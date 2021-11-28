@@ -4,6 +4,7 @@ import router from './router';
 import store from './store';
 import axios from 'axios';
 import VueAxios from 'vue-axios';
+import './index.css';
 
 createApp(App)
   .use(store)
