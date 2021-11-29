@@ -6,12 +6,17 @@ import {
 //import Home from '../views/Home.vue';
 import MainTeacher from '../views/teacher/MainTeacher.vue';
 
+import { courseDashboardSidebarOptions } from '@/navigation/sidebar';
+
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
     name: 'Home',
     component: MainTeacher,
     //component: Home,
+    meta: {
+      sidebarOptions: courseDashboardSidebarOptions,
+    },
   },
 
   {

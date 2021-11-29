@@ -2,59 +2,26 @@
   <div class="flex flex-no-wrap h-screen bg-gray-50">
     <!-- Sidebar starts -->
     <div
-      class="absolute z-40 flex-col justify-between w-64 transition duration-150 ease-in-out shadow bg-primary sm:relative md:h-full"
+      class="absolute z-40 flex-col justify-between transition duration-150 ease-in-out shadow w-52 bg-primary sm:relative md:h-full"
       id="mobile-nav"
     >
       <div
         id="openSideBar"
-        class="absolute right-0 flex items-center justify-center w-10 h-10 mt-16 -mr-10 rounded-tr rounded-br shadow cursor-pointer bg-primary md:hidden"
+        class="absolute right-0 flex items-center justify-center w-10 h-10 mt-16 -mr-10 text-white rounded-tr rounded-br shadow cursor-pointer bg-primary md:hidden"
         @click="sidebarHandler(true)"
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="icon icon-tabler icon-tabler-adjustments"
-          width="20"
-          height="20"
-          viewBox="0 0 24 24"
-          stroke-width="1.5"
-          stroke="#FFFFFF"
-          fill="none"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        >
-          <path stroke="none" d="M0 0h24v24H0z" />
-          <circle cx="6" cy="10" r="2" />
-          <line x1="6" y1="4" x2="6" y2="8" />
-          <line x1="6" y1="12" x2="6" y2="20" />
-          <circle cx="12" cy="16" r="2" />
-          <line x1="12" y1="4" x2="12" y2="14" />
-          <line x1="12" y1="18" x2="12" y2="20" />
-          <circle cx="18" cy="7" r="2" />
-          <line x1="18" y1="4" x2="18" y2="5" />
-          <line x1="18" y1="9" x2="18" y2="20" />
-        </svg>
+        <span class="material-icons-outlined">
+          cancel
+        </span>
       </div>
       <div
         id="closeSideBar"
         class="absolute right-0 flex items-center justify-center hidden w-10 h-10 mt-16 -mr-10 text-white rounded-tr rounded-br shadow cursor-pointer bg-primary"
         @click="sidebarHandler(false)"
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="icon icon-tabler icon-tabler-x"
-          width="20"
-          height="20"
-          viewBox="0 0 24 24"
-          stroke-width="1.5"
-          stroke="currentColor"
-          fill="none"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        >
-          <path stroke="none" d="M0 0h24v24H0z" />
-          <line x1="18" y1="6" x2="6" y2="18" />
-          <line x1="6" y1="6" x2="18" y2="18" />
-        </svg>
+        <span class="material-icons-outlined">
+          cancel
+        </span>
       </div>
       <div>
         <div class="flex items-center w-full h-16 px-8">
@@ -65,13 +32,15 @@
         </div>
         <ul class="px-2 mt-12">
           <li
-            v-for="option in sideBarOptions"
+            v-for="option in sidebarOptions"
             :key="'sidebar-' + option.label"
             class="flex items-center justify-between w-full px-2 py-3 text-gray-200 rounded-md cursor-pointer hover:text-gray-300 hover:bg-primary-dark"
           >
             <div class="flex items-center">
-              <i :class="option.icon"></i>
-              <span class="ml-2 text-sm">{{ option.label }}</span>
+              <span class="text-lg material-icons-outlined">
+                {{ option.icon }}
+              </span>
+              <span class="ml-2 text-base">{{ option.label }}</span>
             </div>
           </li>
         </ul>
@@ -187,8 +156,10 @@
   </div>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import { SidebarOption } from '@/navigation/sidebar'
+import { defineComponent } from '@vue/runtime-core'
+export default defineComponent({
   name: 'MainTeacher',
   data () {
     return {
@@ -196,34 +167,22 @@ export default {
     }
   },
   methods: {
-    sidebarHandler () {
-      var sideBar = document.getElementById('mobile-nav')
-      sideBar.style.transform = 'translateX(-260px)'
-      if (this.$data.moved) {
-        sideBar.style.transform = 'translateX(0px)'
-        this.$data.moved = false
-      } else {
-        sideBar.style.transform = 'translateX(-260px)'
-        this.$data.moved = true
-      }
-    }
+    // sidebarHandler () {
+    //   var sideBar = document.getElementById('mobile-nav')
+    //   sideBar.style.transform = 'translateX(-260px)'
+    //   if (this.$data.moved) {
+    //     sideBar.style.transform = 'translateX(0px)'
+    //     this.$data.moved = false
+    //   } else {
+    //     sideBar.style.transform = 'translateX(-260px)'
+    //     this.$data.moved = true
+    //   }
+    // }
   },
   computed: {
-    sideBarOptions () {
-      // todo create interface for sidebar option with label, link, icon, active (boolean)
-      return [
-        {
-          label: 'Dashboard',
-          icon: 'fas fa-user'
-        },
-        {
-          label: 'Esami'
-        },
-        {
-          label: 'Esercizi'
-        }
-      ]
+    sidebarOptions (): SidebarOption[] {
+      return (this.$route.meta?.sidebarOptions ?? []) as SidebarOption[]
     }
   }
-}
+})
 </script>
