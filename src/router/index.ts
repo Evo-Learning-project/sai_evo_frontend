@@ -3,30 +3,61 @@ import {
   createWebHistory,
   RouteRecordRaw,
 } from 'vue-router';
-//import Home from '../views/Home.vue';
 import MainTeacher from '../views/teacher/MainTeacher.vue';
+import CourseList from '../views/teacher/CourseList.vue';
+import CourseDashboard from '../views/teacher/CourseDashboard.vue';
+import CourseExercises from '../views/teacher/CourseExercises.vue';
+import CourseExams from '../views/teacher/CourseExams.vue';
+import CourseHeadView from '../views/CourseHeadView.vue';
 
-import { courseDashboardSidebarOptions } from '@/navigation/sidebar';
+import {
+  courseDashboardSidebarOptions,
+  courseListSidebarOptions,
+} from '@/navigation/sidebar';
 
 const routes: Array<RouteRecordRaw> = [
   {
-    path: '/',
-    name: 'Home',
+    path: '/teacher',
+    name: 'MainTeacher',
     component: MainTeacher,
-    //component: Home,
+    redirect: { name: 'CourseList' },
     meta: {
-      sidebarOptions: courseDashboardSidebarOptions,
+      // TODO permissions
     },
-  },
-
-  {
-    path: '/about',
-    name: 'About',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () =>
-      import(/* webpackChunkName: "about" */ '../views/About.vue'),
+    children: [
+      {
+        path: 'courses',
+        name: 'CourseList',
+        component: CourseList,
+        meta: {
+          sidebarOptions: courseListSidebarOptions,
+        },
+      },
+      {
+        path: 'courses/:id',
+        component: CourseHeadView,
+        meta: {
+          sidebarOptions: courseDashboardSidebarOptions,
+        },
+        children: [
+          {
+            path: '',
+            name: 'CourseDashboard',
+            component: CourseDashboard,
+          },
+          {
+            path: 'exercises',
+            name: 'CourseExercises',
+            component: CourseExercises,
+          },
+          {
+            path: 'exams',
+            name: 'CourseExams',
+            component: CourseExams,
+          },
+        ],
+      },
+    ],
   },
 ];
 

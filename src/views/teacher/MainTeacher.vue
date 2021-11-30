@@ -35,15 +35,21 @@
             v-for="option in sidebarOptions"
             :key="'sidebar-' + option.label"
             class="flex items-center justify-between w-full px-2 py-1.5 mt-3.5 text-lightText rounded-md cursor-pointer hover:bg-primary-dark"
+            :class="{
+              'bg-primary-dark pointer-events-none':
+                option.routeName == $route.name
+            }"
           >
-            <div class="flex items-center space-x-2">
-              <span
-                class="text-xl text-gray-200 material-icons-outlined opacity-70"
-              >
-                {{ option.icon }}
-              </span>
-              <span class="ml-2 text-base ">{{ option.label }}</span>
-            </div>
+            <router-link :to="{ name: option.routeName }">
+              <div class="flex items-center space-x-2">
+                <span
+                  class="text-xl text-gray-200 material-icons-outlined opacity-70"
+                >
+                  {{ option.icon }}
+                </span>
+                <span class="ml-2 text-base ">{{ option.label }}</span>
+              </div></router-link
+            >
           </li>
         </ul>
       </div>
@@ -149,22 +155,22 @@
     <!--Mobile responsive sidebar-->
     <!-- Sidebar ends -->
     <!-- Remove class [ h-64 ] when adding a card block -->
-    <div class="container w-11/12 h-64 px-6 py-10 mx-auto md:w-4/5">
+    <div class="container w-11/12 h-64 px-4 py-6 mx-auto md:w-4/5">
       <!-- Remove class [ border-dashed border-2 border-gray-300 ] to remove dotted border -->
-      <div class="w-full h-full border-2 border-gray-300 border-dashed rounded">
+      <div class="w-full h-full">
         <!-- Place your content here -->
-        <btn :outline="false" :variant="'primary'">abc</btn>
+        <!-- <btn :outline="false" :variant="'primary'">abc</btn> -->
+        <router-view></router-view>
       </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import Btn from '@/components/ui/Btn.vue'
 import { SidebarOption } from '@/navigation/sidebar'
 import { defineComponent } from '@vue/runtime-core'
 export default defineComponent({
-  components: { Btn },
+  components: {},
   name: 'MainTeacher',
   data () {
     return {

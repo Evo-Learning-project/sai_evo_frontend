@@ -3,3 +3,22 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+    h1 {
+        @apply font-bold text-3xl mb-4
+    }
+    strong {
+      @apply font-bold text-primary;
+    }
+    
+  }
+
+@layer components {
+    .text-muted {
+        @apply font-light text-gray-600
+    }
+    .link {
+        @apply text-primary hover:underline
+    }
+  }
