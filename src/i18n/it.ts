@@ -4,5 +4,6 @@ export const it = {
     course_dashboard_exams: 'Esami',
     course_dashboard_practices: 'Esercitazioni',
     course_dashboard_exercises: 'Esercizi',
+    course_dashboard_back_to_courses: 'Torna ai corsi',
   },
 };

@@ -9,7 +9,7 @@ export interface SidebarOption {
 export const courseDashboardSidebarOptions: SidebarOption[] = [
   {
     label: _('sidebar_labels.course_dashboard_dashboard'),
-    icon: 'space_dashboard',
+    icon: 'home',
   },
   {
     label: _('sidebar_labels.course_dashboard_exams'),
@@ -22,5 +22,9 @@ export const courseDashboardSidebarOptions: SidebarOption[] = [
   {
     label: _('sidebar_labels.course_dashboard_exercises'),
     icon: 'list_alt',
+  },
+  {
+    label: _('sidebar_labels.course_dashboard_back_to_courses'),
+    icon: 'arrow_back_ios',
   },
 ];

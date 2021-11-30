@@ -5,7 +5,20 @@ module.exports = {
   darkMode: false, // or 'media' or 'class'
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['"Open Sans"']
+      },
+      borderWidth: {
+        '1.5': '1.5px'
+      },
+      outline: {
+        primary: ['1.5px solid #4338CA', '1.75px'],
+        danger: ['1.5px solid #F87171', '1.75px'],
+        success: ['1.5px solid #047857', '1.75px']
+      },
       colors: {
+        lightText: '#FFFFFF',
+        darkText: '#000000',
         primary: {
           light: '#4338CA',
           DEFAULT: '#485BCA', // '#0F7490', '#3730A3',
@@ -20,17 +33,21 @@ module.exports = {
         dark: '#111827',
         danger: {
           light: '#FCA5A5',
-          DEFAULT: '#991B1B'
+          DEFAULT: '#F87171',
+          dark: '#991B1B'
         },
         success: {
           light: '#34D399',
-          DEFAULT: '#047857'
+          DEFAULT: '#10B981',
+          dark: '#064E3B'
         }
       }
     }
   },
   variants: {
-    extend: {}
+    extend: {
+      outline: ['active']
+    }
   },
   plugins: []
 }

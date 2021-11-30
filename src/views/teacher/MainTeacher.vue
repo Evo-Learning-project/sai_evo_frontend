@@ -7,7 +7,7 @@
     >
       <div
         id="openSideBar"
-        class="absolute right-0 flex items-center justify-center w-10 h-10 mt-16 -mr-10 text-white rounded-tr rounded-br shadow cursor-pointer bg-primary md:hidden"
+        class="absolute right-0 flex items-center justify-center w-10 h-10 mt-16 -mr-10 rounded-tr rounded-br shadow cursor-pointer text-lightText bg-primary md:hidden"
         @click="sidebarHandler(true)"
       >
         <span class="material-icons-outlined">
@@ -16,7 +16,7 @@
       </div>
       <div
         id="closeSideBar"
-        class="absolute right-0 flex items-center justify-center hidden w-10 h-10 mt-16 -mr-10 text-white rounded-tr rounded-br shadow cursor-pointer bg-primary"
+        class="absolute right-0 flex items-center justify-center hidden w-10 h-10 mt-16 -mr-10 rounded-tr rounded-br shadow cursor-pointer text-lightText bg-primary"
         @click="sidebarHandler(false)"
       >
         <span class="material-icons-outlined">
@@ -34,7 +34,7 @@
           <li
             v-for="option in sidebarOptions"
             :key="'sidebar-' + option.label"
-            class="flex items-center justify-between w-full px-2 py-1.5 mt-3.5 text-white rounded-md cursor-pointer hover:bg-primary-dark"
+            class="flex items-center justify-between w-full px-2 py-1.5 mt-3.5 text-lightText rounded-md cursor-pointer hover:bg-primary-dark"
           >
             <div class="flex items-center space-x-2">
               <span
@@ -42,7 +42,7 @@
               >
                 {{ option.icon }}
               </span>
-              <span class="ml-2 text-base">{{ option.label }}</span>
+              <span class="ml-2 text-base ">{{ option.label }}</span>
             </div>
           </li>
         </ul>
@@ -62,7 +62,7 @@
           </div>
         </div>
         <ul class="flex items-center justify-between w-full">
-          <li class="pt-5 pb-3 text-white cursor-pointer">
+          <li class="pt-5 pb-3 cursor-pointer text-lightText">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               class="icon icon-tabler icon-tabler-bell"
@@ -82,7 +82,7 @@
               <path d="M9 17v1a3 3 0 0 0 6 0v-1"></path>
             </svg>
           </li>
-          <li class="pt-5 pb-3 text-white cursor-pointer">
+          <li class="pt-5 pb-3 cursor-pointer text-lightText">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               class="icon icon-tabler icon-tabler-messages"
@@ -104,7 +104,7 @@
               ></path>
             </svg>
           </li>
-          <li class="pt-5 pb-3 text-white cursor-pointer">
+          <li class="pt-5 pb-3 cursor-pointer text-lightText">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               class="icon icon-tabler icon-tabler-settings"
@@ -124,7 +124,7 @@
               <circle cx="12" cy="12" r="3"></circle>
             </svg>
           </li>
-          <li class="pt-5 pb-3 text-white cursor-pointer">
+          <li class="pt-5 pb-3 cursor-pointer text-lightText">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               class="icon icon-tabler icon-tabler-archive"
@@ -153,15 +153,18 @@
       <!-- Remove class [ border-dashed border-2 border-gray-300 ] to remove dotted border -->
       <div class="w-full h-full border-2 border-gray-300 border-dashed rounded">
         <!-- Place your content here -->
+        <btn :outline="false" :variant="'primary'">abc</btn>
       </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
+import Btn from '@/components/ui/Btn.vue'
 import { SidebarOption } from '@/navigation/sidebar'
 import { defineComponent } from '@vue/runtime-core'
 export default defineComponent({
+  components: { Btn },
   name: 'MainTeacher',
   data () {
     return {
