@@ -2,7 +2,7 @@
   <div class="flex flex-no-wrap h-screen bg-gray-50">
     <!-- Sidebar starts -->
     <div
-      class="absolute z-40 flex-col justify-between transition duration-150 ease-in-out shadow w-52 bg-primary sm:relative md:h-full"
+      class="absolute z-40 flex-col justify-between transition duration-150 ease-in-out shadow w-60 bg-primary sm:relative md:h-full"
       id="mobile-nav"
     >
       <div
@@ -34,10 +34,12 @@
           <li
             v-for="option in sidebarOptions"
             :key="'sidebar-' + option.label"
-            class="flex items-center justify-between w-full px-2 py-3 text-gray-200 rounded-md cursor-pointer hover:text-gray-300 hover:bg-primary-dark"
+            class="flex items-center justify-between w-full px-2 py-1.5 mt-3.5 text-white rounded-md cursor-pointer hover:bg-primary-dark"
           >
-            <div class="flex items-center">
-              <span class="text-lg material-icons-outlined">
+            <div class="flex items-center space-x-2">
+              <span
+                class="text-xl text-gray-200 material-icons-outlined opacity-70"
+              >
                 {{ option.icon }}
               </span>
               <span class="ml-2 text-base">{{ option.label }}</span>
