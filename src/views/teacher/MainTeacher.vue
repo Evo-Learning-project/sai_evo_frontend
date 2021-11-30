@@ -31,16 +31,18 @@
           />
         </div>
         <ul class="px-2 mt-12">
-          <li
+          <router-link
             v-for="option in sidebarOptions"
             :key="'sidebar-' + option.label"
-            class="flex items-center justify-between w-full px-2 py-1.5 mt-3.5 text-lightText rounded-md cursor-pointer hover:bg-primary-dark"
-            :class="{
-              'bg-primary-dark pointer-events-none':
-                option.routeName == $route.name
-            }"
+            :to="{ name: option.routeName }"
           >
-            <router-link :to="{ name: option.routeName }">
+            <li
+              class="flex items-center justify-between w-full px-2 py-2 mt-3 rounded-md cursor-pointer hover:transition-colors text-lightText hover:bg-primary-dark hover:duration-100"
+              :class="{
+                'bg-primary-dark pointer-events-none':
+                  option.routeName == $route.name
+              }"
+            >
               <div class="flex items-center space-x-2">
                 <span
                   class="text-xl text-gray-200 material-icons-outlined opacity-70"
@@ -48,12 +50,12 @@
                   {{ option.icon }}
                 </span>
                 <span class="ml-2 text-base ">{{ option.label }}</span>
-              </div></router-link
-            >
-          </li>
+              </div>
+            </li>
+          </router-link>
         </ul>
       </div>
-      <div class="px-8 bg-primary">
+      <!-- <div class="px-8 bg-primary">
         <div class="flex items-center px-8 mt-48 mb-4">
           <div class="w-10 h-10 mr-3 bg-cover rounded-md">
             <img
@@ -69,97 +71,20 @@
         </div>
         <ul class="flex items-center justify-between w-full">
           <li class="pt-5 pb-3 cursor-pointer text-lightText">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="icon icon-tabler icon-tabler-bell"
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              stroke-width="1.5"
-              stroke="currentColor"
-              fill="none"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <path stroke="none" d="M0 0h24v24H0z"></path>
-              <path
-                d="M10 5a2 2 0 0 1 4 0a7 7 0 0 1 4 6v3a4 4 0 0 0 2 3h-16a4 4 0 0 0 2 -3v-3a7 7 0 0 1 4 -6"
-              ></path>
-              <path d="M9 17v1a3 3 0 0 0 6 0v-1"></path>
-            </svg>
+            
           </li>
           <li class="pt-5 pb-3 cursor-pointer text-lightText">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="icon icon-tabler icon-tabler-messages"
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              stroke-width="1.5"
-              stroke="currentColor"
-              fill="none"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <path stroke="none" d="M0 0h24v24H0z"></path>
-              <path
-                d="M21 14l-3 -3h-7a1 1 0 0 1 -1 -1v-6a1 1 0 0 1 1 -1h9a1 1 0 0 1 1 1v10"
-              ></path>
-              <path
-                d="M14 15v2a1 1 0 0 1 -1 1h-7l-3 3v-10a1 1 0 0 1 1 -1h2"
-              ></path>
-            </svg>
+          </li>
           </li>
           <li class="pt-5 pb-3 cursor-pointer text-lightText">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="icon icon-tabler icon-tabler-settings"
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              stroke-width="1.5"
-              stroke="currentColor"
-              fill="none"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <path stroke="none" d="M0 0h24v24H0z"></path>
-              <path
-                d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
-              ></path>
-              <circle cx="12" cy="12" r="3"></circle>
-            </svg>
-          </li>
-          <li class="pt-5 pb-3 cursor-pointer text-lightText">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="icon icon-tabler icon-tabler-archive"
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              stroke-width="1.5"
-              stroke="currentColor"
-              fill="none"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <path stroke="none" d="M0 0h24v24H0z"></path>
-              <rect x="3" y="4" width="18" height="4" rx="2"></rect>
-              <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10"></path>
-              <line x1="10" y1="12" x2="14" y2="12"></line>
-            </svg>
           </li>
         </ul>
-      </div>
+      </div>-->
     </div>
     <!--Mobile responsive sidebar-->
     <!-- Sidebar ends -->
-    <!-- Remove class [ h-64 ] when adding a card block -->
     <div class="container w-11/12 h-64 px-4 py-6 mx-auto md:w-4/5">
-      <!-- Remove class [ border-dashed border-2 border-gray-300 ] to remove dotted border -->
       <div class="w-full h-full">
-        <!-- Place your content here -->
-        <!-- <btn :outline="false" :variant="'primary'">abc</btn> -->
         <router-view></router-view>
       </div>
     </div>

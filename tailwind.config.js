@@ -11,6 +11,9 @@ module.exports = {
       borderWidth: {
         '1.5': '1.5px'
       },
+      transitionDuration: {
+        '0': '0'
+      },
       outline: {
         primary: ['1.5px solid #4338CA', '1.75px'],
         danger: ['1.5px solid #F87171', '1.75px'],
@@ -18,7 +21,7 @@ module.exports = {
       },
       colors: {
         lightText: '#FFFFFF',
-        darkText: '#000000',
+        darkText: '#111827',
         primary: {
           light: '#4338CA',
           DEFAULT: '#485BCA', // '#0F7490', '#3730A3',
@@ -46,7 +49,8 @@ module.exports = {
   },
   variants: {
     extend: {
-      outline: ['active']
+      outline: ['active'],
+      transitionProperty: ['hover']
     }
   },
   plugins: []

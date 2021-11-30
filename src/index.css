@@ -5,6 +5,9 @@
 @tailwind utilities;
 
 @layer base {
+    body {
+        @apply text-darkText
+    }
     h1 {
         @apply font-bold text-3xl mb-4
     }
