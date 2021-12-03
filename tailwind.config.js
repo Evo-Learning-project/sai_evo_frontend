@@ -5,6 +5,12 @@ module.exports = {
   darkMode: false, // or 'media' or 'class'
   theme: {
     extend: {
+      transformOrigin: {
+        '0': '0%'
+      },
+      zIndex: {
+        '-1': '-1'
+      },
       fontFamily: {
         sans: ['"Open Sans"']
       },
@@ -50,7 +56,10 @@ module.exports = {
   variants: {
     extend: {
       outline: ['active'],
-      transitionProperty: ['hover']
+      transitionProperty: ['hover'],
+      ringWidth: ['hover', 'active'],
+      ringOpacity: ['active'],
+      borderColor: ['responsive', 'hover', 'focus', 'focus-within']
     }
   },
   plugins: []

@@ -24,4 +24,18 @@
     .link {
         @apply text-primary hover:underline
     }
+    .floating-label ~ label {
+      @apply text-gray-500 duration-300
+    }
+    .floating-label:focus-within ~ label {
+      @apply duration-300 transform scale-75 -translate-y-6 text-primary;
+     }
+     .floating-label:focus-within ~ label,
+     .floating-label:not(:placeholder-shown) ~ label {
+       @apply text-gray-500 duration-300 transform scale-75 -translate-y-6;
+     }
+     
+     .floating-label:focus-within ~ label {
+       @apply text-primary;
+     }
   }
