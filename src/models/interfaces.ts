@@ -7,10 +7,14 @@ import {
   EventParticipationState,
 } from '.';
 
+export interface User {
+  email: string;
+}
+
 export interface Course {
   id?: string;
   name: string;
-  description: string;
+  description?: string;
 }
 
 export interface Exercise {

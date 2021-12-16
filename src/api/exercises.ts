@@ -1,13 +1,10 @@
 import { Exercise, ExerciseChoice } from '@/models';
-import { apiCall } from './base';
+import axios from 'axios';
 
 export async function getExercises(
   courseId: string
 ): Promise<Exercise[]> {
-  const response = await apiCall(
-    'get',
-    `/courses/${courseId}/exercises/`
-  );
+  const response = await axios.get(`/courses/${courseId}/exercises/`);
   return response.data;
 }
 
@@ -15,8 +12,7 @@ export async function getExercise(
   courseId: string,
   exerciseId: string
 ): Promise<Exercise> {
-  const response = await apiCall(
-    'get',
+  const response = await axios.get(
     `/courses/${courseId}/exercises/${exerciseId}/`
   );
   return response.data;
@@ -26,12 +22,9 @@ export async function createExercise(
   courseId: string,
   exercise: Exercise
 ): Promise<Exercise> {
-  const response = await apiCall(
-    'post',
+  const response = await axios.post(
     `courses/${courseId}/exercises/`,
-    {
-      ...exercise,
-    }
+    exercise
   );
   return response.data;
 }
@@ -41,12 +34,9 @@ export async function updateExercise(
   exerciseId: string,
   exercise: Exercise
 ): Promise<Exercise> {
-  const response = await apiCall(
-    'put',
+  const response = await axios.put(
     `courses/${courseId}/exercises/${exerciseId}/`,
-    {
-      ...exercise,
-    }
+    exercise
   );
   return response.data;
 }
@@ -55,8 +45,7 @@ export async function deleteExercise(
   courseId: string,
   exerciseId: string
 ): Promise<void> {
-  const response = await apiCall(
-    'delete',
+  const response = await axios.delete(
     `/courses/${courseId}/exercises/${exerciseId}/`
   );
   return response.data;
@@ -66,8 +55,7 @@ export async function getExerciseChoices(
   courseId: string,
   exerciseId: string
 ): Promise<ExerciseChoice[]> {
-  const response = await apiCall(
-    'get',
+  const response = await axios.get(
     `/courses/${courseId}/exercises/${exerciseId}/choices/`
   );
   return response.data;
@@ -78,10 +66,9 @@ export async function createExerciseChoice(
   exerciseId: string,
   choice: ExerciseChoice
 ): Promise<ExerciseChoice> {
-  const response = await apiCall(
-    'post',
+  const response = await axios.post(
     `/courses/${courseId}/exercises/${exerciseId}/choices/`,
-    { ...choice }
+    choice
   );
   return response.data;
 }
@@ -92,10 +79,9 @@ export async function updateExerciseChoice(
   choiceId: string,
   choice: ExerciseChoice
 ): Promise<ExerciseChoice> {
-  const response = await apiCall(
-    'put',
+  const response = await axios.put(
     `/courses/${courseId}/exercises/${exerciseId}/choices/${choiceId}/`,
-    { ...choice }
+    choice
   );
   return response.data;
 }
@@ -105,8 +91,7 @@ export async function deleteExerciseChoice(
   exerciseId: string,
   choiceId: string
 ): Promise<ExerciseChoice> {
-  const response = await apiCall(
-    'delete',
+  const response = await axios.delete(
     `/courses/${courseId}/exercises/${exerciseId}/choices/${choiceId}/`
   );
   return response.data;
@@ -116,8 +101,7 @@ export async function getExerciseSubExercises(
   courseId: string,
   exerciseId: string
 ): Promise<Exercise[]> {
-  const response = await apiCall(
-    'get',
+  const response = await axios.get(
     `/courses/${courseId}/exercises/${exerciseId}/sub_exercises/`
   );
   return response.data;
@@ -128,10 +112,9 @@ export async function createExerciseSubExercise(
   exerciseId: string,
   subExercise: Exercise
 ): Promise<Exercise> {
-  const response = await apiCall(
-    'post',
+  const response = await axios.post(
     `/courses/${courseId}/exercises/${exerciseId}/sub_exercises/`,
-    { ...subExercise }
+    subExercise
   );
   return response.data;
 }
@@ -142,10 +125,9 @@ export async function updateExerciseSubExercise(
   subExerciseId: string,
   subExercise: Exercise
 ): Promise<Exercise> {
-  const response = await apiCall(
-    'put',
+  const response = await axios.put(
     `/courses/${courseId}/exercises/${exerciseId}/sub_exercises/${subExerciseId}/`,
-    { ...subExercise }
+    subExercise
   );
   return response.data;
 }
@@ -155,8 +137,7 @@ export async function deleteExerciseSubExercise(
   exerciseId: string,
   subExerciseId: string
 ): Promise<void> {
-  const response = await apiCall(
-    'delete',
+  const response = await axios.delete(
     `/courses/${courseId}/exercises/${exerciseId}/sub_exercises/${subExerciseId}/`
   );
   return response.data;

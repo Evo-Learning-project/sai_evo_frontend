@@ -9,7 +9,7 @@
         :value="value"
         v-model="proxyModelValue"
         :id="id"
-        class="absolute -top-1 -left-0.5 block transition-all duration-100 bg-gray-100  rounded-full toggle-handle appearance-none cursor-pointer w-6 h-6 hover:ring-8  ring-blue-200 active:ring-opacity-60 ring-opacity-40 toggle-checkbox"
+        class="absolute -left-0.5 block transition-all duration-100 bg-gray-100 rounded-full toggle-handle appearance-none cursor-pointer w-6 h-6 hover:ring-8  ring-blue-200 active:ring-opacity-60 ring-opacity-40 toggle-checkbox"
       />
       <label
         :for="id"
@@ -58,6 +58,7 @@ export default defineComponent({
 .toggle-handle {
   box-shadow: 0 2px 1px -1px rgb(0 0 0 / 20%), 0 1px 1px 0 rgb(0 0 0 / 14%),
     0 1px 3px 0 rgb(0 0 0 / 12%);
+  top: -0.265rem;
 }
 
 .toggle-checkbox:checked {

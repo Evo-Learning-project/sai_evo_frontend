@@ -1,8 +1,10 @@
 <template>
   <button
-    class="font-semibold rounded-md"
+    class="rounded-md"
     :class="{
-      'px-4 py-1.5': size == 'base',
+      'px-5 py-1 font-medium': size == 'base',
+      'px-2.5': size == 'sm',
+      'px-10 py-2 text-lg font-semibold': size == 'lg',
       'text-lightText bg-primary hover:bg-primary-dark':
         !outline && variant == 'primary',
       'text-danger-dark bg-danger': !outline && variant == 'danger',
@@ -15,7 +17,7 @@
         outline && variant == 'primary'
     }"
   >
-    Button
+    <p class="flex items-center"><slot></slot></p>
   </button>
 </template>
 
