@@ -4,11 +4,13 @@
   <text-input></text-input>
   <text-editor></text-editor>
   <div class="h-2 my-10"></div>
+  <dropdown v-model="selected" :options="['a', 'b', 'c']"></dropdown>
   <router-view></router-view>
 </template>
 
 <script>
 import Toggle from '@/components/ui/Toggle.vue'
+import Dropdown from '@/components/ui/Dropdown.vue'
 import TextInput from '@/components/ui/TextInput.vue'
 import TextEditor from '@/components/ui/TextEditor.vue'
 export default {
@@ -21,11 +23,13 @@ export default {
   components: {
     Toggle,
     TextInput,
-    TextEditor
+    TextEditor,
+    Dropdown
   },
   data () {
     return {
-      t: false
+      t: false,
+      selected: ''
     }
   }
 }

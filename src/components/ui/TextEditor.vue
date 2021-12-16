@@ -63,7 +63,7 @@ export default defineComponent({
     }
   },
   methods: {
-    onEditorChange ({ quill, html, text }) {
+    onEditorChange ({ quill, html, text }: unknown) {
       console.log('editor change!', quill, html, text)
       this.content = html
     }
