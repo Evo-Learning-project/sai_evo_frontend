@@ -1,13 +1,13 @@
 <template>
-  <div class="flex flex-no-wrap h-screen bg-gray-50">
+  <div class="flex flex-no-wrap min-h-screen bg-gray-50">
     <!-- Sidebar starts -->
     <div
-      class="absolute z-40 flex-col justify-between transition duration-150 ease-in-out shadow w-60 bg-primary sm:relative md:h-full"
+      class="flex-col justify-between min-h-full ease-in-out shadow w-96 sm:relative md:w-60 bg-primary"
       id="mobile-nav"
     >
       <div
         id="openSideBar"
-        class="absolute right-0 flex items-center justify-center w-10 h-10 mt-16 -mr-10 rounded-tr rounded-br shadow cursor-pointer text-lightText bg-primary md:hidden"
+        class="absolute z-40 flex items-center justify-center w-10 h-10 mt-16 -mr-10 rounded-tr rounded-br shadow cursor-pointer left-28 top-4 text-lightText bg-primary md:hidden"
         @click="sidebarHandler(true)"
       >
         <span class="material-icons-outlined">
@@ -83,10 +83,8 @@
     </div>
     <!--Mobile responsive sidebar-->
     <!-- Sidebar ends -->
-    <div class="container w-11/12 h-64 px-4 py-6 mx-auto md:w-4/5">
-      <div class="w-full h-full">
-        <router-view></router-view>
-      </div>
+    <div class="w-11/12 min-h-full px-4 py-6 mx-auto md:w-4/5">
+      <router-view></router-view>
     </div>
   </div>
 </template>

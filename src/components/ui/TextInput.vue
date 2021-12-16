@@ -1,6 +1,6 @@
 <template>
   <div
-    class="relative z-10 px-2 py-1.5 my-4 bg-transparent bg-gray-100 border-b-2 rounded-t-sm focus-within:border-primary"
+    class="relative z-10 px-2 py-1.5 my-4 bg-gray-100 border-b-2 rounded-t-sm focus-within:border-primary"
   >
     <input
       type="text"

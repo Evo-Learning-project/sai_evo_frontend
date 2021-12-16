@@ -44,4 +44,16 @@
      .floating-label:focus-within ~ label {
        @apply text-primary;
      }
+     .ql-editor-container ~ label {
+      @apply text-gray-500 duration-300
+    }
+    .ql-editor-container:focus-within ~ label {
+      @apply duration-300 transform scale-75 -translate-y-7 text-primary;
+     }
+    .fixed-label {
+      @apply top-0 text-gray-500 duration-300 transform scale-75 -translate-y-7;
+     }
+     /* .ql-editor-container:focus-within ~ label {
+       @apply top-0 duration-300 transform scale-75 -translate-y-5 text-primary;
+     } */
   }

@@ -1,8 +1,11 @@
 <template>
   <router-link :to="{ name: 'CourseDashboard', params: { id: course.id } }">
-    <Card class="hover:bg-gray-100">
+    <Card class="transition-all duration-75 hover:bg-gray-100 hover:shadow-md">
       <template v-slot:header>
         <div class="flex items-center">
+          <span class="mr-2 opacity-50 material-icons-outlined"
+            >space_dashboard</span
+          >
           <h3>{{ course.name }}</h3>
           <!-- <btn :size="'sm'"
             ><span class="mr-1 text-sm material-icons-outlined"

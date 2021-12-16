@@ -24,6 +24,33 @@ export default defineComponent({
           id: 'abc',
           name: 'Programmazione e algoritmica',
           description: 'Test description'
+        },
+        {
+          id: 'def',
+          name: 'Analisi matematica',
+          description: ''
+        },
+        {
+          id: 'ghi',
+          name: 'Laboratorio 1',
+          description:
+            'Test description Test description Test description Test description Test description Test description Test description Test description Test description Test description Test description Test description Test description Test description Test description '
+        },
+        {
+          id: '1',
+          name: 'Programmazione e algoritmica',
+          description: 'Test description'
+        },
+        {
+          id: '2',
+          name: 'Analisi matematica',
+          description: ''
+        },
+        {
+          id: '3',
+          name: 'Laboratorio 1',
+          description:
+            'Test description Test description Test description Test description Test description Test description Test description Test description Test description Test description Test description Test description Test description Test description Test description '
         }
       ]
       //return this.$store.getters.courses
