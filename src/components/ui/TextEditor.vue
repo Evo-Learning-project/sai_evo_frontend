@@ -1,5 +1,5 @@
 <template>
-  <div class="relative z-10 bg-gray-100">
+  <div class="relative z-10 bg-gray-100 rounded-t-sm">
     <div class="z-10 ql-editor-container">
       <quill-editor
         :options="editorOptions"
@@ -10,8 +10,8 @@
     <label
       class="absolute -z-1 top-2 left-3 origin-0"
       :class="{ 'fixed-label': content.length > 0 }"
-      >Username</label
-    >
+      ><slot></slot
+    ></label>
   </div>
   <!--
             v-model:value="state.content"

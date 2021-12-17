@@ -3,8 +3,10 @@
   <toggle v-model="t">Test</toggle>
   <text-input></text-input>
   <text-editor></text-editor>
-  <div class="h-2 my-10"></div>
   <dropdown v-model="selected" :options="['a', 'b', 'c']"></dropdown>
+
+  <div class="h-2 my-10"></div>
+  <exercise-editor></exercise-editor>
   <router-view></router-view>
 </template>
 
@@ -13,6 +15,7 @@ import Toggle from '@/components/ui/Toggle.vue'
 import Dropdown from '@/components/ui/Dropdown.vue'
 import TextInput from '@/components/ui/TextInput.vue'
 import TextEditor from '@/components/ui/TextEditor.vue'
+import ExerciseEditor from '@/components/teacher/ExerciseEditor.vue'
 export default {
   /*
   This empty view is used to achieve two-level nesting of routes such as
@@ -24,7 +27,8 @@ export default {
     Toggle,
     TextInput,
     TextEditor,
-    Dropdown
+    Dropdown,
+    ExerciseEditor
   },
   data () {
     return {

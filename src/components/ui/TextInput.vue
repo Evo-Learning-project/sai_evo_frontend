@@ -9,8 +9,8 @@
       class="z-10 block w-full bg-transparent appearance-none floating-label focus:outline-none"
     />
     <label for="username" class="absolute bottom-1.5 origin-0 -z-1"
-      >Username</label
-    >
+      ><slot></slot
+    ></label>
   </div>
 </template>
 

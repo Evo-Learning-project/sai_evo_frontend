@@ -4,14 +4,21 @@
     @change="$emit('update:modelValue', $event.target.value)"
     :value="modelValue"
   >
-    <option class="text-muted" :value="NULL_VALUE" disabled>Seleziona</option>
+    <option
+      v-if="!isThereDefault"
+      class="text-muted"
+      :value="NULL_VALUE"
+      disabled
+      >{{ $t('misc.select_empty_option') }}</option
+    >
     <option
       class="bg-white text-darkText"
-      v-for="(option, index) in options"
+      v-for="(option, index) in processedOptions"
       :key="'select-' + id + -'-option-' + index"
-      :value="option"
+      :value="option.value"
+      :disabled="option.value == NULL_VALUE"
     >
-      {{ option }}
+      {{ option.name }}
     </option>
   </select>
 </template>
@@ -30,6 +37,26 @@ export default defineComponent({
     return {
       id: '',
       NULL_VALUE: ''
+    }
+  },
+  computed: {
+    processedOptions () {
+      if (!this.options || this.options.length == 0) {
+        return []
+      }
+      if (typeof this.options[0] == 'string') {
+        return this.options.map((option: string) => ({
+          name: option,
+          value: option
+        }))
+      } else {
+        return this.options
+      }
+    },
+    isThereDefault () {
+      return this.options?.some(
+        (o: { value: string }) => o.value == this.NULL_VALUE
+      )
     }
   }
 })
