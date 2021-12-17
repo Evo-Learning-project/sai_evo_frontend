@@ -1,22 +1,29 @@
 <template>
   <card
-    class="transition-shadow duration-100 bg-gray-50 focus-within:shadow-lg"
+    class="transition-shadow duration-100 focus-within:shadow-lg bg-gray-50"
   >
     <template v-slot:header>
       <h3>{{ $t('exercise_editor.exercise_editor_title') }}</h3>
     </template>
     <template v-slot:body>
       <div class="flex flex-col space-y-6">
-        <div class="flex items-center">
-          <text-input v-model="exercise.label" class="w-2/5">{{
+        <div class="flex flex-col items-center md:flex-row">
+          <text-input v-model="exercise.label" class="w-full md:w-2/5">{{
             $t('exercise_editor.exercise_label')
           }}</text-input>
-          <p class="ml-auto">{{ $t('exercise_editor.exercise_type') }}</p>
-          <dropdown
-            v-model="exercise.exercise_type"
-            class="ml-2"
-            :options="exerciseTypeOptions"
-          ></dropdown>
+          <div class="flex flex-col items-center ml-auto md:flex-row">
+            <label
+              :for="'exercise_type_' + elementId"
+              class="select-none md:mr-2"
+            >
+              {{ $t('exercise_editor.exercise_type') }}
+            </label>
+            <dropdown
+              :id="'exercise_type_' + elementId"
+              v-model="exercise.exercise_type"
+              :options="exerciseTypeOptions"
+            ></dropdown>
+          </div>
         </div>
         <text-editor v-model="exercise.text">{{
           $t('exercise_editor.exercise_text')
@@ -35,6 +42,7 @@
 
 <script lang="ts">
 import { getTranslatedString as _ } from '@/i18n'
+import { v4 as uuid4 } from 'uuid'
 
 import { Exercise } from '@/models'
 import { ExerciseType, choicefulExerciseTypes } from '@/models'
@@ -52,9 +60,13 @@ export default defineComponent({
     TextInput,
     Dropdown
   },
+  created () {
+    this.elementId = uuid4()
+  },
   data () {
     return {
-      exercise: {} as Exercise
+      exercise: {} as Exercise,
+      elementId: ''
     }
   },
   computed: {
