@@ -38,7 +38,7 @@ module.exports = {
           DEFAULT: '#4C1D95'
           //dark: '#4C1D95'
         },
-        light: '#D1D5DB',
+        light: '#F3F4F6',
         dark: '#111827',
         danger: {
           light: '#FCA5A5',

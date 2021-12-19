@@ -1,6 +1,6 @@
 <template>
   <router-link :to="{ name: 'CourseDashboard', params: { id: course.id } }">
-    <Card class="transition-all duration-75 hover:bg-gray-100 hover:shadow-md">
+    <Card class="transition-all duration-75 hover:bg-light hover:shadow-md">
       <template v-slot:header>
         <div class="flex items-center">
           <span class="mr-2 opacity-50 material-icons-outlined"

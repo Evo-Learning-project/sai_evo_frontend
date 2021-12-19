@@ -2,10 +2,10 @@
   <div class="">
     <div
       :class="{
-        'max-h-20': !expanded,
+        'max-h-20 hover:shadow-md': !expanded,
         'max-h-screen shadow-2xl': expanded
       }"
-      class="overflow-y-hidden transition-all duration-300 ease-in-out border border-gray-300 rounded-md hover:shadow-md w-max"
+      class="overflow-y-hidden transition-all duration-300 ease-in-out border border-gray-300 rounded-md w-96"
     >
       <label
         :for="id + '-input-' + index"
@@ -30,10 +30,11 @@
           :checked="option.value == modelValue"
         />
         <div class="flex items-center space-x-2">
-          <div class="flex flex-col -space-y-1.5 scale-90 origin-0 transform">
-            <span class="text-xs material-icons"> check_box </span
-            ><span class="text-xs material-icons"> check_box </span
-            ><span class="text-xs material-icons">
+          <div class="flex flex-col -space-y-1.5   ">
+            <span class="text-xs material-icons"> check_box </span>
+            <!-- <span class="text-xs material-icons"> check_box </span
+            > -->
+            <span class="text-xs material-icons">
               check_box_outline_blank
             </span>
           </div>
@@ -53,6 +54,9 @@ export default defineComponent({
   props: ['options', 'modelValue'],
   created () {
     this.id = uuid4()
+    if (this.modelValue != null) {
+      this.expanded = false
+    }
   },
   data () {
     return {

@@ -30,6 +30,21 @@
     .link {
         @apply text-primary hover:underline
     }
+
+    /* tag input */
+    .ti-input, .ti-new-tag-input {
+      @apply bg-light !important
+    }
+    .ti-tag {
+      @apply rounded-lg bg-primary text-lightText !important
+    }
+    .ti-deletion-mark {
+      @apply bg-danger !important
+    }
+    .vue-tags-input {
+      @apply max-w-screen-2xl !important
+    }
+    /* text and number input floating label */
     .floating-label ~ label {
       @apply text-gray-500 duration-300
     }
@@ -44,6 +59,8 @@
      .floating-label:focus-within ~ label {
        @apply text-primary;
      }
+
+     /* quill editor floating label */
      .ql-editor-container ~ label {
       @apply text-gray-500 duration-300
     }
@@ -53,7 +70,4 @@
     .fixed-label {
       @apply top-0 text-gray-500 duration-300 transform scale-75 -translate-y-7;
      }
-     /* .ql-editor-container:focus-within ~ label {
-       @apply top-0 duration-300 transform scale-75 -translate-y-5 text-primary;
-     } */
   }

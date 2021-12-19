@@ -1,15 +1,15 @@
 <template>
-  <div class="relative z-10 bg-gray-100 rounded-t-sm">
+  <div class="relative z-10 rounded-t-sm bg-light">
     <div class="z-10 ql-editor-container">
       <quill-editor
         :options="editorOptions"
-        v-model:value="content"
-        @change="onChange($event)"
+        :value="modelValue"
+        @change="onEditorChange($event)"
       />
     </div>
     <label
       class="absolute -z-1 top-2 left-3 origin-0"
-      :class="{ 'fixed-label': content.length > 0 }"
+      :class="{ 'fixed-label': modelValue?.length > 0 }"
       ><slot></slot
     ></label>
   </div>
@@ -29,6 +29,7 @@ import { defineComponent } from '@vue/runtime-core'
 import { quillEditor } from 'vue3-quill'
 export default defineComponent({
   name: 'TextEditor',
+  props: ['modelValue'],
   components: {
     quillEditor
   },
@@ -66,6 +67,7 @@ export default defineComponent({
     onEditorChange ({ quill, html, text }: unknown) {
       console.log('editor change!', quill, html, text)
       this.content = html
+      this.$emit('update:modelValue', html)
     }
   }
 })

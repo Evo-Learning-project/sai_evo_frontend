@@ -21,6 +21,10 @@ export const it = {
     exercise_solution: "Soluzione dell'esercizio (opzionale)",
     select_exercise_type: 'Seleziona tipologia',
     exercise_type: 'Tipologia esercizio',
+    exercise_tags: 'Tag',
+    choice_text: 'Testo',
+    choice_score: 'Punteggio',
+    new_choice: 'Nuova',
   },
   exercise_types: {
     [ExerciseType.MULTIPLE_CHOICE_SINGLE_POSSIBLE]:
@@ -30,7 +34,7 @@ export const it = {
     [ExerciseType.OPEN_ANSWER]: 'Risposta aperta',
     [ExerciseType.JS]: 'Esercizio JavaScript',
     [ExerciseType.COMPLETION]: 'Esercizio a completamento',
-    [ExerciseType.ATTACHMENT]: 'Caricamento di allegato',
+    [ExerciseType.ATTACHMENT]: 'Caricamento di file',
     [ExerciseType.AGGREGATED]: 'Esercizio composto',
   },
 };

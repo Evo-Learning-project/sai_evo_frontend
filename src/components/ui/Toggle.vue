@@ -9,11 +9,11 @@
         :value="value"
         v-model="proxyModelValue"
         :id="id"
-        class="absolute -left-0.5 block transition-all duration-100 bg-gray-100 rounded-full toggle-handle appearance-none cursor-pointer w-6 h-6 hover:ring-8  ring-blue-200 active:ring-opacity-60 ring-opacity-40 toggle-checkbox"
+        class="absolute -left-0.5 block transition-all duration-100 bg-light rounded-full toggle-handle appearance-none cursor-pointer w-6 h-6 hover:ring-8  ring-blue-200 active:ring-opacity-60 ring-opacity-40 toggle-checkbox"
       />
       <label
         :for="id"
-        class="block h-4 overflow-hidden rounded-full cursor-pointer bg-light toggle-label"
+        class="block h-4 overflow-hidden bg-gray-300 rounded-full cursor-pointer toggle-label"
       ></label>
     </div>
     <label :for="id" v-if="$slots.default">
