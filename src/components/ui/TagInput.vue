@@ -2,10 +2,15 @@
   <vue-tags-input
     v-model="tag"
     :tags="processedModelValue"
+    :allow-edit-tags="true"
     @tags-changed="newTags => onTagsChanged(newTags)"
-    @before-adding-tag="beforeAddingTag($event)"
     @adding-duplicate="onAddingDuplicate($event)"
+    @before-saving-tag="beforeSavingTag($event)"
+    @before-adding-tag="beforeAddingTag($event)"
   />
+  <!--
+          
+-->
 </template>
 
 <script lang="ts">
@@ -27,6 +32,9 @@ export default defineComponent({
     }
   },
   methods: {
+    beforeSavingTag (event: any) {
+      console.log('before saving', event)
+    },
     onTagsChanged (newTags: any) {
       //   this.tags = newTags
       //   console.log(
@@ -39,10 +47,17 @@ export default defineComponent({
       )
     },
     beforeAddingTag (event: any) {
-      console.log('adding', event.tag.text)
+      console.log('before adding', event.tag.text)
       event.addTag()
     },
     onAddingDuplicate (event: any) {
+      //   const duplicate = event.text
+      //   const alreadyExisting = this.processedModelValue.find(
+      //     t => t.text == duplicate
+      //   )
+      //   console.log(alreadyExisting)
+      //   alreadyExisting.text = 'wqejrio'
+      //   alreadyExisting.classes = 'text-red-800'
       console.log('DUPLICATE', event)
     },
     processTag (tag: { text: string }) {
@@ -53,7 +68,9 @@ export default defineComponent({
   },
   computed: {
     processedModelValue () {
-      return this.modelValue.map((t: { name: string }) => t.name)
+      return this.modelValue.map((t: { name: string }) => ({
+        text: t?.name
+      }))
     }
   }
 })

@@ -1,9 +1,9 @@
 <template>
-  <div class="flex items-center my-6">
+  <div class="flex my-6">
     <text-editor class="w-4/5 md:mr-4" v-model="choice.text">{{
       $t('exercise_editor.choice_text')
     }}</text-editor>
-    <number-input v-model="choice.score">{{
+    <number-input class="mb-auto" v-model="choice.score">{{
       $t('exercise_editor.choice_score')
     }}</number-input>
   </div>

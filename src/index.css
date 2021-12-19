@@ -70,4 +70,9 @@
     .fixed-label {
       @apply top-0 text-gray-500 duration-300 transform scale-75 -translate-y-7;
      }
+
+     /* floating label border */
+     .ql-editor-container {
+       @apply transition-border duration-300
+     }
   }

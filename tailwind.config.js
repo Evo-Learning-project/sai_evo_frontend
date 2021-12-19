@@ -5,6 +5,9 @@ module.exports = {
   darkMode: false, // or 'media' or 'class'
   theme: {
     extend: {
+      transitionProperty: {
+        border: 'border'
+      },
       transformOrigin: {
         '0': '0%'
       },
@@ -13,6 +16,9 @@ module.exports = {
       },
       fontFamily: {
         sans: ['"Open Sans"']
+      },
+      fontSize: {
+        '2xs': '.7rem'
       },
       borderWidth: {
         '1.5': '1.5px'

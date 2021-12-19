@@ -37,6 +37,7 @@
         <text-editor v-model="exercise.text">{{
           $t('exercise_editor.exercise_text')
         }}</text-editor>
+        <!-- TODO show code editor if the exercise type is js -->
         <text-editor v-model="exercise.solution">{{
           $t('exercise_editor.exercise_solution')
         }}</text-editor>
@@ -46,8 +47,8 @@
           :placeholder="$t('exercise_editor.exercise_tags')"
         ></tag-input>
       </div>
-      <!-- Choiceful exercise types settings -->
-      <div class="mt-8" v-if="isChoiceful">
+      <!-- Multiple-choice exercise types settings -->
+      <div class="mt-8" v-if="isMultipleChoice">
         <h3 class="mb-8">{{ $t('exercise_editor.choices_title') }}</h3>
         <choice-editor
           v-for="(choice, index) in exercise.choices"
@@ -60,6 +61,11 @@
           </span>
           {{ $t('exercise_editor.new_choice') }}</btn
         >
+        <!-- Js exercise settings -->
+
+        <!-- Completion exercise settings -->
+
+        <!-- Aggregated exercise settings -->
       </div>
     </template>
   </card>
@@ -67,11 +73,12 @@
 
 <script lang="ts">
 import { getTranslatedString as _ } from '@/i18n'
+import { icons as exerciseTypesIcons } from '@/assets/exerciseTypesIcons'
 import { v4 as uuid4 } from 'uuid'
 import RadioGroup from '@/components/ui/RadioGroup.vue'
 
 import { blankChoice, Exercise } from '@/models'
-import { ExerciseType, choicefulExerciseTypes } from '@/models'
+import { ExerciseType, multipleChoiceExerciseTypes } from '@/models'
 import Card from '@/components/ui/Card.vue'
 //import Dropdown from '@/components/ui/Dropdown.vue'
 import { defineComponent } from '@vue/runtime-core'
@@ -121,15 +128,16 @@ export default defineComponent({
   },
   computed: {
     exerciseTypeOptions () {
-      return Object.keys(ExerciseType)
+      return ((Object.keys(ExerciseType) as unknown[]) as ExerciseType[])
         .filter((key: string | number) => parseInt(key as string) == key) //(ExerciseType[key] as unknown) == 'number')
         .map(key => ({
+          icons: exerciseTypesIcons[key],
           value: key,
           content: _('exercise_types.' + key)
         }))
     },
-    isChoiceful (): boolean {
-      return choicefulExerciseTypes.includes(
+    isMultipleChoice (): boolean {
+      return multipleChoiceExerciseTypes.includes(
         parseInt((this.exercise.exercise_type?.toString() ?? '') as string)
       )
     }
