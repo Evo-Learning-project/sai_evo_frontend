@@ -20,11 +20,6 @@
             >
               {{ $t('exercise_editor.exercise_type') }}
             </label>
-            <!-- <dropdown
-              :id="'exercise_type_' + elementId"
-              v-model="exercise.exercise_type"
-              :options="exerciseTypeOptions"
-            ></dropdown> -->
             <radio-group
               :id="'exercise_type_' + elementId"
               :options="exerciseTypeOptions"
@@ -77,7 +72,7 @@ import { icons as exerciseTypesIcons } from '@/assets/exerciseTypesIcons'
 import { v4 as uuid4 } from 'uuid'
 import RadioGroup from '@/components/ui/RadioGroup.vue'
 
-import { blankChoice, Exercise } from '@/models'
+import { getBlankChoice, Exercise } from '@/models'
 import { ExerciseType, multipleChoiceExerciseTypes } from '@/models'
 import Card from '@/components/ui/Card.vue'
 //import Dropdown from '@/components/ui/Dropdown.vue'
@@ -123,7 +118,7 @@ export default defineComponent({
     //   this.exercise.exercise_type = newVal
     // }
     onAddChoice () {
-      this.exercise.choices?.push(blankChoice)
+      this.exercise.choices?.push(getBlankChoice())
     }
   },
   computed: {

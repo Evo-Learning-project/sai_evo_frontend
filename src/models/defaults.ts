@@ -1,6 +1,6 @@
 import { ExerciseChoice } from '.';
 
-export const blankChoice: ExerciseChoice = {
+export const getBlankChoice = (): ExerciseChoice => ({
   text: '',
   score: 0,
-};
+});

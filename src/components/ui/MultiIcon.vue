@@ -18,7 +18,7 @@
       ]"
       v-for="(icon, index) in parsedIcons"
       :key="id + '-icon-' + index"
-      class="mx-auto material-icons"
+      class="mx-auto material-icons-outlined"
     >
       {{ icon }}
     </span>
