@@ -14,6 +14,7 @@ import {
   courseDashboardSidebarOptions,
   courseListSidebarOptions,
 } from '@/navigation/sidebar';
+import { getTranslatedString as _ } from '@/i18n';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -49,6 +50,9 @@ const routes: Array<RouteRecordRaw> = [
             path: 'exercises',
             name: 'CourseExercises',
             component: CourseExercises,
+            meta: {
+              routeTitle: _('headings.course_exercises'),
+            },
           },
           {
             path: 'exams',

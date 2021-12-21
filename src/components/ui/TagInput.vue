@@ -3,6 +3,7 @@
     v-model="tag"
     :tags="processedModelValue"
     :allow-edit-tags="true"
+    :placeholder="placeholder"
     @tags-changed="newTags => onTagsChanged(newTags)"
     @adding-duplicate="onAddingDuplicate($event)"
     @before-saving-tag="beforeSavingTag($event)"
@@ -24,7 +25,7 @@ export default defineComponent({
   components: {
     VueTagsInput
   },
-  props: ['modelValue'],
+  props: ['modelValue', 'placeholder'],
   data () {
     return {
       tag: '',

@@ -1,6 +1,16 @@
 import { ExerciseType } from '@/models';
 
 export const it = {
+  filter_results: {
+    title: 'Filtra risultati',
+    filter_by_tag: 'Filtra per tag',
+    filter_by_type: 'Filtra per tipologia',
+    there_are_active_filters: 'Ci sono filtri attivi',
+  },
+  headings: {
+    course_title: 'Corso',
+    course_exercises: 'Esercizi',
+  },
   misc: {
     select_empty_option: 'Seleziona',
   },

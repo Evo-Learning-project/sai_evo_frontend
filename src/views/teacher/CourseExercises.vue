@@ -1,5 +1,49 @@
 <template>
-  <div><!--filters--></div>
+  <div>
+    <!--filters-->
+    <card class="relative mb-12 shadow-md bg-gray-50">
+      <template v-slot:header
+        ><div class="flex items-center mb-2 space-x-4">
+          <h4 class="">{{ $t('filter_results.title') }}</h4>
+          <p
+            :class="{
+              'opacity-100 delay-300':
+                !expandResultFilter && areThereActiveFilters,
+              'delay-0 opacity-0': expandResultFilter || !areThereActiveFilters
+            }"
+            class="transition-opacity text-muted duration-0"
+          >
+            ({{ $t('filter_results.there_are_active_filters') }})
+          </p>
+        </div></template
+      ><template v-slot:body>
+        <btn
+          @click="expandResultFilter = !expandResultFilter"
+          class="absolute top-0 right-0 mt-4 mr-4"
+          :size="'sm'"
+          :variant="'light'"
+          ><span class="material-icons-outlined">
+            {{ expandResultFilter ? 'expand_less' : 'expand_more' }}
+          </span></btn
+        >
+        <div
+          class="overflow-y-hidden duration-300 ease-in-out transition-max-height"
+          :class="{
+            'max-h-0': !expandResultFilter,
+            'max-h-screen': expandResultFilter
+          }"
+        >
+          <chipset
+            :options="exerciseTypeOptions"
+            v-model="resultFilter.types"
+          ></chipset>
+          <tag-input
+            class="md:mt-1"
+            v-model="resultFilter.tags"
+            :placeholder="$t('filter_results.filter_by_tag')"
+          ></tag-input></div></template
+    ></card>
+  </div>
   <exercise-editor-wrapper
     v-for="(exercise, index) in exercises"
     :key="'course-' + courseId + '-exercise-' + index"
@@ -8,16 +52,47 @@
 </template>
 
 <script lang="ts">
-import { Exercise, getBlankExercise } from '@/models'
+import { getTranslatedString as _ } from '@/i18n'
+import { icons as exerciseTypesIcons } from '@/assets/exerciseTypesIcons'
+import { Exercise, ExerciseType, getBlankExercise, Tag } from '@/models'
+
+import Btn from '@/components/ui/Btn.vue'
+import Chipset from '@/components/ui/Chipset.vue'
+import Card from '@/components/ui/Card.vue'
+import TagInput from '@/components/ui/TagInput.vue'
 import ExerciseEditorWrapper from '@/components/teacher/ExerciseEditor/ExerciseEditorWrapper.vue'
 import { defineComponent } from '@vue/runtime-core'
-
 export default defineComponent({
   name: 'CourseExercises',
+  props: {
+    modelValue: Array,
+    value: {
+      default: null
+    },
+    options: Array
+  },
   components: {
-    ExerciseEditorWrapper
+    ExerciseEditorWrapper,
+    Chipset,
+    TagInput,
+    Card,
+    Btn
+  },
+  data () {
+    return {
+      expandResultFilter: true,
+      resultFilter: {
+        types: [] as ExerciseType[],
+        tags: [] as Tag[]
+      }
+    }
   },
   computed: {
+    areThereActiveFilters () {
+      return (
+        this.resultFilter.types.length > 0 || this.resultFilter.tags.length > 0
+      )
+    },
     courseId (): string {
       // TODO implement
       return 'abc'
@@ -25,9 +100,16 @@ export default defineComponent({
     exercises (): Exercise[] {
       return [getBlankExercise(), getBlankExercise(), getBlankExercise()]
       //return this.$store.getters.exercises
+    },
+    exerciseTypeOptions () {
+      return ((Object.keys(ExerciseType) as unknown[]) as ExerciseType[])
+        .filter((key: string | number) => parseInt(key as string) == key) //(ExerciseType[key] as unknown) == 'number')
+        .map(key => ({
+          icons: exerciseTypesIcons[key],
+          value: key,
+          content: _('exercise_types.' + key)
+        }))
     }
   }
 })
 </script>
-
-<style></style>

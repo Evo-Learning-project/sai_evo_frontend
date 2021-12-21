@@ -6,7 +6,8 @@ module.exports = {
   theme: {
     extend: {
       transitionProperty: {
-        border: 'border'
+        border: 'border',
+        'max-height': 'max-height'
       },
       transformOrigin: {
         '0': '0%'
@@ -15,7 +16,7 @@ module.exports = {
         '-1': '-1'
       },
       fontFamily: {
-        sans: ['"Open Sans"']
+        sans: ['"Source Sans Pro"']
       },
       fontSize: {
         '2xs': '.7rem'
