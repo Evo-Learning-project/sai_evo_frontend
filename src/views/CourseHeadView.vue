@@ -27,12 +27,13 @@
     <p>Scelta multipla con una sola scelta possibile</p>
   </div>
   <!-- <radio-group v-model="selectedRadio" :options="radioChoices"></radio-group> -->
-  <exercise-editor></exercise-editor>
+  <exercise-editor v-model="ex"></exercise-editor>
+  <p class="my-8">{{ ex }}</p>
   <router-view></router-view>
 </template>
 
-<script>
-import { ExerciseType } from '@/models'
+<script lang="ts">
+import { Exercise, ExerciseType, getBlankExercise } from '@/models'
 import { getTranslatedString as _ } from '@/i18n'
 
 import Toggle from '@/components/ui/Toggle.vue'
@@ -40,8 +41,9 @@ import Toggle from '@/components/ui/Toggle.vue'
 import Dropdown from '@/components/ui/Dropdown.vue'
 import TextInput from '@/components/ui/TextInput.vue'
 import TextEditor from '@/components/ui/TextEditor.vue'
-import ExerciseEditor from '@/components/teacher/ExerciseEditor.vue'
-export default {
+import ExerciseEditor from '@/components/teacher/ExerciseEditor/ExerciseEditor.vue'
+import { defineComponent } from '@vue/runtime-core'
+export default defineComponent({
   /*
   This empty view is used to achieve two-level nesting of routes such as
   `teacher/course/:id/exercises` without having to re-define the second
@@ -60,18 +62,23 @@ export default {
     return {
       t: false,
       selected: '',
-      selectedRadio: null
+      selectedRadio: null,
+      ex: {} as Exercise
     }
+  },
+  created () {
+    this.ex = getBlankExercise()
   },
   computed: {
     radioChoices () {
-      return Object.keys(ExerciseType)
-        .filter(key => parseInt(key) == key) //(ExerciseType[key] as unknown) == 'number')
-        .map(key => ({
-          value: key,
-          content: _('exercise_types.' + key)
-        }))
+      return []
+      // return Object.keys(ExerciseType)
+      //   .filter(key => parseInt(key) == key) //(ExerciseType[key] as unknown) == 'number')
+      //   .map(key => ({
+      //     value: key,
+      //     content: _('exercise_types.' + key)
+      //   }))
     }
   }
-}
+})
 </script>

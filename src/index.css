@@ -36,7 +36,7 @@
       @apply bg-light !important
     }
     .ti-tag {
-      @apply rounded-lg bg-primary text-lightText !important
+      @apply rounded-lg bg-primary text-lightText px-1.5 py-0.5 text-sm !important
     }
     .ti-deletion-mark {
       @apply bg-danger !important

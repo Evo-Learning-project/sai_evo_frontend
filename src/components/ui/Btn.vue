@@ -13,6 +13,7 @@
       'focus:outline-primary': variant == 'primary',
       'focus:outline-danger': variant == 'danger',
       'focus:outline-success': variant == 'success',
+      'hover:bg-light hover:shadow-inner': variant == 'light',
       'text-primary hover:text-lightText bg-transparent border-primary border-1.5 hover:bg-primary':
         outline && variant == 'primary'
     }"

@@ -22,7 +22,7 @@ export interface Exercise {
   text: string;
   solution?: string;
   label?: string;
-  exercise_type: ExerciseType;
+  exercise_type: ExerciseType | null;
   state?: ExerciseState;
   choices?: ExerciseChoice[];
   testcases?: ExerciseTestCase[];

@@ -13,6 +13,9 @@ export const it = {
     course_list_courses: 'Corsi',
     course_list_new_course: 'Nuovo corso',
   },
+  exercise_preview: {
+    unnamed_exercise: 'Esercizio senza nome',
+  },
   exercise_editor: {
     exercise_editor_title: 'Editor esercizio',
     choices_title: 'Scelte',

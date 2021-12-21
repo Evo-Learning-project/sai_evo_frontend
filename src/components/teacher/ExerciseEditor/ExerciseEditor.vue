@@ -96,19 +96,19 @@ export default defineComponent({
     Btn,
     TagInput
   },
+  props: ['modelValue'],
+  watch: {
+    serializedModelValue (newVal: string) {
+      this.$emit('update:modelValue', JSON.parse(newVal))
+    }
+  },
   created () {
     this.elementId = uuid4()
+    this.exercise = this.modelValue
   },
   data () {
     return {
-      exercise: {
-        exercise_type: ExerciseType.MULTIPLE_CHOICE_SINGLE_POSSIBLE,
-        choices: [
-          { text: 'abc', score: 1.5 },
-          { text: 'def', score: 0.5 }
-        ],
-        tags: [{ name: 'abc' }, { name: 'def' }]
-      } as Exercise,
+      exercise: {} as Exercise,
       elementId: ''
     }
   },
@@ -122,6 +122,9 @@ export default defineComponent({
     }
   },
   computed: {
+    serializedExercise () {
+      return JSON.stringify(this.exercise)
+    },
     exerciseTypeOptions () {
       return ((Object.keys(ExerciseType) as unknown[]) as ExerciseType[])
         .filter((key: string | number) => parseInt(key as string) == key) //(ExerciseType[key] as unknown) == 'number')
