@@ -23,21 +23,25 @@
           cancel
         </span>
       </div>
-      <div>
-        <div class="flex items-center w-full h-16 px-8">
+      <div class="fixed h-full px-2" style="width: inherit">
+        <div class="flex items-center w-full px-8 mt-4">
           <img
-            class="w-32"
+            class="w-36"
             src="https://di.unipi.it/wp-content/themes/unipi/images/cherubino-white.svg"
           />
         </div>
-        <ul class="px-2 mt-12">
+        <ul class="w-full mt-12">
           <router-link
-            v-for="option in sidebarOptions"
+            class=""
+            v-for="(option, index) in sidebarOptions"
             :key="'sidebar-' + option.label"
             :to="{ name: option.routeName }"
+            :class="{
+              '': index == sidebarOptions.length - 1
+            }"
           >
             <li
-              class="flex items-center justify-between w-full px-2 py-2 mt-3 rounded-md cursor-pointer hover:transition-colors text-lightText hover:bg-primary-dark hover:duration-100"
+              class="flex items-center justify-between w-full px-2 py-2 mt-1.5 rounded-md cursor-pointer hover:transition-colors text-lightText hover:bg-primary-dark hover:duration-100"
               :class="{
                 'bg-primary-dark pointer-events-none':
                   option.routeName == $route.name
