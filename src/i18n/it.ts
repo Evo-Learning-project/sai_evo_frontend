@@ -29,6 +29,8 @@ export const it = {
   exercise_editor: {
     exercise_editor_title: 'Editor esercizio',
     draft_notice: 'Bozza',
+    saving: 'Salvataggio in corso...',
+    saved: 'Salvato!',
     choices_title: 'Scelte',
     exercise_label: "Etichetta dell'esercizio",
     exercise_text: "Testo dell'esercizio",

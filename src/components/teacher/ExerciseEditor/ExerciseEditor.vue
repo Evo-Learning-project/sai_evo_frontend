@@ -4,12 +4,30 @@
     :class="{ 'bg-gray-50': isDraft }"
   >
     <template v-slot:header>
-      <h3>
-        {{ $t('exercise_editor.exercise_editor_title') }}
-        <span v-if="isDraft" class="text-muted"
-          >({{ $t('exercise_editor.draft_notice') }})</span
+      <div class="flex">
+        <h3>
+          {{ $t('exercise_editor.exercise_editor_title') }}
+          <span v-if="isDraft" class="text-muted"
+            >({{ $t('exercise_editor.draft_notice') }})</span
+          >
+        </h3>
+        <div
+          v-if="saving"
+          class="flex items-center ml-auto mr-8 space-x-1 text-muted"
         >
-      </h3>
+          <spinner :size="'sm'"></spinner>
+          <p class="text-sm">{{ $t('exercise_editor.saving') }}</p>
+        </div>
+        <div
+          v-else-if="showSaved"
+          class="flex items-center ml-auto mr-8 space-x-1 text-muted"
+        >
+          <span class="text-base material-icons-outlined">
+            cloud_done
+          </span>
+          <p class="text-sm">{{ $t('exercise_editor.saved') }}</p>
+        </div>
+      </div>
     </template>
     <template v-slot:body>
       <div class="flex flex-col space-y-6">
@@ -88,8 +106,9 @@ import RadioGroup from '@/components/ui/RadioGroup.vue'
 import { getBlankChoice, Exercise, ExerciseState } from '@/models'
 import { ExerciseType, multipleChoiceExerciseTypes } from '@/models'
 import Card from '@/components/ui/Card.vue'
+import Spinner from '@/components/ui/Spinner.vue'
 //import Dropdown from '@/components/ui/Dropdown.vue'
-import { defineComponent } from '@vue/runtime-core'
+import { defineComponent, PropType } from '@vue/runtime-core'
 import TextEditor from '@/components/ui/TextEditor.vue'
 import TextInput from '@/components/ui/TextInput.vue'
 import Btn from '@/components/ui/Btn.vue'
@@ -107,12 +126,29 @@ export default defineComponent({
     RadioGroup,
     ChoiceEditor,
     Btn,
-    TagInput
+    TagInput,
+    Spinner
   },
-  props: ['modelValue'],
+  props: {
+    modelValue: {
+      type: Object as PropType<Exercise>,
+      required: true
+    },
+    saving: {
+      type: Boolean,
+      default: false
+    }
+  },
   watch: {
     serializedModelValue (newVal: string) {
       this.$emit('update:modelValue', JSON.parse(newVal))
+    },
+    saving (newVal: boolean, oldVal: boolean) {
+      if (!newVal && oldVal) {
+        // done saving
+        this.showSaved = true
+        setTimeout(() => (this.showSaved = false), 5000)
+      }
     }
   },
   created () {
@@ -122,7 +158,8 @@ export default defineComponent({
   data () {
     return {
       exercise: {} as Exercise,
-      elementId: ''
+      elementId: '',
+      showSaved: false
     }
   },
   methods: {

@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-wrap p-1">
     <div
-      class="chip"
+      class="cursor-pointer chip hover:bg-light"
       v-for="(option, index) in options"
       :key="'chipset-' + id + '-option-' + index"
       :class="{
@@ -18,7 +18,7 @@
         :value="option.value"
       />
       <label
-        class="flex items-center"
+        class="flex items-center cursor-pointer"
         :for="'chipset-' + id + '-option-' + index"
       >
         <multi-icon

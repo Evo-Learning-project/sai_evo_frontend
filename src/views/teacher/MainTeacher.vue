@@ -96,12 +96,13 @@
 <script lang="ts">
 import { SidebarOption } from '@/navigation/sidebar'
 import { defineComponent } from '@vue/runtime-core'
+
 export default defineComponent({
-  components: {},
   name: 'MainTeacher',
   data () {
     return {
-      moved: true
+      moved: true,
+      test: null
     }
   },
   methods: {

@@ -13,7 +13,11 @@
       v-if="!showEditor"
       :exercise="modelValue"
     ></exercise-preview>
-    <exercise-editor v-else v-model="proxyModelValue"></exercise-editor>
+    <exercise-editor
+      :saving="saving"
+      v-else
+      v-model="proxyModelValue"
+    ></exercise-editor>
   </div>
 </template>
 
@@ -39,8 +43,13 @@ export default defineComponent({
   },
   data () {
     return {
-      showEditor: false
+      showEditor: false,
+      saving: false
     }
+  },
+  created () {
+    setTimeout(() => (this.saving = true), 5000)
+    setTimeout(() => (this.saving = false), 7500)
   },
   methods: {
     toggleExpand () {

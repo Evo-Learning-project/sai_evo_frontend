@@ -79,6 +79,35 @@
       @apply top-0 text-gray-500 duration-300 transform scale-75 -translate-y-7;
      }
 
+     /* calendar input */
+    .mx-input {
+      @apply transition-all duration-300 border-0 border-b-2 border-gray-300 rounded-none shadow-none !important;
+    }
+    .mx-input:hover {
+      @apply border-gray-300 !important;
+    }
+    .mx-input:focus {
+      @apply border-primary !important;
+    }
+    .calendar-floating-label ~ label {
+      @apply text-gray-500 duration-300
+    }
+    .calendar-floating-label:focus-within ~ label {
+      @apply duration-300 transform scale-75 -translate-y-6 text-primary;
+     }
+     .calendar-fixed-label {
+      @apply top-0 text-gray-500 duration-300 transform scale-75 -translate-y-5 !important;
+     }
+     /* .calendar-floating-label:focus-within ~ label {
+     /* .floating-label:not(:placeholder-shown) ~ label 
+       @apply text-gray-500 duration-300 transform scale-75 -translate-y-5;
+     }
+      */
+     .calendar-floating-label:focus-within ~ label {
+       @apply text-primary !important;
+     }
+
+
      /* floating label border */
      .ql-editor-container {
        @apply transition-border duration-300

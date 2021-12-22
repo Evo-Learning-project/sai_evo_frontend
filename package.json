@@ -15,6 +15,7 @@
     "uuid": "^8.3.2",
     "vue": "^3.2.22",
     "vue-axios": "^3.4.0",
+    "vue-datepicker-next": "^1.0.2",
     "vue-i18n": "^9.2.0-beta.22",
     "vue-router": "^4.0.0-0",
     "vue3-quill": "^0.2.6",
