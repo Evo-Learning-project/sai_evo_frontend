@@ -4,7 +4,7 @@
     <card class="relative mb-12 shadow-md bg-gray-50">
       <template v-slot:header
         ><div class="flex items-center mb-2 space-x-4">
-          <h4 class="">{{ $t('filter_results.title') }}</h4>
+          <h3>{{ $t('filter_results.title') }}</h3>
           <p
             :class="{
               'opacity-100 delay-300':
@@ -37,6 +37,10 @@
             :options="exerciseTypeOptions"
             v-model="resultFilter.types"
           ></chipset>
+          <chipset
+            :options="exerciseStateOptions"
+            v-model="resultFilter.states"
+          ></chipset>
           <tag-input
             class="md:mt-1"
             v-model="resultFilter.tags"
@@ -54,7 +58,14 @@
 <script lang="ts">
 import { getTranslatedString as _ } from '@/i18n'
 import { icons as exerciseTypesIcons } from '@/assets/exerciseTypesIcons'
-import { Exercise, ExerciseType, getBlankExercise, Tag } from '@/models'
+import { icons as exerciseStatesIcons } from '@/assets/exerciseStatesIcons'
+import {
+  Exercise,
+  ExerciseState,
+  ExerciseType,
+  getBlankExercise,
+  Tag
+} from '@/models'
 
 import Btn from '@/components/ui/Btn.vue'
 import Chipset from '@/components/ui/Chipset.vue'
@@ -83,7 +94,8 @@ export default defineComponent({
       expandResultFilter: true,
       resultFilter: {
         types: [] as ExerciseType[],
-        tags: [] as Tag[]
+        tags: [] as Tag[],
+        states: [] as ExerciseState[]
       }
     }
   },
@@ -108,6 +120,16 @@ export default defineComponent({
           icons: exerciseTypesIcons[key],
           value: key,
           content: _('exercise_types.' + key)
+        }))
+    },
+    exerciseStateOptions () {
+      return ((Object.keys(ExerciseState) as unknown[]) as ExerciseState[])
+        .filter((key: string | number) => parseInt(key as string) == key) //(ExerciseType[key] as unknown) == 'number')
+        .map(key => ({
+          icons: exerciseStatesIcons[key],
+          value: key,
+          content: _('exercise_states.' + key),
+          description: _('exercise_states_descriptions.' + key)
         }))
     }
   }

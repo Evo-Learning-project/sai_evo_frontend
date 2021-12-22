@@ -1,4 +1,4 @@
-import { ExerciseType } from '@/models';
+import { ExerciseState, ExerciseType } from '@/models';
 
 export const it = {
   filter_results: {
@@ -28,12 +28,14 @@ export const it = {
   },
   exercise_editor: {
     exercise_editor_title: 'Editor esercizio',
+    draft_notice: 'Bozza',
     choices_title: 'Scelte',
     exercise_label: "Etichetta dell'esercizio",
     exercise_text: "Testo dell'esercizio",
     exercise_solution: "Soluzione dell'esercizio (opzionale)",
     select_exercise_type: 'Seleziona tipologia',
-    exercise_type: 'Tipologia esercizio',
+    exercise_type: 'Tipologia',
+    exercise_state: 'Visibilità',
     exercise_tags: 'Tag',
     choice_text: 'Testo',
     choice_score: 'Punteggio',
@@ -49,5 +51,18 @@ export const it = {
     [ExerciseType.COMPLETION]: 'Esercizio a completamento',
     [ExerciseType.ATTACHMENT]: 'Caricamento di file',
     [ExerciseType.AGGREGATED]: 'Esercizio composto',
+  },
+  exercise_states: {
+    [ExerciseState.PUBLIC]: 'Pubblico',
+    [ExerciseState.PRIVATE]: 'Nascosto',
+    [ExerciseState.DRAFT]: 'Bozza',
+  },
+  exercise_states_descriptions: {
+    [ExerciseState.PUBLIC]:
+      'Sarà visibile agli studenti e potrà essere inserito negli esami o comparire nelle esercitazioni.',
+    [ExerciseState.PRIVATE]:
+      'Non comparirà nelle esercitazioni iniziate dagli studenti, ma potrà essere inserito negli esami dagli insegnanti.',
+    [ExerciseState.DRAFT]:
+      'Non potrà essere inserito negli esami e non comparirà nelle esercitazioni.',
   },
 };

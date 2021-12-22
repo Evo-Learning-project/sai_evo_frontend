@@ -1,30 +1,42 @@
 <template>
   <card
-    class="transition-shadow duration-100 focus-within:shadow-lg bg-gray-50"
+    class="transition-shadow duration-100 focus-within:shadow-lg"
+    :class="{ 'bg-gray-50': isDraft }"
   >
     <template v-slot:header>
-      <h3>{{ $t('exercise_editor.exercise_editor_title') }}</h3>
+      <h3>
+        {{ $t('exercise_editor.exercise_editor_title') }}
+        <span v-if="isDraft" class="text-muted"
+          >({{ $t('exercise_editor.draft_notice') }})</span
+        >
+      </h3>
     </template>
     <template v-slot:body>
       <div class="flex flex-col space-y-6">
-        <div class="flex flex-col md:flex-row">
-          <text-input
-            v-model="exercise.label"
-            class="w-full mb-auto md:w-2/5"
-            >{{ $t('exercise_editor.exercise_label') }}</text-input
-          >
-          <div class="flex flex-col mt-2 ml-auto md:flex-row">
-            <label
-              :for="'exercise_type_' + elementId"
-              class="mt-2 select-none md:mr-2"
-            >
-              {{ $t('exercise_editor.exercise_type') }}
-            </label>
+        <div class="flex flex-col items-start my-4 space-x-8 md:flex-row">
+          <div class="w-full mr-auto md:w-4/12">
+            <text-input v-model="exercise.label">{{
+              $t('exercise_editor.exercise_label')
+            }}</text-input>
+          </div>
+          <div class="self-start w-1/2 mr-auto md:w-3/12">
             <radio-group
+              :id="'exercise_state_' + elementId"
+              :options="exerciseStateOptions"
+              v-model="exercise.state"
+            >
+              {{ $t('exercise_editor.exercise_state') }}
+            </radio-group>
+          </div>
+          <div class="flex flex-col ml-auto md:flex-row md:w-5/12">
+            <radio-group
+              class="w-full"
               :id="'exercise_type_' + elementId"
               :options="exerciseTypeOptions"
               v-model="exercise.exercise_type"
-            ></radio-group>
+            >
+              {{ $t('exercise_editor.exercise_type') }}
+            </radio-group>
             <!--              :modelValue="exercise.exercise_type"
               @update:modelValue="onExerciseTypeChange($event)"-->
           </div>
@@ -69,10 +81,11 @@
 <script lang="ts">
 import { getTranslatedString as _ } from '@/i18n'
 import { icons as exerciseTypesIcons } from '@/assets/exerciseTypesIcons'
+import { icons as exerciseStatesIcons } from '@/assets/exerciseStatesIcons'
 import { v4 as uuid4 } from 'uuid'
 import RadioGroup from '@/components/ui/RadioGroup.vue'
 
-import { getBlankChoice, Exercise } from '@/models'
+import { getBlankChoice, Exercise, ExerciseState } from '@/models'
 import { ExerciseType, multipleChoiceExerciseTypes } from '@/models'
 import Card from '@/components/ui/Card.vue'
 //import Dropdown from '@/components/ui/Dropdown.vue'
@@ -134,10 +147,23 @@ export default defineComponent({
           content: _('exercise_types.' + key)
         }))
     },
+    exerciseStateOptions () {
+      return ((Object.keys(ExerciseState) as unknown[]) as ExerciseState[])
+        .filter((key: string | number) => parseInt(key as string) == key) //(ExerciseType[key] as unknown) == 'number')
+        .map(key => ({
+          icons: exerciseStatesIcons[key],
+          value: key,
+          content: _('exercise_states.' + key),
+          description: _('exercise_states_descriptions.' + key)
+        }))
+    },
     isMultipleChoice (): boolean {
       return multipleChoiceExerciseTypes.includes(
         parseInt((this.exercise.exercise_type?.toString() ?? '') as string)
       )
+    },
+    isDraft (): boolean {
+      return this.exercise.state == ExerciseState.DRAFT
     }
   }
 })

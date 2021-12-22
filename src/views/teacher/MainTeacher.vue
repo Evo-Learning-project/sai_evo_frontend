@@ -30,7 +30,7 @@
             src="https://di.unipi.it/wp-content/themes/unipi/images/cherubino-white.svg"
           />
         </div>
-        <ul class="w-full mt-12">
+        <ul class="w-full mt-6">
           <router-link
             class=""
             v-for="(option, index) in sidebarOptions"

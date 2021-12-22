@@ -2,7 +2,7 @@
   <div
     :class="[
       icons?.length == 1 ? '-mb-1.5' : 'my-auto',
-      icons?.length > 1 ? 'flex flex-col' : '',
+      icons?.length == 2 ? 'flex flex-col -space-y-1.25px' : '',
       icons?.length > 2 ? 'flex flex-col -space-y-2' : ''
     ]"
   >

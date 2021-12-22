@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-wrap p-1">
     <div
-      class="mr-2.5 mb-2.5 border border-gray-300 flex h-9 px-2.5 my-auto w-max rounded-full"
+      class="chip"
       v-for="(option, index) in options"
       :key="'chipset-' + id + '-option-' + index"
       :class="{
