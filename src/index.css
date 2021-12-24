@@ -81,7 +81,7 @@
 
      /* calendar input */
     .mx-input {
-      @apply transition-all duration-300 border-0 border-b-2 border-gray-300 rounded-none shadow-none !important;
+      @apply transition-all duration-300 border-0 rounded-none shadow-none !important;
     }
     .mx-input:hover {
       @apply border-gray-300 !important;
@@ -96,7 +96,7 @@
       @apply duration-300 transform scale-75 -translate-y-6 text-primary;
      }
      .calendar-fixed-label {
-      @apply top-0 text-gray-500 duration-300 transform scale-75 -translate-y-5 !important;
+      @apply top-0 text-gray-500 duration-300 transform scale-75 -translate-y-4.5 !important;
      }
      /* .calendar-floating-label:focus-within ~ label {
      /* .floating-label:not(:placeholder-shown) ~ label 

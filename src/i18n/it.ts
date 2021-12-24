@@ -13,6 +13,7 @@ export const it = {
   },
   misc: {
     select_empty_option: 'Seleziona',
+    or_label: 'Oppure',
   },
   sidebar_labels: {
     course_dashboard_dashboard: 'Dashboard',
@@ -25,6 +26,37 @@ export const it = {
   },
   exercise_preview: {
     unnamed_exercise: 'Esercizio senza nome',
+  },
+  event_template_editor: {
+    editor_title: 'Modello esame',
+    same_exercises_for_everyone_or_randomize:
+      'Vuoi che tutti gli studenti abbiano gli stessi esercizi o vuoi utilizzare le opzioni di randomizzazione?',
+    same_exercises_for_everyone: 'Stessi esercizi per tutti',
+    use_randomization: 'Randomizzazione',
+    same_exercises_for_everyone_choose_exercises:
+      "Seleziona gli esercizi che comporranno l'esame. Tutti gli studenti vedranno questi esercizi durante l'esame.",
+    same_exercises_for_everyone_randomize_order:
+      'Randomizza ordine degli esercizi',
+    same_exercises_for_everyone_randomize_order_help_text:
+      'Tutti gli studenti vedranno gli stessi esercizi ma in ordine casuale',
+    add_rule: 'Aggiungi esercizio',
+  },
+  event_template_rule_editor: {
+    exercise_number: 'Esercizio',
+    choose_exercise: 'Scegli esercizio',
+    change_exercise: 'Cambia esercizio',
+  },
+  event_editor: {
+    name: 'Nome',
+    begin_timestamp: 'Data e ora di inizio',
+    end_timestamp: 'Data e ora di fine',
+    instructions: 'Istruzioni (opzionale)',
+    editor_title: 'Editor evento',
+    exercises_shown_at_a_time_label:
+      'Numero di esercizi da mostrare per pagina',
+    allow_going_back_label:
+      'Permetti agli studenti di tornare indietro a un esercizio già visto',
+    show_all_exercises_at_once: 'Mostra tutti gli esercizi insieme',
   },
   exercise_editor: {
     exercise_editor_title: 'Editor esercizio',

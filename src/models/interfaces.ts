@@ -52,12 +52,14 @@ export interface Event {
   id?: string;
   name: string;
   instructions: string;
-  creator: string;
-  begin_timestamp: string;
-  end_timestamp: string;
+  creator?: string;
+  begin_timestamp: string | null;
+  end_timestamp: string | null;
   event_type: EventType;
   state: EventState;
   template?: EventTemplate;
+  exercises_shown_at_a_time: number;
+  allow_going_back: boolean;
 }
 
 export interface EventTemplate {

@@ -9,6 +9,7 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "@dafcoe/vue-collapsible-panel": "^0.2.0",
     "@sipec/vue3-tags-input": "^3.0.4",
     "axios": "^0.24.0",
     "core-js": "^3.6.5",

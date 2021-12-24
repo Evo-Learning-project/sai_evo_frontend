@@ -1,5 +1,5 @@
 <template>
-  <div class="relative z-10 bg-light w-max">
+  <div class="relative z-10 border-b-2 border-gray-200 bg-light w-max">
     <!-- <div class="z-10 bg-transparent floating-label"> -->
     <date-picker
       class="z-10 bg-transparent calendar-floating-label"
@@ -20,7 +20,7 @@
     </date-picker>
     <!-- </div> -->
     <label
-      class="absolute left-2 origin-0 -z-1"
+      class="absolute left-1.5 origin-0 -z-1"
       :class="{
         'calendar-fixed-label': proxyModelValue != null || calendarOpen,
         'bottom-1.5': proxyModelValue == null

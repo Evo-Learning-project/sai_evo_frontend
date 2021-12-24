@@ -8,10 +8,12 @@
       'text-lightText bg-primary hover:bg-primary-dark':
         !outline && variant == 'primary',
       'text-danger-dark bg-danger': !outline && variant == 'danger',
+      'text-danger-dark border-danger-dark bg-white border hover:bg-danger-dark hover:text-white':
+        outline && variant == 'danger',
       'text-success-dark bg-success': !outline && variant == 'success',
       'transition-colors duration-100 shadow-inner': outline,
       'focus:outline-primary': variant == 'primary',
-      'focus:outline-danger': variant == 'danger',
+      'focus:outline-danger-dark': variant == 'danger',
       'focus:outline-success': variant == 'success',
       'hover:bg-light hover:shadow-inner': variant == 'light',
       'text-primary hover:text-lightText bg-transparent border-primary border-1.5 hover:bg-primary':
