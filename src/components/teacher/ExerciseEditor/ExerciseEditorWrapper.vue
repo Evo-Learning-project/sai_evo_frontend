@@ -2,7 +2,7 @@
   <div class="relative">
     <btn
       @click="toggleExpand()"
-      class="absolute top-0 right-0 mt-4 mr-4"
+      class="absolute right-0 mt-4 mr-4 top-4"
       :size="'sm'"
       :variant="'light'"
       ><span class="material-icons-outlined">

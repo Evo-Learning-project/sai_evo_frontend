@@ -1,6 +1,8 @@
 <template>
-  <router-view />
-  <footer class="flex w-full px-6 py-3 mt-auto text-sm text-white bg-dark">
+  <router-view class="" />
+  <footer
+    class="flex items-center w-full h-12 px-6 py-3 mt-auto text-sm text-white bg-dark"
+  >
     <p>
       Crafted with &lt;3
       <!-- <img

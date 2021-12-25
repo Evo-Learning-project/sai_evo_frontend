@@ -1,8 +1,9 @@
 <template>
-  <div class="flex flex-no-wrap min-h-screen bg-gray-50">
+  <div class="flex flex-no-wrap flex-grow">
+    <!-- bg-gray-500 -->
     <!-- Sidebar starts -->
     <div
-      class="flex-col justify-between min-h-full ease-in-out shadow w-96 sm:relative md:w-60 bg-primary"
+      class="flex-col justify-between ease-in-out shadow w-96 sm:relative md:w-60 bg-primary"
       id="mobile-nav"
     >
       <div
@@ -30,14 +31,13 @@
             src="https://di.unipi.it/wp-content/themes/unipi/images/cherubino-white.svg"
           />
         </div>
-        <ul class="w-full mt-6">
+        <ul class="flex flex-col w-full h-full mt-6">
           <router-link
-            class=""
             v-for="(option, index) in sidebarOptions"
             :key="'sidebar-' + option.label"
             :to="{ name: option.routeName }"
             :class="{
-              '': index == sidebarOptions.length - 1
+              'mt-auto': false && index == sidebarOptions.length - 1
             }"
           >
             <li
@@ -87,8 +87,8 @@
     </div>
     <!--Mobile responsive sidebar-->
     <!-- Sidebar ends -->
-    <div class="w-11/12 min-h-full px-4 py-6 mx-auto md:w-4/5">
-      <router-view></router-view>
+    <div class="flex flex-col w-11/12 px-4 py-6 mx-auto md:w-4/5">
+      <router-view class="flex-grow"></router-view>
     </div>
   </div>
 </template>

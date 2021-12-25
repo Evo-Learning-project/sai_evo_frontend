@@ -1,7 +1,7 @@
 <template>
   <!-- <card>
     <template v-slot:header> -->
-  <div class="">
+  <div class="flex flex-col h-full">
     <h3>{{ $t('event_template_editor.editor_title') }}</h3>
     <!--</template>
     <template v-slot:body>-->
@@ -26,7 +26,7 @@
         >
       </div>
     </div>
-    <div v-else-if="criterion == 'same_exercises_for_everyone'">
+    <div class="mb-6" v-else-if="criterion == 'same_exercises_for_everyone'">
       <p class="mb-8">
         {{
           $t(
@@ -42,7 +42,7 @@
     </div>
     <div v-else-if="criterion == 'use_randomization'"></div>
 
-    <div class="flex items-center mt-8" v-if="criterion">
+    <div class="flex items-center mt-auto" v-if="criterion">
       <btn @click="addRule()">{{ $t('event_template_editor.add_rule') }}</btn>
       <div
         v-if="criterion == 'same_exercises_for_everyone'"

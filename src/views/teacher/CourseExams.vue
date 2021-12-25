@@ -1,5 +1,5 @@
 <template>
-  <div class="">
+  <div class="h-full">
     <event-editor v-model="testExam"></event-editor>
   </div>
 </template>
