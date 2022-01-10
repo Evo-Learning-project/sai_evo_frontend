@@ -9,7 +9,6 @@ import {
   Exercise,
   ExerciseChoice,
   ExerciseState,
-  ExerciseType,
 } from '.';
 
 export const getBlankChoice = (): ExerciseChoice => ({
@@ -19,10 +18,12 @@ export const getBlankChoice = (): ExerciseChoice => ({
 
 export const getBlankExercise = (): Exercise => ({
   label: 'ex-01-abc',
+  // FIXME remove default text and label
   text: 'wreh09rtruw9r0ertirwereu09rtrwe90uer90rweu09errwqjeoweru09t3reiwqojadsfihur9e0tiwropjadsifgtr',
   exercise_type: null,
   state: ExerciseState.DRAFT,
   solution: '',
+  // FIXME remove default tags
   tags: [{ name: 'tag1' }, { name: 'tag2' }, { name: 'tag3' }],
   choices: [],
 });

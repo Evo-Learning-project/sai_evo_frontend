@@ -33,6 +33,7 @@
             'max-h-screen': expandResultFilter
           }"
         >
+          <chipset :options="tagsOptions" v-model="resultFilter.tags"></chipset>
           <chipset
             :options="exerciseTypeOptions"
             v-model="resultFilter.types"
@@ -41,18 +42,54 @@
             :options="exerciseStateOptions"
             v-model="resultFilter.states"
           ></chipset>
-          <tag-input
+          <!-- <tag-input
             class="md:mt-1"
             v-model="resultFilter.tags"
             :placeholder="$t('filter_results.filter_by_tag')"
-          ></tag-input></div></template
-    ></card>
+          ></tag-input> -->
+          <div class="flex w-full">
+            <btn @click="applyFilters()" class="mt-4 ml-auto">{{
+              $t('filter_results.title')
+            }}</btn>
+          </div>
+        </div>
+      </template></card
+    >
+  </div>
+  <div class="flex w-full mb-2">
+    <btn @click="onAddExercise()" class="ml-auto"
+      ><span class="mr-1 text-base material-icons-outlined">
+        add_circle_outline
+      </span>
+      {{ $t('course_exercises.new_exercise') }}</btn
+    >
   </div>
   <exercise-editor-wrapper
     v-for="(exercise, index) in exercises"
     :key="'course-' + courseId + '-exercise-' + index"
     v-model="exercises[index]"
   ></exercise-editor-wrapper>
+  <card
+    class="fixed bottom-0 right-0 mb-4 mr-6 transition-opacity duration-75 shadow-2xl opacity-80 hover:opacity-100 w-max h-min bg-light"
+    v-show="selectedExercises.length > 0"
+    ><template v-slot:header
+      ><h4>
+        {{ selectedExercises.length }}
+        {{
+          selectedExercises.length == 1
+            ? $t('course_exercises.selected_exercise')
+            : $t('course_exercises.selected_exercises')
+        }}
+      </h4></template
+    >
+    <template v-slot:body>
+      <div class="flex w-full">
+        <btn class="mx-auto">{{
+          $t('course_exercises.create_exam_from_selected_exercises')
+        }}</btn>
+      </div>
+    </template>
+  </card>
 </template>
 
 <script lang="ts">
@@ -70,7 +107,7 @@ import {
 import Btn from '@/components/ui/Btn.vue'
 import Chipset from '@/components/ui/Chipset.vue'
 import Card from '@/components/ui/Card.vue'
-import TagInput from '@/components/ui/TagInput.vue'
+//import TagInput from '@/components/ui/TagInput.vue'
 import ExerciseEditorWrapper from '@/components/teacher/ExerciseEditor/ExerciseEditorWrapper.vue'
 import { defineComponent } from '@vue/runtime-core'
 export default defineComponent({
@@ -85,9 +122,13 @@ export default defineComponent({
   components: {
     ExerciseEditorWrapper,
     Chipset,
-    TagInput,
+    //TagInput,
     Card,
     Btn
+  },
+  created () {
+    this.$store.dispatch('getExercises', this.courseId)
+    this.$store.dispatch('getTags', this.courseId)
   },
   data () {
     return {
@@ -97,6 +138,14 @@ export default defineComponent({
         tags: [] as Tag[],
         states: [] as ExerciseState[]
       }
+    }
+  },
+  methods: {
+    onAddExercise () {
+      this.$store.dispatch('createExercise', {
+        courseId: this.courseId,
+        exercise: getBlankExercise()
+      })
     }
   },
   computed: {
@@ -111,7 +160,16 @@ export default defineComponent({
     },
     exercises (): Exercise[] {
       return [getBlankExercise(), getBlankExercise(), getBlankExercise()]
-      //return this.$store.getters.exercises
+      // return this.$store.getters.exercises
+    },
+    tags (): Tag[] {
+      return [{ name: 'tag1' }, { name: 'tag2' }, { name: 'tag3' }]
+    },
+    tagsOptions () {
+      return this.tags.map(t => ({
+        value: t.name,
+        content: t.name
+      }))
     },
     exerciseTypeOptions () {
       return ((Object.keys(ExerciseType) as unknown[]) as ExerciseType[])
@@ -131,6 +189,9 @@ export default defineComponent({
           content: _('exercise_states.' + key),
           description: _('exercise_states_descriptions.' + key)
         }))
+    },
+    selectedExercises () {
+      return this.$store.getters.selectedExercises
     }
   }
 })

@@ -9,6 +9,16 @@
         {{ showEditor ? 'expand_less' : 'expand_more' }}
       </span></btn
     >
+    <div v-if="selectable" class="absolute bottom-0 right-0 mb-8 mr-4">
+      <toggle
+        :labelOnLeft="true"
+        :modelValue="isExerciseSelected"
+        @update:modelValue="onUpdateSelected()"
+        ><span class="text-muted">{{
+          $t('exercise_wrapper.select')
+        }}</span></toggle
+      >
+    </div>
     <exercise-preview
       v-if="!showEditor"
       :exercise="modelValue"
@@ -23,6 +33,7 @@
 
 <script lang="ts">
 import Btn from '@/components/ui/Btn.vue'
+import Toggle from '@/components/ui/Toggle.vue'
 
 import ExerciseEditor from '@/components/teacher/ExerciseEditor/ExerciseEditor.vue'
 import ExercisePreview from '@/components/teacher/ExerciseEditor/ExercisePreview.vue'
@@ -33,12 +44,17 @@ export default defineComponent({
   components: {
     ExerciseEditor,
     ExercisePreview,
-    Btn
+    Btn,
+    Toggle
   },
   props: {
     modelValue: {
       type: Object as PropType<Exercise>,
       required: true
+    },
+    selectable: {
+      type: Boolean,
+      default: true
     }
   },
   data () {
@@ -54,6 +70,9 @@ export default defineComponent({
   methods: {
     toggleExpand () {
       this.showEditor = !this.showEditor
+    },
+    onUpdateSelected () {
+      this.$store.commit('toggleSelectedExercise', this.modelValue)
     }
   },
   computed: {
@@ -64,6 +83,11 @@ export default defineComponent({
       set (val: Exercise) {
         this.$emit('update:modelValue', val)
       }
+    },
+    isExerciseSelected (): boolean {
+      return this.$store.getters.selectedExercises
+        .map((e: Exercise) => e.id)
+        .includes(this.modelValue.id)
     }
   }
 })

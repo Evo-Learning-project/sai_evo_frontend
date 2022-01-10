@@ -1,5 +1,5 @@
-<template
-  ><div>
+<template>
+  <div>
     <label
       class="flex items-center space-x-2"
       v-for="(option, index) in options"

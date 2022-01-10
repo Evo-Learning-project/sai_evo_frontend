@@ -23,7 +23,7 @@
       >
         <multi-icon
           v-if="option.icons"
-          class="w-6"
+          class="w-6 mr-1"
           :icons="option.icons"
         ></multi-icon>
         <p v-html="option.content"></p

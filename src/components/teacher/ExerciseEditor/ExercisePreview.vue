@@ -10,7 +10,7 @@
             :tag="tag"
           ></tag>
         </div>
-        <div class="my-auto ml-auto mr-10 chip">
+        <div class="my-auto ml-4 chip">
           <div class="flex items-center">
             <multi-icon class="w-6" :icons="exerciseStateIcons"></multi-icon>
             <p v-html="$t('exercise_states.' + exercise.state)"></p>

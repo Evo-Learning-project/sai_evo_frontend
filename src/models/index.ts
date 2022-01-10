@@ -1,4 +1,5 @@
 export * from './interfaces';
 export * from './types';
 export * from './constants';
-export * from './defaults';
+export * from './factories';
+export * from './logic';

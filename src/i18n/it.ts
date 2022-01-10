@@ -24,6 +24,13 @@ export const it = {
     course_list_courses: 'Corsi',
     course_list_new_course: 'Nuovo corso',
   },
+  course_exercises: {
+    new_exercise: 'Nuovo esercizio',
+    selected_exercises: 'esercizi selezionati',
+    selected_exercise: 'esercizio selezionato',
+    create_exam_from_selected_exercises:
+      'Crea esame con questi esercizi',
+  },
   exercise_preview: {
     unnamed_exercise: 'Esercizio senza nome',
   },
@@ -74,6 +81,9 @@ export const it = {
     choice_text: 'Testo',
     choice_score: 'Punteggio',
     new_choice: 'Nuova',
+  },
+  exercise_wrapper: {
+    select: 'Seleziona',
   },
   exercise_types: {
     [ExerciseType.MULTIPLE_CHOICE_SINGLE_POSSIBLE]:

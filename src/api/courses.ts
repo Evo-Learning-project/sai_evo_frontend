@@ -1,4 +1,4 @@
-import { Course } from '@/models';
+import { Course, Tag } from '@/models';
 import axios from 'axios';
 
 export async function getCourses(): Promise<Course[]> {
@@ -26,5 +26,10 @@ export async function updateCourse(
 
 export async function deleteCourse(courseId: string): Promise<void> {
   const response = await axios.delete(`/courses/${courseId}/`);
+  return response.data;
+}
+
+export async function getTags(courseId: string): Promise<Tag[]> {
+  const response = await axios.get(`/courses/${courseId}/tags/`);
   return response.data;
 }

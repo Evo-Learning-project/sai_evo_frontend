@@ -1,6 +1,7 @@
 <template>
-  <div>
+  <div class="flex items-center">
     <div
+      :class="{ 'order-12 ml-2': labelOnLeft }"
       class="relative inline-block h-4 mr-2 align-middle transition duration-200 ease-in bg-transparent rounded-full shadow-sm select-none w-11"
     >
       <input
@@ -31,6 +32,10 @@ export default defineComponent({
     modelValue: [Boolean, Array],
     value: {
       default: null
+    },
+    labelOnLeft: {
+      type: Boolean,
+      default: false
     }
   },
   created () {
