@@ -4,6 +4,9 @@ module.exports = {
   purge: ['./index.html', './src/**/*.{vue,js,ts,jsx,tsx}'],
   darkMode: false, // or 'media' or 'class'
   theme: {
+    minWidth: {
+      md: '28rem'
+    },
     extend: {
       spacing: {
         '1.25px': '1.25px',

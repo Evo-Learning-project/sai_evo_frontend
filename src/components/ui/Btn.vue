@@ -17,7 +17,9 @@
       'focus:outline-success': variant == 'success',
       'hover:bg-light hover:shadow-inner': variant == 'light',
       'text-primary hover:text-lightText bg-transparent border-primary border-1.5 hover:bg-primary':
-        outline && variant == 'primary'
+        outline && variant == 'primary',
+      'text-lg font-bold text-primary hover:bg-light px-6':
+        variant == 'primary-borderless'
     }"
   >
     <p class="flex items-center"><slot></slot></p>

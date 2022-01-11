@@ -1,6 +1,11 @@
 import { ExerciseState, ExerciseType } from '@/models';
 
 export const it = {
+  dialog: {
+    default_yes_text: 'Sì',
+    default_no_text: 'No',
+    default_ok_text: 'Ok',
+  },
   filter_results: {
     title: 'Filtra risultati',
     filter_by_tag: 'Filtra per tag',

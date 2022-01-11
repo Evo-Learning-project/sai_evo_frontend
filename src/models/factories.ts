@@ -44,6 +44,16 @@ export const getBlankEventTemplate = (): EventTemplate => ({
   name: '',
 });
 
+export const getEventTemplateFromExercises = (
+  exercises: Exercise[]
+): EventTemplate => {
+  const template = getBlankEventTemplate();
+  exercises.forEach((e) => {
+    // TODO create id-based rule
+  });
+  return template;
+};
+
 export const getBlankIdBasedEventTemplateRule = (
   slotNumber: number
 ): EventTemplateRule => ({

@@ -28,11 +28,17 @@
       v-else
       v-model="proxyModelValue"
     ></exercise-editor>
+    <Dialog :showDialog="dialog" @no="dialog = false" :error="true">
+      <template v-slot:title>Title</template>
+      <template v-slot:body>Confermi l'operazione?</template>
+    </Dialog>
+    <btn @click="dialog = true">dialog</btn>
   </div>
 </template>
 
 <script lang="ts">
 import Btn from '@/components/ui/Btn.vue'
+import Dialog from '@/components/ui/Dialog.vue'
 import Toggle from '@/components/ui/Toggle.vue'
 
 import ExerciseEditor from '@/components/teacher/ExerciseEditor/ExerciseEditor.vue'
@@ -45,7 +51,8 @@ export default defineComponent({
     ExerciseEditor,
     ExercisePreview,
     Btn,
-    Toggle
+    Toggle,
+    Dialog
   },
   props: {
     modelValue: {
@@ -60,7 +67,8 @@ export default defineComponent({
   data () {
     return {
       showEditor: false,
-      saving: false
+      saving: false,
+      dialog: false
     }
   },
   created () {
@@ -73,6 +81,9 @@ export default defineComponent({
     },
     onUpdateSelected () {
       this.$store.commit('toggleSelectedExercise', this.modelValue)
+    },
+    onDialog () {
+      console.log('on dialog')
     }
   },
   computed: {
