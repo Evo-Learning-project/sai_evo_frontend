@@ -32,7 +32,7 @@
       <template v-slot:title>Title</template>
       <template v-slot:body>Confermi l'operazione?</template>
     </Dialog>
-    <btn @click="dialog = true">dialog</btn>
+    <btn class="hidden" @click="dialog = true">dialog</btn>
   </div>
 </template>
 

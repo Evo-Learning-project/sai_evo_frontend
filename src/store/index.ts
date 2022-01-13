@@ -9,6 +9,7 @@ import {
 import { createStore } from 'vuex';
 import { getCourses, getTags } from '@/api/courses';
 import { createExercise, getExercises } from '@/api/exercises';
+import axios from 'axios';
 export default createStore({
   state: {
     user: {} as User,
@@ -18,6 +19,8 @@ export default createStore({
     tags: [] as Tag[],
     activeCourseId: null as string | null,
     selectedExercises: [] as Exercise[],
+    token: '',
+    refreshToken: '',
   },
   getters: {
     courses: (state): Course[] => state.courses,
@@ -26,6 +29,25 @@ export default createStore({
     selectedExercises: (state): Exercise[] => state.selectedExercises,
   },
   mutations: {
+    setUser: (state, user) => {
+      state.user = user;
+      localStorage.setItem('user', JSON.stringify(user));
+    },
+    setToken: (state, token) => {
+      state.token = token;
+      localStorage.setItem('token', token);
+      axios.defaults.headers.common['Authorization'] =
+        'Bearer ' + token;
+    },
+    resetToken: (state) => {
+      state.token = '';
+      localStorage.removeItem('token');
+      axios.defaults.headers.common['Authorization'] = '';
+    },
+    setRefreshToken: (state, token) => {
+      state.refreshToken = token;
+      localStorage.setItem('refreshToken', token);
+    },
     setCourses: (state, courses: Course[]) =>
       (state.courses = courses),
     setExercises: (state, exercises: Exercise[]) =>
@@ -50,6 +72,48 @@ export default createStore({
     },
   },
   actions: {
+    // converts a token issued by Google to a token usable to authenticate requests to the backend
+    convertToken: ({ commit }, token) => {
+      // console.log('converting token...');
+      return new Promise((resolve, reject) => {
+        axios
+          .post('/users/auth/convert-token/', {
+            token,
+            grant_type: 'convert_token',
+            client_id: process.env.VUE_APP_GOOGLE_OAUTH_CLIENT_ID,
+            client_secret:
+              process.env.VUE_APP_GOOGLE_OAUTH_CLIENT_SECRET,
+            backend: 'google-oauth2',
+          })
+          .then((response) => {
+            // console.log('committing setToken');
+            commit('setToken', response.data.access_token);
+
+            // console.log('committing setRefreshToken');
+            commit('setRefreshToken', response.data.refresh_token);
+
+            // console.log('resolving');
+            resolve(response);
+          })
+          .catch((error) => {
+            reject(error);
+          });
+      });
+    },
+    getUserData: ({ commit }) => {
+      console.log('getting user...');
+      return new Promise((resolve, reject) => {
+        axios
+          .get('/users/me/')
+          .then((response) => {
+            commit('setUser', response.data);
+            resolve(response);
+          })
+          .catch((error) => {
+            reject(error);
+          });
+      });
+    },
     getCourses: async ({ commit }) => {
       const courses = await getCourses();
       commit('setCourses', courses);
