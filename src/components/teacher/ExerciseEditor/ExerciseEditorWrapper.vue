@@ -27,6 +27,7 @@
       :saving="saving"
       v-else
       v-model="proxyModelValue"
+      @update="onUpdate($event)"
     ></exercise-editor>
     <Dialog :showDialog="dialog" @no="dialog = false" :error="true">
       <template v-slot:title>Title</template>
@@ -84,6 +85,10 @@ export default defineComponent({
     },
     onDialog () {
       console.log('on dialog')
+    },
+    onUpdate (value: unknown) {
+      console.log('on update')
+      console.log(value)
     }
   },
   computed: {

@@ -26,8 +26,10 @@ export default defineComponent({
     this.choice = this.modelValue
   },
   watch: {
-    serializedModelValue (newVal) {
-      this.$emit('update:modelValue', JSON.parse(newVal))
+    serializedModelValue (newVal: string, oldVal: string) {
+      if (oldVal !== '{}') {
+        this.$emit('update:modelValue', JSON.parse(newVal))
+      }
     }
   },
   data () {

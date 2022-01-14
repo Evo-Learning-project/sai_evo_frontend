@@ -27,3 +27,12 @@
     </p>
   </footer>
 </template>
+<script lang="ts">
+import { defineComponent } from '@vue/runtime-core'
+
+export default defineComponent({
+  beforeCreate (): void {
+    this.$store.commit('initStore')
+  }
+})
+</script>

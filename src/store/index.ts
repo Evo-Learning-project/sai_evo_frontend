@@ -8,9 +8,21 @@ import {
 } from '@/models';
 import { createStore } from 'vuex';
 import { getCourses, getTags } from '@/api/courses';
-import { createExercise, getExercises } from '@/api/exercises';
+import {
+  createExercise,
+  createExerciseChoice,
+  getExercises,
+  updateExercise,
+  updateExerciseChoice,
+} from '@/api/exercises';
+import VuexPersistence from 'vuex-persist';
 import axios from 'axios';
+
+const vuexLocal = new VuexPersistence({
+  storage: window.localStorage,
+});
 export default createStore({
+  plugins: [vuexLocal.plugin],
   state: {
     user: {} as User,
     courses: [] as Course[],
@@ -23,12 +35,20 @@ export default createStore({
     refreshToken: '',
   },
   getters: {
+    email: (state): string => state.user?.email,
     courses: (state): Course[] => state.courses,
     exercises: (state): Exercise[] => state.exercises,
     tags: (state): Tag[] => state.tags,
     selectedExercises: (state): Exercise[] => state.selectedExercises,
   },
   mutations: {
+    initStore: (state) => {
+      if (state.token) {
+        console.log('restoring token');
+        axios.defaults.headers.common['Authorization'] =
+          'Bearer ' + state.token;
+      }
+    },
     setUser: (state, user) => {
       state.user = user;
       localStorage.setItem('user', JSON.stringify(user));
@@ -122,10 +142,44 @@ export default createStore({
       { commit, state },
       { courseId, exercise }
     ) => {
-      const newExercise = getBlankExercise(); //await createExercise(courseId, exercise);
+      const newExercise = await createExercise(courseId, exercise); // getBlankExercise(); //
       if (courseId == state.activeCourseId) {
         commit('setExercises', [newExercise, ...state.exercises]);
       }
+    },
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    updateExercise: async ({ commit }, { courseId, exercise }) => {
+      console.log('updating');
+      await updateExercise(courseId, exercise.id, exercise);
+      console.log('updated');
+    },
+    updateExerciseChoice: async (
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      { commit },
+      { courseId, exerciseId, choice }
+    ) => {
+      console.log('updating');
+      await updateExerciseChoice(
+        courseId,
+        exerciseId,
+        choice.id,
+        choice
+      );
+      console.log('updated');
+    },
+    addExerciseChoice: async (
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      { commit, state },
+      { courseId, exerciseId, choice }
+    ) => {
+      const newChoice = await createExerciseChoice(
+        courseId,
+        exerciseId,
+        choice
+      );
+      state.exercises
+        .find((e) => e.id === (exerciseId as string))
+        ?.choices?.push(newChoice);
     },
     getExercises: async (
       { commit, state },
@@ -133,7 +187,8 @@ export default createStore({
       refresh = false,
       filter = null
     ) => {
-      if (courseId != state.activeCourseId || refresh) {
+      // eslint-disable-next-line no-constant-condition
+      if (true || courseId != state.activeCourseId || refresh) {
         const exercises = await getExercises(courseId);
         commit('setExercises', exercises);
         commit('setActiveCourseId', courseId);

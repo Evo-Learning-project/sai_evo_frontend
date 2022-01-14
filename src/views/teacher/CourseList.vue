@@ -17,9 +17,14 @@ export default defineComponent({
   components: {
     CourseListItem
   },
+  created () {
+    this.$store.dispatch('getCourses')
+  },
   computed: {
     courses (): Course[] {
-      return [
+      return this.$store.getters.courses
+
+      /*   return [
         {
           id: 'abc',
           name: 'Programmazione e algoritmica',
@@ -52,8 +57,7 @@ export default defineComponent({
           description:
             'Test description Test description Test description Test description Test description Test description Test description Test description Test description Test description Test description Test description Test description Test description Test description '
         }
-      ]
-      //return this.$store.getters.courses
+      ]*/
     }
   }
 })

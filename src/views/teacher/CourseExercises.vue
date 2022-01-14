@@ -155,12 +155,11 @@ export default defineComponent({
       )
     },
     courseId (): string {
-      // TODO implement
-      return 'abc'
+      return this.$route.params.id as string
     },
     exercises (): Exercise[] {
-      return [getBlankExercise(), getBlankExercise(), getBlankExercise()]
-      // return this.$store.getters.exercises
+      //return [getBlankExercise(), getBlankExercise(), getBlankExercise()]
+      return this.$store.getters.exercises
     },
     tags (): Tag[] {
       return [{ name: 'tag1' }, { name: 'tag2' }, { name: 'tag3' }]

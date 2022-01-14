@@ -78,8 +78,10 @@
         <choice-editor
           v-for="(choice, index) in exercise.choices"
           :key="elementId + '-choice-' + index"
-          v-model="exercise.choices[index]"
+          :modelValue="exercise.choices[index]"
+          @update:modelValue="onChoiceUpdate(index, $event)"
         ></choice-editor>
+        <!--v-model="exercise.choices[index]"-->
         <btn @click="onAddChoice()" :size="'sm'"
           ><span class="mr-1 text-base material-icons-outlined">
             add_circle_outline
@@ -103,7 +105,12 @@ import { icons as exerciseStatesIcons } from '@/assets/exerciseStatesIcons'
 import { v4 as uuid4 } from 'uuid'
 import RadioGroup from '@/components/ui/RadioGroup.vue'
 
-import { getBlankChoice, Exercise, ExerciseState } from '@/models'
+import {
+  getBlankChoice,
+  Exercise,
+  ExerciseState,
+  ExerciseChoice
+} from '@/models'
 import { ExerciseType, multipleChoiceExerciseTypes } from '@/models'
 import Card from '@/components/ui/Card.vue'
 import Spinner from '@/components/ui/Spinner.vue'
@@ -133,15 +140,19 @@ export default defineComponent({
     modelValue: {
       type: Object as PropType<Exercise>,
       required: true
-    },
-    saving: {
-      type: Boolean,
-      default: false
     }
+    // saving: {
+    //   type: Boolean,
+    //   default: false
+    // }
   },
   watch: {
-    serializedModelValue (newVal: string) {
-      this.$emit('update:modelValue', JSON.parse(newVal))
+    async serializedBaseExerciseFields (newVal: string, oldVal: string) {
+      //this.$emit('update:modelValue', JSON.parse(newVal))
+      //this.$emit('update', JSON.parse(newVal))
+      if (oldVal !== '{}') {
+        await this.onChange(JSON.parse(newVal) as Exercise)
+      }
     },
     saving (newVal: boolean, oldVal: boolean) {
       if (!newVal && oldVal) {
@@ -159,7 +170,8 @@ export default defineComponent({
     return {
       exercise: {} as Exercise,
       elementId: '',
-      showSaved: false
+      showSaved: false,
+      saving: false
     }
   },
   methods: {
@@ -167,13 +179,42 @@ export default defineComponent({
     //   if (!confirm('Are you sure?')) return
     //   this.exercise.exercise_type = newVal
     // }
-    onAddChoice () {
-      this.exercise.choices?.push(getBlankChoice())
+    async onAddChoice () {
+      //this.exercise.choices?.push(getBlankChoice())
+      await this.$store.dispatch('addExerciseChoice', {
+        courseId: this.courseId,
+        exerciseId: this.exercise.id,
+        choice: getBlankChoice()
+      })
+    },
+    async onChange (newVal: Exercise) {
+      this.saving = true
+      await this.$store.dispatch('updateExercise', {
+        courseId: this.courseId,
+        exercise: newVal
+      })
+      this.saving = false
+    },
+    async onChoiceUpdate (index: number, newVal: ExerciseChoice) {
+      // eslint-disable-next-line @typescript-eslint/no-extra-semi
+      ;(this.exercise.choices as ExerciseChoice[])[index] = newVal
+
+      this.saving = true
+      await this.$store.dispatch('updateExerciseChoice', {
+        courseId: this.courseId,
+        exerciseId: this.exercise.id,
+        choice: newVal
+      })
+      this.saving = false
     }
   },
   computed: {
     serializedExercise () {
       return JSON.stringify(this.exercise)
+    },
+    serializedBaseExerciseFields () {
+      const { id, text, exercise_type, solution, state, label } = this.exercise
+      return JSON.stringify({ id, text, exercise_type, solution, state, label })
     },
     exerciseTypeOptions () {
       return ((Object.keys(ExerciseType) as unknown[]) as ExerciseType[])
@@ -201,6 +242,9 @@ export default defineComponent({
     },
     isDraft (): boolean {
       return this.exercise.state == ExerciseState.DRAFT
+    },
+    courseId (): string {
+      return this.$route.params.id as string
     }
   }
 })

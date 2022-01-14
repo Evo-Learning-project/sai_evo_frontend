@@ -80,6 +80,9 @@ export default {
     }
   },
   methods: {
+    redirectToMainView () {
+      this.$router.push('/teacher/courses')
+    },
     async handleClickSignIn () {
       try {
         this.loading = true
@@ -94,7 +97,7 @@ export default {
         await this.$store.dispatch('convertToken', token)
         await this.$store.dispatch('getUserData')
 
-        //this.$router.push(getMainView())
+        this.redirectToMainView()
       } catch (error) {
         // this.$store.commit('pushNotification', {
         //   severity: 2,

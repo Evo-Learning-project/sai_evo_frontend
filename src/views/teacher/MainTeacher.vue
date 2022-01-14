@@ -31,6 +31,9 @@
             src="https://di.unipi.it/wp-content/themes/unipi/images/cherubino-white.svg"
           />
         </div>
+        <div class="w-full mx-auto mt-4 mb-8 text-sm text-center text-light">
+          {{ $store.getters.email }}
+        </div>
         <ul class="flex flex-col w-full h-full mt-6">
           <router-link
             v-for="(option, index) in sidebarOptions"
