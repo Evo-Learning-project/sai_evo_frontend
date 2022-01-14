@@ -13,7 +13,7 @@
       <transition name="bounce">
         <div
           v-if="showDialog"
-          class="z-20 max-h-full mx-1.5 bg-white rounded-md shadow-all-around md:mx-0"
+          class="z-20 max-h-full overflow-y-auto mx-1.5 bg-white rounded-md shadow-all-around md:mx-0"
           :class="{
             'md:max-w-4xl md:min-w-md': !large,
             'md:w-full md:mx-4': large

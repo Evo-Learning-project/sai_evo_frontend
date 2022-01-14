@@ -72,7 +72,7 @@ export interface EventTemplate {
 
 export interface EventTemplateRule {
   id?: string;
-  rule_type: EventTemplateRuleType;
+  rule_type?: EventTemplateRuleType;
   exercises?: Exercise[];
   clauses?: EventTemplateRuleClause[];
   target_slot_number: number;

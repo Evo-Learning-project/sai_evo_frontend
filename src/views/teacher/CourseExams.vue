@@ -1,22 +1,35 @@
 <template>
-  <div class="h-full">
-    <event-editor v-model="testExam"></event-editor>
+  <div>
+    <!--<event-editor v-model="testExam"></event-editor>-->
+    <event-editor-preview
+      v-for="(exam, index) in exams"
+      :key="exam + '-' + index"
+      :event="exam"
+    ></event-editor-preview>
   </div>
 </template>
 
 <script lang="ts">
-import EventEditor from '@/components/teacher/EventEditor/EventEditor.vue'
-import { Event, getBlankExam } from '@/models'
+import EventEditorPreview from '@/components/teacher/EventEditor/EventEditorPreview.vue'
+import { Event } from '@/models'
 import { defineComponent } from '@vue/runtime-core'
 export default defineComponent({
-  components: { EventEditor },
+  components: { EventEditorPreview },
   name: 'CourseExams',
   created () {
-    this.testExam = getBlankExam()
+    this.$store.dispatch('getEvents', this.courseId)
   },
   data () {
     return {
       testExam: {} as Event
+    }
+  },
+  computed: {
+    courseId (): string {
+      return this.$route.params.courseId as string
+    },
+    exams (): Event[] {
+      return this.$store.getters.exams
     }
   }
 })

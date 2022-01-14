@@ -1,6 +1,7 @@
 import {
   Course,
   Event,
+  EventType,
   Exercise,
   getBlankExercise,
   Tag,
@@ -17,6 +18,7 @@ import {
 } from '@/api/exercises';
 import VuexPersistence from 'vuex-persist';
 import axios from 'axios';
+import { getEvents } from '@/api/events';
 
 const vuexLocal = new VuexPersistence({
   storage: window.localStorage,
@@ -35,9 +37,13 @@ export default createStore({
     refreshToken: '',
   },
   getters: {
+    event: (state) => (eventId: string) =>
+      state.events.find((e) => e.id == eventId),
     email: (state): string => state.user?.email,
     courses: (state): Course[] => state.courses,
     exercises: (state): Exercise[] => state.exercises,
+    exams: (state): Event[] =>
+      state.events.filter((e) => e.event_type == EventType.EXAM),
     tags: (state): Tag[] => state.tags,
     selectedExercises: (state): Exercise[] => state.selectedExercises,
   },
@@ -72,6 +78,7 @@ export default createStore({
       (state.courses = courses),
     setExercises: (state, exercises: Exercise[]) =>
       (state.exercises = exercises),
+    setEvents: (state, events: Event[]) => (state.events = events),
     setTags: (state, tags: Tag[]) => (state.tags = tags),
     setActiveCourseId: (state, courseId: string) => {
       if (state.activeCourseId !== courseId) {
@@ -201,10 +208,10 @@ export default createStore({
         commit('setActiveCourseId', courseId);
       }
     },
-    // getEvents: async ({ commit }, courseId) => {
-    //   const events = await getEvents(courseId);
-    //   commit('setEvents', events);
-    // },
+    getEvents: async ({ commit }, courseId) => {
+      const events = await getEvents(courseId);
+      commit('setEvents', events);
+    },
   },
   modules: {},
 });

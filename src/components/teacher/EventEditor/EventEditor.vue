@@ -1,15 +1,11 @@
 <template>
-  <event-template-editor></event-template-editor>
-  <div class="hidden">
-    <!-- !!! -->
-    <!-- <template v-slot:header> -->
-    <!-- TODO different title depending on event type -->
+  <div class="">
     <h3>{{ $t('event_editor.editor_title') }}</h3>
-    <!-- </template> -->
+    <event-meta-editor v-model="event"></event-meta-editor>
 
-    <!-- <template v-slot:body> -->
-    <event-meta-editor v-model="proxyModelValue"></event-meta-editor>
-    <!-- </template> -->
+    <div class="my-24"></div>
+
+    <event-template-editor></event-template-editor>
   </div>
   <collapsible-panel-group class="hidden"></collapsible-panel-group>
 </template>
@@ -31,6 +27,12 @@ export default defineComponent({
   },
   props: ['modelValue'],
   computed: {
+    eventId (): string {
+      return this.$route.params.examId as string
+    },
+    event (): Event {
+      return this.$store.getters.event(this.eventId)
+    },
     proxyModelValue: {
       get () {
         return this.modelValue

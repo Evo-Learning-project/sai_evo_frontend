@@ -117,6 +117,7 @@ export default {
     }
   },
   created () {
+    this.$store.commit('resetToken')
     // if (this.$store.getters.isAuthenticated) {
     //   this.$router.push(getMainView())
     // }

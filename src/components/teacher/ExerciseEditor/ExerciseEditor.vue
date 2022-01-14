@@ -324,7 +324,7 @@ export default defineComponent({
       return this.modelValue.state == ExerciseState.DRAFT
     },
     courseId (): string {
-      return this.$route.params.id as string
+      return this.$route.params.courseId as string
     }
   }
 })

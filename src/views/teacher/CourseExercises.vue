@@ -155,10 +155,9 @@ export default defineComponent({
       )
     },
     courseId (): string {
-      return this.$route.params.id as string
+      return this.$route.params.courseId as string
     },
     exercises (): Exercise[] {
-      //return [getBlankExercise(), getBlankExercise(), getBlankExercise()]
       return this.$store.getters.exercises
     },
     tags (): Tag[] {

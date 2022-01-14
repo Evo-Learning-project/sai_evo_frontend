@@ -57,6 +57,18 @@ export const it = {
     exercise_number: 'Esercizio',
     choose_exercise: 'Scegli esercizio',
     change_exercise: 'Cambia esercizio',
+    populate_slot_title: 'Seleziona esercizio per lo slot',
+    mode_selection_text:
+      "Come vuoi scegliere l'esercizio per questo slot?",
+    pick_single_exercise: 'Seleziona un esercizio',
+    pick_exercise_from_pool: 'Seleziona esercizio da un insieme',
+    pick_exercise_tag_based: 'Seleziona esercizio in base ai tag',
+    pick_single_exercise_help_text:
+      'Tutti gli studenti vedranno lo stesso esercizio',
+    pick_exercise_from_pool_help_text:
+      "Ogni studente vedrà un esercizio scelto a caso dall'insieme selezionato",
+    pick_exercise_tag_based_help_text:
+      'Ogni studente vedrà un esercizio scelto a caso con i tag selezionati',
   },
   event_editor: {
     name: 'Nome',

@@ -1,7 +1,7 @@
 <template>
   <!-- <card>
     <template v-slot:header> -->
-  <div class="flex flex-col h-full">
+  <div class="flex flex-col">
     <h3>{{ $t('event_template_editor.editor_title') }}</h3>
     <!--</template>
     <template v-slot:body>-->
@@ -34,11 +34,11 @@
           )
         }}
       </p>
-      <exact-rule-event-template-editor
+      <event-template-rule-editor
         v-for="(rule, index) in template.rules"
         :key="'template-' + elementId + '-rule-' + index"
-        :rule="rule"
-      ></exact-rule-event-template-editor>
+        v-model="template.rules[index]"
+      ></event-template-rule-editor>
     </div>
     <div v-else-if="criterion == 'use_randomization'"></div>
 
@@ -72,10 +72,11 @@ import { v4 as uuid4 } from 'uuid'
 //import Card from '@/components/ui/Card.vue'
 import Btn from '@/components/ui/Btn.vue'
 import { defineComponent } from '@vue/runtime-core'
-import ExactRuleEventTemplateEditor from './ExactRuleEventTemplateEditor.vue'
+import EventTemplateRuleEditor from './EventTemplateRuleEditor.vue'
 import {
   EventTemplate,
   getBlankEventTemplate,
+  getBlankEventTemplateRule,
   getBlankIdBasedEventTemplateRule,
   getBlankTagBasedEventTemplateRule
 } from '@/models'
@@ -84,14 +85,13 @@ export default defineComponent({
   components: {
     //Card,
     Btn,
-    ExactRuleEventTemplateEditor,
+    EventTemplateRuleEditor,
     Toggle
   },
   name: 'EventTemplateEditor',
   created () {
     this.elementId = uuid4()
     this.template = getBlankEventTemplate()
-    this.addRule() // ! remove
     this.addRule() // ! remove
   },
   watch: {
@@ -117,10 +117,13 @@ export default defineComponent({
     },
     addRule () {
       this.template.rules.push(
-        (this.criterion == 'same_exercises_for_everyone'
-          ? getBlankIdBasedEventTemplateRule
-          : getBlankTagBasedEventTemplateRule)(this.template.rules.length)
+        getBlankEventTemplateRule(this.template.rules.length)
       )
+      // this.template.rules.push(
+      //   (this.criterion == 'same_exercises_for_everyone'
+      //     ? getBlankIdBasedEventTemplateRule
+      //     : getBlankTagBasedEventTemplateRule)(this.template.rules.length)
+      // )
     }
   },
   computed: {}

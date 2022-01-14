@@ -1,8 +1,9 @@
 <template>
   <button
-    class="rounded-md"
+    class=""
     :class="{
-      'px-5 py-1 font-medium': size == 'base',
+      'shadow-inner bg-light': forceActive,
+      'px-5 py-1 font-medium': size == 'base' && variant !== 'transparent',
       'px-2.5 py-0.5 text-sm': size == 'sm',
       'px-10 py-2 text-lg font-semibold': size == 'lg',
       'text-lightText bg-primary hover:bg-primary-dark':
@@ -19,10 +20,15 @@
       'text-primary hover:text-lightText bg-transparent border-primary border-1.5 hover:bg-primary':
         outline && variant == 'primary',
       'text-lg font-bold text-primary hover:bg-light px-6':
-        variant == 'primary-borderless'
+        variant == 'primary-borderless',
+      'text-lg font-bold text-success hover:bg-light px-6':
+        variant == 'success-borderless',
+      'hover:bg-light border-gray-300': variant == 'transparent',
+      'rounded-md': variant !== 'transparent'
     }"
   >
     <p class="flex items-center"><slot></slot></p>
+    <slot name="content"></slot>
   </button>
 </template>
 
@@ -38,13 +44,23 @@ export default defineComponent({
     },
     variant: {
       type: String as PropType<
-        'primary' | 'danger' | 'success' | 'dark' | 'light'
+        | 'primary'
+        | 'danger'
+        | 'success'
+        | 'dark'
+        | 'light'
+        | 'primary-borderless'
+        | 'transparent'
       >,
       default: 'primary'
     },
     size: {
       type: String as PropType<'sm' | 'base' | 'lg'>,
       default: 'base'
+    },
+    forceActive: {
+      type: Boolean,
+      default: false
     }
   }
 })

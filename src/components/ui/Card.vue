@@ -1,19 +1,45 @@
 <template>
   <div
     tabindex="0"
-    class="px-1 py-6 my-4 border border-gray-300 rounded-md shadow-sm md:px-6"
+    class="flex border-gray-300 rounded-md shadow-sm"
+    :class="{
+      'md:px-4 md:py-3': size == 'sm',
+      'px-1 py-6  md:px-6 my-4': size == 'default',
+      'border-2': highlighted,
+      border: !highlighted
+    }"
   >
-    <slot name="header"></slot>
-    <div v-if="$slots.body" class="mt-4">
-      <slot name="body"></slot>
+    <div :class="[$slots.side ? 'w-11/12' : 'w-full']">
+      <slot name="header"></slot>
+      <div
+        v-if="$slots.body"
+        :class="{ 'mt-4': size == 'default', 'mt-2': size == 'sm' }"
+      >
+        <slot name="body"></slot>
+      </div>
+    </div>
+    <div v-if="$slots.side">
+      <slot name="side"></slot>
     </div>
   </div>
 </template>
 
-<script>
-export default {
-  name: 'Card'
-}
+<script lang="ts">
+import { defineComponent, PropType } from '@vue/runtime-core'
+
+export default defineComponent({
+  name: 'Card',
+  props: {
+    size: {
+      type: String as PropType<'sm' | 'default'>,
+      default: 'default'
+    },
+    highlighted: {
+      type: Boolean,
+      default: false
+    }
+  }
+})
 </script>
 
 <style></style>
