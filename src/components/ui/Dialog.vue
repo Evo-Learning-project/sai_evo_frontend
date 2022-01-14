@@ -14,7 +14,10 @@
         <div
           v-if="showDialog"
           class="z-20 max-h-full mx-1.5 bg-white rounded-md shadow-all-around md:mx-0"
-          :class="{ 'md:max-w-5xl md:min-w-md': !large, 'md:w-4/5': large }"
+          :class="{
+            'md:max-w-4xl md:min-w-md': !large,
+            'md:w-full md:mx-4': large
+          }"
         >
           <div class="w-full px-4 py-6 overflow-y-auto md:px-8">
             <div v-if="$slots.title" class="flex space-x-2">
@@ -60,7 +63,11 @@
                     : yesText || $t('dialog.default_yes_text')
                 }}
               </btn>
-              <btn @click="emitChoice('no')" :variant="'primary-borderless'">
+              <btn
+                v-if="!confirmOnly"
+                @click="emitChoice('no')"
+                :variant="'primary-borderless'"
+              >
                 {{ noText || $t('dialog.default_no_text') }}
               </btn>
               <!-- <btn

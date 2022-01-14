@@ -33,16 +33,20 @@
       <div class="flex flex-col space-y-6">
         <div class="flex flex-col items-start my-4 space-x-8 md:flex-row">
           <div class="w-full mr-auto md:w-4/12">
-            <text-input v-model="exercise.label">{{
-              $t('exercise_editor.exercise_label')
-            }}</text-input>
+            <text-input
+              :modelValue="modelValue.label"
+              @update:modelValue="emitUpdate('label', $event)"
+              >{{ $t('exercise_editor.exercise_label') }}</text-input
+            >
           </div>
           <div class="self-start w-1/2 mr-auto md:w-3/12">
             <radio-group
               :id="'exercise_state_' + elementId"
               :options="exerciseStateOptions"
-              v-model="exercise.state"
+              :modelValue="modelValue.state"
+              @update:modelValue="onExerciseStateChange($event)"
             >
+              <!--emitUpdate('state', $event)-->
               {{ $t('exercise_editor.exercise_state') }}
             </radio-group>
           </div>
@@ -51,23 +55,29 @@
               class="w-full"
               :id="'exercise_type_' + elementId"
               :options="exerciseTypeOptions"
-              v-model="exercise.exercise_type"
+              :modelValue="modelValue.exercise_type"
+              @update:modelValue="emitUpdate('exercise_type', $event)"
             >
               {{ $t('exercise_editor.exercise_type') }}
             </radio-group>
-            <!--              :modelValue="exercise.exercise_type"
+            <!--              :modelValue="modelValue.exercise_type"
               @update:modelValue="onExerciseTypeChange($event)"-->
           </div>
         </div>
-        <text-editor v-model="exercise.text">{{
-          $t('exercise_editor.exercise_text')
-        }}</text-editor>
+        <text-editor
+          :modelValue="modelValue.text"
+          @update:modelValue="emitUpdate('text', $event)"
+          >{{ $t('exercise_editor.exercise_text') }}</text-editor
+        >
         <!-- TODO show code editor if the exercise type is js -->
-        <text-editor v-model="exercise.solution">{{
-          $t('exercise_editor.exercise_solution')
-        }}</text-editor>
+        <text-editor
+          :modelValue="modelValue.solution"
+          @update:modelValue="emitUpdate('solution', $event)"
+          >{{ $t('exercise_editor.exercise_solution') }}</text-editor
+        >
         <tag-input
-          v-model="exercise.tags"
+          :modelValue="modelValue.tags"
+          @update:modelValue="emitUpdate('tags', $event)"
           :allow-edit-tags="true"
           :placeholder="$t('exercise_editor.exercise_tags')"
         ></tag-input>
@@ -76,12 +86,12 @@
       <div class="mt-8" v-if="isMultipleChoice">
         <h3 class="mb-8">{{ $t('exercise_editor.choices_title') }}</h3>
         <choice-editor
-          v-for="(choice, index) in exercise.choices"
+          v-for="(choice, index) in modelValue.choices"
           :key="elementId + '-choice-' + index"
-          :modelValue="exercise.choices[index]"
+          :modelValue="modelValue.choices[index]"
           @update:modelValue="onChoiceUpdate(index, $event)"
         ></choice-editor>
-        <!--v-model="exercise.choices[index]"-->
+        <!--v-model="modelValue.choices[index]"-->
         <btn @click="onAddChoice()" :size="'sm'"
           ><span class="mr-1 text-base material-icons-outlined">
             add_circle_outline
@@ -94,6 +104,16 @@
 
         <!-- Aggregated exercise settings -->
       </div>
+      <Dialog
+        :showDialog="showDialog"
+        @yes="dialogData.yesCallback()"
+        @no="dialogData.noCallback()"
+        :error="dialogData.error"
+        :confirmOnly="dialogData.confirmOnly"
+      >
+        <template v-slot:title>{{ dialogData.title }}</template>
+        <template v-slot:body>{{ dialogData.body }}</template>
+      </Dialog>
     </template>
   </card>
 </template>
@@ -104,6 +124,7 @@ import { icons as exerciseTypesIcons } from '@/assets/exerciseTypesIcons'
 import { icons as exerciseStatesIcons } from '@/assets/exerciseStatesIcons'
 import { v4 as uuid4 } from 'uuid'
 import RadioGroup from '@/components/ui/RadioGroup.vue'
+import Dialog from '@/components/ui/Dialog.vue'
 
 import {
   getBlankChoice,
@@ -134,7 +155,8 @@ export default defineComponent({
     ChoiceEditor,
     Btn,
     TagInput,
-    Spinner
+    Spinner,
+    Dialog
   },
   props: {
     modelValue: {
@@ -164,26 +186,77 @@ export default defineComponent({
   },
   created () {
     this.elementId = uuid4()
-    this.exercise = this.modelValue
   },
   data () {
     return {
-      exercise: {} as Exercise,
       elementId: '',
       showSaved: false,
-      saving: false
+      saving: false,
+      showDialog: false,
+      dialogData: {
+        title: '',
+        body: '',
+        yesCallback: null as null | (() => void),
+        noCallback: null as null | (() => void),
+        error: false,
+        confirmOnly: false
+      }
     }
   },
   methods: {
+    emitUpdate (key: keyof Exercise, value: unknown) {
+      //console.log('key', key, 'value', value)
+      this.$emit('update:modelValue', {
+        ...this.modelValue,
+        [key]: value
+      })
+    },
+    onExerciseStateChange (newState: ExerciseState) {
+      if (
+        newState != ExerciseState.DRAFT &&
+        // TODO actual error checking
+        this.modelValue.text.length < 15
+      ) {
+        this.showDialog = true
+        this.dialogData = {
+          title: _('exercise_editor.cannot_publish'),
+          body: _('exercise_editor.cannot_publish_body'),
+          yesCallback: () => (this.showDialog = false),
+          noCallback: null,
+          error: true,
+          confirmOnly: true
+        }
+        return
+      }
+
+      console.log(newState == ExerciseState.PUBLIC)
+
+      if (newState == ExerciseState.PUBLIC) {
+        console.log('MAKING PUBLIC')
+        this.showDialog = true
+        this.dialogData = {
+          title: _('exercise_editor.make_public_confirmation_title'),
+          body: _('exercise_editor.make_public_confirmation_body'),
+          yesCallback: () => {
+            this.emitUpdate('state', newState)
+            this.showDialog = false
+          },
+          noCallback: () => (this.showDialog = false),
+          error: false,
+          confirmOnly: false
+        }
+      } else {
+        this.emitUpdate('state', newState)
+      }
+    },
     // onExerciseTypeChange (newVal: ExerciseType) {
     //   if (!confirm('Are you sure?')) return
-    //   this.exercise.exercise_type = newVal
+    //   this.modelValue.exercise_type = newVal
     // }
     async onAddChoice () {
-      //this.exercise.choices?.push(getBlankChoice())
       await this.$store.dispatch('addExerciseChoice', {
         courseId: this.courseId,
-        exerciseId: this.exercise.id,
+        exerciseId: this.modelValue.id,
         choice: getBlankChoice()
       })
     },
@@ -197,12 +270,12 @@ export default defineComponent({
     },
     async onChoiceUpdate (index: number, newVal: ExerciseChoice) {
       // eslint-disable-next-line @typescript-eslint/no-extra-semi
-      ;(this.exercise.choices as ExerciseChoice[])[index] = newVal
+      ;(this.modelValue.choices as ExerciseChoice[])[index] = newVal
 
       this.saving = true
       await this.$store.dispatch('updateExerciseChoice', {
         courseId: this.courseId,
-        exerciseId: this.exercise.id,
+        exerciseId: this.modelValue.id,
         choice: newVal
       })
       this.saving = false
@@ -210,10 +283,17 @@ export default defineComponent({
   },
   computed: {
     serializedExercise () {
-      return JSON.stringify(this.exercise)
+      return JSON.stringify(this.modelValue)
     },
     serializedBaseExerciseFields () {
-      const { id, text, exercise_type, solution, state, label } = this.exercise
+      const {
+        id,
+        text,
+        exercise_type,
+        solution,
+        state,
+        label
+      } = this.modelValue
       return JSON.stringify({ id, text, exercise_type, solution, state, label })
     },
     exerciseTypeOptions () {
@@ -237,11 +317,11 @@ export default defineComponent({
     },
     isMultipleChoice (): boolean {
       return multipleChoiceExerciseTypes.includes(
-        parseInt((this.exercise.exercise_type?.toString() ?? '') as string)
+        parseInt((this.modelValue.exercise_type?.toString() ?? '') as string)
       )
     },
     isDraft (): boolean {
-      return this.exercise.state == ExerciseState.DRAFT
+      return this.modelValue.state == ExerciseState.DRAFT
     },
     courseId (): string {
       return this.$route.params.id as string

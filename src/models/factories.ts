@@ -18,9 +18,8 @@ export const getBlankChoice = (): ExerciseChoice => ({
 });
 
 export const getBlankExercise = (): Exercise => ({
-  label: 'ex-01-abc',
-  // FIXME remove default text and label
-  text: 'wreh09rtruw9r0ertirwereu09rtrwe90uer90rweu09errwqjeoweru09t3reiwqojadsfihur9e0tiwropjadsifgtr',
+  label: '',
+  text: '',
   exercise_type: ExerciseType.MULTIPLE_CHOICE_SINGLE_POSSIBLE,
   state: ExerciseState.DRAFT,
   solution: '',

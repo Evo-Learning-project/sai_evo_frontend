@@ -30,11 +30,11 @@
         >
           <input
             @click="onClick(option.value)"
+            @input="onInput(option.value, $event)"
             class="w-0 h-0"
             type="radio"
             :id="id + '-input-' + index"
             :value="option.value"
-            @change="onChange(option.value)"
             :checked="option.value == modelValue"
           />
           <div class="flex space-x-2 items-top">
@@ -89,7 +89,26 @@ export default defineComponent({
     }
   },
   methods: {
-    onChange (value: string) {
+    onInput (value: string, inputEvent: Event) {
+      console.log('INPUT', value)
+
+      if (this.modelValue != value) {
+        this.expanded = false
+        this.showFeedback = true
+        setTimeout(() => (this.showFeedback = false), 1000)
+      }
+
+      // prevent target from automatically being checked -
+      // it will if its value is equal to modelValue
+
+      // eslint-disable-next-line @typescript-eslint/no-extra-semi
+      ;((inputEvent.target as unknown) as { checked: boolean }).checked = false
+      inputEvent.preventDefault()
+      this.$emit('update:modelValue', value)
+    },
+    onChange (value: string, changeEvent: Event) {
+      console.log(changeEvent)
+
       if (this.modelValue != value) {
         this.expanded = false
         this.showFeedback = true

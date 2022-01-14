@@ -4,7 +4,7 @@ export const it = {
   dialog: {
     default_yes_text: 'Sì',
     default_no_text: 'No',
-    default_ok_text: 'Ok',
+    default_ok_text: 'OK',
   },
   filter_results: {
     title: 'Filtra risultati',
@@ -86,6 +86,13 @@ export const it = {
     choice_text: 'Testo',
     choice_score: 'Punteggio',
     new_choice: 'Nuova',
+    cannot_publish: 'Non puoi ancora pubblicare questo esercizio',
+    cannot_publish_body:
+      'Per poter rimuovere lo stato di bozza, correggi i seguenti errori:',
+    make_public_confirmation_title:
+      'Sei sicuro di voler rendere questo esercizio pubblico?',
+    make_public_confirmation_body:
+      'Se rendi questo esercizio pubblico, tutti gli studenti potranno visualizzarlo in qualsiasi momento. Se vuoi utilizzare questo esercizio in un esame, rendilo privato.',
   },
   exercise_wrapper: {
     select: 'Seleziona',
