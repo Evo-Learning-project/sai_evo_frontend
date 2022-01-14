@@ -27,7 +27,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
 import { Exercise } from '@/models'
-import { defineComponent } from '@vue/runtime-core'
+import { defineComponent, PropType } from '@vue/runtime-core'
 import MinimalExercisePreview from '@/components/teacher/ExerciseEditor/MinimalExercisePreview.vue'
 import Btn from '@/components/ui/Btn.vue'
 export default defineComponent({
@@ -39,25 +39,23 @@ export default defineComponent({
     MinimalExercisePreview
     //Btn
   },
-  data () {
-    return {
-      selected: [] as Exercise[]
+  props: {
+    modelValue: {
+      type: Object as PropType<Exercise[]>,
+      required: true
     }
   },
   methods: {
     onSelection (exercise: Exercise) {
-      console.log(exercise.id, 'selected')
-      const index = this.selected.findIndex(e => e.id == exercise.id)
+      const index = this.modelValue.findIndex(e => e.id == exercise.id)
       if (index === -1) {
-        console.log('PUSHING')
-        this.selected.push(exercise)
+        this.$emit('addExercise', exercise)
       } else {
-        console.log('SPLICING', index)
-        this.selected.splice(index, 1)
+        this.$emit('removeExercise', exercise)
       }
     },
     isSelected (exercise: Exercise): boolean {
-      return this.selected.find(e => e.id == exercise.id) != null
+      return this.modelValue.find(e => e.id == exercise.id) != null
     }
   },
   computed: {

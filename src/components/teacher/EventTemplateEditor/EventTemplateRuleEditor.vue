@@ -35,7 +35,7 @@
         :exercise="modelValue.exercises[0]"
       ></exercise-preview> -->
     </div>
-    <Dialog :showDialog="true || showDialog" :large="true">
+    <Dialog :showDialog="showDialog" :large="true" :footerBorder="true">
       <template v-slot:title>
         {{
           $t('event_template_rule_editor.populate_slot_title') +
@@ -123,7 +123,11 @@
             }}
           </p>
           <div class="mt-4 max-h-96">
-            <exercise-picker></exercise-picker>
+            <exercise-picker
+              :modelValue="modelValue.exercises"
+              @addExercise="onAddExercise($event)"
+              @removeExercise="onRemoveExercise($event)"
+            ></exercise-picker>
           </div>
         </div>
         <div v-else-if="modelValue.rule_type == tagBasedRuleType"></div>
@@ -134,7 +138,7 @@
 
 <script lang="ts">
 import Dialog from '@/components/ui/Dialog.vue'
-import { EventTemplateRule, EventTemplateRuleType } from '@/models'
+import { EventTemplateRule, EventTemplateRuleType, Exercise } from '@/models'
 import { defineComponent, PropType } from '@vue/runtime-core'
 import Btn from '@/components/ui/Btn.vue'
 //import ExercisePreview from '@/components/teacher/ExerciseEditor/ExercisePreview.vue'
@@ -165,6 +169,24 @@ export default defineComponent({
         ...this.modelValue,
         [key]: value
       })
+    },
+    onAddExercise (exercise: Exercise) {
+      if (this.pickOneExerciseOnly) {
+        this.emitUpdate('exercises', [exercise])
+      } else {
+        this.emitUpdate('exercises', [
+          exercise,
+          ...(this.modelValue?.exercises as Exercise[])
+        ])
+      }
+    },
+    onRemoveExercise (exercise: Exercise) {
+      const index = (this.modelValue?.exercises as Exercise[]).findIndex(
+        e => e.id === exercise.id
+      )
+      const newValue = [...(this.modelValue?.exercises as Exercise[])]
+      newValue.splice(index, 1)
+      this.emitUpdate('exercises', newValue)
     },
     showRuleDialog () {
       this.showDialog = true

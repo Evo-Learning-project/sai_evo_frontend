@@ -53,7 +53,12 @@
             </div>
           </div>
 
-          <div class="flex flex-col pb-4 pr-2 mt-5 md:flex-row">
+          <div
+            class="flex flex-col pt-5 pb-4 pr-2 md:flex-row"
+            :class="{
+              'border-t border-gray-200': footerBorder
+            }"
+          >
             <div class="mt-auto"><slot name="footerButtons"></slot></div>
             <div class="flex ml-auto">
               <btn @click="emitChoice('yes')" :variant="'primary-borderless'">
@@ -133,6 +138,10 @@ export default defineComponent({
       default: false
     },
     success: {
+      type: Boolean,
+      default: false
+    },
+    footerBorder: {
       type: Boolean,
       default: false
     },

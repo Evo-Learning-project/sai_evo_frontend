@@ -66,6 +66,7 @@ export const getBlankEventTemplateRule = (
   slotNumber: number
 ): EventTemplateRule => ({
   target_slot_number: slotNumber,
+  exercises: [],
 });
 
 export const getBlankTagBasedEventTemplateRule = (
