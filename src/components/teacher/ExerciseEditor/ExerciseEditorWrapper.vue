@@ -1,7 +1,7 @@
 <template>
   <div class="relative">
     <btn
-      @click="toggleExpand()"
+      @btnClick="toggleExpand()"
       class="absolute right-0 mt-4 mr-4 top-4"
       :size="'sm'"
       :variant="'light'"
@@ -33,7 +33,7 @@
       <template v-slot:title>Title</template>
       <template v-slot:body>Confermi l'operazione?</template>
     </Dialog>
-    <btn class="hidden" @click="dialog = true">dialog</btn>
+    <btn class="hidden" @btnClick="dialog = true">dialog</btn>
   </div>
 </template>
 

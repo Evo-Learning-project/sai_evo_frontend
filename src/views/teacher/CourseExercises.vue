@@ -18,7 +18,7 @@
         </div></template
       ><template v-slot:body>
         <btn
-          @click="expandResultFilter = !expandResultFilter"
+          @btnClick="expandResultFilter = !expandResultFilter"
           class="absolute top-0 right-0 mt-4 mr-4"
           :size="'sm'"
           :variant="'light'"
@@ -48,7 +48,7 @@
             :placeholder="$t('filter_results.filter_by_tag')"
           ></tag-input> -->
           <div class="flex w-full">
-            <btn @click="applyFilters()" class="mt-4 ml-auto">{{
+            <btn @btnClick="applyFilters()" class="mt-4 ml-auto">{{
               $t('filter_results.title')
             }}</btn>
           </div>
@@ -57,7 +57,7 @@
     >
   </div>
   <div class="flex w-full mb-2">
-    <btn @click="onAddExercise()" class="ml-auto"
+    <btn @btnClick="onAddExercise()" class="ml-auto"
       ><span class="mr-1 text-base material-icons-outlined">
         add_circle_outline
       </span>

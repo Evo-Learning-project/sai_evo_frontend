@@ -15,13 +15,13 @@
         <btn
           :outline="true"
           :size="'lg'"
-          @click="setCriterion('same_exercises_for_everyone')"
+          @btnClick="setCriterion('same_exercises_for_everyone')"
           >{{ $t('event_template_editor.same_exercises_for_everyone') }}</btn
         >
         <btn
           :outline="true"
           :size="'lg'"
-          @click="setCriterion('use_randomization')"
+          @btnClick="setCriterion('use_randomization')"
           >{{ $t('event_template_editor.use_randomization') }}</btn
         >
       </div>
@@ -43,7 +43,9 @@
     <div v-else-if="criterion == 'use_randomization'"></div>
 
     <div class="flex items-center mt-auto" v-if="criterion">
-      <btn @click="addRule()">{{ $t('event_template_editor.add_rule') }}</btn>
+      <btn @btnClick="addRule()">{{
+        $t('event_template_editor.add_rule')
+      }}</btn>
       <div
         v-if="criterion == 'same_exercises_for_everyone'"
         class="flex flex-col ml-auto"

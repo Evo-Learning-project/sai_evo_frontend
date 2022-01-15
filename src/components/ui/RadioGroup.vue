@@ -6,7 +6,7 @@
     <div
       :class="{
         'max-h-20 hover:shadow-md': !expanded,
-        'max-h-screen shadow-2xl': expanded
+        'max-h-screen shadow-popup': expanded
       }"
       class="flex overflow-y-hidden transition-all duration-300 ease-in-out border border-gray-300 rounded-md"
     >

@@ -92,7 +92,7 @@
           @update:modelValue="onChoiceUpdate(index, $event)"
         ></choice-editor>
         <!--v-model="modelValue.choices[index]"-->
-        <btn @click="onAddChoice()" :size="'sm'"
+        <btn @btnClick="onAddChoice()" :size="'sm'"
           ><span class="mr-1 text-base material-icons-outlined">
             add_circle_outline
           </span>

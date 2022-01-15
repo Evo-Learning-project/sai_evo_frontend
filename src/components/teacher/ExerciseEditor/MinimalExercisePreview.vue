@@ -49,7 +49,7 @@
           :variant="'success-borderless'"
           class="mt-auto"
           :forceActive="highlighted"
-          @click="onSelection()"
+          @btnClick="onSelection()"
           ><span class="material-icons-outlined">
             done
           </span></btn

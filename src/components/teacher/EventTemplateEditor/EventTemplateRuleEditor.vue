@@ -10,7 +10,7 @@
           {{ modelValue.target_slot_number + 1 }}
         </h4>
         <div class="flex ml-auto space-x-2">
-          <btn @click="showRuleDialog()" :size="'sm'">
+          <btn @btnClick="showRuleDialog()" :size="'sm'">
             {{
               /*isExerciseChosen
                 ? $t('event_template_rule_editor.change_exercise')
@@ -19,7 +19,7 @@
             }}
           </btn>
           <btn
-            @click="deleteRule()"
+            @btnClick="deleteRule()"
             :size="'sm'"
             :variant="'danger'"
             :outline="true"
@@ -48,7 +48,7 @@
           <p>{{ $t('event_template_rule_editor.mode_selection_text') }}</p>
           <div class="grid grid-cols-3 mt-6">
             <btn
-              @click="setRuleMode(idBasedRuleType, true)"
+              @btnClick="setRuleMode(idBasedRuleType, true)"
               :variant="'transparent'"
               class="py-5 pl-4 border-r"
             >
@@ -66,7 +66,7 @@
               >
             </btn>
             <btn
-              @click="setRuleMode(idBasedRuleType, false)"
+              @btnClick="setRuleMode(idBasedRuleType, false)"
               :variant="'transparent'"
               class="pl-8 border-r"
             >
@@ -84,7 +84,7 @@
               >
             </btn>
             <btn
-              @click="setRuleMode(tagBasedRuleType)"
+              @btnClick="setRuleMode(tagBasedRuleType)"
               :variant="'transparent'"
               class="pl-8"
             >

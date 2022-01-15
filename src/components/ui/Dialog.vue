@@ -6,7 +6,7 @@
       class="fixed top-0 left-0 z-50 flex items-center justify-center w-full h-full"
     >
       <div
-        @click="dismiss()"
+        @btnClick="dismiss()"
         style="width: 100vw !important; height: 100vh !important"
         class="absolute z-10 w-full h-full transition-none bg-gray-900 opacity-80"
       ></div>
@@ -61,7 +61,10 @@
           >
             <div class="mt-auto"><slot name="footerButtons"></slot></div>
             <div class="flex ml-auto">
-              <btn @click="emitChoice('yes')" :variant="'primary-borderless'">
+              <btn
+                @btnClick="emitChoice('yes')"
+                :variant="'primary-borderless'"
+              >
                 {{
                   confirmOnly
                     ? $t('dialog.default_ok_text')
@@ -70,7 +73,7 @@
               </btn>
               <btn
                 v-if="!confirmOnly"
-                @click="emitChoice('no')"
+                @btnClick="emitChoice('no')"
                 :variant="'primary-borderless'"
               >
                 {{ noText || $t('dialog.default_no_text') }}
@@ -79,13 +82,13 @@
                 class="mr-2"
                 :disabled="disableOk > 0"
                 :variant="severity == 1 ? 'green' : 'red'"
-                @click="emitChoice('yes')"
+                @btnClick="emitChoice('yes')"
               >
                 {{ confirmOnly ? 'Ok' : yesText || 'Sì' }}
               </btn>
               <btn
                 :variant="'light'"
-                @click="emitChoice('no')"
+                @btnClick="emitChoice('no')"
                 v-if="!confirmOnly"
               >
                 {{ noText || 'No' }}

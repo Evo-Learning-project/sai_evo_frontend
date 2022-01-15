@@ -11,7 +11,7 @@
         {{ rule.target_slot_number + 1 }}
       </h4>
       <div class="flex ml-auto space-x-2">
-        <btn @click="showExerciseSelector()" :size="'sm'">
+        <btn @btnClick="showExerciseSelector()" :size="'sm'">
           {{
             isExerciseChosen
               ? $t('event_template_rule_editor.change_exercise')
@@ -19,7 +19,7 @@
           }}
         </btn>
         <btn
-          @click="deleteRule()"
+          @btnClick="deleteRule()"
           :size="'sm'"
           :variant="'danger'"
           :outline="true"

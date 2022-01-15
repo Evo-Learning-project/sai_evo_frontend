@@ -1,6 +1,7 @@
 <template>
   <button
-    class=""
+    @click="onClick"
+    class="relative overflow-hidden"
     :class="{
       'shadow-inner bg-light': forceActive,
       'px-5 py-1 font-medium': size == 'base' && variant !== 'transparent',
@@ -34,6 +35,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from '@vue/runtime-core'
+import { v4 as uuid4 } from 'uuid'
 
 export default defineComponent({
   name: 'Btn',
@@ -62,8 +64,67 @@ export default defineComponent({
       type: Boolean,
       default: false
     }
+  },
+  created () {
+    this.elementId = uuid4()
+    // const btn = document.getElementById(this.elementId)
+    // console.log('BTN', btn)
+    // btn?.addEventListener('click', this.rippleEffect)
+  },
+  data () {
+    return {
+      elementId: ''
+    }
+  },
+  methods: {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    onClick (event: any) {
+      this.rippleEffect(event)
+      setTimeout(() => this.$emit('btnClick'), 100)
+    },
+    rippleEffect (event: {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      currentTarget: any
+      clientX: number
+      clientY: number
+    }) {
+      console.log('CLICKED')
+      const btn = event.currentTarget
+      console.log(btn)
+
+      const circle = document.createElement('span')
+      const diameter = Math.max(btn.clientWidth, btn.clientHeight)
+      const radius = diameter / 2
+
+      circle.style.width = circle.style.height = `${diameter}px`
+      circle.style.left = `${event.clientX - (btn.offsetLeft + radius)}px`
+      circle.style.top = `${event.clientY - (btn.offsetTop + radius)}px`
+      circle.classList.add('ripple')
+
+      const ripple = btn.getElementsByClassName('ripple')[0]
+      console.log('ripple', ripple)
+      if (ripple) {
+        ripple.remove()
+      }
+
+      btn.appendChild(circle)
+    }
   }
 })
 </script>
 
-<style></style>
+<style>
+span.ripple {
+  position: absolute;
+  border-radius: 50%;
+  transform: scale(0);
+  animation: ripple 500ms linear;
+  background-color: rgba(226, 225, 225, 0.5);
+}
+@keyframes ripple {
+  to {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+</style>
