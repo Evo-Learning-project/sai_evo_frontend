@@ -1,5 +1,6 @@
 <template>
   <card
+    :marginLess="true"
     class="transition-shadow duration-100 focus-within:shadow-lg"
     :class="{ 'bg-gray-50': isDraft }"
   >

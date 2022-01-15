@@ -4,7 +4,8 @@
     class="flex border-gray-300 rounded-md shadow-sm"
     :class="{
       'md:px-4 md:py-3': size == 'sm',
-      'px-1 py-6  md:px-6 my-4': size == 'default',
+      'px-1 py-6  md:px-6': size == 'default',
+      'my-4': size == 'default' && !marginLess,
       'border-2': highlighted,
       border: !highlighted
     }"
@@ -35,6 +36,10 @@ export default defineComponent({
       default: 'default'
     },
     highlighted: {
+      type: Boolean,
+      default: false
+    },
+    marginLess: {
       type: Boolean,
       default: false
     }

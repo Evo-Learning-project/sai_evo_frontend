@@ -1,46 +1,27 @@
 <template>
-  <div class="relative">
-    <btn
-      @btnClick="toggleExpand()"
-      class="absolute right-0 mt-4 mr-4 top-4"
-      :size="'sm'"
-      :variant="'light'"
-      ><span class="material-icons-outlined">
-        {{ showEditor ? 'expand_less' : 'expand_more' }}
-      </span></btn
-    >
-    <div v-if="selectable" class="absolute bottom-0 right-0 mb-8 mr-4">
-      <toggle
-        :labelOnLeft="true"
-        :modelValue="isExerciseSelected"
-        @update:modelValue="onUpdateSelected()"
-        ><span class="text-muted">{{
-          $t('exercise_wrapper.select')
-        }}</span></toggle
+  <div class="relative my-2">
+    <div class="absolute top-0 right-0 mt-2 mr-2">
+      <btn :size="'sm'" :variant="'light'"
+        ><span class="material-icons-outlined">
+          {{ showEditor ? 'expand_less' : 'expand_more' }}
+        </span></btn
       >
     </div>
     <exercise-preview
-      v-if="!showEditor"
+      v-show="!showEditor"
       :exercise="modelValue"
     ></exercise-preview>
     <exercise-editor
       :saving="saving"
-      v-else
+      v-show="showEditor"
       v-model="proxyModelValue"
       @update="onUpdate($event)"
     ></exercise-editor>
-    <Dialog :showDialog="dialog" @no="dialog = false" :error="true">
-      <template v-slot:title>Title</template>
-      <template v-slot:body>Confermi l'operazione?</template>
-    </Dialog>
-    <btn class="hidden" @btnClick="dialog = true">dialog</btn>
   </div>
 </template>
 
 <script lang="ts">
 import Btn from '@/components/ui/Btn.vue'
-import Dialog from '@/components/ui/Dialog.vue'
-import Toggle from '@/components/ui/Toggle.vue'
 
 import ExerciseEditor from '@/components/teacher/ExerciseEditor/ExerciseEditor.vue'
 import ExercisePreview from '@/components/teacher/ExerciseEditor/ExercisePreview.vue'
@@ -51,9 +32,7 @@ export default defineComponent({
   components: {
     ExerciseEditor,
     ExercisePreview,
-    Btn,
-    Toggle,
-    Dialog
+    Btn
   },
   props: {
     modelValue: {

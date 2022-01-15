@@ -4,6 +4,10 @@ module.exports = {
   purge: ['./index.html', './src/**/*.{vue,js,ts,jsx,tsx}'],
   darkMode: false, // or 'media' or 'class'
   theme: {
+    ripple: theme => ({
+      colors: theme('colors'),
+      darken: 0.1
+    }),
     minWidth: {
       md: '28rem'
     },
@@ -76,5 +80,6 @@ module.exports = {
       borderColor: ['responsive', 'hover', 'focus', 'focus-within']
     }
   },
-  plugins: []
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  plugins: [require('tailwindcss-ripple')()]
 }

@@ -4,27 +4,30 @@
     class="relative overflow-hidden"
     :class="{
       'shadow-inner bg-light': forceActive,
+      'bg-success-light bg-opacity-30':
+        forceActive && variant === 'success-borderless',
       'px-5 py-1 font-medium': size == 'base' && variant !== 'transparent',
       'px-2.5 py-0.5 text-sm': size == 'sm',
       'px-10 py-2 text-lg font-semibold': size == 'lg',
-      'text-lightText bg-primary hover:bg-primary-dark':
-        !outline && variant == 'primary',
+      'text-lightText bg-primary': !outline && variant == 'primary',
       'text-danger-dark bg-danger': !outline && variant == 'danger',
       'text-danger-dark border-danger-dark bg-white border hover:bg-danger-dark hover:text-white':
         outline && variant == 'danger',
       'text-success-dark bg-success': !outline && variant == 'success',
       'transition-colors duration-100 shadow-inner': outline,
-      'focus:outline-primary': variant == 'primary',
+      'focus:outline-primary': false && variant == 'primary',
       'focus:outline-danger-dark': variant == 'danger',
       'focus:outline-success': variant == 'success',
       'hover:bg-light hover:shadow-inner': variant == 'light',
       'text-primary hover:text-lightText bg-transparent border-primary border-1.5 hover:bg-primary':
         outline && variant == 'primary',
-      'text-lg font-bold text-primary hover:bg-light px-6':
+      'text-lg font-bold text-primary hover:bg-light px-6 focus:bg-primary-light focus:bg-opacity-30':
         variant == 'primary-borderless',
+      'text-lg font-bold text-success hover:bg-light px-6 focus:bg-success-light focus:bg-opacity-30':
+        variant == 'success-borderless',
       'text-lg font-bold text-success hover:bg-light px-6':
         variant == 'success-borderless',
-      'hover:bg-light border-gray-300': variant == 'transparent',
+      'border-gray-300 bg-white hover:bg-light': variant == 'transparent',
       'rounded-md': variant !== 'transparent'
     }"
   >
@@ -35,7 +38,6 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from '@vue/runtime-core'
-import { v4 as uuid4 } from 'uuid'
 
 export default defineComponent({
   name: 'Btn',
@@ -52,6 +54,7 @@ export default defineComponent({
         | 'dark'
         | 'light'
         | 'primary-borderless'
+        | 'success-borderless'
         | 'transparent'
       >,
       default: 'primary'
@@ -65,22 +68,13 @@ export default defineComponent({
       default: false
     }
   },
-  created () {
-    this.elementId = uuid4()
-    // const btn = document.getElementById(this.elementId)
-    // console.log('BTN', btn)
-    // btn?.addEventListener('click', this.rippleEffect)
-  },
-  data () {
-    return {
-      elementId: ''
-    }
-  },
   methods: {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onClick (event: any) {
+      event
       this.rippleEffect(event)
-      setTimeout(() => this.$emit('btnClick'), 100)
+      setTimeout(() => this.$emit('btnClick'), 400)
+      //this.$emit('btnClick')
     },
     rippleEffect (event: {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -100,6 +94,7 @@ export default defineComponent({
       circle.style.left = `${event.clientX - (btn.offsetLeft + radius)}px`
       circle.style.top = `${event.clientY - (btn.offsetTop + radius)}px`
       circle.classList.add('ripple')
+      circle.classList.add(this.getRippleClass())
 
       const ripple = btn.getElementsByClassName('ripple')[0]
       console.log('ripple', ripple)
@@ -108,6 +103,16 @@ export default defineComponent({
       }
 
       btn.appendChild(circle)
+    },
+    getRippleClass () {
+      switch (this.variant) {
+        case 'primary-borderless':
+          return 'ripple-primary'
+        case 'success-borderless':
+          return 'ripple-success'
+        default:
+          return 'ripple-white'
+      }
     }
   }
 })
@@ -118,8 +123,16 @@ span.ripple {
   position: absolute;
   border-radius: 50%;
   transform: scale(0);
-  animation: ripple 500ms linear;
-  background-color: rgba(226, 225, 225, 0.5);
+  animation: ripple 600ms linear;
+}
+.ripple-white {
+  background-color: rgba(255, 255, 255, 0.6);
+}
+.ripple-primary {
+  background-color: rgba(68, 56, 202, 0.25);
+}
+.ripple-success {
+  background-color: rgba(52, 211, 153, 0.25);
 }
 @keyframes ripple {
   to {

@@ -1,5 +1,5 @@
 <template>
-  <card>
+  <card :marginLess="true">
     <template v-slot:header>
       <div class="flex items-center ">
         <h3>{{ previewTitle }}</h3>
