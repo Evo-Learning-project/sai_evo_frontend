@@ -1,5 +1,7 @@
 <template>
-  <router-link :to="{ name: 'CourseDashboard', params: { id: course.id } }">
+  <router-link
+    :to="{ name: 'CourseDashboard', params: { courseId: course.id } }"
+  >
     <Card class="transition-all duration-75 hover:bg-light hover:shadow-md">
       <template v-slot:header>
         <div class="flex items-center">

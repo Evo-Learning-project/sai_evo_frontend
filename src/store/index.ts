@@ -18,7 +18,7 @@ import {
 } from '@/api/exercises';
 import VuexPersistence from 'vuex-persist';
 import axios from 'axios';
-import { getEvents } from '@/api/events';
+import { createEvent, getEvents } from '@/api/events';
 
 const vuexLocal = new VuexPersistence({
   storage: window.localStorage,
@@ -153,6 +153,13 @@ export default createStore({
       if (courseId == state.activeCourseId) {
         commit('setExercises', [newExercise, ...state.exercises]);
       }
+    },
+    createEvent: async ({ commit, state }, { courseId, event }) => {
+      const newEvent = await createEvent(courseId, event);
+      if (courseId == state.activeCourseId) {
+        commit('setEvents', [newEvent, ...state.events]);
+      }
+      return newEvent;
     },
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     updateExercise: async ({ commit }, { courseId, exercise }) => {

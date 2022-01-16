@@ -1,7 +1,8 @@
 <template>
   <button
     @click="onClick"
-    class="relative overflow-hidden disabled:cursor-not-allowed disabled:opacity-50"
+    :disabled="loading"
+    class="relative overflow-hidden disabled:cursor-not-allowed disabled:opacity-70"
     :class="{
       'shadow-inner bg-light': forceActive,
       'bg-success-light bg-opacity-30':
@@ -31,15 +32,28 @@
       'rounded-md': variant !== 'transparent'
     }"
   >
-    <p class="flex items-center"><slot></slot></p>
+    <p class="flex items-center" :class="loading ? 'opacity-0' : ''">
+      <slot></slot>
+    </p>
+    <p
+      v-if="loading"
+      class="absolute transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
+    >
+      <spinner
+        :size="'md'"
+        :variant="variant === 'primary' ? primary : 'gray'"
+      ></spinner>
+    </p>
     <slot name="content"></slot>
   </button>
 </template>
 
 <script lang="ts">
 import { defineComponent, PropType } from '@vue/runtime-core'
+import Spinner from './Spinner.vue'
 
 export default defineComponent({
+  components: { Spinner },
   name: 'Btn',
   props: {
     outline: {
@@ -64,6 +78,10 @@ export default defineComponent({
       default: 'base'
     },
     forceActive: {
+      type: Boolean,
+      default: false
+    },
+    loading: {
       type: Boolean,
       default: false
     }
@@ -123,7 +141,7 @@ span.ripple {
   animation: ripple 500ms linear;
 }
 .ripple-white {
-  background-color: rgba(255, 255, 255, 0.6);
+  background-color: rgba(255, 255, 255, 0.25);
 }
 .ripple-primary {
   background-color: rgba(68, 56, 202, 0.25);

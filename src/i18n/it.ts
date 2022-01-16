@@ -17,6 +17,7 @@ export const it = {
   headings: {
     course_title: 'Corso',
     course_exercises: 'Esercizi',
+    course_exams: 'Esami',
   },
   misc: {
     select_empty_option: 'Seleziona',
@@ -38,8 +39,14 @@ export const it = {
     create_exam_from_selected_exercises:
       'Crea esame con questi esercizi',
   },
+  course_events: {
+    new_exam: 'Nuovo esame',
+  },
   exercise_preview: {
     unnamed_exercise: 'Esercizio senza nome',
+  },
+  event_preview: {
+    unnamed_event: 'Esame senza nome',
   },
   event_template_editor: {
     editor_title: 'Modello esame',

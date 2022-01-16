@@ -22,7 +22,7 @@
         <p class="select-none text-muted">{{ $t('misc.or_label') }}</p>
         <btn>{{ $t('event_editor.show_all_exercises_at_once') }}</btn>
       </div>
-      <toggle class="" v-model="event.allow_going_back">{{
+      <toggle :labelOnLeft="true" class="" v-model="event.allow_going_back">{{
         $t('event_editor.allow_going_back_label')
       }}</toggle>
     </div>

@@ -58,7 +58,7 @@ export interface Event {
   event_type: EventType;
   state: EventState;
   template?: EventTemplate;
-  exercises_shown_at_a_time: number;
+  exercises_shown_at_a_time: number | null;
   allow_going_back: boolean;
 }
 

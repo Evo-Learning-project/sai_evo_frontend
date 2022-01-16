@@ -1,27 +1,56 @@
 <template>
   <div>
-    <!--<event-editor v-model="testExam"></event-editor>-->
-    <event-editor-preview
-      v-for="(exam, index) in exams"
-      :key="exam + '-' + index"
-      :event="exam"
-    ></event-editor-preview>
+    <div class="flex w-full mb-2">
+      <btn @btnClick="onAddExam()" :loading="loading" class="ml-auto"
+        ><span class="mr-1 text-base material-icons-outlined">
+          add_circle_outline
+        </span>
+        {{ $t('course_events.new_exam') }}</btn
+      >
+    </div>
+    <div class="grid grid-cols-2 gap-4 mt-8">
+      <event-editor-preview
+        v-for="(exam, index) in exams"
+        :key="exam + '-' + index"
+        :event="exam"
+      ></event-editor-preview>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
 import EventEditorPreview from '@/components/teacher/EventEditor/EventEditorPreview.vue'
-import { Event } from '@/models'
+import { Event, getBlankExam } from '@/models'
+import Btn from '@/components/ui/Btn.vue'
+
 import { defineComponent } from '@vue/runtime-core'
 export default defineComponent({
-  components: { EventEditorPreview },
+  components: {
+    EventEditorPreview,
+    Btn
+  },
   name: 'CourseExams',
   created () {
     this.$store.dispatch('getEvents', this.courseId)
   },
   data () {
     return {
-      testExam: {} as Event
+      loading: false
+    }
+  },
+  methods: {
+    async onAddExam () {
+      this.loading = true
+      const newExam = await this.$store.dispatch('createEvent', {
+        courseId: this.courseId,
+        event: getBlankExam()
+      })
+      console.log(newExam)
+      this.loading = false
+      this.$router.push({
+        name: 'EventEditor',
+        params: { examId: newExam.id }
+      })
     }
   },
   computed: {

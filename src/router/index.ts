@@ -64,6 +64,9 @@ const routes: Array<RouteRecordRaw> = [
             path: 'exams',
             name: 'CourseExams',
             component: CourseExams,
+            meta: {
+              routeTitle: _('headings.course_exams'),
+            },
           },
           {
             path: 'exams/:examId',

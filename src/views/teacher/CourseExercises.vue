@@ -66,7 +66,7 @@
   </div>
   <exercise-editor-wrapper
     v-for="(exercise, index) in exercises"
-    :key="'course-' + courseId + '-exercise-' + index"
+    :key="'course-' + courseId + '-exercise-' + exercise.id"
     v-model="exercises[index]"
   ></exercise-editor-wrapper>
   <card
@@ -142,6 +142,7 @@ export default defineComponent({
   },
   methods: {
     onAddExercise () {
+      console.log('dispatching')
       this.$store.dispatch('createExercise', {
         courseId: this.courseId,
         exercise: getBlankExercise()

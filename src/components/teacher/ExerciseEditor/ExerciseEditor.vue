@@ -173,6 +173,7 @@ export default defineComponent({
     async serializedBaseExerciseFields (newVal: string, oldVal: string) {
       //this.$emit('update:modelValue', JSON.parse(newVal))
       //this.$emit('update', JSON.parse(newVal))
+      console.log('oldval', oldVal, 'newval', newVal)
       if (oldVal !== '{}') {
         await this.onChange(JSON.parse(newVal) as Exercise)
       }
