@@ -33,7 +33,8 @@ module.exports = {
         '2xs': '.7rem'
       },
       borderWidth: {
-        '1.5': '1.5px'
+        '1.5': '1.5px',
+        '6': '6px'
       },
       transitionDuration: {
         '0': '0'

@@ -125,6 +125,8 @@ export default defineComponent({
           return 'ripple-primary'
         case 'success-borderless':
           return 'ripple-success'
+        case 'transparent':
+          return 'ripple-gray'
         default:
           return 'ripple-white'
       }
@@ -141,7 +143,10 @@ span.ripple {
   animation: ripple 500ms linear;
 }
 .ripple-white {
-  background-color: rgba(255, 255, 255, 0.25);
+  background-color: rgba(255, 255, 255, 0.2);
+}
+.ripple-gray {
+  background-color: rgba(255, 255, 255, 0.7);
 }
 .ripple-primary {
   background-color: rgba(68, 56, 202, 0.25);

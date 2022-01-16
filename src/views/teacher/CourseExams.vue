@@ -8,7 +8,7 @@
         {{ $t('course_events.new_exam') }}</btn
       >
     </div>
-    <div class="grid grid-cols-2 gap-4 mt-8">
+    <div class="grid grid-cols-2 gap-4 mt-4">
       <event-editor-preview
         v-for="(exam, index) in exams"
         :key="exam + '-' + index"

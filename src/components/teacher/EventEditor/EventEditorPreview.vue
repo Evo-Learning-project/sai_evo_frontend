@@ -7,10 +7,10 @@
       <template v-slot:header>
         <div class="flex items-center w-full">
           <h3>{{ previewTitle }}</h3>
-          <div class="flex ml-auto space-x-2">
-            <timestamp :value="event.begin_timestamp"></timestamp>
-            <timestamp :value="event.end_timestamp"></timestamp>
-          </div>
+        </div>
+        <div class="flex ml-auto space-x-2">
+          <timestamp :value="event.begin_timestamp"></timestamp>
+          <timestamp :value="event.end_timestamp"></timestamp>
         </div>
       </template>
       <template v-slot:body> {{ event.instructions }} </template>

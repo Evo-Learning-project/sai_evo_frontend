@@ -1,4 +1,10 @@
 <template>
+  <div
+    v-if="showSpinner"
+    class="absolute z-50 transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
+  >
+    <Spinner :size="'xl'" :variant="'dark'" :fast="true"></Spinner>
+  </div>
   <router-view class="" />
   <footer
     class="flex items-center w-full h-12 px-6 py-3 mt-auto text-sm text-white bg-dark"
@@ -29,10 +35,33 @@
 </template>
 <script lang="ts">
 import { defineComponent } from '@vue/runtime-core'
+import Spinner from './components/ui/Spinner.vue'
 
 export default defineComponent({
   beforeCreate (): void {
     this.$store.commit('initStore')
+  },
+  components: {
+    Spinner
+  },
+  data () {
+    return {
+      //showSpinner: false
+    }
+  },
+  computed: {
+    showSpinner () {
+      return this.$store.getters.loading
+    }
   }
+  // methods: {
+  //   onLoading () {
+  //     console.log('loading!')
+  //     this.showSpinner = true
+  //   },
+  //   onDoneLoading () {
+  //     this.showSpinner = true
+  //   }
+  // }
 })
 </script>

@@ -6,6 +6,7 @@
       @open="onOpen()"
       @close="onClose()"
       v-model:value="proxyModelValue"
+      type="datetime"
     >
       <template v-slot:icon-calendar
         ><span class="text-base material-icons-outlined">
@@ -58,7 +59,7 @@ export default defineComponent({
   computed: {
     proxyModelValue: {
       get () {
-        return this.modelValue
+        return new Date(this.modelValue)
       },
       set (val: unknown) {
         console.log('abc')

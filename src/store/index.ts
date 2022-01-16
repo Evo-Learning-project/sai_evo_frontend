@@ -3,7 +3,6 @@ import {
   Event,
   EventType,
   Exercise,
-  getBlankExercise,
   Tag,
   User,
 } from '@/models';
@@ -18,10 +17,24 @@ import {
 } from '@/api/exercises';
 import VuexPersistence from 'vuex-persist';
 import axios from 'axios';
-import { createEvent, getEvents } from '@/api/events';
+import {
+  createEvent,
+  getEvent,
+  getEvents,
+  updateEvent,
+} from '@/api/events';
 
 const vuexLocal = new VuexPersistence({
   storage: window.localStorage,
+  reducer: (state: {
+    user: User;
+    token: string;
+    refreshToken: string;
+  }) => ({
+    user: state.user,
+    token: state.token,
+    refreshToken: state.refreshToken,
+  }),
 });
 export default createStore({
   plugins: [vuexLocal.plugin],
@@ -35,10 +48,11 @@ export default createStore({
     selectedExercises: [] as Exercise[],
     token: '',
     refreshToken: '',
+    loading: false,
   },
   getters: {
     event: (state) => (eventId: string) =>
-      state.events.find((e) => e.id == eventId),
+      state.events.find((e) => e.id == eventId) ?? {},
     email: (state): string => state.user?.email,
     courses: (state): Course[] => state.courses,
     exercises: (state): Exercise[] => state.exercises,
@@ -46,6 +60,7 @@ export default createStore({
       state.events.filter((e) => e.event_type == EventType.EXAM),
     tags: (state): Tag[] => state.tags,
     selectedExercises: (state): Exercise[] => state.selectedExercises,
+    loading: (state): boolean => state.loading,
   },
   mutations: {
     initStore: (state) => {
@@ -55,6 +70,7 @@ export default createStore({
           'Bearer ' + state.token;
       }
     },
+    setLoading: (state, val: boolean) => (state.loading = val),
     setUser: (state, user) => {
       state.user = user;
       localStorage.setItem('user', JSON.stringify(user));
@@ -79,6 +95,11 @@ export default createStore({
     setExercises: (state, exercises: Exercise[]) =>
       (state.exercises = exercises),
     setEvents: (state, events: Event[]) => (state.events = events),
+    setEvent: (state, { eventId, event }) =>
+      Object.assign(
+        state.events.find((e) => e.id == eventId),
+        event
+      ),
     setTags: (state, tags: Tag[]) => (state.tags = tags),
     setActiveCourseId: (state, courseId: string) => {
       if (state.activeCourseId !== courseId) {
@@ -163,23 +184,23 @@ export default createStore({
     },
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     updateExercise: async ({ commit }, { courseId, exercise }) => {
-      console.log('updating');
       await updateExercise(courseId, exercise.id, exercise);
-      console.log('updated');
+    },
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    updateEvent: async ({ commit }, { courseId, event }) => {
+      await updateEvent(courseId, event.id, event);
     },
     updateExerciseChoice: async (
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       { commit },
       { courseId, exerciseId, choice }
     ) => {
-      console.log('updating');
       await updateExerciseChoice(
         courseId,
         exerciseId,
         choice.id,
         choice
       );
-      console.log('updated');
     },
     addExerciseChoice: async (
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -218,6 +239,11 @@ export default createStore({
     getEvents: async ({ commit }, courseId) => {
       const events = await getEvents(courseId);
       commit('setEvents', events);
+    },
+    getEvent: async ({ commit, state }, { courseId, eventId }) => {
+      console.log('GETTIN');
+      const event = await getEvent(courseId, eventId);
+      commit('setEvents', [event, ...state.events]);
     },
   },
   modules: {},

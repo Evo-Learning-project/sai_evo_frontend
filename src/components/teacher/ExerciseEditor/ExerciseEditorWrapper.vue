@@ -51,10 +51,7 @@ export default defineComponent({
       dialog: false
     }
   },
-  created () {
-    setTimeout(() => (this.saving = true), 5000)
-    setTimeout(() => (this.saving = false), 7500)
-  },
+  //created () {},
   methods: {
     toggleExpand () {
       this.showEditor = !this.showEditor

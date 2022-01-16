@@ -12,22 +12,10 @@
             >({{ $t('exercise_editor.draft_notice') }})</span
           >
         </h3>
-        <div
-          v-if="saving"
-          class="flex items-center ml-auto mr-8 space-x-1 text-muted"
-        >
-          <spinner :size="'sm'"></spinner>
-          <p class="text-sm">{{ $t('exercise_editor.saving') }}</p>
-        </div>
-        <div
-          v-else-if="showSaved"
-          class="flex items-center ml-auto mr-8 space-x-1 text-muted"
-        >
-          <span class="text-base material-icons-outlined">
-            cloud_done
-          </span>
-          <p class="text-sm">{{ $t('exercise_editor.saved') }}</p>
-        </div>
+        <CloudSaveStatus
+          class="my-auto ml-auto"
+          :saving="saving"
+        ></CloudSaveStatus>
       </div>
     </template>
     <template v-slot:body>
@@ -135,7 +123,6 @@ import {
 } from '@/models'
 import { ExerciseType, multipleChoiceExerciseTypes } from '@/models'
 import Card from '@/components/ui/Card.vue'
-import Spinner from '@/components/ui/Spinner.vue'
 //import Dropdown from '@/components/ui/Dropdown.vue'
 import { defineComponent, PropType } from '@vue/runtime-core'
 import TextEditor from '@/components/ui/TextEditor.vue'
@@ -144,6 +131,7 @@ import Btn from '@/components/ui/Btn.vue'
 import TagInput from '@/components/ui/TagInput.vue'
 
 import ChoiceEditor from '@/components/teacher/ExerciseEditor/ChoiceEditor.vue'
+import CloudSaveStatus from '@/components/ui/CloudSaveStatus.vue'
 
 export default defineComponent({
   name: 'ExerciseEditor',
@@ -156,7 +144,7 @@ export default defineComponent({
     ChoiceEditor,
     Btn,
     TagInput,
-    Spinner,
+    CloudSaveStatus,
     Dialog
   },
   props: {
@@ -177,14 +165,14 @@ export default defineComponent({
       if (oldVal !== '{}') {
         await this.onChange(JSON.parse(newVal) as Exercise)
       }
-    },
-    saving (newVal: boolean, oldVal: boolean) {
-      if (!newVal && oldVal) {
-        // done saving
-        this.showSaved = true
-        setTimeout(() => (this.showSaved = false), 5000)
-      }
     }
+    // saving (newVal: boolean, oldVal: boolean) {
+    //   if (!newVal && oldVal) {
+    //     // done saving
+    //     this.showSaved = true
+    //     setTimeout(() => (this.showSaved = false), 5000)
+    //   }
+    // }
   },
   created () {
     this.elementId = uuid4()

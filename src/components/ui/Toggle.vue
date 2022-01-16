@@ -76,7 +76,7 @@ export default defineComponent({
   border-color: rgba(72, 91, 202, 1);
 }
 .toggle-checkbox:checked + .toggle-label {
-  background-color: rgba(72, 91, 202, 0.75);
+  background-color: rgba(72, 91, 202, 0.68);
 }
 .toggle-checkbox {
   right: 40%;
