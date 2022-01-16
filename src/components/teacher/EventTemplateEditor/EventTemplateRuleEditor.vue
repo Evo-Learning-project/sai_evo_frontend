@@ -1,7 +1,7 @@
 <template>
   <div>
     <div
-      class="px-3 py-4 rounded-md"
+      class="px-3 py-4"
       :class="[modelValue.target_slot_number % 2 ? 'bg-light' : 'bg-gray-50']"
     >
       <div class="flex items-center ">
@@ -31,11 +31,29 @@
       </div>
 
       <!-- <exercise-preview
-        v-if="isExerciseChosen"
+        v-if="modelValue.exercises.length > 0"
         :exercise="modelValue.exercises[0]"
       ></exercise-preview> -->
     </div>
-    <Dialog :showDialog="showDialog" :large="true" :footerBorder="true">
+    <Dialog
+      :showDialog="showDialog"
+      :large="true"
+      :footerBorder="true"
+      :confirmOnly="true"
+      @yes="() => (showDialog = false)"
+    >
+      <template v-if="modelValue.rule_type != null" v-slot:backButton>
+        <btn
+          :variant="'light'"
+          :size="'sm'"
+          class=""
+          @click="setRuleMode(null)"
+        >
+          <span class="material-icons-outlined">
+            arrow_back
+          </span>
+        </btn>
+      </template>
       <template v-slot:title>
         {{
           $t('event_template_rule_editor.populate_slot_title') +
@@ -68,7 +86,7 @@
             <btn
               @btnClick="setRuleMode(idBasedRuleType, false)"
               :variant="'transparent'"
-              class="pl-8 border-r"
+              class="pl-4 pr-3 border-r"
             >
               <template v-slot:content>
                 <h4 class="text-dark">
@@ -141,8 +159,9 @@ import Dialog from '@/components/ui/Dialog.vue'
 import { EventTemplateRule, EventTemplateRuleType, Exercise } from '@/models'
 import { defineComponent, PropType } from '@vue/runtime-core'
 import Btn from '@/components/ui/Btn.vue'
-//import ExercisePreview from '@/components/teacher/ExerciseEditor/ExercisePreview.vue'
+import { getTranslatedString as _ } from '@/i18n'
 import ExercisePicker from '@/components/teacher/ExercisePicker.vue'
+//import ExercisePreview from '@/components/teacher/ExerciseEditor/ExercisePreview.vue'
 export default defineComponent({
   components: {
     Dialog,
@@ -159,7 +178,8 @@ export default defineComponent({
   data () {
     return {
       showDialog: false,
-      pickOneExerciseOnly: null as boolean | null
+      pickOneExerciseOnly: null as boolean | null,
+      temporaryRule: null as EventTemplateRule | null
     }
   },
   methods: {
@@ -171,6 +191,7 @@ export default defineComponent({
       })
     },
     onAddExercise (exercise: Exercise) {
+      // TODO move to a temporary array and not to rule
       if (this.pickOneExerciseOnly) {
         this.emitUpdate('exercises', [exercise])
       } else {
@@ -198,16 +219,36 @@ export default defineComponent({
     }
   },
   computed: {
-    // ruleTypes (): EventTemplateRuleType[] {
-    //   return (Object.keys(
-    //     EventTemplateRuleType
-    //   ) as unknown[]) as EventTemplateRuleType[]
-    // },
     idBasedRuleType (): EventTemplateRuleType {
       return EventTemplateRuleType.ID_BASED
     },
     tagBasedRuleType (): EventTemplateRuleType {
       return EventTemplateRuleType.TAG_BASED
+    },
+    dialogData () {
+      const noText = _('dialog.default_cancel_text')
+      const yesText = _('dialog.default_confirm_text')
+      let confirmDisabled = false
+      const noCallback = () => (this.showDialog = false)
+      let yesCallback = () => null as unknown
+
+      if (this.modelValue?.rule_type == EventTemplateRuleType.ID_BASED) {
+        if (this.modelValue?.exercises?.length == 0) {
+          confirmDisabled = true
+        } else {
+          yesCallback = () => (this.showDialog = false)
+        }
+      } else {
+        // TODO check for tags
+      }
+
+      return {
+        yesText,
+        noText,
+        confirmDisabled,
+        noCallback,
+        yesCallback
+      }
     }
   }
 })

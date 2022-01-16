@@ -43,9 +43,11 @@
     <div v-else-if="criterion == 'use_randomization'"></div>
 
     <div class="flex items-center mt-auto" v-if="criterion">
-      <btn @btnClick="addRule()">{{
-        $t('event_template_editor.add_rule')
-      }}</btn>
+      <btn @btnClick="addRule()"
+        ><span class="mr-1 text-base material-icons-outlined">
+          add_circle_outline </span
+        >{{ $t('event_template_editor.add_rule') }}</btn
+      >
       <div
         v-if="criterion == 'same_exercises_for_everyone'"
         class="flex flex-col ml-auto"

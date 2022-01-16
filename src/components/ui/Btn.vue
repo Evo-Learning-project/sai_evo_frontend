@@ -1,7 +1,7 @@
 <template>
   <button
     @click="onClick"
-    class="relative overflow-hidden"
+    class="relative overflow-hidden disabled:cursor-not-allowed disabled:opacity-50"
     :class="{
       'shadow-inner bg-light': forceActive,
       'bg-success-light bg-opacity-30':
@@ -73,7 +73,7 @@ export default defineComponent({
     onClick (event: any) {
       event
       this.rippleEffect(event)
-      setTimeout(() => this.$emit('btnClick'), 400)
+      setTimeout(() => this.$emit('btnClick'), 150)
       //this.$emit('btnClick')
     },
     rippleEffect (event: {
@@ -82,10 +82,7 @@ export default defineComponent({
       clientX: number
       clientY: number
     }) {
-      console.log('CLICKED')
       const btn = event.currentTarget
-      console.log(btn)
-
       const circle = document.createElement('span')
       const diameter = Math.max(btn.clientWidth, btn.clientHeight)
       const radius = diameter / 2
@@ -123,7 +120,7 @@ span.ripple {
   position: absolute;
   border-radius: 50%;
   transform: scale(0);
-  animation: ripple 600ms linear;
+  animation: ripple 500ms linear;
 }
 .ripple-white {
   background-color: rgba(255, 255, 255, 0.6);
@@ -132,7 +129,7 @@ span.ripple {
   background-color: rgba(68, 56, 202, 0.25);
 }
 .ripple-success {
-  background-color: rgba(52, 211, 153, 0.25);
+  background-color: rgba(52, 211, 153, 0.4);
 }
 @keyframes ripple {
   to {

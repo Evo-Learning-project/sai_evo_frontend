@@ -3,6 +3,8 @@ import { ExerciseState, ExerciseType } from '@/models';
 export const it = {
   dialog: {
     default_yes_text: 'Sì',
+    default_confirm_text: 'Conferma',
+    default_cancel_text: 'Annulla',
     default_no_text: 'No',
     default_ok_text: 'OK',
   },
