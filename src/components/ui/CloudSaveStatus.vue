@@ -1,13 +1,10 @@
 <template>
   <div>
-    <div
-      v-if="saving"
-      class="flex items-center ml-auto mr-8 space-x-1 text-muted"
-    >
+    <div v-if="saving" class="flex items-center ml-auto space-x-1 text-muted">
       <spinner :size="'sm'"></spinner>
       <p class="text-sm">{{ $t('exercise_editor.saving') }}</p>
     </div>
-    <div v-else class="flex items-center ml-auto mr-8 space-x-1 text-muted">
+    <div v-else class="flex items-center ml-auto space-x-1 text-muted">
       <div class="tooltip">
         <span
           :class="{

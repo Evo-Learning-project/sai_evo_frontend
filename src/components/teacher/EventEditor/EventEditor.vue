@@ -4,17 +4,22 @@
       <h3>{{ $t('event_editor.editor_title') }}</h3>
       <CloudSaveStatus class="ml-auto" :saving="saving"></CloudSaveStatus>
     </div>
-    <EventMetaEditor v-model="proxyModelValue"></EventMetaEditor>
+    <div class="flex flex-col space-y-12">
+      <EventMetaEditor v-model="proxyModelValue"></EventMetaEditor>
 
-    <div class="my-24"></div>
+      <!-- <div class="my-24"></div> -->
 
-    <EventTemplateEditor></EventTemplateEditor>
+      <EventTemplateEditor></EventTemplateEditor>
+
+      <EventStateEditor v-model="proxyModelValue"></EventStateEditor>
+    </div>
   </div>
   <collapsible-panel-group class="hidden"></collapsible-panel-group>
 </template>
 
 <script lang="ts">
 import EventMetaEditor from '@/components/teacher/EventEditor/EventMetaEditor.vue'
+import EventStateEditor from '@/components/teacher/EventEditor/EventStateEditor.vue'
 import EventTemplateEditor from '@/components/teacher/EventTemplateEditor/EventTemplateEditor.vue'
 import CollapsiblePanelGroup from '@/components/ui/CollapsiblePanelGroup.vue'
 import CloudSaveStatus from '@/components/ui/CloudSaveStatus.vue'
@@ -27,7 +32,8 @@ export default defineComponent({
     EventMetaEditor,
     CollapsiblePanelGroup,
     EventTemplateEditor,
-    CloudSaveStatus
+    CloudSaveStatus,
+    EventStateEditor
   },
   props: [],
   async created () {
@@ -62,7 +68,6 @@ export default defineComponent({
       this.$store.commit('setEvent', { eventId: this.eventId, event: newVal })
 
       // persist update to server
-      // TODO throttle
       this.saving = true
       this.dispatchUpdate(newVal)
     },

@@ -3,7 +3,8 @@
     <!-- bg-gray-500 -->
     <!-- Sidebar starts -->
     <div
-      class="flex-col justify-between ease-in-out shadow w-96 sm:relative md:w-60 bg-primary"
+      style="box-shadow: 2px 0 5px rgba(0,0,0,0.3)"
+      class="flex-col justify-between ease-in-out w-96 sm:relative md:w-60 bg-primary"
       id="mobile-nav"
     >
       <div

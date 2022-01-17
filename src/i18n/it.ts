@@ -1,4 +1,4 @@
-import { ExerciseState, ExerciseType } from '@/models';
+import { EventState, ExerciseState, ExerciseType } from '@/models';
 
 export const it = {
   dialog: {
@@ -53,7 +53,7 @@ export const it = {
   event_template_editor: {
     editor_title: 'Modello esame',
     introduction_text:
-      'Crea il modello per questo esame. Per ogni slot, puoi scegliere se far vedere a ogni studente lo stesso esercizio o se utilizzare dei criteri di scelta casuale.',
+      'Crea il modello per questo esame. Per ogni slot, puoi scegliere se far vedere a ogni studente lo stesso esercizio o se utilizzare i criteri di scelta casuale.',
     // same_exercises_for_everyone_or_randomize:
     //   'Vuoi che tutti gli studenti abbiano gli stessi esercizi o vuoi utilizzare le opzioni di randomizzazione?',
     // same_exercises_for_everyone: 'Stessi esercizi per tutti',
@@ -85,6 +85,9 @@ export const it = {
   },
   event_editor: {
     name: 'Nome',
+    state_editor_title: 'Pubblica',
+    state: 'Stato esame',
+    current_state_is: "L'esame è attualmente in stato",
     begin_timestamp: 'Data e ora di inizio',
     end_timestamp: 'Data e ora di fine',
     instructions: 'Istruzioni (opzionale)',
@@ -139,6 +142,12 @@ export const it = {
     [ExerciseState.PUBLIC]: 'Pubblico',
     [ExerciseState.PRIVATE]: 'Nascosto',
     [ExerciseState.DRAFT]: 'Bozza',
+  },
+  event_states: {
+    [EventState.DRAFT]: 'Bozza',
+    [EventState.PLANNED]: 'Pianificato',
+    [EventState.OPEN]: 'In corso',
+    [EventState.CLOSED]: 'Terminato',
   },
   exercise_states_descriptions: {
     [ExerciseState.PUBLIC]:

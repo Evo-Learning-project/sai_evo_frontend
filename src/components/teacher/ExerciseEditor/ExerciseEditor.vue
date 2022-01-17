@@ -13,7 +13,7 @@
           >
         </h3>
         <CloudSaveStatus
-          class="my-auto ml-auto"
+          class="my-auto ml-auto mr-8"
           :saving="saving"
         ></CloudSaveStatus>
       </div>
