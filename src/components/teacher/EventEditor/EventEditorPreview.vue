@@ -13,7 +13,11 @@
           <timestamp :value="event.end_timestamp"></timestamp>
         </div>
       </template>
-      <template v-slot:body> {{ event.instructions }} </template>
+      <template v-slot:body
+        ><div class="overflow-hidden overflow-ellipsis">
+          {{ event.instructions }}
+        </div></template
+      >
     </Card>
   </router-link>
 </template>

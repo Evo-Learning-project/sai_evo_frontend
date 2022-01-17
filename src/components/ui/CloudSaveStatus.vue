@@ -7,14 +7,20 @@
       <spinner :size="'sm'"></spinner>
       <p class="text-sm">{{ $t('exercise_editor.saving') }}</p>
     </div>
-    <div
-      v-else-if="showSaved"
-      class="flex items-center ml-auto mr-8 space-x-1 text-muted"
-    >
-      <span class="text-base material-icons-outlined">
-        cloud_done
-      </span>
-      <p class="text-sm">{{ $t('exercise_editor.saved') }}</p>
+    <div v-else class="flex items-center ml-auto mr-8 space-x-1 text-muted">
+      <div class="tooltip">
+        <span
+          class="text-base cursor-default select-none material-icons-outlined hover:text-primary"
+        >
+          cloud_done
+        </span>
+        <span class="tooltip-text tooltip-left">{{
+          $t('misc.changes_saved_to_server')
+        }}</span>
+      </div>
+      <p v-if="showSaved" class="mb-0.5 text-sm">
+        {{ $t('exercise_editor.saved') }}
+      </p>
     </div>
   </div>
 </template>
@@ -52,5 +58,4 @@ export default defineComponent({
   }
 })
 </script>
-
-<style></style>
+<style scoped></style>

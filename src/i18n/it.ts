@@ -22,6 +22,8 @@ export const it = {
   misc: {
     select_empty_option: 'Seleziona',
     or_label: 'Oppure',
+    changes_saved_to_server:
+      'Tutte le modifiche sono state salvate sul server',
   },
   sidebar_labels: {
     course_dashboard_dashboard: 'Dashboard',
