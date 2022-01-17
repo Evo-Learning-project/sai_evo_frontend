@@ -41,7 +41,7 @@
     >
       <spinner
         :size="'md'"
-        :variant="variant === 'primary' ? primary : 'gray'"
+        :variant="variant === 'primary' ? 'primary' : 'gray'"
       ></spinner>
     </p>
     <slot name="content"></slot>

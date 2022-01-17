@@ -64,12 +64,20 @@
       {{ $t('course_exercises.new_exercise') }}</btn
     >
   </div>
-  <exercise-editor-wrapper
-    v-for="(exercise, index) in exercises"
-    :key="'course-' + courseId + '-exercise-' + exercise.id"
-    v-model="exercises[index]"
-    :ref="'course-' + courseId + '-exercise-' + exercise.id"
-  ></exercise-editor-wrapper>
+  <div v-if="!firstLoading">
+    <exercise-editor-wrapper
+      v-for="(exercise, index) in exercises"
+      :key="'course-' + courseId + '-exercise-' + exercise.id"
+      v-model="exercises[index]"
+      :ref="'course-' + courseId + '-exercise-' + exercise.id"
+    ></exercise-editor-wrapper>
+  </div>
+  <div v-else>
+    <skeleton-card></skeleton-card>
+    <skeleton-card></skeleton-card>
+    <skeleton-card></skeleton-card>
+    <skeleton-card></skeleton-card>
+  </div>
   <card
     class="fixed bottom-0 right-0 mb-4 mr-6 transition-opacity duration-75 shadow-2xl opacity-80 hover:opacity-100 w-max h-min bg-light"
     v-show="selectedExercises.length > 0"
@@ -111,6 +119,7 @@ import Card from '@/components/ui/Card.vue'
 //import TagInput from '@/components/ui/TagInput.vue'
 import ExerciseEditorWrapper from '@/components/teacher/ExerciseEditor/ExerciseEditorWrapper.vue'
 import { defineComponent } from '@vue/runtime-core'
+import SkeletonCard from '@/components/ui/SkeletonCard.vue'
 export default defineComponent({
   name: 'CourseExercises',
   props: {
@@ -125,11 +134,14 @@ export default defineComponent({
     Chipset,
     //TagInput,
     Card,
-    Btn
+    Btn,
+    SkeletonCard
   },
-  created () {
-    this.$store.dispatch('getExercises', this.courseId)
-    this.$store.dispatch('getTags', this.courseId)
+  async created () {
+    this.firstLoading = true
+    await this.$store.dispatch('getExercises', this.courseId)
+    await this.$store.dispatch('getTags', this.courseId)
+    this.firstLoading = false
   },
   data () {
     return {
@@ -139,7 +151,8 @@ export default defineComponent({
         tags: [] as Tag[],
         states: [] as ExerciseState[]
       },
-      loading: false
+      loading: false,
+      firstLoading: false
     }
   },
   methods: {
