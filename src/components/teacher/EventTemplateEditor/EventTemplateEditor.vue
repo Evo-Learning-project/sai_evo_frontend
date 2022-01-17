@@ -1,38 +1,9 @@
 <template>
-  <!-- <card>
-    <template v-slot:header> -->
-  <div class="flex flex-col">
-    <h3>{{ $t('event_template_editor.editor_title') }}</h3>
-    <!--</template>
-    <template v-slot:body>-->
-    <div v-if="criterion == null">
-      <p>
-        {{
-          $t('event_template_editor.same_exercises_for_everyone_or_randomize')
-        }}
-      </p>
-      <div class="flex flex-col items-center my-6 space-y-2">
-        <btn
-          :outline="true"
-          :size="'lg'"
-          @btnClick="setCriterion('same_exercises_for_everyone')"
-          >{{ $t('event_template_editor.same_exercises_for_everyone') }}</btn
-        >
-        <btn
-          :outline="true"
-          :size="'lg'"
-          @btnClick="setCriterion('use_randomization')"
-          >{{ $t('event_template_editor.use_randomization') }}</btn
-        >
-      </div>
-    </div>
-    <div class="mb-6" v-else-if="criterion == 'same_exercises_for_everyone'">
-      <p class="mb-8">
-        {{
-          $t(
-            'event_template_editor.same_exercises_for_everyone_choose_exercises'
-          )
-        }}
+  <div class="">
+    <h3 class="mb-3.5">{{ $t('event_template_editor.editor_title') }}</h3>
+    <div class="mb-6">
+      <p class="mb-6 text-muted">
+        {{ $t('event_template_editor.introduction_text') }}
       </p>
       <event-template-rule-editor
         v-for="(rule, index) in template.rules"
@@ -40,31 +11,13 @@
         v-model="template.rules[index]"
       ></event-template-rule-editor>
     </div>
-    <div v-else-if="criterion == 'use_randomization'"></div>
 
-    <div class="flex items-center mt-auto" v-if="criterion">
+    <div class="flex items-center mt-auto">
       <btn @btnClick="addRule()"
         ><span class="mr-1 text-base material-icons-outlined">
           add_circle_outline </span
         >{{ $t('event_template_editor.add_rule') }}</btn
       >
-      <div
-        v-if="criterion == 'same_exercises_for_everyone'"
-        class="flex flex-col ml-auto"
-      >
-        <toggle class="ml-auto">{{
-          $t(
-            'event_template_editor.same_exercises_for_everyone_randomize_order'
-          )
-        }}</toggle>
-        <p class="mt-1 text-xs text-muted">
-          {{
-            $t(
-              'event_template_editor.same_exercises_for_everyone_randomize_order_help_text'
-            )
-          }}
-        </p>
-      </div>
     </div>
   </div>
   <!-- </template>
@@ -80,17 +33,15 @@ import EventTemplateRuleEditor from './EventTemplateRuleEditor.vue'
 import {
   EventTemplate,
   getBlankEventTemplate,
-  getBlankEventTemplateRule,
-  getBlankIdBasedEventTemplateRule,
-  getBlankTagBasedEventTemplateRule
+  getBlankEventTemplateRule
 } from '@/models'
-import Toggle from '@/components/ui/Toggle.vue'
+//import Toggle from '@/components/ui/Toggle.vue'
 export default defineComponent({
   components: {
     //Card,
     Btn,
-    EventTemplateRuleEditor,
-    Toggle
+    EventTemplateRuleEditor
+    //Toggle
   },
   name: 'EventTemplateEditor',
   created () {
@@ -108,17 +59,17 @@ export default defineComponent({
   data () {
     return {
       elementId: '',
-      criterion: 'same_exercises_for_everyone' as  // ! put it back to null
-        | 'same_exercises_for_everyone'
-        | 'use_randomization'
-        | null,
+      // criterion: 'same_exercises_for_everyone' as  // ! put it back to null
+      //   | 'same_exercises_for_everyone'
+      //   | 'use_randomization'
+      //   | null,
       template: {} as EventTemplate
     }
   },
   methods: {
-    setCriterion (value: 'same_exercises_for_everyone' | 'use_randomization') {
-      this.criterion = value
-    },
+    // setCriterion (value: 'same_exercises_for_everyone' | 'use_randomization') {
+    //   this.criterion = value
+    // },
     addRule () {
       this.template.rules.push(
         getBlankEventTemplateRule(this.template.rules.length)

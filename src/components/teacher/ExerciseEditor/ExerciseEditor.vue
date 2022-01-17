@@ -29,7 +29,7 @@
             >
           </div>
           <div class="self-start w-1/2 mr-auto md:w-3/12">
-            <radio-group
+            <Dropdown
               :id="'exercise_state_' + elementId"
               :options="exerciseStateOptions"
               :modelValue="modelValue.state"
@@ -37,10 +37,10 @@
             >
               <!--emitUpdate('state', $event)-->
               {{ $t('exercise_editor.exercise_state') }}
-            </radio-group>
+            </Dropdown>
           </div>
           <div class="flex flex-col ml-auto md:flex-row md:w-5/12">
-            <radio-group
+            <Dropdown
               class="w-full"
               :id="'exercise_type_' + elementId"
               :options="exerciseTypeOptions"
@@ -48,7 +48,7 @@
               @update:modelValue="emitUpdate('exercise_type', $event)"
             >
               {{ $t('exercise_editor.exercise_type') }}
-            </radio-group>
+            </Dropdown>
             <!--              :modelValue="modelValue.exercise_type"
               @update:modelValue="onExerciseTypeChange($event)"-->
           </div>
@@ -112,7 +112,7 @@ import { getTranslatedString as _ } from '@/i18n'
 import { icons as exerciseTypesIcons } from '@/assets/exerciseTypesIcons'
 import { icons as exerciseStatesIcons } from '@/assets/exerciseStatesIcons'
 import { v4 as uuid4 } from 'uuid'
-import RadioGroup from '@/components/ui/RadioGroup.vue'
+import Dropdown from '@/components/ui/Dropdown.vue'
 import Dialog from '@/components/ui/Dialog.vue'
 
 import {
@@ -140,8 +140,7 @@ export default defineComponent({
     Card,
     TextEditor,
     TextInput,
-    //Dropdown
-    RadioGroup,
+    Dropdown,
     ChoiceEditor,
     Btn,
     TagInput,

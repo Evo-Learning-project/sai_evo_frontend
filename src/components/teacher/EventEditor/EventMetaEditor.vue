@@ -27,8 +27,14 @@
       {{ $t('event_editor.instructions') }}</text-editor
     >
     <div class="flex flex-col mt-12 space-y-4">
+      <h3>{{ $t('event_editor.flow_rules') }}</h3>
       <div class="flex items-center space-x-4">
-        <number-input
+        <radio-group
+          :modelValue="modelValue.exercises_shown_at_a_time"
+          :options="exercisesShownAtOnceOptions"
+          @update:modelValue="emitUpdate('exercises_shown_at_a_time', $event)"
+        ></radio-group>
+        <!-- <number-input
           class="w-1/3"
           :modelValue="modelValue.exercises_shown_at_a_time"
           @update:modelValue="emitUpdate('exercises_shown_at_a_time', $event)"
@@ -37,11 +43,11 @@
           }}</number-input
         >
         <p class="select-none text-muted">{{ $t('misc.or_label') }}</p>
-        <btn>{{ $t('event_editor.show_all_exercises_at_once') }}</btn>
+        <btn>{{ $t('event_editor.show_all_exercises_at_once') }}</btn> -->
       </div>
       <toggle
         :labelOnLeft="true"
-        class=""
+        v-show="modelValue.exercises_shown_at_a_time == 1"
         :modelValue="modelValue.allow_going_back"
         @update:modelValue="emitUpdate('allow_going_back', $event)"
         >{{ $t('event_editor.allow_going_back_label') }}</toggle
@@ -57,9 +63,11 @@ import TextEditor from '@/components/ui/TextEditor.vue'
 import { defineComponent } from '@vue/runtime-core'
 import { Event } from '@/models'
 import Toggle from '@/components/ui/Toggle.vue'
-import NumberInput from '@/components/ui/NumberInput.vue'
+//import NumberInput from '@/components/ui/NumberInput.vue'
 import { PropType } from 'vue'
-import Btn from '@/components/ui/Btn.vue'
+//import Btn from '@/components/ui/Btn.vue'
+import RadioGroup from '@/components/ui/RadioGroup.vue'
+import { getTranslatedString as _ } from '@/i18n'
 
 export default defineComponent({
   name: 'EventMetaEditor',
@@ -68,8 +76,9 @@ export default defineComponent({
     TextInput,
     TextEditor,
     Toggle,
-    NumberInput,
-    Btn
+    //NumberInput,
+    //Btn,
+    RadioGroup
   },
   props: {
     modelValue: {
@@ -104,6 +113,18 @@ export default defineComponent({
     // serializedEvent () {
     //   return JSON.stringify(this.event)
     // }
+    exercisesShownAtOnceOptions () {
+      return [
+        {
+          value: null,
+          content: _('event_editor.show_all_exercises_at_once')
+        },
+        {
+          value: 1,
+          content: _('event_editor.show_one_exercise_at_once')
+        }
+      ]
+    }
   }
 })
 </script>

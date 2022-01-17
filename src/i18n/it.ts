@@ -52,20 +52,22 @@ export const it = {
   },
   event_template_editor: {
     editor_title: 'Modello esame',
-    same_exercises_for_everyone_or_randomize:
-      'Vuoi che tutti gli studenti abbiano gli stessi esercizi o vuoi utilizzare le opzioni di randomizzazione?',
-    same_exercises_for_everyone: 'Stessi esercizi per tutti',
-    use_randomization: 'Randomizzazione',
-    same_exercises_for_everyone_choose_exercises:
-      "Seleziona gli esercizi che comporranno l'esame. Tutti gli studenti vedranno questi esercizi durante l'esame.",
-    same_exercises_for_everyone_randomize_order:
-      'Randomizza ordine degli esercizi',
-    same_exercises_for_everyone_randomize_order_help_text:
-      'Tutti gli studenti vedranno gli stessi esercizi ma in ordine casuale',
+    introduction_text:
+      'Crea il modello per questo esame. Per ogni slot, puoi scegliere se far vedere a ogni studente lo stesso esercizio o se utilizzare dei criteri di scelta casuale.',
+    // same_exercises_for_everyone_or_randomize:
+    //   'Vuoi che tutti gli studenti abbiano gli stessi esercizi o vuoi utilizzare le opzioni di randomizzazione?',
+    // same_exercises_for_everyone: 'Stessi esercizi per tutti',
+    // use_randomization: 'Randomizzazione',
+    // same_exercises_for_everyone_choose_exercises:
+    //   "Seleziona gli esercizi che comporranno l'esame. Tutti gli studenti vedranno questi esercizi durante l'esame.",
+    // same_exercises_for_everyone_randomize_order:
+    //   'Randomizza ordine degli esercizi',
+    // same_exercises_for_everyone_randomize_order_help_text:
+    //   'Tutti gli studenti vedranno gli stessi esercizi ma in ordine casuale',
     add_rule: 'Aggiungi esercizio',
   },
   event_template_rule_editor: {
-    exercise_number: 'Esercizio',
+    exercise_number: 'Slot',
     choose_exercise: 'Scegli esercizio',
     change_exercise: 'Cambia esercizio',
     populate_slot_title: 'Seleziona esercizio per lo slot',
@@ -86,12 +88,14 @@ export const it = {
     begin_timestamp: 'Data e ora di inizio',
     end_timestamp: 'Data e ora di fine',
     instructions: 'Istruzioni (opzionale)',
-    editor_title: 'Editor evento',
+    editor_title: 'Editor esame',
+    flow_rules: 'Regole di svolgimento',
     exercises_shown_at_a_time_label:
       'Numero di esercizi da mostrare per pagina',
     allow_going_back_label:
       'Permetti agli studenti di tornare indietro a un esercizio già visto',
     show_all_exercises_at_once: 'Mostra tutti gli esercizi insieme',
+    show_one_exercise_at_once: 'Mostra solo un esercizio alla volta',
   },
   exercise_editor: {
     exercise_editor_title: 'Editor esercizio',
