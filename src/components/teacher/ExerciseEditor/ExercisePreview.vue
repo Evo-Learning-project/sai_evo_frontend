@@ -20,7 +20,9 @@
     </template>
 
     <template v-slot:body>
-      <div v-html="previewText"></div>
+      <div class="overflow-x-hidden overflow-y-auto overflow-ellipsis max-h-20">
+        <div v-html="previewText" class="overflow-ellipsis"></div>
+      </div>
     </template>
   </card>
 </template>

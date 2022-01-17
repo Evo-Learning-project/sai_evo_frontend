@@ -132,6 +132,7 @@ import TagInput from '@/components/ui/TagInput.vue'
 
 import ChoiceEditor from '@/components/teacher/ExerciseEditor/ChoiceEditor.vue'
 import CloudSaveStatus from '@/components/ui/CloudSaveStatus.vue'
+import { getDebounced } from '@/utils'
 
 export default defineComponent({
   name: 'ExerciseEditor',
@@ -152,30 +153,18 @@ export default defineComponent({
       type: Object as PropType<Exercise>,
       required: true
     }
-    // saving: {
-    //   type: Boolean,
-    //   default: false
-    // }
   },
   watch: {
     async serializedBaseExerciseFields (newVal: string, oldVal: string) {
-      //this.$emit('update:modelValue', JSON.parse(newVal))
-      //this.$emit('update', JSON.parse(newVal))
-      console.log('oldval', oldVal, 'newval', newVal)
-      if (oldVal !== '{}') {
-        await this.onChange(JSON.parse(newVal) as Exercise)
+      if (oldVal !== '{}' && newVal !== oldVal) {
+        await this.onBaseFieldsChange(JSON.parse(newVal) as Exercise)
       }
     }
-    // saving (newVal: boolean, oldVal: boolean) {
-    //   if (!newVal && oldVal) {
-    //     // done saving
-    //     this.showSaved = true
-    //     setTimeout(() => (this.showSaved = false), 5000)
-    //   }
-    // }
   },
   created () {
     this.elementId = uuid4()
+    this.dispatchExerciseUpdate = getDebounced(this.dispatchExerciseUpdate)
+    this.dispatchChoiceUpdate = getDebounced(this.dispatchChoiceUpdate)
   },
   data () {
     return {
@@ -195,11 +184,33 @@ export default defineComponent({
   },
   methods: {
     emitUpdate (key: keyof Exercise, value: unknown) {
-      //console.log('key', key, 'value', value)
       this.$emit('update:modelValue', {
         ...this.modelValue,
         [key]: value
       })
+    },
+    // onExerciseTypeChange (newVal: ExerciseType) {
+    //   if (!confirm('Are you sure?')) return
+    //   this.modelValue.exercise_type = newVal
+    // }
+
+    // event handlers
+    async onBaseFieldsChange (newVal: Exercise) {
+      this.saving = true
+      await this.dispatchExerciseUpdate(newVal)
+    },
+    async onAddChoice () {
+      await this.$store.dispatch('addExerciseChoice', {
+        courseId: this.courseId,
+        exerciseId: this.modelValue.id,
+        choice: getBlankChoice()
+      })
+    },
+    async onChoiceUpdate (index: number, newVal: ExerciseChoice) {
+      // eslint-disable-next-line @typescript-eslint/no-extra-semi
+      ;(this.modelValue.choices as ExerciseChoice[])[index] = newVal // TODO use a mutation
+      this.saving = true
+      await this.dispatchChoiceUpdate(newVal)
     },
     onExerciseStateChange (newState: ExerciseState) {
       if (
@@ -218,11 +229,7 @@ export default defineComponent({
         }
         return
       }
-
-      console.log(newState == ExerciseState.PUBLIC)
-
       if (newState == ExerciseState.PUBLIC) {
-        console.log('MAKING PUBLIC')
         this.showDialog = true
         this.dialogData = {
           title: _('exercise_editor.make_public_confirmation_title'),
@@ -239,30 +246,17 @@ export default defineComponent({
         this.emitUpdate('state', newState)
       }
     },
-    // onExerciseTypeChange (newVal: ExerciseType) {
-    //   if (!confirm('Are you sure?')) return
-    //   this.modelValue.exercise_type = newVal
-    // }
-    async onAddChoice () {
-      await this.$store.dispatch('addExerciseChoice', {
-        courseId: this.courseId,
-        exerciseId: this.modelValue.id,
-        choice: getBlankChoice()
-      })
-    },
-    async onChange (newVal: Exercise) {
-      this.saving = true
+    // end event handlers
+
+    // debounced dispatchers
+    async dispatchExerciseUpdate (newVal: Exercise) {
       await this.$store.dispatch('updateExercise', {
         courseId: this.courseId,
         exercise: newVal
       })
       this.saving = false
     },
-    async onChoiceUpdate (index: number, newVal: ExerciseChoice) {
-      // eslint-disable-next-line @typescript-eslint/no-extra-semi
-      ;(this.modelValue.choices as ExerciseChoice[])[index] = newVal
-
-      this.saving = true
+    async dispatchChoiceUpdate (newVal: ExerciseChoice) {
       await this.$store.dispatch('updateExerciseChoice', {
         courseId: this.courseId,
         exerciseId: this.modelValue.id,
@@ -270,6 +264,7 @@ export default defineComponent({
       })
       this.saving = false
     }
+    // end debounced dispatchers
   },
   computed: {
     serializedExercise () {

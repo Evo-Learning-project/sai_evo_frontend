@@ -174,6 +174,7 @@ export default createStore({
       if (courseId == state.activeCourseId) {
         commit('setExercises', [newExercise, ...state.exercises]);
       }
+      return newExercise;
     },
     createEvent: async ({ commit, state }, { courseId, event }) => {
       const newEvent = await createEvent(courseId, event);

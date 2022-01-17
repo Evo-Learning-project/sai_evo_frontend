@@ -10,7 +10,10 @@
     <div v-else class="flex items-center ml-auto mr-8 space-x-1 text-muted">
       <div class="tooltip">
         <span
-          class="text-base cursor-default select-none material-icons-outlined hover:text-primary"
+          :class="{
+            'hover:bg-gray-200 hover:bg-opacity-80 rounded-md px-1.5  transition-colors duration-100': !showSaved
+          }"
+          class="text-base cursor-default select-none opacity-80 material-icons-outlined hover:text-primary-dark"
         >
           cloud_done
         </span>

@@ -59,10 +59,9 @@ export default defineComponent({
   computed: {
     proxyModelValue: {
       get () {
-        return new Date(this.modelValue)
+        return this.modelValue ? new Date(this.modelValue) : null
       },
       set (val: unknown) {
-        console.log('abc')
         this.$emit('update:modelValue', val)
       }
     }

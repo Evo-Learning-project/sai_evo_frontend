@@ -57,7 +57,7 @@
     >
   </div>
   <div class="flex w-full mb-2">
-    <btn @btnClick="onAddExercise()" class="ml-auto"
+    <btn @btnClick="onAddExercise()" :loading="loading" class="ml-auto"
       ><span class="mr-1 text-base material-icons-outlined">
         add_circle_outline
       </span>
@@ -68,6 +68,7 @@
     v-for="(exercise, index) in exercises"
     :key="'course-' + courseId + '-exercise-' + exercise.id"
     v-model="exercises[index]"
+    :ref="'course-' + courseId + '-exercise-' + exercise.id"
   ></exercise-editor-wrapper>
   <card
     class="fixed bottom-0 right-0 mb-4 mr-6 transition-opacity duration-75 shadow-2xl opacity-80 hover:opacity-100 w-max h-min bg-light"
@@ -137,16 +138,25 @@ export default defineComponent({
         types: [] as ExerciseType[],
         tags: [] as Tag[],
         states: [] as ExerciseState[]
-      }
+      },
+      loading: false
     }
   },
   methods: {
-    onAddExercise () {
+    async onAddExercise () {
       console.log('dispatching')
-      this.$store.dispatch('createExercise', {
+      this.loading = true
+      const newExercise = await this.$store.dispatch('createExercise', {
         courseId: this.courseId,
         exercise: getBlankExercise()
       })
+      this.loading = false
+      ;(this.$refs[
+        'course-' + this.courseId + '-exercise-' + newExercise.id
+      ] as { showEditor: boolean }).showEditor = true
+    },
+    applyFilters () {
+      1
     }
   },
   computed: {
