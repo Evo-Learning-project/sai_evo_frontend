@@ -73,9 +73,9 @@ export interface EventTemplate {
 export interface EventTemplateRule {
   id?: string;
   rule_type?: EventTemplateRuleType;
-  exercises?: Exercise[];
+  exercises?: string[];
   clauses?: EventTemplateRuleClause[];
-  target_slot_number: number;
+  target_slot_number?: number;
 }
 
 export interface EventTemplateRuleClause {

@@ -2,7 +2,7 @@
   <div>
     <div class="flex mt-6 mb-6 space-x-4">
       <text-input
-        class="w-1/2 mr-auto"
+        class="w-full mr-auto"
         :modelValue="modelValue.name"
         @update:modelValue="emitUpdate('name', $event)"
         >{{ $t('event_editor.name') }}</text-input

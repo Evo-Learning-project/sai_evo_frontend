@@ -7,11 +7,16 @@
     <div class="flex flex-col space-y-12">
       <EventMetaEditor v-model="proxyModelValue"></EventMetaEditor>
 
-      <!-- <div class="my-24"></div> -->
+      <EventTemplateEditor
+        :modelValue="proxyModelValueTemplate"
+      ></EventTemplateEditor>
 
-      <EventTemplateEditor></EventTemplateEditor>
-
-      <EventStateEditor v-model="proxyModelValue"></EventStateEditor>
+      <EventStateEditor
+        class="pb-10"
+        :modelValue="proxyModelValue"
+        @update:modelValue="onStateUpdate($event)"
+        :saving="stateSaving"
+      ></EventStateEditor>
     </div>
   </div>
   <collapsible-panel-group class="hidden"></collapsible-panel-group>
@@ -25,6 +30,7 @@ import CollapsiblePanelGroup from '@/components/ui/CollapsiblePanelGroup.vue'
 import CloudSaveStatus from '@/components/ui/CloudSaveStatus.vue'
 import { defineComponent } from '@vue/runtime-core'
 import { getDebounced } from '@/utils'
+import { Event, EventState } from '@/models'
 
 export default defineComponent({
   name: 'EventEditor',
@@ -49,10 +55,24 @@ export default defineComponent({
   },
   data () {
     return {
-      saving: false
+      saving: false,
+      stateSaving: false
     }
   },
   methods: {
+    async onStateUpdate (newVal: EventState) {
+      this.stateSaving = true
+      this.$store.commit('setEvent', {
+        eventId: this.eventId,
+        event: { ...this.proxyModelValue, state: newVal }
+      })
+
+      await this.$store.dispatch('updateEvent', {
+        courseId: this.courseId,
+        event: { ...this.proxyModelValue, state: newVal }
+      })
+      this.stateSaving = false
+    },
     async onChange (newVal: Event) {
       const stringifiedNewVal = JSON.stringify(this.proxyModelValue)
       // prevents triggering auto-save upon first entering the page
@@ -72,7 +92,6 @@ export default defineComponent({
       this.dispatchUpdate(newVal)
     },
     async dispatchUpdate (newVal: Event) {
-      console.log('CALLED')
       await this.$store.dispatch('updateEvent', {
         courseId: this.courseId,
         event: newVal
@@ -88,12 +107,16 @@ export default defineComponent({
       return this.$route.params.examId as string
     },
     proxyModelValue: {
-      get () {
+      get (): Event {
         return this.$store.getters.event(this.eventId)
       },
       async set (val: Event) {
         await this.onChange(val)
       }
+    },
+    proxyModelValueTemplate () {
+      // return a blank object until the event has been retrieved
+      return this.proxyModelValue?.template ?? {}
     }
   }
 })

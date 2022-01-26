@@ -178,13 +178,11 @@ export default defineComponent({
   data () {
     return {
       showDialog: false,
-      pickOneExerciseOnly: null as boolean | null,
-      temporaryRule: null as EventTemplateRule | null
+      pickOneExerciseOnly: null as boolean | null
     }
   },
   methods: {
     emitUpdate (key: keyof EventTemplateRule, value: unknown) {
-      //console.log('key', key, 'value', value)
       this.$emit('update:modelValue', {
         ...this.modelValue,
         [key]: value
@@ -193,19 +191,19 @@ export default defineComponent({
     onAddExercise (exercise: Exercise) {
       // TODO move to a temporary array and not to rule
       if (this.pickOneExerciseOnly) {
-        this.emitUpdate('exercises', [exercise])
+        this.emitUpdate('exercises', [exercise.id])
       } else {
         this.emitUpdate('exercises', [
-          exercise,
-          ...(this.modelValue?.exercises as Exercise[])
+          exercise.id,
+          ...(this.modelValue?.exercises as string[])
         ])
       }
     },
     onRemoveExercise (exercise: Exercise) {
-      const index = (this.modelValue?.exercises as Exercise[]).findIndex(
-        e => e.id === exercise.id
+      const index = (this.modelValue?.exercises as string[]).findIndex(
+        e => e === exercise.id
       )
-      const newValue = [...(this.modelValue?.exercises as Exercise[])]
+      const newValue = [...(this.modelValue?.exercises as string[])]
       newValue.splice(index, 1)
       this.emitUpdate('exercises', newValue)
     },

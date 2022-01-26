@@ -1,3 +1,4 @@
+import { Event, EventTemplate, EventTemplateRule } from '@/models';
 import axios from 'axios';
 
 export async function getEvents(courseId: string): Promise<Event[]> {
@@ -44,6 +45,52 @@ export async function deleteEvent(
 ): Promise<void> {
   const response = await axios.delete(
     `/courses/${courseId}/events/${eventId}/`
+  );
+  return response.data;
+}
+
+export async function getEventTemplate(
+  courseId: string,
+  templateId: string
+): Promise<EventTemplate> {
+  const response = await axios.get(
+    `/courses/${courseId}/templates/${templateId}/`
+  );
+  return response.data;
+}
+
+export async function createEventTemplate(
+  courseId: string,
+  template: EventTemplate
+): Promise<EventTemplate> {
+  const response = await axios.post(
+    `courses/${courseId}/templates/`,
+    template
+  );
+  return response.data;
+}
+
+export async function createEventTemplateRule(
+  courseId: string,
+  templateId: string,
+  rule: EventTemplateRule
+): Promise<EventTemplateRule> {
+  const response = await axios.post(
+    `courses/${courseId}/templates/${templateId}/rules/`,
+    rule
+  );
+  return response.data;
+}
+
+export async function updateEventTemplateRule(
+  courseId: string,
+  templateId: string,
+  ruleId: string,
+  rule: EventTemplateRule
+): Promise<EventTemplateRule> {
+  const response = await axios.put(
+    `/courses/${courseId}/templates/${templateId}/rules/${ruleId}/`,
+    rule
   );
   return response.data;
 }

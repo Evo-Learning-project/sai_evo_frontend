@@ -1,6 +1,7 @@
 import {
   Course,
   Event,
+  EventTemplate,
   EventType,
   Exercise,
   Tag,
@@ -19,9 +20,13 @@ import VuexPersistence from 'vuex-persist';
 import axios from 'axios';
 import {
   createEvent,
+  createEventTemplate,
+  createEventTemplateRule,
   getEvent,
   getEvents,
+  getEventTemplate,
   updateEvent,
+  updateEventTemplateRule,
 } from '@/api/events';
 
 const vuexLocal = new VuexPersistence({
@@ -43,6 +48,7 @@ export default createStore({
     courses: [] as Course[],
     exercises: [] as Exercise[],
     events: [] as Event[],
+    templates: [] as EventTemplate[],
     tags: [] as Tag[],
     activeCourseId: null as string | null,
     selectedExercises: [] as Exercise[],
@@ -53,11 +59,21 @@ export default createStore({
   getters: {
     event: (state) => (eventId: string) =>
       state.events.find((e) => e.id == eventId) ?? {},
+    template: (state, getters) => (eventId: string) =>
+      state.templates.find(
+        (t) => t.id == getters.event(eventId).template
+        // (
+        //   state.events.find((e) => e.id == eventId) ?? {
+        //     template: '',
+        //   }
+        // ).template
+      ),
     email: (state): string => state.user?.email,
     courses: (state): Course[] => state.courses,
     exercises: (state): Exercise[] => state.exercises,
     exams: (state): Event[] =>
       state.events.filter((e) => e.event_type == EventType.EXAM),
+    templates: (state): EventTemplate[] => state.templates,
     tags: (state): Tag[] => state.tags,
     selectedExercises: (state): Exercise[] => state.selectedExercises,
     loading: (state): boolean => state.loading,
@@ -95,6 +111,8 @@ export default createStore({
     setExercises: (state, exercises: Exercise[]) =>
       (state.exercises = exercises),
     setEvents: (state, events: Event[]) => (state.events = events),
+    setTemplates: (state, templates: EventTemplate[]) =>
+      (state.templates = templates),
     setEvent: (state, { eventId, event }) =>
       Object.assign(
         state.events.find((e) => e.id == eventId),
@@ -183,6 +201,19 @@ export default createStore({
       }
       return newEvent;
     },
+    createEventTemplate: async (
+      { commit, state },
+      { courseId, template }
+    ) => {
+      const newTemplate = await createEventTemplate(
+        courseId,
+        template
+      );
+      if (courseId == state.activeCourseId) {
+        commit('setTemplates', [newTemplate, ...state.templates]);
+      }
+      return newTemplate;
+    },
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     updateExercise: async ({ commit }, { courseId, exercise }) => {
       await updateExercise(courseId, exercise.id, exercise);
@@ -203,6 +234,18 @@ export default createStore({
         choice
       );
     },
+    updateEventTemplateRule: async (
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      { commit },
+      { courseId, templateId, rule }
+    ) => {
+      await updateEventTemplateRule(
+        courseId,
+        templateId,
+        rule.id,
+        rule
+      );
+    },
     addExerciseChoice: async (
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       { commit, state },
@@ -216,6 +259,20 @@ export default createStore({
       state.exercises
         .find((e) => e.id === (exerciseId as string))
         ?.choices?.push(newChoice);
+    },
+    addEventTemplateRule: async (
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      { commit, state },
+      { courseId, templateId, rule }
+    ) => {
+      const newRule = await createEventTemplateRule(
+        courseId,
+        templateId,
+        rule
+      );
+      state.events
+        .find((e) => e.template?.id === (templateId as string))
+        ?.template?.rules?.push(newRule);
     },
     getExercises: async (
       { commit, state },
@@ -245,6 +302,15 @@ export default createStore({
       console.log('GETTIN');
       const event = await getEvent(courseId, eventId);
       commit('setEvents', [event, ...state.events]);
+
+      // retrieve event template if it isn't in the store already
+      // if (!state.templates.find((t) => t.id == event.template)) {
+      //   const template = await getEventTemplate(
+      //     courseId,
+      //     event.template as string
+      //   );
+      //   commit('setTemplates', [template, ...state.templates]);
+      // }
     },
   },
   modules: {},

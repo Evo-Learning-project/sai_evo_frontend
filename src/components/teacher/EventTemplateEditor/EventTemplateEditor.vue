@@ -5,15 +5,16 @@
       <p class="mb-6 text-muted">
         {{ $t('event_template_editor.introduction_text') }}
       </p>
-      <event-template-rule-editor
-        v-for="(rule, index) in template.rules"
+      <EventTemplateRuleEditor
+        v-for="(rule, index) in modelValue.rules"
         :key="'template-' + elementId + '-rule-' + index"
-        v-model="template.rules[index]"
-      ></event-template-rule-editor>
+        :modelValue="modelValue.rules[index]"
+        @update:modelValue="onRuleUpdate(index, $event)"
+      ></EventTemplateRuleEditor>
     </div>
 
     <div class="flex items-center mt-auto">
-      <btn @btnClick="addRule()"
+      <btn @btnClick="onAddRule()"
         ><span class="mr-1 text-base material-icons-outlined">
           add_circle_outline </span
         >{{ $t('event_template_editor.add_rule') }}</btn
@@ -28,11 +29,11 @@
 import { v4 as uuid4 } from 'uuid'
 //import Card from '@/components/ui/Card.vue'
 import Btn from '@/components/ui/Btn.vue'
-import { defineComponent } from '@vue/runtime-core'
+import { defineComponent, PropType } from '@vue/runtime-core'
 import EventTemplateRuleEditor from './EventTemplateRuleEditor.vue'
 import {
   EventTemplate,
-  getBlankEventTemplate,
+  EventTemplateRule,
   getBlankEventTemplateRule
 } from '@/models'
 //import Toggle from '@/components/ui/Toggle.vue'
@@ -44,44 +45,50 @@ export default defineComponent({
     //Toggle
   },
   name: 'EventTemplateEditor',
-  created () {
-    this.elementId = uuid4()
-    this.template = getBlankEventTemplate()
-    this.addRule() // ! remove
-  },
-  watch: {
-    criterion (_newVal, oldVal) {
-      if (!oldVal) {
-        this.addRule()
-      }
+  props: {
+    modelValue: {
+      type: Object as PropType<EventTemplate>,
+      required: true
     }
   },
+  created () {
+    this.elementId = uuid4()
+  },
+  watch: {},
   data () {
     return {
-      elementId: '',
-      // criterion: 'same_exercises_for_everyone' as  // ! put it back to null
-      //   | 'same_exercises_for_everyone'
-      //   | 'use_randomization'
-      //   | null,
-      template: {} as EventTemplate
+      elementId: ''
     }
   },
   methods: {
-    // setCriterion (value: 'same_exercises_for_everyone' | 'use_randomization') {
-    //   this.criterion = value
-    // },
-    addRule () {
-      this.template.rules.push(
-        getBlankEventTemplateRule(this.template.rules.length)
-      )
-      // this.template.rules.push(
-      //   (this.criterion == 'same_exercises_for_everyone'
-      //     ? getBlankIdBasedEventTemplateRule
-      //     : getBlankTagBasedEventTemplateRule)(this.template.rules.length)
-      // )
+    async onAddRule () {
+      await this.$store.dispatch('addEventTemplateRule', {
+        courseId: this.courseId,
+        templateId: this.modelValue.id,
+        rule: getBlankEventTemplateRule()
+      })
+    },
+    async onRuleUpdate (index: number, newVal: EventTemplateRule) {
+      this.$emit('saving', true)
+
+      // update in-memory object
+      // eslint-disable-next-line @typescript-eslint/no-extra-semi
+      ;(this.modelValue.rules as EventTemplateRule[])[index] = newVal // TODO use a mutation
+
+      // dispatch update to store
+      await this.$store.dispatch('updateEventTemplateRule', {
+        courseId: this.courseId,
+        templateId: this.modelValue.id,
+        rule: newVal
+      })
+      this.$emit('saving', false)
     }
   },
-  computed: {}
+  computed: {
+    courseId (): string {
+      return this.$route.params.courseId as string
+    }
+  }
 })
 </script>
 

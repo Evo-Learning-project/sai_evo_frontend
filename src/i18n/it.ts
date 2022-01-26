@@ -64,7 +64,7 @@ export const it = {
     //   'Randomizza ordine degli esercizi',
     // same_exercises_for_everyone_randomize_order_help_text:
     //   'Tutti gli studenti vedranno gli stessi esercizi ma in ordine casuale',
-    add_rule: 'Aggiungi esercizio',
+    add_rule: 'Aggiungi slot',
   },
   event_template_rule_editor: {
     exercise_number: 'Slot',
@@ -99,6 +99,10 @@ export const it = {
       'Permetti agli studenti di tornare indietro a un esercizio già visto',
     show_all_exercises_at_once: 'Mostra tutti gli esercizi insieme',
     show_one_exercise_at_once: 'Mostra solo un esercizio alla volta',
+    publish: 'Pubblica',
+    revert_to_draft: 'Torna a stato di bozza',
+    event_planned_help_text:
+      "L'esame verrà aperto agli studenti automaticamente in data",
   },
   exercise_editor: {
     exercise_editor_title: 'Editor esercizio',
@@ -156,5 +160,13 @@ export const it = {
       'Non comparirà nelle esercitazioni iniziate dagli studenti, ma potrà essere inserito negli esami dagli insegnanti.',
     [ExerciseState.DRAFT]:
       'Non potrà essere inserito negli esami e non comparirà nelle esercitazioni.',
+  },
+  event_states_descriptions: {
+    [EventState.PLANNED]:
+      "È tutto pronto! L'anteprima dell'esame è visibile agli studenti, ma questi non potranno accedervi fino alla data di inizio.",
+    // [EventState.OPEN]:
+    //   'Non comparirà nelle esercitazioni iniziate dagli studenti, ma potrà essere inserito negli esami dagli insegnanti.',
+    [EventState.DRAFT]:
+      "L'esame non è visibile agli studenti e non sarà accessibile fino a quando viene pubblicato.",
   },
 };

@@ -20,7 +20,12 @@
 
 <script lang="ts">
 import EventEditorPreview from '@/components/teacher/EventEditor/EventEditorPreview.vue'
-import { Event, getBlankExam } from '@/models'
+import {
+  Event,
+  EventTemplate,
+  getBlankEventTemplate,
+  getBlankExam
+} from '@/models'
 import Btn from '@/components/ui/Btn.vue'
 
 import { defineComponent } from '@vue/runtime-core'
@@ -45,8 +50,9 @@ export default defineComponent({
         courseId: this.courseId,
         event: getBlankExam()
       })
-      console.log(newExam)
       this.loading = false
+
+      // redirect to exam editor for newly created exam
       this.$router.push({
         name: 'EventEditor',
         params: { examId: newExam.id }

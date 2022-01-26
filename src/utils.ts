@@ -9,3 +9,6 @@ export const getDebounced = (callback: any) =>
   debounce(callback, DEBOUNCE_TIME_MS, {
     maxWait: DEBOUNCE_MAX_WAIT_MS,
   });
+
+export const getFormattedTimestamp = (timestamp: string): string =>
+  timestamp;
