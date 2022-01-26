@@ -1,5 +1,5 @@
 <template>
-  <card :marginLess="true">
+  <card :marginLess="short">
     <template v-slot:header>
       <div
         :class="[short ? 'h-3' : 'h-4']"

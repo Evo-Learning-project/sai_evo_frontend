@@ -1,11 +1,24 @@
 import { Exercise, ExerciseChoice } from '@/models';
 import axios from 'axios';
 
+// export async function getExercises(
+//   courseId: string
+// ): Promise<Exercise[]> {
+//   const response = await axios.get(`/courses/${courseId}/exercises/`);
+//   return response.data;
+// }
+
 export async function getExercises(
-  courseId: string
-): Promise<Exercise[]> {
-  const response = await axios.get(`/courses/${courseId}/exercises/`);
-  return response.data;
+  courseId: string,
+  pageNumber: number
+): Promise<{ exercises: Exercise[]; moreResults: boolean }> {
+  const response = await axios.get(
+    `/courses/${courseId}/exercises/?page=${pageNumber}`
+  );
+  return {
+    exercises: response.data.results,
+    moreResults: !!response.data.next,
+  };
 }
 
 export async function getExercise(

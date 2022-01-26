@@ -73,32 +73,20 @@
     ></exercise-editor-wrapper>
   </div>
   <div v-else>
-    <skeleton-card></skeleton-card>
-    <skeleton-card></skeleton-card>
-    <skeleton-card></skeleton-card>
-    <skeleton-card></skeleton-card>
+    <skeleton-card class="pb-10"></skeleton-card>
+    <skeleton-card class="pb-10"></skeleton-card>
+    <skeleton-card class="pb-10"></skeleton-card>
+    <skeleton-card class="pb-10"></skeleton-card>
   </div>
-  <card
-    class="fixed bottom-0 right-0 mb-4 mr-6 transition-opacity duration-75 shadow-2xl opacity-80 hover:opacity-100 w-max h-min bg-light"
-    v-show="selectedExercises.length > 0"
-    ><template v-slot:header
-      ><h4>
-        {{ selectedExercises.length }}
-        {{
-          selectedExercises.length == 1
-            ? $t('course_exercises.selected_exercise')
-            : $t('course_exercises.selected_exercises')
-        }}
-      </h4></template
-    >
-    <template v-slot:body>
-      <div class="flex w-full">
-        <btn class="mx-auto">{{
-          $t('course_exercises.create_exam_from_selected_exercises')
-        }}</btn>
-      </div>
+  <VueEternalLoading :load="onLoadMore">
+    <template #loading>
+      <spinner></spinner>
     </template>
-  </card>
+    <template #no-more>
+      &nbsp;
+      <!-- <div class="w-full h-1 bg-gray-200 rounded-md"></div> -->
+    </template>
+  </VueEternalLoading>
 </template>
 
 <script lang="ts">
@@ -113,6 +101,8 @@ import {
   Tag
 } from '@/models'
 
+import { VueEternalLoading, LoadAction } from '@ts-pro/vue-eternal-loading'
+
 import Btn from '@/components/ui/Btn.vue'
 import Chipset from '@/components/ui/Chipset.vue'
 import Card from '@/components/ui/Card.vue'
@@ -120,6 +110,7 @@ import Card from '@/components/ui/Card.vue'
 import ExerciseEditorWrapper from '@/components/teacher/ExerciseEditor/ExerciseEditorWrapper.vue'
 import { defineComponent } from '@vue/runtime-core'
 import SkeletonCard from '@/components/ui/SkeletonCard.vue'
+import Spinner from '@/components/ui/Spinner.vue'
 export default defineComponent({
   name: 'CourseExercises',
   props: {
@@ -132,14 +123,18 @@ export default defineComponent({
   components: {
     ExerciseEditorWrapper,
     Chipset,
-    //TagInput,
+    VueEternalLoading,
     Card,
     Btn,
-    SkeletonCard
+    SkeletonCard,
+    Spinner
   },
   async created () {
     this.firstLoading = true
-    await this.$store.dispatch('getExercises', this.courseId)
+    await this.$store.dispatch('getExercises', {
+      courseId: this.courseId,
+      fromFirstPage: true
+    })
     await this.$store.dispatch('getTags', this.courseId)
     this.firstLoading = false
   },
@@ -156,6 +151,21 @@ export default defineComponent({
     }
   },
   methods: {
+    async onLoadMore ({ loaded, noMore, error }: LoadAction) {
+      try {
+        const moreResults = await this.$store.dispatch('getExercises', {
+          courseId: this.courseId,
+          fromFirstPage: false
+        })
+        if (!moreResults) {
+          noMore()
+        } else {
+          loaded()
+        }
+      } catch {
+        error()
+      }
+    },
     async onAddExercise () {
       console.log('dispatching')
       this.loading = true

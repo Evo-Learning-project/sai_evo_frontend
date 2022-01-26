@@ -51,6 +51,7 @@ export default createStore({
     templates: [] as EventTemplate[],
     tags: [] as Tag[],
     activeCourseId: null as string | null,
+    currentExercisePage: 1,
     selectedExercises: [] as Exercise[],
     token: '',
     refreshToken: '',
@@ -59,14 +60,11 @@ export default createStore({
   getters: {
     event: (state) => (eventId: string) =>
       state.events.find((e) => e.id == eventId) ?? {},
+    exercise: (state) => (exerciseId: string) =>
+      state.exercises.find((e) => e.id == exerciseId) ?? {},
     template: (state, getters) => (eventId: string) =>
       state.templates.find(
         (t) => t.id == getters.event(eventId).template
-        // (
-        //   state.events.find((e) => e.id == eventId) ?? {
-        //     template: '',
-        //   }
-        // ).template
       ),
     email: (state): string => state.user?.email,
     courses: (state): Course[] => state.courses,
@@ -110,6 +108,8 @@ export default createStore({
       (state.courses = courses),
     setExercises: (state, exercises: Exercise[]) =>
       (state.exercises = exercises),
+    setCurrentExercisePage: (state, pageNumber: number) =>
+      (state.currentExercisePage = pageNumber),
     setEvents: (state, events: Event[]) => (state.events = events),
     setTemplates: (state, templates: EventTemplate[]) =>
       (state.templates = templates),
@@ -188,7 +188,7 @@ export default createStore({
       { commit, state },
       { courseId, exercise }
     ) => {
-      const newExercise = await createExercise(courseId, exercise); // getBlankExercise(); //
+      const newExercise = await createExercise(courseId, exercise);
       if (courseId == state.activeCourseId) {
         commit('setExercises', [newExercise, ...state.exercises]);
       }
@@ -276,41 +276,46 @@ export default createStore({
     },
     getExercises: async (
       { commit, state },
-      courseId,
-      refresh = false,
-      filter = null
-    ) => {
-      // eslint-disable-next-line no-constant-condition
-      if (true || courseId != state.activeCourseId || refresh) {
-        const exercises = await getExercises(courseId);
-        commit('setExercises', exercises);
+      { courseId, fromFirstPage = true }
+    ) =>
+      // filter = null
+      {
+        if (fromFirstPage) {
+          commit('setCurrentExercisePage', 1);
+        }
+        const { exercises, moreResults } = await getExercises(
+          courseId,
+          state.currentExercisePage
+        );
+        commit(
+          'setExercises',
+          fromFirstPage
+            ? exercises
+            : [...state.exercises, ...exercises]
+        );
         commit('setActiveCourseId', courseId);
-      }
-    },
-    getTags: async ({ commit, state }, courseId, refresh = false) => {
-      if (courseId != state.activeCourseId || refresh) {
-        const tags = await getTags(courseId);
-        commit('setTags', tags);
-        commit('setActiveCourseId', courseId);
-      }
+        if (exercises.length > 0) {
+          commit(
+            'setCurrentExercisePage',
+            state.currentExercisePage + 1
+          );
+        }
+
+        return moreResults;
+      },
+    getTags: async ({ commit }, courseId) => {
+      return;
+      // const tags = await getTags(courseId);
+      // commit('setTags', tags);
+      // commit('setActiveCourseId', courseId);
     },
     getEvents: async ({ commit }, courseId) => {
       const events = await getEvents(courseId);
       commit('setEvents', events);
     },
     getEvent: async ({ commit, state }, { courseId, eventId }) => {
-      console.log('GETTIN');
       const event = await getEvent(courseId, eventId);
       commit('setEvents', [event, ...state.events]);
-
-      // retrieve event template if it isn't in the store already
-      // if (!state.templates.find((t) => t.id == event.template)) {
-      //   const template = await getEventTemplate(
-      //     courseId,
-      //     event.template as string
-      //   );
-      //   commit('setTemplates', [template, ...state.templates]);
-      // }
     },
   },
   modules: {},

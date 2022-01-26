@@ -82,6 +82,10 @@ export const it = {
       "Ogni studente vedrà un esercizio scelto a caso dall'insieme selezionato",
     pick_exercise_tag_based_help_text:
       'Ogni studente vedrà un esercizio scelto a caso con i tag selezionati',
+    one_exercise_from_set_description:
+      'Ogni studente vedrà un esercizio scelto a caso tra questi:',
+    same_exercise_for_everyone_description:
+      'Tutti gli studenti vedranno questo esercizio:',
   },
   event_editor: {
     name: 'Nome',

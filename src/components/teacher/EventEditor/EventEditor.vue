@@ -51,6 +51,7 @@ export default defineComponent({
       courseId: this.courseId,
       eventId: this.eventId
     })
+    await this.$store.dispatch('getExercises', { courseId: this.courseId })
     this.$store.commit('setLoading', false)
   },
   data () {

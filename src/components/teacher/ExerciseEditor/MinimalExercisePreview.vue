@@ -45,6 +45,7 @@
         >
 
         <btn
+          v-if="selectable"
           :size="'sm'"
           :variant="'success-borderless'"
           class="mt-auto"
@@ -83,6 +84,10 @@ export default defineComponent({
     highlighted: {
       type: Boolean,
       default: false
+    },
+    selectable: {
+      type: Boolean,
+      default: true
     }
   },
   components: {

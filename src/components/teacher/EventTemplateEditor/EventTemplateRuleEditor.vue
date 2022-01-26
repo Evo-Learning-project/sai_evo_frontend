@@ -29,6 +29,29 @@
           </btn>
         </div>
       </div>
+      <div v-if="isSlotPopulated" class="mt-4">
+        <p class="text-muted mb-2">
+          {{
+            ruleExercises.length == 1
+              ? $t(
+                  'event_template_rule_editor.same_exercise_for_everyone_description'
+                )
+              : $t(
+                  'event_template_rule_editor.one_exercise_from_set_description'
+                )
+          }}
+        </p>
+        <div
+          :class="[ruleExercises.length > 1 ? 'grid grid-cols-2 gap-2' : '']"
+        >
+          <MinimalExercisePreview
+            v-for="exercise in ruleExercises"
+            :key="'r-' + modelValue.id + '-e-' + exercise.id"
+            :exercise="exercise"
+            :selectable="false"
+          ></MinimalExercisePreview>
+        </div>
+      </div>
 
       <!-- <exercise-preview
         v-if="modelValue.exercises.length > 0"
@@ -141,11 +164,11 @@
             }}
           </p>
           <div class="mt-4 max-h-96">
-            <exercise-picker
+            <ExercisePicker
               :modelValue="modelValue.exercises"
               @addExercise="onAddExercise($event)"
               @removeExercise="onRemoveExercise($event)"
-            ></exercise-picker>
+            ></ExercisePicker>
           </div>
         </div>
         <div v-else-if="modelValue.rule_type == tagBasedRuleType"></div>
@@ -161,18 +184,19 @@ import { defineComponent, PropType } from '@vue/runtime-core'
 import Btn from '@/components/ui/Btn.vue'
 import { getTranslatedString as _ } from '@/i18n'
 import ExercisePicker from '@/components/teacher/ExercisePicker.vue'
-//import ExercisePreview from '@/components/teacher/ExerciseEditor/ExercisePreview.vue'
+import MinimalExercisePreview from '../ExerciseEditor/MinimalExercisePreview.vue'
 export default defineComponent({
   components: {
     Dialog,
     Btn,
-    // ExercisePreview,
-    ExercisePicker
+    ExercisePicker,
+    MinimalExercisePreview
   },
   name: 'EventTemplateRuleEditor',
   props: {
     modelValue: {
-      type: Object as PropType<EventTemplateRule>
+      type: Object as PropType<EventTemplateRule>,
+      required: true
     }
   },
   data () {
@@ -217,6 +241,20 @@ export default defineComponent({
     }
   },
   computed: {
+    ruleExercises (): Exercise[] {
+      if (this.modelValue.rule_type != this.idBasedRuleType) {
+        return []
+      }
+      return this.modelValue.exercises?.map(e =>
+        this.$store.getters.exercise(e)
+      ) as Exercise[]
+    },
+    isSlotPopulated () {
+      if (this.modelValue.rule_type == this.idBasedRuleType) {
+        return (this.modelValue.exercises?.length ?? 0) > 0
+      }
+      return false
+    },
     idBasedRuleType (): EventTemplateRuleType {
       return EventTemplateRuleType.ID_BASED
     },
