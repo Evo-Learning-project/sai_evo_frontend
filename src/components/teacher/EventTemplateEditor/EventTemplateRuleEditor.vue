@@ -41,15 +41,22 @@
                 )
           }}
         </p>
-        <div
-          :class="[ruleExercises.length > 1 ? 'grid grid-cols-2 gap-2' : '']"
-        >
-          <MinimalExercisePreview
-            v-for="exercise in ruleExercises"
-            :key="'r-' + modelValue.id + '-e-' + exercise"
-            :exercise="exercise"
-            :selectable="false"
-          ></MinimalExercisePreview>
+        <div>
+          <div
+            v-if="!loading"
+            :class="[ruleExercises.length > 1 ? 'grid grid-cols-2 gap-2' : '']"
+          >
+            <MinimalExercisePreview
+              v-for="exercise in ruleExercises"
+              :key="'r-' + modelValue.id + '-e-' + exercise"
+              :exercise="exercise"
+              :selectable="false"
+            ></MinimalExercisePreview>
+          </div>
+          <div v-else class="grid grid-cols-2 gap-2">
+            <SkeletonCard :short="true"></SkeletonCard>
+            <SkeletonCard :short="true"></SkeletonCard>
+          </div>
         </div>
       </div>
     </div>
@@ -181,12 +188,14 @@ import { getTranslatedString as _ } from '@/i18n'
 import ExercisePicker from '@/components/teacher/ExercisePicker.vue'
 import MinimalExercisePreview from '../ExerciseEditor/MinimalExercisePreview.vue'
 import { getExercise } from '@/api/exercises'
+import SkeletonCard from '@/components/ui/SkeletonCard.vue'
 export default defineComponent({
   components: {
     Dialog,
     Btn,
     ExercisePicker,
-    MinimalExercisePreview
+    MinimalExercisePreview,
+    SkeletonCard
   },
   name: 'EventTemplateRuleEditor',
   props: {
@@ -204,7 +213,8 @@ export default defineComponent({
     return {
       showDialog: false,
       pickOneExerciseOnly: null as boolean | null,
-      previewExercises: [] as Exercise[]
+      previewExercises: [] as Exercise[],
+      loading: false
     }
   },
   methods: {
@@ -214,20 +224,21 @@ export default defineComponent({
         [key]: value
       })
     },
-    async onRuleExercisesChange () {
+    async onRuleExercisesChange (newId = undefined as string | undefined) {
       // get exercises that aren't stored in local data yet
       const previewIds = this.previewExercises.map(e => e.id)
-      const toRetrieve = this.modelValue.exercises?.filter(
-        (e: string) => !previewIds.includes(e)
-      ) as string[]
-      const previews = (await getExercise(
-        this.courseId,
-        toRetrieve
-      )) as Exercise[]
+      const toRetrieve = newId
+        ? [newId]
+        : (this.modelValue.exercises?.filter(
+            (e: string) => !previewIds.includes(e)
+          ) as string[])
+
+      this.loading = true
+      const previews = await getExercise(this.courseId, toRetrieve)
       this.previewExercises.push(...previews)
+      this.loading = false
     },
-    onAddExercise (exercise: Exercise) {
-      // TODO move to a temporary array and not to rule
+    async onAddExercise (exercise: Exercise) {
       if (this.pickOneExerciseOnly) {
         this.emitUpdate('exercises', [exercise.id])
       } else {
@@ -236,6 +247,7 @@ export default defineComponent({
           ...(this.modelValue?.exercises as string[])
         ])
       }
+      await this.onRuleExercisesChange(exercise.id)
     },
     onRemoveExercise (exercise: Exercise) {
       const index = (this.modelValue?.exercises as string[]).findIndex(
@@ -244,6 +256,10 @@ export default defineComponent({
       const newValue = [...(this.modelValue?.exercises as string[])]
       newValue.splice(index, 1)
       this.emitUpdate('exercises', newValue)
+
+      this.previewExercises = this.previewExercises.filter(
+        e => e.id != exercise.id
+      )
     },
     showRuleDialog () {
       this.showDialog = true
@@ -263,9 +279,6 @@ export default defineComponent({
         return []
       }
       return this.previewExercises
-      // return this.modelValue.exercises?.map(e =>
-      //   this.$store.getters.exercise(e)
-      // ) as Exercise[]
     },
     isSlotPopulated () {
       if (this.modelValue.rule_type == this.idBasedRuleType) {
@@ -278,31 +291,6 @@ export default defineComponent({
     },
     tagBasedRuleType (): EventTemplateRuleType {
       return EventTemplateRuleType.TAG_BASED
-    },
-    dialogData () {
-      const noText = _('dialog.default_cancel_text')
-      const yesText = _('dialog.default_confirm_text')
-      let confirmDisabled = false
-      const noCallback = () => (this.showDialog = false)
-      let yesCallback = () => null as unknown
-
-      if (this.modelValue?.rule_type == EventTemplateRuleType.ID_BASED) {
-        if (this.modelValue?.exercises?.length == 0) {
-          confirmDisabled = true
-        } else {
-          yesCallback = () => (this.showDialog = false)
-        }
-      } else {
-        // TODO check for tags
-      }
-
-      return {
-        yesText,
-        noText,
-        confirmDisabled,
-        noCallback,
-        yesCallback
-      }
     }
   }
 })

@@ -1,3 +1,4 @@
+/* eslint-disable no-constant-condition */
 import { Exercise, ExerciseChoice } from '@/models';
 import axios from 'axios';
 import { SearchFilter } from './interfaces';
@@ -27,14 +28,10 @@ export async function getExercises(
 
 export async function getExercise(
   courseId: string,
-  exerciseId: string | string[]
-): Promise<Exercise | Exercise[]> {
+  exerciseId: string[]
+): Promise<Exercise[]> {
   let url = `/courses/${courseId}/exercises/`;
-  if (typeof exerciseId === 'object' && exerciseId.length > 0) {
-    url += `bulk_get/?ids=${exerciseId.join(',')}`;
-  } else {
-    url += exerciseId + '/';
-  }
+  url += `bulk_get/?ids=${exerciseId.join(',')}`;
   const response = await axios.get(url);
   return response.data;
 }
