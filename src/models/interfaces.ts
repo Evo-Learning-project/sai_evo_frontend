@@ -18,7 +18,7 @@ export interface Course {
 }
 
 export interface Exercise {
-  id?: string;
+  id: string;
   text: string;
   solution?: string;
   label?: string;
@@ -31,7 +31,7 @@ export interface Exercise {
 }
 
 export interface ExerciseChoice {
-  id?: string;
+  id: string;
   text: string;
   score?: number;
 }
@@ -49,7 +49,7 @@ export interface Tag {
 }
 
 export interface Event {
-  id?: string;
+  id: string;
   name: string;
   instructions: string;
   creator?: string;
@@ -71,7 +71,7 @@ export interface EventTemplate {
 }
 
 export interface EventTemplateRule {
-  id?: string;
+  id: string;
   rule_type?: EventTemplateRuleType;
   exercises?: string[];
   clauses?: EventTemplateRuleClause[];

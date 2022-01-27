@@ -1,5 +1,5 @@
 <template>
-  <card class=" -mt-2 mb-4 shadow-md bg-light">
+  <card class="mb-4 -mt-2 shadow-md bg-light">
     <template v-slot:body>
       <ExerciseSearchFilters v-model="searchFilter"></ExerciseSearchFilters>
     </template>

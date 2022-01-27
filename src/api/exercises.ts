@@ -27,11 +27,15 @@ export async function getExercises(
 
 export async function getExercise(
   courseId: string,
-  exerciseId: string
-): Promise<Exercise> {
-  const response = await axios.get(
-    `/courses/${courseId}/exercises/${exerciseId}/`
-  );
+  exerciseId: string | string[]
+): Promise<Exercise | Exercise[]> {
+  let url = `/courses/${courseId}/exercises/`;
+  if (typeof exerciseId === 'object' && exerciseId.length > 0) {
+    url += `bulk_get/?ids=${exerciseId.join(',')}`;
+  } else {
+    url += exerciseId + '/';
+  }
+  const response = await axios.get(url);
   return response.data;
 }
 

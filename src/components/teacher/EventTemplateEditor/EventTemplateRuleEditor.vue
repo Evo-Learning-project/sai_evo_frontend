@@ -52,11 +52,6 @@
           ></MinimalExercisePreview>
         </div>
       </div>
-
-      <!-- <exercise-preview
-        v-if="modelValue.exercises.length > 0"
-        :exercise="modelValue.exercises[0]"
-      ></exercise-preview> -->
     </div>
     <Dialog
       :showDialog="showDialog"
@@ -185,6 +180,7 @@ import Btn from '@/components/ui/Btn.vue'
 import { getTranslatedString as _ } from '@/i18n'
 import ExercisePicker from '@/components/teacher/ExercisePicker.vue'
 import MinimalExercisePreview from '../ExerciseEditor/MinimalExercisePreview.vue'
+import { getExercise } from '@/api/exercises'
 export default defineComponent({
   components: {
     Dialog,
@@ -199,10 +195,16 @@ export default defineComponent({
       required: true
     }
   },
+  async created () {
+    if (this.modelValue.rule_type == this.idBasedRuleType) {
+      await this.onRuleExercisesChange()
+    }
+  },
   data () {
     return {
       showDialog: false,
-      pickOneExerciseOnly: null as boolean | null
+      pickOneExerciseOnly: null as boolean | null,
+      previewExercises: [] as Exercise[]
     }
   },
   methods: {
@@ -211,6 +213,18 @@ export default defineComponent({
         ...this.modelValue,
         [key]: value
       })
+    },
+    async onRuleExercisesChange () {
+      // get exercises that aren't stored in local data yet
+      const previewIds = this.previewExercises.map(e => e.id)
+      const toRetrieve = this.modelValue.exercises?.filter(
+        (e: string) => !previewIds.includes(e)
+      ) as string[]
+      const previews = (await getExercise(
+        this.courseId,
+        toRetrieve
+      )) as Exercise[]
+      this.previewExercises.push(...previews)
     },
     onAddExercise (exercise: Exercise) {
       // TODO move to a temporary array and not to rule
@@ -241,13 +255,17 @@ export default defineComponent({
     }
   },
   computed: {
+    courseId (): string {
+      return this.$route.params.courseId as string
+    },
     ruleExercises (): Exercise[] {
       if (this.modelValue.rule_type != this.idBasedRuleType) {
         return []
       }
-      return this.modelValue.exercises?.map(e =>
-        this.$store.getters.exercise(e)
-      ) as Exercise[]
+      return this.previewExercises
+      // return this.modelValue.exercises?.map(e =>
+      //   this.$store.getters.exercise(e)
+      // ) as Exercise[]
     },
     isSlotPopulated () {
       if (this.modelValue.rule_type == this.idBasedRuleType) {

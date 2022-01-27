@@ -85,7 +85,7 @@ export default defineComponent({
   data () {
     return {
       firstLoading: false,
-      isInitialInfiniteLoad: true,
+      isInitialInfiniteLoad: false,
       searchFilter: {
         label: '',
         text: '',

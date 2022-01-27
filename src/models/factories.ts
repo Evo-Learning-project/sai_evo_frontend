@@ -13,11 +13,13 @@ import {
 } from '.';
 
 export const getBlankChoice = (): ExerciseChoice => ({
+  id: '',
   text: '',
   score: 0,
 });
 
 export const getBlankExercise = (): Exercise => ({
+  id: '',
   label: '',
   text: '',
   exercise_type: ExerciseType.MULTIPLE_CHOICE_SINGLE_POSSIBLE,
@@ -29,6 +31,7 @@ export const getBlankExercise = (): Exercise => ({
 });
 
 export const getBlankExam = (): Event => ({
+  id: '',
   name: '',
   instructions: '',
   begin_timestamp: null,
@@ -54,27 +57,28 @@ export const getEventTemplateFromExercises = (
   return template;
 };
 
-export const getBlankIdBasedEventTemplateRule = (
-  slotNumber: number
-): EventTemplateRule => ({
-  rule_type: EventTemplateRuleType.ID_BASED,
-  exercises: [],
-  target_slot_number: slotNumber,
-});
+// export const getBlankIdBasedEventTemplateRule = (
+//   slotNumber: number
+// ): EventTemplateRule => ({
+//   rule_type: EventTemplateRuleType.ID_BASED,
+//   exercises: [],
+//   target_slot_number: slotNumber,
+// });
 
 export const getBlankEventTemplateRule = (): //slotNumber: number
 EventTemplateRule => ({
+  id: '',
   // target_slot_number: slotNumber,
   // exercises: [],
 });
 
-export const getBlankTagBasedEventTemplateRule = (
-  slotNumber: number
-): EventTemplateRule => ({
-  rule_type: EventTemplateRuleType.TAG_BASED,
-  clauses: [],
-  target_slot_number: slotNumber,
-});
+// export const getBlankTagBasedEventTemplateRule = (
+//   slotNumber: number
+// ): EventTemplateRule => ({
+//   rule_type: EventTemplateRuleType.TAG_BASED,
+//   clauses: [],
+//   target_slot_number: slotNumber,
+// });
 
 export const getBlankTagBasedEventTemplateRuleClause =
   (): EventTemplateRuleClause => ({
