@@ -187,7 +187,7 @@ import Btn from '@/components/ui/Btn.vue'
 import { getTranslatedString as _ } from '@/i18n'
 import ExercisePicker from '@/components/teacher/ExercisePicker.vue'
 import MinimalExercisePreview from '../ExerciseEditor/MinimalExercisePreview.vue'
-import { getExercise } from '@/api/exercises'
+import { getExercisesById } from '@/api/exercises'
 import SkeletonCard from '@/components/ui/SkeletonCard.vue'
 export default defineComponent({
   components: {
@@ -205,9 +205,15 @@ export default defineComponent({
     }
   },
   async created () {
+    this.loading = true
     if (this.modelValue.rule_type == this.idBasedRuleType) {
-      await this.onRuleExercisesChange()
+      const previews = await getExercisesById(
+        this.courseId,
+        this.modelValue.exercises as string[]
+      )
+      this.previewExercises.push(...previews)
     }
+    this.loading = false
   },
   data () {
     return {
@@ -224,20 +230,6 @@ export default defineComponent({
         [key]: value
       })
     },
-    async onRuleExercisesChange (newId = undefined as string | undefined) {
-      // get exercises that aren't stored in local data yet
-      const previewIds = this.previewExercises.map(e => e.id)
-      const toRetrieve = newId
-        ? [newId]
-        : (this.modelValue.exercises?.filter(
-            (e: string) => !previewIds.includes(e)
-          ) as string[])
-
-      this.loading = true
-      const previews = await getExercise(this.courseId, toRetrieve)
-      this.previewExercises.push(...previews)
-      this.loading = false
-    },
     async onAddExercise (exercise: Exercise) {
       if (this.pickOneExerciseOnly) {
         this.emitUpdate('exercises', [exercise.id])
@@ -247,16 +239,21 @@ export default defineComponent({
           ...(this.modelValue?.exercises as string[])
         ])
       }
-      await this.onRuleExercisesChange(exercise.id)
+
+      // fetch exercise from server and add to local array for preview
+      this.loading = true
+      const preview = await getExercisesById(this.courseId, [exercise.id])
+      this.previewExercises.push(...preview)
+      this.loading = false
     },
     onRemoveExercise (exercise: Exercise) {
-      const index = (this.modelValue?.exercises as string[]).findIndex(
-        e => e === exercise.id
+      // emit modelValue update of new exercise list without removed one
+      this.emitUpdate(
+        'exercises',
+        this.modelValue?.exercises?.filter(e => e != exercise.id)
       )
-      const newValue = [...(this.modelValue?.exercises as string[])]
-      newValue.splice(index, 1)
-      this.emitUpdate('exercises', newValue)
 
+      // remove exercise from local array of exercises for preview
       this.previewExercises = this.previewExercises.filter(
         e => e.id != exercise.id
       )

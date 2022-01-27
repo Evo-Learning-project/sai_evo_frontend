@@ -39,6 +39,19 @@ export async function updateEvent(
   return response.data;
 }
 
+// TODO https://stackoverflow.com/a/49286056/12424975
+export async function partialUpdateEvent(
+  courseId: string,
+  eventId: string,
+  changes: Record<keyof Event, unknown>
+): Promise<Event> {
+  const response = await axios.patch(
+    `courses/${courseId}/events/${eventId}/`,
+    changes
+  );
+  return response.data;
+}
+
 export async function deleteEvent(
   courseId: string,
   eventId: string

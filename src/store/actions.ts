@@ -30,6 +30,7 @@ import {
   createEventTemplateRule,
   getEvent,
   getEvents,
+  partialUpdateEvent,
   updateEvent,
   updateEventTemplateRule,
 } from '@/api/events';
@@ -128,6 +129,21 @@ export const actions = {
     { courseId, event }: { courseId: string; event: Event }
   ) => {
     await updateEvent(courseId, event.id, event);
+  },
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  partialUpdateEvent: async (
+    { commit }: { commit: Commit },
+    {
+      courseId,
+      eventId,
+      changes,
+    }: {
+      courseId: string;
+      eventId: string;
+      changes: Record<keyof Event, unknown>;
+    }
+  ) => {
+    await partialUpdateEvent(courseId, eventId, changes);
   },
   updateExerciseChoice: async (
     // eslint-disable-next-line @typescript-eslint/no-unused-vars

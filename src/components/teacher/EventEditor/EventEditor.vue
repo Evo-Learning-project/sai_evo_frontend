@@ -68,9 +68,10 @@ export default defineComponent({
         event: { ...this.proxyModelValue, state: newVal }
       })
 
-      await this.$store.dispatch('updateEvent', {
+      await this.$store.dispatch('partialUpdateEvent', {
         courseId: this.courseId,
-        event: { ...this.proxyModelValue, state: newVal }
+        eventId: this.proxyModelValue.id,
+        changes: { state: newVal }
       })
       this.stateSaving = false
     },

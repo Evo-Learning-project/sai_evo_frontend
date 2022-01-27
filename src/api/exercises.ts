@@ -26,7 +26,7 @@ export async function getExercises(
   };
 }
 
-export async function getExercise(
+export async function getExercisesById(
   courseId: string,
   exerciseId: string[]
 ): Promise<Exercise[]> {
