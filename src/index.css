@@ -21,6 +21,9 @@
     h4 {
       @apply font-semibold text-lg
     }
+    h5 {
+      @apply font-semibold
+    }
     strong {
       @apply font-bold text-primary;
     }
@@ -41,8 +44,26 @@
         @apply text-primary hover:underline
     }
 
-    .chip {
+    /* .primary-bottom-faded:after {
+        content: '';
+        position: absolute;
+        bottom: -2px;
+        width: 100%;
+        height: 10px;
+        display: block;
+        background-image: linear-gradient(to bottom, rgba(209, 213, 219,1), transparent);
+    } */
+
+    .chip, .chip-sm {
       @apply mr-2.5 mb-2.5 border border-gray-300 flex h-8 px-3 my-auto w-max rounded-full
+    }
+
+    .chip-sm {
+      @apply h-6 px-2
+    }
+
+    .material-icons-outlined {
+      @apply select-none
     }
 
     .icon-surrounding {

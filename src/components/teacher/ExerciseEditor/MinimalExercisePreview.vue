@@ -9,7 +9,7 @@
     <template v-slot:header>
       <div class="relative">
         <div class="flex items-center">
-          <h4>{{ previewTitle }}</h4>
+          <h5>{{ previewTitle }}</h5>
           <div class="flex ml-2 space-x-1">
             <tag
               v-for="(tag, index) in exercise.tags"
@@ -17,10 +17,13 @@
               :tag="tag"
             ></tag>
           </div>
-          <div class="my-auto ml-4 chip">
+          <div
+            :title="$t('exercise_states.' + exercise.state)"
+            class="my-auto ml-4 chip chip-sm cursor-default"
+          >
             <div class="flex items-center">
-              <multi-icon class="w-6" :icons="exerciseStateIcons"></multi-icon>
-              <p v-html="$t('exercise_states.' + exercise.state)"></p>
+              <MultiIcon class="w-6" :icons="exerciseStateIcons"></MultiIcon>
+              <!-- <p v-html="$t('exercise_states.' + exercise.state)"></p> -->
             </div>
           </div>
         </div>
@@ -28,7 +31,7 @@
     </template>
 
     <template v-slot:body>
-      <div class="relative h-9 overflow-y-auto">
+      <div class="relative h-10 overflow-y-auto">
         <div
           class="w-11/12 overflow-x-hidden overflow-ellipsis"
           v-html="previewText"

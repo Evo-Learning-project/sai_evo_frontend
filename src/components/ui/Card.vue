@@ -3,7 +3,7 @@
     tabindex="0"
     class="flex border-gray-300 rounded-md shadow-sm"
     :class="{
-      'md:px-4 md:py-3': size == 'sm',
+      'md:px-3 md:py-2.5': size == 'sm',
       'px-1 py-6  md:px-6': size == 'default',
       'my-4': size == 'default' && !marginLess,
       'border-2': highlighted,
@@ -14,7 +14,10 @@
       <slot name="header"></slot>
       <div
         v-if="$slots.body"
-        :class="{ 'mt-4': size == 'default', 'mt-2': size == 'sm' }"
+        :class="{
+          'mt-4': size == 'default',
+          'mt-1.5': size == 'sm'
+        }"
       >
         <slot name="body"></slot>
       </div>
