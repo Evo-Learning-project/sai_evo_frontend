@@ -1,61 +1,10 @@
 <template>
-  <div>
-    <!--filters-->
-    <card class="relative mb-12 shadow-md bg-gray-50">
-      <template v-slot:header
-        ><div class="flex items-center mb-2 space-x-4">
-          <h3>{{ $t('filter_results.title') }}</h3>
-          <p
-            :class="{
-              'opacity-100 delay-300':
-                !expandResultFilter && areThereActiveFilters,
-              'delay-0 opacity-0': expandResultFilter || !areThereActiveFilters
-            }"
-            class="transition-opacity text-muted duration-0"
-          >
-            ({{ $t('filter_results.there_are_active_filters') }})
-          </p>
-        </div></template
-      ><template v-slot:body>
-        <btn
-          @btnClick="expandResultFilter = !expandResultFilter"
-          class="absolute top-0 right-0 mt-4 mr-4"
-          :size="'sm'"
-          :variant="'light'"
-          ><span class="material-icons-outlined">
-            {{ expandResultFilter ? 'expand_less' : 'expand_more' }}
-          </span></btn
-        >
-        <div
-          class="overflow-y-hidden duration-300 ease-in-out transition-max-height"
-          :class="{
-            'max-h-0': !expandResultFilter,
-            'max-h-screen': expandResultFilter
-          }"
-        >
-          <chipset :options="tagsOptions" v-model="resultFilter.tags"></chipset>
-          <chipset
-            :options="exerciseTypeOptions"
-            v-model="resultFilter.types"
-          ></chipset>
-          <chipset
-            :options="exerciseStateOptions"
-            v-model="resultFilter.states"
-          ></chipset>
-          <!-- <tag-input
-            class="md:mt-1"
-            v-model="resultFilter.tags"
-            :placeholder="$t('filter_results.filter_by_tag')"
-          ></tag-input> -->
-          <div class="flex w-full">
-            <btn @btnClick="applyFilters()" class="mt-4 ml-auto">{{
-              $t('filter_results.title')
-            }}</btn>
-          </div>
-        </div>
-      </template></card
-    >
-  </div>
+  <card class=" -mt-2 mb-4 shadow-md bg-light">
+    <template v-slot:body>
+      <ExerciseSearchFilters v-model="searchFilter"></ExerciseSearchFilters>
+    </template>
+  </card>
+
   <div class="flex w-full mb-2">
     <btn @btnClick="onAddExercise()" :loading="loading" class="ml-auto"
       ><span class="mr-1 text-base material-icons-outlined">
@@ -78,13 +27,16 @@
     <skeleton-card class="pb-10"></skeleton-card>
     <skeleton-card class="pb-10"></skeleton-card>
   </div>
-  <VueEternalLoading :load="onLoadMore">
+  <VueEternalLoading
+    :load="onLoadMore"
+    v-model:is-initial="isInitialInfiniteLoad"
+  >
     <template #loading>
       <spinner></spinner>
     </template>
     <template #no-more>
-      &nbsp;
-      <!-- <div class="w-full h-1 bg-gray-200 rounded-md"></div> -->
+      <!-- &nbsp; -->
+      <div class="w-full h-1 bg-gray-200 rounded-md"></div>
     </template>
   </VueEternalLoading>
 </template>
@@ -104,13 +56,16 @@ import {
 import { VueEternalLoading, LoadAction } from '@ts-pro/vue-eternal-loading'
 
 import Btn from '@/components/ui/Btn.vue'
-import Chipset from '@/components/ui/Chipset.vue'
+// import Chipset from '@/components/ui/Chipset.vue'
 import Card from '@/components/ui/Card.vue'
 //import TagInput from '@/components/ui/TagInput.vue'
 import ExerciseEditorWrapper from '@/components/teacher/ExerciseEditor/ExerciseEditorWrapper.vue'
 import { defineComponent } from '@vue/runtime-core'
 import SkeletonCard from '@/components/ui/SkeletonCard.vue'
 import Spinner from '@/components/ui/Spinner.vue'
+import ExerciseSearchFilters from '@/components/teacher/ExerciseSearchFilters.vue'
+import { SearchFilter } from '@/api/interfaces'
+import { getDebouncedForFilter } from '@/utils'
 export default defineComponent({
   name: 'CourseExercises',
   props: {
@@ -120,16 +75,28 @@ export default defineComponent({
     },
     options: Array
   },
+  watch: {
+    searchFilter: {
+      async handler (val: SearchFilter) {
+        await this.onFilterChange()
+        this.isInitialInfiniteLoad = true
+      },
+      deep: true
+    }
+  },
   components: {
     ExerciseEditorWrapper,
-    Chipset,
+    //Chipset,
     VueEternalLoading,
     Card,
     Btn,
     SkeletonCard,
-    Spinner
+    Spinner,
+    ExerciseSearchFilters
   },
   async created () {
+    this.onFilterChange = getDebouncedForFilter(this.onFilterChange)
+
     this.firstLoading = true
     await this.$store.dispatch('getExercises', {
       courseId: this.courseId,
@@ -140,22 +107,33 @@ export default defineComponent({
   },
   data () {
     return {
+      isInitialInfiniteLoad: false,
       expandResultFilter: true,
-      resultFilter: {
-        types: [] as ExerciseType[],
-        tags: [] as Tag[],
-        states: [] as ExerciseState[]
-      },
       loading: false,
-      firstLoading: false
+      firstLoading: false,
+      searchFilter: {
+        label: '',
+        text: '',
+        tags: [] as string[],
+        exercise_types: [] as ExerciseType[],
+        states: [] as ExerciseState[]
+      } as SearchFilter
     }
   },
   methods: {
+    async onFilterChange () {
+      await this.$store.dispatch('getExercises', {
+        courseId: this.courseId,
+        fromFirstPage: true,
+        filters: this.searchFilter
+      })
+    },
     async onLoadMore ({ loaded, noMore, error }: LoadAction) {
       try {
         const moreResults = await this.$store.dispatch('getExercises', {
           courseId: this.courseId,
-          fromFirstPage: false
+          fromFirstPage: false,
+          filters: this.searchFilter
         })
         if (!moreResults) {
           noMore()
@@ -167,7 +145,6 @@ export default defineComponent({
       }
     },
     async onAddExercise () {
-      console.log('dispatching')
       this.loading = true
       const newExercise = await this.$store.dispatch('createExercise', {
         courseId: this.courseId,
@@ -177,17 +154,9 @@ export default defineComponent({
       ;(this.$refs[
         'course-' + this.courseId + '-exercise-' + newExercise.id
       ] as { showEditor: boolean }).showEditor = true
-    },
-    applyFilters () {
-      1
     }
   },
   computed: {
-    areThereActiveFilters () {
-      return (
-        this.resultFilter.types.length > 0 || this.resultFilter.tags.length > 0
-      )
-    },
     courseId (): string {
       return this.$route.params.courseId as string
     },

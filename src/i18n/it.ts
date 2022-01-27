@@ -168,7 +168,7 @@ export const it = {
   },
   event_states_descriptions: {
     [EventState.PLANNED]:
-      "È tutto pronto! L'anteprima dell'esame è visibile agli studenti, ma questi non potranno accedervi fino alla data di inizio.",
+      "È tutto pronto! L'anteprima dell'esame è visibile agli studenti, ma questi non potranno accedervi fino alla data e ora di inizio.",
     // [EventState.OPEN]:
     //   'Non comparirà nelle esercitazioni iniziate dagli studenti, ma potrà essere inserito negli esami dagli insegnanti.',
     [EventState.DRAFT]:
