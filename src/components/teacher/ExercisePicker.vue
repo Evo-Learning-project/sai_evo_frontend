@@ -2,7 +2,8 @@
   <div>
     <ExerciseSearchFilters
       class="bg-light -mx-8 px-8 mb-4 py-4"
-      w-full
+      v-model="searchFilter"
+      :full="false"
     ></ExerciseSearchFilters>
 
     <div v-if="!firstLoading" class="grid grid-cols-2 gap-5">
@@ -23,13 +24,17 @@
       <skeleton-card :short="true"></skeleton-card>
       <skeleton-card :short="true"></skeleton-card>
     </div>
-    <VueEternalLoading :load="onLoadMore">
+    <VueEternalLoading
+      :load="onLoadMore"
+      v-model:is-initial="isInitialInfiniteLoad"
+    >
       <template #loading>
         <spinner></spinner>
+        <!-- <Btn @click="onLoadMore()">Carica di più</Btn> -->
       </template>
       <template #no-more>
-        &nbsp;
-        <!-- <div class="mt-4 mb-12 w-full h-1 bg-gray-200 rounded-md"></div> -->
+        <!-- &nbsp; -->
+        <div class="mt-4 mb-12 w-full h-1 bg-gray-200 rounded-md"></div>
       </template>
     </VueEternalLoading>
   </div>
@@ -40,15 +45,19 @@
 import { VueEternalLoading, LoadAction } from '@ts-pro/vue-eternal-loading'
 import Spinner from '@/components/ui/Spinner.vue'
 
-import { Exercise } from '@/models'
+import { Exercise, ExerciseState, ExerciseType } from '@/models'
 import { defineComponent, PropType } from '@vue/runtime-core'
 import MinimalExercisePreview from '@/components/teacher/ExerciseEditor/MinimalExercisePreview.vue'
 import Btn from '@/components/ui/Btn.vue'
 import SkeletonCard from '../ui/SkeletonCard.vue'
 import ExerciseSearchFilters from './ExerciseSearchFilters.vue'
+import { SearchFilter } from '@/api/interfaces'
+import { getDebouncedForFilter } from '@/utils'
 export default defineComponent({
   name: 'ExercisePicker',
   async created () {
+    this.onFilterChange = getDebouncedForFilter(this.onFilterChange)
+
     this.firstLoading = true
     await this.$store.dispatch('getExercises', {
       courseId: this.courseId,
@@ -56,16 +65,34 @@ export default defineComponent({
     })
     this.firstLoading = false
   },
+  watch: {
+    searchFilter: {
+      async handler (val: SearchFilter) {
+        await this.onFilterChange()
+        this.isInitialInfiniteLoad = true
+      },
+      deep: true
+    }
+  },
   components: {
     MinimalExercisePreview,
     SkeletonCard,
     VueEternalLoading,
     Spinner,
     ExerciseSearchFilters
+    //Btn
   },
   data () {
     return {
-      firstLoading: false
+      firstLoading: false,
+      isInitialInfiniteLoad: true,
+      searchFilter: {
+        label: '',
+        text: '',
+        tags: [] as string[],
+        exercise_types: [] as ExerciseType[],
+        states: [] as ExerciseState[]
+      } as SearchFilter
     }
   },
   props: {
@@ -88,18 +115,28 @@ export default defineComponent({
     },
     async onLoadMore ({ loaded, noMore, error }: LoadAction) {
       try {
+        console.log('calling onloadmore', this.searchFilter)
         const moreResults = await this.$store.dispatch('getExercises', {
           courseId: this.courseId,
-          fromFirstPage: false
+          fromFirstPage: false,
+          filters: this.searchFilter
         })
         if (!moreResults) {
           noMore()
         } else {
           loaded()
         }
-      } catch {
+      } catch (e) {
+        console.log('ERROR', e)
         error()
       }
+    },
+    async onFilterChange () {
+      await this.$store.dispatch('getExercises', {
+        courseId: this.courseId,
+        fromFirstPage: true,
+        filters: this.searchFilter
+      })
     }
   },
   computed: {

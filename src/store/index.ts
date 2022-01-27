@@ -28,6 +28,7 @@ import {
   updateEvent,
   updateEventTemplateRule,
 } from '@/api/events';
+import { SearchFilter } from '@/api/interfaces';
 
 const vuexLocal = new VuexPersistence({
   storage: window.localStorage,
@@ -276,16 +277,19 @@ export default createStore({
     },
     getExercises: async (
       { commit, state },
-      { courseId, fromFirstPage = true }
+      { courseId, fromFirstPage = true, filters = null }
     ) =>
       // filter = null
       {
+        console.log("HERE'S filters", filters);
+
         if (fromFirstPage) {
           commit('setCurrentExercisePage', 1);
         }
         const { exercises, moreResults } = await getExercises(
           courseId,
-          state.currentExercisePage
+          state.currentExercisePage,
+          filters
         );
         commit(
           'setExercises',
@@ -300,6 +304,8 @@ export default createStore({
             state.currentExercisePage + 1
           );
         }
+
+        console.log('more', moreResults);
 
         return moreResults;
       },

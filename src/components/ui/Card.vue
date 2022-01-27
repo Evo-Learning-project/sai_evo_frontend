@@ -19,7 +19,7 @@
         <slot name="body"></slot>
       </div>
     </div>
-    <div v-if="$slots.side">
+    <div class="ml-auto" v-if="$slots.side">
       <slot name="side"></slot>
     </div>
   </div>

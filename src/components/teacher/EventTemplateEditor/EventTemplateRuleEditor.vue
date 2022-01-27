@@ -46,7 +46,7 @@
         >
           <MinimalExercisePreview
             v-for="exercise in ruleExercises"
-            :key="'r-' + modelValue.id + '-e-' + exercise.id"
+            :key="'r-' + modelValue.id + '-e-' + exercise"
             :exercise="exercise"
             :selectable="false"
           ></MinimalExercisePreview>

@@ -9,10 +9,11 @@ export const it = {
     default_ok_text: 'OK',
   },
   filter_results: {
-    title: 'Filtra risultati',
+    title: 'Filtra esercizi',
     filter_by_tag: 'Filtra per tag',
     filter_by_type: 'Filtra per tipologia',
     there_are_active_filters: 'Ci sono filtri attivi',
+    more_filters: 'Filtri avanzati',
   },
   headings: {
     course_title: 'Corso',

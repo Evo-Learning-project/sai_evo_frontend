@@ -1,32 +1,49 @@
 <template>
   <div>
-    <!-- RE-USE THE STUFF FROM COURSEEXERCIES VIEW (a few ideas, use props to
-    conditionally hide certain search parameters for the reduced version, and
-    don't put margins or the card borders by default. In the exercise picker,
-    you can include this component with the reduced version and integrate it
-    with the picker) - define a SearchFilters interface and use it here as the
-    modelValue -->
     <h3>{{ $t('filter_results.title') }}</h3>
 
-    <div class="overflow-y-hidden duration-300 ease-in-out">
-      <!-- <chipset :options="tagsOptions" v-model="resultFilter.tags"></chipset> -->
-      <chipset
-        :options="exerciseTypeOptions"
-        v-model="resultFilter.types"
-      ></chipset>
-      <chipset
-        :options="exerciseStateOptions"
-        v-model="resultFilter.states"
-      ></chipset>
+    <div class="mt-5">
+      <!-- <chipset :options="tagsOptions" :modelValue="modelValue.tags"></chipset> -->
+      <div class="flex space-x-4">
+        <TextInput
+          :modelValue="modelValue.label"
+          @update:modelValue="emitUpdate('label', $event)"
+          class="flex-grow"
+        >
+          {{ $t('exercise_editor.exercise_label') }}
+        </TextInput>
+        <TextInput class="flex-grow">
+          {{ $t('exercise_editor.exercise_text') }}
+        </TextInput>
+      </div>
+      <div class="mt-8" v-show="full || expanded">
+        <chipset
+          :options="exerciseTypeOptions"
+          :modelValue="modelValue.exercise_types"
+        ></chipset>
+        <chipset
+          :options="exerciseStateOptions"
+          :modelValue="modelValue.states"
+        ></chipset>
+      </div>
       <!-- <tag-input
             class="md:mt-1"
-            v-model="resultFilter.tags"
+            :modelValue="modelValue.tags"
             :placeholder="$t('filter_results.filter_by_tag')"
           ></tag-input> -->
-      <div class="flex w-full hidden">
-        <btn @btnClick="applyFilters()" class="mt-4 ml-auto">{{
+      <div class="flex w-full">
+        <!-- <btn @btnClick="applyFilters()" class="mt-4 ml-auto">{{
           $t('filter_results.title')
-        }}</btn>
+        }}</btn> -->
+        <Btn
+          v-if="!full"
+          :variant="'light'"
+          @btnClick="expanded = !expanded"
+          class="mt-4 ml-auto"
+          ><span class="material-icons-outlined">
+            {{ expanded ? 'expand_less' : 'expand_more' }} </span
+          >{{ $t('filter_results.more_filters') }}
+        </Btn>
       </div>
     </div>
   </div>
@@ -43,22 +60,42 @@ import { getTranslatedString as _ } from '@/i18n'
 //   getBlankExercise,
 //   Tag
 // } from '@/models'
-
+import { SearchFilter } from '@/api/interfaces'
 import Btn from '@/components/ui/Btn.vue'
 import Chipset from '@/components/ui/Chipset.vue'
 import { ExerciseState, ExerciseType, Tag } from '@/models'
-import { defineComponent } from '@vue/runtime-core'
+import { defineComponent, PropType } from '@vue/runtime-core'
 import { icons as exerciseTypesIcons } from '@/assets/exerciseTypesIcons'
 import { icons as exerciseStatesIcons } from '@/assets/exerciseStatesIcons'
+import TextInput from '../ui/TextInput.vue'
 export default defineComponent({
   name: 'ExerciseSearchFilters',
   components: {
     Chipset,
-    Btn
+    Btn,
+    TextInput
+  },
+  props: {
+    modelValue: {
+      type: Object as PropType<SearchFilter>,
+      required: true
+    },
+    full: {
+      type: Boolean,
+      default: true
+    }
   },
   data () {
     return {
-      resultFilter: { types: [], states: [] }
+      expanded: false
+    }
+  },
+  methods: {
+    emitUpdate (key: keyof SearchFilter, value: unknown) {
+      this.$emit('update:modelValue', {
+        ...this.modelValue,
+        [key]: value
+      })
     }
   },
   computed: {

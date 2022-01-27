@@ -5,7 +5,7 @@
     <input
       type="text"
       :value="modelValue"
-      @change="$emit('update:modelValue', $event.target.value)"
+      @input="$emit('update:modelValue', $event.target.value)"
       placeholder=" "
       class="z-10 block w-full bg-transparent appearance-none floating-label focus:outline-none"
     />

@@ -29,7 +29,7 @@ import EventTemplateEditor from '@/components/teacher/EventTemplateEditor/EventT
 import CollapsiblePanelGroup from '@/components/ui/CollapsiblePanelGroup.vue'
 import CloudSaveStatus from '@/components/ui/CloudSaveStatus.vue'
 import { defineComponent } from '@vue/runtime-core'
-import { getDebounced } from '@/utils'
+import { getDebouncedForEditor } from '@/utils'
 import { Event, EventState } from '@/models'
 
 export default defineComponent({
@@ -44,7 +44,7 @@ export default defineComponent({
   props: [],
   async created () {
     // wrap update method in a debounce
-    this.dispatchUpdate = getDebounced(this.dispatchUpdate)
+    this.dispatchUpdate = getDebouncedForEditor(this.dispatchUpdate)
 
     this.$store.commit('setLoading', true)
     await this.$store.dispatch('getEvent', {

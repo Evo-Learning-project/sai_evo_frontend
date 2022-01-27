@@ -28,7 +28,7 @@
     </template>
 
     <template v-slot:body>
-      <div class="relative">
+      <div class="relative h-9 overflow-y-auto">
         <div
           class="w-11/12 overflow-x-hidden overflow-ellipsis"
           v-html="previewText"

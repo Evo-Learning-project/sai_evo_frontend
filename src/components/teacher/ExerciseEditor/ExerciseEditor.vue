@@ -132,7 +132,7 @@ import TagInput from '@/components/ui/TagInput.vue'
 
 import ChoiceEditor from '@/components/teacher/ExerciseEditor/ChoiceEditor.vue'
 import CloudSaveStatus from '@/components/ui/CloudSaveStatus.vue'
-import { getDebounced } from '@/utils'
+import { getDebouncedForEditor } from '@/utils'
 
 export default defineComponent({
   name: 'ExerciseEditor',
@@ -162,8 +162,10 @@ export default defineComponent({
   },
   created () {
     this.elementId = uuid4()
-    this.dispatchExerciseUpdate = getDebounced(this.dispatchExerciseUpdate)
-    this.dispatchChoiceUpdate = getDebounced(this.dispatchChoiceUpdate)
+    this.dispatchExerciseUpdate = getDebouncedForEditor(
+      this.dispatchExerciseUpdate
+    )
+    this.dispatchChoiceUpdate = getDebouncedForEditor(this.dispatchChoiceUpdate)
   },
   data () {
     return {

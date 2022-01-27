@@ -1,5 +1,7 @@
 import { Exercise, ExerciseChoice } from '@/models';
 import axios from 'axios';
+import { SearchFilter } from './interfaces';
+import { getUrlQueryParams } from './utils';
 
 // export async function getExercises(
 //   courseId: string
@@ -10,10 +12,12 @@ import axios from 'axios';
 
 export async function getExercises(
   courseId: string,
-  pageNumber: number
+  pageNumber: number,
+  filter: SearchFilter | null
 ): Promise<{ exercises: Exercise[]; moreResults: boolean }> {
+  const filterUrlQuery = getUrlQueryParams(filter);
   const response = await axios.get(
-    `/courses/${courseId}/exercises/?page=${pageNumber}`
+    `/courses/${courseId}/exercises/?page=${pageNumber}${filterUrlQuery}`
   );
   return {
     exercises: response.data.results,
