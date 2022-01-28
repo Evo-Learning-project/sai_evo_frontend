@@ -45,7 +45,7 @@
     </template>
 
     <template v-slot:side>
-      <div class="flex flex-col items-center h-full ml-2 -mr-2">
+      <div class="flex flex-col items-end h-full">
         <Btn
           :size="'xs'"
           :variant="'primary-borderless'"

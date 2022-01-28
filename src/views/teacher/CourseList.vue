@@ -9,7 +9,7 @@
 
 <script lang="ts">
 import { defineComponent } from '@vue/runtime-core'
-import CourseListItem from '@/components/teacher/CourseListItem.vue'
+import CourseListItem from '@/components/shared/CourseListItem.vue'
 import { mapState } from 'vuex'
 
 export default defineComponent({
