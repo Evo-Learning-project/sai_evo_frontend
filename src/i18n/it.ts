@@ -25,6 +25,7 @@ export const it = {
     or_label: 'Oppure',
     changes_saved_to_server:
       'Tutte le modifiche sono state salvate sul server',
+    exercise_preview_title: 'Anteprima esercizio',
   },
   sidebar_labels: {
     course_dashboard_dashboard: 'Dashboard',

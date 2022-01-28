@@ -102,12 +102,13 @@ export default defineComponent({
       pageY: number
       clientY: number
     }) {
-      console.log('EVENT', event)
+      //console.log('EVENT', event)
       const btn = event.currentTarget
       const circle = document.createElement('span')
       const diameter = Math.max(btn.clientWidth, btn.clientHeight)
       const radius = diameter / 2
-      console.log('parent', btn.offsetParent)
+
+      //console.log('parent', btn.offsetParent)
       const parentPosition = getComputedStyle(btn.offsetParent).position
 
       const offsetX =
@@ -129,7 +130,7 @@ export default defineComponent({
       circle.classList.add(this.getRippleClass())
 
       const ripple = btn.getElementsByClassName('ripple')[0]
-      console.log('ripple', ripple, 'offsetY', offsetY)
+      //console.log('ripple', ripple, 'offsetY', offsetY)
       if (ripple) {
         ripple.remove()
       }

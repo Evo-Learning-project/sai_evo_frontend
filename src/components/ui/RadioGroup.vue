@@ -18,6 +18,7 @@
           :id="id + '-input-' + index"
           :value="option.value"
           :checked="option.value == modelValue"
+          :disabled="disabled"
         />
         <div class="flex space-x-2 items-top">
           <multi-icon
@@ -42,7 +43,7 @@ import MultiIcon from '@/components/ui/MultiIcon.vue'
 
 export default defineComponent({
   name: 'RadioGroup',
-  props: ['options', 'modelValue'],
+  props: ['options', 'modelValue', 'disabled'],
   components: {
     MultiIcon
   },

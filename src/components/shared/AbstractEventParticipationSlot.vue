@@ -1,25 +1,41 @@
 <template>
   <div>
-    <p v-html="exercise.text"></p>
+    <h3 v-if="showExerciseLabel">{{ exercise.label }}</h3>
+    <div class="mb-8" v-html="exercise.text"></div>
     <CheckboxGroup
       v-if="isMultipleChoiceMultiplePossible"
-      :choices="exercise.choices"
+      :options="exerciseChoicesAsOptions"
       v-model="selectedChoicesProxy"
+      :disabled="!allowEditSubmission"
     ></CheckboxGroup>
-    <!-- TODO add radio group and text editor for other types of question -->
+    <RadioGroup
+      v-else-if="isMultipleChoiceSinglePossible"
+      :options="exerciseChoicesAsOptions"
+      v-model="selectedChoicesProxy"
+      :disabled="!allowEditSubmission"
+    ></RadioGroup>
+    <!-- TODO add text editor for other types of question -->
   </div>
 </template>
 
 <script lang="ts">
-import { EventParticipationSlot, Exercise, ExerciseType } from '@/models'
+import {
+  EventParticipationSlot,
+  Exercise,
+  ExerciseChoice,
+  ExerciseType
+} from '@/models'
 import { defineComponent, PropType } from '@vue/runtime-core'
 import CheckboxGroup from '@/components/ui/CheckboxGroup.vue'
+import { SelectableOption } from '@/interfaces'
+import RadioGroup from '../ui/RadioGroup.vue'
 
 export default defineComponent({
   components: {
-    CheckboxGroup
+    CheckboxGroup,
+    RadioGroup
   },
-  name: 'EventParticipationSlot',
+  name: 'AbstractEventParticipationSlot',
   props: {
     modelValue: {
       type: Object as PropType<EventParticipationSlot>,
@@ -32,27 +48,40 @@ export default defineComponent({
     allowEditSubmission: {
       type: Boolean,
       default: false
+    },
+    showExerciseLabel: {
+      type: Boolean,
+      default: false
     }
   },
   computed: {
-    // TODO get rid of this and use modelValue
-    slot (): EventParticipationSlot {
-      return this.modelValue
-    },
     exercise (): Exercise {
-      return this.slot.exercise
+      return this.modelValue.exercise
     },
     isMultipleChoiceSinglePossible (): boolean {
       return (
-        parseInt((this.exercise?.exercise_type?.toString() ?? '') as string) ==
+        this.exercise.exercise_type ==
         ExerciseType.MULTIPLE_CHOICE_SINGLE_POSSIBLE
       )
     },
     isMultipleChoiceMultiplePossible (): boolean {
       return (
-        parseInt((this.exercise?.exercise_type?.toString() ?? '') as string) ==
+        this.exercise.exercise_type ==
         ExerciseType.MULTIPLE_CHOICE_MULTIPLE_POSSIBLE
       )
+    },
+    exerciseChoicesAsOptions (): SelectableOption[] {
+      if (
+        !this.isMultipleChoiceSinglePossible &&
+        !this.isMultipleChoiceMultiplePossible
+      ) {
+        return []
+      }
+
+      return (this.exercise.choices as ExerciseChoice[]).map(c => ({
+        value: c.id,
+        content: c.text
+      }))
     },
     isOpenAnswer (): boolean {
       return (
@@ -62,7 +91,7 @@ export default defineComponent({
     },
     selectedChoicesProxy: {
       get () {
-        return this.slot?.selected_choices
+        return this.modelValue.selected_choices
       },
       set (val: string[]) {
         // TODO probably check if a new value has been added or removed by

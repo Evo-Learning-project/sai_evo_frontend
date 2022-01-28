@@ -10,7 +10,7 @@
       <div class="relative">
         <div class="flex items-center">
           <h5>{{ previewTitle }}</h5>
-          <div class="flex ml-2 space-x-1 hidden">
+          <div class="flex hidden ml-2 space-x-1">
             <!-- hidden -->
             <Tag
               v-for="(tag, index) in exercise.tags"
@@ -21,7 +21,7 @@
           </div>
           <div
             :title="$t('exercise_states.' + exercise.state)"
-            class="my-auto ml-4 chip chip-sm cursor-default"
+            class="my-auto ml-4 cursor-default chip chip-sm"
           >
             <div class="flex items-center">
               <MultiIcon class="w-6" :icons="exerciseStateIcons"></MultiIcon>
@@ -39,15 +39,18 @@
           v-html="previewText"
         ></div>
         <!-- <div
-          class="h-7 w-full absolute left-0 bottom-0 bg-gradient-to-b from-transparent to-light"
+          class="absolute bottom-0 left-0 w-full h-7 bg-gradient-to-b from-transparent to-light"
         ></div> -->
       </div>
     </template>
 
     <template v-slot:side>
-      <div class="flex flex-col h-full items-center -mr-2 ml-2">
-        <Btn :size="'xs'" :variant="'primary-borderless'"
-          ><span class="material-icons-outlined text-base">
+      <div class="flex flex-col items-center h-full ml-2 -mr-2">
+        <Btn
+          :size="'xs'"
+          :variant="'primary-borderless'"
+          @click="showPreview = true"
+          ><span class="text-base material-icons-outlined">
             open_in_full
           </span>
         </Btn>
@@ -59,13 +62,25 @@
           class="mt-auto"
           :forceActive="highlighted"
           @btnClick="onSelection()"
-          ><span class="material-icons-outlined text-base">
+          ><span class="text-base material-icons-outlined">
             done
           </span></Btn
         >
       </div>
     </template>
   </Card>
+  <Dialog
+    :showDialog="showPreview"
+    @yes="showPreview = false"
+    :confirmOnly="true"
+    :large="true"
+    :dismissible="true"
+  >
+    <template v-slot:title>{{ $t('misc.exercise_preview_title') }}</template>
+    <template v-slot:body>
+      <FullExercise :exercise="exercise"></FullExercise>
+    </template>
+  </Dialog>
   <!--</template>-->
   <!--</btn>-->
 </template>
@@ -81,6 +96,8 @@ import Tag from '@/components/ui/Tag.vue'
 import MultiIcon from '@/components/ui/MultiIcon.vue'
 import { icons as exerciseStatesIcons } from '@/assets/exerciseStatesIcons'
 import Btn from '@/components/ui/Btn.vue'
+import Dialog from '@/components/ui/Dialog.vue'
+import FullExercise from '@/components/shared/FullExercise.vue'
 
 export default defineComponent({
   name: 'MinimalExercisePreview',
@@ -102,14 +119,17 @@ export default defineComponent({
     Card,
     Tag,
     MultiIcon,
-    Btn
+    Btn,
+    Dialog,
+    FullExercise
   },
   created () {
     this.elementId = uuid4()
   },
   data () {
     return {
-      elementId: ''
+      elementId: '',
+      showPreview: false
     }
   },
   methods: {

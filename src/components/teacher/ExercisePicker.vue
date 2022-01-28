@@ -145,9 +145,6 @@ export default defineComponent({
     courseId (): string {
       return this.$route.params.courseId as string
     },
-    // exercises (): Exercise[] {
-    //   return this.$store.getters.exercises
-    // }
     ...mapState(['exercises'])
   }
 })

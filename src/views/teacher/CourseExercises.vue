@@ -56,7 +56,7 @@ import {
 } from '@/models'
 
 import { VueEternalLoading, LoadAction } from '@ts-pro/vue-eternal-loading'
-
+import { SelectableOption } from '@/interfaces'
 import Btn from '@/components/ui/Btn.vue'
 // import Chipset from '@/components/ui/Chipset.vue'
 import Card from '@/components/ui/Card.vue'
@@ -171,7 +171,7 @@ export default defineComponent({
         content: t.name
       }))
     },
-    exerciseTypeOptions () {
+    exerciseTypeOptions (): SelectableOption[] {
       return ((Object.keys(ExerciseType) as unknown[]) as ExerciseType[])
         .filter((key: string | number) => parseInt(key as string) == key) //(ExerciseType[key] as unknown) == 'number')
         .map(key => ({
@@ -180,7 +180,7 @@ export default defineComponent({
           content: _('exercise_types.' + key)
         }))
     },
-    exerciseStateOptions () {
+    exerciseStateOptions (): SelectableOption[] {
       return ((Object.keys(ExerciseState) as unknown[]) as ExerciseState[])
         .filter((key: string | number) => parseInt(key as string) == key) //(ExerciseType[key] as unknown) == 'number')
         .map(key => ({

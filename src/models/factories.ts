@@ -1,5 +1,6 @@
 import {
   Event,
+  EventParticipationSlot,
   EventState,
   EventTemplate,
   EventTemplateRule,
@@ -84,3 +85,13 @@ export const getBlankTagBasedEventTemplateRuleClause =
   (): EventTemplateRuleClause => ({
     tags: [],
   });
+
+export const getFakeEventParticipationSlot = (
+  exercise: Exercise
+): EventParticipationSlot => ({
+  id: '',
+  exercise,
+  answer_text: '',
+  selected_choices: [],
+  sub_slots: [],
+});

@@ -7,6 +7,7 @@
       :for="id + '-option-' + index"
     >
       <input
+        :disabled="disabled"
         :id="id + '-option-' + index"
         type="checkbox"
         v-model="proxyModelValue"
@@ -23,7 +24,7 @@ import { v4 as uuid4 } from 'uuid'
 
 export default defineComponent({
   name: 'CheckboxGroup',
-  props: ['options', 'modelValue'],
+  props: ['options', 'modelValue', 'disabled'],
   created () {
     this.id = uuid4()
   },
