@@ -118,15 +118,18 @@ export default defineComponent({
         parentPosition === 'fixed' || parentPosition === 'absolute'
           ? event.clientY
           : event.pageY
+
+      const { offsetTop, offsetLeft } = this.getOffset(btn)
+
       //const {top, left} = this.getOffset(btn)
       circle.style.width = circle.style.height = `${diameter}px`
-      circle.style.left = `${offsetX - (btn.offsetLeft + radius)}px`
-      circle.style.top = `${offsetY - (btn.offsetTop + radius)}px`
+      circle.style.left = `${offsetX - (offsetLeft + radius)}px`
+      circle.style.top = `${offsetY - (offsetTop + radius)}px`
       circle.classList.add('ripple')
       circle.classList.add(this.getRippleClass())
 
       const ripple = btn.getElementsByClassName('ripple')[0]
-      console.log('ripple', ripple, 'clienty', event.pageY)
+      console.log('ripple', ripple, 'offsetY', offsetY)
       if (ripple) {
         ripple.remove()
       }
@@ -148,7 +151,7 @@ export default defineComponent({
         _y += el.offsetTop - el.scrollTop
         el = el.offsetParent
       }
-      return { top: _y, left: _x }
+      return { offsetTop: _y, offsetLeft: _x }
     },
     getRippleClass () {
       switch (this.variant) {

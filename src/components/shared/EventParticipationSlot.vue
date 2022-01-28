@@ -1,11 +1,12 @@
 <template>
   <div>
     <p v-html="exercise.text"></p>
-    <checkbox-group
+    <CheckboxGroup
       v-if="isMultipleChoiceMultiplePossible"
       :choices="exercise.choices"
       v-model="selectedChoicesProxy"
-    ></checkbox-group>
+    ></CheckboxGroup>
+    <!-- TODO add radio group and text editor for other types of question -->
   </div>
 </template>
 
@@ -27,9 +28,14 @@ export default defineComponent({
     allowEditScores: {
       type: Boolean,
       default: false
+    },
+    allowEditSubmission: {
+      type: Boolean,
+      default: false
     }
   },
   computed: {
+    // TODO get rid of this and use modelValue
     slot (): EventParticipationSlot {
       return this.modelValue
     },
@@ -59,6 +65,8 @@ export default defineComponent({
         return this.slot?.selected_choices
       },
       set (val: string[]) {
+        // TODO probably check if a new value has been added or removed by
+        // TODO comparing with current modelValue and emit a specific event
         this.$emit('updateSelectedChoices', { selected_choices: val })
       }
     }
