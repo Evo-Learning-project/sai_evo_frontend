@@ -54,18 +54,19 @@
             open_in_full
           </span>
         </Btn>
-
-        <Btn
-          v-if="selectable"
-          :size="'xs'"
-          :variant="'success-borderless'"
-          class="mt-auto"
-          :forceActive="highlighted"
-          @btnClick="onSelection()"
-          ><span class="text-base material-icons-outlined">
-            done
-          </span></Btn
-        >
+        <div class="mt-auto" :title="selectButtonTitle">
+          <Btn
+            v-if="selectable"
+            :size="'xs'"
+            :variant="'success-borderless'"
+            :forceActive="highlighted"
+            :disabled="selectionDisabled"
+            @btnClick="onSelection()"
+            ><span class="text-base material-icons-outlined">
+              done
+            </span></Btn
+          >
+        </div>
       </div>
     </template>
   </Card>
@@ -113,6 +114,14 @@ export default defineComponent({
     selectable: {
       type: Boolean,
       default: true
+    },
+    selectionDisabled: {
+      type: Boolean,
+      default: false
+    },
+    selectButtonTitle: {
+      type: String,
+      default: ''
     }
   },
   components: {

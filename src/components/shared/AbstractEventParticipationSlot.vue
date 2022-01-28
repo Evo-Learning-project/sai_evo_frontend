@@ -29,6 +29,7 @@ import { defineComponent, PropType } from '@vue/runtime-core'
 import CheckboxGroup from '@/components/ui/CheckboxGroup.vue'
 import { SelectableOption } from '@/interfaces'
 import RadioGroup from '../ui/RadioGroup.vue'
+import { getTranslatedString as _ } from '@/i18n'
 
 export default defineComponent({
   components: {
@@ -80,7 +81,15 @@ export default defineComponent({
 
       return (this.exercise.choices as ExerciseChoice[]).map(c => ({
         value: c.id,
-        content: c.text
+        content: c.text,
+        description:
+          c.score +
+          ' ' +
+          _(
+            `exercise.choice_score_word_${
+              c.score == 1 || c.score == -1 ? 'singular' : 'plural'
+            }`
+          )
       }))
     },
     isOpenAnswer (): boolean {

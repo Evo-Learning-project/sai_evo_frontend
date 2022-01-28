@@ -9,6 +9,12 @@
     <div v-if="!firstLoading" class="grid grid-cols-2 gap-5">
       <MinimalExercisePreview
         :selectable="true"
+        :selectionDisabled="!isExerciseSelectable(exercise)"
+        :selectButtonTitle="
+          isExerciseSelectable(exercise)
+            ? ''
+            : $t('exercise_picker.cannot_pick_draft')
+        "
         v-for="(exercise, index) in exercises"
         :key="'course-' + courseId + '-exercise-' + index"
         :exercise="exercise"
@@ -101,9 +107,16 @@ export default defineComponent({
     modelValue: {
       type: Object as PropType<string[]>,
       required: true
+    },
+    allowPickingDraft: {
+      type: Boolean,
+      default: false
     }
   },
   methods: {
+    isExerciseSelectable (exercise: Exercise): boolean {
+      return this.allowPickingDraft || exercise.state != ExerciseState.DRAFT
+    },
     onSelection (exercise: Exercise) {
       const index = this.modelValue.findIndex(e => e == exercise.id)
       if (index === -1) {

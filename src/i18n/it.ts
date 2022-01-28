@@ -43,6 +43,10 @@ export const it = {
     create_exam_from_selected_exercises:
       'Crea esame con questi esercizi',
   },
+  exercise: {
+    choice_score_word_singular: 'punto',
+    choice_score_word_plural: 'punti',
+  },
   course_events: {
     new_exam: 'Nuovo esame',
   },
@@ -67,6 +71,10 @@ export const it = {
     // same_exercises_for_everyone_randomize_order_help_text:
     //   'Tutti gli studenti vedranno gli stessi esercizi ma in ordine casuale',
     add_rule: 'Aggiungi slot',
+  },
+  exercise_picker: {
+    cannot_pick_draft:
+      'Non puoi usare un esercizio in stato di bozza in un esame',
   },
   event_template_rule_editor: {
     exercise_number: 'Slot',

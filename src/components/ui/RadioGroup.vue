@@ -7,13 +7,14 @@
     <div class="w-full">
       <label
         :for="id + '-input-' + index"
-        class="flex items-center max-h-screen space-x-1 overflow-y-hidden cursor-pointer"
+        class="flex max-h-screen space-x-1.5 overflow-y-hidden cursor-pointer items-top"
         v-for="(option, index) in options"
         :key="id + '-option-' + index"
       >
         <input
           @input="onInput(option.value, $event)"
           style="min-width: 15px; min-height: 15px"
+          class="mt-1.5"
           type="radio"
           :id="id + '-input-' + index"
           :value="option.value"
@@ -28,7 +29,11 @@
           ></multi-icon>
           <div class="flex flex-col">
             <p class="" v-html="option.content"></p>
-            <p v-if="option.description" v-html="option.description"></p>
+            <p
+              class="mb-2 text-sm text-muted"
+              v-if="(option.description?.length ?? 0) > 0"
+              v-html="option.description"
+            ></p>
           </div>
         </div>
       </label>

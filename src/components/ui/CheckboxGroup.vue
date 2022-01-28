@@ -1,7 +1,7 @@
 <template>
   <div>
     <label
-      class="flex items-center space-x-2"
+      class="flex space-x-1.5 items-top"
       v-for="(option, index) in options"
       :key="id + '-option-' + index"
       :for="id + '-option-' + index"
@@ -12,8 +12,16 @@
         type="checkbox"
         v-model="proxyModelValue"
         :value="option.value"
+        class="mt-1.5"
       />
-      <p v-html="option.content"></p>
+      <div class="flex flex-col">
+        <p v-html="option.content"></p>
+        <p
+          class="mb-2 text-sm text-muted"
+          v-if="(option.description?.length ?? 0) > 0"
+          v-html="option.description"
+        ></p>
+      </div>
     </label>
   </div>
 </template>
