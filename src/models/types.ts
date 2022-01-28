@@ -40,3 +40,7 @@ export enum EventParticipationState {
   IN_PROGRESS,
   TURNED_IN,
 }
+
+export enum CoursePrivilege {
+  ALL_PRIVILEGES = '__all__',
+}

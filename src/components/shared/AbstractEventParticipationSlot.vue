@@ -7,13 +7,23 @@
       :options="exerciseChoicesAsOptions"
       v-model="selectedChoicesProxy"
       :disabled="!allowEditSubmission"
-    ></CheckboxGroup>
+      v-slot="{ description }"
+    >
+      <p class="mb-2 text-sm text-muted">{{ description }}</p>
+
+      <!-- <div class="px-2 py-1.25px rounded-md mb-2 bg-gray-50">
+        <p class="text-sm text-muted">{{ description }}</p>
+      </div> -->
+    </CheckboxGroup>
     <RadioGroup
       v-else-if="isMultipleChoiceSinglePossible"
       :options="exerciseChoicesAsOptions"
       v-model="selectedChoicesProxy"
       :disabled="!allowEditSubmission"
-    ></RadioGroup>
+      v-slot="{ description }"
+    >
+      <p class="mb-2 text-sm text-muted">{{ description }}</p>
+    </RadioGroup>
     <!-- TODO add text editor for other types of question -->
   </div>
 </template>

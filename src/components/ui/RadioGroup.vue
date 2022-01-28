@@ -29,11 +29,12 @@
           ></multi-icon>
           <div class="flex flex-col">
             <p class="" v-html="option.content"></p>
-            <p
+            <!-- <p
               class="mb-2 text-sm text-muted"
               v-if="(option.description?.length ?? 0) > 0"
               v-html="option.description"
-            ></p>
+            ></p> -->
+            <slot v-bind:description="option.description"></slot>
           </div>
         </div>
       </label>

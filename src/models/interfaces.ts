@@ -5,16 +5,20 @@ import {
   ExerciseType,
   EventTemplateRuleType,
   EventParticipationState,
+  CoursePrivilege,
 } from '.';
 
 export interface User {
   email: string;
+  is_teacher: boolean;
 }
 
 export interface Course {
-  id?: string;
+  id: string;
   name: string;
   description?: string;
+  is_enrolled?: boolean;
+  privileges?: CoursePrivilege[];
 }
 
 export interface Exercise {
