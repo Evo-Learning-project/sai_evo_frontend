@@ -1,11 +1,19 @@
 <template>
-  <div class="ti-tag">{{ tag.name }}</div>
+  <div class="ti-tag" :class="{ 'ti-tag-sm': small }">{{ tag.name }}</div>
 </template>
 
 <script>
 export default {
   name: 'Tag',
-  props: ['tag']
+  props: {
+    tag: {
+      type: Object
+    },
+    small: {
+      type: Boolean,
+      default: false
+    }
+  }
 }
 </script>
 

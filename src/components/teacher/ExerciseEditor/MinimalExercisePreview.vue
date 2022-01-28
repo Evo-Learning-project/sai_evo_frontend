@@ -10,12 +10,14 @@
       <div class="relative">
         <div class="flex items-center">
           <h5>{{ previewTitle }}</h5>
-          <div class="flex ml-2 space-x-1">
-            <tag
+          <div class="flex ml-2 space-x-1 hidden">
+            <!-- hidden -->
+            <Tag
               v-for="(tag, index) in exercise.tags"
               :key="elementId + '-tag-' + index"
               :tag="tag"
-            ></tag>
+              :small="true"
+            ></Tag>
           </div>
           <div
             :title="$t('exercise_states.' + exercise.state)"
@@ -31,32 +33,35 @@
     </template>
 
     <template v-slot:body>
-      <div class="relative h-10 overflow-y-auto">
+      <div class="relative h-12 overflow-y-hidden">
         <div
           class="w-11/12 overflow-x-hidden overflow-ellipsis"
           v-html="previewText"
         ></div>
+        <!-- <div
+          class="h-7 w-full absolute left-0 bottom-0 bg-gradient-to-b from-transparent to-light"
+        ></div> -->
       </div>
     </template>
 
     <template v-slot:side>
-      <div class="flex flex-col h-full">
-        <btn :size="'sm'" :variant="'primary-borderless'"
-          ><span class="material-icons-outlined">
-            preview
-          </span></btn
-        >
+      <div class="flex flex-col h-full items-center -mr-2 ml-2">
+        <Btn :size="'xs'" :variant="'primary-borderless'"
+          ><span class="material-icons-outlined text-base">
+            open_in_full
+          </span>
+        </Btn>
 
-        <btn
+        <Btn
           v-if="selectable"
-          :size="'sm'"
+          :size="'xs'"
           :variant="'success-borderless'"
           class="mt-auto"
           :forceActive="highlighted"
           @btnClick="onSelection()"
-          ><span class="material-icons-outlined">
+          ><span class="material-icons-outlined text-base">
             done
-          </span></btn
+          </span></Btn
         >
       </div>
     </template>

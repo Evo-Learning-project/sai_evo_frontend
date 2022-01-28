@@ -11,19 +11,11 @@
         </h4>
         <div class="flex ml-auto space-x-2">
           <btn @btnClick="showRuleDialog()" :size="'sm'">
-            {{
-              /*isExerciseChosen
-                ? $t('event_template_rule_editor.change_exercise')
-                : */
-              $t('event_template_rule_editor.choose_exercise')
-            }}
+            {{ $t('event_template_rule_editor.choose_exercise') }}
           </btn>
-          <btn
-            @btnClick="deleteRule()"
-            :size="'sm'"
-            :variant="'danger'"
-            :outline="true"
-            ><span class="text-base material-icons-outlined">
+          <!--@btnClick="deleteRule()"-->
+          <btn :size="'xs'" :variant="'danger'" :outline="true"
+            ><span style="font-size: 17px;" class="material-icons-outlined">
               delete
             </span>
           </btn>

@@ -4,11 +4,10 @@
     :tags="processedModelValue"
     :allow-edit-tags="true"
     :placeholder="placeholder"
-    @tags-changed="newTags => onTagsChanged(newTags)"
-    @adding-duplicate="onAddingDuplicate($event)"
-    @before-saving-tag="beforeSavingTag($event)"
     @before-adding-tag="beforeAddingTag($event)"
+    @before-deleting-tag="beforeDeletingTag($event)"
   />
+  <!--@tags-changed="newTags => onTagsChanged(newTags)"-->
   <!--
           
 -->
@@ -33,9 +32,6 @@ export default defineComponent({
     }
   },
   methods: {
-    beforeSavingTag (event: any) {
-      console.log('before saving', event)
-    },
     onTagsChanged (newTags: any) {
       //   this.tags = newTags
       //   console.log(
@@ -49,17 +45,19 @@ export default defineComponent({
     },
     beforeAddingTag (event: any) {
       console.log('before adding', event.tag.text)
-      event.addTag()
+      if (
+        !this.processedModelValue
+          .map((t: { text: string }) => t.text)
+          .includes(event.tag.text)
+      ) {
+        this.$emit('addTag', event.tag.text)
+        this.tag = ''
+      }
     },
-    onAddingDuplicate (event: any) {
-      //   const duplicate = event.text
-      //   const alreadyExisting = this.processedModelValue.find(
-      //     t => t.text == duplicate
-      //   )
-      //   console.log(alreadyExisting)
-      //   alreadyExisting.text = 'wqejrio'
-      //   alreadyExisting.classes = 'text-red-800'
-      console.log('DUPLICATE', event)
+    beforeDeletingTag (event: any) {
+      console.log('before deleting', event.tag.text)
+      //event.deleteTag()
+      this.$emit('removeTag', event.tag.text)
     },
     processTag (tag: { text: string }) {
       return {

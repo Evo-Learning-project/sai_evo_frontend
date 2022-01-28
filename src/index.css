@@ -103,6 +103,9 @@
     .ti-tag {
       @apply rounded-full bg-primary text-lightText px-3 py-0.5 text-sm !important
     }
+    .ti-tag-sm {
+      @apply h-6 px-2
+    }
     .ti-deletion-mark {
       @apply bg-danger !important
     }

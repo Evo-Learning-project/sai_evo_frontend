@@ -28,12 +28,34 @@ export async function getExercises(
 
 export async function getExercisesById(
   courseId: string,
-  exerciseId: string[]
+  exerciseIds: string[]
 ): Promise<Exercise[]> {
   let url = `/courses/${courseId}/exercises/`;
-  url += `bulk_get/?ids=${exerciseId.join(',')}`;
+  url += `bulk_get/?ids=${exerciseIds.join(',')}`;
   const response = await axios.get(url);
   return response.data;
+}
+
+export async function addTagToExercise(
+  courseId: string,
+  exerciseId: string,
+  tag: string
+): Promise<void> {
+  await axios.put(
+    `/courses/${courseId}/exercises/${exerciseId}/tags/`,
+    { tag }
+  );
+}
+
+export async function removeTagFromExercise(
+  courseId: string,
+  exerciseId: string,
+  tag: string
+): Promise<void> {
+  await axios.delete(
+    `/courses/${courseId}/exercises/${exerciseId}/tags/`,
+    { data: { tag } }
+  );
 }
 
 export async function createExercise(

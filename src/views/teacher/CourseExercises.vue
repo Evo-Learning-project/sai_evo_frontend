@@ -14,12 +14,12 @@
     >
   </div>
   <div v-if="!firstLoading">
-    <exercise-editor-wrapper
+    <ExerciseEditorWrapper
       v-for="(exercise, index) in exercises"
       :key="'course-' + courseId + '-exercise-' + exercise.id"
       v-model="exercises[index]"
       :ref="'course-' + courseId + '-exercise-' + exercise.id"
-    ></exercise-editor-wrapper>
+    ></ExerciseEditorWrapper>
   </div>
   <div v-else>
     <skeleton-card class="pb-10"></skeleton-card>

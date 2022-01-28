@@ -64,12 +64,14 @@
           @update:modelValue="emitUpdate('solution', $event)"
           >{{ $t('exercise_editor.exercise_solution') }}</text-editor
         >
-        <tag-input
+        <TagInput
           :modelValue="modelValue.tags"
-          @update:modelValue="emitUpdate('tags', $event)"
           :allow-edit-tags="true"
           :placeholder="$t('exercise_editor.exercise_tags')"
-        ></tag-input>
+          @addTag="onAddTag($event)"
+          @removeTag="onRemoveTag($event)"
+        ></TagInput>
+        <!-- @update:modelValue="emitUpdate('tags', $event)"-->
       </div>
       <!-- Multiple-choice exercise types settings -->
       <div class="mt-8" v-if="isMultipleChoice">
@@ -205,6 +207,20 @@ export default defineComponent({
         courseId: this.courseId,
         exerciseId: this.modelValue.id,
         choice: getBlankChoice()
+      })
+    },
+    async onAddTag (tag: string) {
+      await this.$store.dispatch('addExerciseTag', {
+        courseId: this.courseId,
+        exerciseId: this.modelValue.id,
+        tag
+      })
+    },
+    async onRemoveTag (tag: string) {
+      await this.$store.dispatch('removeExerciseTag', {
+        courseId: this.courseId,
+        exerciseId: this.modelValue.id,
+        tag
       })
     },
     async onChoiceUpdate (index: number, newVal: ExerciseChoice) {

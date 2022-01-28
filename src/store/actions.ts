@@ -17,9 +17,11 @@ import { getCourses, getTags } from '@/api/courses';
 import { Commit } from 'vuex';
 
 import {
+  addTagToExercise,
   createExercise,
   createExerciseChoice,
   getExercises,
+  removeTagFromExercise,
   updateExercise,
   updateExerciseChoice,
 } from '@/api/exercises';
@@ -268,6 +270,41 @@ export const actions = {
     // const tags = await getTags(courseId);
     // commit('setTags', tags);
     // commit('setActiveCourseId', courseId);
+  },
+  addExerciseTag: async (
+    { commit, state }: { commit: Commit; state: any },
+    {
+      courseId,
+      exerciseId,
+      tag,
+    }: {
+      courseId: string;
+      exerciseId: string;
+      tag: string;
+    }
+  ) => {
+    await addTagToExercise(courseId, exerciseId, tag);
+    state.exercises
+      .find((e: Exercise) => e.id === (exerciseId as string))
+      ?.tags?.push({ name: tag } as Tag);
+  },
+  removeExerciseTag: async (
+    { commit, state }: { commit: Commit; state: any },
+    {
+      courseId,
+      exerciseId,
+      tag,
+    }: {
+      courseId: string;
+      exerciseId: string;
+      tag: string;
+    }
+  ) => {
+    await removeTagFromExercise(courseId, exerciseId, tag);
+    const target = state.exercises.find(
+      (e: Exercise) => e.id === (exerciseId as string)
+    ) as Exercise;
+    target.tags = target.tags?.filter((t) => t.name != tag);
   },
   getEvents: async (
     { commit }: { commit: Commit },

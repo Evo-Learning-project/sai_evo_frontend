@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="">
     <ExerciseSearchFilters
       class="bg-light -mx-8 px-8 mb-4 py-4"
       v-model="searchFilter"

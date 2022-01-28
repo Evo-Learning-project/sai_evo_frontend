@@ -3,14 +3,14 @@
     tabindex="0"
     class="flex border-gray-300 rounded-md shadow-sm"
     :class="{
-      'md:px-3 md:py-2.5': size == 'sm',
+      'md:px-3.5 md:py-3': size == 'sm',
       'px-1 py-6  md:px-6': size == 'default',
       'my-4': size == 'default' && !marginLess,
       'border-2': highlighted,
       border: !highlighted
     }"
   >
-    <div :class="[$slots.side ? 'w-11/12' : 'w-full']">
+    <div class="w-full">
       <slot name="header"></slot>
       <div
         v-if="$slots.body"

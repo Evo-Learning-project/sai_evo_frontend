@@ -7,16 +7,15 @@
         </span></btn
       >
     </div>
-    <exercise-preview
+    <ExercisePreview
       v-show="!showEditor"
       :exercise="modelValue"
-    ></exercise-preview>
-    <exercise-editor
+    ></ExercisePreview>
+    <ExerciseEditor
       :saving="saving"
       v-show="showEditor"
       v-model="proxyModelValue"
-      @update="onUpdate($event)"
-    ></exercise-editor>
+    ></ExerciseEditor>
   </div>
 </template>
 
@@ -55,16 +54,6 @@ export default defineComponent({
   methods: {
     toggleExpand () {
       this.showEditor = !this.showEditor
-    },
-    onUpdateSelected () {
-      this.$store.commit('toggleSelectedExercise', this.modelValue)
-    },
-    onDialog () {
-      console.log('on dialog')
-    },
-    onUpdate (value: unknown) {
-      console.log('on update')
-      console.log(value)
     }
   },
   computed: {
