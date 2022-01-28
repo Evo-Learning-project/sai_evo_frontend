@@ -1,10 +1,10 @@
 <template>
-  <h1>Corsi</h1>
-  <course-list-item
+  <!-- <h1>Corsi</h1> -->
+  <CourseListItem
     v-for="course in courses"
     :key="'course-' + course.id"
     :course="course"
-  ></course-list-item>
+  ></CourseListItem>
 </template>
 
 <script lang="ts">

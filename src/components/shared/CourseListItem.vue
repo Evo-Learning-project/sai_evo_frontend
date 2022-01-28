@@ -2,7 +2,7 @@
   <!-- <router-link
     :to="{ name: 'CourseDashboard', params: { courseId: course.id } }"
   > -->
-  <Card class="transition-all duration-75 hover:bg-light hover:shadow-md">
+  <Card class="transition-all duration-75 hover:bg-gray-50">
     <template v-slot:header>
       <div class="flex items-center">
         <span class="mr-2 opacity-50 material-icons-outlined"
@@ -17,15 +17,30 @@
       </div>
     </template>
     <template v-slot:side>
-      <div class="ml-auto">
-        <Btn>
-          <!-- <span class="material-icons-outlined">space_dashboard</span> -->
-          Pannello
+      <div class="flex flex-col items-stretch space-y-2">
+        <router-link
+          :to="{ name: 'CourseDashboard', params: { courseId: course.id } }"
+          ><Btn class="w-full">
+            <span class="mr-1 text-base material-icons-outlined">
+              shield
+            </span>
+            Pannello
+          </Btn></router-link
+        >
+        <Btn
+          v-if="canEnroll"
+          :variant="'success'"
+          @click="showEnrollDialog = true"
+        >
+          <span class="mr-1 text-base material-icons-outlined">
+            add_circle_outline
+          </span>
+          Iscriviti
         </Btn>
-        <p>dfj</p>
-        <Btn v-if="canEnroll">
-          <!-- <span class="material-icons-outlined">space_dashboard</span> -->
-          Pannello
+        <Btn v-else-if="true || course.is_enrolled">
+          <span class="mr-1 text-base material-icons-outlined">
+            chevron_right </span
+          >Vai al corso
         </Btn>
       </div>
     </template>
@@ -44,6 +59,11 @@ export default defineComponent({
     course: {
       type: Object as PropType<Course>,
       required: true
+    }
+  },
+  data () {
+    return {
+      showEnrollDialog: false
     }
   },
   components: {

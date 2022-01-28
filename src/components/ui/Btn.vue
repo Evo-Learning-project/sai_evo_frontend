@@ -33,9 +33,11 @@
       'rounded-md': variant !== 'transparent'
     }"
   >
-    <p class="flex items-center" :class="loading ? 'opacity-0' : ''">
-      <slot></slot>
-    </p>
+    <div class="flex w-full">
+      <p class="flex items-center mx-auto" :class="loading ? 'opacity-0' : ''">
+        <slot></slot>
+      </p>
+    </div>
     <p
       v-if="loading"
       class="absolute transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"

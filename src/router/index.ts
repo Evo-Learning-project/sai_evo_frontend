@@ -4,7 +4,8 @@ import {
   RouteRecordRaw,
 } from 'vue-router';
 import MainTeacher from '../views/teacher/MainTeacher.vue';
-import CourseList from '../views/teacher/CourseList.vue';
+import MainStudent from '../views/student/MainStudent.vue';
+import CourseList from '../views/shared/CourseList.vue';
 import CourseDashboard from '../views/teacher/CourseDashboard.vue';
 import CourseExercises from '../views/teacher/CourseExercises.vue';
 import CourseExams from '../views/teacher/CourseExams.vue';
@@ -27,33 +28,34 @@ const routes: Array<RouteRecordRaw> = [
     path: '/teacher',
     name: 'MainTeacher',
     component: MainTeacher,
-    redirect: { name: 'CourseList' },
+    redirect: { name: 'TeacherCourseList' },
     meta: {
       // TODO permissions
     },
     children: [
       {
-        path: 'courses',
-        name: 'CourseList',
-        component: CourseList,
-        meta: {
-          sidebarOptions: courseListSidebarOptions,
-        },
-      },
-      {
-        path: 'courses/:courseId',
+        path: '',
         component: CourseHeadView,
         meta: {
           sidebarOptions: courseDashboardSidebarOptions,
         },
         children: [
           {
-            path: '',
+            path: 'courses',
+            name: 'TeacherCourseList',
+            component: CourseList,
+            meta: {
+              routeTitle: _('headings.course_list'),
+              sidebarOptions: courseListSidebarOptions,
+            },
+          },
+          {
+            path: 'courses/:courseId',
             name: 'CourseDashboard',
             component: CourseDashboard,
           },
           {
-            path: 'exercises',
+            path: 'courses/:courseId/exercises',
             name: 'CourseExercises',
             component: CourseExercises,
             meta: {
@@ -61,7 +63,7 @@ const routes: Array<RouteRecordRaw> = [
             },
           },
           {
-            path: 'exams',
+            path: 'courses/:courseId/exams',
             name: 'CourseExams',
             component: CourseExams,
             meta: {
@@ -69,11 +71,33 @@ const routes: Array<RouteRecordRaw> = [
             },
           },
           {
-            path: 'exams/:examId',
+            path: 'courses/:courseId/exams/:examId',
             component: EventEditor,
             name: 'EventEditor',
           },
         ],
+      },
+    ],
+  },
+  {
+    path: '/student',
+    name: 'MainStudent',
+    component: MainStudent,
+    redirect: { name: 'StudentCourseList' },
+    meta: {
+      // TODO permissions
+    },
+    children: [
+      {
+        path: 'courses',
+        name: 'StudentCourseList',
+        component: CourseList,
+        meta: {
+          routeTitle: _('headings.course_list'),
+        },
+        // meta: {
+        //   sidebarOptions: courseListSidebarOptions,
+        // },
       },
     ],
   },

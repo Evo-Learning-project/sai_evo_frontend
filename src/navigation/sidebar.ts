@@ -10,7 +10,7 @@ export const courseListSidebarOptions: SidebarOption[] = [
   {
     label: _('sidebar_labels.course_list_courses'),
     icon: 'list',
-    routeName: 'CourseList',
+    routeName: 'TeacherCourseList',
   },
   {
     label: _('sidebar_labels.course_list_new_course'),
@@ -42,6 +42,6 @@ export const courseDashboardSidebarOptions: SidebarOption[] = [
   {
     label: _('sidebar_labels.course_dashboard_back_to_courses'),
     icon: 'arrow_back_ios',
-    routeName: 'CourseList',
+    routeName: 'TeacherCourseList',
   },
 ];

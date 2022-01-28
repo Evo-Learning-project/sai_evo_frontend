@@ -19,6 +19,7 @@ export const it = {
     course_title: 'Corso',
     course_exercises: 'Esercizi',
     course_exams: 'Esami',
+    course_list: 'Corsi',
   },
   misc: {
     select_empty_option: 'Seleziona',

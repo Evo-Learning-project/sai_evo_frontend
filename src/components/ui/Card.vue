@@ -28,7 +28,7 @@
     <div
       v-if="$slots.side"
       class="h-full"
-      :class="{ 'w-30': size == 'default', 'w-10': size == 'sm' }"
+      :class="{ 'w-40': size == 'default', 'w-10': size == 'sm' }"
     >
       <slot name="side"></slot>
     </div>

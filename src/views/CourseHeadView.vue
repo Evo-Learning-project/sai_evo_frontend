@@ -1,8 +1,10 @@
 <template>
-  <h2 class="mb-8">
-    {{ $t('headings.course_title') }} {{ $route.params.id }}
-    {{ $route.meta.routeTitle ? ' &mdash; ' + $route.meta.routeTitle : '' }}
-  </h2>
+  <h1 class="mb-8">
+    <!-- TODO move this into MainTeacher.vue and get rid of this component -->
+    <!-- {{ $t('headings.course_title') }} {{ $route.params.id }} -->
+    {{ $route.meta.routeTitle }}
+    <!--? ' &mdash; ' + $route.meta.routeTitle : '' -->
+  </h1>
   <router-view></router-view>
 </template>
 
