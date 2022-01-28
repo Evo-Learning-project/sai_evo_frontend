@@ -1,6 +1,6 @@
 <template>
   <div
-    v-if="showSpinner"
+    v-if="loading"
     class="absolute z-50 transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
   >
     <Spinner :size="'xl'" :variant="'dark'" :fast="true"></Spinner>
@@ -36,6 +36,7 @@
 <script lang="ts">
 import { defineComponent } from '@vue/runtime-core'
 import Spinner from './components/ui/Spinner.vue'
+import { mapState } from 'vuex'
 
 export default defineComponent({
   beforeCreate (): void {
@@ -50,18 +51,8 @@ export default defineComponent({
     }
   },
   computed: {
-    showSpinner () {
-      return this.$store.getters.loading
-    }
-  }
-  // methods: {
-  //   onLoading () {
-  //     console.log('loading!')
-  //     this.showSpinner = true
-  //   },
-  //   onDoneLoading () {
-  //     this.showSpinner = true
-  //   }
-  // }
+    ...mapState(['loading'])
+  },
+  methods: {}
 })
 </script>

@@ -42,6 +42,8 @@
 </template>
 
 <script lang="ts">
+import { mapState } from 'vuex'
+
 import { getTranslatedString as _ } from '@/i18n'
 import { icons as exerciseTypesIcons } from '@/assets/exerciseTypesIcons'
 import { icons as exerciseStatesIcons } from '@/assets/exerciseStatesIcons'
@@ -160,9 +162,6 @@ export default defineComponent({
     courseId (): string {
       return this.$route.params.courseId as string
     },
-    exercises (): Exercise[] {
-      return this.$store.getters.exercises
-    },
     tags (): Tag[] {
       return [{ name: 'tag1' }, { name: 'tag2' }, { name: 'tag3' }]
     },
@@ -191,9 +190,7 @@ export default defineComponent({
           description: _('exercise_states_descriptions.' + key)
         }))
     },
-    selectedExercises () {
-      return this.$store.getters.selectedExercises
-    }
+    ...mapState(['exercises'])
   }
 })
 </script>

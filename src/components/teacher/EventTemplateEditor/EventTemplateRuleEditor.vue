@@ -22,7 +22,7 @@
         </div>
       </div>
       <div v-if="isSlotPopulated" class="mt-4">
-        <p class="text-muted mb-2">
+        <p class="mb-2 text-muted">
           {{
             ruleExercises.length == 1
               ? $t(
@@ -198,7 +198,10 @@ export default defineComponent({
   },
   async created () {
     this.loading = true
-    if (this.modelValue.rule_type == this.idBasedRuleType) {
+    if (
+      this.modelValue.rule_type == this.idBasedRuleType &&
+      (this.modelValue.exercises?.length ?? 0) > 0
+    ) {
       const previews = await getExercisesById(
         this.courseId,
         this.modelValue.exercises as string[]

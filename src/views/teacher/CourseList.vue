@@ -8,9 +8,9 @@
 </template>
 
 <script lang="ts">
-import { Course } from '@/models'
 import { defineComponent } from '@vue/runtime-core'
 import CourseListItem from '@/components/teacher/CourseListItem.vue'
+import { mapState } from 'vuex'
 
 export default defineComponent({
   name: 'CourseList',
@@ -21,44 +21,7 @@ export default defineComponent({
     this.$store.dispatch('getCourses')
   },
   computed: {
-    courses (): Course[] {
-      return this.$store.getters.courses
-
-      /*   return [
-        {
-          id: 'abc',
-          name: 'Programmazione e algoritmica',
-          description: 'Test description'
-        },
-        {
-          id: 'def',
-          name: 'Analisi matematica',
-          description: ''
-        },
-        {
-          id: 'ghi',
-          name: 'Laboratorio 1',
-          description:
-            'Test description Test description Test description Test description Test description Test description Test description Test description Test description Test description Test description Test description Test description Test description Test description '
-        },
-        {
-          id: '1',
-          name: 'Programmazione e algoritmica',
-          description: 'Test description'
-        },
-        {
-          id: '2',
-          name: 'Analisi matematica',
-          description: ''
-        },
-        {
-          id: '3',
-          name: 'Laboratorio 1',
-          description:
-            'Test description Test description Test description Test description Test description Test description Test description Test description Test description Test description Test description Test description Test description Test description Test description '
-        }
-      ]*/
-    }
+    ...mapState(['courses'])
   }
 })
 </script>

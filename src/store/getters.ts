@@ -19,13 +19,6 @@ export const getters = {
       (t: EventTemplate) => t.id == getters.event(eventId).template
     ),
   email: (state: any): string => state.user?.email,
-  courses: (state: any): Course[] => state.courses,
-  exercises: (state: any): Exercise[] => state.exercises,
   exams: (state: any): Event[] =>
     state.events.filter((e: Event) => e.event_type == EventType.EXAM),
-  templates: (state: any): EventTemplate[] => state.templates,
-  tags: (state: any): Tag[] => state.tags,
-  selectedExercises: (state: any): Exercise[] =>
-    state.selectedExercises,
-  loading: (state: any): boolean => state.loading,
 };

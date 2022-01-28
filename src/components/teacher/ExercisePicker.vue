@@ -1,7 +1,7 @@
 <template>
   <div class="">
     <ExerciseSearchFilters
-      class="bg-light -mx-8 px-8 mb-4 py-4"
+      class="px-8 py-4 mb-4 -mx-8 bg-light"
       v-model="searchFilter"
       :full="false"
     ></ExerciseSearchFilters>
@@ -34,7 +34,7 @@
       </template>
       <template #no-more>
         <!-- &nbsp; -->
-        <div class="mt-4 mb-12 w-full h-1 bg-gray-200 rounded-md"></div>
+        <div class="w-full h-1 mt-4 mb-12 bg-gray-200 rounded-md"></div>
       </template>
     </VueEternalLoading>
   </div>
@@ -42,6 +42,8 @@
 
 <script lang="ts">
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import { mapState } from 'vuex'
+
 import { VueEternalLoading, LoadAction } from '@ts-pro/vue-eternal-loading'
 import Spinner from '@/components/ui/Spinner.vue'
 
@@ -143,9 +145,10 @@ export default defineComponent({
     courseId (): string {
       return this.$route.params.courseId as string
     },
-    exercises (): Exercise[] {
-      return this.$store.getters.exercises
-    }
+    // exercises (): Exercise[] {
+    //   return this.$store.getters.exercises
+    // }
+    ...mapState(['exercises'])
   }
 })
 </script>

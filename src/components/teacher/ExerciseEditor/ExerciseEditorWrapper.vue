@@ -64,11 +64,6 @@ export default defineComponent({
       set (val: Exercise) {
         this.$emit('update:modelValue', val)
       }
-    },
-    isExerciseSelected (): boolean {
-      return this.$store.getters.selectedExercises
-        .map((e: Exercise) => e.id)
-        .includes(this.modelValue.id)
     }
   }
 })
