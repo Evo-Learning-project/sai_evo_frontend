@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <div class="h-6">
     <div v-if="saving" class="flex items-center ml-auto space-x-1 text-muted">
-      <spinner :size="'sm'"></spinner>
+      <Spinner :size="'sm'"></Spinner>
       <p class="text-sm">{{ $t('exercise_editor.saving') }}</p>
     </div>
     <div v-else class="flex items-center ml-auto space-x-1 text-muted">

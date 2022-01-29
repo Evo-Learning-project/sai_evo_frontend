@@ -1,9 +1,13 @@
 <template>
-  <div class="relative z-10 rounded-t-sm bg-light">
+  <div
+    class="relative z-10 rounded-t-sm bg-light"
+    :class="{ 'opacity-60 pointer-events-none': disabled }"
+  >
     <div class="z-10 ql-editor-container">
       <quill-editor
         :options="editorOptions"
         :value="modelValue"
+        :disabled="disabled"
         @change="onEditorChange($event)"
       />
     </div>
@@ -29,7 +33,7 @@ import { defineComponent } from '@vue/runtime-core'
 import { quillEditor } from 'vue3-quill'
 export default defineComponent({
   name: 'TextEditor',
-  props: ['modelValue'],
+  props: ['modelValue', 'disabled'],
   components: {
     quillEditor
   },

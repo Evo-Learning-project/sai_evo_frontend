@@ -6,7 +6,7 @@
       v-if="isMultipleChoiceMultiplePossible"
       :options="exerciseChoicesAsOptions"
       v-model="selectedChoicesProxy"
-      :disabled="!allowEditSubmission"
+      :disabled="!allowEditSubmission || saving"
       v-slot="{ description }"
     >
       <p class="mb-2 text-sm text-muted">{{ description }}</p>
@@ -19,12 +19,18 @@
       v-else-if="isMultipleChoiceSinglePossible"
       :options="exerciseChoicesAsOptions"
       v-model="selectedChoicesProxy"
-      :disabled="!allowEditSubmission"
+      :disabled="!allowEditSubmission || saving"
       v-slot="{ description }"
     >
       <p class="mb-2 text-sm text-muted">{{ description }}</p>
     </RadioGroup>
-    <!-- TODO add text editor for other types of question -->
+    <TextEditor
+      :disabled="!allowEditSubmission"
+      v-else-if="isOpenAnswer"
+      v-model="answerTextProxy"
+    >
+      {{ $t('event_participation_slot.text_answer_label') }}
+    </TextEditor>
   </div>
 </template>
 
@@ -40,11 +46,13 @@ import CheckboxGroup from '@/components/ui/CheckboxGroup.vue'
 import { SelectableOption } from '@/interfaces'
 import RadioGroup from '../ui/RadioGroup.vue'
 import { getTranslatedString as _ } from '@/i18n'
+import TextEditor from '../ui/TextEditor.vue'
 
 export default defineComponent({
   components: {
     CheckboxGroup,
-    RadioGroup
+    RadioGroup,
+    TextEditor
   },
   name: 'AbstractEventParticipationSlot',
   props: {
@@ -65,6 +73,10 @@ export default defineComponent({
       default: false
     },
     showScores: {
+      type: Boolean,
+      default: false
+    },
+    saving: {
       type: Boolean,
       default: false
     }
@@ -118,10 +130,23 @@ export default defineComponent({
       get () {
         return this.modelValue.selected_choices
       },
-      set (val: string[]) {
+      set (val: string | string[]) {
         // TODO probably check if a new value has been added or removed by
         // TODO comparing with current modelValue and emit a specific event
-        this.$emit('updateSelectedChoices', { selected_choices: val })
+        this.$emit(
+          'updateSelectedChoices',
+          typeof val === 'object' ? val : [val]
+        )
+      }
+    },
+    answerTextProxy: {
+      get () {
+        return this.modelValue.answer_text
+      },
+      set (val: string) {
+        // TODO probably check if a new value has been added or removed by
+        // TODO comparing with current modelValue and emit a specific event
+        this.$emit('updateAnswerText', val)
       }
     }
   }

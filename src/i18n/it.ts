@@ -24,6 +24,9 @@ export const it = {
   event_participation_page: {
     exercise: 'Esercizio',
   },
+  event_participation_slot: {
+    text_answer_label: 'La tua risposta',
+  },
   misc: {
     select_empty_option: 'Seleziona',
     or_label: 'Oppure',

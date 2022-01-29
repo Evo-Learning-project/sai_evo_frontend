@@ -1,6 +1,7 @@
 import {
   Event,
   EventParticipation,
+  EventParticipationSlot,
   EventTemplate,
   EventTemplateRule,
 } from '@/models';
@@ -119,6 +120,20 @@ export async function participateInEvent(
 ): Promise<EventParticipation> {
   const response = await axios.post(
     `/courses/${courseId}/events/${eventId}/participations/`
+  );
+  return response.data;
+}
+
+export async function partialUpdateEventSubmissionSlot(
+  courseId: string,
+  eventId: string,
+  participationId: string,
+  slotId: string,
+  changes: Record<keyof EventParticipationSlot, unknown>
+): Promise<EventParticipationSlot> {
+  const response = await axios.patch(
+    `/courses/${courseId}/events/${eventId}/participations/${participationId}/slots/${slotId}/`,
+    changes
   );
   return response.data;
 }

@@ -4,6 +4,7 @@ import {
   Course,
   Event,
   EventParticipation,
+  EventParticipationSlot,
   EventTemplate,
   Exercise,
   Tag,
@@ -56,6 +57,25 @@ export const mutations = {
       state.events.find((e: Event) => e.id == eventId),
       event
     ),
+  setEventParticipationSlot: (
+    state: any,
+    { slotId, slot }: { slotId: string; slot: EventParticipationSlot }
+  ) => {
+    console.log(
+      'slotid',
+      slotId,
+      'TARGET',
+      state.eventParticipation.slots.find(
+        (s: EventParticipationSlot) => s.id == slotId
+      )
+    );
+    Object.assign(
+      state.eventParticipation?.slots?.find(
+        (s: EventParticipationSlot) => s.id == slotId
+      ),
+      slot
+    );
+  },
   setTags: (state: any, tags: Tag[]) => (state.tags = tags),
   setActiveCourseId: (state: any, courseId: string) => {
     if (state.activeCourseId !== courseId) {
