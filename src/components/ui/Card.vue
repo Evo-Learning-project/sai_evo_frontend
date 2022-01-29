@@ -1,7 +1,7 @@
 <template>
   <div
     tabindex="0"
-    class="flex border-gray-300 rounded-md shadow-sm"
+    class="flex h-full border-gray-300 rounded-md shadow-sm"
     :class="{
       'md:px-3.5 md:py-3': size == 'sm',
       'px-1 py-5  md:px-5': size == 'default',

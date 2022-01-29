@@ -1,4 +1,9 @@
-import { Event, EventTemplate, EventTemplateRule } from '@/models';
+import {
+  Event,
+  EventParticipation,
+  EventTemplate,
+  EventTemplateRule,
+} from '@/models';
 import axios from 'axios';
 
 export async function getEvents(courseId: string): Promise<Event[]> {
@@ -104,6 +109,16 @@ export async function updateEventTemplateRule(
   const response = await axios.put(
     `/courses/${courseId}/templates/${templateId}/rules/${ruleId}/`,
     rule
+  );
+  return response.data;
+}
+
+export async function participateInEvent(
+  courseId: string,
+  eventId: string
+): Promise<EventParticipation> {
+  const response = await axios.post(
+    `/courses/${courseId}/events/${eventId}/participations/`
   );
   return response.data;
 }

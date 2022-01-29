@@ -3,6 +3,7 @@
 import {
   Course,
   Event,
+  EventParticipation,
   EventTemplate,
   Exercise,
   Tag,
@@ -62,16 +63,8 @@ export const mutations = {
     }
     state.activeCourseId = courseId;
   },
-  resetSelectedExercises: (state: any) =>
-    (state.selectedExercises = []),
-  toggleSelectedExercise: (state: any, exercise: Exercise) => {
-    const index = state.selectedExercises.findIndex(
-      (e: Exercise) => e.id === exercise.id
-    );
-    if (index !== -1) {
-      state.selectedExercises.splice(index, 1);
-    } else {
-      state.selectedExercises.push(exercise);
-    }
-  },
+  setEventParticipation: (
+    state: any,
+    participation: EventParticipation
+  ) => (state.eventParticipation = participation),
 };

@@ -32,7 +32,8 @@ import {
 import { SearchFilter } from '@/api/interfaces';
 import { mutations } from './mutations';
 import { getters } from './getters';
-import { actions } from './actions';
+import { actions as teacherActions } from './teacherActions';
+import { actions as studentActions } from './studentActions';
 
 const vuexLocal = new VuexPersistence({
   storage: window.localStorage,
@@ -69,6 +70,9 @@ export default createStore({
   },
   getters,
   mutations,
-  actions,
+  actions: {
+    ...teacherActions,
+    ...studentActions,
+  },
   modules: {},
 });

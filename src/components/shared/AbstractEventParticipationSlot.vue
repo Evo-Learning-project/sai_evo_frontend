@@ -63,6 +63,10 @@ export default defineComponent({
     showExerciseLabel: {
       type: Boolean,
       default: false
+    },
+    showScores: {
+      type: Boolean,
+      default: false
     }
   },
   computed: {
@@ -92,14 +96,16 @@ export default defineComponent({
       return (this.exercise.choices as ExerciseChoice[]).map(c => ({
         value: c.id,
         content: c.text,
-        description:
-          c.score +
-          ' ' +
-          _(
-            `exercise.choice_score_word_${
-              c.score == 1 || c.score == -1 ? 'singular' : 'plural'
-            }`
-          )
+        ...(this.showScores && {
+          description:
+            c.score +
+            ' ' +
+            _(
+              `exercise.choice_score_word_${
+                c.score == 1 || c.score == -1 ? 'singular' : 'plural'
+              }`
+            )
+        })
       }))
     },
     isOpenAnswer (): boolean {

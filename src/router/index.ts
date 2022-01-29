@@ -10,7 +10,7 @@ import CourseDashboard from '../views/teacher/CourseDashboard.vue';
 import CourseExercises from '../views/teacher/CourseExercises.vue';
 import CourseExams from '../views/teacher/CourseExams.vue';
 import EventEditor from '../components/teacher/EventEditor/EventEditor.vue';
-import CourseHeadView from '../views/CourseHeadView.vue';
+import EventParticipationPage from '../views/student/EventParticipationPage.vue';
 import Login from '../views/Login.vue';
 import {
   courseDashboardSidebarOptions,
@@ -95,9 +95,12 @@ const routes: Array<RouteRecordRaw> = [
         meta: {
           routeTitle: _('headings.course_list'),
         },
-        // meta: {
-        //   sidebarOptions: courseListSidebarOptions,
-        // },
+      },
+      {
+        path: 'courses/:courseId/exams/:examId',
+        component: EventParticipationPage,
+        name: 'ExamParticipationPage',
+        meta: {},
       },
     ],
   },

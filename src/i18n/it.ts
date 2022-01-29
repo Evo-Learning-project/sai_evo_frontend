@@ -21,6 +21,9 @@ export const it = {
     course_exams: 'Esami',
     course_list: 'Corsi',
   },
+  event_participation_page: {
+    exercise: 'Esercizio',
+  },
   misc: {
     select_empty_option: 'Seleziona',
     or_label: 'Oppure',
