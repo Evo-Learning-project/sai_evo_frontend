@@ -92,6 +92,9 @@
     <!--Mobile responsive sidebar-->
     <!-- Sidebar ends -->
     <div class="flex flex-col w-11/12 px-4 py-6 mx-auto md:w-4/5">
+      <h1 class="mb-8">
+        {{ $route.meta.routeTitle }}
+      </h1>
       <router-view class="flex-grow"></router-view>
     </div>
   </div>

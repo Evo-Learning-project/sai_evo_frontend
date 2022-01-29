@@ -135,6 +135,7 @@ import TagInput from '@/components/ui/TagInput.vue'
 import ChoiceEditor from '@/components/teacher/ExerciseEditor/ChoiceEditor.vue'
 import CloudSaveStatus from '@/components/ui/CloudSaveStatus.vue'
 import { getDebouncedForEditor } from '@/utils'
+import { courseIdMixin } from '@/mixins'
 
 export default defineComponent({
   name: 'ExerciseEditor',
@@ -155,6 +156,7 @@ export default defineComponent({
       required: true
     }
   },
+  mixins: [courseIdMixin],
   watch: {
     async serializedBaseExerciseFields (newVal: string, oldVal: string) {
       if (oldVal !== '{}' && newVal !== oldVal) {
@@ -324,9 +326,6 @@ export default defineComponent({
     },
     isDraft (): boolean {
       return this.modelValue.state == ExerciseState.DRAFT
-    },
-    courseId (): string {
-      return this.$route.params.courseId as string
     }
   }
 })

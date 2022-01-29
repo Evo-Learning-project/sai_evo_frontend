@@ -36,6 +36,7 @@ import {
   EventTemplateRule,
   getBlankEventTemplateRule
 } from '@/models'
+import { courseIdMixin } from '@/mixins'
 //import Toggle from '@/components/ui/Toggle.vue'
 export default defineComponent({
   components: {
@@ -44,6 +45,7 @@ export default defineComponent({
     EventTemplateRuleEditor
     //Toggle
   },
+  mixins: [courseIdMixin],
   name: 'EventTemplateEditor',
   props: {
     modelValue: {
@@ -84,11 +86,7 @@ export default defineComponent({
       this.$emit('saving', false)
     }
   },
-  computed: {
-    courseId (): string {
-      return this.$route.params.courseId as string
-    }
-  }
+  computed: {}
 })
 </script>
 

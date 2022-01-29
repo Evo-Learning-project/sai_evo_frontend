@@ -1,6 +1,7 @@
 import {
   Course,
   Event,
+  EventParticipation,
   EventTemplate,
   EventType,
   Exercise,
@@ -48,18 +49,23 @@ const vuexLocal = new VuexPersistence({
 export default createStore({
   plugins: [vuexLocal.plugin],
   state: {
+    /* shared state */
     user: {} as User,
     courses: [] as Course[],
+    token: '',
+    refreshToken: '',
+    loading: false,
+
+    /* teachers only state*/
     exercises: [] as Exercise[],
     events: [] as Event[],
     templates: [] as EventTemplate[],
     tags: [] as Tag[],
     activeCourseId: null as string | null,
     currentExercisePage: 1,
-    selectedExercises: [] as Exercise[],
-    token: '',
-    refreshToken: '',
-    loading: false,
+
+    /* students only state */
+    eventParticipation: null as EventParticipation | null,
   },
   getters,
   mutations,

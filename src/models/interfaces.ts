@@ -89,10 +89,10 @@ export interface EventTemplateRuleClause {
 
 export interface EventParticipation {
   id: string;
-  user?: string;
+  user: string;
   state: EventParticipationState;
   slots: EventParticipationSlot[];
-  score: number;
+  score?: number;
 }
 
 export interface EventParticipationSlot {

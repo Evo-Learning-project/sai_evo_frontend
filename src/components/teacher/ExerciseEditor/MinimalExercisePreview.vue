@@ -1,89 +1,91 @@
-<template>
-  <!-- <btn :variant="'transparent'" class="text-left rounded-md"> -->
-  <!-- <template v-slot:content>-->
-  <Card
-    :size="'sm'"
-    :highlighted="highlighted"
-    :class="{ 'border-success': highlighted }"
-  >
-    <template v-slot:header>
-      <div class="relative">
-        <div class="flex items-center">
-          <h5>{{ previewTitle }}</h5>
-          <div class="flex hidden ml-2 space-x-1">
-            <!-- hidden -->
-            <Tag
-              v-for="(tag, index) in exercise.tags"
-              :key="elementId + '-tag-' + index"
-              :tag="tag"
-              :small="true"
-            ></Tag>
-          </div>
-          <div
-            :title="$t('exercise_states.' + exercise.state)"
-            class="my-auto ml-4 cursor-default chip chip-sm"
-          >
-            <div class="flex items-center">
-              <MultiIcon class="w-6" :icons="exerciseStateIcons"></MultiIcon>
-              <!-- <p v-html="$t('exercise_states.' + exercise.state)"></p> -->
+<template
+  ><div>
+    <!-- <btn :variant="'transparent'" class="text-left rounded-md"> -->
+    <!-- <template v-slot:content>-->
+    <Card
+      :size="'sm'"
+      :highlighted="highlighted"
+      :class="{ 'border-success': highlighted }"
+    >
+      <template v-slot:header>
+        <div class="relative">
+          <div class="flex items-center">
+            <h5>{{ previewTitle }}</h5>
+            <div class="flex hidden ml-2 space-x-1">
+              <!-- hidden -->
+              <Tag
+                v-for="(tag, index) in exercise.tags"
+                :key="elementId + '-tag-' + index"
+                :tag="tag"
+                :small="true"
+              ></Tag>
+            </div>
+            <div
+              :title="$t('exercise_states.' + exercise.state)"
+              class="my-auto ml-4 cursor-default chip chip-sm"
+            >
+              <div class="flex items-center">
+                <MultiIcon class="w-6" :icons="exerciseStateIcons"></MultiIcon>
+                <!-- <p v-html="$t('exercise_states.' + exercise.state)"></p> -->
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </template>
+      </template>
 
-    <template v-slot:body>
-      <div class="relative h-12 overflow-y-hidden">
-        <div
-          class="w-11/12 overflow-x-hidden overflow-ellipsis"
-          v-html="previewText"
-        ></div>
-        <!-- <div
+      <template v-slot:body>
+        <div class="relative h-12 overflow-y-hidden">
+          <div
+            class="w-11/12 overflow-x-hidden overflow-ellipsis"
+            v-html="previewText"
+          ></div>
+          <!-- <div
           class="absolute bottom-0 left-0 w-full h-7 bg-gradient-to-b from-transparent to-light"
         ></div> -->
-      </div>
-    </template>
-
-    <template v-slot:side>
-      <div class="flex flex-col items-end h-full">
-        <Btn
-          :size="'xs'"
-          :variant="'primary-borderless'"
-          @click="showPreview = true"
-          ><span class="text-base material-icons-outlined">
-            open_in_full
-          </span>
-        </Btn>
-        <div class="mt-auto" :title="selectButtonTitle">
-          <Btn
-            v-if="selectable"
-            :size="'xs'"
-            :variant="'success-borderless'"
-            :forceActive="highlighted"
-            :disabled="selectionDisabled"
-            @btnClick="onSelection()"
-            ><span class="text-base material-icons-outlined">
-              done
-            </span></Btn
-          >
         </div>
-      </div>
-    </template>
-  </Card>
-  <Dialog
-    :showDialog="showPreview"
-    @yes="showPreview = false"
-    :confirmOnly="true"
-    :large="true"
-    :dismissible="true"
-  >
-    <template v-slot:title>{{ $t('misc.exercise_preview_title') }}</template>
-    <template v-slot:body>
-      <FullExercise :exercise="exercise"></FullExercise>
-    </template>
-  </Dialog>
-  <!--</template>-->
-  <!--</btn>-->
+      </template>
+
+      <template v-slot:side>
+        <div class="flex flex-col items-end h-full">
+          <Btn
+            :size="'xs'"
+            :variant="'primary-borderless'"
+            @click="showPreview = true"
+            ><span class="text-base material-icons-outlined">
+              open_in_full
+            </span>
+          </Btn>
+          <div class="mt-auto" :title="selectButtonTitle">
+            <Btn
+              v-if="selectable"
+              :size="'xs'"
+              :variant="'success-borderless'"
+              :forceActive="highlighted"
+              :disabled="selectionDisabled"
+              @btnClick="onSelection()"
+              ><span class="text-base material-icons-outlined">
+                done
+              </span></Btn
+            >
+          </div>
+        </div>
+      </template>
+    </Card>
+    <Dialog
+      :showDialog="showPreview"
+      @yes="showPreview = false"
+      :confirmOnly="true"
+      :large="true"
+      :dismissible="true"
+    >
+      <template v-slot:title>{{ $t('misc.exercise_preview_title') }}</template>
+      <template v-slot:body>
+        <FullExercise :exercise="exercise"></FullExercise>
+      </template>
+    </Dialog>
+    <!--</template>-->
+    <!--</btn>-->
+  </div>
 </template>
 
 <script lang="ts">

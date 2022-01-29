@@ -40,7 +40,7 @@
           >
             <MinimalExercisePreview
               v-for="exercise in ruleExercises"
-              :key="'r-' + modelValue.id + '-e-' + exercise"
+              :key="'r-' + modelValue.id + '-e-' + exercise.id"
               :exercise="exercise"
               :selectable="false"
             ></MinimalExercisePreview>
@@ -181,6 +181,7 @@ import ExercisePicker from '@/components/teacher/ExercisePicker.vue'
 import MinimalExercisePreview from '../ExerciseEditor/MinimalExercisePreview.vue'
 import { getExercisesById } from '@/api/exercises'
 import SkeletonCard from '@/components/ui/SkeletonCard.vue'
+import { courseIdMixin } from '@/mixins'
 export default defineComponent({
   components: {
     Dialog,
@@ -196,6 +197,7 @@ export default defineComponent({
       required: true
     }
   },
+  mixins: [courseIdMixin],
   async created () {
     this.loading = true
     if (
@@ -263,9 +265,6 @@ export default defineComponent({
     }
   },
   computed: {
-    courseId (): string {
-      return this.$route.params.courseId as string
-    },
     ruleExercises (): Exercise[] {
       if (this.modelValue.rule_type != this.idBasedRuleType) {
         return []

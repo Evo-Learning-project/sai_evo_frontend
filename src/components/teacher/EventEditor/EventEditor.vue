@@ -31,6 +31,7 @@ import CloudSaveStatus from '@/components/ui/CloudSaveStatus.vue'
 import { defineComponent } from '@vue/runtime-core'
 import { getDebouncedForEditor } from '@/utils'
 import { Event, EventState } from '@/models'
+import { courseIdMixin, eventIdMixin } from '@/mixins'
 
 export default defineComponent({
   name: 'EventEditor',
@@ -41,6 +42,7 @@ export default defineComponent({
     CloudSaveStatus,
     EventStateEditor
   },
+  mixins: [courseIdMixin, eventIdMixin],
   props: [],
   async created () {
     // wrap update method in a debounce
@@ -102,12 +104,6 @@ export default defineComponent({
     }
   },
   computed: {
-    courseId (): string {
-      return this.$route.params.courseId as string
-    },
-    eventId (): string {
-      return this.$route.params.examId as string
-    },
     proxyModelValue: {
       get (): Event {
         return this.$store.getters.event(this.eventId)

@@ -34,48 +34,48 @@ const routes: Array<RouteRecordRaw> = [
     },
     children: [
       {
-        path: '',
-        component: CourseHeadView,
+        path: 'courses',
+        name: 'TeacherCourseList',
+        component: CourseList,
+        meta: {
+          routeTitle: _('headings.course_list'),
+          sidebarOptions: courseListSidebarOptions,
+        },
+      },
+      {
+        path: 'courses/:courseId',
+        name: 'CourseDashboard',
+        component: CourseDashboard,
+        meta: {
+          routeTitle: _('headings.course_title'),
+          sidebarOptions: courseDashboardSidebarOptions,
+        },
+      },
+      {
+        path: 'courses/:courseId/exercises',
+        name: 'CourseExercises',
+        component: CourseExercises,
+        meta: {
+          routeTitle: _('headings.course_exercises'),
+          sidebarOptions: courseDashboardSidebarOptions,
+        },
+      },
+      {
+        path: 'courses/:courseId/exams',
+        name: 'CourseExams',
+        component: CourseExams,
+        meta: {
+          routeTitle: _('headings.course_exams'),
+          sidebarOptions: courseDashboardSidebarOptions,
+        },
+      },
+      {
+        path: 'courses/:courseId/exams/:examId',
+        component: EventEditor,
+        name: 'ExamEditor',
         meta: {
           sidebarOptions: courseDashboardSidebarOptions,
         },
-        children: [
-          {
-            path: 'courses',
-            name: 'TeacherCourseList',
-            component: CourseList,
-            meta: {
-              routeTitle: _('headings.course_list'),
-              sidebarOptions: courseListSidebarOptions,
-            },
-          },
-          {
-            path: 'courses/:courseId',
-            name: 'CourseDashboard',
-            component: CourseDashboard,
-          },
-          {
-            path: 'courses/:courseId/exercises',
-            name: 'CourseExercises',
-            component: CourseExercises,
-            meta: {
-              routeTitle: _('headings.course_exercises'),
-            },
-          },
-          {
-            path: 'courses/:courseId/exams',
-            name: 'CourseExams',
-            component: CourseExams,
-            meta: {
-              routeTitle: _('headings.course_exams'),
-            },
-          },
-          {
-            path: 'courses/:courseId/exams/:examId',
-            component: EventEditor,
-            name: 'EventEditor',
-          },
-        ],
       },
     ],
   },

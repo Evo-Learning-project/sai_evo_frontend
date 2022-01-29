@@ -9,32 +9,29 @@
       >
     </div>
     <div class="grid grid-cols-2 gap-4 mt-4">
-      <event-editor-preview
+      <EventEditorPreview
         v-for="(exam, index) in exams"
         :key="exam + '-' + index"
         :event="exam"
-      ></event-editor-preview>
+      ></EventEditorPreview>
     </div>
   </div>
 </template>
 
 <script lang="ts">
 import EventEditorPreview from '@/components/teacher/EventEditor/EventEditorPreview.vue'
-import {
-  Event,
-  EventTemplate,
-  getBlankEventTemplate,
-  getBlankExam
-} from '@/models'
+import { Event, getBlankExam } from '@/models'
 import Btn from '@/components/ui/Btn.vue'
 
 import { defineComponent } from '@vue/runtime-core'
+import { courseIdMixin } from '@/mixins'
 export default defineComponent({
   components: {
     EventEditorPreview,
     Btn
   },
   name: 'CourseExams',
+  mixins: [courseIdMixin],
   created () {
     this.$store.dispatch('getEvents', this.courseId)
   },
@@ -54,15 +51,12 @@ export default defineComponent({
 
       // redirect to exam editor for newly created exam
       this.$router.push({
-        name: 'EventEditor',
+        name: 'ExamEditor',
         params: { examId: newExam.id }
       })
     }
   },
   computed: {
-    courseId (): string {
-      return this.$route.params.courseId as string
-    },
     exams (): Event[] {
       return this.$store.getters.exams
     }

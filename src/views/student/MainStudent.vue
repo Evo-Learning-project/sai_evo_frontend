@@ -14,7 +14,7 @@
               <div class="flex items-baseline ml-10 space-x-4">
                 <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
                 <!--
- <a
+                <a
                   href="#"
                   class="px-3 py-2 text-sm font-medium text-white bg-gray-900 rounded-md"
                   aria-current="page"
@@ -25,24 +25,6 @@
                   href="#"
                   class="px-3 py-2 text-sm font-medium text-gray-300 rounded-md hover:bg-gray-700 hover:text-white"
                   >Team</a
-                >
-
-                <a
-                  href="#"
-                  class="px-3 py-2 text-sm font-medium text-gray-300 rounded-md hover:bg-gray-700 hover:text-white"
-                  >Projects</a
-                >
-
-                <a
-                  href="#"
-                  class="px-3 py-2 text-sm font-medium text-gray-300 rounded-md hover:bg-gray-700 hover:text-white"
-                  >Calendar</a
-                >
-
-                <a
-                  href="#"
-                  class="px-3 py-2 text-sm font-medium text-gray-300 rounded-md hover:bg-gray-700 hover:text-white"
-                  >Reports</a
                 >
                 -->
               </div>

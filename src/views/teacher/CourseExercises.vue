@@ -68,6 +68,7 @@ import Spinner from '@/components/ui/Spinner.vue'
 import ExerciseSearchFilters from '@/components/teacher/ExerciseSearchFilters.vue'
 import { SearchFilter } from '@/api/interfaces'
 import { getDebouncedForFilter } from '@/utils'
+import { courseIdMixin } from '@/mixins'
 export default defineComponent({
   name: 'CourseExercises',
   props: {
@@ -77,6 +78,7 @@ export default defineComponent({
     },
     options: Array
   },
+  mixins: [courseIdMixin],
   watch: {
     searchFilter: {
       async handler (val: SearchFilter) {
@@ -159,9 +161,6 @@ export default defineComponent({
     }
   },
   computed: {
-    courseId (): string {
-      return this.$route.params.courseId as string
-    },
     tags (): Tag[] {
       return [{ name: 'tag1' }, { name: 'tag2' }, { name: 'tag3' }]
     },

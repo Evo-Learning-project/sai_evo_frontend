@@ -1,5 +1,5 @@
 <template>
-  <router-link :to="{ name: 'EventEditor', params: { examId: event.id } }">
+  <router-link :to="{ name: 'ExamEditor', params: { examId: event.id } }">
     <Card
       :marginLess="true"
       class="transition-all duration-75 hover:bg-light hover:shadow-md"

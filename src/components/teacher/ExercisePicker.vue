@@ -61,6 +61,7 @@ import SkeletonCard from '../ui/SkeletonCard.vue'
 import ExerciseSearchFilters from './ExerciseSearchFilters.vue'
 import { SearchFilter } from '@/api/interfaces'
 import { getDebouncedForFilter } from '@/utils'
+import { courseIdMixin } from '@/mixins'
 export default defineComponent({
   name: 'ExercisePicker',
   async created () {
@@ -73,6 +74,7 @@ export default defineComponent({
     })
     this.firstLoading = false
   },
+  mixins: [courseIdMixin],
   watch: {
     searchFilter: {
       async handler (val: SearchFilter) {
@@ -155,9 +157,6 @@ export default defineComponent({
     }
   },
   computed: {
-    courseId (): string {
-      return this.$route.params.courseId as string
-    },
     ...mapState(['exercises'])
   }
 })
