@@ -1,8 +1,8 @@
 <template>
   <div>
-    <div class="flex w-full">
-      <CloudSaveStatus class="ml-auto" :saving="saving"></CloudSaveStatus>
-    </div>
+    <teleport v-if="mounted" to="#main-student-header-right">
+      <CloudSaveStatus :saving="saving"></CloudSaveStatus
+    ></teleport>
     <div
       class="my-4"
       v-for="(slot, index) in proxyModelValue.slots"
@@ -45,9 +45,14 @@ export default defineComponent({
       eventId: this.eventId
     })
   },
+  mounted () {
+    this.mounted = true // prevent issues with teleported component
+  },
+
   data () {
     return {
-      saving: false
+      saving: false,
+      mounted: false
     }
   },
   methods: {

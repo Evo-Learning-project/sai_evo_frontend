@@ -272,16 +272,23 @@
         </div>
       </div>
     </nav>
-    <header class="relative z-10 shadow-md bg-light">
-      <div class="px-4 py-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
+    <header
+      class="sticky top-0 z-10 bg-gray-200 shadow-md bg-opacity-70 backdrop-blur-sm backdrop-filter"
+    >
+      <div
+        class="flex items-center px-4 py-4 mx-auto max-w-7xl sm:px-6 lg:px-8"
+      >
         <!-- <h1 class="text-3xl font-bold text-gray-900">
           Dashboard
         </h1> -->
-        <h1 class="mb-0">
+        <h2 class="mb-0">
+          Esame in corso
+          <!-- TODO remove -->
           <!-- {{ $t('headings.course_title') }} {{ $route.params.id }} -->
           {{ $route.meta.routeTitle }}
           <!-- ? ' &mdash; ' + $route.meta.routeTitle : ''-->
-        </h1>
+        </h2>
+        <div id="main-student-header-right" class="ml-auto"></div>
       </div>
     </header>
     <main class="flex-grow bg-white">
