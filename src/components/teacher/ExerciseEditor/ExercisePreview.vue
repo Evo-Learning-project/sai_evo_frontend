@@ -1,18 +1,18 @@
 <template>
-  <card :marginLess="true">
+  <Card :marginLess="true">
     <template v-slot:header>
       <div class="flex items-center ">
-        <h3>{{ previewTitle }}</h3>
+        <h4>{{ previewTitle }}</h4>
         <div class="flex ml-2 space-x-1">
-          <tag
+          <Tag
             v-for="(tag, index) in exercise.tags"
             :key="elementId + '-tag-' + index"
             :tag="tag"
-          ></tag>
+          ></Tag>
         </div>
-        <div class="my-auto ml-4 chip">
+        <div class="my-auto ml-4 chip ">
           <div class="flex items-center">
-            <multi-icon class="w-6" :icons="exerciseStateIcons"></multi-icon>
+            <MultiIcon class="w-6" :icons="exerciseStateIcons"></MultiIcon>
             <p v-html="$t('exercise_states.' + exercise.state)"></p>
           </div>
         </div>
@@ -24,7 +24,7 @@
         <div v-html="previewText" class="overflow-ellipsis"></div>
       </div>
     </template>
-  </card>
+  </Card>
 </template>
 
 <script lang="ts">

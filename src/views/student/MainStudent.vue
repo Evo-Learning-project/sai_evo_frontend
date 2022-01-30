@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col">
+  <div class="flex flex-col flex-grow">
     <nav class="bg-primary">
       <div class="px-4 mx-auto max-w-7xl sm:px-6 lg:px-10">
         <div class="flex items-center justify-between h-14">
@@ -292,7 +292,7 @@
       </div>
     </header>
     <main class="flex-grow bg-white">
-      <div class="py-6 mx-auto max-w-7xl sm:px-5 lg:px-10">
+      <div class="h-full py-6 mx-auto max-w-7xl sm:px-5 lg:px-10">
         <!-- Replace with your content -->
         <!-- <div class="px-4 py-6 sm:px-0">
           <div

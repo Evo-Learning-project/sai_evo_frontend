@@ -64,7 +64,7 @@
           :variant="'light'"
           :size="'sm'"
           class=""
-          @click="setRuleMode(null)"
+          @btnClick="setRuleMode(null)"
         >
           <span class="material-icons-outlined">
             arrow_back

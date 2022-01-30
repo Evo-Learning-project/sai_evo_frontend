@@ -3,7 +3,7 @@
     <h3 class="mb-3">{{ $t('event_editor.state_editor_title') }}</h3>
     <card class="bg-light">
       <template v-slot:header
-        ><div class="flex space-x-4 items-center">
+        ><div class="flex items-center space-x-4">
           <div v-if="isDraft">
             <div class="text-yellow-900 bg-yellow-500 icon-surrounding">
               <span class="ml-px material-icons-outlined">
@@ -23,7 +23,7 @@
       </template></card
     >
     <div class="">
-      <div class="flex space-x-4 items-center mt-2">
+      <div class="flex items-center mt-2 space-x-4">
         <p class="text-muted">
           {{ $t('event_editor.current_state_is') }}
           <strong>{{ currentEventStateName }}</strong
@@ -32,7 +32,7 @@
         <Btn
           :variant="'primary'"
           :loading="saving"
-          @click="isDraft ? publish() : revertToDraft()"
+          @btnClick="isDraft ? publish() : revertToDraft()"
         >
           {{
             isDraft

@@ -89,6 +89,7 @@ export interface EventTemplateRuleClause {
 
 export interface EventParticipation {
   id: string;
+  event: Event;
   user: string;
   state: EventParticipationState;
   slots: EventParticipationSlot[];

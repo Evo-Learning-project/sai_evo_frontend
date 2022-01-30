@@ -1,10 +1,14 @@
 <template>
-  <div>
+  <div class="flex flex-col flex-grow h-full">
     <teleport v-if="mounted" to="#main-student-header-right">
       <CloudSaveStatus :saving="saving"></CloudSaveStatus
     ></teleport>
     <div
-      class="mb-10"
+      :class="{
+        'flex-grow': oneExerciseAtATime,
+        'mb-auto': !oneExerciseAtATime
+      }"
+      class=""
       v-for="(slot, index) in proxyModelValue.slots"
       :key="'p-' + proxyModelValue.id + '-s-' + slot.id"
     >
@@ -17,11 +21,15 @@
         :saving="saving"
       ></AbstractEventParticipationSlot>
     </div>
+    <div class="flex mt-8">
+      <Btn class="ml-auto">Avanti</Btn>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
 import AbstractEventParticipationSlot from '@/components/shared/AbstractEventParticipationSlot.vue'
+import Btn from '@/components/ui/Btn.vue'
 import CloudSaveStatus from '@/components/ui/CloudSaveStatus.vue'
 import { courseIdMixin, eventIdMixin } from '@/mixins'
 import { EventParticipation, EventParticipationSlot } from '@/models'
@@ -32,7 +40,8 @@ import { defineComponent } from '@vue/runtime-core'
 export default defineComponent({
   components: {
     AbstractEventParticipationSlot,
-    CloudSaveStatus
+    CloudSaveStatus,
+    Btn
   },
   name: 'EventParticipationPage',
   mixins: [courseIdMixin, eventIdMixin],
@@ -95,6 +104,9 @@ export default defineComponent({
       async set (val: EventParticipation) {
         await this.onChange(val)
       }
+    },
+    oneExerciseAtATime (): boolean {
+      return this.proxyModelValue.event.exercises_shown_at_a_time == 1
     }
   }
 })
