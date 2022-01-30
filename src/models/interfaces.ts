@@ -105,4 +105,6 @@ export interface EventParticipationSlot {
   answer_text: string;
   seen_at?: string;
   answered_at?: string;
+  is_first?: boolean;
+  is_last?: boolean;
 }

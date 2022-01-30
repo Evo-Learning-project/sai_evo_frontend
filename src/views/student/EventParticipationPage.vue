@@ -21,8 +21,34 @@
         :saving="saving"
       ></AbstractEventParticipationSlot>
     </div>
-    <div class="flex mt-8">
-      <Btn class="ml-auto">Avanti</Btn>
+    <div class="flex w-full mt-8">
+      <Btn
+        class=""
+        @btnClick="onGoBack"
+        v-if="goingBackAllowed"
+        :disabled="!canGoBack"
+      >
+        <span class="material-icons-outlined mt-0.5 mr-0.5 text-base">
+          chevron_left
+        </span>
+        {{ $t('event_participation_page.previous_exercise') }}</Btn
+      >
+      <Btn class="ml-auto" @btnClick="onGoForward" v-if="canGoForward"
+        >{{ $t('event_participation_page.next_exercise') }}
+        <span class="material-icons-outlined mt-0.5 ml-0.5 text-base">
+          chevron_right
+        </span></Btn
+      >
+      <Btn
+        class="ml-auto"
+        @btnClick="onGoForward"
+        v-else-if="canTurnIn"
+        :variant="'success'"
+        >{{ $t('event_participation_page.turn_in') }}
+        <span class="material-icons-outlined mt-0.5 text-base ml-1">
+          check
+        </span></Btn
+      >
     </div>
   </div>
 </template>
@@ -61,10 +87,21 @@ export default defineComponent({
   data () {
     return {
       saving: false,
-      mounted: false
+      mounted: false,
+      firstLoading: false,
+      loading: false
     }
   },
   methods: {
+    async onGoForward () {
+      // -
+    },
+    async onGoBack () {
+      //-
+    },
+    async onTurnIn () {
+      //-
+    },
     async onChange (newVal: EventParticipation) {
       console.log(newVal)
     },
@@ -106,7 +143,35 @@ export default defineComponent({
       }
     },
     oneExerciseAtATime (): boolean {
-      return this.proxyModelValue.event.exercises_shown_at_a_time == 1
+      return (this.proxyModelValue.event?.exercises_shown_at_a_time ?? 0) == 1
+    },
+    canGoForward (): boolean {
+      return (
+        this.oneExerciseAtATime &&
+        (this.proxyModelValue.slots?.length ?? 0) > 0 &&
+        !this.proxyModelValue.slots[0].is_last
+      )
+    },
+    canGoBack (): boolean {
+      return (
+        this.oneExerciseAtATime &&
+        (this.proxyModelValue.slots?.length ?? 0) > 0 &&
+        !this.proxyModelValue.slots[0].is_first
+      )
+    },
+    canTurnIn (): boolean {
+      return (
+        !this.firstLoading &&
+        (!this.oneExerciseAtATime ||
+          ((this.proxyModelValue.slots?.length ?? 0) > 0 &&
+            (this.proxyModelValue.slots[0].is_last ?? false)))
+      )
+    },
+    goingBackAllowed (): boolean {
+      return (
+        this.oneExerciseAtATime &&
+        (this.proxyModelValue.event?.allow_going_back ?? false)
+      )
     }
   }
 })

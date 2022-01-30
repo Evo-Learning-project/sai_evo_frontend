@@ -23,6 +23,14 @@ export const it = {
   },
   event_participation_page: {
     exercise: 'Esercizio',
+    of: 'di',
+    next_exercise: 'Avanti',
+    previous_exercise: 'Indietro',
+    skip_exercise: 'Salta esercizio',
+    turn_in: 'Consegna',
+    turn_in_dialog_title: 'Sei sicuro di voler consegnare?',
+    turn_in_dialog_text:
+      'Una volta consegnato, non potrai più modificare le tue risposte.',
   },
   event_participation_slot: {
     text_answer_label: 'La tua risposta',
