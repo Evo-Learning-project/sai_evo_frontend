@@ -9,10 +9,11 @@
           :modelValue="modelValue.label"
           @update:modelValue="emitUpdate('label', $event)"
           class="flex-grow"
+          :rightIcon="'search'"
         >
           {{ $t('exercise_editor.exercise_label') }}
         </TextInput>
-        <TextInput class="flex-grow">
+        <TextInput class="flex-grow" :rightIcon="'search'">
           {{ $t('exercise_editor.exercise_text') }}
         </TextInput>
       </div>

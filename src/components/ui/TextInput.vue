@@ -10,12 +10,31 @@
       class="z-10 block w-full bg-transparent appearance-none floating-label focus:outline-none"
     />
     <label class="absolute bottom-1.5 origin-0 -z-1"><slot></slot></label>
+    <div
+      v-if="true || rightIcon.length > 0"
+      class="absolute bottom-0 right-1 -z-1"
+    >
+      <span class="text-base text-muted material-icons-outlined">
+        {{ rightIcon }}
+      </span>
+    </div>
   </div>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import { defineComponent } from '@vue/runtime-core'
+
+export default defineComponent({
   name: 'TextInput',
-  props: ['modelValue']
-}
+  props: {
+    modelValue: {
+      type: String,
+      required: true
+    },
+    rightIcon: {
+      type: String,
+      default: ''
+    }
+  }
+})
 </script>

@@ -1,12 +1,12 @@
 <template>
   <div class="flex flex-col">
     <nav class="bg-primary">
-      <div class="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
+      <div class="px-4 mx-auto max-w-7xl sm:px-6 lg:px-10">
         <div class="flex items-center justify-between h-14">
           <div class="flex items-center">
             <div class="flex-shrink-0">
               <img
-                class="w-32"
+                class="w-32 -ml-1"
                 src="https://di.unipi.it/wp-content/themes/unipi/images/cherubino-white.svg"
               />
             </div>
@@ -273,10 +273,10 @@
       </div>
     </nav>
     <header
-      class="sticky top-0 z-10 bg-gray-200 shadow-md bg-opacity-70 backdrop-blur-sm backdrop-filter"
+      class="sticky top-0 z-20 bg-gray-200 shadow-md bg-opacity-70 backdrop-blur-sm backdrop-filter"
     >
       <div
-        class="flex items-center px-4 py-4 mx-auto max-w-7xl sm:px-6 lg:px-8"
+        class="flex items-center px-4 py-4 mx-auto max-w-7xl sm:px-6 lg:px-10"
       >
         <!-- <h1 class="text-3xl font-bold text-gray-900">
           Dashboard
@@ -292,7 +292,7 @@
       </div>
     </header>
     <main class="flex-grow bg-white">
-      <div class="py-6 mx-auto max-w-7xl sm:px-5 lg:px-6">
+      <div class="py-6 mx-auto max-w-7xl sm:px-5 lg:px-10">
         <!-- Replace with your content -->
         <!-- <div class="px-4 py-6 sm:px-0">
           <div

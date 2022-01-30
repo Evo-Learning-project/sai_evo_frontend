@@ -4,7 +4,7 @@
       <CloudSaveStatus :saving="saving"></CloudSaveStatus
     ></teleport>
     <div
-      class="my-4"
+      class="mb-10"
       v-for="(slot, index) in proxyModelValue.slots"
       :key="'p-' + proxyModelValue.id + '-s-' + slot.id"
     >
