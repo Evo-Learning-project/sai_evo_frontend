@@ -1,13 +1,13 @@
 <template>
   <div
     tabindex="0"
-    class="flex h-full border-gray-300 rounded-md shadow-sm"
+    class="flex border-gray-300 rounded-md shadow-sm"
     :class="{
       'md:px-3.5 md:py-3': size == 'sm',
       'px-1 py-5  md:px-5': size == 'default',
       'my-4': size == 'default' && !marginLess,
       'border-2': highlighted,
-      border: !highlighted
+      border: !highlighted && !borderLess
     }"
   >
     <div class="w-full">
@@ -50,6 +50,10 @@ export default defineComponent({
       default: false
     },
     marginLess: {
+      type: Boolean,
+      default: false
+    },
+    borderLess: {
       type: Boolean,
       default: false
     }

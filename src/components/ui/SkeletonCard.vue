@@ -1,9 +1,9 @@
 <template>
-  <card :marginLess="short">
+  <card :marginLess="short" :borderLess="borderLess">
     <template v-slot:header>
       <div
         :class="[short ? 'h-3' : 'h-4']"
-        class=" bg-gray-200 rounded animate-pulse"
+        class="bg-gray-200 rounded  animate-pulse"
       ></div>
     </template>
     <template v-slot:body>
@@ -18,11 +18,11 @@
         <div class="grid grid-cols-3" :class="[short ? 'gap-2' : 'gap-4']">
           <div
             :class="[short ? 'h-3' : 'h-4']"
-            class=" col-span-2 bg-gray-200 rounded"
+            class="col-span-2 bg-gray-200 rounded "
           ></div>
           <div
             :class="[short ? 'h-3' : 'h-4']"
-            class=" col-span-1 bg-gray-200 rounded"
+            class="col-span-1 bg-gray-200 rounded "
           ></div>
         </div>
         <div v-if="!short" class="w-11/12 h-4 bg-gray-200 rounded"></div>
@@ -40,6 +40,10 @@ export default {
   },
   props: {
     short: {
+      type: Boolean,
+      default: false
+    },
+    borderLess: {
       type: Boolean,
       default: false
     }

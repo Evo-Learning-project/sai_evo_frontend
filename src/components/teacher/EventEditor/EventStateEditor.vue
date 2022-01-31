@@ -1,7 +1,7 @@
 <template>
   <div class="">
     <h3 class="mb-3">{{ $t('event_editor.state_editor_title') }}</h3>
-    <card class="bg-light">
+    <Card class="bg-light">
       <template v-slot:header
         ><div class="flex items-center space-x-4">
           <div v-if="isDraft">
@@ -20,7 +20,7 @@
           </div>
           <p class="">{{ currentEventStateDescription }}</p>
         </div>
-      </template></card
+      </template></Card
     >
     <div class="">
       <div class="flex items-center mt-2 space-x-4">

@@ -32,6 +32,9 @@ export const it = {
     turn_in_dialog_text:
       'Una volta consegnato, non potrai più modificare le tue risposte.',
     turn_in_confirm_button: 'Consegna',
+    turned_in_text:
+      'Fatto! Hai consegnato con successo. Qui sotto puoi rivedere le tue risposte. Quando vuoi, puoi chiudere questa pagina.',
+    review_answers: 'Revisione risposte',
     next_dialog_title:
       'Sei sicuro di voler passare al prossimo esercizio?',
     next_dialog_text:

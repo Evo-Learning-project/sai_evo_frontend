@@ -3,13 +3,30 @@
     <teleport v-if="mounted" to="#main-student-header-right">
       <CloudSaveStatus :saving="saving"></CloudSaveStatus
     ></teleport>
+    <Card v-if="turnedIn" class="bg-light">
+      <template v-slot:header
+        ><div class="flex items-center space-x-4">
+          <div>
+            <div class="icon-surrounding bg-success-light text-success-dark">
+              <span class="material-icons-outlined">
+                check
+              </span>
+            </div>
+          </div>
+          <p class="">{{ $t('event_participation_page.turned_in_text') }}</p>
+        </div>
+      </template></Card
+    >
     <div
       :class="{
-        'flex-grow': oneExerciseAtATime,
-        'mb-auto': !oneExerciseAtATime
+        'flex-grow': oneExerciseAtATime && !turnedIn,
+        'mb-10 pb-10 border-b':
+          index !== proxyModelValue.slots.length - 1 &&
+          (!oneExerciseAtATime || turnedIn),
+        'pb-0 border-b-0': index === proxyModelValue.slots.length - 1
       }"
       class=""
-      v-for="slot in proxyModelValue.slots"
+      v-for="(slot, index) in proxyModelValue.slots"
       :key="'p-' + proxyModelValue.id + '-s-' + slot.id"
     >
       <h4>
@@ -17,14 +34,14 @@
         {{ slot.slot_number + 1 }}
         <span v-if="oneExerciseAtATime"
           >{{ $t('event_participation_page.of') }}
-          {{ proxyModelValue.last_slot_number }}
+          {{ proxyModelValue.last_slot_number + 1 }}
         </span>
       </h4>
       <AbstractEventParticipationSlot
         :modelValue="slot"
         @updateSelectedChoices="onUpdateChoices(slot, $event)"
         @updateAnswerText="onUpdateAnswerText(slot, $event)"
-        :allowEditSubmission="true"
+        :allowEditSubmission="!turnedIn"
         :saving="saving"
       ></AbstractEventParticipationSlot>
     </div>
@@ -96,17 +113,20 @@ import { defineComponent } from '@vue/runtime-core'
 //import { mapState } from 'vuex'
 import { getTranslatedString as _ } from '@/i18n'
 import { DialogData } from '@/interfaces'
+import Card from '@/components/ui/Card.vue'
 
 export default defineComponent({
   components: {
     AbstractEventParticipationSlot,
     CloudSaveStatus,
     Btn,
-    Dialog
+    Dialog,
+    Card
   },
   name: 'EventParticipationPage',
   mixins: [courseIdMixin, eventIdMixin],
   async created () {
+    this.firstLoading = true
     this.dispatchAnswerTextUpdate = getDebouncedForStudentText(
       this.dispatchAnswerTextUpdate
     )
@@ -114,6 +134,7 @@ export default defineComponent({
       courseId: this.courseId,
       eventId: this.eventId
     })
+    this.firstLoading = false
   },
   mounted () {
     this.mounted = true // prevent issues with teleported component
@@ -222,6 +243,9 @@ export default defineComponent({
         await this.onChange(val)
       }
     },
+    turnedIn (): boolean {
+      return this.proxyModelValue.state == EventParticipationState.TURNED_IN
+    },
     oneExerciseAtATime (): boolean {
       return (this.proxyModelValue.event?.exercises_shown_at_a_time ?? 0) == 1
     },
@@ -244,7 +268,8 @@ export default defineComponent({
         !this.firstLoading &&
         (!this.oneExerciseAtATime ||
           ((this.proxyModelValue.slots?.length ?? 0) > 0 &&
-            (this.proxyModelValue.slots[0].is_last ?? false)))
+            (this.proxyModelValue.slots[0].is_last ?? false))) &&
+        !this.turnedIn
       )
     },
     goingBackAllowed (): boolean {
