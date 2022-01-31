@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col flex-grow">
-    <nav class="bg-primary">
+    <nav class="relative z-50 bg-primary">
       <div class="px-4 mx-auto max-w-7xl sm:px-6 lg:px-10">
         <div class="flex items-center justify-between h-14">
           <div class="flex items-center">
@@ -273,7 +273,7 @@
       </div>
     </nav>
     <header
-      class="sticky top-0 z-20 bg-gray-200 shadow-md bg-opacity-70 backdrop-blur-sm backdrop-filter"
+      class="sticky top-0 z-20 bg-indigo-100 shadow-md bg-opacity-70 backdrop-blur-sm backdrop-filter"
     >
       <div
         class="flex items-center px-4 py-4 mx-auto max-w-7xl sm:px-6 lg:px-10"

@@ -57,6 +57,18 @@ export const mutations = {
       state.events.find((e: Event) => e.id == eventId),
       event
     ),
+  setEventParticipationSlots: (
+    state: any,
+    slots: EventParticipationSlot[]
+  ) => {
+    state.eventParticipation.slots = slots;
+    console.log(
+      'assigned',
+      slots,
+      'new',
+      state.eventParticipation.slots
+    );
+  },
   setEventParticipationSlot: (
     state: any,
     { slotId, slot }: { slotId: string; slot: EventParticipationSlot }

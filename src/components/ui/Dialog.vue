@@ -62,7 +62,7 @@
           >
             <div class="mt-auto"><slot name="footerButtons"></slot></div>
             <div class="flex ml-auto">
-              <btn
+              <Btn
                 @btnClick="emitChoice('yes')"
                 :variant="'primary-borderless'"
                 :disabled="disableOk"
@@ -72,14 +72,14 @@
                     ? $t('dialog.default_ok_text')
                     : yesText || $t('dialog.default_yes_text')
                 }}
-              </btn>
-              <btn
+              </Btn>
+              <Btn
                 v-if="!confirmOnly"
                 @btnClick="emitChoice('no')"
                 :variant="'primary-borderless'"
               >
                 {{ noText || $t('dialog.default_no_text') }}
-              </btn>
+              </Btn>
               <!-- <btn
                 class="mr-2"
                 :disabled="disableOk > 0"
@@ -162,9 +162,7 @@ export default defineComponent({
   data () {
     return {
       choice: '',
-      showContent: false,
-      remainingCoolDown: 0,
-      coolDownHandle: null as number | null
+      showContent: false
     }
   },
   methods: {
@@ -175,7 +173,9 @@ export default defineComponent({
       this.$emit(choice)
     },
     dismiss () {
-      if (!this.dismissible) return
+      if (!this.dismissible) {
+        return
+      }
       this.emitChoice(this.confirmOnly ? 'yes' : 'no')
     }
   }

@@ -124,7 +124,20 @@ export async function participateInEvent(
   return response.data;
 }
 
-export async function partialUpdateEventSubmissionSlot(
+export async function partialUpdateEventParticipation(
+  courseId: string,
+  eventId: string,
+  participationId: string,
+  changes: Record<keyof EventParticipation, unknown>
+): Promise<EventParticipation> {
+  const response = await axios.patch(
+    `/courses/${courseId}/events/${eventId}/participations/${participationId}/`,
+    changes
+  );
+  return response.data;
+}
+
+export async function partialUpdateEventParticipationSlot(
   courseId: string,
   eventId: string,
   participationId: string,
@@ -134,6 +147,18 @@ export async function partialUpdateEventSubmissionSlot(
   const response = await axios.patch(
     `/courses/${courseId}/events/${eventId}/participations/${participationId}/slots/${slotId}/`,
     changes
+  );
+  return response.data;
+}
+
+export async function moveEventParticipationCurrentSlotCursor(
+  courseId: string,
+  eventId: string,
+  participationId: string,
+  direction: 'forward' | 'back'
+): Promise<EventParticipationSlot> {
+  const response = await axios.post(
+    `/courses/${courseId}/events/${eventId}/participations/${participationId}/go_${direction}/`
   );
   return response.data;
 }

@@ -1,9 +1,10 @@
 <template>
   <button
     @click="onClick"
-    :disabled="loading"
-    class="relative overflow-hidden disabled:cursor-not-allowed disabled:opacity-70"
+    :disabled="disabled || loading || ghostDisabled"
+    class="relative overflow-hidden"
     :class="{
+      'disabled:cursor-not-allowed disabled:opacity-70': !ghostDisabled,
       'shadow-inner bg-light': forceActive,
       'bg-success-light bg-opacity-30':
         forceActive && variant === 'success-borderless',
@@ -88,6 +89,15 @@ export default defineComponent({
     loading: {
       type: Boolean,
       default: false
+    },
+    disabled: {
+      type: Boolean,
+      default: false
+    }
+  },
+  data () {
+    return {
+      ghostDisabled: false // prevent multiple clicks before delayed click event has fired
     }
   },
   methods: {
@@ -95,7 +105,11 @@ export default defineComponent({
     onClick (event: any) {
       event
       this.rippleEffect(event)
-      setTimeout(() => this.$emit('btnClick'), 150)
+      this.ghostDisabled = true
+      setTimeout(() => {
+        this.$emit('btnClick')
+        this.ghostDisabled = false
+      }, 150)
     },
     rippleEffect (event: {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any

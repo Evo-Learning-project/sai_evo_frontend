@@ -36,7 +36,13 @@
       <template v-slot:body>
         <div class="relative h-12 overflow-y-hidden">
           <div
-            class="w-11/12 overflow-x-hidden overflow-ellipsis"
+            style="
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow:hidden
+            "
+            class="w-11/12 overflow-x-hidden overflow-ellipsis "
             v-html="previewText"
           ></div>
           <!-- <div

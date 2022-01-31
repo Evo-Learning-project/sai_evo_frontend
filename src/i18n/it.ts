@@ -31,6 +31,12 @@ export const it = {
     turn_in_dialog_title: 'Sei sicuro di voler consegnare?',
     turn_in_dialog_text:
       'Una volta consegnato, non potrai più modificare le tue risposte.',
+    turn_in_confirm_button: 'Consegna',
+    next_dialog_title:
+      'Sei sicuro di voler passare al prossimo esercizio?',
+    next_dialog_text:
+      'Se vai avanti, non potrai più tornare indietro a questo esercizio.',
+    next_dialog_confirm_button: 'Vai avanti',
   },
   event_participation_slot: {
     text_answer_label: 'La tua risposta',

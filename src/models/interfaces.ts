@@ -94,6 +94,7 @@ export interface EventParticipation {
   state: EventParticipationState;
   slots: EventParticipationSlot[];
   score?: number;
+  last_slot_number?: number;
 }
 
 export interface EventParticipationSlot {

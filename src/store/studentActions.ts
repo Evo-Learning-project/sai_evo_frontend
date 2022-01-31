@@ -4,6 +4,7 @@ import axios from 'axios';
 import {
   Course,
   Event,
+  EventParticipation,
   EventParticipationSlot,
   EventTemplate,
   EventTemplateRule,
@@ -18,7 +19,9 @@ import { getCourses, getTags } from '@/api/courses';
 import { Commit } from 'vuex';
 
 import {
-  partialUpdateEventSubmissionSlot,
+  moveEventParticipationCurrentSlotCursor,
+  partialUpdateEventParticipation,
+  partialUpdateEventParticipationSlot,
   participateInEvent,
 } from '@/api/events';
 
@@ -30,7 +33,26 @@ export const actions = {
     const participation = await participateInEvent(courseId, eventId);
     commit('setEventParticipation', participation);
   },
-  partialUpdateEventSubmissionSlot: async (
+  partialUpdateEventParticipation: async (
+    { commit, state }: { commit: Commit; state: any },
+    {
+      courseId,
+      changes,
+    }: {
+      courseId: string;
+      eventId: string;
+      changes: Record<keyof EventParticipation, unknown>;
+    }
+  ) => {
+    const response = await partialUpdateEventParticipation(
+      courseId,
+      state.eventParticipation?.event.id,
+      state.eventParticipation?.id,
+      changes
+    );
+    commit('setEventParticipation', response);
+  },
+  partialUpdateEventParticipationSlot: async (
     { commit, state }: { commit: Commit; state: any },
     {
       courseId,
@@ -50,7 +72,7 @@ export const actions = {
       mutate: boolean;
     }
   ) => {
-    const response = await partialUpdateEventSubmissionSlot(
+    const response = await partialUpdateEventParticipationSlot(
       courseId,
       eventId,
       state.eventParticipation?.id,
@@ -63,5 +85,30 @@ export const actions = {
         slot: response,
       });
     }
+  },
+  moveEventParticipationCurrentSlotCursorForward: async (
+    { commit, state }: { commit: Commit; state: any },
+    { courseId }: { courseId: string }
+  ) => {
+    const slot = await moveEventParticipationCurrentSlotCursor(
+      courseId,
+      state.eventParticipation.event.id,
+      state.eventParticipation.id,
+      'forward'
+    );
+    console.log('slot', slot);
+    commit('setEventParticipationSlots', [slot]);
+  },
+  moveEventParticipationCurrentSlotCursorBack: async (
+    { commit, state }: { commit: Commit; state: any },
+    { courseId }: { courseId: string }
+  ) => {
+    const slot = await moveEventParticipationCurrentSlotCursor(
+      courseId,
+      state.eventParticipation.event.id,
+      state.eventParticipation.id,
+      'back'
+    );
+    commit('setEventParticipationSlots', [slot]);
   },
 };

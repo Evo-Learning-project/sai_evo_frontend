@@ -5,3 +5,16 @@ export interface SelectableOption {
   description?: string;
   icons?: string[];
 }
+
+export interface DialogData {
+  // used for components where a single dialog has multiple uses
+  // to dynamically pass certain props to the dialog component
+  title?: string;
+  text?: string;
+  yesText?: string;
+  noText?: string;
+  dismissible?: boolean;
+  confirmOnly?: boolean;
+  onYes?: () => void;
+  onNo?: () => void;
+}
