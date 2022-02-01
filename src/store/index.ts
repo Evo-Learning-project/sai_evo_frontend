@@ -8,7 +8,7 @@ import {
   Tag,
   User,
 } from '@/models';
-import { createStore } from 'vuex';
+import { Commit, createStore } from 'vuex';
 import { getCourses, getTags } from '@/api/courses';
 import {
   createExercise,
@@ -21,11 +21,9 @@ import VuexPersistence from 'vuex-persist';
 import axios from 'axios';
 import {
   createEvent,
-  createEventTemplate,
   createEventTemplateRule,
   getEvent,
   getEvents,
-  getEventTemplate,
   updateEvent,
   updateEventTemplateRule,
 } from '@/api/events';
@@ -60,10 +58,10 @@ export default createStore({
     /* teachers only state*/
     exercises: [] as Exercise[],
     events: [] as Event[],
-    templates: [] as EventTemplate[],
+    eventParticipations: [] as EventParticipation[], // participations to current event
     tags: [] as Tag[],
-    activeCourseId: null as string | null,
-    currentExercisePage: 1,
+    activeCourseId: null as string | null, //? remove?
+    currentExercisePage: 1, // for server-side pagination
 
     /* students only state */
     eventParticipation: null as EventParticipation | null,
@@ -73,6 +71,45 @@ export default createStore({
   actions: {
     ...teacherActions,
     ...studentActions,
+    // converts a token issued by Google to a token usable to authenticate requests to the backend
+    convertToken: ({ commit }: { commit: Commit }, token: string) => {
+      return new Promise((resolve, reject) => {
+        axios
+          .post('/users/auth/convert-token/', {
+            token,
+            grant_type: 'convert_token',
+            client_id: process.env.VUE_APP_GOOGLE_OAUTH_CLIENT_ID,
+            client_secret:
+              process.env.VUE_APP_GOOGLE_OAUTH_CLIENT_SECRET,
+            backend: 'google-oauth2',
+          })
+          .then((response) => {
+            commit('setToken', response.data.access_token);
+            commit('setRefreshToken', response.data.refresh_token);
+            resolve(response);
+          })
+          .catch((error) => {
+            reject(error);
+          });
+      });
+    },
+    getUserData: ({ commit }: { commit: Commit }) => {
+      return new Promise((resolve, reject) => {
+        axios
+          .get('/users/me/')
+          .then((response) => {
+            commit('setUser', response.data);
+            resolve(response);
+          })
+          .catch((error) => {
+            reject(error);
+          });
+      });
+    },
+    getCourses: async ({ commit }: { commit: Commit }) => {
+      const courses = await getCourses();
+      commit('setCourses', courses);
+    },
   },
   modules: {},
 });

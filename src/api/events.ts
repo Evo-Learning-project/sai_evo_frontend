@@ -68,26 +68,36 @@ export async function deleteEvent(
   return response.data;
 }
 
-export async function getEventTemplate(
+export async function getEventParticipations(
   courseId: string,
-  templateId: string
-): Promise<EventTemplate> {
+  eventId: string
+): Promise<EventParticipation[]> {
   const response = await axios.get(
-    `/courses/${courseId}/templates/${templateId}/`
+    `/courses/${courseId}/events/${eventId}/participations/`
   );
   return response.data;
 }
 
-export async function createEventTemplate(
-  courseId: string,
-  template: EventTemplate
-): Promise<EventTemplate> {
-  const response = await axios.post(
-    `courses/${courseId}/templates/`,
-    template
-  );
-  return response.data;
-}
+// export async function getEventTemplate(
+//   courseId: string,
+//   templateId: string
+// ): Promise<EventTemplate> {
+//   const response = await axios.get(
+//     `/courses/${courseId}/templates/${templateId}/`
+//   );
+//   return response.data;
+// }
+
+// export async function createEventTemplate(
+//   courseId: string,
+//   template: EventTemplate
+// ): Promise<EventTemplate> {
+//   const response = await axios.post(
+//     `courses/${courseId}/templates/`,
+//     template
+//   );
+//   return response.data;
+// }
 
 export async function createEventTemplateRule(
   courseId: string,

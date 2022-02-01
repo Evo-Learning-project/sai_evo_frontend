@@ -99,4 +99,9 @@ export const mutations = {
     state: any,
     participation: EventParticipation
   ) => (state.eventParticipation = participation),
+  setEventParticipations: (
+    // TODO better naming for student vs teacher state
+    state: any,
+    participations: EventParticipation[]
+  ) => (state.eventParticipations = participations),
 };

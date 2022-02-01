@@ -28,9 +28,9 @@ import {
 
 import {
   createEvent,
-  createEventTemplate,
   createEventTemplateRule,
   getEvent,
+  getEventParticipations,
   getEvents,
   partialUpdateEvent,
   updateEvent,
@@ -39,60 +39,14 @@ import {
 import { SearchFilter } from '@/api/interfaces';
 
 export const actions = {
-  // converts a token issued by Google to a token usable to authenticate requests to the backend
-  convertToken: ({ commit }: { commit: Commit }, token: string) => {
-    // console.log('converting token...');
-    return new Promise((resolve, reject) => {
-      axios
-        .post('/users/auth/convert-token/', {
-          token,
-          grant_type: 'convert_token',
-          client_id: process.env.VUE_APP_GOOGLE_OAUTH_CLIENT_ID,
-          client_secret:
-            process.env.VUE_APP_GOOGLE_OAUTH_CLIENT_SECRET,
-          backend: 'google-oauth2',
-        })
-        .then((response) => {
-          // console.log('committing setToken');
-          commit('setToken', response.data.access_token);
-
-          // console.log('committing setRefreshToken');
-          commit('setRefreshToken', response.data.refresh_token);
-
-          // console.log('resolving');
-          resolve(response);
-        })
-        .catch((error) => {
-          reject(error);
-        });
-    });
-  },
-  getUserData: ({ commit }: { commit: Commit }) => {
-    console.log('getting user...');
-    return new Promise((resolve, reject) => {
-      axios
-        .get('/users/me/')
-        .then((response) => {
-          commit('setUser', response.data);
-          resolve(response);
-        })
-        .catch((error) => {
-          reject(error);
-        });
-    });
-  },
-  getCourses: async ({ commit }: { commit: Commit }) => {
-    const courses = await getCourses();
-    commit('setCourses', courses);
-  },
   createExercise: async (
     { commit, state }: { commit: Commit; state: any },
     { courseId, exercise }: { courseId: string; exercise: Exercise }
   ) => {
     const newExercise = await createExercise(courseId, exercise);
-    if (courseId == state.activeCourseId) {
-      commit('setExercises', [newExercise, ...state.exercises]);
-    }
+    //if (courseId == state.activeCourseId) {
+    commit('setExercises', [newExercise, ...state.exercises]);
+    //}
     return newExercise;
   },
   createEvent: async (
@@ -100,23 +54,20 @@ export const actions = {
     { courseId, event }: { courseId: string; event: Event }
   ) => {
     const newEvent = await createEvent(courseId, event);
-    if (courseId == state.activeCourseId) {
-      commit('setEvents', [newEvent, ...state.events]);
-    }
+    //if (courseId == state.activeCourseId) {
+    commit('setEvents', [newEvent, ...state.events]);
+    //}
     return newEvent;
   },
-  createEventTemplate: async (
-    { commit, state }: { commit: Commit; state: any },
-    {
-      courseId,
-      template,
-    }: { courseId: string; template: EventTemplate }
+  getEventParticipations: async (
+    { commit }: { commit: Commit },
+    { courseId, eventId }: { courseId: string; eventId: string }
   ) => {
-    const newTemplate = await createEventTemplate(courseId, template);
-    if (courseId == state.activeCourseId) {
-      commit('setTemplates', [newTemplate, ...state.templates]);
-    }
-    return newTemplate;
+    const participations = await getEventParticipations(
+      courseId,
+      eventId
+    );
+    commit('setEventParticipations', participations);
   },
   updateExercise: async (
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -255,7 +206,7 @@ export const actions = {
       'setExercises',
       fromFirstPage ? exercises : [...state.exercises, ...exercises]
     );
-    commit('setActiveCourseId', courseId);
+    //commit('setActiveCourseId', courseId);
     if (exercises.length > 0) {
       commit('setCurrentExercisePage', state.currentExercisePage + 1);
     }
