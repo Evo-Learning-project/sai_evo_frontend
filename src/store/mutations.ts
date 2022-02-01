@@ -20,17 +20,30 @@ export const mutations = {
         'Bearer ' + state.token;
     }
   },
+
+  // "dumb" mutations - could be abstracted
+  setCourses: (state: any, courses: Course[]) =>
+    (state.courses = courses),
+  setExercises: (state: any, exercises: Exercise[]) =>
+    (state.exercises = exercises),
+  setCurrentExercisePage: (state: any, pageNumber: number) =>
+    (state.currentExercisePage = pageNumber),
+  setEvents: (state: any, events: Event[]) => (state.events = events),
+  setTags: (state: any, tags: Tag[]) => (state.tags = tags),
   setLoading: (state: any, val: boolean) => (state.loading = val),
+
   setUser: (state: any, user: User) => {
     state.user = user;
     localStorage.setItem('user', JSON.stringify(user));
   },
+
   setToken: (state: any, token: string) => {
     state.token = token;
     localStorage.setItem('token', token);
     axios.defaults.headers.common['Authorization'] =
       'Bearer ' + token;
   },
+  // todo merge into above mutation
   resetToken: (state: any) => {
     state.token = '';
     localStorage.removeItem('token');
@@ -40,15 +53,7 @@ export const mutations = {
     state.refreshToken = token;
     localStorage.setItem('refreshToken', token);
   },
-  setCourses: (state: any, courses: Course[]) =>
-    (state.courses = courses),
-  setExercises: (state: any, exercises: Exercise[]) =>
-    (state.exercises = exercises),
-  setCurrentExercisePage: (state: any, pageNumber: number) =>
-    (state.currentExercisePage = pageNumber),
-  setEvents: (state: any, events: Event[]) => (state.events = events),
-  setTemplates: (state: any, templates: EventTemplate[]) =>
-    (state.templates = templates),
+
   setEvent: (
     state: any,
     { eventId, event }: { eventId: string; event: Event }
@@ -62,38 +67,17 @@ export const mutations = {
     slots: EventParticipationSlot[]
   ) => {
     state.eventParticipation.slots = slots;
-    console.log(
-      'assigned',
-      slots,
-      'new',
-      state.eventParticipation.slots
-    );
   },
   setEventParticipationSlot: (
     state: any,
     { slotId, slot }: { slotId: string; slot: EventParticipationSlot }
   ) => {
-    console.log(
-      'slotid',
-      slotId,
-      'TARGET',
-      state.eventParticipation.slots.find(
-        (s: EventParticipationSlot) => s.id == slotId
-      )
-    );
     Object.assign(
       state.eventParticipation?.slots?.find(
         (s: EventParticipationSlot) => s.id == slotId
       ),
       slot
     );
-  },
-  setTags: (state: any, tags: Tag[]) => (state.tags = tags),
-  setActiveCourseId: (state: any, courseId: string) => {
-    if (state.activeCourseId !== courseId) {
-      state.selectedExercises = [];
-    }
-    state.activeCourseId = courseId;
   },
   setEventParticipation: (
     state: any,

@@ -40,7 +40,11 @@
             :to="{ name: 'ExamEditor', params: { examId: event.id } }"
             ><Btn>Editor</Btn></router-link
           >
-          <Btn v-if="hasBegun">Monitora</Btn>
+          <router-link
+            v-if="hasBegun"
+            :to="{ name: 'ExamProgress', params: { examId: event.id } }"
+            ><Btn>Monitora</Btn></router-link
+          >
           <Btn v-else-if="hasEnded">Risultati</Btn>
         </div>
       </div>

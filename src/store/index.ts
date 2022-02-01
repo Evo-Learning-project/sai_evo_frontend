@@ -55,7 +55,7 @@ export default createStore({
     refreshToken: '',
     loading: false,
 
-    /* teachers only state*/
+    /* teachers-only state*/
     exercises: [] as Exercise[],
     events: [] as Event[],
     eventParticipations: [] as EventParticipation[], // participations to current event
@@ -63,7 +63,7 @@ export default createStore({
     activeCourseId: null as string | null, //? remove?
     currentExercisePage: 1, // for server-side pagination
 
-    /* students only state */
+    /* students-only state */
     eventParticipation: null as EventParticipation | null,
   },
   getters,

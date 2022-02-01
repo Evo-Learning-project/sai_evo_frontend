@@ -1,16 +1,11 @@
 <template>
-  <div>
-    <exercise-head></exercise-head>
-  </div>
+  <div></div>
 </template>
 
 <script>
-import ExerciseHead from '@/components/student/Exercise/ExerciseHead.vue'
 export default {
   name: 'EventParticipationFull',
-  components: {
-    ExerciseHead
-  }
+  components: {}
 }
 </script>
 
