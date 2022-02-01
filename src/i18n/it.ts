@@ -8,6 +8,12 @@ export const it = {
     default_no_text: 'No',
     default_ok_text: 'OK',
   },
+  courses: {
+    enroll: 'Iscriviti',
+    enroll_title: 'Iscriviti al corso',
+    course_panel: 'Pannello',
+    go_to_course: 'Vai al corso',
+  },
   filter_results: {
     title: 'Filtra esercizi',
     filter_by_tag: 'Filtra per tag',
@@ -51,6 +57,14 @@ export const it = {
       'Tutte le modifiche sono state salvate sul server',
     exercise_preview_title: 'Anteprima esercizio',
   },
+  cloud: {
+    saving: 'Salvataggio in corso...',
+    saved: 'Salvato!',
+    changes_saved_to_server:
+      'Tutte le modifiche sono state salvate sul server',
+    error:
+      'Si è verificato un errore nel salvataggio dei dati. Riprova.',
+  },
   sidebar_labels: {
     course_dashboard_dashboard: 'Dashboard',
     course_dashboard_exams: 'Esami',
@@ -84,16 +98,6 @@ export const it = {
     editor_title: 'Modello esame',
     introduction_text:
       'Crea il modello per questo esame. Per ogni slot, puoi scegliere se far vedere a ogni studente lo stesso esercizio o se utilizzare i criteri di scelta casuale.',
-    // same_exercises_for_everyone_or_randomize:
-    //   'Vuoi che tutti gli studenti abbiano gli stessi esercizi o vuoi utilizzare le opzioni di randomizzazione?',
-    // same_exercises_for_everyone: 'Stessi esercizi per tutti',
-    // use_randomization: 'Randomizzazione',
-    // same_exercises_for_everyone_choose_exercises:
-    //   "Seleziona gli esercizi che comporranno l'esame. Tutti gli studenti vedranno questi esercizi durante l'esame.",
-    // same_exercises_for_everyone_randomize_order:
-    //   'Randomizza ordine degli esercizi',
-    // same_exercises_for_everyone_randomize_order_help_text:
-    //   'Tutti gli studenti vedranno gli stessi esercizi ma in ordine casuale',
     add_rule: 'Aggiungi slot',
   },
   exercise_picker: {
@@ -145,8 +149,6 @@ export const it = {
   exercise_editor: {
     exercise_editor_title: 'Editor esercizio',
     draft_notice: 'Bozza',
-    saving: 'Salvataggio in corso...',
-    saved: 'Salvato!',
     choices_title: 'Scelte',
     exercise_label: "Etichetta dell'esercizio",
     exercise_text: "Testo dell'esercizio",

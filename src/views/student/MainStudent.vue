@@ -282,7 +282,6 @@
           Dashboard
         </h1> -->
         <h2 class="mb-0">
-          Esame in corso
           <!-- TODO remove -->
           <!-- {{ $t('headings.course_title') }} {{ $route.params.id }} -->
           {{ $route.meta.routeTitle }}

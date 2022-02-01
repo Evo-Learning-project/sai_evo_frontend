@@ -20,11 +20,11 @@
       <div class="flex flex-col items-stretch space-y-2">
         <router-link
           :to="{ name: 'CourseDashboard', params: { courseId: course.id } }"
-          ><Btn class="w-full">
+          ><Btn v-if="canAccessCoursePanel" class="w-full">
             <span class="mr-1 text-base material-icons-outlined">
               shield
             </span>
-            Pannello
+            {{ $t('courses.course_panel') }}
           </Btn></router-link
         >
         <Btn
@@ -35,12 +35,13 @@
           <span class="mr-1 text-base material-icons-outlined">
             add_circle_outline
           </span>
-          Iscriviti
+          {{ $t('courses.enroll') }}
         </Btn>
-        <Btn v-else-if="true || course.is_enrolled">
+        <Btn v-else-if="course.is_enrolled">
           <span class="mr-1 text-base material-icons-outlined">
-            chevron_right </span
-          >Vai al corso
+            chevron_right
+          </span>
+          {{ $t('courses.go_to_course') }}
         </Btn>
       </div>
     </template>
@@ -74,6 +75,12 @@ export default defineComponent({
     canEnroll (): boolean {
       return (
         !this.course.is_enrolled && (this.course.privileges?.length ?? 0) == 0
+      )
+    },
+    canAccessCoursePanel (): boolean {
+      return (
+        this.course.creator?.id === this.$store.state.user?.id ||
+        (this.course.privileges?.length ?? 0) > 0
       )
     }
   }

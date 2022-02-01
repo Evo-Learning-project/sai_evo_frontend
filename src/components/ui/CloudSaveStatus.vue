@@ -2,9 +2,12 @@
   <div class="h-6">
     <div v-if="saving" class="flex items-center ml-auto space-x-1 text-muted">
       <Spinner :size="'sm'"></Spinner>
-      <p class="text-sm">{{ $t('exercise_editor.saving') }}</p>
+      <p class="text-sm">{{ $t('cloud.saving') }}</p>
     </div>
-    <div v-else class="flex items-center ml-auto space-x-1 text-muted">
+    <div
+      v-else-if="!hadError"
+      class="flex items-center ml-auto space-x-1 text-muted"
+    >
       <div class="tooltip">
         <span
           :class="{
@@ -15,12 +18,20 @@
           cloud_done
         </span>
         <span class="tooltip-text tooltip-left">{{
-          $t('misc.changes_saved_to_server')
+          $t('cloud.changes_saved_to_server')
         }}</span>
       </div>
       <p v-if="showSaved" class="mb-0.5 text-sm">
-        {{ $t('exercise_editor.saved') }}
+        {{ $t('cloud.saved') }}
       </p>
+    </div>
+    <div v-else>
+      <div
+        class="flex items-center space-x-1 text-sm text-muted text-danger-dark"
+      >
+        <span class="text-sm material-icons-outlined">error_outline</span>
+        <span class="">{{ $t('cloud.error') }}</span>
+      </div>
     </div>
   </div>
 </template>

@@ -11,6 +11,7 @@ import CourseExercises from '../views/teacher/CourseExercises.vue';
 import CourseExams from '../views/teacher/CourseExams.vue';
 import EventEditor from '../components/teacher/EventEditor/EventEditor.vue';
 import EventParticipationPage from '../views/student/EventParticipationPage.vue';
+import EventParticipationsMonitor from '../views/teacher/EventParticipationsMonitor.vue';
 import Login from '../views/Login.vue';
 import {
   courseDashboardSidebarOptions,
@@ -73,6 +74,26 @@ const routes: Array<RouteRecordRaw> = [
         path: 'courses/:courseId/exams/:examId',
         component: EventEditor,
         name: 'ExamEditor',
+        meta: {
+          sidebarOptions: courseDashboardSidebarOptions,
+        },
+      },
+      {
+        path: 'courses/:courseId/exams/:examId/progress',
+        component: EventParticipationsMonitor,
+        name: 'ExamProgress',
+        meta: {
+          sidebarOptions: courseDashboardSidebarOptions,
+        },
+      },
+      {
+        path: 'courses/:courseId/exams/:examId/progress',
+        component: EventParticipationsMonitor,
+        name: 'ExamResults',
+        props: {
+          refreshData: false,
+          allowEdit: true,
+        },
         meta: {
           sidebarOptions: courseDashboardSidebarOptions,
         },

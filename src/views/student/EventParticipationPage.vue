@@ -1,9 +1,12 @@
 <template>
   <div class="flex flex-col flex-grow h-full">
     <teleport v-if="mounted" to="#main-student-header-right">
-      <CloudSaveStatus :saving="saving"></CloudSaveStatus
+      <CloudSaveStatus
+        :saving="saving"
+        :hadError="savingError"
+      ></CloudSaveStatus
     ></teleport>
-    <Card v-if="turnedIn" class="bg-light">
+    <Card v-if="turnedIn" class="mb-8 shadow-md bg-light">
       <template v-slot:header
         ><div class="flex items-center space-x-4">
           <div>
@@ -17,13 +20,22 @@
         </div>
       </template></Card
     >
+    <div v-if="firstLoading">
+      <skeleton-card :borderLess="true"></skeleton-card>
+      <skeleton-card :borderLess="true"></skeleton-card>
+      <skeleton-card :borderLess="true"></skeleton-card>
+    </div>
+    <h2 v-if="turnedIn">{{ $t('event_participation_page.review_answers') }}</h2>
     <div
       :class="{
         'flex-grow': oneExerciseAtATime && !turnedIn,
         'mb-10 pb-10 border-b':
           index !== proxyModelValue.slots.length - 1 &&
-          (!oneExerciseAtATime || turnedIn),
-        'pb-0 border-b-0': index === proxyModelValue.slots.length - 1
+          (!oneExerciseAtATime || turnedIn) &&
+          !turnedIn,
+        'pb-0 border-b-0': index === proxyModelValue.slots.length - 1,
+        'px-6 py-2 rounded-md bg-gray-50': turnedIn,
+        'pb-10': turnedIn && index !== proxyModelValue.slots.length - 1
       }"
       class=""
       v-for="(slot, index) in proxyModelValue.slots"
@@ -32,7 +44,7 @@
       <h4>
         {{ $t('event_participation_page.exercise') }}
         {{ slot.slot_number + 1 }}
-        <span v-if="oneExerciseAtATime"
+        <span v-if="oneExerciseAtATime && !turnedIn"
           >{{ $t('event_participation_page.of') }}
           {{ proxyModelValue.last_slot_number + 1 }}
         </span>
@@ -114,6 +126,7 @@ import { defineComponent } from '@vue/runtime-core'
 import { getTranslatedString as _ } from '@/i18n'
 import { DialogData } from '@/interfaces'
 import Card from '@/components/ui/Card.vue'
+import SkeletonCard from '@/components/ui/SkeletonCard.vue'
 
 export default defineComponent({
   components: {
@@ -121,7 +134,8 @@ export default defineComponent({
     CloudSaveStatus,
     Btn,
     Dialog,
-    Card
+    Card,
+    SkeletonCard
   },
   name: 'EventParticipationPage',
   mixins: [courseIdMixin, eventIdMixin],
@@ -143,6 +157,7 @@ export default defineComponent({
   data () {
     return {
       saving: false,
+      savingError: false,
       mounted: false,
       firstLoading: false,
       loading: false,
@@ -210,18 +225,29 @@ export default defineComponent({
     },
     async onUpdateChoices (slot: EventParticipationSlot, newVal: string[]) {
       this.saving = true
-      await this.$store.dispatch('partialUpdateEventParticipationSlot', {
-        courseId: this.courseId,
-        eventId: this.eventId,
-        slotId: slot.id,
-        changes: { selected_choices: newVal }
-      })
-      this.saving = false
+      try {
+        await this.$store.dispatch('partialUpdateEventParticipationSlot', {
+          courseId: this.courseId,
+          eventId: this.eventId,
+          slotId: slot.id,
+          changes: { selected_choices: newVal }
+        })
+      } catch {
+        this.savingError = true
+      } finally {
+        this.saving = false
+      }
     },
     async onUpdateAnswerText (slot: EventParticipationSlot, newVal: string) {
       this.saving = true
       slot.answer_text = newVal
-      await this.dispatchAnswerTextUpdate(slot, newVal)
+      try {
+        await this.dispatchAnswerTextUpdate(slot, newVal)
+      } catch {
+        this.savingError = true
+      } finally {
+        this.saving = false
+      }
     },
     async dispatchAnswerTextUpdate (slot: EventParticipationSlot, val: string) {
       await this.$store.dispatch('partialUpdateEventParticipationSlot', {

@@ -10,13 +10,13 @@
       border: !highlighted && !borderLess
     }"
   >
-    <div class="w-full">
+    <div class="flex flex-col flex-grow w-full">
       <div v-if="$slots.header" class="">
         <slot name="header"></slot>
       </div>
       <div
         v-if="$slots.body"
-        class=""
+        class="flex-grow"
         :class="{
           'mt-4': size == 'default',
           'mt-1.5': size == 'sm'

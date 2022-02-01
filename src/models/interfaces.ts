@@ -9,6 +9,7 @@ import {
 } from '.';
 
 export interface User {
+  id: string;
   email: string;
   is_teacher: boolean;
 }
@@ -19,6 +20,7 @@ export interface Course {
   description?: string;
   is_enrolled?: boolean;
   privileges?: CoursePrivilege[];
+  creator?: User;
 }
 
 export interface Exercise {
