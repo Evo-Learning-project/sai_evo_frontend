@@ -52,40 +52,6 @@ export const actions = {
     );
     commit('setEventParticipation', response);
   },
-  partialUpdateEventParticipationSlot: async (
-    { commit, state }: { commit: Commit; state: any },
-    {
-      courseId,
-      eventId,
-      //participationId,
-      slotId,
-      changes,
-      // true if action mutates the store state to reflect changes,
-      //false if action only dispatches api call
-      mutate = true,
-    }: {
-      courseId: string;
-      eventId: string;
-      //participationId: string;
-      slotId: string;
-      changes: Record<keyof EventParticipationSlot, unknown>;
-      mutate: boolean;
-    }
-  ) => {
-    const response = await partialUpdateEventParticipationSlot(
-      courseId,
-      eventId,
-      state.eventParticipation?.id,
-      slotId,
-      changes
-    );
-    if (mutate) {
-      commit('setEventParticipationSlot', {
-        slotId,
-        slot: response,
-      });
-    }
-  },
   moveEventParticipationCurrentSlotCursorForward: async (
     { commit, state }: { commit: Commit; state: any },
     { courseId }: { courseId: string }

@@ -92,15 +92,21 @@
     <!--Mobile responsive sidebar-->
     <!-- Sidebar ends -->
     <div class="flex flex-col w-11/12 px-4 py-6 mx-auto md:w-4/5">
-      <h1 class="mb-8">
-        {{ $route.meta.routeTitle }}
-      </h1>
+      <h2 class="">
+        {{ routeTitle }}
+      </h2>
       <router-view class="flex-grow"></router-view>
     </div>
   </div>
 </template>
 
 <script lang="ts">
+import { courseIdMixin, eventIdMixin } from '@/mixins'
+import { Course, Event } from '@/models'
+import {
+  ROUTE_TITLE_COURSE_NAME_TOKEN,
+  ROUTE_TITLE_EVENT_NAME_TOKEN
+} from '@/navigation/const'
 import { SidebarOption } from '@/navigation/sidebar'
 import { defineComponent } from '@vue/runtime-core'
 
@@ -112,6 +118,7 @@ export default defineComponent({
       test: null
     }
   },
+  mixins: [courseIdMixin, eventIdMixin],
   methods: {
     // sidebarHandler () {
     //   var sideBar = document.getElementById('mobile-nav')
@@ -128,6 +135,25 @@ export default defineComponent({
   computed: {
     sidebarOptions (): SidebarOption[] {
       return (this.$route.meta?.sidebarOptions ?? []) as SidebarOption[]
+    },
+    routeTitle (): string {
+      return (this.$route.meta.routeTitle as string)
+        ?.replace(ROUTE_TITLE_COURSE_NAME_TOKEN, this.currentCourse)
+        ?.replace(ROUTE_TITLE_EVENT_NAME_TOKEN, this.currentEvent)
+    },
+    currentCourse (): string {
+      return (
+        this.$store.state.courses.find((c: Course) => c.id == this.courseId)
+          ?.name ?? ''
+      )
+    },
+    currentEvent (): string {
+      return (
+        this.$store.state.events.find((e: Event) => e.id == this.eventId)
+          ?.name ??
+        this.$store.state.eventParticipation?.event?.name ??
+        ''
+      )
     }
   }
 })

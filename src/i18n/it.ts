@@ -1,4 +1,8 @@
 import { EventState, ExerciseState, ExerciseType } from '@/models';
+import {
+  ROUTE_TITLE_COURSE_NAME_TOKEN,
+  ROUTE_TITLE_EVENT_NAME_TOKEN,
+} from '@/navigation/const';
 
 export const it = {
   dialog: {
@@ -23,9 +27,14 @@ export const it = {
   },
   headings: {
     course_title: 'Corso',
-    course_exercises: 'Esercizi',
-    course_exams: 'Esami',
+    course_exercises:
+      'Esercizi corso ' + ROUTE_TITLE_COURSE_NAME_TOKEN,
+    course_exams: 'Esami corso ' + ROUTE_TITLE_COURSE_NAME_TOKEN,
     course_list: 'Corsi',
+    exam_progress: 'Progresso esame ' + ROUTE_TITLE_EVENT_NAME_TOKEN,
+    exam_results: 'Risultati esame ' + ROUTE_TITLE_EVENT_NAME_TOKEN,
+    ongoing_exam:
+      'Esame ' + ROUTE_TITLE_EVENT_NAME_TOKEN + ' in corso',
   },
   event_participation_page: {
     exercise: 'Esercizio',
@@ -51,9 +60,33 @@ export const it = {
     text_answer_label: 'La tua risposta',
   },
   event_participation_headings: {
+    state: 'Stato',
     email: 'Email',
     full_name: 'Nome e cognome',
-    exercise: 'Es',
+    exercise: 'Es.',
+  },
+  event_assessment: {
+    all_participations_assesses:
+      'Tutti gli esami sono stati corretti. Puoi pubblicare i risultati.',
+    some_exams_require_manual_assessment:
+      'Alcuni esami richiedono una correzione manuale. Prima di poter pubblicare i risultati, devi assegnare un punteggio agli esercizi che ancora non lo hanno.',
+    exams_awaiting_assessment_are_marked:
+      "Gli esami in attesa di correzione manuale sono contrassegnati dall'icona",
+    publish_results: 'Pubblica i risultati',
+    this_comment_is_private:
+      'Questo commento verrà visualizzato dagli insegnanti ma non dallo studente',
+    comment_for_student: 'Commento per lo studente',
+    student_will_see_this_comment:
+      'Questo commento sarà visibile allo studente quando pubblicherai i risultati',
+    this_exercise_requires_manual_asessment:
+      'Devi assegnare manualmente un punteggio a questa risposta',
+    assessment_state: 'Stato della correzione',
+    confirm_assessment: 'Salva valutazione',
+    exercise: 'esercizio',
+    assess: 'Valuta',
+    assigned_score: 'Punteggio assegnato',
+    your_assessment: 'La tua valutazione',
+    text_answer_label: 'Risposta dello studente',
   },
   misc: {
     select_empty_option: 'Seleziona',
@@ -61,6 +94,7 @@ export const it = {
     changes_saved_to_server:
       'Tutte le modifiche sono state salvate sul server',
     exercise_preview_title: 'Anteprima esercizio',
+    for: 'per',
   },
   cloud: {
     saving: 'Salvataggio in corso...',

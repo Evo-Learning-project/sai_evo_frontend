@@ -229,6 +229,7 @@ export default defineComponent({
         await this.$store.dispatch('partialUpdateEventParticipationSlot', {
           courseId: this.courseId,
           eventId: this.eventId,
+          participationId: this.proxyModelValue.id,
           slotId: slot.id,
           changes: { selected_choices: newVal }
         })
@@ -245,14 +246,16 @@ export default defineComponent({
         await this.dispatchAnswerTextUpdate(slot, newVal)
       } catch {
         this.savingError = true
-      } finally {
-        this.saving = false
       }
+      // finally {
+      //   this.saving = false
+      // }
     },
     async dispatchAnswerTextUpdate (slot: EventParticipationSlot, val: string) {
       await this.$store.dispatch('partialUpdateEventParticipationSlot', {
         courseId: this.courseId,
         eventId: this.eventId,
+        participationId: this.proxyModelValue.id,
         slotId: slot.id,
         changes: { answer_text: val },
         mutate: false

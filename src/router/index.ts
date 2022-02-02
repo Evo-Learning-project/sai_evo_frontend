@@ -84,10 +84,11 @@ const routes: Array<RouteRecordRaw> = [
         name: 'ExamProgress',
         meta: {
           sidebarOptions: courseDashboardSidebarOptions,
+          routeTitle: _('headings.exam_progress'),
         },
       },
       {
-        path: 'courses/:courseId/exams/:examId/progress',
+        path: 'courses/:courseId/exams/:examId/results',
         component: EventParticipationsMonitor,
         name: 'ExamResults',
         props: {
@@ -96,6 +97,7 @@ const routes: Array<RouteRecordRaw> = [
         },
         meta: {
           sidebarOptions: courseDashboardSidebarOptions,
+          routeTitle: _('headings.exam_results'),
         },
       },
     ],
@@ -121,7 +123,9 @@ const routes: Array<RouteRecordRaw> = [
         path: 'courses/:courseId/exams/:examId',
         component: EventParticipationPage,
         name: 'ExamParticipationPage',
-        meta: {},
+        meta: {
+          routeTitle: _('headings.ongoing_exam'),
+        },
       },
     ],
   },

@@ -1,7 +1,7 @@
 <template>
   <div>
     <label
-      class="flex space-x-1.5 items-top"
+      class="flex space-x-1.5 items-start"
       v-for="(option, index) in options"
       :key="id + '-option-' + index"
       :for="id + '-option-' + index"
@@ -12,7 +12,7 @@
         type="checkbox"
         v-model="proxyModelValue"
         :value="option.value"
-        class="mt-1.5"
+        style="margin-top: 5px"
       />
       <div class="flex flex-col">
         <p v-html="option.content"></p>

@@ -45,6 +45,9 @@ export default defineComponent({
   components: {
     Spinner
   },
+  created () {
+    this.$store.dispatch('getCourses')
+  },
   data () {
     return {
       //showSpinner: false

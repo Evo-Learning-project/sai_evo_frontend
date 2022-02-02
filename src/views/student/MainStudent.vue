@@ -282,10 +282,7 @@
           Dashboard
         </h1> -->
         <h2 class="mb-0">
-          <!-- TODO remove -->
-          <!-- {{ $t('headings.course_title') }} {{ $route.params.id }} -->
-          {{ $route.meta.routeTitle }}
-          <!-- ? ' &mdash; ' + $route.meta.routeTitle : ''-->
+          {{ routeTitle }}
         </h2>
         <div id="main-student-header-right" class="ml-auto"></div>
       </div>
@@ -306,6 +303,12 @@
 </template>
 
 <script lang="ts">
+import { courseIdMixin, eventIdMixin } from '@/mixins'
+import { Course, Event } from '@/models'
+import {
+  ROUTE_TITLE_COURSE_NAME_TOKEN,
+  ROUTE_TITLE_EVENT_NAME_TOKEN
+} from '@/navigation/const'
 import { SidebarOption } from '@/navigation/sidebar'
 import { defineComponent } from '@vue/runtime-core'
 
@@ -317,6 +320,7 @@ export default defineComponent({
       test: null
     }
   },
+  mixins: [courseIdMixin, eventIdMixin],
   methods: {
     // sidebarHandler () {
     //   var sideBar = document.getElementById('mobile-nav')
@@ -333,6 +337,25 @@ export default defineComponent({
   computed: {
     sidebarOptions (): SidebarOption[] {
       return (this.$route.meta?.sidebarOptions ?? []) as SidebarOption[]
+    },
+    routeTitle (): string {
+      return (this.$route.meta.routeTitle as string)
+        ?.replace(ROUTE_TITLE_COURSE_NAME_TOKEN, this.currentCourse)
+        ?.replace(ROUTE_TITLE_EVENT_NAME_TOKEN, this.currentEvent)
+    },
+    currentCourse (): string {
+      return (
+        this.$store.state.courses.find((c: Course) => c.id == this.courseId)
+          ?.name ?? ''
+      )
+    },
+    currentEvent (): string {
+      return (
+        this.$store.state.events.find((e: Event) => e.id == this.eventId)
+          ?.name ??
+        this.$store.state.eventParticipation?.event?.name ??
+        ''
+      )
     }
   }
 })

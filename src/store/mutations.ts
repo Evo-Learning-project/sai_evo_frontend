@@ -70,14 +70,26 @@ export const mutations = {
   },
   setEventParticipationSlot: (
     state: any,
-    { slotId, slot }: { slotId: string; slot: EventParticipationSlot }
+    {
+      slotId,
+      slot,
+      participationId,
+    }: {
+      slotId: string;
+      slot: EventParticipationSlot;
+      participationId: string;
+    }
   ) => {
-    Object.assign(
+    const target =
+      state.eventParticipations
+        .find((p: EventParticipation) => p.id == participationId)
+        .slots?.find((s: EventParticipationSlot) => s.id == slotId) ??
       state.eventParticipation?.slots?.find(
         (s: EventParticipationSlot) => s.id == slotId
-      ),
-      slot
-    );
+      );
+    console.log('target', target, 'slot', slot);
+    Object.assign(target, slot);
+    console.log(state);
   },
   setEventParticipation: (
     state: any,

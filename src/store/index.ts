@@ -2,6 +2,7 @@ import {
   Course,
   Event,
   EventParticipation,
+  EventParticipationSlot,
   EventTemplate,
   EventType,
   Exercise,
@@ -24,6 +25,7 @@ import {
   createEventTemplateRule,
   getEvent,
   getEvents,
+  partialUpdateEventParticipationSlot,
   updateEvent,
   updateEventTemplateRule,
 } from '@/api/events';
@@ -109,6 +111,41 @@ export default createStore({
     getCourses: async ({ commit }: { commit: Commit }) => {
       const courses = await getCourses();
       commit('setCourses', courses);
+    },
+    partialUpdateEventParticipationSlot: async (
+      { commit, state }: { commit: Commit; state: any },
+      {
+        courseId,
+        eventId,
+        participationId,
+        slotId,
+        changes,
+        // true if action mutates the store state to reflect changes,
+        //false if action only dispatches api call
+        mutate = true,
+      }: {
+        courseId: string;
+        eventId: string;
+        participationId: string;
+        slotId: string;
+        changes: Record<keyof EventParticipationSlot, unknown>;
+        mutate: boolean;
+      }
+    ) => {
+      const response = await partialUpdateEventParticipationSlot(
+        courseId,
+        eventId,
+        participationId, //state.eventParticipation?.id,
+        slotId,
+        changes
+      );
+      if (mutate) {
+        commit('setEventParticipationSlot', {
+          slotId,
+          slot: response,
+          participationId,
+        });
+      }
     },
   },
   modules: {},

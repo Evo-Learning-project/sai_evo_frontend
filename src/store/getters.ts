@@ -10,6 +10,7 @@ import {
 
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 export const getters = {
+  p: (state: any) => state.eventParticipations,
   event: (state: any) => (eventId: string) =>
     state.events.find((e: Event) => e.id == eventId) ?? {},
   exercise: (state: any) => (exerciseId: string) =>

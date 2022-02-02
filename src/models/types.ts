@@ -41,6 +41,17 @@ export enum EventParticipationState {
   TURNED_IN,
 }
 
+export enum ParticipationAssessmentProgress {
+  NOT_ASSESSED,
+  PARTIALLY_ASSESSED,
+  FULLY_ASSESSED,
+}
+
+export enum AssessmentSlotState {
+  NOT_ASSESSED,
+  ASSESSED,
+}
+
 export enum CoursePrivilege {
   ALL_PRIVILEGES = '__all__',
 }

@@ -214,4 +214,21 @@
       opacity: 0;
     }
     
+
+    /* ag data table */
+    .ag-theme-material {
+      @apply font-sans text-sm !important
+    }
+    .ag-row-hover, .ag-header-active {
+      @apply bg-light !important
+    }
+    .ag-has-focus, .ag-cell-focus {
+      @apply border-0 outline-none !important
+    }
+    .ag-header-row {
+      @apply text-gray-600 font-semibold font-sans text-sm !important
+    }
+    .ag-row {
+      @apply border-l-0 border-r-0 border-b border-light hover:bg-light transition-colors duration-75 !important
+    }
   }

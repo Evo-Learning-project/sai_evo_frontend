@@ -29,8 +29,29 @@
       v-else-if="isOpenAnswer"
       v-model="answerTextProxy"
     >
-      {{ $t('event_participation_slot.text_answer_label') }}
+      {{
+        allowEditSubmission
+          ? $t('event_participation_slot.text_answer_label')
+          : $t('event_assessment.text_answer_label')
+      }}
     </TextEditor>
+    <div v-if="allowEditScores" class="mt-8">
+      <h3>{{ $t('event_assessment.your_assessment') }}</h3>
+      <div class="mt-4">
+        <NumberInput
+          class="w-1/2 mb-4"
+          :modelValue="modelValue.score"
+          @update:modelValue="emitUpdate('score', $event)"
+          >{{ $t('event_assessment.assigned_score') }}
+        </NumberInput>
+        <TextEditor
+          class="w-full"
+          :modelValue="modelValue.comment"
+          @update:modelValue="emitUpdate('comment', $event)"
+          >{{ $t('event_assessment.comment_for_student') }}</TextEditor
+        >
+      </div>
+    </div>
   </div>
 </template>
 
@@ -47,12 +68,14 @@ import { SelectableOption } from '@/interfaces'
 import RadioGroup from '../ui/RadioGroup.vue'
 import { getTranslatedString as _ } from '@/i18n'
 import TextEditor from '../ui/TextEditor.vue'
+import NumberInput from '../ui/NumberInput.vue'
 
 export default defineComponent({
   components: {
     CheckboxGroup,
     RadioGroup,
-    TextEditor
+    TextEditor,
+    NumberInput
   },
   name: 'AbstractEventParticipationSlot',
   props: {
@@ -79,6 +102,15 @@ export default defineComponent({
     saving: {
       type: Boolean,
       default: false
+    }
+  },
+  methods: {
+    emitUpdate (key: keyof EventParticipationSlot, value: unknown) {
+      console.log(key, value)
+      this.$emit('update:modelValue', {
+        ...this.modelValue,
+        [key]: value
+      })
     }
   },
   computed: {
@@ -131,8 +163,6 @@ export default defineComponent({
         return this.modelValue.selected_choices
       },
       set (val: string | string[]) {
-        // TODO probably check if a new value has been added or removed by
-        // TODO comparing with current modelValue and emit a specific event
         this.$emit(
           'updateSelectedChoices',
           typeof val === 'object' ? val : [val]
@@ -144,8 +174,6 @@ export default defineComponent({
         return this.modelValue.answer_text
       },
       set (val: string) {
-        // TODO probably check if a new value has been added or removed by
-        // TODO comparing with current modelValue and emit a specific event
         this.$emit('updateAnswerText', val)
       }
     }

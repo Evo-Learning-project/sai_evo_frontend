@@ -6,6 +6,8 @@ import {
   EventTemplateRuleType,
   EventParticipationState,
   CoursePrivilege,
+  ParticipationAssessmentProgress,
+  AssessmentSlotState,
 } from '.';
 
 export interface User {
@@ -95,6 +97,7 @@ export interface EventParticipation {
   event: Event;
   user?: User;
   state: EventParticipationState;
+  assessment_progress?: ParticipationAssessmentProgress;
   slots: EventParticipationSlot[];
   score?: number;
   last_slot_number?: number;
@@ -105,6 +108,8 @@ export interface EventParticipationSlot {
   slot_number?: number;
   exercise: Exercise;
   score?: number;
+  comment?: string;
+  assessment_state?: AssessmentSlotState;
   sub_slots: EventParticipationSlot[];
   selected_choices: string[];
   answer_text: string;
