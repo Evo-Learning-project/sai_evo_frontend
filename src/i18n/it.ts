@@ -50,6 +50,11 @@ export const it = {
   event_participation_slot: {
     text_answer_label: 'La tua risposta',
   },
+  event_participation_headings: {
+    email: 'Email',
+    full_name: 'Nome e cognome',
+    exercise: 'Es',
+  },
   misc: {
     select_empty_option: 'Seleziona',
     or_label: 'Oppure',

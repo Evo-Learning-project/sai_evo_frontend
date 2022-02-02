@@ -45,7 +45,10 @@
       :key="'participation-' + participation.id"
       :participation="participation"
     ></EventParticipationPreview>
-    <data-table></data-table>
+    <DataTable
+      :columnDefs="participationPreviewColumns"
+      :rowData="participationsData"
+    ></DataTable>
   </div>
 </template>
 
@@ -54,9 +57,10 @@ import EventParticipationPreview from '@/components/teacher/EventParticipation/E
 import Card from '@/components/ui/Card.vue'
 import DataTable from '@/components/ui/DataTable.vue'
 import { courseIdMixin, eventIdMixin } from '@/mixins'
-import { Event } from '@/models'
+import { Event, EventParticipation } from '@/models'
 import { defineComponent } from '@vue/runtime-core'
 import { mapState } from 'vuex'
+import { getTranslatedString as _ } from '@/i18n'
 
 export default defineComponent({
   components: {
@@ -93,6 +97,7 @@ export default defineComponent({
       firstLoading: false
     }
   },
+  methods: {},
   computed: {
     ...mapState(['eventParticipations']),
     event (): Event {
@@ -106,6 +111,51 @@ export default defineComponent({
     },
     turnedInCount () {
       return 3
+    },
+    participationPreviewColumns () {
+      if ((this.eventParticipations?.length ?? 0) === 0) {
+        return []
+      }
+      let ret = [
+        { field: _('event_participation_headings.email'), width: 230 },
+        { field: _('event_participation_headings.full_name'), width: 180 }
+      ] as {
+        field: string
+        type?: string
+        width?: number
+        sortable?: boolean
+        filter?: string
+        colSpan?: number
+        flex?: number
+      }[]
+      ;(this.eventParticipations[0] as EventParticipation).slots.forEach(s =>
+        ret.push({
+          width: 70,
+          type: 'numberColumn',
+          field:
+            _('event_participation_headings.exercise') +
+            ' ' +
+            ((s.slot_number as number) + 1)
+        })
+      )
+      return ret
+    },
+    participationsData () {
+      return this.eventParticipations.map((p: EventParticipation) => {
+        const ret = {
+          [_('event_participation_headings.email')]: p.user?.email,
+          [_('event_participation_headings.full_name')]: p.user?.full_name
+        }
+        p.slots.forEach(
+          s =>
+            (ret[
+              _('event_participation_headings.exercise') +
+                ' ' +
+                ((s.slot_number as number) + 1)
+            ] = (s.score as unknown) as string)
+        )
+        return ret
+      })
     }
   }
 })

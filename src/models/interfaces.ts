@@ -11,6 +11,7 @@ import {
 export interface User {
   id: string;
   email: string;
+  full_name: string;
   is_teacher: boolean;
 }
 
@@ -92,7 +93,7 @@ export interface EventTemplateRuleClause {
 export interface EventParticipation {
   id: string;
   event: Event;
-  user: string;
+  user?: User;
   state: EventParticipationState;
   slots: EventParticipationSlot[];
   score?: number;
@@ -101,6 +102,7 @@ export interface EventParticipation {
 
 export interface EventParticipationSlot {
   id: string;
+  slot_number?: number;
   exercise: Exercise;
   score?: number;
   sub_slots: EventParticipationSlot[];
