@@ -11,6 +11,9 @@ module.exports = {
     minWidth: {
       md: '28rem'
     },
+    outlineWidth: {
+      0: '0px'
+    },
     extend: {
       spacing: {
         '1.25px': '1.25px',

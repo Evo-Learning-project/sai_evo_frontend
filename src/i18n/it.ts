@@ -69,9 +69,9 @@ export const it = {
     all_participations_assesses:
       'Tutti gli esami sono stati corretti. Puoi pubblicare i risultati.',
     some_exams_require_manual_assessment:
-      'Alcuni esami richiedono una correzione manuale. Prima di poter pubblicare i risultati, devi assegnare un punteggio agli esercizi che ancora non lo hanno.',
+      'Alcune risposte richiedono una correzione manuale. Prima di poter pubblicare i risultati, devi assegnare un punteggio agli esercizi che ancora non lo hanno.',
     exams_awaiting_assessment_are_marked:
-      "Gli esami in attesa di correzione manuale sono contrassegnati dall'icona",
+      "Gli esercizi in attesa di correzione manuale sono contrassegnati dall'icona",
     publish_results: 'Pubblica i risultati',
     this_comment_is_private:
       'Questo commento verrà visualizzato dagli insegnanti ma non dallo studente',

@@ -225,6 +225,9 @@
     .ag-has-focus, .ag-cell-focus {
       @apply border-0 outline-none !important
     }
+    .ag-cell {
+      @apply border-0 !important
+    }
     .ag-header-row {
       @apply text-gray-600 font-semibold font-sans text-sm !important
     }

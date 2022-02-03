@@ -320,12 +320,14 @@ export default defineComponent({
             ' ' +
             ((s.slot_number as number) + 1),
           cellRenderer: (params: any) =>
-            `<span class="px-1.5 py-1.5 rounded-md cursor-pointer hover:bg-gray-200">` +
-            (params.value.score ??
-              `<span class="pt-2 pb-0 pr-1 text-lg text-yellow-900 transition-opacity duration-75 hover:opacity-100 opacity-70 material-icons-outlined">
-                  pending_actions
-                </span>`) +
-            `</span>`
+            `<div class="flex items-center h-full ml-4 rounded-md cursor-pointer hover:bg-gray-200 ${params
+              .value.score ??
+              'transition-opacity duration-75 hover:opacity-100 opacity-70 '}">` +
+            `<span class="mx-auto ${params.value.score ??
+              'text-lg text-yellow-900 material-icons-outlined'}">
+                  ${params.value.score ?? 'pending_actions'}
+                </span>` +
+            `</div>`
         })
       )
       return ret
