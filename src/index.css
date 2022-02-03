@@ -234,4 +234,20 @@
     .ag-row {
       @apply border-l-0 border-r-0 border-b border-light hover:bg-light transition-colors duration-75 !important
     }
+    .ag-theme-material .ag-checkbox-input-wrapper.ag-checked::after {
+      @apply text-primary !important
+    }
+
+    .ag-theme-material .ag-checkbox-input-wrapper {
+      font-family: 'Material Icons Outlined' !important;
+    }
+    .ag-theme-material .ag-checkbox-input-wrapper::after {
+      content: "check_box_outline_blank" !important
+    }
+    .ag-theme-material .ag-checkbox-input-wrapper.ag-checked::after {
+      content: "check_box" !important;
+    }
+    .ag-theme-material .ag-checkbox-input-wrapper.ag-indeterminate::after {
+      content: "indeterminate_check_box" !important
+    }
   }

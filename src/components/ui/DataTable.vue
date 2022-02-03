@@ -5,8 +5,11 @@
     suppressRowHoverHighlight="true"
     suppressCellSelection="false"
     :columnDefs="columnDefs"
+    :rowSelection="'multiple'"
+    :isRowSelectable="isRowSelectable"
     :rowData="rowData"
     @cell-click="$emit('cellClicked', $event)"
+    @selection-change="$emit('selectionChanged', $event)"
     @first-data-rendered="onGridReady"
   ></ag-grid-vue>
 </template>
@@ -17,6 +20,7 @@ import 'ag-grid-community/dist/styles/ag-grid.css'
 import 'ag-grid-community/dist/styles/ag-theme-material.css'
 import { defineComponent, PropType } from '@vue/runtime-core'
 import { AgGridVue } from 'ag-grid-vue3'
+import { ColDef } from 'ag-grid-community'
 
 export default defineComponent({
   name: 'DataTable',
@@ -25,12 +29,16 @@ export default defineComponent({
   },
   props: {
     columnDefs: {
-      type: Array as PropType<{ field: string }[]>,
+      type: Array as PropType<ColDef[]>,
       required: true
     },
     rowData: {
       type: Array,
       required: true
+    },
+    isRowSelectable: {
+      type: Function,
+      default: () => false
     }
   },
   data () {
@@ -42,10 +50,8 @@ export default defineComponent({
   },
   methods: {
     onGridReady (params: any) {
-      console.log('READY', params)
+      //console.log('READY', params)
       this.$emit('gridReady', params)
-      // this.gridApi = params.api;
-      // this.gridColumnApi = params.columnApi;
     }
   }
 })

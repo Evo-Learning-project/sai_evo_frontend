@@ -69,17 +69,17 @@ export const it = {
     all_participations_assesses:
       'Tutti gli esami sono stati corretti. Puoi pubblicare i risultati.',
     some_exams_require_manual_assessment:
-      'Alcune risposte richiedono una correzione manuale. Prima di poter pubblicare i risultati, devi assegnare un punteggio agli esercizi che ancora non lo hanno.',
+      'Alcuni esercizi richiedono una correzione manuale. Prima di poter pubblicare i risultati, devi assegnare un punteggio agli esercizi che ancora non lo hanno.',
     exams_awaiting_assessment_are_marked:
-      "Gli esercizi in attesa di correzione manuale sono contrassegnati dall'icona",
+      "Per assegnare un punteggio alle risposte non ancora valutate, clicca sull'icona",
     publish_results: 'Pubblica i risultati',
     this_comment_is_private:
       'Questo commento verrà visualizzato dagli insegnanti ma non dallo studente',
     comment_for_student: 'Commento per lo studente',
     student_will_see_this_comment:
       'Questo commento sarà visibile allo studente quando pubblicherai i risultati',
-    this_exercise_requires_manual_asessment:
-      'Devi assegnare manualmente un punteggio a questa risposta',
+    this_exercise_requires_manual_assessment:
+      'Devi assegnare manualmente un punteggio a questa risposta.',
     assessment_state: 'Stato della correzione',
     confirm_assessment: 'Salva valutazione',
     exercise: 'esercizio',
@@ -87,6 +87,8 @@ export const it = {
     assigned_score: 'Punteggio assegnato',
     your_assessment: 'La tua valutazione',
     text_answer_label: 'Risposta dello studente',
+    exercise_seen_at: 'Visto:',
+    exercises_answered_at: 'Risposto:',
   },
   misc: {
     select_empty_option: 'Seleziona',

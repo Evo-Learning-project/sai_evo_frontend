@@ -1,57 +1,78 @@
 <template>
-  <div class="flex space-x-12">
+  <div class="">
     <div class="w-full">
       <h3 v-if="showExerciseLabel">{{ exercise.label }}</h3>
       <div class="mb-8" v-html="exercise.text"></div>
-      <CheckboxGroup
-        v-if="isMultipleChoiceMultiplePossible"
-        :options="exerciseChoicesAsOptions"
-        v-model="selectedChoicesProxy"
-        :disabled="!allowEditSubmission || saving"
-        v-slot="{ description }"
-      >
-        <p class="mb-2 text-sm text-muted">{{ description }}</p>
+      <div :class="{ 'flex space-x-8': allowEditScores }">
+        <div :class="{ 'w-1/2': allowEditScores }">
+          <CheckboxGroup
+            v-if="isMultipleChoiceMultiplePossible"
+            :options="exerciseChoicesAsOptions"
+            v-model="selectedChoicesProxy"
+            :disabled="!allowEditSubmission || saving"
+            v-slot="{ description }"
+          >
+            <p class="mb-2 text-sm text-muted">{{ description }}</p>
 
-        <!-- <div class="px-2 py-1.25px rounded-md mb-2 bg-gray-50">
+            <!-- <div class="px-2 py-1.25px rounded-md mb-2 bg-gray-50">
         <p class="text-sm text-muted">{{ description }}</p>
       </div> -->
-      </CheckboxGroup>
-      <RadioGroup
-        v-else-if="isMultipleChoiceSinglePossible"
-        :options="exerciseChoicesAsOptions"
-        v-model="selectedChoicesProxy"
-        :disabled="!allowEditSubmission || saving"
-        v-slot="{ description }"
-      >
-        <p class="mb-2 text-sm text-muted">{{ description }}</p>
-      </RadioGroup>
-      <TextEditor
-        :disabled="!allowEditSubmission"
-        v-else-if="isOpenAnswer"
-        v-model="answerTextProxy"
-      >
-        {{
-          allowEditSubmission
-            ? $t('event_participation_slot.text_answer_label')
-            : $t('event_assessment.text_answer_label')
-        }}
-      </TextEditor>
-    </div>
-    <div v-if="allowEditScores" class="w-full mt-auto">
-      <h3>{{ $t('event_assessment.your_assessment') }}</h3>
-      <div class="mt-4">
-        <NumberInput
-          class="mb-4"
-          :modelValue="modelValue.score"
-          @update:modelValue="emitUpdate('score', $event)"
-          >{{ $t('event_assessment.assigned_score') }}
-        </NumberInput>
-        <TextEditor
-          class="w-full"
-          :modelValue="modelValue.comment"
-          @update:modelValue="emitUpdate('comment', $event)"
-          >{{ $t('event_assessment.comment_for_student') }}</TextEditor
-        >
+          </CheckboxGroup>
+          <RadioGroup
+            v-else-if="isMultipleChoiceSinglePossible"
+            :options="exerciseChoicesAsOptions"
+            v-model="selectedChoicesProxy"
+            :disabled="!allowEditSubmission || saving"
+            v-slot="{ description }"
+          >
+            <p class="mb-2 text-sm text-muted">{{ description }}</p>
+          </RadioGroup>
+          <TextEditor
+            :disabled="!allowEditSubmission"
+            v-else-if="isOpenAnswer"
+            v-model="answerTextProxy"
+          >
+            {{
+              allowEditSubmission
+                ? $t('event_participation_slot.text_answer_label')
+                : $t('event_assessment.text_answer_label')
+            }}
+          </TextEditor>
+        </div>
+        <div v-if="allowEditScores" class="w-1/2">
+          <!-- TODO work on this -->
+          <p v-if="modelValue.seen_at">
+            {{ $t('event_assessment.exercise_seen_at') }}
+            <Timestamp :value="modelValue.seen_at"></Timestamp>
+          </p>
+          <p v-if="modelValue.answered_at">
+            {{ $t('event_assessment.exercise_answered_at') }}
+            <Timestamp :value="modelValue.answered_at"></Timestamp>
+          </p>
+          <!-- -->
+          <h3>{{ $t('event_assessment.your_assessment') }}</h3>
+          <div class="mt-4">
+            <p class="mb-4 text-muted" v-if="modelValue.score == null">
+              {{
+                $t('event_assessment.this_exercise_requires_manual_assessment')
+              }}
+            </p>
+            <p>
+              <NumberInput
+                class="mb-4"
+                :modelValue="modelValue.score"
+                @update:modelValue="emitUpdate('score', $event)"
+                >{{ $t('event_assessment.assigned_score') }}
+              </NumberInput>
+              <TextEditor
+                class="w-full"
+                :modelValue="modelValue.comment"
+                @update:modelValue="emitUpdate('comment', $event)"
+                >{{ $t('event_assessment.comment_for_student') }}</TextEditor
+              >
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -71,13 +92,15 @@ import RadioGroup from '../ui/RadioGroup.vue'
 import { getTranslatedString as _ } from '@/i18n'
 import TextEditor from '../ui/TextEditor.vue'
 import NumberInput from '../ui/NumberInput.vue'
+import Timestamp from '../ui/Timestamp.vue'
 
 export default defineComponent({
   components: {
     CheckboxGroup,
     RadioGroup,
     TextEditor,
-    NumberInput
+    NumberInput,
+    Timestamp
   },
   name: 'AbstractEventParticipationSlot',
   props: {

@@ -75,14 +75,24 @@
       v-if="!firstLoading"
       :columnDefs="participationPreviewColumns"
       :rowData="participationsData"
+      :isRowSelectable="isParticipationPublishable"
       @cellClicked="onCellClicked"
       @gridReady="gridApi = $event.api"
+      @selectionChanged="onSelectionChanged"
     ></DataTable>
     <div v-else>
       <SkeletonCard :borderLess="true"></SkeletonCard>
       <SkeletonCard :borderLess="true"></SkeletonCard>
       <SkeletonCard :borderLess="true"></SkeletonCard>
     </div>
+
+    <Btn :variant="'success'" :disabled="selectedParticipations.length == 0">
+      <span class="mr-1 text-base material-icons-outlined">
+        done
+      </span>
+      Pubblica risultati</Btn
+    >
+
     <Dialog
       :large="true"
       :showDialog="showDialog"
@@ -99,7 +109,7 @@
         {{ editingFullName }}
       </template>
       <template v-slot:body>
-        <div class="overflow-auto h-5/6">
+        <div class="text-darkText">
           <AbstractEventParticipationSlot
             v-if="editingSlot"
             :allowEditScores="true"
@@ -118,7 +128,6 @@
 
 //import EventParticipationPreview from '@/components/teacher/EventParticipation/EventParticipationPreview.vue'
 import Card from '@/components/ui/Card.vue'
-import Btn from '@/components/ui/Btn.vue'
 import DataTable from '@/components/ui/DataTable.vue'
 import { courseIdMixin, eventIdMixin } from '@/mixins'
 import {
@@ -131,12 +140,18 @@ import {
 import { defineComponent } from '@vue/runtime-core'
 import { mapState } from 'vuex'
 import { getTranslatedString as _ } from '@/i18n'
-import { CellClickedEvent } from 'ag-grid-community'
+import {
+  CellClickedEvent,
+  ColDef,
+  RowNode,
+  SelectionChangedEvent
+} from 'ag-grid-community'
 import { icons as assessmentStateIcons } from '@/assets/assessmentStateIcons'
 import Dialog from '@/components/ui/Dialog.vue'
 import AbstractEventParticipationSlot from '@/components/shared/AbstractEventParticipationSlot.vue'
 import { DialogData } from '@/interfaces'
 import SkeletonCard from '@/components/ui/SkeletonCard.vue'
+import Btn from '@/components/ui/Btn.vue'
 
 export default defineComponent({
   components: {
@@ -145,7 +160,8 @@ export default defineComponent({
     DataTable,
     Dialog,
     AbstractEventParticipationSlot,
-    SkeletonCard
+    SkeletonCard,
+    Btn
   },
   name: 'EventParticipationsMonitor',
   props: {
@@ -191,10 +207,20 @@ export default defineComponent({
       editingSlotDirty: null as EventParticipationSlot | null,
       editingFullName: '',
       editingParticipationId: '',
-      gridApi: null as any
+      gridApi: null as any,
+      selectedParticipations: [] as string[]
     }
   },
   methods: {
+    isParticipationPublishable (row: RowNode) {
+      return row.data.state == ParticipationAssessmentProgress.FULLY_ASSESSED
+    },
+    onSelectionChanged (event: SelectionChangedEvent) {
+      console.log('selection', event, this.gridApi.getSelectedNodes())
+      this.selectedParticipations = this.gridApi
+        ?.getSelectedNodes()
+        .map((n: any) => n.data.id)
+    },
     onCellClicked (event: CellClickedEvent) {
       //console.log('cell clicked', event, event.value)
       if (!event.colDef.field?.startsWith('slot')) {
@@ -267,46 +293,37 @@ export default defineComponent({
         return []
       }
       let ret = [
-          { field: 'id', hide: true },
-          {
-            field: 'state',
-            width: 80,
-            headerName: _('event_participation_headings.state'),
-            cellRenderer: (params: any) =>
-              `<span class="${
-                params.value ==
-                ParticipationAssessmentProgress.PARTIALLY_ASSESSED
-                  ? 'text-yellow-900'
-                  : 'text-success'
-              } pt-2 ml-1 text-lg material-icons-outlined">${
-                assessmentStateIcons[
-                  params.value as ParticipationAssessmentProgress
-                ]
-              }</span>`
-          },
-          {
-            field: 'email',
-            headerName: _('event_participation_headings.email'),
-            width: 230,
-            cellRenderer: (params: any) => params.value
-          },
-          {
-            field: 'fullName',
-            headerName: _('event_participation_headings.full_name'),
-            flex: 1
-          }
-        ] as {
-          field: string
-          headerName: string
-          type?: string
-          width?: number
-          sortable?: boolean
-          filter?: string
-          colSpan?: number
-          flex?: number
-          cellClassRules: Record<string, string>
-          cellRenderer?: any
-        }[] // TODO make interface
+        { field: 'id', hide: true },
+        {
+          field: 'state',
+          width: 80,
+          headerName: _('event_participation_headings.state'),
+          cellRenderer: (params: any) =>
+            `<span class="${
+              params.value == ParticipationAssessmentProgress.PARTIALLY_ASSESSED
+                ? 'text-yellow-900'
+                : 'text-success'
+            } pt-2 ml-1 text-lg material-icons-outlined">${
+              assessmentStateIcons[
+                params.value as ParticipationAssessmentProgress
+              ]
+            }</span>`
+        },
+        {
+          field: 'email',
+          headerName: _('event_participation_headings.email'),
+          width: 230,
+          cellRenderer: (params: any) => params.value,
+          checkboxSelection: true,
+          headerCheckboxSelection: true,
+          headerCheckboxSelectionFilteredOnly: true
+        },
+        {
+          field: 'fullName',
+          headerName: _('event_participation_headings.full_name'),
+          flex: 1
+        }
+      ] as ColDef[]
       ;(this.eventParticipations[0] as EventParticipation).slots.forEach(s =>
         ret.push({
           width: 100,
