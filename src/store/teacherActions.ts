@@ -30,6 +30,7 @@ import {
   createEvent,
   createEventTemplateRule,
   getEvent,
+  getEventParticipation,
   getEventParticipations,
   getEvents,
   partialUpdateEvent,
@@ -68,6 +69,21 @@ export const actions = {
       eventId
     );
     commit('setEventParticipations', participations);
+  },
+  getEventParticipation: async (
+    { commit }: { commit: Commit },
+    {
+      courseId,
+      eventId,
+      participationId,
+    }: { courseId: string; eventId: string; participationId: string }
+  ) => {
+    const participation = await getEventParticipation(
+      courseId,
+      eventId,
+      participationId
+    );
+    commit('setEventParticipation', participation);
   },
   updateExercise: async (
     // eslint-disable-next-line @typescript-eslint/no-unused-vars

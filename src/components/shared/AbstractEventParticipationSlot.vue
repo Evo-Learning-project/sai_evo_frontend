@@ -1,45 +1,47 @@
 <template>
-  <div>
-    <h3 v-if="showExerciseLabel">{{ exercise.label }}</h3>
-    <div class="mb-8" v-html="exercise.text"></div>
-    <CheckboxGroup
-      v-if="isMultipleChoiceMultiplePossible"
-      :options="exerciseChoicesAsOptions"
-      v-model="selectedChoicesProxy"
-      :disabled="!allowEditSubmission || saving"
-      v-slot="{ description }"
-    >
-      <p class="mb-2 text-sm text-muted">{{ description }}</p>
+  <div class="flex space-x-12">
+    <div class="w-full">
+      <h3 v-if="showExerciseLabel">{{ exercise.label }}</h3>
+      <div class="mb-8" v-html="exercise.text"></div>
+      <CheckboxGroup
+        v-if="isMultipleChoiceMultiplePossible"
+        :options="exerciseChoicesAsOptions"
+        v-model="selectedChoicesProxy"
+        :disabled="!allowEditSubmission || saving"
+        v-slot="{ description }"
+      >
+        <p class="mb-2 text-sm text-muted">{{ description }}</p>
 
-      <!-- <div class="px-2 py-1.25px rounded-md mb-2 bg-gray-50">
+        <!-- <div class="px-2 py-1.25px rounded-md mb-2 bg-gray-50">
         <p class="text-sm text-muted">{{ description }}</p>
       </div> -->
-    </CheckboxGroup>
-    <RadioGroup
-      v-else-if="isMultipleChoiceSinglePossible"
-      :options="exerciseChoicesAsOptions"
-      v-model="selectedChoicesProxy"
-      :disabled="!allowEditSubmission || saving"
-      v-slot="{ description }"
-    >
-      <p class="mb-2 text-sm text-muted">{{ description }}</p>
-    </RadioGroup>
-    <TextEditor
-      :disabled="!allowEditSubmission"
-      v-else-if="isOpenAnswer"
-      v-model="answerTextProxy"
-    >
-      {{
-        allowEditSubmission
-          ? $t('event_participation_slot.text_answer_label')
-          : $t('event_assessment.text_answer_label')
-      }}
-    </TextEditor>
-    <div v-if="allowEditScores" class="mt-8">
+      </CheckboxGroup>
+      <RadioGroup
+        v-else-if="isMultipleChoiceSinglePossible"
+        :options="exerciseChoicesAsOptions"
+        v-model="selectedChoicesProxy"
+        :disabled="!allowEditSubmission || saving"
+        v-slot="{ description }"
+      >
+        <p class="mb-2 text-sm text-muted">{{ description }}</p>
+      </RadioGroup>
+      <TextEditor
+        :disabled="!allowEditSubmission"
+        v-else-if="isOpenAnswer"
+        v-model="answerTextProxy"
+      >
+        {{
+          allowEditSubmission
+            ? $t('event_participation_slot.text_answer_label')
+            : $t('event_assessment.text_answer_label')
+        }}
+      </TextEditor>
+    </div>
+    <div v-if="allowEditScores" class="w-full mt-auto">
       <h3>{{ $t('event_assessment.your_assessment') }}</h3>
       <div class="mt-4">
         <NumberInput
-          class="w-1/2 mb-4"
+          class="mb-4"
           :modelValue="modelValue.score"
           @update:modelValue="emitUpdate('score', $event)"
           >{{ $t('event_assessment.assigned_score') }}

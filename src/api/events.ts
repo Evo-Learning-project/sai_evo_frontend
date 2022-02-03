@@ -78,6 +78,17 @@ export async function getEventParticipations(
   return response.data;
 }
 
+export async function getEventParticipation(
+  courseId: string,
+  eventId: string,
+  participationId: string
+): Promise<EventParticipation> {
+  const response = await axios.get(
+    `/courses/${courseId}/events/${eventId}/participations/${participationId}/`
+  );
+  return response.data;
+}
+
 // export async function getEventTemplate(
 //   courseId: string,
 //   templateId: string

@@ -18,7 +18,7 @@
         v-if="$slots.body"
         class="flex-grow"
         :class="{
-          'mt-4': size == 'default',
+          'mt-4': size == 'default' && $slots.header,
           'mt-1.5': size == 'sm'
         }"
       >

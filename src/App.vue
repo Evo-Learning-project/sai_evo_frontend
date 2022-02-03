@@ -1,7 +1,8 @@
 <template>
   <div
     v-if="loading"
-    class="fixed z-50 transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
+    style="z-index: 999"
+    class="fixed transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
   >
     <Spinner :size="'xl'" :variant="'dark'" :fast="true"></Spinner>
   </div>

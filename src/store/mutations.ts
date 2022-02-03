@@ -94,7 +94,18 @@ export const mutations = {
   setEventParticipation: (
     state: any,
     participation: EventParticipation
-  ) => (state.eventParticipation = participation),
+  ) => {
+    const target = state.eventParticipations.find(
+      (p: EventParticipation) => p.id == participation.id
+    );
+    if (target) {
+      // teacher usage
+      Object.assign(target, participation);
+    } else {
+      // student usage
+      state.eventParticipation = participation;
+    }
+  },
   setEventParticipations: (
     // TODO better naming for student vs teacher state
     state: any,

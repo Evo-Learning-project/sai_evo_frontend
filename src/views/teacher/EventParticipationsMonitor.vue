@@ -1,17 +1,36 @@
 <template>
   <div>
     <div v-if="resultsMode && thereArePartialAssessment" class="mb-8">
-      <p class="text-muted">
-        {{ $t('event_assessment.some_exams_require_manual_assessment') }}
-      </p>
-      <div class="flex items-center space-x-1">
-        <p class="text-muted">
-          {{ $t('event_assessment.exams_awaiting_assessment_are_marked') }}
-        </p>
-        <span class="text-lg material-icons-outlined text-danger-dark"
-          >pending_actions</span
-        >.
-      </div>
+      <Card class="bg-light">
+        <template v-slot:body>
+          <div class="flex space-x-3">
+            <div>
+              <div class="text-yellow-900 bg-yellow-500 icon-surrounding">
+                <span class="ml-px material-icons-outlined">
+                  pending_actions
+                </span>
+              </div>
+            </div>
+            <div class="flex flex-wrap items-center">
+              <p class="">
+                {{
+                  $t('event_assessment.some_exams_require_manual_assessment')
+                }}
+              </p>
+              <div class="flex flex-wrap items-center space-x-1">
+                <p>
+                  {{
+                    $t('event_assessment.exams_awaiting_assessment_are_marked')
+                  }}
+                </p>
+                <span class="text-lg text-yellow-900 material-icons-outlined"
+                  >pending_actions</span
+                >.
+              </div>
+            </div>
+          </div>
+        </template>
+      </Card>
     </div>
     <div class="grid grid-cols-3 gap-12" v-if="!resultsMode && !firstLoading">
       <Card class="shadow-sm">
@@ -53,11 +72,17 @@
     </div>
 
     <DataTable
+      v-if="!firstLoading"
       :columnDefs="participationPreviewColumns"
       :rowData="participationsData"
       @cellClicked="onCellClicked"
       @gridReady="gridApi = $event.api"
     ></DataTable>
+    <div v-else>
+      <SkeletonCard :borderLess="true"></SkeletonCard>
+      <SkeletonCard :borderLess="true"></SkeletonCard>
+      <SkeletonCard :borderLess="true"></SkeletonCard>
+    </div>
     <Dialog
       :large="true"
       :showDialog="showDialog"
@@ -111,6 +136,7 @@ import { icons as assessmentStateIcons } from '@/assets/assessmentStateIcons'
 import Dialog from '@/components/ui/Dialog.vue'
 import AbstractEventParticipationSlot from '@/components/shared/AbstractEventParticipationSlot.vue'
 import { DialogData } from '@/interfaces'
+import SkeletonCard from '@/components/ui/SkeletonCard.vue'
 
 export default defineComponent({
   components: {
@@ -118,7 +144,8 @@ export default defineComponent({
     Card,
     DataTable,
     Dialog,
-    AbstractEventParticipationSlot
+    AbstractEventParticipationSlot,
+    SkeletonCard
   },
   name: 'EventParticipationsMonitor',
   props: {
@@ -144,6 +171,12 @@ export default defineComponent({
     })
     this.firstLoading = false
   },
+  watch: {
+    loading (newVal) {
+      // TODO Make mixin
+      this.$store.state.loading = newVal
+    }
+  },
   data () {
     return {
       firstLoading: false,
@@ -163,7 +196,10 @@ export default defineComponent({
   },
   methods: {
     onCellClicked (event: CellClickedEvent) {
-      console.log('cell clicked', event, event.value)
+      //console.log('cell clicked', event, event.value)
+      if (!event.colDef.field?.startsWith('slot')) {
+        return
+      }
       this.showDialog = true
       this.editingSlot = event.value
       this.editingSlotDirty = JSON.parse(JSON.stringify(this.editingSlot))
@@ -181,6 +217,11 @@ export default defineComponent({
           score: this.editingSlotDirty?.score,
           comment: this.editingSlotDirty?.comment
         }
+      })
+      await this.$store.dispatch('getEventParticipation', {
+        courseId: this.courseId,
+        eventId: this.eventId,
+        participationId: this.editingParticipationId
       })
       this.hideDialog()
       this.loading = false
@@ -235,7 +276,7 @@ export default defineComponent({
               `<span class="${
                 params.value ==
                 ParticipationAssessmentProgress.PARTIALLY_ASSESSED
-                  ? 'text-danger-dark'
+                  ? 'text-yellow-900'
                   : 'text-success'
               } pt-2 ml-1 text-lg material-icons-outlined">${
                 assessmentStateIcons[
@@ -268,10 +309,8 @@ export default defineComponent({
         }[] // TODO make interface
       ;(this.eventParticipations[0] as EventParticipation).slots.forEach(s =>
         ret.push({
-          width: 80,
+          width: 100,
           cellClassRules: {
-            // TODO in results mode (after exam is closed), show colors to indicate the
-            // TODO exercise needs manual evaluation
             //'bg-danger bg-opacity-30': '!x'
           },
           type: 'numericColumn',
@@ -280,7 +319,13 @@ export default defineComponent({
             _('event_participation_headings.exercise') +
             ' ' +
             ((s.slot_number as number) + 1),
-          cellRenderer: (params: any) => params.value.score ?? '-'
+          cellRenderer: (params: any) =>
+            `<span class="px-1.5 py-1.5 rounded-md cursor-pointer hover:bg-gray-200">` +
+            (params.value.score ??
+              `<span class="pt-2 pb-0 pr-1 text-lg text-yellow-900 transition-opacity duration-75 hover:opacity-100 opacity-70 material-icons-outlined">
+                  pending_actions
+                </span>`) +
+            `</span>`
         })
       )
       return ret
