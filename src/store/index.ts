@@ -58,6 +58,7 @@ export default createStore({
     token: '',
     refreshToken: '',
     loading: false,
+    showSuccessFeedback: false,
 
     /* teachers-only state*/
     exercises: [] as Exercise[],

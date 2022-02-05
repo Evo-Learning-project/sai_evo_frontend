@@ -97,6 +97,7 @@ export const it = {
       'Tutte le modifiche sono state salvate sul server',
     exercise_preview_title: 'Anteprima esercizio',
     for: 'per',
+    success: 'Operazione completata con successo',
   },
   cloud: {
     saving: 'Salvataggio in corso...',

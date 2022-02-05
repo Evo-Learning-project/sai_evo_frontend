@@ -231,7 +231,6 @@ export default defineComponent({
       )
     },
     getRowClass (row: RowClassParams) {
-      console.log('ROWDATA', row.data)
       return (row.data as EventParticipation).visibility ==
         AssessmentVisibility.PUBLISHED
         ? ['bg-success-important', 'hover:bg-success-important']
@@ -272,6 +271,7 @@ export default defineComponent({
           visibility: AssessmentVisibility.PUBLISHED
         }
       })
+      this.$store.commit('showSuccessFeedback')
       this.hideDialog()
       this.loading = false
       this.gridApi.refreshCells({ force: true })

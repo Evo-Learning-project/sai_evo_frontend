@@ -32,6 +32,10 @@ export const mutations = {
   setTags: (state: any, tags: Tag[]) => (state.tags = tags),
   setLoading: (state: any, val: boolean) => (state.loading = val),
 
+  showSuccessFeedback: (state: any) => {
+    state.showSuccessFeedback = true;
+    setTimeout(() => (state.showSuccessFeedback = false), 2000);
+  },
   setUser: (state: any, user: User) => {
     state.user = user;
     localStorage.setItem('user', JSON.stringify(user));

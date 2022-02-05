@@ -31,6 +31,15 @@
   }
 
 @layer components {
+    .fade-enter-active,
+    .fade-leave-active {
+      transition: opacity 0.2s linear;
+    }
+
+    .fade-enter-from,
+    .fade-leave-to {
+      opacity: 0;
+    }
     .user-content {
       @apply bg-gray-50 rounded-l-none rounded-r-md pr-2 pl-4 py-5 border border-l-6 border-primary
     }

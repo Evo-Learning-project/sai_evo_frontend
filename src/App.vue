@@ -6,6 +6,9 @@
   >
     <Spinner :size="'xl'" :variant="'dark'" :fast="true"></Spinner>
   </div>
+  <transition name="fade">
+    <Notification v-if="showSuccessFeedback"></Notification>
+  </transition>
   <router-view class="" />
   <footer
     class="flex items-center w-full h-12 px-6 py-3 mt-auto text-sm text-white bg-dark"
@@ -38,16 +41,18 @@
 import { defineComponent } from '@vue/runtime-core'
 import Spinner from './components/ui/Spinner.vue'
 import { mapState } from 'vuex'
+import Notification from './components/ui/Notification.vue'
 
 export default defineComponent({
   beforeCreate (): void {
     this.$store.commit('initStore')
   },
   components: {
-    Spinner
+    Spinner,
+    Notification
   },
-  created () {
-    this.$store.dispatch('getCourses')
+  async created () {
+    await this.$store.dispatch('getCourses')
   },
   data () {
     return {
@@ -55,7 +60,7 @@ export default defineComponent({
     }
   },
   computed: {
-    ...mapState(['loading'])
+    ...mapState(['loading', 'showSuccessFeedback'])
   },
   methods: {}
 })

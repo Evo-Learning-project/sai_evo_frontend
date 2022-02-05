@@ -8,12 +8,20 @@
         {{ $t('course_events.new_exam') }}</btn
       >
     </div>
-    <div class="grid grid-cols-2 gap-4 mt-4">
+    <div v-if="!firstLoading" class="grid grid-cols-2 gap-4 mt-4">
       <EventEditorPreview
         v-for="(exam, index) in exams"
         :key="exam + '-' + index"
         :event="exam"
       ></EventEditorPreview>
+    </div>
+    <div class="grid grid-cols-2 gap-4 mt-4" v-else>
+      <SkeletonCard :marginLess="true"></SkeletonCard>
+      <SkeletonCard :marginLess="true"></SkeletonCard>
+      <SkeletonCard :marginLess="true"></SkeletonCard>
+      <SkeletonCard :marginLess="true"></SkeletonCard>
+      <SkeletonCard :marginLess="true"></SkeletonCard>
+      <SkeletonCard :marginLess="true"></SkeletonCard>
     </div>
   </div>
 </template>
@@ -25,18 +33,23 @@ import Btn from '@/components/ui/Btn.vue'
 
 import { defineComponent } from '@vue/runtime-core'
 import { courseIdMixin } from '@/mixins'
+import SkeletonCard from '@/components/ui/SkeletonCard.vue'
 export default defineComponent({
   components: {
     EventEditorPreview,
-    Btn
+    Btn,
+    SkeletonCard
   },
   name: 'CourseExams',
   mixins: [courseIdMixin],
-  created () {
-    this.$store.dispatch('getEvents', this.courseId)
+  async created () {
+    this.firstLoading = true
+    await this.$store.dispatch('getEvents', this.courseId)
+    this.firstLoading = false
   },
   data () {
     return {
+      firstLoading: false,
       loading: false
     }
   },
