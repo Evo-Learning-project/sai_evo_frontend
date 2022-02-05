@@ -43,7 +43,9 @@
       </div>
       <p v-if="isPlanned" class="mt-4 text-muted">
         {{ $t('event_editor.event_planned_help_text') }}
-        <strong>{{ formattedTimestamp }}</strong
+        <!-- <strong>{{ formattedTimestamp }}</strong> -->
+        &nbsp;<strong
+          ><Timestamp :value="modelValue.begin_timestamp"></Timestamp></strong
         >.
       </p>
       <!-- TODO
@@ -61,12 +63,14 @@ import { getTranslatedString as _ } from '@/i18n'
 import Card from '@/components/ui/Card.vue'
 import Btn from '@/components/ui/Btn.vue'
 import { getFormattedTimestamp } from '@/utils'
+import Timestamp from '@/components/ui/Timestamp.vue'
 //import Dropdown from '@/components/ui/Dropdown.vue'
 
 export default defineComponent({
   components: {
     Card,
-    Btn
+    Btn,
+    Timestamp
   },
   props: {
     modelValue: {

@@ -1,5 +1,4 @@
 <template>
-  <!-- <router-link :to="{ name: 'ExamEditor', params: { examId: event.id } }"> -->
   <Card
     :marginLess="true"
     class="transition-all duration-75 hover:bg-light"
@@ -38,19 +37,22 @@
         <div class="flex items-end justify-between mt-auto">
           <router-link
             :to="{ name: 'ExamEditor', params: { examId: event.id } }"
-            ><Btn>Editor</Btn></router-link
+            ><Btn>{{ $t('event_preview.editor') }}</Btn></router-link
           >
           <router-link
             v-if="hasBegun"
             :to="{ name: 'ExamProgress', params: { examId: event.id } }"
-            ><Btn>Monitora</Btn></router-link
+            ><Btn>{{ $t('event_preview.monitor') }}</Btn></router-link
           >
-          <Btn v-else-if="hasEnded">Risultati</Btn>
+          <router-link
+            :to="{ name: 'ExamResults', params: { examId: event.id } }"
+            v-else-if="hasEnded"
+            ><Btn>{{ $t('event_preview.results') }}</Btn></router-link
+          >
         </div>
       </div>
     </template>
   </Card>
-  <!-- </router-link> -->
 </template>
 
 <script lang="ts">
@@ -85,16 +87,16 @@ export default defineComponent({
         : _('event_preview.unnamed_event')
     },
     isDraft (): boolean {
-      return this.event.state == EventState.DRAFT
+      return this.event.state === EventState.DRAFT
     },
     eventStateIcons () {
       return eventStatesIcons[this.event.state as EventState]
     },
     hasBegun () {
-      return true
+      return this.event.state === EventState.OPEN
     },
     hasEnded () {
-      return true
+      return this.event.state === EventState.CLOSED
     }
   }
 })

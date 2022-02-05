@@ -134,6 +134,15 @@ export const it = {
   },
   event_preview: {
     unnamed_event: 'Esame senza nome',
+    monitor: 'Monitora',
+    results: 'Risultati',
+    editor: 'Editor',
+  },
+  event_results: {
+    publish_results: 'Pubblica risultati',
+    publish_confirm_text:
+      'Una volta pubblicati, i risultati selezionati saranno visibili agli studenti. Confermi di volerli pubblicare?',
+    publish: 'Pubblica',
   },
   event_template_editor: {
     editor_title: 'Modello esame',

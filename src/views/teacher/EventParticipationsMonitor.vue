@@ -91,38 +91,39 @@
     <Btn
       class="mt-8 mr-auto"
       :variant="'success'"
+      @btnClick="onPublish"
       :disabled="selectedParticipations.length == 0"
     >
       <span class="mr-1 text-base material-icons-outlined">
         done
       </span>
-      Pubblica risultati</Btn
+      {{ $t('event_results.publish_results') }}</Btn
     >
 
     <Dialog
-      :large="true"
+      :large="!!editingSlot"
       :showDialog="showDialog"
-      @no="onDialogNo()"
-      @yes="onDialogYes()"
+      @no="hideDialog()"
+      @yes="dialogData.onYes()"
       :noText="dialogData.noText"
       :yesText="dialogData.yesText"
-      :dismissible="false"
+      :dismissible="!editingSlot"
     >
-      <template v-slot:title>
+      <template v-if="editingSlot" v-slot:title>
         {{ $t('event_assessment.assess') }}
         {{ $t('event_assessment.exercise') }} {{ editingSlot.slot_number + 1 }}
         {{ $t('misc.for') }}
         {{ editingFullName }}
       </template>
       <template v-slot:body>
-        <div class="text-darkText">
+        <div class="text-darkText" v-if="editingSlot">
           <AbstractEventParticipationSlot
-            v-if="editingSlot"
             :allowEditScores="true"
             v-model="editingSlotDirty"
           ></AbstractEventParticipationSlot>
-          <!-- :modelValue="editingSlot"
-            @update:modelValue="editingSlotDirty = $event" -->
+        </div>
+        <div v-else>
+          {{ $t('event_results.publish_confirm_text') }}
         </div>
       </template>
     </Dialog>
@@ -151,8 +152,7 @@ import {
   CellClickedEvent,
   ColDef,
   RowClassParams,
-  RowNode,
-  SelectionChangedEvent
+  RowNode
 } from 'ag-grid-community'
 import { icons as assessmentStateIcons } from '@/assets/assessmentStateIcons'
 import Dialog from '@/components/ui/Dialog.vue'
@@ -207,9 +207,9 @@ export default defineComponent({
       loading: false,
       showDialog: false,
       dialogData: {
-        title: 'Esercizio 1 Samuele Bonini',
+        title: '',
         noText: _('dialog.default_cancel_text'),
-        yesText: _('event_assessment.confirm_assessment')
+        yesText: ''
       } as DialogData,
       editingSlot: null as EventParticipationSlot | null,
       editingSlotDirty: null as EventParticipationSlot | null,
@@ -225,7 +225,10 @@ export default defineComponent({
        * Used by ag grid to determine whether the row is selectable
        * (grid selection is currently used to publish assessments)
        */
-      return row.data.state == ParticipationAssessmentProgress.FULLY_ASSESSED
+      return (
+        row.data.state == ParticipationAssessmentProgress.FULLY_ASSESSED &&
+        row.data.visibility != AssessmentVisibility.PUBLISHED
+      )
     },
     getRowClass (row: RowClassParams) {
       console.log('ROWDATA', row.data)
@@ -246,12 +249,34 @@ export default defineComponent({
         return
       }
       this.showDialog = true
+      this.dialogData.onYes = this.dispatchAssessmentUpdate
+      this.dialogData.yesText = _('event_assessment.confirm_assessment')
       this.editingSlot = event.value
       this.editingSlotDirty = JSON.parse(JSON.stringify(this.editingSlot))
       this.editingFullName = event.data.fullName
       this.editingParticipationId = event.data.id
     },
-    async onDialogYes () {
+    onPublish () {
+      this.showDialog = true
+      this.dialogData.onYes = this.publishResults
+      this.dialogData.yesText = _('event_results.publish')
+    },
+    async publishResults () {
+      console.log('publishing')
+      this.loading = true
+      await this.$store.dispatch('partialUpdateEventParticipation', {
+        courseId: this.courseId,
+        eventId: this.eventId,
+        participationIds: this.selectedParticipations,
+        changes: {
+          visibility: AssessmentVisibility.PUBLISHED
+        }
+      })
+      this.hideDialog()
+      this.loading = false
+      this.gridApi.refreshCells({ force: true })
+    },
+    async dispatchAssessmentUpdate () {
       this.loading = true
       await this.$store.dispatch('partialUpdateEventParticipationSlot', {
         courseId: this.courseId,
@@ -271,9 +296,6 @@ export default defineComponent({
       this.hideDialog()
       this.loading = false
       this.gridApi.refreshCells({ force: true })
-    },
-    onDialogNo () {
-      this.hideDialog()
     },
     hideDialog () {
       this.showDialog = false

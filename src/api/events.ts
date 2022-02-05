@@ -158,6 +158,18 @@ export async function partialUpdateEventParticipation(
   return response.data;
 }
 
+export async function bulkPartialUpdateEventParticipation(
+  courseId: string,
+  eventId: string,
+  participationIds: string[],
+  changes: Record<keyof EventParticipation, unknown>
+): Promise<EventParticipation[]> {
+  let url = `/courses/${courseId}/events/${eventId}/participations/`;
+  url += `bulk_patch/?ids=${participationIds.join(',')}`;
+  const response = await axios.patch(url, changes);
+  return response.data;
+}
+
 export async function partialUpdateEventParticipationSlot(
   courseId: string,
   eventId: string,

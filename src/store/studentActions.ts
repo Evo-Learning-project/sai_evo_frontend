@@ -33,25 +33,6 @@ export const actions = {
     const participation = await participateInEvent(courseId, eventId);
     commit('setEventParticipation', participation);
   },
-  partialUpdateEventParticipation: async (
-    { commit, state }: { commit: Commit; state: any },
-    {
-      courseId,
-      changes,
-    }: {
-      courseId: string;
-      eventId: string;
-      changes: Record<keyof EventParticipation, unknown>;
-    }
-  ) => {
-    const response = await partialUpdateEventParticipation(
-      courseId,
-      state.eventParticipation?.event.id,
-      state.eventParticipation?.id,
-      changes
-    );
-    commit('setEventParticipation', response);
-  },
   moveEventParticipationCurrentSlotCursorForward: async (
     { commit, state }: { commit: Commit; state: any },
     { courseId }: { courseId: string }
