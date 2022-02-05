@@ -8,6 +8,7 @@ import {
   CoursePrivilege,
   ParticipationAssessmentProgress,
   AssessmentSlotState,
+  AssessmentVisibility,
 } from '.';
 
 export interface User {
@@ -98,6 +99,7 @@ export interface EventParticipation {
   user?: User;
   state: EventParticipationState;
   assessment_progress?: ParticipationAssessmentProgress;
+  visibility?: AssessmentVisibility;
   slots: EventParticipationSlot[];
   score?: number;
   last_slot_number?: number;

@@ -31,6 +31,9 @@
   }
 
 @layer components {
+    .user-content {
+      @apply bg-gray-50 rounded-l-none rounded-r-md pr-2 pl-4 py-5 border border-l-6 border-primary
+    }
     .text-muted {
         @apply font-light text-gray-600
     }
@@ -249,5 +252,9 @@
     }
     .ag-theme-material .ag-checkbox-input-wrapper.ag-indeterminate::after {
       content: "indeterminate_check_box" !important
+    }
+
+    .bg-success-important {
+      @apply bg-success-light bg-opacity-20 hover:bg-success-light hover:bg-opacity-20 !important
     }
   }

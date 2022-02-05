@@ -47,6 +47,12 @@ export enum ParticipationAssessmentProgress {
   FULLY_ASSESSED,
 }
 
+export enum AssessmentVisibility {
+  DRAFT,
+  FOR_REVIEW,
+  PUBLISHED,
+}
+
 export enum AssessmentSlotState {
   NOT_ASSESSED,
   ASSESSED,

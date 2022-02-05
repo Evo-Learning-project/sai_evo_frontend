@@ -7,6 +7,7 @@
     :columnDefs="columnDefs"
     :rowSelection="'multiple'"
     :isRowSelectable="isRowSelectable"
+    :getRowClass="getRowClass"
     :rowData="rowData"
     @cell-click="$emit('cellClicked', $event)"
     @selection-change="$emit('selectionChanged', $event)"
@@ -38,14 +39,18 @@ export default defineComponent({
     },
     isRowSelectable: {
       type: Function,
-      default: () => false
+      default: () => true
+    },
+    getRowClass: {
+      type: Function,
+      default: () => ''
     }
   },
   data () {
     return {
       //columnDefs: [] as any,
       //rowData: [] as any,
-      style: 'width: 100%; height: 300px'
+      style: 'width: 100%; height: 100%'
     }
   },
   methods: {

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="flex flex-col">
     <div v-if="resultsMode && thereArePartialAssessment" class="mb-8">
       <Card class="bg-light">
         <template v-slot:body>
@@ -70,23 +70,29 @@
         </template>
       </Card>
     </div>
-
-    <DataTable
-      v-if="!firstLoading"
-      :columnDefs="participationPreviewColumns"
-      :rowData="participationsData"
-      :isRowSelectable="isParticipationPublishable"
-      @cellClicked="onCellClicked"
-      @gridReady="gridApi = $event.api"
-      @selectionChanged="onSelectionChanged"
-    ></DataTable>
-    <div v-else>
-      <SkeletonCard :borderLess="true"></SkeletonCard>
-      <SkeletonCard :borderLess="true"></SkeletonCard>
-      <SkeletonCard :borderLess="true"></SkeletonCard>
+    <div class="flex-grow">
+      <DataTable
+        v-if="!firstLoading"
+        :columnDefs="participationPreviewColumns"
+        :rowData="participationsData"
+        :isRowSelectable="isParticipationPublishable"
+        :getRowClass="getRowClass"
+        @cellClicked="onCellClicked"
+        @gridReady="gridApi = $event.api"
+        @selectionChanged="onSelectionChanged"
+      ></DataTable>
+      <div v-else>
+        <SkeletonCard :borderLess="true"></SkeletonCard>
+        <SkeletonCard :borderLess="true"></SkeletonCard>
+        <SkeletonCard :borderLess="true"></SkeletonCard>
+      </div>
     </div>
 
-    <Btn :variant="'success'" :disabled="selectedParticipations.length == 0">
+    <Btn
+      class="mt-8 mr-auto"
+      :variant="'success'"
+      :disabled="selectedParticipations.length == 0"
+    >
       <span class="mr-1 text-base material-icons-outlined">
         done
       </span>
@@ -131,6 +137,7 @@ import Card from '@/components/ui/Card.vue'
 import DataTable from '@/components/ui/DataTable.vue'
 import { courseIdMixin, eventIdMixin } from '@/mixins'
 import {
+  AssessmentVisibility,
   Event,
   EventParticipation,
   EventParticipationSlot,
@@ -143,6 +150,7 @@ import { getTranslatedString as _ } from '@/i18n'
 import {
   CellClickedEvent,
   ColDef,
+  RowClassParams,
   RowNode,
   SelectionChangedEvent
 } from 'ag-grid-community'
@@ -213,10 +221,21 @@ export default defineComponent({
   },
   methods: {
     isParticipationPublishable (row: RowNode) {
+      /**
+       * Used by ag grid to determine whether the row is selectable
+       * (grid selection is currently used to publish assessments)
+       */
       return row.data.state == ParticipationAssessmentProgress.FULLY_ASSESSED
     },
-    onSelectionChanged (event: SelectionChangedEvent) {
-      console.log('selection', event, this.gridApi.getSelectedNodes())
+    getRowClass (row: RowClassParams) {
+      console.log('ROWDATA', row.data)
+      return (row.data as EventParticipation).visibility ==
+        AssessmentVisibility.PUBLISHED
+        ? ['bg-success-important', 'hover:bg-success-important']
+        : ''
+    },
+    onSelectionChanged () {
+      // copy the id's of the selected participations
       this.selectedParticipations = this.gridApi
         ?.getSelectedNodes()
         .map((n: any) => n.data.id)
@@ -294,6 +313,7 @@ export default defineComponent({
       }
       let ret = [
         { field: 'id', hide: true },
+        { field: 'visibility', hide: true },
         {
           field: 'state',
           width: 80,
@@ -355,7 +375,8 @@ export default defineComponent({
           id: p.id,
           email: p.user?.email,
           fullName: p.user?.full_name,
-          state: p.assessment_progress
+          state: p.assessment_progress,
+          visibility: p.visibility
         } as Record<string, unknown>
         p.slots.forEach(
           s => (ret['slot-' + ((s.slot_number as number) + 1)] = s) //s.score ?? '-')

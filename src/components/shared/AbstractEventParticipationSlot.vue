@@ -2,7 +2,14 @@
   <div class="">
     <div class="w-full">
       <h3 v-if="showExerciseLabel">{{ exercise.label }}</h3>
-      <div class="mb-8" v-html="exercise.text"></div>
+      <div
+        class="mb-8 user-content"
+        :class="{
+          'bg-gray-200 p-2 border border-dark rounded-md':
+            false && allowEditScores
+        }"
+        v-html="exercise.text"
+      ></div>
       <div :class="{ 'flex space-x-8': allowEditScores }">
         <div :class="{ 'w-1/2': allowEditScores }">
           <CheckboxGroup
