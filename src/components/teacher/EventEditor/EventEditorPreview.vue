@@ -34,6 +34,9 @@
             <Timestamp :value="event.end_timestamp"></Timestamp>
           </div>
         </div>
+        <p class="mb-2 text-muted text-danger-dark" v-if="halfClosed">
+          {{ $t('event_preview.still_open_for_some') }}
+        </p>
         <div class="flex items-end mt-auto">
           <div class="flex mr-auto space-x-2">
             <router-link
@@ -110,10 +113,23 @@ export default defineComponent({
       return eventStatesIcons[this.event.state as EventState]
     },
     hasBegun () {
-      return this.event.state === EventState.OPEN
+      return (
+        this.event.state === EventState.OPEN ||
+        (this.event.state === EventState.CLOSED &&
+          (this.event.users_allowed_past_closure?.length ?? 0) > 0)
+      )
     },
     hasEnded () {
-      return this.event.state === EventState.CLOSED
+      return (
+        this.event.state === EventState.CLOSED &&
+        (this.event.users_allowed_past_closure?.length ?? -1) === 0
+      )
+    },
+    halfClosed () {
+      return (
+        this.event.state === EventState.CLOSED &&
+        (this.event.users_allowed_past_closure?.length ?? 0) > 0
+      )
     }
   }
 })

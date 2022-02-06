@@ -27,7 +27,7 @@
     <Dialog
       :showDialog="showCloseDialog"
       @no="showCloseDialog = false"
-      @yes="onCloseExam()"
+      @yes="closeExam()"
       :yesText="$t('course_events.close_for_everyone')"
       :noText="$t('dialog.default_cancel_text')"
     >
@@ -52,7 +52,7 @@
 
 <script lang="ts">
 import EventEditorPreview from '@/components/teacher/EventEditor/EventEditorPreview.vue'
-import { Event, getBlankExam } from '@/models'
+import { Event, EventState, getBlankExam } from '@/models'
 import Btn from '@/components/ui/Btn.vue'
 
 import { defineComponent } from '@vue/runtime-core'
@@ -73,6 +73,12 @@ export default defineComponent({
     await this.$store.dispatch('getEvents', this.courseId)
     this.firstLoading = false
   },
+  watch: {
+    loading (newVal) {
+      // TODO Make mixin
+      this.$store.state.loading = newVal
+    }
+  },
   data () {
     return {
       firstLoading: false,
@@ -85,6 +91,22 @@ export default defineComponent({
     onClose (event: Event) {
       this.showCloseDialog = true
       this.closingExam = event
+    },
+    async closeExam () {
+      this.loading = true
+      await this.$store.dispatch('partialUpdateEvent', {
+        courseId: this.courseId,
+        eventId: this.closingExam?.id,
+        mutate: true,
+        changes: {
+          state: EventState.CLOSED,
+          users_allowed_past_closure: []
+        }
+      })
+      this.closingExam = null
+      this.showCloseDialog = false
+      this.loading = false
+      this.$store.commit('showSuccessFeedback')
     },
     async onAddExam () {
       this.loading = true

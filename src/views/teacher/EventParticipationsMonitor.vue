@@ -125,7 +125,7 @@
         v-if="!firstLoading"
         :columnDefs="participationPreviewColumns"
         :rowData="participationsData"
-        :isRowSelectable="isParticipationPublishable"
+        :isRowSelectable="isRowSelectable"
         :getRowClass="getRowClass"
         @cellClicked="onCellClicked"
         @gridReady="gridApi = $event.api"
@@ -311,14 +311,22 @@ export default defineComponent({
     }
   },
   methods: {
-    isParticipationPublishable (row: RowNode) {
+    isRowSelectable (row: RowNode) {
       /**
        * Used by ag grid to determine whether the row is selectable
-       * (grid selection is currently used to publish assessments)
        */
-      return (
-        row.data.state == ParticipationAssessmentProgress.FULLY_ASSESSED &&
-        row.data.visibility != AssessmentVisibility.PUBLISHED
+      if (this.resultsMode) {
+        return (
+          row.data.state == ParticipationAssessmentProgress.FULLY_ASSESSED &&
+          row.data.visibility != AssessmentVisibility.PUBLISHED
+        )
+      }
+
+      return !this.event.users_allowed_past_closure?.includes(
+        this.eventParticipations.find(
+          (p: EventParticipation) =>
+            p.id === (row.data as EventParticipation).id
+        )?.user?.id
       )
     },
     getRowClass (row: RowClassParams) {

@@ -156,6 +156,8 @@ export const it = {
     results: 'Risultati',
     editor: 'Editor',
     close: 'Chiudi',
+    still_open_for_some:
+      "L'esame è ancora aperto per alcuni studenti.",
   },
   event_monitor: {
     close_for_selected: 'Chiudi esame per i selezionati',
