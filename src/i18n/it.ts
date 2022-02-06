@@ -104,6 +104,11 @@ export const it = {
     exercise_preview_title: 'Anteprima esercizio',
     for: 'per',
     success: 'Operazione completata con successo',
+    participants: 'partecipanti',
+    participant: 'partecipante',
+    close: 'Chiudi',
+    exams: 'esami',
+    exam: 'esame',
   },
   cloud: {
     saving: 'Salvataggio in corso...',
@@ -135,6 +140,12 @@ export const it = {
   },
   course_events: {
     new_exam: 'Nuovo esame',
+    close_exam_for_everyone_title: "Chiudi l'esame per tutti",
+    close_for_everyone: 'Chiudi per tutti',
+    close_exam_for_everyone_body_1: "Stai per chiudere l'esame",
+    close_exam_for_everyone_body_2: 'per tutti i partecipanti.',
+    close_exam_for_everyone_body_3:
+      "Se vuoi chiudere l'esame solo per alcuni studenti, selezionali dalla pagina",
   },
   exercise_preview: {
     unnamed_exercise: 'Esercizio senza nome',
@@ -144,6 +155,14 @@ export const it = {
     monitor: 'Monitora',
     results: 'Risultati',
     editor: 'Editor',
+    close: 'Chiudi',
+  },
+  event_monitor: {
+    close_for_selected: 'Chiudi esame per i selezionati',
+    close_for_selected_text_1: "Stai per chiudere l'esame per",
+    close_for_selected_text_2: "L'esame rimarrà aperto per",
+    some_exams_still_open:
+      "L'esame è terminato, ma non è stato ancora chiuso per alcuni partecipanti. Ricorda di chiudere l'esame per tutti al termine. Le righe evidenziate in rosso corrispondono a esami già chiusi.",
   },
   event_results: {
     publish_results: 'Pubblica risultati',

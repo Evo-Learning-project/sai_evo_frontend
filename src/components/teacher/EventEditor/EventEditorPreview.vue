@@ -34,15 +34,32 @@
             <Timestamp :value="event.end_timestamp"></Timestamp>
           </div>
         </div>
-        <div class="flex items-end justify-between mt-auto">
-          <router-link
-            :to="{ name: 'ExamEditor', params: { examId: event.id } }"
-            ><Btn>{{ $t('event_preview.editor') }}</Btn></router-link
-          >
+        <div class="flex items-end mt-auto">
+          <div class="flex mr-auto space-x-2">
+            <router-link
+              :to="{ name: 'ExamEditor', params: { examId: event.id } }"
+              ><Btn
+                ><span class="-ml-1 mr-1.5 text-base material-icons-outlined">
+                  edit
+                </span>
+                {{ $t('event_preview.editor') }}</Btn
+              ></router-link
+            >
+            <Btn :variant="'danger'" v-if="hasBegun" @btnClick="$emit('close')"
+              ><span class="mr-1 text-base material-icons-outlined">
+                block </span
+              >{{ $t('event_preview.close') }}</Btn
+            >
+          </div>
+
           <router-link
             v-if="hasBegun"
             :to="{ name: 'ExamProgress', params: { examId: event.id } }"
-            ><Btn>{{ $t('event_preview.monitor') }}</Btn></router-link
+            ><Btn
+              ><span class="mr-1.5 -ml-1 text-base material-icons-outlined">
+                visibility </span
+              >{{ $t('event_preview.monitor') }}</Btn
+            ></router-link
           >
           <router-link
             :to="{ name: 'ExamResults', params: { examId: event.id } }"

@@ -50,7 +50,7 @@ export default defineComponent({
     return {
       //columnDefs: [] as any,
       //rowData: [] as any,
-      style: 'width: 100%; height: 100%'
+      style: 'width: 100%; height: 100%; min-height: 300px'
     }
   },
   methods: {

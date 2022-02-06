@@ -1,6 +1,24 @@
 <template>
   <div class="flex flex-col">
-    <div class="mb-2" v-if="!firstLoading">
+    <div class="mb-2" v-if="halfClosed">
+      <Card class="bg-light">
+        <template v-slot:body>
+          <div class="flex items-center space-x-3">
+            <div>
+              <div class="text-yellow-900 bg-yellow-500 icon-surrounding">
+                <span class="ml-px material-icons-outlined">
+                  priority_high
+                </span>
+              </div>
+            </div>
+            <p class="">
+              {{ $t('event_monitor.some_exams_still_open') }}
+            </p>
+          </div>
+        </template>
+      </Card>
+    </div>
+    <div class="mb-2" v-if="!firstLoading && resultsMode">
       <Card class="bg-light">
         <template v-slot:body>
           <div class="flex space-x-3">
@@ -121,6 +139,7 @@
     </div>
 
     <Btn
+      v-if="resultsMode"
       class="mt-8 mr-auto"
       :variant="'success'"
       @btnClick="onPublish"
@@ -131,7 +150,18 @@
       </span>
       {{ $t('event_results.publish_results') }}</Btn
     >
-
+    <Btn
+      v-else-if="!firstLoading"
+      class="mt-8 mr-auto"
+      :variant="'danger'"
+      @btnClick="onCloseSelectedExams"
+      :disabled="selectedParticipations.length == 0"
+    >
+      <span class="mr-1 text-base material-icons-outlined">
+        block
+      </span>
+      {{ $t('event_monitor.close_for_selected') }}</Btn
+    >
     <Dialog
       :large="!!editingSlot"
       :showDialog="showDialog"
@@ -151,6 +181,9 @@
         {{ $t('misc.for') }}
         {{ editingFullName }}
       </template>
+      <template v-else-if="dialogData.title?.length > 0" v-slot:title>{{
+        dialogData.title
+      }}</template>
       <template v-slot:body>
         <div class="text-darkText" v-if="editingSlot">
           <AbstractEventParticipationSlot
@@ -158,8 +191,30 @@
             v-model="editingSlotDirty"
           ></AbstractEventParticipationSlot>
         </div>
-        <div v-else>
+        <div v-else-if="resultsMode">
           {{ $t('event_results.publish_confirm_text') }}
+        </div>
+        <div v-else>
+          <p>
+            {{ $t('event_monitor.close_for_selected_text_1') }}
+            <strong>{{ selectedParticipations.length }}</strong>
+            {{
+              selectedParticipations.length === 1
+                ? $t('misc.participant')
+                : $t('misc.participants')
+            }}.
+          </p>
+          <p v-if="selectedParticipations.length < eventParticipations.length">
+            {{ $t('event_monitor.close_for_selected_text_2') }}
+            <strong>{{
+              eventParticipations.length - selectedParticipations.length
+            }}</strong>
+            {{
+              eventParticipations.length - selectedParticipations.length === 1
+                ? $t('misc.participant')
+                : $t('misc.participants')
+            }}.
+          </p>
         </div>
       </template>
     </Dialog>
@@ -267,9 +322,20 @@ export default defineComponent({
       )
     },
     getRowClass (row: RowClassParams) {
-      return (row.data as EventParticipation).visibility ==
-        AssessmentVisibility.PUBLISHED
-        ? ['bg-success-important', 'hover:bg-success-important']
+      if (this.resultsMode) {
+        return (row.data as EventParticipation).visibility ==
+          AssessmentVisibility.PUBLISHED
+          ? ['bg-success-important', 'hover:bg-success-important']
+          : ''
+      }
+      return this.event.state === EventState.CLOSED &&
+        !this.event.users_allowed_past_closure?.includes(
+          this.eventParticipations.find(
+            (p: EventParticipation) =>
+              p.id === (row.data as EventParticipation).id
+          )?.user?.id
+        )
+        ? ['bg-danger-important', 'hover:bg-danger-important']
         : ''
     },
     onSelectionChanged () {
@@ -291,10 +357,43 @@ export default defineComponent({
       this.editingFullName = event.data.fullName
       this.editingParticipationId = event.data.id
     },
+    onCloseSelectedExams () {
+      this.showDialog = true
+      this.dialogData.title = _('event_monitor.close_for_selected')
+      this.dialogData.yesText =
+        _('misc.close') +
+        ' ' +
+        this.selectedParticipations.length +
+        ' ' +
+        (this.selectedParticipations.length === 1
+          ? _('misc.exam')
+          : _('misc.exams'))
+      this.dialogData.onYes = this.closeExams
+    },
     onPublish () {
       this.showDialog = true
       this.dialogData.onYes = this.publishResults
       this.dialogData.yesText = _('event_results.publish')
+    },
+    async closeExams () {
+      this.loading = true
+      const unselectedParticipations = (this
+        .eventParticipations as EventParticipation[]).filter(
+        p => !this.selectedParticipations.includes(p.id)
+      )
+      const unselectedUserIds = unselectedParticipations.map(p => p.user?.id)
+      await this.$store.dispatch('partialUpdateEvent', {
+        courseId: this.courseId,
+        eventId: this.eventId,
+        mutate: true,
+        changes: {
+          state: EventState.CLOSED,
+          users_allowed_past_closure: unselectedUserIds
+        }
+      })
+      this.$store.commit('showSuccessFeedback')
+      this.loading = false
+      this.hideDialog()
     },
     async publishResults () {
       console.log('publishing')
@@ -347,7 +446,16 @@ export default defineComponent({
       return this.$store.getters.event(this.eventId)
     },
     resultsMode () {
-      return this.event.state == EventState.CLOSED
+      return (
+        this.event.state === EventState.CLOSED &&
+        (this.event.users_allowed_past_closure?.length ?? -1) === 0
+      )
+    },
+    halfClosed () {
+      return (
+        this.event.state === EventState.CLOSED &&
+        (this.event.users_allowed_past_closure?.length ?? 0) > 0
+      )
     },
     participantCount () {
       return this.eventParticipations?.length ?? 0
@@ -378,21 +486,26 @@ export default defineComponent({
       let ret = [
         { field: 'id', hide: true },
         { field: 'visibility', hide: true },
-        {
-          field: 'state',
-          width: 80,
-          headerName: _('event_participation_headings.state'),
-          cellRenderer: (params: any) =>
-            `<span class="${
-              params.value == ParticipationAssessmentProgress.PARTIALLY_ASSESSED
-                ? 'text-yellow-900'
-                : 'text-success'
-            } pt-2 ml-1 text-lg material-icons-outlined">${
-              assessmentStateIcons[
-                params.value as ParticipationAssessmentProgress
-              ]
-            }</span>`
-        },
+        ...(this.resultsMode
+          ? [
+              {
+                field: 'state',
+                width: 80,
+                headerName: _('event_participation_headings.state'),
+                cellRenderer: (params: any) =>
+                  `<span class="${
+                    params.value ==
+                    ParticipationAssessmentProgress.PARTIALLY_ASSESSED
+                      ? 'text-yellow-900'
+                      : 'text-success'
+                  } pt-2 ml-1 text-lg material-icons-outlined">${
+                    assessmentStateIcons[
+                      params.value as ParticipationAssessmentProgress
+                    ]
+                  }</span>`
+              }
+            ]
+          : []),
         {
           field: 'email',
           headerName: _('event_participation_headings.email'),

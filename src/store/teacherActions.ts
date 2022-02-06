@@ -106,13 +106,22 @@ export const actions = {
       courseId,
       eventId,
       changes,
+      mutate = false,
     }: {
       courseId: string;
       eventId: string;
       changes: Record<keyof Event, unknown>;
+      mutate: boolean;
     }
   ) => {
-    await partialUpdateEvent(courseId, eventId, changes);
+    const event = await partialUpdateEvent(
+      courseId,
+      eventId,
+      changes
+    );
+    if (mutate) {
+      commit('setEvent', { eventId, event });
+    }
   },
   updateExerciseChoice: async (
     // eslint-disable-next-line @typescript-eslint/no-unused-vars

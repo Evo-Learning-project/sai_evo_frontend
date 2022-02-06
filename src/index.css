@@ -266,4 +266,8 @@
     .bg-success-important {
       @apply bg-success-light bg-opacity-20 hover:bg-success-light hover:bg-opacity-20 !important
     }
+
+    .bg-danger-important {
+      @apply bg-danger-light bg-opacity-20 hover:bg-danger-light hover:bg-opacity-20 !important
+    }
   }

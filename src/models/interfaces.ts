@@ -67,6 +67,7 @@ export interface Event {
   end_timestamp: string | null;
   event_type: EventType;
   state: EventState;
+  users_allowed_past_closure?: string[];
   template?: EventTemplate;
   exercises_shown_at_a_time: number | null;
   allow_going_back: boolean;
