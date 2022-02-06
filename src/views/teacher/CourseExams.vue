@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="flex w-full mb-2">
-      <Btn @btnClick="onAddExam()" :loading="loading" class="ml-auto"
+      <Btn @btnClick="onAddExam()" :loading="buttonLoading" class="ml-auto"
         ><span class="mr-1 text-base material-icons-outlined">
           add_circle_outline
         </span>
@@ -56,7 +56,7 @@ import { Event, EventState, getBlankExam } from '@/models'
 import Btn from '@/components/ui/Btn.vue'
 
 import { defineComponent } from '@vue/runtime-core'
-import { courseIdMixin } from '@/mixins'
+import { courseIdMixin, loadingMixin } from '@/mixins'
 import SkeletonCard from '@/components/ui/SkeletonCard.vue'
 import Dialog from '@/components/ui/Dialog.vue'
 export default defineComponent({
@@ -67,22 +67,17 @@ export default defineComponent({
     Dialog
   },
   name: 'CourseExams',
-  mixins: [courseIdMixin],
+  mixins: [courseIdMixin, loadingMixin],
   async created () {
     this.firstLoading = true
     await this.$store.dispatch('getEvents', this.courseId)
     this.firstLoading = false
   },
-  watch: {
-    loading (newVal) {
-      // TODO Make mixin
-      this.$store.state.loading = newVal
-    }
-  },
+
   data () {
     return {
       firstLoading: false,
-      loading: false,
+      buttonLoading: false,
       showCloseDialog: false,
       closingExam: null as Event | null
     }
@@ -93,28 +88,29 @@ export default defineComponent({
       this.closingExam = event
     },
     async closeExam () {
-      this.loading = true
-      await this.$store.dispatch('partialUpdateEvent', {
-        courseId: this.courseId,
-        eventId: this.closingExam?.id,
-        mutate: true,
-        changes: {
-          state: EventState.CLOSED,
-          users_allowed_past_closure: []
-        }
-      })
+      await this.withLoading(
+        async () =>
+          await this.$store.dispatch('partialUpdateEvent', {
+            courseId: this.courseId,
+            eventId: this.closingExam?.id,
+            mutate: true,
+            changes: {
+              state: EventState.CLOSED,
+              users_allowed_past_closure: []
+            }
+          })
+      )
       this.closingExam = null
       this.showCloseDialog = false
-      this.loading = false
       this.$store.commit('showSuccessFeedback')
     },
     async onAddExam () {
-      this.loading = true
+      this.buttonLoading = true
       const newExam = await this.$store.dispatch('createEvent', {
         courseId: this.courseId,
         event: getBlankExam()
       })
-      this.loading = false
+      this.buttonLoading = false
 
       // redirect to exam editor for newly created exam
       this.$router.push({

@@ -31,7 +31,7 @@ import CloudSaveStatus from '@/components/ui/CloudSaveStatus.vue'
 import { defineComponent } from '@vue/runtime-core'
 import { getDebouncedForEditor } from '@/utils'
 import { Event, EventState } from '@/models'
-import { courseIdMixin, eventIdMixin } from '@/mixins'
+import { courseIdMixin, eventIdMixin, loadingMixin } from '@/mixins'
 
 export default defineComponent({
   name: 'EventEditor',
@@ -42,19 +42,20 @@ export default defineComponent({
     CloudSaveStatus,
     EventStateEditor
   },
-  mixins: [courseIdMixin, eventIdMixin],
+  mixins: [courseIdMixin, eventIdMixin, loadingMixin],
   props: [],
   async created () {
     // wrap update method in a debounce
     this.dispatchUpdate = getDebouncedForEditor(this.dispatchUpdate)
 
-    this.$store.commit('setLoading', true)
-    await this.$store.dispatch('getEvent', {
-      courseId: this.courseId,
-      eventId: this.eventId
+    await this.withLoading(async () => {
+      await this.$store.dispatch('getEvent', {
+        courseId: this.courseId,
+        eventId: this.eventId
+      })
+
+      await this.$store.dispatch('getExercises', { courseId: this.courseId })
     })
-    await this.$store.dispatch('getExercises', { courseId: this.courseId })
-    this.$store.commit('setLoading', false)
   },
   data () {
     return {

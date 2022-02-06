@@ -227,7 +227,7 @@
 //import EventParticipationPreview from '@/components/teacher/EventParticipation/EventParticipationPreview.vue'
 import Card from '@/components/ui/Card.vue'
 import DataTable from '@/components/ui/DataTable.vue'
-import { courseIdMixin, eventIdMixin } from '@/mixins'
+import { courseIdMixin, eventIdMixin, loadingMixin } from '@/mixins'
 import {
   AssessmentVisibility,
   Event,
@@ -273,7 +273,7 @@ export default defineComponent({
       default: false
     }
   },
-  mixins: [courseIdMixin, eventIdMixin],
+  mixins: [courseIdMixin, eventIdMixin, loadingMixin],
   async created () {
     this.firstLoading = true
     await this.$store.dispatch('getEventParticipations', {
@@ -286,16 +286,9 @@ export default defineComponent({
     })
     this.firstLoading = false
   },
-  watch: {
-    loading (newVal) {
-      // TODO Make mixin
-      this.$store.state.loading = newVal
-    }
-  },
   data () {
     return {
       firstLoading: false,
-      loading: false,
       showDialog: false,
       dialogData: {
         title: '',
@@ -384,60 +377,62 @@ export default defineComponent({
       this.dialogData.yesText = _('event_results.publish')
     },
     async closeExams () {
-      this.loading = true
       const unselectedParticipations = (this
         .eventParticipations as EventParticipation[]).filter(
         p => !this.selectedParticipations.includes(p.id)
       )
       const unselectedUserIds = unselectedParticipations.map(p => p.user?.id)
-      await this.$store.dispatch('partialUpdateEvent', {
-        courseId: this.courseId,
-        eventId: this.eventId,
-        mutate: true,
-        changes: {
-          state: EventState.CLOSED,
-          users_allowed_past_closure: unselectedUserIds
-        }
-      })
+      await this.withLoading(
+        async () =>
+          await this.$store.dispatch('partialUpdateEvent', {
+            courseId: this.courseId,
+            eventId: this.eventId,
+            mutate: true,
+            changes: {
+              state: EventState.CLOSED,
+              users_allowed_past_closure: unselectedUserIds
+            }
+          })
+      )
       this.$store.commit('showSuccessFeedback')
-      this.loading = false
       this.hideDialog()
     },
     async publishResults () {
       console.log('publishing')
-      this.loading = true
-      await this.$store.dispatch('partialUpdateEventParticipation', {
-        courseId: this.courseId,
-        eventId: this.eventId,
-        participationIds: this.selectedParticipations,
-        changes: {
-          visibility: AssessmentVisibility.PUBLISHED
-        }
-      })
+      await this.withLoading(
+        async () =>
+          await this.$store.dispatch('partialUpdateEventParticipation', {
+            courseId: this.courseId,
+            eventId: this.eventId,
+            participationIds: this.selectedParticipations,
+            changes: {
+              visibility: AssessmentVisibility.PUBLISHED
+            }
+          })
+      )
       this.$store.commit('showSuccessFeedback')
       this.hideDialog()
-      this.loading = false
       this.gridApi.refreshCells({ force: true })
     },
     async dispatchAssessmentUpdate () {
-      this.loading = true
-      await this.$store.dispatch('partialUpdateEventParticipationSlot', {
-        courseId: this.courseId,
-        eventId: this.eventId,
-        participationId: this.editingParticipationId,
-        slotId: this.editingSlot?.id,
-        changes: {
-          score: this.editingSlotDirty?.score,
-          comment: this.editingSlotDirty?.comment
-        }
-      })
-      await this.$store.dispatch('getEventParticipation', {
-        courseId: this.courseId,
-        eventId: this.eventId,
-        participationId: this.editingParticipationId
+      await this.withLoading(async () => {
+        await this.$store.dispatch('partialUpdateEventParticipationSlot', {
+          courseId: this.courseId,
+          eventId: this.eventId,
+          participationId: this.editingParticipationId,
+          slotId: this.editingSlot?.id,
+          changes: {
+            score: this.editingSlotDirty?.score,
+            comment: this.editingSlotDirty?.comment
+          }
+        })
+        await this.$store.dispatch('getEventParticipation', {
+          courseId: this.courseId,
+          eventId: this.eventId,
+          participationId: this.editingParticipationId
+        })
       })
       this.hideDialog()
-      this.loading = false
       this.gridApi.refreshCells({ force: true })
     },
     hideDialog () {
