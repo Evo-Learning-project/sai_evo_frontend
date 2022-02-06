@@ -72,6 +72,12 @@ export const it = {
       'Alcuni esercizi richiedono una correzione manuale. Prima di poter pubblicare i risultati, devi assegnare un punteggio agli esercizi che ancora non lo hanno.',
     exams_awaiting_assessment_are_marked:
       "Per assegnare un punteggio alle risposte non ancora valutate, clicca sull'icona",
+    ready_to_publish_1:
+      'I risultati sono pronti per essere pubblicati. Seleziona le righe che vuoi pubblicare e clicca su',
+    ready_to_publish_2:
+      'Le righe evidenziate in verde corrispondono a risultati già pubblicati.',
+    all_published:
+      'Tutti i risultati sono stati pubblicati e sono ora visibili agli studenti.',
     publish_results: 'Pubblica i risultati',
     this_comment_is_private:
       'Questo commento verrà visualizzato dagli insegnanti ma non dallo studente',

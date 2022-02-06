@@ -1,17 +1,39 @@
 <template>
   <div class="flex flex-col">
-    <div v-if="resultsMode && thereArePartialAssessment" class="mb-8">
+    <div class="mb-2" v-if="!firstLoading">
       <Card class="bg-light">
         <template v-slot:body>
           <div class="flex space-x-3">
             <div>
-              <div class="text-yellow-900 bg-yellow-500 icon-surrounding">
+              <div
+                v-if="resultsMode && thereArePartialAssessments"
+                class="text-yellow-900 bg-yellow-500 icon-surrounding"
+              >
                 <span class="ml-px material-icons-outlined">
                   pending_actions
                 </span>
               </div>
+              <div
+                v-else-if="thereAreUnpublishedAssessments"
+                class="bg-success-light text-success-dark icon-surrounding"
+              >
+                <span class="ml-px material-icons-outlined">
+                  task
+                </span>
+              </div>
+              <div
+                v-else
+                class="bg-success-light text-success-dark icon-surrounding"
+              >
+                <span class="ml-px material-icons-outlined">
+                  done
+                </span>
+              </div>
             </div>
-            <div class="flex flex-wrap items-center">
+            <div
+              v-if="resultsMode && thereArePartialAssessments"
+              class="flex flex-wrap items-center"
+            >
               <p class="">
                 {{
                   $t('event_assessment.some_exams_require_manual_assessment')
@@ -28,6 +50,16 @@
                 >.
               </div>
             </div>
+
+            <p v-else-if="thereAreUnpublishedAssessments">
+              {{ $t('event_assessment.ready_to_publish_1') }}
+              <em>{{ $t('event_results.publish_results') }}</em
+              >.
+              {{ $t('event_assessment.ready_to_publish_2') }}
+            </p>
+            <p class="my-auto" v-else>
+              {{ $t('event_assessment.all_published') }}
+            </p>
           </div>
         </template>
       </Card>
@@ -108,6 +140,10 @@
       :noText="dialogData.noText"
       :yesText="dialogData.yesText"
       :dismissible="!editingSlot"
+      :disableOk="
+        editingSlotDirty &&
+          (editingSlotDirty.score == null || editingSlotDirty.score.length == 0)
+      "
     >
       <template v-if="editingSlot" v-slot:title>
         {{ $t('event_assessment.assess') }}
@@ -322,11 +358,17 @@ export default defineComponent({
     turnedInCount () {
       return 3
     },
-    thereArePartialAssessment () {
+    thereArePartialAssessments () {
       return this.eventParticipations.some(
         (p: EventParticipation) =>
           p.assessment_progress ==
           ParticipationAssessmentProgress.PARTIALLY_ASSESSED
+      )
+    },
+    thereAreUnpublishedAssessments () {
+      return this.eventParticipations.some(
+        (p: EventParticipation) =>
+          p.visibility != AssessmentVisibility.PUBLISHED
       )
     },
     participationPreviewColumns () {

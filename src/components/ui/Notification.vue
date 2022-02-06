@@ -1,7 +1,7 @@
 <template>
   <div
     style="z-index: 999"
-    class="fixed transform -translate-x-1/2 -translate-y-1/2 bg-gray-300 bg-opacity-50 border rounded-md shadow-2xl top-1/2 left-1/2"
+    class="fixed transform -translate-x-1/2 -translate-y-1/2 bg-gray-200 border rounded-md shadow-2xl bg-opacity-90 top-1/2 left-1/2"
   >
     <div class="flex items-center w-full px-6 py-8 space-x-4">
       <AnimatedIcon></AnimatedIcon>

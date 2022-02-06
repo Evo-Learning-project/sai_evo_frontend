@@ -58,12 +58,15 @@
           </p>
           <!-- -->
           <h3>{{ $t('event_assessment.your_assessment') }}</h3>
+          <p
+            class="mb-4 text-muted"
+            v-if="modelValue.score == null || modelValue.score.length == 0"
+          >
+            {{
+              $t('event_assessment.this_exercise_requires_manual_assessment')
+            }}
+          </p>
           <div class="mt-4">
-            <p class="mb-4 text-muted" v-if="modelValue.score == null">
-              {{
-                $t('event_assessment.this_exercise_requires_manual_assessment')
-              }}
-            </p>
             <p>
               <NumberInput
                 class="mb-4"

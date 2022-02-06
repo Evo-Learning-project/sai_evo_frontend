@@ -22,10 +22,10 @@
     ></ExerciseEditorWrapper>
   </div>
   <div v-else>
-    <skeleton-card class="pb-10"></skeleton-card>
-    <skeleton-card class="pb-10"></skeleton-card>
-    <skeleton-card class="pb-10"></skeleton-card>
-    <skeleton-card class="pb-10"></skeleton-card>
+    <SkeletonCard></SkeletonCard>
+    <SkeletonCard></SkeletonCard>
+    <SkeletonCard></SkeletonCard>
+    <SkeletonCard></SkeletonCard>
   </div>
   <VueEternalLoading
     :load="onLoadMore"

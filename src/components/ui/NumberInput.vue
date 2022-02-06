@@ -6,7 +6,7 @@
       type="number"
       placeholder=" "
       :value="modelValue"
-      @change="$emit('update:modelValue', $event.target.value)"
+      @input="$emit('update:modelValue', $event.target.value)"
       class="z-10 block w-full bg-transparent appearance-none floating-label focus:outline-none"
     />
     <label class="absolute bottom-1.5 origin-0 -z-1"><slot></slot></label>

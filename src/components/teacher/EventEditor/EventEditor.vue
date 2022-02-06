@@ -19,14 +19,14 @@
       ></EventStateEditor>
     </div>
   </div>
-  <collapsible-panel-group class="hidden"></collapsible-panel-group>
+  <!-- <collapsible-panel-group class="hidden"></collapsible-panel-group> -->
 </template>
 
 <script lang="ts">
 import EventMetaEditor from '@/components/teacher/EventEditor/EventMetaEditor.vue'
 import EventStateEditor from '@/components/teacher/EventEditor/EventStateEditor.vue'
 import EventTemplateEditor from '@/components/teacher/EventTemplateEditor/EventTemplateEditor.vue'
-import CollapsiblePanelGroup from '@/components/ui/CollapsiblePanelGroup.vue'
+//import CollapsiblePanelGroup from '@/components/ui/CollapsiblePanelGroup.vue'
 import CloudSaveStatus from '@/components/ui/CloudSaveStatus.vue'
 import { defineComponent } from '@vue/runtime-core'
 import { getDebouncedForEditor } from '@/utils'
@@ -37,7 +37,7 @@ export default defineComponent({
   name: 'EventEditor',
   components: {
     EventMetaEditor,
-    CollapsiblePanelGroup,
+    //CollapsiblePanelGroup,
     EventTemplateEditor,
     CloudSaveStatus,
     EventStateEditor
@@ -76,6 +76,9 @@ export default defineComponent({
         changes: { state: newVal }
       })
       this.stateSaving = false
+      if (newVal === EventState.PLANNED) {
+        this.$store.commit('showSuccessFeedback')
+      }
     },
     async onChange (newVal: Event) {
       const stringifiedNewVal = JSON.stringify(this.proxyModelValue)
