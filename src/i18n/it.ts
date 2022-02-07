@@ -109,6 +109,7 @@ export const it = {
     close: 'Chiudi',
     exams: 'esami',
     exam: 'esame',
+    edit: 'Modifica',
   },
   cloud: {
     saving: 'Salvataggio in corso...',
@@ -223,6 +224,9 @@ export const it = {
     revert_to_draft: 'Torna a stato di bozza',
     event_planned_help_text:
       "L'esame verrà aperto agli studenti automaticamente in data",
+    editing_open_event_title: 'Modifica di un esame in corso',
+    editing_open_event_body:
+      'Stai modificando un esame già iniziato. Sei sicuro di volerlo modificare?',
   },
   exercise_editor: {
     exercise_editor_title: 'Editor esercizio',
@@ -237,6 +241,9 @@ export const it = {
     exercise_tags: 'Tag',
     choice_text: 'Testo',
     choice_score: 'Punteggio',
+    edit_non_draft_title: 'Modifica di un esercizio non bozza',
+    edit_non_draft_body:
+      'Stai per modificare un esercizio non in stato di bozza. Potrebbe essere già presente in un esame o essere già stato visto dagli studenti. Sei sicuro di volerlo modificare?',
     new_choice: 'Nuova',
     cannot_publish: 'Non puoi ancora pubblicare questo esercizio',
     cannot_publish_body:

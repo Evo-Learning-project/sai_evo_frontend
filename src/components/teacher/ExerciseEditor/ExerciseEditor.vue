@@ -1,112 +1,122 @@
 <template>
-  <card
-    :marginLess="true"
-    class="transition-shadow duration-100 focus-within:shadow-lg"
-    :class="{ 'bg-gray-50': isDraft }"
-  >
-    <template v-slot:header>
-      <div class="flex">
-        <h3>
-          {{ $t('exercise_editor.exercise_editor_title') }}
-          <span v-if="isDraft" class="text-muted"
-            >({{ $t('exercise_editor.draft_notice') }})</span
-          >
-        </h3>
-        <CloudSaveStatus
-          class="my-auto ml-auto mr-8"
-          :saving="saving"
-        ></CloudSaveStatus>
-      </div>
-    </template>
-    <template v-slot:body>
-      <div class="flex flex-col space-y-6">
-        <div class="flex flex-col items-start my-4 space-x-8 md:flex-row">
-          <div class="w-full mr-auto md:w-4/12">
-            <text-input
-              :modelValue="modelValue.label"
-              @update:modelValue="emitUpdate('label', $event)"
-              >{{ $t('exercise_editor.exercise_label') }}</text-input
+  <div class="relative">
+    <div
+      @click="onFocusNonDraft"
+      style="z-index: 20"
+      class="absolute top-0 left-0 w-full h-full bg-gray-500 bg-opacity-0 cursor-pointer"
+      v-if="!isDraft && preventEdit"
+    ></div>
+    <Card
+      :marginLess="true"
+      class="transition-shadow duration-100 focus-within:shadow-lg"
+      :class="{ 'bg-gray-50': isDraft }"
+    >
+      <template v-slot:header>
+        <div class="flex">
+          <h3>
+            {{ $t('exercise_editor.exercise_editor_title') }}
+            <span v-if="isDraft" class="text-muted"
+              >({{ $t('exercise_editor.draft_notice') }})</span
             >
-          </div>
-          <div class="self-start w-1/2 mr-auto md:w-3/12">
-            <Dropdown
-              :id="'exercise_state_' + elementId"
-              :options="exerciseStateOptions"
-              :modelValue="modelValue.state"
-              @update:modelValue="onExerciseStateChange($event)"
-            >
-              <!--emitUpdate('state', $event)-->
-              {{ $t('exercise_editor.exercise_state') }}
-            </Dropdown>
-          </div>
-          <div class="flex flex-col ml-auto md:flex-row md:w-5/12">
-            <Dropdown
-              class="w-full"
-              :id="'exercise_type_' + elementId"
-              :options="exerciseTypeOptions"
-              :modelValue="modelValue.exercise_type"
-              @update:modelValue="emitUpdate('exercise_type', $event)"
-            >
-              {{ $t('exercise_editor.exercise_type') }}
-            </Dropdown>
-            <!--              :modelValue="modelValue.exercise_type"
-              @update:modelValue="onExerciseTypeChange($event)"-->
-          </div>
+          </h3>
+          <CloudSaveStatus
+            class="my-auto ml-auto mr-8"
+            :saving="saving"
+          ></CloudSaveStatus>
         </div>
-        <text-editor
-          :modelValue="modelValue.text"
-          @update:modelValue="emitUpdate('text', $event)"
-          >{{ $t('exercise_editor.exercise_text') }}</text-editor
-        >
-        <!-- TODO show code editor if the exercise type is js -->
-        <text-editor
-          :modelValue="modelValue.solution"
-          @update:modelValue="emitUpdate('solution', $event)"
-          >{{ $t('exercise_editor.exercise_solution') }}</text-editor
-        >
-        <TagInput
-          :modelValue="modelValue.tags"
-          :allow-edit-tags="true"
-          :placeholder="$t('exercise_editor.exercise_tags')"
-          @addTag="onAddTag($event)"
-          @removeTag="onRemoveTag($event)"
-        ></TagInput>
-        <!-- @update:modelValue="emitUpdate('tags', $event)"-->
-      </div>
-      <!-- Multiple-choice exercise types settings -->
-      <div class="mt-8" v-if="isMultipleChoice">
-        <h3 class="mb-8">{{ $t('exercise_editor.choices_title') }}</h3>
-        <choice-editor
-          v-for="(choice, index) in modelValue.choices"
-          :key="elementId + '-choice-' + index"
-          :modelValue="modelValue.choices[index]"
-          @update:modelValue="onChoiceUpdate(index, $event)"
-        ></choice-editor>
-        <!--v-model="modelValue.choices[index]"-->
-        <btn @btnClick="onAddChoice()" :size="'sm'"
-          ><span class="mr-1 text-base material-icons-outlined">
-            add_circle_outline
-          </span>
-          {{ $t('exercise_editor.new_choice') }}</btn
-        >
-        <!-- Js exercise settings -->
+      </template>
+      <template v-slot:body>
+        <div class="flex flex-col space-y-6">
+          <div class="flex flex-col items-start my-4 space-x-8 md:flex-row">
+            <div class="w-full mr-auto md:w-4/12">
+              <text-input
+                :modelValue="modelValue.label"
+                @update:modelValue="emitUpdate('label', $event)"
+                >{{ $t('exercise_editor.exercise_label') }}</text-input
+              >
+            </div>
+            <div class="self-start w-1/2 mr-auto md:w-3/12">
+              <Dropdown
+                :id="'exercise_state_' + elementId"
+                :options="exerciseStateOptions"
+                :modelValue="modelValue.state"
+                @update:modelValue="onExerciseStateChange($event)"
+              >
+                <!--emitUpdate('state', $event)-->
+                {{ $t('exercise_editor.exercise_state') }}
+              </Dropdown>
+            </div>
+            <div class="flex flex-col ml-auto md:flex-row md:w-5/12">
+              <Dropdown
+                class="w-full"
+                :id="'exercise_type_' + elementId"
+                :options="exerciseTypeOptions"
+                :modelValue="modelValue.exercise_type"
+                @update:modelValue="emitUpdate('exercise_type', $event)"
+              >
+                {{ $t('exercise_editor.exercise_type') }}
+              </Dropdown>
+              <!--              :modelValue="modelValue.exercise_type"
+              @update:modelValue="onExerciseTypeChange($event)"-->
+            </div>
+          </div>
+          <text-editor
+            :modelValue="modelValue.text"
+            @update:modelValue="emitUpdate('text', $event)"
+            >{{ $t('exercise_editor.exercise_text') }}</text-editor
+          >
+          <!-- TODO show code editor if the exercise type is js -->
+          <text-editor
+            :modelValue="modelValue.solution"
+            @update:modelValue="emitUpdate('solution', $event)"
+            >{{ $t('exercise_editor.exercise_solution') }}</text-editor
+          >
+          <TagInput
+            :modelValue="modelValue.tags"
+            :allow-edit-tags="true"
+            :placeholder="$t('exercise_editor.exercise_tags')"
+            @addTag="onAddTag($event)"
+            @removeTag="onRemoveTag($event)"
+          ></TagInput>
+          <!-- @update:modelValue="emitUpdate('tags', $event)"-->
+        </div>
+        <!-- Multiple-choice exercise types settings -->
+        <div class="mt-8" v-if="isMultipleChoice">
+          <h3 class="mb-8">{{ $t('exercise_editor.choices_title') }}</h3>
+          <choice-editor
+            v-for="(choice, index) in modelValue.choices"
+            :key="elementId + '-choice-' + index"
+            :modelValue="modelValue.choices[index]"
+            @update:modelValue="onChoiceUpdate(index, $event)"
+          ></choice-editor>
+          <!--v-model="modelValue.choices[index]"-->
+          <btn @btnClick="onAddChoice()" :size="'sm'"
+            ><span class="mr-1 text-base material-icons-outlined">
+              add_circle_outline
+            </span>
+            {{ $t('exercise_editor.new_choice') }}</btn
+          >
+          <!-- Js exercise settings -->
 
-        <!-- Completion exercise settings -->
+          <!-- Completion exercise settings -->
 
-        <!-- Aggregated exercise settings -->
-      </div>
-      <Dialog
-        :showDialog="showDialog"
-        @yes="dialogData.yesCallback()"
-        @no="dialogData.noCallback()"
-        :error="dialogData.error"
-        :confirmOnly="dialogData.confirmOnly"
-      >
-        <template v-slot:title>{{ dialogData.title }}</template>
-        <template v-slot:body>{{ dialogData.body }}</template>
-      </Dialog>
-    </template>
-  </card>
+          <!-- Aggregated exercise settings -->
+        </div>
+        <Dialog
+          :showDialog="showDialog"
+          @yes="dialogData.onYes()"
+          @no="dialogData.onNo()"
+          :yesText="dialogData.yesText"
+          :noText="dialogData.noText"
+          :error="dialogData.error"
+          :confirmOnly="dialogData.confirmOnly"
+        >
+          <template v-slot:title>{{ dialogData.title }}</template>
+          <template v-slot:body>{{ dialogData.text }}</template>
+        </Dialog>
+      </template>
+    </Card>
+  </div>
 </template>
 
 <script lang="ts">
@@ -136,6 +146,7 @@ import ChoiceEditor from '@/components/teacher/ExerciseEditor/ChoiceEditor.vue'
 import CloudSaveStatus from '@/components/ui/CloudSaveStatus.vue'
 import { getDebouncedForEditor } from '@/utils'
 import { courseIdMixin } from '@/mixins'
+import { DialogData } from '@/interfaces'
 
 export default defineComponent({
   name: 'ExerciseEditor',
@@ -177,14 +188,15 @@ export default defineComponent({
       showSaved: false,
       saving: false,
       showDialog: false,
+      preventEdit: true,
       dialogData: {
         title: '',
-        body: '',
-        yesCallback: null as null | (() => void),
-        noCallback: null as null | (() => void),
+        text: '',
+        onNo: null as null | (() => void),
+        onYes: null as null | (() => void),
         error: false,
         confirmOnly: false
-      }
+      } as DialogData
     }
   },
   methods: {
@@ -193,6 +205,20 @@ export default defineComponent({
         ...this.modelValue,
         [key]: value
       })
+    },
+    onFocusNonDraft () {
+      this.showDialog = true
+      this.dialogData = {
+        title: _('exercise_editor.edit_non_draft_title'),
+        text: _('exercise_editor.edit_non_draft_body'),
+        yesText: _('misc.edit'),
+        noText: _('dialog.default_cancel_text'),
+        onNo: () => (this.showDialog = false),
+        onYes: () => {
+          this.preventEdit = false
+          this.showDialog = false
+        }
+      }
     },
     // onExerciseTypeChange (newVal: ExerciseType) {
     //   if (!confirm('Are you sure?')) return
@@ -240,9 +266,8 @@ export default defineComponent({
         this.showDialog = true
         this.dialogData = {
           title: _('exercise_editor.cannot_publish'),
-          body: _('exercise_editor.cannot_publish_body'),
-          yesCallback: () => (this.showDialog = false),
-          noCallback: null,
+          text: _('exercise_editor.cannot_publish_body'),
+          onYes: () => (this.showDialog = false),
           error: true,
           confirmOnly: true
         }
@@ -252,12 +277,12 @@ export default defineComponent({
         this.showDialog = true
         this.dialogData = {
           title: _('exercise_editor.make_public_confirmation_title'),
-          body: _('exercise_editor.make_public_confirmation_body'),
-          yesCallback: () => {
+          text: _('exercise_editor.make_public_confirmation_body'),
+          onYes: () => {
             this.emitUpdate('state', newState)
             this.showDialog = false
           },
-          noCallback: () => (this.showDialog = false),
+          onNo: () => (this.showDialog = false),
           error: false,
           confirmOnly: false
         }

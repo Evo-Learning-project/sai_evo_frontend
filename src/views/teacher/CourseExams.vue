@@ -25,6 +25,7 @@
       <SkeletonCard :marginLess="true"></SkeletonCard>
     </div>
     <Dialog
+      :warning="true"
       :showDialog="showCloseDialog"
       @no="showCloseDialog = false"
       @yes="closeExam()"

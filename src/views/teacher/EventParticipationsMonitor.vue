@@ -163,6 +163,7 @@
       {{ $t('event_monitor.close_for_selected') }}</Btn
     >
     <Dialog
+      :warning="!resultsMode && !editingSlot"
       :large="!!editingSlot"
       :showDialog="showDialog"
       @no="hideDialog()"
@@ -314,13 +315,14 @@ export default defineComponent({
           row.data.visibility != AssessmentVisibility.PUBLISHED
         )
       }
+      return true
 
-      return !this.event.users_allowed_past_closure?.includes(
-        this.eventParticipations.find(
-          (p: EventParticipation) =>
-            p.id === (row.data as EventParticipation).id
-        )?.user?.id
-      )
+      // return !this.event.users_allowed_past_closure?.includes(
+      //   this.eventParticipations.find(
+      //     (p: EventParticipation) =>
+      //       p.id === (row.data as EventParticipation).id
+      //   )?.user?.id
+      // )
     },
     getRowClass (row: RowClassParams) {
       if (this.resultsMode) {
@@ -347,7 +349,7 @@ export default defineComponent({
     },
     onCellClicked (event: CellClickedEvent) {
       //console.log('cell clicked', event, event.value)
-      if (!event.colDef.field?.startsWith('slot')) {
+      if (!event.colDef.field?.startsWith('slot') || !this.resultsMode) {
         return
       }
       this.showDialog = true
@@ -396,6 +398,7 @@ export default defineComponent({
       )
       this.$store.commit('showSuccessFeedback')
       this.hideDialog()
+      this.gridApi.refreshCells({ force: true })
     },
     async publishResults () {
       console.log('publishing')

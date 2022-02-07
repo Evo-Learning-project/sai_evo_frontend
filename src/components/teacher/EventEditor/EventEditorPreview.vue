@@ -67,7 +67,12 @@
           <router-link
             :to="{ name: 'ExamResults', params: { examId: event.id } }"
             v-else-if="hasEnded"
-            ><Btn>{{ $t('event_preview.results') }}</Btn></router-link
+            ><Btn
+              ><span class="mr-1.5 text-base material-icons-outlined">
+                bar_chart
+              </span>
+              {{ $t('event_preview.results') }}</Btn
+            ></router-link
           >
         </div>
       </div>

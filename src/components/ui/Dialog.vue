@@ -20,7 +20,7 @@
           }"
         >
           <div class="w-full px-4 py-6 overflow-y-auto md:px-8">
-            <div v-if="$slots.title" class="flex items-center mb-2 space-x-2">
+            <div v-if="$slots.title" class="flex items-center mb-2 space-x-3">
               <slot class="my-auto" name="backButton"></slot>
               <div v-if="error">
                 <div class="icon-surrounding bg-danger-light text-danger-dark">

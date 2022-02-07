@@ -18,6 +18,22 @@
         :saving="stateSaving"
       ></EventStateEditor>
     </div>
+
+    <Dialog
+      :yesText="$t('misc.edit')"
+      :noText="$t('dialog.default_cancel_text')"
+      :showDialog="showConfirmationDialog"
+      :warning="true"
+      @yes="showConfirmationDialog = false"
+      @no="$router.push({ name: 'CourseExams', params: { courseId } })"
+    >
+      <template v-slot:title>
+        {{ $t('event_editor.editing_open_event_title') }}
+      </template>
+      <template v-slot:body>
+        {{ $t('event_editor.editing_open_event_body') }}
+      </template>
+    </Dialog>
   </div>
   <!-- <collapsible-panel-group class="hidden"></collapsible-panel-group> -->
 </template>
@@ -32,6 +48,7 @@ import { defineComponent } from '@vue/runtime-core'
 import { getDebouncedForEditor } from '@/utils'
 import { Event, EventState } from '@/models'
 import { courseIdMixin, eventIdMixin, loadingMixin } from '@/mixins'
+import Dialog from '@/components/ui/Dialog.vue'
 
 export default defineComponent({
   name: 'EventEditor',
@@ -40,7 +57,8 @@ export default defineComponent({
     //CollapsiblePanelGroup,
     EventTemplateEditor,
     CloudSaveStatus,
-    EventStateEditor
+    EventStateEditor,
+    Dialog
   },
   mixins: [courseIdMixin, eventIdMixin, loadingMixin],
   props: [],
@@ -53,14 +71,18 @@ export default defineComponent({
         courseId: this.courseId,
         eventId: this.eventId
       })
-
       await this.$store.dispatch('getExercises', { courseId: this.courseId })
     })
+
+    if (this.proxyModelValue.state == EventState.OPEN) {
+      this.showConfirmationDialog = true
+    }
   },
   data () {
     return {
       saving: false,
-      stateSaving: false
+      stateSaving: false,
+      showConfirmationDialog: false
     }
   },
   methods: {

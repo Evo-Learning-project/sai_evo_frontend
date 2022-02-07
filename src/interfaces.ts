@@ -17,4 +17,6 @@ export interface DialogData {
   confirmOnly?: boolean;
   onYes?: () => void;
   onNo?: () => void;
+  error?: boolean;
+  warning?: boolean;
 }

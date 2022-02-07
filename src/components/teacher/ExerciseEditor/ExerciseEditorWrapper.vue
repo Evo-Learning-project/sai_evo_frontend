@@ -1,10 +1,10 @@
 <template>
   <div class="relative my-4">
-    <div class="absolute top-0 right-0 mt-2 mr-2">
-      <btn :size="'sm'" :variant="'light'" @btnClick="showEditor = !showEditor"
+    <div class="absolute top-0 right-0 z-50 mt-2 mr-2">
+      <Btn :size="'sm'" :variant="'light'" @btnClick="showEditor = !showEditor"
         ><span class="material-icons-outlined">
           {{ showEditor ? 'expand_less' : 'expand_more' }}
-        </span></btn
+        </span></Btn
       >
     </div>
     <ExercisePreview
