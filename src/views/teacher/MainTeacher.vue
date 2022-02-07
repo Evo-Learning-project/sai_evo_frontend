@@ -27,10 +27,7 @@
       </div>
       <div class="fixed h-full px-2" style="width: inherit">
         <div class="flex items-center w-full px-8 mt-4">
-          <img
-            class="w-36"
-            src="https://di.unipi.it/wp-content/themes/unipi/images/cherubino-white.svg"
-          />
+          <img class="w-36" src="../../../public/unipi-logo.svg" />
         </div>
         <div class="w-full mx-auto mt-4 mb-8 text-sm text-center text-light">
           {{ $store.getters.email }}

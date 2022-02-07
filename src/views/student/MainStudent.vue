@@ -5,10 +5,7 @@
         <div class="flex items-center justify-between h-14">
           <div class="flex items-center">
             <div class="flex-shrink-0">
-              <img
-                class="w-32 -ml-1"
-                src="https://di.unipi.it/wp-content/themes/unipi/images/cherubino-white.svg"
-              />
+              <img class="w-32 -ml-1" src="../../../public/unipi-logo.svg" />
             </div>
             <div class="hidden md:block">
               <div class="flex items-baseline ml-10 space-x-4">
