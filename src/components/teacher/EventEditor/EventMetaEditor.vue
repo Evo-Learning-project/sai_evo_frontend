@@ -10,7 +10,11 @@
       <calendar-input
         class=""
         :modelValue="modelValue.begin_timestamp"
-        @update:modelValue="emitUpdate('begin_timestamp', $event)"
+        ref="beginTimestampElement"
+        @open="onBeginTimestampOpen()"
+        @update:modelValue="
+          isDraft ? emitUpdate('begin_timestamp', $event) : () => null
+        "
         >{{ $t('event_editor.begin_timestamp') }}</calendar-input
       >
       <calendar-input
@@ -34,16 +38,6 @@
           :options="exercisesShownAtOnceOptions"
           @update:modelValue="emitUpdate('exercises_shown_at_a_time', $event)"
         ></radio-group>
-        <!-- <number-input
-          class="w-1/3"
-          :modelValue="modelValue.exercises_shown_at_a_time"
-          @update:modelValue="emitUpdate('exercises_shown_at_a_time', $event)"
-          >{{
-            $t('event_editor.exercises_shown_at_a_time_label')
-          }}</number-input
-        >
-        <p class="select-none text-muted">{{ $t('misc.or_label') }}</p>
-        <btn>{{ $t('event_editor.show_all_exercises_at_once') }}</btn> -->
       </div>
       <toggle
         :labelOnLeft="true"
@@ -53,21 +47,33 @@
         >{{ $t('event_editor.allow_going_back_label') }}</toggle
       >
     </div>
+    <Dialog
+      @yes="showDialog = false"
+      :showDialog="showDialog"
+      :confirmOnly="true"
+    >
+      <template v-slot:body>
+        {{ $t('event_editor.cannot_change_timestamp') }}
+      </template>
+    </Dialog>
   </div>
 </template>
 
 <script lang="ts">
+/* eslint-disable @typescript-eslint/no-extra-semi */
+
 import CalendarInput from '@/components/ui/CalendarInput.vue'
 import TextInput from '@/components/ui/TextInput.vue'
 import TextEditor from '@/components/ui/TextEditor.vue'
 import { defineComponent } from '@vue/runtime-core'
-import { Event } from '@/models'
+import { Event, EventState } from '@/models'
 import Toggle from '@/components/ui/Toggle.vue'
 //import NumberInput from '@/components/ui/NumberInput.vue'
 import { PropType } from 'vue'
 //import Btn from '@/components/ui/Btn.vue'
 import RadioGroup from '@/components/ui/RadioGroup.vue'
 import { getTranslatedString as _ } from '@/i18n'
+import Dialog from '@/components/ui/Dialog.vue'
 
 export default defineComponent({
   name: 'EventMetaEditor',
@@ -78,7 +84,8 @@ export default defineComponent({
     Toggle,
     //NumberInput,
     //Btn,
-    RadioGroup
+    RadioGroup,
+    Dialog
   },
   props: {
     modelValue: {
@@ -97,7 +104,8 @@ export default defineComponent({
   data () {
     return {
       event: {} as Event,
-      saving: false
+      saving: false,
+      showDialog: false
     }
   },
   methods: {
@@ -107,12 +115,19 @@ export default defineComponent({
         ...this.modelValue,
         [key]: value
       })
+    },
+    onBeginTimestampOpen () {
+      if (this.modelValue.state != EventState.DRAFT) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        ;(this.$refs.beginTimestampElement as any).close()
+        this.showDialog = true
+      }
     }
   },
   computed: {
-    // serializedEvent () {
-    //   return JSON.stringify(this.event)
-    // }
+    isDraft () {
+      return this.modelValue.state == EventState.DRAFT
+    },
     exercisesShownAtOnceOptions () {
       return [
         {

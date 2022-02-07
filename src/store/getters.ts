@@ -5,6 +5,7 @@ import {
   EventTemplate,
   EventType,
   Exercise,
+  getBlankExam,
   Tag,
 } from '@/models';
 
@@ -12,7 +13,8 @@ import {
 export const getters = {
   p: (state: any) => state.eventParticipations,
   event: (state: any) => (eventId: string) =>
-    state.events.find((e: Event) => e.id == eventId) ?? {},
+    state.events.find((e: Event) => e.id == eventId) ??
+    getBlankExam(),
   exercise: (state: any) => (exerciseId: string) =>
     state.exercises.find((e: Exercise) => e.id == exerciseId) ?? {},
   template: (state: any, getters: any) => (eventId: string) =>

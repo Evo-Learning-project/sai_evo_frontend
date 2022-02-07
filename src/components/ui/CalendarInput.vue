@@ -4,9 +4,12 @@
     <date-picker
       class="z-10 bg-transparent calendar-floating-label"
       @open="onOpen()"
+      :open="calendarOpen"
       @close="onClose()"
+      @focus="$emit('focus')"
       v-model:value="proxyModelValue"
       type="datetime"
+      :ref="'calendar-' + elementId"
     >
       <template v-slot:icon-calendar
         ><span class="text-base material-icons-outlined">
@@ -37,22 +40,34 @@
 
 <script lang="ts">
 import { defineComponent } from '@vue/runtime-core'
+import { v4 as uuid4 } from 'uuid'
+
 import DatePicker from 'vue-datepicker-next'
 import 'vue-datepicker-next/index.css'
 export default defineComponent({
   name: 'CalendarInput',
   components: { DatePicker },
   props: ['modelValue'],
+  created () {
+    this.elementId = uuid4()
+  },
   data () {
     return {
-      calendarOpen: false
+      calendarOpen: false,
+      elementId: ''
     }
   },
   methods: {
     onOpen () {
+      console.log('open')
       this.calendarOpen = true
+      this.$emit('open')
     },
     onClose () {
+      this.calendarOpen = false
+      this.$emit('close')
+    },
+    close () {
       this.calendarOpen = false
     }
   },

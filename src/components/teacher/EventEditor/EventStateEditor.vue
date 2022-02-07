@@ -23,6 +23,18 @@
       </template></Card
     >
     <div class="">
+      <div v-if="validationErrors.length > 0" class="mb-12">
+        <p>{{ $t('event_editor.correct_errors_to_publish') }}</p>
+        <ul class="list-disc list-inside">
+          <li
+            class="text-muted text-danger-dark"
+            v-for="(error, index) in validationErrors"
+            :key="'err-' + index"
+          >
+            {{ error }}
+          </li>
+        </ul>
+      </div>
       <div class="flex items-center mt-2 space-x-4">
         <p class="text-muted">
           {{ $t('event_editor.current_state_is') }}
@@ -31,6 +43,7 @@
         </p>
         <Btn
           :variant="'primary'"
+          :disabled="validationErrors.length > 0"
           :loading="saving"
           @btnClick="isDraft ? publish() : revertToDraft()"
         >
@@ -56,7 +69,7 @@
 </template>
 
 <script lang="ts">
-import { Event, EventState } from '@/models'
+import { Event, EventState, getExamValidationErrors } from '@/models'
 import { defineComponent, PropType } from '@vue/runtime-core'
 import { icons as eventStateIcons } from '@/assets/eventStateIcons'
 import { getTranslatedString as _ } from '@/i18n'
@@ -121,6 +134,14 @@ export default defineComponent({
     },
     formattedTimestamp () {
       return getFormattedTimestamp(this.modelValue.begin_timestamp ?? '')
+    },
+    validationErrors () {
+      if (!this.modelValue) {
+        return []
+      }
+      return getExamValidationErrors(this.modelValue).map(e =>
+        _('exam_validation_errors.' + e)
+      )
     }
   }
 })

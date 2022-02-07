@@ -1,4 +1,9 @@
-import { EventState, ExerciseState, ExerciseType } from '@/models';
+import {
+  EventState,
+  ExamValidationError,
+  ExerciseState,
+  ExerciseType,
+} from '@/models';
 import {
   ROUTE_TITLE_COURSE_NAME_TOKEN,
   ROUTE_TITLE_EVENT_NAME_TOKEN,
@@ -110,6 +115,7 @@ export const it = {
     exams: 'esami',
     exam: 'esame',
     edit: 'Modifica',
+    at: 'alle',
   },
   cloud: {
     saving: 'Salvataggio in corso...',
@@ -227,6 +233,10 @@ export const it = {
     editing_open_event_title: 'Modifica di un esame in corso',
     editing_open_event_body:
       'Stai modificando un esame già iniziato. Sei sicuro di volerlo modificare?',
+    correct_errors_to_publish:
+      "Prima di poter pubblicare l'esame, correggi i seguenti errori:",
+    cannot_change_timestamp:
+      "Non puoi modificare la data e ora di inizio dell'esame una volta pianificato. Per modificare questo campo, metti l'esame in stato di bozza.",
   },
   exercise_editor: {
     exercise_editor_title: 'Editor esercizio',
@@ -293,5 +303,17 @@ export const it = {
     //   'Non comparirà nelle esercitazioni iniziate dagli studenti, ma potrà essere inserito negli esami dagli insegnanti.',
     [EventState.DRAFT]:
       "L'esame non è visibile agli studenti e non sarà accessibile fino a quando viene pubblicato.",
+  },
+  exam_validation_errors: {
+    [ExamValidationError.NO_NAME]:
+      "Non hai assegnato un nome all'esame",
+    [ExamValidationError.NO_VALID_TEMPLATE_RULES]:
+      'Non hai creato slot per gli esercizi per questo esame',
+    [ExamValidationError.NO_END_TIMESTAMP]:
+      'Non hai assegnato una data e ora di fine a questo esame',
+    [ExamValidationError.NO_BEGIN_TIMESTAMP]:
+      'Non hai assegnato una data e ora di inizio a questo esame',
+    [ExamValidationError.INVALID_TIMESTAMPS]:
+      'Hai selezionato data e ora di inizio e fine non corrette per questo esame',
   },
 };

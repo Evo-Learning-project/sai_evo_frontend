@@ -49,6 +49,7 @@ import { getDebouncedForEditor } from '@/utils'
 import { Event, EventState } from '@/models'
 import { courseIdMixin, eventIdMixin, loadingMixin } from '@/mixins'
 import Dialog from '@/components/ui/Dialog.vue'
+import { getTranslatedString as _ } from '@/i18n'
 
 export default defineComponent({
   name: 'EventEditor',
