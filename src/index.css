@@ -90,12 +90,20 @@
       @apply absolute opacity-0 text-sm w-max bg-dark text-light px-2 py-1.5 rounded-md transition-opacity duration-100 ease-in-out shadow-md bg-opacity-60
     }
 
+    .tooltip-text-force {
+      @apply opacity-100 !important;
+    }
+
     .tooltip:hover .tooltip-text {
       @apply opacity-100;
     }
 
     .tooltip-top {
       @apply bottom-full left-1/2 transform -translate-x-1/2
+    }
+
+    .tooltip-bottom {
+      @apply top-full left-1/2 transform -translate-x-1/2
     }
 
     .tooltip-left {
@@ -106,6 +114,12 @@
       content: ' ';
       border-color: transparent transparent transparent rgba(17, 24, 39, 0.6) !important;
       @apply absolute -mt-1 border-4 border-transparent border-solid top-1/2 left-full;
+    }
+
+    .tooltip-bottom::after {
+      content: ' ';
+      border-color: transparent  transparent rgba(17, 24, 39, 0.6) transparent !important;
+      @apply absolute -mt-1 border-4 border-transparent border-solid bottom-full left-1/2;
     }
 
     /* tag input */

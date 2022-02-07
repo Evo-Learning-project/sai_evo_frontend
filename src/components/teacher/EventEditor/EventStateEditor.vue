@@ -36,7 +36,7 @@
         </ul>
       </div>
       <div class="flex items-center mt-2 space-x-4">
-        <p class="text-muted">
+        <h5 class="">
           {{
             isDraft || isPlanned
               ? $t('event_editor.current_state_is')
@@ -44,7 +44,7 @@
           }}
           <strong>{{ currentEventStateName }}</strong
           >.
-        </p>
+        </h5>
         <Btn
           v-if="isDraft || isPlanned"
           :variant="'primary'"
@@ -59,16 +59,22 @@
           }}
         </Btn>
       </div>
-      <p v-if="isPlanned" class="mt-4 text-muted">
+      <p v-if="isPlanned" class="mt-10 text-muted">
         {{ $t('event_editor.event_planned_help_text') }}
         <!-- <strong>{{ formattedTimestamp }}</strong> -->
         &nbsp;<strong
           ><Timestamp :value="modelValue.begin_timestamp"></Timestamp></strong
         >.
       </p>
-      <!-- TODO
-         check that the exam can be published (non-null begin date, name etc.)
-      -->
+      <div
+        class="flex flex-col items-stretch mt-2 space-y-2"
+        v-if="isPlanned || isOpen"
+      >
+        <p class="text-muted">
+          {{ $t('event_editor.this_is_the_link_to_the_event') }}
+        </p>
+        <CopyToClipboard :value="permalink"></CopyToClipboard>
+      </div>
     </div>
   </div>
 </template>
@@ -82,14 +88,17 @@ import Card from '@/components/ui/Card.vue'
 import Btn from '@/components/ui/Btn.vue'
 import { getFormattedTimestamp } from '@/utils'
 import Timestamp from '@/components/ui/Timestamp.vue'
+import CopyToClipboard from '@/components/ui/CopyToClipboard.vue'
 //import Dropdown from '@/components/ui/Dropdown.vue'
 
 export default defineComponent({
   components: {
     Card,
     Btn,
-    Timestamp
+    Timestamp,
+    CopyToClipboard
   },
+
   props: {
     modelValue: {
       type: Object as PropType<Event>,
@@ -129,6 +138,9 @@ export default defineComponent({
     isPlanned () {
       return this.modelValue.state == EventState.PLANNED
     },
+    isOpen () {
+      return this.modelValue.state == EventState.OPEN
+    },
     currentEventStateName () {
       return this.eventStateOptions[
         this.modelValue?.state
@@ -146,6 +158,15 @@ export default defineComponent({
       }
       return getExamValidationErrors(this.modelValue).map(e =>
         _('exam_validation_errors.' + e)
+      )
+    },
+    permalink (): string {
+      return (
+        window.location.origin +
+        this.$router.resolve({
+          name: 'ExamParticipationPage',
+          params: { examId: this.modelValue.id }
+        }).fullPath
       )
     }
   }

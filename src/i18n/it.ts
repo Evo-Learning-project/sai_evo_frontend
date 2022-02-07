@@ -116,6 +116,8 @@ export const it = {
     exam: 'esame',
     edit: 'Modifica',
     at: 'alle',
+    copy: 'Copia',
+    copied: 'Copiato',
   },
   cloud: {
     saving: 'Salvataggio in corso...',
@@ -240,6 +242,8 @@ export const it = {
       "Prima di poter pubblicare l'esame, correggi i seguenti errori:",
     cannot_change_timestamp:
       "Non puoi modificare la data e ora di inizio dell'esame una volta pianificato. Per modificare questo campo, metti l'esame in stato di bozza.",
+    this_is_the_link_to_the_event:
+      "Ecco il link per accedere all'esame. Comunicalo agli studenti che parteciperanno.",
   },
   exercise_editor: {
     exercise_editor_title: 'Editor esercizio',

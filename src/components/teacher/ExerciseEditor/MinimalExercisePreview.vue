@@ -1,7 +1,5 @@
 <template
   ><div>
-    <!-- <btn :variant="'transparent'" class="text-left rounded-md"> -->
-    <!-- <template v-slot:content>-->
     <Card
       :size="'sm'"
       :highlighted="highlighted"
@@ -29,7 +27,6 @@
             >
               <div class="flex items-center">
                 <MultiIcon class="w-6" :icons="exerciseStateIcons"></MultiIcon>
-                <!-- <p v-html="$t('exercise_states.' + exercise.state)"></p> -->
               </div>
             </div>
           </div>
@@ -48,9 +45,6 @@
             class="w-11/12 overflow-x-hidden overflow-ellipsis "
             v-html="previewText"
           ></div>
-          <!-- <div
-          class="absolute bottom-0 left-0 w-full h-7 bg-gradient-to-b from-transparent to-light"
-        ></div> -->
         </div>
       </template>
 
@@ -93,8 +87,6 @@
         <FullExercise :exercise="exercise"></FullExercise>
       </template>
     </Dialog>
-    <!--</template>-->
-    <!--</btn>-->
   </div>
 </template>
 

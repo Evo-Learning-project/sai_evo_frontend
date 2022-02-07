@@ -1,5 +1,4 @@
 /* eslint-disable */
-
 import { createApp } from 'vue';
 import App from './App.vue';
 import router from './router';
@@ -10,6 +9,7 @@ import { i18n } from './i18n';
 //import GAuth from './src/plugins/vue3-google-oauth2'; //'vue3-google-oauth2';
 import GAuth from 'vue3-google-oauth2';
 import './index.css';
+import VueClipboard from 'vue3-clipboard';
 
 const gAuthOptions = {
   clientId:
@@ -32,4 +32,8 @@ createApp(App)
   .use(router)
   .use(VueAxios, axios)
   .use(i18n)
+  .use(VueClipboard, {
+    autoSetContainer: true,
+    appendToBody: true,
+  })
   .mount('#app');
