@@ -6,6 +6,7 @@
         {{ $t('event_template_editor.introduction_text') }}
       </p>
       <EventTemplateRuleEditor
+        :globallySelectedExercises="selectedExercises"
         v-for="(rule, index) in modelValue.rules"
         :key="'template-' + elementId + '-rule-' + index"
         :modelValue="modelValue.rules[index]"
@@ -34,6 +35,8 @@ import EventTemplateRuleEditor from './EventTemplateRuleEditor.vue'
 import {
   EventTemplate,
   EventTemplateRule,
+  EventTemplateRuleType,
+  Exercise,
   getBlankEventTemplateRule
 } from '@/models'
 import { courseIdMixin } from '@/mixins'
@@ -86,7 +89,14 @@ export default defineComponent({
       this.$emit('saving', false)
     }
   },
-  computed: {}
+  computed: {
+    selectedExercises (): string[] {
+      return this.modelValue.rules
+        .filter(r => r.rule_type == EventTemplateRuleType.ID_BASED)
+        .map(r => r.exercises as string[])
+        .flat()
+    }
+  }
 })
 </script>
 

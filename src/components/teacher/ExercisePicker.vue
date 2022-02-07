@@ -9,11 +9,15 @@
     <div v-if="!firstLoading" class="grid grid-cols-2 gap-5">
       <MinimalExercisePreview
         :selectable="true"
-        :selectionDisabled="!isExerciseSelectable(exercise)"
+        :selectionDisabled="
+          isExerciseDraft(exercise) || isSelectedInAnotherRule(exercise)
+        "
         :selectButtonTitle="
-          isExerciseSelectable(exercise)
-            ? ''
-            : $t('exercise_picker.cannot_pick_draft')
+          isExerciseDraft(exercise)
+            ? $t('exercise_picker.cannot_pick_draft')
+            : isSelectedInAnotherRule(exercise)
+            ? $t('exercise_picker.already_selected')
+            : ''
         "
         v-for="(exercise, index) in exercises"
         :key="'course-' + courseId + '-exercise-' + index"
@@ -113,11 +117,20 @@ export default defineComponent({
     allowPickingDraft: {
       type: Boolean,
       default: false
+    },
+    alreadySelected: {
+      type: Object as PropType<string[]>,
+      required: true
     }
   },
   methods: {
-    isExerciseSelectable (exercise: Exercise): boolean {
-      return this.allowPickingDraft || exercise.state != ExerciseState.DRAFT
+    isExerciseDraft (exercise: Exercise): boolean {
+      return !this.allowPickingDraft && exercise.state == ExerciseState.DRAFT
+    },
+    isSelectedInAnotherRule (exercise: Exercise): boolean {
+      return (
+        this.alreadySelected.includes(exercise.id) && !this.isSelected(exercise)
+      )
     },
     onSelection (exercise: Exercise) {
       const index = this.modelValue.findIndex(e => e == exercise.id)

@@ -1,7 +1,7 @@
 <template>
   <div class="">
     <h3 class="mb-3">{{ $t('event_editor.state_editor_title') }}</h3>
-    <Card class="bg-light">
+    <Card class="bg-light" v-if="isDraft || isPlanned">
       <template v-slot:header
         ><div class="flex items-center space-x-4">
           <div v-if="isDraft">
@@ -37,13 +37,18 @@
       </div>
       <div class="flex items-center mt-2 space-x-4">
         <p class="text-muted">
-          {{ $t('event_editor.current_state_is') }}
+          {{
+            isDraft || isPlanned
+              ? $t('event_editor.current_state_is')
+              : $t('event_editor.state_is')
+          }}
           <strong>{{ currentEventStateName }}</strong
           >.
         </p>
         <Btn
+          v-if="isDraft || isPlanned"
           :variant="'primary'"
-          :disabled="validationErrors.length > 0"
+          :disabled="isDraft && validationErrors.length > 0"
           :loading="saving"
           @btnClick="isDraft ? publish() : revertToDraft()"
         >

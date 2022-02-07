@@ -5,7 +5,10 @@
     <Card
       :size="'sm'"
       :highlighted="highlighted"
-      :class="{ 'border-success': highlighted }"
+      :class="{
+        'border-success': highlighted,
+        'bg-gray-50 opacity-60': selectionDisabled
+      }"
     >
       <template v-slot:header>
         <div class="relative">
@@ -52,8 +55,9 @@
       </template>
 
       <template v-slot:side>
-        <div class="flex flex-col items-end h-full ">
+        <div class="flex flex-col items-end h-full space-y-5">
           <Btn
+            class="flex-grow"
             :size="'xs'"
             :variant="'primary-borderless'"
             @click="showPreview = true"

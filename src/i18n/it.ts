@@ -188,6 +188,8 @@ export const it = {
   exercise_picker: {
     cannot_pick_draft:
       'Non puoi usare un esercizio in stato di bozza in un esame',
+    already_selected:
+      'Questo esercizio è già stato selezionato in un altro slot',
   },
   event_template_rule_editor: {
     exercise_number: 'Slot',
@@ -215,6 +217,7 @@ export const it = {
     state_editor_title: 'Pubblica',
     state: 'Stato esame',
     current_state_is: "L'esame è attualmente in stato",
+    state_is: "L'esame è",
     begin_timestamp: 'Data e ora di inizio',
     end_timestamp: 'Data e ora di fine',
     instructions: 'Istruzioni (opzionale)',

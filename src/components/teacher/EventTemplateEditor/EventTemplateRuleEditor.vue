@@ -160,6 +160,7 @@
           <div class="mt-4 max-h-96">
             <ExercisePicker
               :modelValue="modelValue.exercises"
+              :alreadySelected="globallySelectedExercises"
               @addExercise="onAddExercise($event)"
               @removeExercise="onRemoveExercise($event)"
             ></ExercisePicker>
@@ -194,6 +195,10 @@ export default defineComponent({
   props: {
     modelValue: {
       type: Object as PropType<EventTemplateRule>,
+      required: true
+    },
+    globallySelectedExercises: {
+      type: Object as PropType<string[]>,
       required: true
     }
   },
