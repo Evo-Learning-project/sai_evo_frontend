@@ -112,7 +112,20 @@
           :confirmOnly="dialogData.confirmOnly"
         >
           <template v-slot:title>{{ dialogData.title }}</template>
-          <template v-slot:body>{{ dialogData.text }}</template>
+          <template v-slot:body
+            >{{ dialogData.text }}
+            <div class="mt-2" v-if="showValidationErrors">
+              <ul class="list-disc list-inside">
+                <li
+                  class="text-muted text-danger-dark"
+                  v-for="(error, index) in validationErrors"
+                  :key="'err-' + index"
+                >
+                  {{ error }}
+                </li>
+              </ul>
+            </div>
+          </template>
         </Dialog>
       </template>
     </Card>
@@ -131,7 +144,8 @@ import {
   getBlankChoice,
   Exercise,
   ExerciseState,
-  ExerciseChoice
+  ExerciseChoice,
+  getExerciseValidationErrors
 } from '@/models'
 import { ExerciseType, multipleChoiceExerciseTypes } from '@/models'
 import Card from '@/components/ui/Card.vue'
@@ -188,6 +202,7 @@ export default defineComponent({
       showSaved: false,
       saving: false,
       showDialog: false,
+      showValidationErrors: false,
       preventEdit: true,
       dialogData: {
         title: '',
@@ -258,16 +273,16 @@ export default defineComponent({
       await this.dispatchChoiceUpdate(newVal)
     },
     onExerciseStateChange (newState: ExerciseState) {
-      if (
-        newState != ExerciseState.DRAFT &&
-        // TODO actual error checking
-        this.modelValue.text.length < 15
-      ) {
+      if (newState != ExerciseState.DRAFT && this.validationErrors.length > 0) {
         this.showDialog = true
+        this.showValidationErrors = true
         this.dialogData = {
           title: _('exercise_editor.cannot_publish'),
           text: _('exercise_editor.cannot_publish_body'),
-          onYes: () => (this.showDialog = false),
+          onYes: () => {
+            this.showDialog = false
+            this.showValidationErrors = false
+          },
           error: true,
           confirmOnly: true
         }
@@ -351,6 +366,11 @@ export default defineComponent({
     },
     isDraft (): boolean {
       return this.modelValue.state == ExerciseState.DRAFT
+    },
+    validationErrors () {
+      return getExerciseValidationErrors(this.modelValue).map(e =>
+        _('exercise_validation_errors.' + e)
+      )
     }
   }
 })

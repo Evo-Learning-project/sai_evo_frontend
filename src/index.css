@@ -277,6 +277,10 @@
       content: "indeterminate_check_box" !important
     }
 
+    .ag-selectable-cell {
+      @apply flex items-center h-full rounded-md cursor-pointer hover:bg-gray-200 !important
+    }
+
     .bg-success-important {
       @apply bg-success-light bg-opacity-20 hover:bg-success-light hover:bg-opacity-20 !important
     }

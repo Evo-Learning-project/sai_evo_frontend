@@ -1,8 +1,10 @@
 import {
+  EventParticipationState,
   EventState,
   ExamValidationError,
   ExerciseState,
   ExerciseType,
+  ExerciseValidationError,
 } from '@/models';
 import {
   ROUTE_TITLE_COURSE_NAME_TOKEN,
@@ -174,6 +176,8 @@ export const it = {
     close_for_selected_text_2: "L'esame rimarrà aperto per",
     some_exams_still_open:
       "L'esame è terminato, ma non è stato ancora chiuso per alcuni partecipanti. Ricorda di chiudere l'esame per tutti al termine. Le righe evidenziate in rosso corrispondono a esami già chiusi.",
+    un_turn_in_text:
+      'Questo studente ha già consegnato. Puoi annullare la sua consegna per permettergli di modificare le sue risposte. Vuoi annullare la conferma di ',
   },
   event_results: {
     publish_results: 'Pubblica risultati',
@@ -295,6 +299,10 @@ export const it = {
     [EventState.OPEN]: 'In corso',
     [EventState.CLOSED]: 'Terminato',
   },
+  event_participation_states: {
+    [EventParticipationState.IN_PROGRESS]: 'In corso',
+    [EventParticipationState.TURNED_IN]: 'Consegnato',
+  },
   exercise_states_descriptions: {
     [ExerciseState.PUBLIC]:
       'Sarà visibile agli studenti e potrà essere inserito negli esami o comparire nelle esercitazioni.',
@@ -322,5 +330,17 @@ export const it = {
       'Non hai assegnato una data e ora di inizio a questo esame',
     [ExamValidationError.INVALID_TIMESTAMPS]:
       'Hai selezionato data e ora di inizio e fine non corrette per questo esame',
+  },
+  exercise_validation_errors: {
+    [ExerciseValidationError.BLANK_TEXT]:
+      'Questo esercizio è senza testo',
+    [ExerciseValidationError.NO_CHOICES]:
+      'Questo esercizio a scelta multipla non ha scelte',
+    [ExerciseValidationError.BLANK_CHOICE]:
+      'Questo esercizio a scelta multipla contiene delle scelte senza testo',
+    [ExerciseValidationError.NO_TESTCASES]:
+      'Questo esercizio di programmazione non ha test case',
+    [ExerciseValidationError.NO_SUB_EXERCISES]:
+      'Questo esercizio composto non contiene sotto-esercizi',
   },
 };

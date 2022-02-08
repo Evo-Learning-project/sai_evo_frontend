@@ -186,15 +186,28 @@
         dialogData.title
       }}</template>
       <template v-slot:body>
+        <!-- editing an assessment slot -->
         <div class="text-darkText" v-if="editingSlot">
           <AbstractEventParticipationSlot
             :allowEditScores="true"
             v-model="editingSlotDirty"
           ></AbstractEventParticipationSlot>
         </div>
+        <!-- publishing selected assessments -->
         <div v-else-if="resultsMode">
           {{ $t('event_results.publish_confirm_text') }}
         </div>
+
+        <!-- re-opening a turned in participation-->
+        <div v-else-if="!!editingParticipationId">
+          {{
+            $t('event_monitor.un_turn_in_text') +
+              selectedParticipation?.user?.full_name +
+              '?'
+          }}
+        </div>
+
+        <!-- closing exam for selected participants -->
         <div v-else>
           <p>
             {{ $t('event_monitor.close_for_selected_text_1') }}
@@ -234,6 +247,7 @@ import {
   Event,
   EventParticipation,
   EventParticipationSlot,
+  EventParticipationState,
   EventState,
   ParticipationAssessmentProgress
 } from '@/models'
@@ -247,6 +261,7 @@ import {
   RowNode
 } from 'ag-grid-community'
 import { icons as assessmentStateIcons } from '@/assets/assessmentStateIcons'
+import { icons as participationStateIcons } from '@/assets/participationStateIcons'
 import Dialog from '@/components/ui/Dialog.vue'
 import AbstractEventParticipationSlot from '@/components/shared/AbstractEventParticipationSlot.vue'
 import { DialogData } from '@/interfaces'
@@ -301,7 +316,13 @@ export default defineComponent({
       editingFullName: '',
       editingParticipationId: '',
       gridApi: null as any,
-      selectedParticipations: [] as string[]
+      selectedParticipations: [] as string[],
+
+      // dialog functions
+      // TODO make dialogData be a computed based on these flags to avoid setting it manually inside of methods
+      editingAssessmentSlot: false,
+      publishingResults: false,
+      closingExams: false
     }
   },
   methods: {
@@ -348,17 +369,27 @@ export default defineComponent({
         .map((n: any) => n.data.id)
     },
     onCellClicked (event: CellClickedEvent) {
-      //console.log('cell clicked', event, event.value)
-      if (!event.colDef.field?.startsWith('slot') || !this.resultsMode) {
-        return
+      // edit assessment slot
+      if (event.colDef.field?.startsWith('slot') && this.resultsMode) {
+        this.showDialog = true
+        this.dialogData.onYes = this.dispatchAssessmentUpdate
+        this.dialogData.yesText = _('event_assessment.confirm_assessment')
+        this.editingSlot = event.value
+        this.editingSlotDirty = JSON.parse(JSON.stringify(this.editingSlot))
+        this.editingFullName = event.data.fullName
+        this.editingParticipationId = event.data.id
+        this.dialogData.noText = _('dialog.default_cancel_text')
       }
-      this.showDialog = true
-      this.dialogData.onYes = this.dispatchAssessmentUpdate
-      this.dialogData.yesText = _('event_assessment.confirm_assessment')
-      this.editingSlot = event.value
-      this.editingSlotDirty = JSON.parse(JSON.stringify(this.editingSlot))
-      this.editingFullName = event.data.fullName
-      this.editingParticipationId = event.data.id
+      // change turned in status
+      else if (event.colDef.field === 'state' && !this.resultsMode) {
+        this.dialogData.title = ''
+        this.dialogData.warning = false
+        this.editingParticipationId = event.data.id
+        this.showDialog = true
+        this.dialogData.noText = _('dialog.default_no_text')
+        this.dialogData.yesText = _('dialog.default_yes_text')
+        // TODO onyes
+      }
     },
     onCloseSelectedExams () {
       this.showDialog = true
@@ -371,12 +402,14 @@ export default defineComponent({
         (this.selectedParticipations.length === 1
           ? _('misc.exam')
           : _('misc.exams'))
+      this.dialogData.noText = _('dialog.default_cancel_text')
       this.dialogData.onYes = this.closeExams
     },
     onPublish () {
       this.showDialog = true
       this.dialogData.onYes = this.publishResults
       this.dialogData.yesText = _('event_results.publish')
+      this.dialogData.noText = _('dialog.default_cancel_text')
     },
     async closeExams () {
       const unselectedParticipations = (this
@@ -401,7 +434,6 @@ export default defineComponent({
       this.gridApi.refreshCells({ force: true })
     },
     async publishResults () {
-      console.log('publishing')
       await this.withLoading(
         async () =>
           await this.$store.dispatch('partialUpdateEventParticipation', {
@@ -448,6 +480,11 @@ export default defineComponent({
   },
   computed: {
     ...mapState(['eventParticipations']),
+    selectedParticipation () {
+      return this.eventParticipations.find(
+        (p: EventParticipation) => p.id == this.editingParticipationId
+      )
+    },
     event (): Event {
       return this.$store.getters.event(this.eventId)
     },
@@ -495,7 +532,7 @@ export default defineComponent({
         ...(this.resultsMode
           ? [
               {
-                field: 'state',
+                field: 'state', // assessment progress
                 width: 80,
                 headerName: _('event_participation_headings.state'),
                 cellRenderer: (params: any) =>
@@ -509,6 +546,28 @@ export default defineComponent({
                       params.value as ParticipationAssessmentProgress
                     ]
                   }</span>`
+              }
+            ]
+          : []),
+        ...(!this.resultsMode
+          ? [
+              {
+                field: 'state', // participation state (in progress / turned in)
+                width: 80,
+                headerName: _('event_participation_headings.state'),
+                cellRenderer: (params: any) =>
+                  `<div class=" ag-selectable-cell">
+                  <span title="${_(
+                    'event_participation_states.' + params.value
+                  )}" class="mx-auto ${
+                    params.value == EventParticipationState.IN_PROGRESS
+                      ? 'text-muted'
+                      : 'text-success'
+                  } text-lg material-icons-outlined">${
+                    participationStateIcons[
+                      params.value as EventParticipationState
+                    ]
+                  }</span></div>`
               }
             ]
           : []),
@@ -540,8 +599,7 @@ export default defineComponent({
             ' ' +
             ((s.slot_number as number) + 1),
           cellRenderer: (params: any) =>
-            `<div class="flex items-center h-full ml-4 rounded-md cursor-pointer hover:bg-gray-200 ${params
-              .value.score ??
+            `<div class="ml-4 -mr-2 ag-selectable-cell ${params.value.score ??
               'transition-opacity duration-75 hover:opacity-100 opacity-70 '}">` +
             `<span class="mx-auto ${params.value.score ??
               'text-lg text-yellow-900 material-icons-outlined'}">
@@ -558,7 +616,7 @@ export default defineComponent({
           id: p.id,
           email: p.user?.email,
           fullName: p.user?.full_name,
-          state: p.assessment_progress,
+          state: this.resultsMode ? p.assessment_progress : p.state,
           visibility: p.visibility
         } as Record<string, unknown>
         p.slots.forEach(

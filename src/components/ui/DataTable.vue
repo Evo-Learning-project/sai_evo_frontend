@@ -1,6 +1,7 @@
 <template>
   <ag-grid-vue
     :style="style"
+    :suppressRowClickSelection="true"
     class="ag-theme-material"
     suppressRowHoverHighlight="true"
     suppressCellSelection="false"
