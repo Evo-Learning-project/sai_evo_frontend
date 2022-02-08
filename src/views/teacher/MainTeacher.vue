@@ -34,6 +34,8 @@
         </div>
         <ul class="flex flex-col w-full h-full mt-6">
           <router-link
+            class="relative my-1 overflow-hidden rounded-md"
+            @click="onRouteClick"
             v-for="(option, index) in sidebarOptions"
             :key="'sidebar-' + option.label"
             :to="{ name: option.routeName }"
@@ -42,7 +44,7 @@
             }"
           >
             <li
-              class="flex items-center justify-between w-full px-2 py-2 mt-1.5 rounded-md cursor-pointer hover:transition-colors text-lightText hover:bg-primary-dark hover:duration-100"
+              class="flex items-center justify-between w-full px-2 py-2.5 rounded-md cursor-pointer hover:transition-colors text-lightText hover:bg-primary-dark hover:duration-100"
               :class="{
                 'bg-primary-dark pointer-events-none': isRouteActive(option)
               }"
@@ -104,6 +106,7 @@ import {
   ROUTE_TITLE_EVENT_NAME_TOKEN
 } from '@/navigation/const'
 import { SidebarOption } from '@/navigation/sidebar'
+import { rippleEffect } from '@/utils'
 import { defineComponent } from '@vue/runtime-core'
 
 export default defineComponent({
@@ -116,6 +119,10 @@ export default defineComponent({
   },
   mixins: [courseIdMixin, eventIdMixin],
   methods: {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    onRouteClick (event: any) {
+      rippleEffect(event, 'ripple-light')
+    },
     isRouteActive (option: SidebarOption) {
       return (
         option.routeName === this.$route.name ||
