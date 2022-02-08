@@ -1,44 +1,46 @@
-<template>
-  <card class="mb-4 -mt-2 shadow-md bg-light">
-    <template v-slot:body>
-      <ExerciseSearchFilters v-model="searchFilter"></ExerciseSearchFilters>
-    </template>
-  </card>
+<template
+  ><div>
+    <Card class="mb-4 -mt-2 shadow-md bg-light">
+      <template v-slot:body>
+        <ExerciseSearchFilters v-model="searchFilter"></ExerciseSearchFilters>
+      </template>
+    </Card>
 
-  <div class="flex w-full mb-2">
-    <btn @btnClick="onAddExercise()" :loading="loading" class="ml-auto"
-      ><span class="mr-1 text-base material-icons-outlined">
-        add_circle_outline
-      </span>
-      {{ $t('course_exercises.new_exercise') }}</btn
+    <div class="flex w-full mb-2">
+      <btn @btnClick="onAddExercise()" :loading="loading" class="ml-auto"
+        ><span class="mr-1 text-base material-icons-outlined">
+          add_circle_outline
+        </span>
+        {{ $t('course_exercises.new_exercise') }}</btn
+      >
+    </div>
+    <div v-if="!firstLoading">
+      <ExerciseEditorWrapper
+        v-for="(exercise, index) in exercises"
+        :key="'course-' + courseId + '-exercise-' + exercise.id"
+        v-model="exercises[index]"
+        :ref="'course-' + courseId + '-exercise-' + exercise.id"
+      ></ExerciseEditorWrapper>
+    </div>
+    <div v-else>
+      <SkeletonCard></SkeletonCard>
+      <SkeletonCard></SkeletonCard>
+      <SkeletonCard></SkeletonCard>
+      <SkeletonCard></SkeletonCard>
+    </div>
+    <VueEternalLoading
+      :load="onLoadMore"
+      v-model:is-initial="isInitialInfiniteLoad"
     >
+      <template #loading>
+        <spinner></spinner>
+      </template>
+      <template #no-more>
+        <!-- &nbsp; -->
+        <div class="w-full h-1 bg-gray-200 rounded-md"></div>
+      </template>
+    </VueEternalLoading>
   </div>
-  <div v-if="!firstLoading">
-    <ExerciseEditorWrapper
-      v-for="(exercise, index) in exercises"
-      :key="'course-' + courseId + '-exercise-' + exercise.id"
-      v-model="exercises[index]"
-      :ref="'course-' + courseId + '-exercise-' + exercise.id"
-    ></ExerciseEditorWrapper>
-  </div>
-  <div v-else>
-    <SkeletonCard></SkeletonCard>
-    <SkeletonCard></SkeletonCard>
-    <SkeletonCard></SkeletonCard>
-    <SkeletonCard></SkeletonCard>
-  </div>
-  <VueEternalLoading
-    :load="onLoadMore"
-    v-model:is-initial="isInitialInfiniteLoad"
-  >
-    <template #loading>
-      <spinner></spinner>
-    </template>
-    <template #no-more>
-      <!-- &nbsp; -->
-      <div class="w-full h-1 bg-gray-200 rounded-md"></div>
-    </template>
-  </VueEternalLoading>
 </template>
 
 <script lang="ts">

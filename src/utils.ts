@@ -4,8 +4,8 @@ import moment from 'moment';
 import 'moment/locale/it';
 import { getTranslatedString } from './i18n';
 
-const EDITOR_DEBOUNCE_TIME_MS = 3000;
-const EDITOR_DEBOUNCE_MAX_WAIT_MS = 6000;
+const EDITOR_DEBOUNCE_TIME_MS = 1500;
+const EDITOR_DEBOUNCE_MAX_WAIT_MS = 4000;
 
 const SEARCH_DEBOUNCE_TIME_MS = 500;
 const SEARCH_DEBOUNCE_MAX_WAIT_MS = 1000;

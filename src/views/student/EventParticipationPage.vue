@@ -114,7 +114,7 @@ import AbstractEventParticipationSlot from '@/components/shared/AbstractEventPar
 import Btn from '@/components/ui/Btn.vue'
 import CloudSaveStatus from '@/components/ui/CloudSaveStatus.vue'
 import Dialog from '@/components/ui/Dialog.vue'
-import { courseIdMixin, eventIdMixin } from '@/mixins'
+import { courseIdMixin, eventIdMixin, savingMixin } from '@/mixins'
 import {
   EventParticipation,
   EventParticipationSlot,
@@ -138,7 +138,7 @@ export default defineComponent({
     SkeletonCard
   },
   name: 'EventParticipationPage',
-  mixins: [courseIdMixin, eventIdMixin],
+  mixins: [courseIdMixin, eventIdMixin, savingMixin],
   async created () {
     this.firstLoading = true
     this.dispatchAnswerTextUpdate = getDebouncedForStudentText(

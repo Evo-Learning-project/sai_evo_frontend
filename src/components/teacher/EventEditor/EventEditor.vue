@@ -47,7 +47,12 @@ import CloudSaveStatus from '@/components/ui/CloudSaveStatus.vue'
 import { defineComponent } from '@vue/runtime-core'
 import { getDebouncedForEditor } from '@/utils'
 import { Event, EventState } from '@/models'
-import { courseIdMixin, eventIdMixin, loadingMixin } from '@/mixins'
+import {
+  courseIdMixin,
+  eventIdMixin,
+  loadingMixin,
+  savingMixin
+} from '@/mixins'
 import Dialog from '@/components/ui/Dialog.vue'
 import { getTranslatedString as _ } from '@/i18n'
 
@@ -61,7 +66,7 @@ export default defineComponent({
     EventStateEditor,
     Dialog
   },
-  mixins: [courseIdMixin, eventIdMixin, loadingMixin],
+  mixins: [courseIdMixin, eventIdMixin, loadingMixin, savingMixin],
   props: [],
   async created () {
     // wrap update method in a debounce

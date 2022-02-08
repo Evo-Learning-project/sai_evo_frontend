@@ -29,10 +29,10 @@
         <div class="flex flex-col space-y-6">
           <div class="flex flex-col items-start my-4 space-x-8 md:flex-row">
             <div class="w-full mr-auto md:w-4/12">
-              <text-input
+              <TextInput
                 :modelValue="modelValue.label"
                 @update:modelValue="emitUpdate('label', $event)"
-                >{{ $t('exercise_editor.exercise_label') }}</text-input
+                >{{ $t('exercise_editor.exercise_label') }}</TextInput
               >
             </div>
             <div class="self-start w-1/2 mr-auto md:w-3/12">
@@ -60,16 +60,16 @@
               @update:modelValue="onExerciseTypeChange($event)"-->
             </div>
           </div>
-          <text-editor
+          <TextEditor
             :modelValue="modelValue.text"
             @update:modelValue="emitUpdate('text', $event)"
-            >{{ $t('exercise_editor.exercise_text') }}</text-editor
+            >{{ $t('exercise_editor.exercise_text') }}</TextEditor
           >
           <!-- TODO show code editor if the exercise type is js -->
-          <text-editor
+          <TextEditor
             :modelValue="modelValue.solution"
             @update:modelValue="emitUpdate('solution', $event)"
-            >{{ $t('exercise_editor.exercise_solution') }}</text-editor
+            >{{ $t('exercise_editor.exercise_solution') }}</TextEditor
           >
           <TagInput
             :modelValue="modelValue.tags"
@@ -78,17 +78,16 @@
             @addTag="onAddTag($event)"
             @removeTag="onRemoveTag($event)"
           ></TagInput>
-          <!-- @update:modelValue="emitUpdate('tags', $event)"-->
         </div>
         <!-- Multiple-choice exercise types settings -->
         <div class="mt-8" v-if="isMultipleChoice">
           <h3 class="mb-8">{{ $t('exercise_editor.choices_title') }}</h3>
-          <choice-editor
+          <ChoiceEditor
             v-for="(choice, index) in modelValue.choices"
             :key="elementId + '-choice-' + index"
             :modelValue="modelValue.choices[index]"
             @update:modelValue="onChoiceUpdate(index, $event)"
-          ></choice-editor>
+          ></ChoiceEditor>
           <!--v-model="modelValue.choices[index]"-->
           <btn @btnClick="onAddChoice()" :size="'sm'"
             ><span class="mr-1 text-base material-icons-outlined">
@@ -159,7 +158,7 @@ import TagInput from '@/components/ui/TagInput.vue'
 import ChoiceEditor from '@/components/teacher/ExerciseEditor/ChoiceEditor.vue'
 import CloudSaveStatus from '@/components/ui/CloudSaveStatus.vue'
 import { getDebouncedForEditor } from '@/utils'
-import { courseIdMixin } from '@/mixins'
+import { courseIdMixin, savingMixin } from '@/mixins'
 import { DialogData } from '@/interfaces'
 
 export default defineComponent({
@@ -181,7 +180,7 @@ export default defineComponent({
       required: true
     }
   },
-  mixins: [courseIdMixin],
+  mixins: [courseIdMixin, savingMixin],
   watch: {
     async serializedBaseExerciseFields (newVal: string, oldVal: string) {
       if (oldVal !== '{}' && newVal !== oldVal) {

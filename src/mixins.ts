@@ -26,10 +26,13 @@ export const loadingMixin = {
       await callback();
       store.state.loading = false;
     },
-    // async withFirstLoading(callback: () => any) {
-    //   store.state.firstLoading = true;
-    //   await callback();
-    //   store.state.firstLoading = false;
-    // }
+  },
+};
+
+export const savingMixin = {
+  watch: {
+    saving(newVal: boolean) {
+      store.state.saving = newVal;
+    },
   },
 };

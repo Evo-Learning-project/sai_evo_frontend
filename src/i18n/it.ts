@@ -120,6 +120,8 @@ export const it = {
     at: 'alle',
     copy: 'Copia',
     copied: 'Copiato',
+    confirm_exiting_unsaved_changes:
+      'Hai effettuato delle modifiche non ancora salvate. Se esci, perderai le ultime modifiche. Vuoi uscire?',
   },
   cloud: {
     saving: 'Salvataggio in corso...',

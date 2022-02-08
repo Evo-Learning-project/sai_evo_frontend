@@ -17,7 +17,11 @@ import {
   courseDashboardSidebarOptions,
   courseListSidebarOptions,
 } from '@/navigation/sidebar';
-import { getTranslatedString as _ } from '@/i18n';
+import {
+  getTranslatedString,
+  getTranslatedString as _,
+} from '@/i18n';
+import store from '@/store';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -134,6 +138,20 @@ const routes: Array<RouteRecordRaw> = [
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes,
+});
+
+router.beforeEach((to, from) => {
+  if (store.state.saving) {
+    if (
+      !confirm(
+        getTranslatedString('misc.confirm_exiting_unsaved_changes')
+      )
+    ) {
+      return false;
+    } else {
+      store.state.saving = false;
+    }
+  }
 });
 
 export default router;

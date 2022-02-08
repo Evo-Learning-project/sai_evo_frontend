@@ -9,6 +9,14 @@
   <transition name="fade">
     <Notification v-if="showSuccessFeedback"></Notification>
   </transition>
+  <transition name="fade">
+    <!-- unfortunately doesn't work -->
+    <Notification
+      :icon="'cloud_off'"
+      :text="$t('misc.confirm_exiting_unsaved_changes')"
+      v-if="showUnsavedChangesNotification"
+    ></Notification>
+  </transition>
   <router-view class="" />
   <footer
     class="flex items-center w-full h-12 px-6 py-3 mt-auto text-sm text-white bg-dark"
@@ -42,10 +50,14 @@ import { defineComponent } from '@vue/runtime-core'
 import Spinner from './components/ui/Spinner.vue'
 import { mapState } from 'vuex'
 import Notification from './components/ui/Notification.vue'
+import { getTranslatedString as _ } from './i18n'
 
 export default defineComponent({
   beforeCreate (): void {
     this.$store.commit('initStore')
+  },
+  beforeUnmount () {
+    window.removeEventListener('beforeunload', this.beforeWindowUnload)
   },
   components: {
     Spinner,
@@ -53,15 +65,28 @@ export default defineComponent({
   },
   async created () {
     await this.$store.dispatch('getCourses')
+    window.addEventListener('beforeunload', this.beforeWindowUnload)
   },
   data () {
     return {
-      //showSpinner: false
+      showUnsavedChangesNotification: false
+    }
+  },
+  methods: {
+    beforeWindowUnload (e: {
+      preventDefault: () => void
+      returnValue: string
+    }) {
+      if (this.saving && !confirm(_('misc.confirm_exiting_unsaved_changes'))) {
+        // Cancel the event
+        e.preventDefault()
+        // Chrome requires returnValue to be set
+        e.returnValue = ''
+      }
     }
   },
   computed: {
-    ...mapState(['loading', 'showSuccessFeedback'])
-  },
-  methods: {}
+    ...mapState(['loading', 'showSuccessFeedback', 'saving'])
+  }
 })
 </script>
