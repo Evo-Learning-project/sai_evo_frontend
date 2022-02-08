@@ -42,6 +42,11 @@ export const courseDashboardSidebarOptions: SidebarOption[] = [
     routeName: 'CourseExercises',
   },
   {
+    label: _('sidebar_labels.course_permissions'),
+    icon: 'admin_panel_settings',
+    routeName: 'CoursePermissions',
+  },
+  {
     label: _('sidebar_labels.course_dashboard_back_to_courses'),
     icon: 'arrow_back_ios',
     routeName: 'TeacherCourseList',

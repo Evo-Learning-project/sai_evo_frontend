@@ -77,7 +77,7 @@ module.exports = {
   },
   variants: {
     extend: {
-      cursor: ['disabled'],
+      cursor: ['disabled', 'hover'],
       opacity: ['disabled'],
       outline: ['active'],
       transitionProperty: ['hover'],

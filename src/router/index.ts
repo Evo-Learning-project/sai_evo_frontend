@@ -9,6 +9,7 @@ import CourseList from '../views/shared/CourseList.vue';
 import CourseDashboard from '../views/teacher/CourseDashboard.vue';
 import CourseExercises from '../views/teacher/CourseExercises.vue';
 import CourseExams from '../views/teacher/CourseExams.vue';
+import CoursePermissions from '../views/teacher/CoursePermissions.vue';
 import EventEditor from '../components/teacher/EventEditor/EventEditor.vue';
 import EventParticipationPage from '../views/student/EventParticipationPage.vue';
 import EventParticipationsMonitor from '../views/teacher/EventParticipationsMonitor.vue';
@@ -53,6 +54,15 @@ const routes: Array<RouteRecordRaw> = [
         component: CourseDashboard,
         meta: {
           routeTitle: _('headings.course_title'),
+          sidebarOptions: courseDashboardSidebarOptions,
+        },
+      },
+      {
+        path: 'courses/:courseId/permissions',
+        name: 'CoursePermissions',
+        component: CoursePermissions,
+        meta: {
+          routeTitle: _('headings.course_permissions'),
           sidebarOptions: courseDashboardSidebarOptions,
         },
       },

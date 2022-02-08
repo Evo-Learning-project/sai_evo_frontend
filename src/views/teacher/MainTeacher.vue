@@ -40,7 +40,7 @@
             :key="'sidebar-' + option.label"
             :to="{ name: option.routeName }"
             :class="{
-              'mt-auto': false && index == sidebarOptions.length - 1
+              'mt-auto mb-44': false && index == sidebarOptions.length - 1
             }"
           >
             <li

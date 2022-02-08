@@ -104,77 +104,16 @@ export default defineComponent({
   methods: {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onClick (event: any) {
-      event
       rippleEffect(event, this.getRippleClass())
+
+      // prevent button from being clicked twice before the event has fired
       this.ghostDisabled = true
       setTimeout(() => {
+        // delay emitting the event to finish ripple animation first
         this.$emit('btnClick')
         this.ghostDisabled = false
       }, 150)
     },
-    // rippleEffect (
-    //   event: {
-    //     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    //     currentTarget: any
-    //     pageX: number
-    //     clientX: number
-    //     pageY: number
-    //     clientY: number
-    //   },
-    //   rippleClass = 'ripple-primary'
-    // ) {
-    //   //console.log('EVENT', event)
-    //   const btn = event.currentTarget
-    //   const circle = document.createElement('span')
-    //   const diameter = Math.max(btn.clientWidth, btn.clientHeight)
-    //   const radius = diameter / 2
-
-    //   //console.log('parent', btn.offsetParent)
-    //   const parentPosition = getComputedStyle(btn.offsetParent).position
-
-    //   const offsetX =
-    //     parentPosition === 'fixed' || parentPosition === 'absolute'
-    //       ? event.clientX
-    //       : event.pageX
-    //   const offsetY =
-    //     parentPosition === 'fixed' || parentPosition === 'absolute'
-    //       ? event.clientY
-    //       : event.pageY
-
-    //   const { offsetTop, offsetLeft } = this.getOffset(btn)
-
-    //   //const {top, left} = this.getOffset(btn)
-    //   circle.style.width = circle.style.height = `${diameter}px`
-    //   circle.style.left = `${offsetX - (offsetLeft + radius)}px`
-    //   circle.style.top = `${offsetY - (offsetTop + radius)}px`
-    //   circle.classList.add('ripple')
-    //   circle.classList.add(rippleClass)
-
-    //   const ripple = btn.getElementsByClassName('ripple')[0]
-    //   //console.log('ripple', ripple, 'offsetY', offsetY)
-    //   if (ripple) {
-    //     ripple.remove()
-    //   }
-
-    //   btn.appendChild(circle)
-    // },
-    // getOffset (el: {
-    //   offsetLeft: number
-    //   offsetTop: number
-    //   scrollLeft: number
-    //   scrollTop: number
-    //   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    //   offsetParent: any
-    // }) {
-    //   var _x = 0
-    //   var _y = 0
-    //   while (el && !isNaN(el.offsetLeft) && !isNaN(el.offsetTop)) {
-    //     _x += el.offsetLeft - el.scrollLeft
-    //     _y += el.offsetTop - el.scrollTop
-    //     el = el.offsetParent
-    //   }
-    //   return { offsetTop: _y, offsetLeft: _x }
-    // },
     getRippleClass () {
       switch (this.variant) {
         case 'primary-borderless':
@@ -190,30 +129,3 @@ export default defineComponent({
   }
 })
 </script>
-
-<style>
-/* span.ripple {
-  position: absolute;
-  border-radius: 50%;
-  transform: scale(0);
-  animation: ripple 500ms linear;
-}
-.ripple-white {
-  background-color: rgba(255, 255, 255, 0.2); /*rgba(255, 255, 255, 0.2);*/
-/*}
-.ripple-gray {
-  background-color: rgba(255, 255, 255, 0.7);
-}
-.ripple-primary {
-  background-color: rgba(68, 56, 202, 0.25);
-}
-.ripple-success {
-  background-color: rgba(52, 211, 153, 0.4);
-}
-@keyframes ripple {
-  to {
-    transform: scale(4);
-    opacity: 0;
-  }
-} */
-</style>

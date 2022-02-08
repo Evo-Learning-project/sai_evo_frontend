@@ -1,4 +1,5 @@
 import {
+  CoursePrivilege,
   EventParticipationState,
   EventState,
   ExamValidationError,
@@ -37,6 +38,8 @@ export const it = {
     course_exercises:
       'Esercizi corso ' + ROUTE_TITLE_COURSE_NAME_TOKEN,
     course_exams: 'Esami corso ' + ROUTE_TITLE_COURSE_NAME_TOKEN,
+    course_permissions:
+      'Permessi corso ' + ROUTE_TITLE_COURSE_NAME_TOKEN,
     course_list: 'Corsi',
     exam_progress: 'Progresso esame ' + ROUTE_TITLE_EVENT_NAME_TOKEN,
     exam_results: 'Risultati esame ' + ROUTE_TITLE_EVENT_NAME_TOKEN,
@@ -133,6 +136,7 @@ export const it = {
   },
   sidebar_labels: {
     course_dashboard_dashboard: 'Dashboard',
+    course_permissions: 'Permessi',
     course_dashboard_exams: 'Esami',
     course_dashboard_practices: 'Esercitazioni',
     course_dashboard_exercises: 'Esercizi',
@@ -344,5 +348,16 @@ export const it = {
       'Questo esercizio di programmazione non ha test case',
     [ExerciseValidationError.NO_SUB_EXERCISES]:
       'Questo esercizio composto non contiene sotto-esercizi',
+  },
+  course_privileges: {
+    [CoursePrivilege.ACCESS_EXERCISES]: 'Vedere gli esercizi',
+    [CoursePrivilege.ASSESS_PARTICIPATIONS]:
+      'Vedere le partecipazioni agli esami e assegnare voti',
+    [CoursePrivilege.MANAGE_EVENTS]: 'Creare e modificare esami',
+    [CoursePrivilege.MANAGE_EXERCISES]:
+      'Creare e modificare esercizi',
+    [CoursePrivilege.UPDATE_COURSE]:
+      'Modificare le impostazioni del corso',
+    [CoursePrivilege.ALL_PRIVILEGES]: 'Tutti i permessi',
   },
 };
