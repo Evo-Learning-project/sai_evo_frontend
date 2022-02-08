@@ -27,7 +27,7 @@ export const courseDashboardSidebarOptions: SidebarOption[] = [
   },
   {
     label: _('sidebar_labels.course_dashboard_exams'),
-    icon: 'quiz',
+    icon: 'assignment', //'quiz',
     routeName: 'CourseExams',
     children: ['ExamEditor'],
   },
@@ -38,7 +38,7 @@ export const courseDashboardSidebarOptions: SidebarOption[] = [
   // },
   {
     label: _('sidebar_labels.course_dashboard_exercises'),
-    icon: 'list_alt',
+    icon: 'topic', //'list_alt',
     routeName: 'CourseExercises',
   },
   {
