@@ -3,6 +3,7 @@
 import axios from 'axios';
 import {
   Course,
+  CoursePrivilege,
   Event,
   EventTemplate,
   EventTemplateRule,
@@ -38,6 +39,7 @@ import {
   updateEventTemplateRule,
 } from '@/api/events';
 import { SearchFilter } from '@/api/interfaces';
+import { getUsers, updateUserCoursePrivileges } from '@/api/users';
 
 export const actions = {
   createExercise: async (
@@ -295,5 +297,31 @@ export const actions = {
   ) => {
     const event = await getEvent(courseId, eventId);
     commit('setEvents', [event, ...state.events]);
+  },
+  getUsersForCourse: async (
+    { commit, state }: { commit: Commit; state: any },
+    { courseId }: { courseId: string }
+  ) => {
+    const users = await getUsers(courseId);
+    state.users = users;
+  },
+  updateUserCoursePrivileges: async (
+    { commit, state }: { commit: Commit; state: any },
+    {
+      courseId,
+      userId,
+      privileges,
+    }: {
+      courseId: string;
+      userId: string;
+      privileges: CoursePrivilege[];
+    }
+  ) => {
+    const user = await updateUserCoursePrivileges(
+      courseId,
+      userId,
+      privileges
+    );
+    commit('setUser', { user, userId });
   },
 };

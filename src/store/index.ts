@@ -59,6 +59,7 @@ export default createStore({
     refreshToken: '',
     loading: false,
     saving: false,
+    savingError: false,
     showSuccessFeedback: false,
 
     /* teachers-only state*/
@@ -66,8 +67,8 @@ export default createStore({
     events: [] as Event[],
     eventParticipations: [] as EventParticipation[], // participations to current event
     tags: [] as Tag[],
-    activeCourseId: null as string | null, //? remove?
     currentExercisePage: 1, // for server-side pagination
+    users: [] as User[], // for course permissions view
 
     /* students-only state */
     eventParticipation: null as EventParticipation | null,
@@ -104,7 +105,7 @@ export default createStore({
         axios
           .get('/users/me/')
           .then((response) => {
-            commit('setUser', response.data);
+            commit('setUser', { user: response.data });
             resolve(response);
           })
           .catch((error) => {

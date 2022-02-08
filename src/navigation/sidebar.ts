@@ -29,7 +29,7 @@ export const courseDashboardSidebarOptions: SidebarOption[] = [
     label: _('sidebar_labels.course_dashboard_exams'),
     icon: 'assignment', //'quiz',
     routeName: 'CourseExams',
-    children: ['ExamEditor'],
+    children: ['ExamEditor', 'ExamResults', 'ExamProgress'],
   },
   // {
   //   label: _('sidebar_labels.course_dashboard_practices'),
@@ -48,7 +48,7 @@ export const courseDashboardSidebarOptions: SidebarOption[] = [
   },
   {
     label: _('sidebar_labels.course_dashboard_back_to_courses'),
-    icon: 'arrow_back_ios',
+    icon: 'chevron_left',
     routeName: 'TeacherCourseList',
   },
 ];

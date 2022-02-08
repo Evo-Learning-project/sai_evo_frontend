@@ -22,6 +22,7 @@
           <CloudSaveStatus
             class="my-auto ml-auto mr-8"
             :saving="saving"
+            :hadError="savingError"
           ></CloudSaveStatus>
         </div>
       </template>
@@ -200,6 +201,7 @@ export default defineComponent({
       elementId: '',
       showSaved: false,
       saving: false,
+      savingError: false,
       showDialog: false,
       showValidationErrors: false,
       preventEdit: true,
@@ -242,6 +244,7 @@ export default defineComponent({
     // event handlers
     async onBaseFieldsChange (newVal: Exercise) {
       this.saving = true
+      this.savingError = false
       await this.dispatchExerciseUpdate(newVal)
     },
     async onAddChoice () {
@@ -269,6 +272,7 @@ export default defineComponent({
       // eslint-disable-next-line @typescript-eslint/no-extra-semi
       ;(this.modelValue.choices as ExerciseChoice[])[index] = newVal // TODO use a mutation
       this.saving = true
+      this.savingError = false
       await this.dispatchChoiceUpdate(newVal)
     },
     onExerciseStateChange (newState: ExerciseState) {
@@ -308,19 +312,29 @@ export default defineComponent({
 
     // debounced dispatchers
     async dispatchExerciseUpdate (newVal: Exercise) {
-      await this.$store.dispatch('updateExercise', {
-        courseId: this.courseId,
-        exercise: newVal
-      })
-      this.saving = false
+      try {
+        await this.$store.dispatch('updateExercise', {
+          courseId: this.courseId,
+          exercise: newVal
+        })
+      } catch {
+        this.savingError = true
+      } finally {
+        this.saving = false
+      }
     },
     async dispatchChoiceUpdate (newVal: ExerciseChoice) {
-      await this.$store.dispatch('updateExerciseChoice', {
-        courseId: this.courseId,
-        exerciseId: this.modelValue.id,
-        choice: newVal
-      })
-      this.saving = false
+      try {
+        await this.$store.dispatch('updateExerciseChoice', {
+          courseId: this.courseId,
+          exerciseId: this.modelValue.id,
+          choice: newVal
+        })
+      } catch {
+        this.savingError = true
+      } finally {
+        this.saving = false
+      }
     }
     // end debounced dispatchers
   },

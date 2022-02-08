@@ -37,7 +37,8 @@ module.exports = {
       },
       borderWidth: {
         '1.5': '1.5px',
-        '6': '6px'
+        '6': '6px',
+        '10': '10px'
       },
       transitionDuration: {
         '0': '0'

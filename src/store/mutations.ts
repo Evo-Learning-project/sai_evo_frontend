@@ -36,9 +36,21 @@ export const mutations = {
     state.showSuccessFeedback = true;
     setTimeout(() => (state.showSuccessFeedback = false), 2000);
   },
-  setUser: (state: any, user: User) => {
-    state.user = user;
-    localStorage.setItem('user', JSON.stringify(user));
+  setUser: (
+    state: any,
+    { user, userId }: { user: User; userId?: string }
+  ) => {
+    if (!userId) {
+      // used to set personal user account
+      state.user = user;
+      localStorage.setItem('user', JSON.stringify(user));
+    } else {
+      // teacher usage to replace a user when editing privileges
+      Object.assign(
+        state.users.find((u: User) => u.id == userId),
+        user
+      );
+    }
   },
 
   setToken: (state: any, token: string) => {

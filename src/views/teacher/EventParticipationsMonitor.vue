@@ -522,7 +522,7 @@ export default defineComponent({
           p.visibility != AssessmentVisibility.PUBLISHED
       )
     },
-    participationPreviewColumns () {
+    participationPreviewColumns (): ColDef[] {
       if ((this.eventParticipations?.length ?? 0) === 0) {
         return []
       }
@@ -582,7 +582,7 @@ export default defineComponent({
         },
         {
           field: 'fullName',
-          headerName: _('event_participation_headings.full_name'),
+          headerName: _('misc.full_name'),
           flex: 1
         }
       ] as ColDef[]

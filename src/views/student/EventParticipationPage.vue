@@ -225,6 +225,7 @@ export default defineComponent({
     },
     async onUpdateChoices (slot: EventParticipationSlot, newVal: string[]) {
       this.saving = true
+      this.savingError = false
       try {
         await this.$store.dispatch('partialUpdateEventParticipationSlot', {
           courseId: this.courseId,
@@ -241,6 +242,7 @@ export default defineComponent({
     },
     async onUpdateAnswerText (slot: EventParticipationSlot, newVal: string) {
       this.saving = true
+      this.savingError = false
       slot.answer_text = newVal
       try {
         await this.dispatchAnswerTextUpdate(slot, newVal)

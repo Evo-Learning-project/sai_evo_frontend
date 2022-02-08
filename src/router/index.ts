@@ -151,7 +151,7 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from) => {
-  if (store.state.saving) {
+  if (store.getters.unsavedChanges) {
     if (
       !confirm(
         getTranslatedString('misc.confirm_exiting_unsaved_changes')
@@ -160,6 +160,7 @@ router.beforeEach((to, from) => {
       return false;
     } else {
       store.state.saving = false;
+      store.state.savingError = false;
     }
   }
 });

@@ -49,13 +49,13 @@
                 'bg-primary-dark pointer-events-none': isRouteActive(option)
               }"
             >
-              <div class="flex items-center space-x-2">
+              <div class="flex items-center space-x-2.5">
                 <span
-                  class="text-xl text-gray-200 material-icons-outlined opacity-70"
+                  class="text-2xl text-gray-200 material-icons-outlined opacity-70"
                 >
                   {{ option.icon }}
                 </span>
-                <span class="ml-2 text-base ">{{ option.label }}</span>
+                <span class="ml-4">{{ option.label }}</span>
               </div>
             </li>
           </router-link>

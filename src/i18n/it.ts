@@ -72,7 +72,6 @@ export const it = {
   event_participation_headings: {
     state: 'Stato',
     email: 'Email',
-    full_name: 'Nome e cognome',
     exercise: 'Es.',
   },
   event_assessment: {
@@ -125,6 +124,7 @@ export const it = {
     copied: 'Copiato',
     confirm_exiting_unsaved_changes:
       'Hai effettuato delle modifiche non ancora salvate. Se esci, perderai le ultime modifiche. Vuoi uscire?',
+    full_name: 'Nome e cognome',
   },
   cloud: {
     saving: 'Salvataggio in corso...',
@@ -359,5 +359,17 @@ export const it = {
     [CoursePrivilege.UPDATE_COURSE]:
       'Modificare le impostazioni del corso',
     [CoursePrivilege.ALL_PRIVILEGES]: 'Tutti i permessi',
+  },
+  course_privileges_short: {
+    [CoursePrivilege.ACCESS_EXERCISES]: 'Vedere esercizi',
+    [CoursePrivilege.ASSESS_PARTICIPATIONS]: 'Assegnare voti',
+    [CoursePrivilege.MANAGE_EVENTS]: 'Creare esami',
+    [CoursePrivilege.MANAGE_EXERCISES]: 'Creare esercizi',
+    [CoursePrivilege.UPDATE_COURSE]: 'Modificare impostazioni corso',
+    [CoursePrivilege.ALL_PRIVILEGES]: 'Tutti',
+  },
+  course_privileges_page: {
+    course_privileges: 'Permessi',
+    edit_permissions_title: 'Modifica i permessi di',
   },
 };

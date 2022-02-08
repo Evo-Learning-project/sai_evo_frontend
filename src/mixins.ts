@@ -34,5 +34,8 @@ export const savingMixin = {
     saving(newVal: boolean) {
       store.state.saving = newVal;
     },
+    savingError(newVal: boolean) {
+      store.state.savingError = newVal;
+    },
   },
 };

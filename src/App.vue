@@ -48,7 +48,7 @@
 <script lang="ts">
 import { defineComponent } from '@vue/runtime-core'
 import Spinner from './components/ui/Spinner.vue'
-import { mapState } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 import Notification from './components/ui/Notification.vue'
 import { getTranslatedString as _ } from './i18n'
 
@@ -77,7 +77,10 @@ export default defineComponent({
       preventDefault: () => void
       returnValue: string
     }) {
-      if (this.saving && !confirm(_('misc.confirm_exiting_unsaved_changes'))) {
+      if (
+        this.unsavedChanges &&
+        !confirm(_('misc.confirm_exiting_unsaved_changes'))
+      ) {
         // Cancel the event
         e.preventDefault()
         // Chrome requires returnValue to be set
@@ -86,7 +89,8 @@ export default defineComponent({
     }
   },
   computed: {
-    ...mapState(['loading', 'showSuccessFeedback', 'saving'])
+    ...mapState(['loading', 'showSuccessFeedback']),
+    ...mapGetters(['unsavedChanges'])
   }
 })
 </script>

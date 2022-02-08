@@ -24,4 +24,5 @@ export const getters = {
   email: (state: any): string => state.user?.email,
   exams: (state: any): Event[] =>
     state.events.filter((e: Event) => e.event_type == EventType.EXAM),
+  unsavedChanges: (state: any) => state.saving || state.savingError,
 };

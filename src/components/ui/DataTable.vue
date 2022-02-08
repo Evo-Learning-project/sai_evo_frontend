@@ -2,6 +2,7 @@
   <ag-grid-vue
     :style="style"
     :suppressRowClickSelection="true"
+    :alwaysShowHorizontalScroll="true"
     class="ag-theme-material"
     suppressRowHoverHighlight="true"
     suppressCellSelection="false"
