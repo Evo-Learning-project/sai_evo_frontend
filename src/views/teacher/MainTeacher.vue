@@ -44,8 +44,7 @@
             <li
               class="flex items-center justify-between w-full px-2 py-2 mt-1.5 rounded-md cursor-pointer hover:transition-colors text-lightText hover:bg-primary-dark hover:duration-100"
               :class="{
-                'bg-primary-dark pointer-events-none':
-                  option.routeName == $route.name
+                'bg-primary-dark pointer-events-none': isRouteActive(option)
               }"
             >
               <div class="flex items-center space-x-2">
@@ -117,6 +116,12 @@ export default defineComponent({
   },
   mixins: [courseIdMixin, eventIdMixin],
   methods: {
+    isRouteActive (option: SidebarOption) {
+      return (
+        option.routeName === this.$route.name ||
+        option.children?.includes(this.$route.name as string)
+      )
+    }
     // sidebarHandler () {
     //   var sideBar = document.getElementById('mobile-nav')
     //   sideBar.style.transform = 'translateX(-260px)'

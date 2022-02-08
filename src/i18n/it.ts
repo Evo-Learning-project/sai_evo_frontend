@@ -316,10 +316,10 @@ export const it = {
   event_states_descriptions: {
     [EventState.PLANNED]:
       "È tutto pronto! L'anteprima dell'esame è visibile agli studenti, ma questi non potranno accedervi fino alla data e ora di inizio.",
-    // [EventState.OPEN]:
-    //   'Non comparirà nelle esercitazioni iniziate dagli studenti, ma potrà essere inserito negli esami dagli insegnanti.',
     [EventState.DRAFT]:
       "L'esame non è visibile agli studenti e non sarà accessibile fino a quando viene pubblicato.",
+    [EventState.OPEN]: '',
+    [EventState.CLOSED]: '',
   },
   exam_validation_errors: {
     [ExamValidationError.NO_NAME]:

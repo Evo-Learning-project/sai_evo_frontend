@@ -6,7 +6,6 @@ export const getUrlQueryParams = (
   if (!filters) {
     return '';
   }
-  console.log('HERE');
   let ret = '';
   if (
     (filters.label?.length ?? 0) > 0 ||
