@@ -166,7 +166,7 @@
       :warning="!resultsMode && !editingSlot"
       :large="!!editingSlot"
       :showDialog="showDialog"
-      @no="hideDialog()"
+      @no="dialogData.onNo()"
       @yes="dialogData.onYes()"
       :noText="dialogData.noText"
       :yesText="dialogData.yesText"
@@ -373,53 +373,24 @@ export default defineComponent({
       // edit assessment slot
       if (event.colDef.field?.startsWith('slot') && this.resultsMode) {
         this.editingSlot = event.value
+
+        // deep copy slot to prevent affecting the original one while editing
         this.editingSlotDirty = JSON.parse(JSON.stringify(this.editingSlot))
         this.editingFullName = event.data.fullName
         this.editingParticipationId = event.data.id
         this.editingAssessmentSlotMode = true
-
-        //this.showDialog = true
-        // this.dialogData.onYes = this.dispatchAssessmentUpdate
-        // this.dialogData.yesText = _('event_assessment.confirm_assessment')
-
-        // this.dialogData.noText = _('dialog.default_cancel_text')
       }
       // change turned in status
       else if (event.colDef.field === 'state' && !this.resultsMode) {
         this.editingParticipationId = event.data.id
         this.reOpeningTurnedInParticipationMode = true
-
-        // this.dialogData.title = ''
-        // this.dialogData.warning = false
-        // //this.showDialog = true
-        // this.dialogData.noText = _('dialog.default_no_text')
-        // this.dialogData.yesText = _('dialog.default_yes_text')
-        // TODO onyes
       }
     },
     onCloseSelectedExams () {
       this.closingExamsMode = true
-
-      //this.showDialog = true
-      // this.dialogData.title = _('event_monitor.close_for_selected')
-      // this.dialogData.yesText =
-      //   _('misc.close') +
-      //   ' ' +
-      //   this.selectedParticipations.length +
-      //   ' ' +
-      //   (this.selectedParticipations.length === 1
-      //     ? _('misc.exam')
-      //     : _('misc.exams'))
-      // this.dialogData.noText = _('dialog.default_cancel_text')
-      // this.dialogData.onYes = this.closeExams
     },
     onPublish () {
       this.publishingResultsMode = true
-
-      //this.showDialog = true
-      // this.dialogData.onYes = this.publishResults
-      // this.dialogData.yesText = _('event_results.publish')
-      // this.dialogData.noText = _('dialog.default_cancel_text')
     },
     async closeExams () {
       const unselectedParticipations = (this
@@ -457,6 +428,21 @@ export default defineComponent({
       )
       this.$store.commit('showSuccessFeedback')
       this.hideDialog()
+      this.gridApi.refreshCells({ force: true })
+    },
+    async reOpenSubmission () {
+      await this.withLoading(async () => {
+        await this.$store.dispatch('partialUpdateEventParticipation', {
+          courseId: this.courseId,
+          eventId: this.eventId,
+          changes: {
+            state: EventParticipationState.IN_PROGRESS
+          },
+          participationIds: [this.editingParticipationId]
+        })
+      })
+      this.hideDialog()
+      this.$store.commit('showSuccessFeedback')
       this.gridApi.refreshCells({ force: true })
     },
     async dispatchAssessmentUpdate () {
@@ -516,6 +502,16 @@ export default defineComponent({
         noText: _('dialog.default_cancel_text')
       } as DialogData
 
+      if (this.reOpeningTurnedInParticipationMode) {
+        ret = {
+          title: '',
+          warning: false,
+          noText: _('dialog.default_no_text'),
+          yesText: _('dialog.default_yes_text'),
+          onYes: this.reOpenSubmission
+        }
+      }
+
       if (this.editingAssessmentSlotMode) {
         ret = {
           onYes: this.dispatchAssessmentUpdate,
@@ -544,15 +540,6 @@ export default defineComponent({
               : _('misc.exams')),
           noText: _('dialog.default_cancel_text'),
           onYes: this.closeExams
-        }
-
-        if (this.reOpeningTurnedInParticipationMode) {
-          ret = {
-            title: '',
-            warning: false,
-            noText: _('dialog.default_no_text'),
-            yesText: _('dialog.default_yes_text')
-          }
         }
       }
       return { ...defaultData, ...ret }
@@ -705,5 +692,3 @@ export default defineComponent({
   }
 })
 </script>
-
-<style></style>
