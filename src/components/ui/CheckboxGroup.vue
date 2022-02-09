@@ -15,7 +15,10 @@
         style="margin-top: 5px"
       />
       <div class="flex flex-col">
-        <p v-html="option.content"></p>
+        <div class="flex">
+          <slot v-bind:icons="option.icons"></slot>
+          <p :class="labelClass" v-html="option.content"></p>
+        </div>
         <!-- <p
           class="mb-2 text-sm text-muted"
           v-if="(option.description?.length ?? 0) > 0"
@@ -28,12 +31,30 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/runtime-core'
+import { SelectableOption } from '@/interfaces'
+import { defineComponent, PropType } from '@vue/runtime-core'
 import { v4 as uuid4 } from 'uuid'
 
 export default defineComponent({
   name: 'CheckboxGroup',
-  props: ['options', 'modelValue', 'disabled'],
+  //props: ['options', 'modelValue', 'disabled'],
+  props: {
+    options: {
+      type: Object as PropType<SelectableOption[]>,
+      required: true
+    },
+    modelValue: {
+      required: true
+    },
+    disabled: {
+      type: Boolean,
+      default: false
+    },
+    labelClass: {
+      type: String,
+      default: ''
+    }
+  },
   created () {
     this.id = uuid4()
   },

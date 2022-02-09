@@ -14,6 +14,7 @@
     @cell-click="$emit('cellClicked', $event)"
     @selection-change="$emit('selectionChanged', $event)"
     @first-data-rendered="onGridReady"
+    :localeTextFunc="localeTextFunc"
   ></ag-grid-vue>
 </template>
 
@@ -24,6 +25,7 @@ import 'ag-grid-community/dist/styles/ag-theme-material.css'
 import { defineComponent, PropType } from '@vue/runtime-core'
 import { AgGridVue } from 'ag-grid-vue3'
 import { ColDef } from 'ag-grid-community'
+import { getTranslatedString as _ } from '@/i18n'
 
 export default defineComponent({
   name: 'DataTable',
@@ -56,6 +58,9 @@ export default defineComponent({
     }
   },
   methods: {
+    localeTextFunc (key: string) {
+      return _('data_table.' + key)
+    },
     onGridReady (params: any) {
       //console.log('READY', params)
       this.$emit('gridReady', params)

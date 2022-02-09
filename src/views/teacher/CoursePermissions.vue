@@ -1,7 +1,7 @@
 <template>
   <div>
     <DataTable
-      v-if="!loading"
+      v-if="usersData.length > 0"
       :columnDefs="columns"
       :rowData="usersData"
       @cellClicked="onCellClicked"
@@ -14,11 +14,23 @@
         }}
       </template>
       <template v-slot:body>
-        <CheckboxGroup
-          :options="privilegesAsOptions"
-          v-model="editingUserPrivileges"
-        ></CheckboxGroup>
-      </template>
+        <div class="text-darkText">
+          <CheckboxGroup
+            :options="privilegesAsOptions"
+            v-model="editingUserPrivileges"
+            :labelClass="'text-lg -mt-0.5'"
+            v-slot="{ description, icons }"
+          >
+            <span
+              v-if="icons?.length > 0"
+              class="mx-1 text-base material-icons-outlined"
+              >{{ icons[0] }}</span
+            >
+
+            <p class="mb-4 -mt-1 text-sm text-muted">{{ description }}</p>
+          </CheckboxGroup>
+        </div></template
+      >
     </Dialog>
   </div>
 </template>
@@ -61,8 +73,10 @@ export default defineComponent({
   },
   methods: {
     onCellClicked (event: CellClickedEvent) {
-      this.showDialog = true
-      this.editingUserId = event.data.id
+      if (event.data.id !== this.user.id) {
+        this.showDialog = true
+        this.editingUserId = event.data.id
+      }
     },
     hideDialog () {
       this.showDialog = false
@@ -70,7 +84,7 @@ export default defineComponent({
     }
   },
   computed: {
-    ...mapState(['users', 'loading']),
+    ...mapState(['user', 'users', 'loading']),
     editingUser (): User {
       return this.$store.state.users.find(
         (u: User) => u.id === this.editingUserId
@@ -91,18 +105,37 @@ export default defineComponent({
               privileges: val
             })
         )
-        this.gridApi.refreshCells({ force: true })
+        this.gridApi.refreshCells()
       }
     },
     columns (): ColDef[] {
       return [
         { field: 'id', hide: true },
-        { field: 'email' },
-        { field: 'fullName', headerName: _('misc.full_name') },
+        {
+          field: 'email',
+          filterParams: {
+            filterOptions: ['contains'],
+            suppressAndOrCondition: true
+          },
+          filter: 'agTextColumnFilter'
+        },
+        {
+          field: 'fullName',
+          headerName: _('misc.full_name'),
+          filterParams: {
+            filterOptions: ['contains'],
+            suppressAndOrCondition: true
+          },
+          filter: 'agTextColumnFilter'
+        },
         {
           field: 'coursePrivileges',
-          headerName: _('course_privileges_page.course_privileges'),
-          flex: 1,
+          headerName:
+            _('course_privileges_page.course_privileges') +
+            ' (' +
+            _('misc.click_to_edit') +
+            ')',
+          minWidth: 685,
           cellRenderer: (params: any) =>
             '<div class="flex mt-2 space-x-4 cursor-pointer ">' +
             (params.value as CoursePrivilege[]).reduce(
@@ -131,8 +164,9 @@ export default defineComponent({
     privilegesAsOptions (): SelectableOption[] {
       return Object.values(CoursePrivilege).map(key => ({
         value: key,
-        content: _('course_privileges.' + key),
-        icons: [coursePrivilegeIcons[key]]
+        content: _('course_privileges_short.' + key),
+        icons: [coursePrivilegeIcons[key]],
+        description: _('course_privileges.' + key)
       }))
     }
   }

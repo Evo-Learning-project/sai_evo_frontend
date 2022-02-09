@@ -281,6 +281,20 @@
       @apply flex items-center h-full rounded-md cursor-pointer hover:bg-gray-200 !important
     }
 
+    .ag-popup-child {
+      @apply shadow-popup !important
+    }
+
+    .ag-popup-child::after {
+      content: ' sdf';
+      border-color: transparent  transparent rgba(17, 24, 39, 0.6) transparent !important;
+      @apply absolute -mt-1 border-4 border-transparent border-solid bottom-full left-1/2;
+    }
+
+    .ag-menu {
+      @apply px-4 py-2 rounded-md bg-light !important
+    }
+
     .bg-success-important {
       @apply bg-success-light bg-opacity-20 hover:bg-success-light hover:bg-opacity-20 !important
     }

@@ -305,12 +305,12 @@ export default defineComponent({
   data () {
     return {
       firstLoading: false,
-      showDialog: false,
-      dialogData: {
-        title: '',
-        noText: _('dialog.default_cancel_text'),
-        yesText: ''
-      } as DialogData,
+      //showDialog: false,
+      // dialogData: {
+      //   title: '',
+      //   noText: _('dialog.default_cancel_text'),
+      //   yesText: ''
+      // } as DialogData,
       editingSlot: null as EventParticipationSlot | null,
       editingSlotDirty: null as EventParticipationSlot | null,
       editingFullName: '',
@@ -320,9 +320,10 @@ export default defineComponent({
 
       // dialog functions
       // TODO make dialogData be a computed based on these flags to avoid setting it manually inside of methods
-      editingAssessmentSlot: false,
-      publishingResults: false,
-      closingExams: false
+      editingAssessmentSlotMode: false,
+      publishingResultsMode: false,
+      closingExamsMode: false,
+      reOpeningTurnedInParticipationMode: false
     }
   },
   methods: {
@@ -371,45 +372,54 @@ export default defineComponent({
     onCellClicked (event: CellClickedEvent) {
       // edit assessment slot
       if (event.colDef.field?.startsWith('slot') && this.resultsMode) {
-        this.showDialog = true
-        this.dialogData.onYes = this.dispatchAssessmentUpdate
-        this.dialogData.yesText = _('event_assessment.confirm_assessment')
         this.editingSlot = event.value
         this.editingSlotDirty = JSON.parse(JSON.stringify(this.editingSlot))
         this.editingFullName = event.data.fullName
         this.editingParticipationId = event.data.id
-        this.dialogData.noText = _('dialog.default_cancel_text')
+        this.editingAssessmentSlotMode = true
+
+        //this.showDialog = true
+        // this.dialogData.onYes = this.dispatchAssessmentUpdate
+        // this.dialogData.yesText = _('event_assessment.confirm_assessment')
+
+        // this.dialogData.noText = _('dialog.default_cancel_text')
       }
       // change turned in status
       else if (event.colDef.field === 'state' && !this.resultsMode) {
-        this.dialogData.title = ''
-        this.dialogData.warning = false
         this.editingParticipationId = event.data.id
-        this.showDialog = true
-        this.dialogData.noText = _('dialog.default_no_text')
-        this.dialogData.yesText = _('dialog.default_yes_text')
+        this.reOpeningTurnedInParticipationMode = true
+
+        // this.dialogData.title = ''
+        // this.dialogData.warning = false
+        // //this.showDialog = true
+        // this.dialogData.noText = _('dialog.default_no_text')
+        // this.dialogData.yesText = _('dialog.default_yes_text')
         // TODO onyes
       }
     },
     onCloseSelectedExams () {
-      this.showDialog = true
-      this.dialogData.title = _('event_monitor.close_for_selected')
-      this.dialogData.yesText =
-        _('misc.close') +
-        ' ' +
-        this.selectedParticipations.length +
-        ' ' +
-        (this.selectedParticipations.length === 1
-          ? _('misc.exam')
-          : _('misc.exams'))
-      this.dialogData.noText = _('dialog.default_cancel_text')
-      this.dialogData.onYes = this.closeExams
+      this.closingExamsMode = true
+
+      //this.showDialog = true
+      // this.dialogData.title = _('event_monitor.close_for_selected')
+      // this.dialogData.yesText =
+      //   _('misc.close') +
+      //   ' ' +
+      //   this.selectedParticipations.length +
+      //   ' ' +
+      //   (this.selectedParticipations.length === 1
+      //     ? _('misc.exam')
+      //     : _('misc.exams'))
+      // this.dialogData.noText = _('dialog.default_cancel_text')
+      // this.dialogData.onYes = this.closeExams
     },
     onPublish () {
-      this.showDialog = true
-      this.dialogData.onYes = this.publishResults
-      this.dialogData.yesText = _('event_results.publish')
-      this.dialogData.noText = _('dialog.default_cancel_text')
+      this.publishingResultsMode = true
+
+      //this.showDialog = true
+      // this.dialogData.onYes = this.publishResults
+      // this.dialogData.yesText = _('event_results.publish')
+      // this.dialogData.noText = _('dialog.default_cancel_text')
     },
     async closeExams () {
       const unselectedParticipations = (this
@@ -471,15 +481,82 @@ export default defineComponent({
       this.gridApi.refreshCells({ force: true })
     },
     hideDialog () {
-      this.showDialog = false
+      //this.showDialog = false
       this.editingSlot = null
       this.editingSlotDirty = null
       this.editingFullName = ''
       this.editingParticipationId = ''
+      this.showDialog = false
     }
   },
   computed: {
     ...mapState(['eventParticipations']),
+    showDialog: {
+      get () {
+        return (
+          this.editingAssessmentSlotMode ||
+          this.publishingResultsMode ||
+          this.closingExamsMode ||
+          this.reOpeningTurnedInParticipationMode
+        )
+      },
+      set (val: boolean) {
+        if (!val) {
+          this.editingAssessmentSlotMode = false
+          this.publishingResultsMode = false
+          this.closingExamsMode = false
+          this.reOpeningTurnedInParticipationMode = false
+        }
+      }
+    },
+    dialogData (): DialogData {
+      let ret = {} as DialogData
+      const defaultData = {
+        onNo: this.hideDialog,
+        noText: _('dialog.default_cancel_text')
+      } as DialogData
+
+      if (this.editingAssessmentSlotMode) {
+        ret = {
+          onYes: this.dispatchAssessmentUpdate,
+          yesText: _('event_assessment.confirm_assessment')
+        }
+      }
+
+      if (this.publishingResultsMode) {
+        ret = {
+          onYes: this.publishResults,
+          yesText: _('event_results.publish'),
+          noText: _('dialog.default_cancel_text')
+        }
+      }
+
+      if (this.closingExamsMode) {
+        ret = {
+          title: _('event_monitor.close_for_selected'),
+          yesText:
+            _('misc.close') +
+            ' ' +
+            this.selectedParticipations.length +
+            ' ' +
+            (this.selectedParticipations.length === 1
+              ? _('misc.exam')
+              : _('misc.exams')),
+          noText: _('dialog.default_cancel_text'),
+          onYes: this.closeExams
+        }
+
+        if (this.reOpeningTurnedInParticipationMode) {
+          ret = {
+            title: '',
+            warning: false,
+            noText: _('dialog.default_no_text'),
+            yesText: _('dialog.default_yes_text')
+          }
+        }
+      }
+      return { ...defaultData, ...ret }
+    },
     selectedParticipation () {
       return this.eventParticipations.find(
         (p: EventParticipation) => p.id == this.editingParticipationId

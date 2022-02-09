@@ -2,9 +2,8 @@
   <button
     @mousedown="onMouseDown"
     :disabled="disabled || loading"
-    class="relative overflow-hidden"
+    class="relative overflow-hidden disabled:cursor-not-allowed disabled:opacity-70"
     :class="{
-      'disabled:cursor-not-allowed disabled:opacity-70': !ghostDisabled,
       'shadow-inner bg-light': forceActive,
       'bg-success-light bg-opacity-30':
         forceActive && variant === 'success-borderless',

@@ -125,6 +125,7 @@ export const it = {
     confirm_exiting_unsaved_changes:
       'Hai effettuato delle modifiche non ancora salvate. Se esci, perderai le ultime modifiche. Vuoi uscire?',
     full_name: 'Nome e cognome',
+    click_to_edit: 'Clicca per modificare',
   },
   cloud: {
     saving: 'Salvataggio in corso...',
@@ -350,15 +351,17 @@ export const it = {
       'Questo esercizio composto non contiene sotto-esercizi',
   },
   course_privileges: {
-    [CoursePrivilege.ACCESS_EXERCISES]: 'Vedere gli esercizi',
+    [CoursePrivilege.ACCESS_EXERCISES]:
+      'Può accedere alla lista degli esercizi del corso.',
     [CoursePrivilege.ASSESS_PARTICIPATIONS]:
-      'Vedere le partecipazioni agli esami e assegnare voti',
-    [CoursePrivilege.MANAGE_EVENTS]: 'Creare e modificare esami',
+      'Può vedere le partecipazioni agli esami e assegnare voti.',
+    [CoursePrivilege.MANAGE_EVENTS]:
+      'Può creare e modificare gli esami del corso.',
     [CoursePrivilege.MANAGE_EXERCISES]:
-      'Creare e modificare esercizi',
+      'Può creare e modificare esercizi.',
     [CoursePrivilege.UPDATE_COURSE]:
-      'Modificare le impostazioni del corso',
-    [CoursePrivilege.ALL_PRIVILEGES]: 'Tutti i permessi',
+      'Può modificare le impostazioni del corso, incluso assegnare permessi ad altri utenti.',
+    //[CoursePrivilege.ALL_PRIVILEGES]: 'Tutti i permessi',
   },
   course_privileges_short: {
     [CoursePrivilege.ACCESS_EXERCISES]: 'Vedere esercizi',
@@ -366,10 +369,14 @@ export const it = {
     [CoursePrivilege.MANAGE_EVENTS]: 'Creare esami',
     [CoursePrivilege.MANAGE_EXERCISES]: 'Creare esercizi',
     [CoursePrivilege.UPDATE_COURSE]: 'Modificare impostazioni corso',
-    [CoursePrivilege.ALL_PRIVILEGES]: 'Tutti',
+    //[CoursePrivilege.ALL_PRIVILEGES]: 'Tutti',
   },
   course_privileges_page: {
     course_privileges: 'Permessi',
     edit_permissions_title: 'Modifica i permessi di',
+  },
+  data_table: {
+    filterOoo: 'Cerca...',
+    contains: 'Contenuto',
   },
 };

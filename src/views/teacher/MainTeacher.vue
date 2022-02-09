@@ -35,7 +35,7 @@
         <ul class="flex flex-col w-full h-full mt-6">
           <router-link
             class="relative my-1 overflow-hidden rounded-md"
-            @click="onRouteClick"
+            @mousedown="onRouteMouseDown"
             v-for="(option, index) in sidebarOptions"
             :key="'sidebar-' + option.label"
             :to="{ name: option.routeName }"
@@ -120,7 +120,7 @@ export default defineComponent({
   mixins: [courseIdMixin, eventIdMixin],
   methods: {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    onRouteClick (event: any) {
+    onRouteMouseDown (event: any) {
       rippleEffect(event, 'ripple-light')
     },
     isRouteActive (option: SidebarOption) {
