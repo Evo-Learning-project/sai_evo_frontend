@@ -1,12 +1,13 @@
 <template>
   <div>
     <label
-      class="flex space-x-1.5 items-start"
+      :class="'flex space-x-1.5 items-start ' + optionClass"
       v-for="(option, index) in options"
       :key="id + '-option-' + index"
       :for="id + '-option-' + index"
     >
       <input
+        v-if="!useToggles"
         :disabled="disabled"
         :id="id + '-option-' + index"
         type="checkbox"
@@ -14,6 +15,12 @@
         :value="option.value"
         style="margin-top: 5px"
       />
+      <Toggle
+        v-else
+        class="mt-5px"
+        :modelValue="proxyModelValue.includes(option.value)"
+        @update:modelValue="onToggleUpdate($event, option)"
+      ></Toggle>
       <div class="flex flex-col">
         <div class="flex">
           <slot v-bind:icons="option.icons"></slot>
@@ -34,8 +41,10 @@
 import { SelectableOption } from '@/interfaces'
 import { defineComponent, PropType } from '@vue/runtime-core'
 import { v4 as uuid4 } from 'uuid'
+import Toggle from './Toggle.vue'
 
 export default defineComponent({
+  components: { Toggle },
   name: 'CheckboxGroup',
   //props: ['options', 'modelValue', 'disabled'],
   props: {
@@ -44,6 +53,7 @@ export default defineComponent({
       required: true
     },
     modelValue: {
+      type: Array as PropType<unknown[]>,
       required: true
     },
     disabled: {
@@ -53,6 +63,14 @@ export default defineComponent({
     labelClass: {
       type: String,
       default: ''
+    },
+    optionClass: {
+      type: String,
+      default: ''
+    },
+    useToggles: {
+      type: Boolean,
+      default: true
     }
   },
   created () {
@@ -63,15 +81,23 @@ export default defineComponent({
       id: ''
     }
   },
-  //   methods: {
-  //     onChange (value: unknown) {
-  //       console.log(value)
-  //       this.$emit('update:modelValue', value)
-  //     }
-  //   },
+  methods: {
+    onToggleUpdate (event: unknown, option: SelectableOption) {
+      console.log(event, option)
+      if (event) {
+        // new selection
+        this.proxyModelValue = [...this.proxyModelValue, option.value]
+      } else {
+        // deselection
+        this.proxyModelValue = this.proxyModelValue.filter(
+          v => v !== option.value
+        )
+      }
+    }
+  },
   computed: {
     proxyModelValue: {
-      get () {
+      get (): unknown[] {
         return this.modelValue
       },
       set (val: Array<{ value: string; content: string }>) {

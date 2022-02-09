@@ -17,6 +17,7 @@ module.exports = {
     extend: {
       spacing: {
         '1.25px': '1.25px',
+        '5px': '5px',
         '4.5': '18px'
       },
       transitionProperty: {

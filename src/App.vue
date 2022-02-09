@@ -79,7 +79,7 @@ export default defineComponent({
     }) {
       if (
         this.unsavedChanges &&
-        !confirm(_('misc.confirm_exiting_unsaved_changes'))
+        !window.confirm(_('misc.confirm_exiting_unsaved_changes'))
       ) {
         // Cancel the event
         e.preventDefault()

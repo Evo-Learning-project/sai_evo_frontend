@@ -18,7 +18,8 @@
           <CheckboxGroup
             :options="privilegesAsOptions"
             v-model="editingUserPrivileges"
-            :labelClass="'text-lg -mt-0.5'"
+            :labelClass="'text-xl -mt-0.5'"
+            :optionClass="'my-4'"
             v-slot="{ description, icons }"
           >
             <span
@@ -27,7 +28,7 @@
               >{{ icons[0] }}</span
             >
 
-            <p class="mb-4 -mt-1 text-sm text-muted">{{ description }}</p>
+            <p class="-mt-1 text-sm text-muted">{{ description }}</p>
           </CheckboxGroup>
         </div></template
       >
