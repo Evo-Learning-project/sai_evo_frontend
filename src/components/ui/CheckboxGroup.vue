@@ -6,23 +6,23 @@
       :key="id + '-option-' + index"
       :for="id + '-option-' + index"
     >
-      <input
-        v-if="!useToggles"
-        :disabled="disabled"
-        :id="id + '-option-' + index"
-        type="checkbox"
-        v-model="proxyModelValue"
-        :value="option.value"
-        style="margin-top: 5px"
-      />
-      <Toggle
-        v-else
-        class="mt-5px"
-        :modelValue="proxyModelValue.includes(option.value)"
-        @update:modelValue="onToggleUpdate($event, option)"
-      ></Toggle>
       <div class="flex flex-col">
         <div class="flex">
+          <input
+            v-if="!useToggles"
+            :disabled="disabled"
+            :id="id + '-option-' + index"
+            type="checkbox"
+            v-model="proxyModelValue"
+            :value="option.value"
+            class="mr-2 mt-5px"
+          />
+          <Toggle
+            v-else
+            class="order-1 mt-1 ml-4"
+            :modelValue="proxyModelValue.includes(option.value)"
+            @update:modelValue="onToggleUpdate($event, option)"
+          ></Toggle>
           <slot v-bind:icons="option.icons"></slot>
           <p :class="labelClass" v-html="option.content"></p>
         </div>

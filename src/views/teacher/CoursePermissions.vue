@@ -28,7 +28,7 @@
               class="mx-1 text-base material-icons-outlined"
               >{{ icons[0] }}</span
             >
-            <p class="-mt-1 text-sm text-muted">{{ description }}</p>
+            <p class="ml-1 mt-0.5 text-sm text-muted">{{ description }}</p>
           </CheckboxGroup>
         </div></template
       >
