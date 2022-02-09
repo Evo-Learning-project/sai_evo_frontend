@@ -7,7 +7,7 @@
     </Card>
 
     <div class="flex w-full mb-2">
-      <btn @btnClick="onAddExercise()" :loading="loading" class="ml-auto"
+      <btn @click="onAddExercise()" :loading="loading" class="ml-auto"
         ><span class="mr-1 text-base material-icons-outlined">
           add_circle_outline
         </span>

@@ -142,7 +142,7 @@
       v-if="resultsMode"
       class="mt-8 mr-auto"
       :variant="'success'"
-      @btnClick="onPublish"
+      @click="onPublish"
       :disabled="selectedParticipations.length == 0"
     >
       <span class="mr-1 text-base material-icons-outlined">
@@ -154,7 +154,7 @@
       v-else-if="!firstLoading"
       class="mt-8 mr-auto"
       :variant="'danger'"
-      @btnClick="onCloseSelectedExams"
+      @click="onCloseSelectedExams"
       :disabled="selectedParticipations.length == 0"
     >
       <span class="mr-1 text-base material-icons-outlined">

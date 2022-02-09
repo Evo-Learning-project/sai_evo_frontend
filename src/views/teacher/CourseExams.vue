@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="flex w-full mb-2">
-      <Btn @btnClick="onAddExam()" :loading="buttonLoading" class="ml-auto"
+      <Btn @click="onAddExam()" :loading="buttonLoading" class="ml-auto"
         ><span class="mr-1 text-base material-icons-outlined">
           add_circle_outline
         </span>

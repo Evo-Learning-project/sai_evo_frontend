@@ -10,10 +10,10 @@
           {{ modelValue.target_slot_number + 1 }}
         </h4>
         <div class="flex ml-auto space-x-2">
-          <btn @btnClick="showRuleDialog()" :size="'sm'">
+          <btn @click="showRuleDialog()" :size="'sm'">
             {{ $t('event_template_rule_editor.choose_exercise') }}
           </btn>
-          <!--@btnClick="deleteRule()"-->
+          <!--@click="deleteRule()"-->
           <btn :size="'xs'" :variant="'danger'" :outline="true"
             ><span style="font-size: 17px;" class="material-icons-outlined">
               delete
@@ -64,7 +64,7 @@
           :variant="'light'"
           :size="'sm'"
           class=""
-          @btnClick="setRuleMode(null)"
+          @click="setRuleMode(null)"
         >
           <span class="material-icons-outlined">
             arrow_back
@@ -83,7 +83,7 @@
           <p>{{ $t('event_template_rule_editor.mode_selection_text') }}</p>
           <div class="grid grid-cols-3 mt-6">
             <btn
-              @btnClick="setRuleMode(idBasedRuleType, true)"
+              @click="setRuleMode(idBasedRuleType, true)"
               :variant="'transparent'"
               class="py-5 pl-4 border-r"
             >
@@ -101,7 +101,7 @@
               >
             </btn>
             <btn
-              @btnClick="setRuleMode(idBasedRuleType, false)"
+              @click="setRuleMode(idBasedRuleType, false)"
               :variant="'transparent'"
               class="pl-4 pr-3 border-r"
             >
@@ -119,7 +119,7 @@
               >
             </btn>
             <btn
-              @btnClick="setRuleMode(tagBasedRuleType)"
+              @click="setRuleMode(tagBasedRuleType)"
               :variant="'transparent'"
               class="pl-8"
             >

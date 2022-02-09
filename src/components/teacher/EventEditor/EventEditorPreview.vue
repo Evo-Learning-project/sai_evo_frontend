@@ -48,7 +48,7 @@
                 {{ $t('event_preview.editor') }}</Btn
               ></router-link
             >
-            <Btn :variant="'danger'" v-if="hasBegun" @btnClick="$emit('close')"
+            <Btn :variant="'danger'" v-if="hasBegun" @click="$emit('close')"
               ><span class="mr-1 text-base material-icons-outlined">
                 block </span
               >{{ $t('event_preview.close') }}</Btn

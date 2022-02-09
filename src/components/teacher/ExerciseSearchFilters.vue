@@ -33,13 +33,13 @@
             :placeholder="$t('filter_results.filter_by_tag')"
           ></tag-input> -->
       <div class="flex w-full">
-        <!-- <btn @btnClick="applyFilters()" class="mt-4 ml-auto">{{
+        <!-- <btn @click="applyFilters()" class="mt-4 ml-auto">{{
           $t('filter_results.title')
         }}</btn> -->
         <Btn
           v-if="!full"
           :variant="'light'"
-          @btnClick="expanded = !expanded"
+          @click="expanded = !expanded"
           class="mt-4 ml-auto"
           ><span class="material-icons-outlined">
             {{ expanded ? 'expand_less' : 'expand_more' }} </span

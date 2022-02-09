@@ -66,7 +66,7 @@
               :variant="'success-borderless'"
               :forceActive="highlighted"
               :disabled="selectionDisabled"
-              @btnClick="onSelection()"
+              @click="onSelection()"
               ><span class="text-base material-icons-outlined">
                 done
               </span></Btn

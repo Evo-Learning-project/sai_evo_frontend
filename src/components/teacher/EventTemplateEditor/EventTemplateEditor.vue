@@ -15,7 +15,7 @@
     </div>
 
     <div class="flex items-center mt-auto">
-      <btn @btnClick="onAddRule()"
+      <btn @click="onAddRule()"
         ><span class="mr-1 text-base material-icons-outlined">
           add_circle_outline </span
         >{{ $t('event_template_editor.add_rule') }}</btn

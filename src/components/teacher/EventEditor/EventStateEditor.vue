@@ -50,7 +50,7 @@
           :variant="'primary'"
           :disabled="isDraft && validationErrors.length > 0"
           :loading="saving"
-          @btnClick="isDraft ? publish() : revertToDraft()"
+          @click="isDraft ? publish() : revertToDraft()"
         >
           {{
             isDraft

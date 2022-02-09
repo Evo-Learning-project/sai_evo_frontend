@@ -1,7 +1,7 @@
 <template>
   <button
-    @click="onClick"
-    :disabled="disabled || loading || ghostDisabled"
+    @mousedown="onMouseDown"
+    :disabled="disabled || loading"
     class="relative overflow-hidden"
     :class="{
       'disabled:cursor-not-allowed disabled:opacity-70': !ghostDisabled,
@@ -36,7 +36,7 @@
     }"
   >
     <div class="flex w-full">
-      <p class="flex items-center mx-auto" :class="loading ? 'opacity-0' : ''">
+      <p class="flex items-center mx-auto" :class="loading ? 'invisible' : ''">
         <slot></slot>
       </p>
     </div>
@@ -97,24 +97,16 @@ export default defineComponent({
     }
   },
   data () {
-    return {
-      ghostDisabled: false // prevent multiple clicks before delayed click event has fired
-    }
+    return {}
   },
   methods: {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    onClick (event: any) {
-      rippleEffect(event, this.getRippleClass())
-
-      // prevent button from being clicked twice before the event has fired
-      this.ghostDisabled = true
-      setTimeout(() => {
-        // delay emitting the event to finish ripple animation first
-        this.$emit('btnClick')
-        this.ghostDisabled = false
-      }, 150)
-    },
-    getRippleClass () {
+    onMouseDown (event: any) {
+      rippleEffect(event, this.rippleClass)
+    }
+  },
+  computed: {
+    rippleClass () {
       switch (this.variant) {
         case 'primary-borderless':
           return 'ripple-primary'

@@ -60,7 +60,7 @@
     <div class="flex w-full mt-8">
       <Btn
         class=""
-        @btnClick="onGoBack"
+        @click="onGoBack"
         v-if="goingBackAllowed"
         :disabled="!canGoBack"
         :loading="loading"
@@ -72,7 +72,7 @@
       >
       <Btn
         class="ml-auto"
-        @btnClick="goingBackAllowed ? onGoForward() : confirmGoForward()"
+        @click="goingBackAllowed ? onGoForward() : confirmGoForward()"
         v-if="canGoForward"
         :disabled="saving"
         :loading="loading"
@@ -83,7 +83,7 @@
       >
       <Btn
         class="ml-auto"
-        @btnClick="confirmTurnIn"
+        @click="confirmTurnIn"
         v-else-if="canTurnIn"
         :variant="'success'"
         >{{ $t('event_participation_page.turn_in') }}

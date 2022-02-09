@@ -63,7 +63,7 @@
             <div class="mt-auto"><slot name="footerButtons"></slot></div>
             <div class="flex ml-auto">
               <Btn
-                @btnClick="emitChoice('yes')"
+                @click="emitChoice('yes')"
                 :variant="'primary-borderless'"
                 :disabled="disableOk"
               >
@@ -75,7 +75,7 @@
               </Btn>
               <Btn
                 v-if="!confirmOnly"
-                @btnClick="emitChoice('no')"
+                @click="emitChoice('no')"
                 :variant="'primary-borderless'"
               >
                 {{ noText || $t('dialog.default_no_text') }}
@@ -84,13 +84,13 @@
                 class="mr-2"
                 :disabled="disableOk > 0"
                 :variant="severity == 1 ? 'green' : 'red'"
-                @btnClick="emitChoice('yes')"
+                @click="emitChoice('yes')"
               >
                 {{ confirmOnly ? 'Ok' : yesText || 'Sì' }}
               </btn>
               <btn
                 :variant="'light'"
-                @btnClick="emitChoice('no')"
+                @click="emitChoice('no')"
                 v-if="!confirmOnly"
               >
                 {{ noText || 'No' }}
