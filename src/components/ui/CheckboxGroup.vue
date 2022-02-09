@@ -70,7 +70,7 @@ export default defineComponent({
     },
     useToggles: {
       type: Boolean,
-      default: true
+      default: false
     }
   },
   created () {

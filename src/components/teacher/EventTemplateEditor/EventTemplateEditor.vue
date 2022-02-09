@@ -15,10 +15,10 @@
     </div>
 
     <div class="flex items-center mt-auto">
-      <btn @click="onAddRule()"
+      <Btn @click="onAddRule()" :loading="loading"
         ><span class="mr-1 text-base material-icons-outlined">
           add_circle_outline </span
-        >{{ $t('event_template_editor.add_rule') }}</btn
+        >{{ $t('event_template_editor.add_rule') }}</Btn
       >
     </div>
   </div>
@@ -62,16 +62,19 @@ export default defineComponent({
   watch: {},
   data () {
     return {
-      elementId: ''
+      elementId: '',
+      loading: false
     }
   },
   methods: {
     async onAddRule () {
+      this.loading = true
       await this.$store.dispatch('addEventTemplateRule', {
         courseId: this.courseId,
         templateId: this.modelValue.id,
         rule: getBlankEventTemplateRule()
       })
+      this.loading = false
     },
     async onRuleUpdate (index: number, newVal: EventTemplateRule) {
       this.$emit('saving', true)

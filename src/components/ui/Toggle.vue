@@ -18,6 +18,13 @@
       />
       <label
         :for="id"
+        :class="[proxyModelValue ? 'text-light' : 'text-gray-600']"
+        class="absolute text-lg font-semibold transform translate-y-1/2 toggle-mark opacity-70 material-icons-outlined bottom-1/2"
+        >&nbsp;</label
+      >
+
+      <label
+        :for="id"
         class="block overflow-hidden bg-gray-400 rounded-full cursor-pointer toggle-rail toggle-label"
       ></label>
     </div>
@@ -76,6 +83,27 @@ export default defineComponent({
   height: 14px;
 }
 
+.toggle-checkbox ~ .toggle-mark {
+  left: 0%;
+  font: 'Material Icons Outlined';
+}
+
+.toggle-checkbox ~ .toggle-mark::after {
+  content: 'remove';
+  position: absolute;
+  left: -0.4px;
+}
+
+.toggle-checkbox:checked ~ .toggle-mark {
+  left: 50%;
+}
+
+.toggle-checkbox:checked ~ .toggle-mark::after {
+  content: 'done';
+  position: absolute;
+  left: 1.25px;
+}
+
 .toggle-checkbox:checked {
   left: 50%;
   border-color: rgba(72, 91, 202, 1);
@@ -83,9 +111,10 @@ export default defineComponent({
 .toggle-checkbox:checked + .toggle-label {
   background-color: rgba(72, 91, 202, 0.68);
 }
-.toggle-checkbox {
+.toggle-checkbox,
+.toggle-mark {
   /* right: 49%; */
   /* left: auto; */
-  transition: all 0.25s ease-out;
+  transition: all 0.15s ease-out !important;
 }
 </style>

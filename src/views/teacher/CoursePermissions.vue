@@ -20,6 +20,7 @@
             v-model="editingUserPrivileges"
             :labelClass="'text-xl -mt-0.5'"
             :optionClass="'my-4'"
+            :useToggles="true"
             v-slot="{ description, icons }"
           >
             <span
@@ -27,7 +28,6 @@
               class="mx-1 text-base material-icons-outlined"
               >{{ icons[0] }}</span
             >
-
             <p class="-mt-1 text-sm text-muted">{{ description }}</p>
           </CheckboxGroup>
         </div></template
