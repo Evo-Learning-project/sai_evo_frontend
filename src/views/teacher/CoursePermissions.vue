@@ -6,6 +6,7 @@
       :rowData="usersData"
       @cellClicked="onCellClicked"
       @gridReady="gridApi = $event.api"
+      :getRowClass="getRowClass"
     ></DataTable>
     <Dialog :showDialog="showDialog" :confirmOnly="true" @yes="hideDialog()">
       <template v-slot:title>
@@ -40,10 +41,15 @@
 import DataTable from '@/components/ui/DataTable.vue'
 import { courseIdMixin, loadingMixin, savingMixin } from '@/mixins'
 import { defineComponent } from '@vue/runtime-core'
-import { CellClickedEvent, ColDef } from 'ag-grid-community'
+import {
+  CellClickedEvent,
+  ColDef,
+  RowClassParams,
+  RowNode
+} from 'ag-grid-community'
 import { mapState } from 'vuex'
 import { getTranslatedString as _ } from '@/i18n'
-import { CoursePrivilege, User } from '@/models'
+import { Course, CoursePrivilege, User } from '@/models'
 import { icons as coursePrivilegeIcons } from '@/assets/coursePrivilegeIcons'
 import Dialog from '@/components/ui/Dialog.vue'
 import CheckboxGroup from '@/components/ui/CheckboxGroup.vue'
@@ -74,7 +80,10 @@ export default defineComponent({
   },
   methods: {
     onCellClicked (event: CellClickedEvent) {
-      if (event.data.id !== this.user.id) {
+      if (
+        event.data.id !== this.user.id &&
+        event.data.id != this.currentCourse?.creator?.id
+      ) {
         this.showDialog = true
         this.editingUserId = event.data.id
       }
@@ -82,6 +91,13 @@ export default defineComponent({
     hideDialog () {
       this.showDialog = false
       this.editingUserId = ''
+    },
+    getRowClass (row: RowClassParams) {
+      const userId = row.data.id as string
+      if (userId == this.user.id || userId == this.currentCourse?.creator?.id) {
+        return 'opacity-60 bg-light-important'
+      }
+      return ''
     }
   },
   computed: {
@@ -169,6 +185,11 @@ export default defineComponent({
         icons: [coursePrivilegeIcons[key]],
         description: _('course_privileges.' + key)
       }))
+    },
+    currentCourse (): Course {
+      return this.$store.state.courses.find(
+        (c: Course) => c.id == this.courseId
+      )
     }
   }
 })

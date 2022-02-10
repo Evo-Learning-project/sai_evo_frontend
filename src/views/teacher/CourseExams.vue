@@ -1,7 +1,11 @@
 <template>
   <div>
     <div class="flex w-full mb-2">
-      <Btn @click="onAddExam()" :loading="buttonLoading" class="ml-auto"
+      <Btn
+        v-if="hasPrivileges([CoursePrivilege.MANAGE_EVENTS])"
+        @click="onAddExam()"
+        :loading="buttonLoading"
+        class="ml-auto"
         ><span class="mr-1 text-base material-icons-outlined">
           add_circle_outline
         </span>
@@ -53,11 +57,11 @@
 
 <script lang="ts">
 import EventEditorPreview from '@/components/teacher/EventEditor/EventEditorPreview.vue'
-import { Event, EventState, getBlankExam } from '@/models'
+import { Event, EventState, CoursePrivilege, getBlankExam } from '@/models'
 import Btn from '@/components/ui/Btn.vue'
 
 import { defineComponent } from '@vue/runtime-core'
-import { courseIdMixin, loadingMixin } from '@/mixins'
+import { courseIdMixin, coursePrivilegeMixin, loadingMixin } from '@/mixins'
 import SkeletonCard from '@/components/ui/SkeletonCard.vue'
 import Dialog from '@/components/ui/Dialog.vue'
 export default defineComponent({
@@ -68,7 +72,7 @@ export default defineComponent({
     Dialog
   },
   name: 'CourseExams',
-  mixins: [courseIdMixin, loadingMixin],
+  mixins: [courseIdMixin, loadingMixin, coursePrivilegeMixin],
   async created () {
     this.firstLoading = true
     await this.$store.dispatch('getEvents', this.courseId)
@@ -77,6 +81,7 @@ export default defineComponent({
 
   data () {
     return {
+      CoursePrivilege,
       firstLoading: false,
       buttonLoading: false,
       showCloseDialog: false,

@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import { ComponentOptionsMixin } from 'vue';
+import { ComponentOptionsMixin, computed } from 'vue';
+import { Course, CoursePrivilege } from './models';
 import router from './router';
 import store from './store/index';
 export const courseIdMixin = {
@@ -38,4 +39,41 @@ export const savingMixin = {
       store.state.savingError = newVal;
     },
   },
+};
+
+export const coursePrivilegeMixin = {
+  methods: {
+    hasPrivileges(requiredPrivilegesList: CoursePrivilege[]) {
+      /**
+       * Given a list of required privileges, returns true iff the current
+       * user has such privileges for the current course
+       */
+      const myPrivileges =
+        store.state.courses.find(
+          (c: Course) =>
+            c.id ==
+            (router.currentRoute.value.params.courseId as string)
+        )?.privileges ?? [];
+
+      console.log(
+        'my',
+        myPrivileges,
+        'required',
+        requiredPrivilegesList
+      );
+
+      return requiredPrivilegesList.every((p) =>
+        myPrivileges.includes(p)
+      );
+    },
+  },
+  // computed: {
+  //   currentCoursePrivileges(): CoursePrivilege[] {
+  //     return store.state.courses.find(
+  //       (c: Course) =>
+  //         c.id ==
+  //         (router.currentRoute.value.params.courseId as string)
+  //     )?.privileges as CoursePrivilege[];
+  //   },
+  // },
 };

@@ -36,7 +36,7 @@
           <router-link
             class="relative my-1 overflow-hidden rounded-md"
             @mousedown="onRouteMouseDown"
-            v-for="(option, index) in sidebarOptions"
+            v-for="(option, index) in allowedSidebarOptions"
             :key="'sidebar-' + option.label"
             :to="{ name: option.routeName }"
             :class="{
@@ -99,8 +99,8 @@
 </template>
 
 <script lang="ts">
-import { courseIdMixin, eventIdMixin } from '@/mixins'
-import { Course, Event } from '@/models'
+import { courseIdMixin, coursePrivilegeMixin, eventIdMixin } from '@/mixins'
+import { Course, CoursePrivilege, Event } from '@/models'
 import {
   ROUTE_TITLE_COURSE_NAME_TOKEN,
   ROUTE_TITLE_EVENT_NAME_TOKEN
@@ -117,7 +117,7 @@ export default defineComponent({
       test: null
     }
   },
-  mixins: [courseIdMixin, eventIdMixin],
+  mixins: [courseIdMixin, eventIdMixin, coursePrivilegeMixin],
   methods: {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onRouteMouseDown (event: any) {
@@ -142,27 +142,24 @@ export default defineComponent({
     // }
   },
   computed: {
-    sidebarOptions (): SidebarOption[] {
-      return (this.$route.meta?.sidebarOptions ?? []) as SidebarOption[]
+    allowedSidebarOptions (): SidebarOption[] {
+      return ((this.$route.meta?.sidebarOptions ??
+        []) as SidebarOption[]).filter(o =>
+        this.hasPrivileges(o.requiredPrivileges)
+      )
     },
     routeTitle (): string {
       return (this.$route.meta.routeTitle as string)
-        ?.replace(ROUTE_TITLE_COURSE_NAME_TOKEN, this.currentCourse)
-        ?.replace(ROUTE_TITLE_EVENT_NAME_TOKEN, this.currentEvent)
+        ?.replace(ROUTE_TITLE_COURSE_NAME_TOKEN, this.currentCourse?.name ?? '')
+        ?.replace(ROUTE_TITLE_EVENT_NAME_TOKEN, this.currentEvent?.name ?? '')
     },
-    currentCourse (): string {
-      return (
-        this.$store.state.courses.find((c: Course) => c.id == this.courseId)
-          ?.name ?? ''
+    currentCourse (): Course {
+      return this.$store.state.courses.find(
+        (c: Course) => c.id == this.courseId
       )
     },
-    currentEvent (): string {
-      return (
-        this.$store.state.events.find((e: Event) => e.id == this.eventId)
-          ?.name ??
-        this.$store.state.eventParticipation?.event?.name ??
-        ''
-      )
+    currentEvent (): Event {
+      return this.$store.state.events.find((e: Event) => e.id == this.eventId)
     }
   }
 })

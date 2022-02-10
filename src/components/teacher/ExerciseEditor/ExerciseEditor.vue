@@ -161,6 +161,7 @@ import CloudSaveStatus from '@/components/ui/CloudSaveStatus.vue'
 import { getDebouncedForEditor } from '@/utils'
 import { courseIdMixin, savingMixin } from '@/mixins'
 import { DialogData } from '@/interfaces'
+import { DebouncedFunc } from 'lodash'
 
 export default defineComponent({
   name: 'ExerciseEditor',
@@ -246,6 +247,10 @@ export default defineComponent({
       this.saving = true
       this.savingError = false
       await this.dispatchExerciseUpdate(newVal)
+
+      // TODO call flush if the modified field isn't a text field
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      //;(this.dispatchExerciseUpdate as DebouncedFunc<any>).flush()
     },
     async onAddChoice () {
       await this.$store.dispatch('addExerciseChoice', {

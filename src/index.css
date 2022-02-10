@@ -303,6 +303,10 @@
       @apply bg-danger-light bg-opacity-30 hover:bg-danger-light hover:bg-opacity-30 !important
     }
 
+    .bg-light-important {
+      @apply bg-light hover:bg-light  !important
+    }
+
     /* ripple */
     span.ripple {
       position: absolute;

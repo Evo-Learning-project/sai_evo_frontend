@@ -41,14 +41,17 @@
           <div class="flex mr-auto space-x-2">
             <router-link
               :to="{ name: 'ExamEditor', params: { examId: event.id } }"
-              ><Btn
+              ><Btn v-if="hasPrivileges([CoursePrivilege.MANAGE_EVENTS])"
                 ><span class="-ml-1 mr-1.5 text-base material-icons-outlined">
                   edit
                 </span>
                 {{ $t('event_preview.editor') }}</Btn
               ></router-link
             >
-            <Btn :variant="'danger'" v-if="hasBegun" @click="$emit('close')"
+            <Btn
+              :variant="'danger'"
+              v-if="hasBegun && hasPrivileges([CoursePrivilege.MANAGE_EVENTS])"
+              @click="$emit('close')"
               ><span class="mr-1 text-base material-icons-outlined">
                 block </span
               >{{ $t('event_preview.close') }}</Btn
@@ -58,7 +61,7 @@
           <router-link
             v-if="hasBegun"
             :to="{ name: 'ExamProgress', params: { examId: event.id } }"
-            ><Btn
+            ><Btn v-if="hasPrivileges([CoursePrivilege.MANAGE_EVENTS])"
               ><span class="mr-1.5 -ml-1 text-base material-icons-outlined">
                 visibility </span
               >{{ $t('event_preview.monitor') }}</Btn
@@ -66,7 +69,9 @@
           >
           <router-link
             :to="{ name: 'ExamResults', params: { examId: event.id } }"
-            v-else-if="hasEnded"
+            v-else-if="
+              hasEnded && hasPrivileges([CoursePrivilege.ASSESS_PARTICIPATIONS])
+            "
             ><Btn
               ><span class="mr-1.5 text-base material-icons-outlined">
                 bar_chart
@@ -83,13 +88,14 @@
 <script lang="ts">
 import { defineComponent } from '@vue/runtime-core'
 import { PropType } from 'vue'
-import { Event, EventState } from '@/models'
+import { Event, EventState, CoursePrivilege } from '@/models'
 import Card from '@/components/ui/Card.vue'
 import Timestamp from '@/components/ui/Timestamp.vue'
 import { getTranslatedString as _ } from '@/i18n'
 import { icons as eventStatesIcons } from '@/assets/eventStateIcons'
 import MultiIcon from '@/components/ui/MultiIcon.vue'
 import Btn from '@/components/ui/Btn.vue'
+import { coursePrivilegeMixin } from '@/mixins'
 
 export default defineComponent({
   components: {
@@ -99,10 +105,16 @@ export default defineComponent({
     Btn
   },
   name: 'EventEditorPreview',
+  mixins: [coursePrivilegeMixin],
   props: {
     event: {
       type: Object as PropType<Event>,
       required: true
+    }
+  },
+  data () {
+    return {
+      CoursePrivilege
     }
   },
   computed: {

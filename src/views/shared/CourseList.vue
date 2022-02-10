@@ -1,10 +1,11 @@
 <template>
-  <!-- <h1>Corsi</h1> -->
-  <CourseListItem
-    v-for="course in courses"
-    :key="'course-' + course.id"
-    :course="course"
-  ></CourseListItem>
+  <div>
+    <CourseListItem
+      v-for="course in courses"
+      :key="'course-' + course.id"
+      :course="course"
+    ></CourseListItem>
+  </div>
 </template>
 
 <script lang="ts">
@@ -17,8 +18,8 @@ export default defineComponent({
   components: {
     CourseListItem
   },
-  created () {
-    this.$store.dispatch('getCourses')
+  async created () {
+    await this.$store.dispatch('getCourses')
   },
   computed: {
     ...mapState(['courses'])
