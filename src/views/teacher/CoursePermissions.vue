@@ -19,14 +19,14 @@
           <CheckboxGroup
             :options="privilegesAsOptions"
             v-model="editingUserPrivileges"
-            :labelClass="'text-xl -mt-0.5'"
+            :labelClass="'text-xl flex-grow'"
             :optionClass="'my-4'"
             :useToggles="true"
             v-slot="{ description, icons }"
           >
             <span
               v-if="icons?.length > 0"
-              class="mx-1 text-base material-icons-outlined"
+              class="mx-1 mt-0.5 text-base material-icons-outlined"
               >{{ icons[0] }}</span
             >
             <p class="ml-1 mt-0.5 text-sm text-muted">{{ description }}</p>
@@ -154,7 +154,7 @@ export default defineComponent({
             ')',
           minWidth: 685,
           cellRenderer: (params: any) =>
-            '<div class="flex mt-2 space-x-4 cursor-pointer ">' +
+            '<div class="flex mt-2 space-x-4 cursor-pointer">' +
             (params.value as CoursePrivilege[]).reduce(
               (acc, curr) =>
                 acc +

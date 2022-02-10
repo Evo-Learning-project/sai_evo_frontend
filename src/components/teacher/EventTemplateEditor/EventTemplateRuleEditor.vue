@@ -166,7 +166,14 @@
             ></ExercisePicker>
           </div>
         </div>
-        <div v-else-if="modelValue.rule_type == tagBasedRuleType"></div>
+        <div v-else-if="modelValue.rule_type == tagBasedRuleType">
+          <TagBasedEventTemplateRuleEditor
+            :modelValue="modelValue.clauses"
+            @addClause="onAddClause($event)"
+            @removeClause="onRemoveClause($event)"
+            @clauseUpdate="onUpdateClause($event)"
+          ></TagBasedEventTemplateRuleEditor>
+        </div>
       </template>
     </Dialog>
   </div>
@@ -174,7 +181,12 @@
 
 <script lang="ts">
 import Dialog from '@/components/ui/Dialog.vue'
-import { EventTemplateRule, EventTemplateRuleType, Exercise } from '@/models'
+import {
+  EventTemplateRule,
+  EventTemplateRuleClause,
+  EventTemplateRuleType,
+  Exercise
+} from '@/models'
 import { defineComponent, PropType } from '@vue/runtime-core'
 import Btn from '@/components/ui/Btn.vue'
 import { getTranslatedString as _ } from '@/i18n'
@@ -183,13 +195,15 @@ import MinimalExercisePreview from '../ExerciseEditor/MinimalExercisePreview.vue
 import { getExercisesById } from '@/api/exercises'
 import SkeletonCard from '@/components/ui/SkeletonCard.vue'
 import { courseIdMixin } from '@/mixins'
+import TagBasedEventTemplateRuleEditor from './TagBasedEventTemplateRuleEditor.vue'
 export default defineComponent({
   components: {
     Dialog,
     Btn,
     ExercisePicker,
     MinimalExercisePreview,
-    SkeletonCard
+    SkeletonCard,
+    TagBasedEventTemplateRuleEditor
   },
   name: 'EventTemplateRuleEditor',
   props: {
@@ -226,6 +240,15 @@ export default defineComponent({
     }
   },
   methods: {
+    onAddClause () {
+      return 1
+    },
+    onRemoveClause (clauseId: string) {
+      return 1
+    },
+    onClauseUpdate (clause: EventTemplateRuleClause) {
+      return 1
+    },
     emitUpdate (key: keyof EventTemplateRule, value: unknown) {
       this.$emit('update:modelValue', {
         ...this.modelValue,

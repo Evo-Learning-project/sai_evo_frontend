@@ -224,6 +224,11 @@ export const it = {
       'Ogni studente vedrà un esercizio scelto a caso tra questi:',
     same_exercise_for_everyone_description:
       'Tutti gli studenti vedranno questo esercizio:',
+    tag_based_select_exercises: 'Seleziona solo esercizi che hanno',
+    tag_based_at_least_one: 'almeno uno',
+    tag_based_between: 'tra i seguenti tag:',
+    tag_based_and: '... e',
+    tag_based_add_condition: 'Aggiungi condizione',
   },
   event_editor: {
     name: 'Nome',
@@ -378,5 +383,6 @@ export const it = {
   data_table: {
     filterOoo: 'Cerca...',
     contains: 'Contenuto',
+    noRowsToShow: 'Non ci sono dati da mostrare',
   },
 };

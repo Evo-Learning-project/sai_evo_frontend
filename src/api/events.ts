@@ -4,6 +4,7 @@ import {
   EventParticipationSlot,
   EventTemplate,
   EventTemplateRule,
+  EventTemplateRuleClause,
 } from '@/models';
 import axios from 'axios';
 
@@ -89,27 +90,6 @@ export async function getEventParticipation(
   return response.data;
 }
 
-// export async function getEventTemplate(
-//   courseId: string,
-//   templateId: string
-// ): Promise<EventTemplate> {
-//   const response = await axios.get(
-//     `/courses/${courseId}/templates/${templateId}/`
-//   );
-//   return response.data;
-// }
-
-// export async function createEventTemplate(
-//   courseId: string,
-//   template: EventTemplate
-// ): Promise<EventTemplate> {
-//   const response = await axios.post(
-//     `courses/${courseId}/templates/`,
-//     template
-//   );
-//   return response.data;
-// }
-
 export async function createEventTemplateRule(
   courseId: string,
   templateId: string,
@@ -131,6 +111,32 @@ export async function updateEventTemplateRule(
   const response = await axios.put(
     `/courses/${courseId}/templates/${templateId}/rules/${ruleId}/`,
     rule
+  );
+  return response.data;
+}
+
+export async function createEventTemplateRuleClause(
+  courseId: string,
+  templateId: string,
+  ruleId: string,
+  clause: EventTemplateRuleClause
+): Promise<EventTemplateRuleClause> {
+  const response = await axios.post(
+    `courses/${courseId}/templates/${templateId}/rules/${ruleId}/clauses/`,
+    clause
+  );
+  return response.data;
+}
+
+export async function updateEventTemplateRuleClause(
+  courseId: string,
+  templateId: string,
+  ruleId: string,
+  clause: EventTemplateRuleClause
+): Promise<EventTemplateRuleClause> {
+  const response = await axios.put(
+    `courses/${courseId}/templates/${templateId}/rules/${ruleId}/clauses/${clause.id}/`,
+    clause
   );
   return response.data;
 }

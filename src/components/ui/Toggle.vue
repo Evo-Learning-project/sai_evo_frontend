@@ -2,7 +2,7 @@
   <div class="flex items-center">
     <div
       :class="{ 'order-12 ml-2': labelOnLeft }"
-      class="relative inline-block w-10 h-4 mr-2 align-middle transition duration-200 ease-in bg-transparent rounded-full shadow-sm select-none"
+      class="relative inline-block w-10 h-4 mt-1 mr-2 align-middle transition duration-200 ease-in bg-transparent rounded-full shadow-sm select-none"
     >
       <input
         type="checkbox"
@@ -80,6 +80,7 @@ export default defineComponent({
 }
 
 .toggle-rail {
+  transition: all 0.22s ease-out;
   height: 14px;
 }
 
@@ -108,8 +109,8 @@ export default defineComponent({
   left: 50%;
   border-color: rgba(72, 91, 202, 1);
 }
-.toggle-checkbox:checked + .toggle-label {
-  background-color: rgba(72, 91, 202, 0.68);
+.toggle-checkbox:checked ~ .toggle-rail {
+  background-color: rgba(72, 91, 202, 0.68) !important;
 }
 .toggle-checkbox,
 .toggle-mark {

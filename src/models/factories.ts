@@ -83,6 +83,7 @@ EventTemplateRule => ({
 
 export const getBlankTagBasedEventTemplateRuleClause =
   (): EventTemplateRuleClause => ({
+    id: '',
     tags: [],
   });
 

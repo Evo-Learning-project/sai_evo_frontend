@@ -6,8 +6,8 @@
       :key="id + '-option-' + index"
       :for="id + '-option-' + index"
     >
-      <div class="flex flex-col">
-        <div class="flex">
+      <div class="flex flex-col w-full">
+        <div class="flex w-full">
           <input
             v-if="!useToggles"
             :disabled="disabled"
