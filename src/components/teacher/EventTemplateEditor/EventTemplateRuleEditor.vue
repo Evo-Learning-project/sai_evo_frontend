@@ -73,7 +73,7 @@
             :key="'clause-preview-' + clause.id"
             class="flex items-center mb-2"
           >
-            <p class="mr-2">
+            <p class="mr-2" v-if="clause.tags.length > 1">
               {{ $t('event_template_rule_editor.tag_based_at_least_one') }}
               {{ $t('misc.among') }}
             </p>
@@ -119,12 +119,7 @@
           <p>{{ $t('event_template_rule_editor.mode_selection_text') }}</p>
           <div class="grid grid-cols-3 mt-6">
             <Btn
-              @click="
-                setRuleMode(
-                  modelValue.rule_type == EventTemplateRuleType.ID_BASED,
-                  true
-                )
-              "
+              @click="setRuleMode(EventTemplateRuleType.ID_BASED, true)"
               :variant="'transparent'"
               class="py-5 pl-4 border-r"
             >
@@ -142,12 +137,7 @@
               >
             </Btn>
             <Btn
-              @click="
-                setRuleMode(
-                  modelValue.rule_type == EventTemplateRuleType.ID_BASED,
-                  false
-                )
-              "
+              @click="setRuleMode(EventTemplateRuleType.ID_BASED, false)"
               :variant="'transparent'"
               class="pl-4 pr-3 border-r"
             >
@@ -165,11 +155,7 @@
               >
             </Btn>
             <Btn
-              @click="
-                setRuleMode(
-                  modelValue.rule_type == EventTemplateRuleType.TAG_BASED
-                )
-              "
+              @click="setRuleMode(EventTemplateRuleType.TAG_BASED)"
               :variant="'transparent'"
               class="pl-8"
             >
@@ -188,12 +174,7 @@
             </Btn>
           </div>
         </div>
-        <div
-          v-else-if="
-            (modelValue.rule_type == modelValue.rule_type) ==
-              EventTemplateRuleType.ID_BASED
-          "
-        >
+        <div v-else-if="modelValue.rule_type == EventTemplateRuleType.ID_BASED">
           <h3 class="text-dark">
             {{
               pickOneExerciseOnly
@@ -222,10 +203,7 @@
           </div>
         </div>
         <div
-          v-else-if="
-            (modelValue.rule_type == modelValue.rule_type) ==
-              EventTemplateRuleType.TAG_BASED
-          "
+          v-else-if="modelValue.rule_type == EventTemplateRuleType.TAG_BASED"
         >
           <TagBasedEventTemplateRuleEditor
             :modelValue="modelValue.clauses"

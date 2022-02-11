@@ -1,7 +1,4 @@
 <template>
-  <!-- <router-link
-    :to="{ name: 'CourseDashboard', params: { courseId: course.id } }"
-  > -->
   <Card class="transition-all duration-75 hover:bg-gray-50">
     <template v-slot:header>
       <div class="flex items-center">
@@ -27,17 +24,7 @@
             {{ $t('courses.course_panel') }}
           </Btn></router-link
         >
-        <Btn
-          v-if="canEnroll"
-          :variant="'success'"
-          @click="showEnrollDialog = true"
-        >
-          <span class="mr-1 text-base material-icons-outlined">
-            add_circle_outline
-          </span>
-          {{ $t('courses.enroll') }}
-        </Btn>
-        <Btn v-else-if="course.is_enrolled">
+        <Btn>
           <span class="mr-1 text-base material-icons-outlined">
             chevron_right
           </span>
@@ -46,7 +33,6 @@
       </div>
     </template>
   </Card>
-  <!-- </router-link> -->
 </template>
 
 <script lang="ts">
@@ -63,20 +49,13 @@ export default defineComponent({
     }
   },
   data () {
-    return {
-      showEnrollDialog: false
-    }
+    return {}
   },
   components: {
     Card,
     Btn
   },
   computed: {
-    canEnroll (): boolean {
-      return (
-        !this.course.is_enrolled && (this.course.privileges?.length ?? 0) == 0
-      )
-    },
     canAccessCoursePanel (): boolean {
       return (
         this.course.creator?.id === this.$store.state.user?.id ||

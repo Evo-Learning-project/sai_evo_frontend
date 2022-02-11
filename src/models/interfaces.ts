@@ -23,7 +23,6 @@ export interface Course {
   id: string;
   name: string;
   description?: string;
-  is_enrolled?: boolean;
   privileges?: CoursePrivilege[];
   creator?: User;
 }
