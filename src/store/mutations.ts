@@ -103,9 +103,7 @@ export const mutations = {
       state.eventParticipation?.slots?.find(
         (s: EventParticipationSlot) => s.id == slotId
       );
-    console.log('target', target, 'slot', slot);
     Object.assign(target, slot);
-    console.log(state);
   },
   setEventParticipation: (
     state: any,
