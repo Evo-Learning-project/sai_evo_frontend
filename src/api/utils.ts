@@ -8,7 +8,6 @@ export const tagNamesToTags = (names: string[]): Tag[] =>
   names.map((n) => store.getters.tagByName(n));
 
 export const tagIdsToTags = (ids: string[]): Tag[] => {
-  console.log('IDS TO ', ids);
   return ids.map((i) => store.getters.tagById(i) as Tag);
 };
 

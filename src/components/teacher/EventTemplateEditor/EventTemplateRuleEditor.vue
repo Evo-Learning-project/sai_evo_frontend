@@ -169,7 +169,7 @@
         <div v-else-if="modelValue.rule_type == tagBasedRuleType">
           <TagBasedEventTemplateRuleEditor
             :modelValue="modelValue.clauses"
-            :loading="loading"
+            :loading="parentLoading"
             @addClause="onAddClause($event)"
             @removeClause="onRemoveClause($event)"
             @updateClause="onUpdateClause($event)"
@@ -216,6 +216,10 @@ export default defineComponent({
     globallySelectedExercises: {
       type: Object as PropType<string[]>,
       required: true
+    },
+    parentLoading: {
+      type: Boolean,
+      default: false
     }
   },
   mixins: [courseIdMixin],

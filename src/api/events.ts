@@ -48,8 +48,7 @@ export async function getEvent(
       ...event.template,
       rules: processedRules,
     },
-  };
-  console.log(convertedEvent);
+  } as Event;
   return convertedEvent;
 }
 
@@ -177,7 +176,6 @@ export async function updateEventTemplateRuleClause(
       (t) => t.id
     ),
   };
-  console.log('PAYLOAD', payload, 'original', clause);
   const response = await axios.put(
     `courses/${courseId}/templates/${templateId}/rules/${ruleId}/clauses/${clause.id}/`,
     payload

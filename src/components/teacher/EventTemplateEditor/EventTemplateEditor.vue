@@ -13,6 +13,7 @@
         @update:modelValue="onRuleUpdate(index, $event)"
         @addClause="onRuleAddClause(rule)"
         @updateClause="onRuleUpdateClause(rule, $event)"
+        :parentLoading="loading"
       ></EventTemplateRuleEditor>
     </div>
 
@@ -41,13 +42,13 @@ import {
   getBlankEventTemplateRule,
   getBlankTagBasedEventTemplateRuleClause
 } from '@/models'
-import { courseIdMixin } from '@/mixins'
+import { courseIdMixin, loadingMixin } from '@/mixins'
 export default defineComponent({
   components: {
     Btn,
     EventTemplateRuleEditor
   },
-  mixins: [courseIdMixin],
+  mixins: [courseIdMixin, loadingMixin],
   name: 'EventTemplateEditor',
   props: {
     modelValue: {
@@ -91,6 +92,7 @@ export default defineComponent({
       this.$emit('saving', false)
     },
     async onRuleAddClause (rule: EventTemplateRule) {
+      this.loading = true
       await this.$store.dispatch('addEventTemplateRuleClause', {
         courseId: this.courseId,
         eventId: this.eventId,
@@ -98,18 +100,22 @@ export default defineComponent({
         ruleId: rule.id,
         clause: getBlankTagBasedEventTemplateRuleClause()
       })
+      this.loading = false
     },
     async onRuleUpdateClause (
       rule: EventTemplateRule,
       clause: EventTemplateRuleClause
     ) {
-      await this.$store.dispatch('updateEventTemplateRuleClause', {
-        courseId: this.courseId,
-        eventId: this.eventId,
-        templateId: this.modelValue.id,
-        ruleId: rule.id,
-        clause
-      })
+      await this.withLoading(
+        async () =>
+          await this.$store.dispatch('updateEventTemplateRuleClause', {
+            courseId: this.courseId,
+            eventId: this.eventId,
+            templateId: this.modelValue.id,
+            ruleId: rule.id,
+            clause
+          })
+      )
     }
   },
   computed: {

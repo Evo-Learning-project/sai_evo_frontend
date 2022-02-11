@@ -224,6 +224,8 @@ export const it = {
       'Ogni studente vedrà un esercizio scelto a caso tra questi:',
     same_exercise_for_everyone_description:
       'Tutti gli studenti vedranno questo esercizio:',
+    tag_based_introduction:
+      'Ogni studente vedrà un esercizio scelto a caso che rispetta le condizioni definite qui. Un esercizio è idoneo se, per ogni gruppo di tag definito, contiene almeno un tag di quel gruppo.',
     tag_based_select_exercises: 'Seleziona solo esercizi che hanno',
     tag_based_at_least_one: 'almeno uno',
     tag_based_between: 'tra i seguenti tag:',

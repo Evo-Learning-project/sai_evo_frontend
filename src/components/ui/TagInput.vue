@@ -1,12 +1,13 @@
 <template>
   <vue-tags-input
+    :add-only-from-autocomplete="existingOnly"
     v-model="tag"
     :tags="processedModelValue"
     :allow-edit-tags="true"
     :placeholder="placeholder"
     @before-adding-tag="beforeAddingTag($event)"
     @before-deleting-tag="beforeDeletingTag($event)"
-    :autocomplete-items="processedChoices"
+    :autocomplete-items="autoCompleteItems"
   />
   <!--@tags-changed="newTags => onTagsChanged(newTags)"-->
   <!--
@@ -38,6 +39,10 @@ export default defineComponent({
     choices: {
       type: Array as PropType<Tag[]>,
       default: () => []
+    },
+    existingOnly: {
+      type: Boolean,
+      default: false
     }
   },
   data () {
@@ -57,7 +62,9 @@ export default defineComponent({
       if (
         !this.processedModelValue
           .map((t: { text: string }) => t.text)
-          .includes(event.tag.text)
+          .includes(event.tag.text) &&
+        (!this.existingOnly ||
+          this.autoCompleteItems.map(i => i.text).includes(event.tag.text))
       ) {
         this.$emit('addTag', event.tag.text)
         this.tag = ''
@@ -84,6 +91,12 @@ export default defineComponent({
       return this.choices.map((t: Tag) => ({
         text: t.name
       }))
+    },
+    autoCompleteItems () {
+      return this.processedChoices.filter(
+        (c: { text: string }) =>
+          c.text.toLowerCase().indexOf(this.tag.toLowerCase()) !== -1
+      )
     }
   }
 })

@@ -135,6 +135,15 @@
     .ti-deletion-mark {
       @apply bg-danger !important
     }
+
+    .ti-autocomplete {
+      @apply p-2 z-20 bg-gray-50 rounded-b-md shadow-popup !important
+    }
+
+    .ti-selected-item {
+      @apply bg-primary -mx-2 p-0 pl-2 !important
+    }
+
     .vue-tags-input {
       @apply max-w-screen-2xl !important
     }
