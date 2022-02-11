@@ -21,7 +21,13 @@
           </btn>
         </div>
       </div>
-      <div v-if="isSlotPopulated" class="mt-4">
+      <div
+        v-if="
+          isSlotPopulated &&
+            modelValue.rule_type == EventTemplateRuleType.ID_BASED
+        "
+        class="mt-4"
+      >
         <p class="mb-2 text-muted">
           {{
             ruleExercises.length == 1
@@ -48,6 +54,36 @@
           <div v-else class="grid grid-cols-2 gap-2">
             <SkeletonCard :short="true"></SkeletonCard>
             <SkeletonCard :short="true"></SkeletonCard>
+          </div>
+        </div>
+      </div>
+      <div
+        v-else-if="
+          isSlotPopulated &&
+            modelValue.rule_type == EventTemplateRuleType.TAG_BASED
+        "
+        class="mt-4"
+      >
+        <p class="mb-2 text-muted">
+          {{ $t('event_template_rule_editor.tag_based_description') }}
+        </p>
+        <div class="flex space-x-3">
+          <div
+            v-for="(clause, index) in modelValue.clauses"
+            :key="'clause-preview-' + clause.id"
+            class="flex items-center mb-2"
+          >
+            <p class="mr-2">
+              {{ $t('event_template_rule_editor.tag_based_at_least_one') }}
+              {{ $t('misc.among') }}
+            </p>
+            <Tag
+              class="mx-0.5"
+              v-for="tag in clause.tags"
+              :key="'clause-' + clause.id + '-tag-' + tag.id"
+              :tag="tag"
+            ></Tag>
+            <p v-if="index !== modelValue.clauses.length - 1">,</p>
           </div>
         </div>
       </div>
@@ -82,8 +118,13 @@
         <div v-if="modelValue.rule_type == null">
           <p>{{ $t('event_template_rule_editor.mode_selection_text') }}</p>
           <div class="grid grid-cols-3 mt-6">
-            <btn
-              @click="setRuleMode(idBasedRuleType, true)"
+            <Btn
+              @click="
+                setRuleMode(
+                  modelValue.rule_type == EventTemplateRuleType.ID_BASED,
+                  true
+                )
+              "
               :variant="'transparent'"
               class="py-5 pl-4 border-r"
             >
@@ -99,9 +140,14 @@
                   }}
                 </p></template
               >
-            </btn>
-            <btn
-              @click="setRuleMode(idBasedRuleType, false)"
+            </Btn>
+            <Btn
+              @click="
+                setRuleMode(
+                  modelValue.rule_type == EventTemplateRuleType.ID_BASED,
+                  false
+                )
+              "
               :variant="'transparent'"
               class="pl-4 pr-3 border-r"
             >
@@ -117,9 +163,13 @@
                   }}
                 </p></template
               >
-            </btn>
-            <btn
-              @click="setRuleMode(tagBasedRuleType)"
+            </Btn>
+            <Btn
+              @click="
+                setRuleMode(
+                  modelValue.rule_type == EventTemplateRuleType.TAG_BASED
+                )
+              "
               :variant="'transparent'"
               class="pl-8"
             >
@@ -135,10 +185,15 @@
                   }}
                 </p>
               </template>
-            </btn>
+            </Btn>
           </div>
         </div>
-        <div v-else-if="modelValue.rule_type == idBasedRuleType">
+        <div
+          v-else-if="
+            (modelValue.rule_type == modelValue.rule_type) ==
+              EventTemplateRuleType.ID_BASED
+          "
+        >
           <h3 class="text-dark">
             {{
               pickOneExerciseOnly
@@ -166,7 +221,12 @@
             ></ExercisePicker>
           </div>
         </div>
-        <div v-else-if="modelValue.rule_type == tagBasedRuleType">
+        <div
+          v-else-if="
+            (modelValue.rule_type == modelValue.rule_type) ==
+              EventTemplateRuleType.TAG_BASED
+          "
+        >
           <TagBasedEventTemplateRuleEditor
             :modelValue="modelValue.clauses"
             :loading="parentLoading"
@@ -186,8 +246,8 @@ import {
   EventTemplateRule,
   EventTemplateRuleClause,
   EventTemplateRuleType,
-  Exercise,
-  Tag
+  Exercise
+  //Tag as ITag
 } from '@/models'
 import { defineComponent, PropType } from '@vue/runtime-core'
 import Btn from '@/components/ui/Btn.vue'
@@ -198,6 +258,7 @@ import { getExercisesById } from '@/api/exercises'
 import SkeletonCard from '@/components/ui/SkeletonCard.vue'
 import { courseIdMixin } from '@/mixins'
 import TagBasedEventTemplateRuleEditor from './TagBasedEventTemplateRuleEditor.vue'
+import Tag from '@/components/ui/Tag.vue'
 export default defineComponent({
   components: {
     Dialog,
@@ -205,7 +266,8 @@ export default defineComponent({
     ExercisePicker,
     MinimalExercisePreview,
     SkeletonCard,
-    TagBasedEventTemplateRuleEditor
+    TagBasedEventTemplateRuleEditor,
+    Tag
   },
   name: 'EventTemplateRuleEditor',
   props: {
@@ -226,7 +288,7 @@ export default defineComponent({
   async created () {
     this.loading = true
     if (
-      this.modelValue.rule_type == this.idBasedRuleType &&
+      this.modelValue.rule_type == EventTemplateRuleType.ID_BASED &&
       (this.modelValue.exercises?.length ?? 0) > 0
     ) {
       const previews = await getExercisesById(
@@ -242,7 +304,8 @@ export default defineComponent({
       showDialog: false,
       pickOneExerciseOnly: null as boolean | null,
       previewExercises: [] as Exercise[],
-      loading: false
+      loading: false,
+      EventTemplateRuleType
     }
   },
   methods: {
@@ -300,22 +363,19 @@ export default defineComponent({
   },
   computed: {
     ruleExercises (): Exercise[] {
-      if (this.modelValue.rule_type != this.idBasedRuleType) {
+      if (this.modelValue.rule_type != EventTemplateRuleType.ID_BASED) {
         return []
       }
       return this.previewExercises
     },
     isSlotPopulated () {
-      if (this.modelValue.rule_type == this.idBasedRuleType) {
+      if (this.modelValue.rule_type == EventTemplateRuleType.ID_BASED) {
         return (this.modelValue.exercises?.length ?? 0) > 0
       }
+      if (this.modelValue.rule_type == EventTemplateRuleType.TAG_BASED) {
+        return (this.modelValue.clauses?.length ?? 0) > 0
+      }
       return false
-    },
-    idBasedRuleType (): EventTemplateRuleType {
-      return EventTemplateRuleType.ID_BASED
-    },
-    tagBasedRuleType (): EventTemplateRuleType {
-      return EventTemplateRuleType.TAG_BASED
     }
   }
 })

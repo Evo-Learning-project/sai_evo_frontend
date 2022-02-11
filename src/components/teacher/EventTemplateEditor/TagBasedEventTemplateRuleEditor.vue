@@ -13,14 +13,14 @@
         <strong>{{
           $t('event_template_rule_editor.tag_based_at_least_one')
         }}</strong>
-        {{ $t('event_template_rule_editor.tag_based_between') }}
+        {{ $t('event_template_rule_editor.tag_based_among') }}
       </p>
       <p v-else>
         {{ $t('event_template_rule_editor.tag_based_and') }}
         <strong>{{
           $t('event_template_rule_editor.tag_based_at_least_one')
         }}</strong>
-        {{ $t('event_template_rule_editor.tag_based_between') }}
+        {{ $t('event_template_rule_editor.tag_based_among') }}
       </p>
       <TagInput
         :placeholder="$t('exercise_editor.exercise_tags')"
@@ -40,7 +40,7 @@
         <strong>{{
           $t('event_template_rule_editor.tag_based_at_least_one')
         }}</strong>
-        {{ $t('event_template_rule_editor.tag_based_between') }}
+        {{ $t('event_template_rule_editor.tag_based_among') }}
       </p>
       <TagInput
         :disabled="true"

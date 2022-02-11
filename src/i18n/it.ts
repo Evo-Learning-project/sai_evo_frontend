@@ -107,7 +107,6 @@ export const it = {
   },
   misc: {
     select_empty_option: 'Seleziona',
-    or_label: 'Oppure',
     changes_saved_to_server:
       'Tutte le modifiche sono state salvate sul server',
     exercise_preview_title: 'Anteprima esercizio',
@@ -126,6 +125,8 @@ export const it = {
       'Hai effettuato delle modifiche non ancora salvate. Se esci, perderai le ultime modifiche. Vuoi uscire?',
     full_name: 'Nome e cognome',
     click_to_edit: 'Clicca per modificare',
+    among: 'tra',
+    and: 'e',
   },
   cloud: {
     saving: 'Salvataggio in corso...',
@@ -222,13 +223,15 @@ export const it = {
       'Ogni studente vedrà un esercizio scelto a caso con i tag selezionati',
     one_exercise_from_set_description:
       'Ogni studente vedrà un esercizio scelto a caso tra questi:',
+    tag_based_description:
+      'Ogni studente vedrà un esercizio a caso che tra i tag ha:',
     same_exercise_for_everyone_description:
       'Tutti gli studenti vedranno questo esercizio:',
     tag_based_introduction:
       'Ogni studente vedrà un esercizio scelto a caso che rispetta le condizioni definite qui. Un esercizio è idoneo se, per ogni gruppo di tag definito, contiene almeno un tag di quel gruppo.',
     tag_based_select_exercises: 'Seleziona solo esercizi che hanno',
     tag_based_at_least_one: 'almeno uno',
-    tag_based_between: 'tra i seguenti tag:',
+    tag_based_among: 'tra i seguenti tag:',
     tag_based_and: '... e',
     tag_based_add_condition: 'Aggiungi condizione',
   },
