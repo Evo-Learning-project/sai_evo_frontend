@@ -1,4 +1,16 @@
 import { SearchFilter } from './interfaces';
+import store from '@/store';
+import { Tag } from '@/models';
+
+export const tagNamesToTags = (names: string[]): Tag[] =>
+  // converts a list of tag names to a list of their id's, as per
+  // the format used by the backend
+  names.map((n) => store.getters.tagByName(n));
+
+export const tagIdsToTags = (ids: string[]): Tag[] => {
+  console.log('IDS TO ', ids);
+  return ids.map((i) => store.getters.tagById(i) as Tag);
+};
 
 export const getUrlQueryParams = (
   filters: SearchFilter | null

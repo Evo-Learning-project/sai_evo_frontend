@@ -6,6 +6,7 @@
     :placeholder="placeholder"
     @before-adding-tag="beforeAddingTag($event)"
     @before-deleting-tag="beforeDeletingTag($event)"
+    :autocomplete-items="processedChoices"
   />
   <!--@tags-changed="newTags => onTagsChanged(newTags)"-->
   <!--
@@ -16,28 +17,36 @@
 <script lang="ts">
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
+import { Tag } from '@/models'
 import VueTagsInput from '@sipec/vue3-tags-input'
-import { defineComponent } from '@vue/runtime-core'
+import { defineComponent, PropType } from '@vue/runtime-core'
 
 export default defineComponent({
   name: 'TagInput',
   components: {
     VueTagsInput
   },
-  props: ['modelValue', 'placeholder'],
+  props: {
+    modelValue: {
+      type: Array as PropType<Tag[]>,
+      required: true
+    },
+    placeholder: {
+      type: String
+      // TODO default
+    },
+    choices: {
+      type: Array as PropType<Tag[]>,
+      default: () => []
+    }
+  },
   data () {
     return {
-      tag: '',
-      tags: [] as unknown[]
+      tag: ''
     }
   },
   methods: {
     onTagsChanged (newTags: any) {
-      //   this.tags = newTags
-      //   console.log(
-      //     'new tags',
-      //     newTags.map((t: { text: string }) => t.text)
-      //   )
       this.$emit(
         'update:modelValue',
         newTags.map((t: { text: string }) => this.processTag(t))
@@ -67,8 +76,13 @@ export default defineComponent({
   },
   computed: {
     processedModelValue () {
-      return this.modelValue.map((t: { name: string }) => ({
-        text: t?.name
+      return this.modelValue.map((t: Tag) => ({
+        text: t.name
+      }))
+    },
+    processedChoices () {
+      return this.choices.map((t: Tag) => ({
+        text: t.name
       }))
     }
   }

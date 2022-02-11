@@ -73,6 +73,7 @@ export default defineComponent({
     this.dispatchUpdate = getDebouncedForEditor(this.dispatchUpdate)
 
     await this.withLoading(async () => {
+      await this.$store.dispatch('getTags', this.courseId)
       await this.$store.dispatch('getEvent', {
         courseId: this.courseId,
         eventId: this.eventId

@@ -11,6 +11,8 @@
         :key="'template-' + elementId + '-rule-' + index"
         :modelValue="modelValue.rules[index]"
         @update:modelValue="onRuleUpdate(index, $event)"
+        @addClause="onRuleAddClause(rule)"
+        @updateClause="onRuleUpdateClause(rule, $event)"
       ></EventTemplateRuleEditor>
     </div>
 
@@ -28,25 +30,22 @@
 
 <script lang="ts">
 import { v4 as uuid4 } from 'uuid'
-//import Card from '@/components/ui/Card.vue'
 import Btn from '@/components/ui/Btn.vue'
 import { defineComponent, PropType } from '@vue/runtime-core'
 import EventTemplateRuleEditor from './EventTemplateRuleEditor.vue'
 import {
   EventTemplate,
   EventTemplateRule,
+  EventTemplateRuleClause,
   EventTemplateRuleType,
-  Exercise,
-  getBlankEventTemplateRule
+  getBlankEventTemplateRule,
+  getBlankTagBasedEventTemplateRuleClause
 } from '@/models'
 import { courseIdMixin } from '@/mixins'
-//import Toggle from '@/components/ui/Toggle.vue'
 export default defineComponent({
   components: {
-    //Card,
     Btn,
     EventTemplateRuleEditor
-    //Toggle
   },
   mixins: [courseIdMixin],
   name: 'EventTemplateEditor',
@@ -90,6 +89,27 @@ export default defineComponent({
         rule: newVal
       })
       this.$emit('saving', false)
+    },
+    async onRuleAddClause (rule: EventTemplateRule) {
+      await this.$store.dispatch('addEventTemplateRuleClause', {
+        courseId: this.courseId,
+        eventId: this.eventId,
+        templateId: this.modelValue.id,
+        ruleId: rule.id,
+        clause: getBlankTagBasedEventTemplateRuleClause()
+      })
+    },
+    async onRuleUpdateClause (
+      rule: EventTemplateRule,
+      clause: EventTemplateRuleClause
+    ) {
+      await this.$store.dispatch('updateEventTemplateRuleClause', {
+        courseId: this.courseId,
+        eventId: this.eventId,
+        templateId: this.modelValue.id,
+        ruleId: rule.id,
+        clause
+      })
     }
   },
   computed: {

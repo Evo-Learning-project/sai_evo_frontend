@@ -11,6 +11,7 @@ import {
   ExerciseChoice,
   ExerciseState,
   ExerciseType,
+  Tag,
 } from '.';
 
 export const getBlankChoice = (): ExerciseChoice => ({
@@ -80,6 +81,11 @@ EventTemplateRule => ({
 //   clauses: [],
 //   target_slot_number: slotNumber,
 // });
+
+export const getBlankTag = (): Tag => ({
+  id: '',
+  name: '',
+});
 
 export const getBlankTagBasedEventTemplateRuleClause =
   (): EventTemplateRuleClause => ({

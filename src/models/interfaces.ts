@@ -92,7 +92,7 @@ export interface EventTemplateRule {
 
 export interface EventTemplateRuleClause {
   id: string;
-  tags: string[];
+  tags: Tag[];
 }
 
 export interface EventParticipation {

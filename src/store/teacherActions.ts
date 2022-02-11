@@ -7,6 +7,7 @@ import {
   Event,
   EventTemplate,
   EventTemplateRule,
+  EventTemplateRuleClause,
   EventType,
   Exercise,
   ExerciseChoice,
@@ -30,6 +31,7 @@ import {
 import {
   createEvent,
   createEventTemplateRule,
+  createEventTemplateRuleClause,
   getEvent,
   getEventParticipation,
   getEventParticipations,
@@ -37,6 +39,7 @@ import {
   partialUpdateEvent,
   updateEvent,
   updateEventTemplateRule,
+  updateEventTemplateRuleClause,
 } from '@/api/events';
 import { SearchFilter } from '@/api/interfaces';
 import { getUsers, updateUserCoursePrivileges } from '@/api/users';
@@ -209,6 +212,64 @@ export const actions = {
       .find((e: Event) => e.template?.id === (templateId as string))
       ?.template?.rules?.push(newRule);
   },
+  addEventTemplateRuleClause: async (
+    { commit, state }: { commit: Commit; state: any },
+    {
+      courseId,
+      templateId,
+      ruleId,
+      clause,
+    }: {
+      courseId: string;
+      templateId: string;
+      ruleId: string;
+      clause: EventTemplateRuleClause;
+    }
+  ) => {
+    const newClause = await createEventTemplateRuleClause(
+      courseId,
+      templateId,
+      ruleId,
+      clause
+    );
+    state.events
+      .find((e: Event) => e.template?.id === templateId)
+      ?.template?.rules?.find(
+        (r: EventTemplateRule) => r.id === ruleId
+      )
+      ?.clauses.push(newClause);
+  },
+  updateEventTemplateRuleClause: async (
+    { commit, state }: { commit: Commit; state: any },
+    {
+      courseId,
+      templateId,
+      ruleId,
+      clause,
+    }: {
+      courseId: string;
+      templateId: string;
+      ruleId: string;
+      clause: EventTemplateRuleClause;
+    }
+  ) => {
+    const newClause = await updateEventTemplateRuleClause(
+      courseId,
+      templateId,
+      ruleId,
+      clause
+    );
+    const target = state.events
+      .find((e: Event) => e.template?.id === templateId)
+      ?.template?.rules?.find(
+        (r: EventTemplateRule) => r.id === ruleId
+      )
+      ?.clauses?.find(
+        (c: EventTemplateRuleClause) => c.id == clause.id
+      );
+
+    Object.assign(target, newClause);
+  },
   getExercises: async (
     { commit, state }: { commit: Commit; state: any },
     {
@@ -244,10 +305,8 @@ export const actions = {
     { commit }: { commit: Commit },
     courseId: string
   ) => {
-    return;
-    // const tags = await getTags(courseId);
-    // commit('setTags', tags);
-    // commit('setActiveCourseId', courseId);
+    const tags = await getTags(courseId);
+    commit('setTags', tags);
   },
   addExerciseTag: async (
     { commit, state }: { commit: Commit; state: any },

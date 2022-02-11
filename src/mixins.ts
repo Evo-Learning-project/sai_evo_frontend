@@ -55,13 +55,6 @@ export const coursePrivilegeMixin = {
             (router.currentRoute.value.params.courseId as string)
         )?.privileges ?? [];
 
-      console.log(
-        'my',
-        myPrivileges,
-        'required',
-        requiredPrivilegesList
-      );
-
       return requiredPrivilegesList.every((p) =>
         myPrivileges.includes(p)
       );

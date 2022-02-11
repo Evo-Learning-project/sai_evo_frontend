@@ -74,7 +74,7 @@
           >
           <TagInput
             :modelValue="modelValue.tags"
-            :allow-edit-tags="true"
+            :allow-edit-tags="false"
             :placeholder="$t('exercise_editor.exercise_tags')"
             @addTag="onAddTag($event)"
             @removeTag="onRemoveTag($event)"

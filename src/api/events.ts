@@ -5,8 +5,10 @@ import {
   EventTemplate,
   EventTemplateRule,
   EventTemplateRuleClause,
+  EventTemplateRuleType,
 } from '@/models';
 import axios from 'axios';
+import { tagIdsToTags, tagNamesToTags } from './utils';
 
 export async function getEvents(courseId: string): Promise<Event[]> {
   const response = await axios.get(`/courses/${courseId}/events/`);
@@ -20,7 +22,35 @@ export async function getEvent(
   const response = await axios.get(
     `/courses/${courseId}/events/${eventId}/`
   );
-  return response.data;
+  const event = response.data as Event;
+
+  // convert tag-based template rules from backend's format (which uses a list of
+  //ids to represent the field `tags` on EventTemplateRuleClause) to the
+  // frontend's format, which uses Tag[] for that field
+  const processedRules = event.template?.rules.map((r) => {
+    if (r.rule_type != EventTemplateRuleType.TAG_BASED) {
+      return r;
+    }
+    return {
+      ...r,
+      clauses: r.clauses?.map((c) => ({
+        ...c,
+        // we're expecting to receive EventTemplateRuleClause, but the server is sending
+        // {id: string, tags: string[]}, so the conversion is needed here
+        // ? might fix this by having an EventPayload, EventTemplatePayload, ... interfaces
+        tags: tagIdsToTags(c.tags as unknown as string[]),
+      })),
+    };
+  }) as EventTemplateRule[];
+  const convertedEvent = {
+    ...event,
+    template: {
+      ...event.template,
+      rules: processedRules,
+    },
+  };
+  console.log(convertedEvent);
+  return convertedEvent;
 }
 
 export async function createEvent(
@@ -121,11 +151,18 @@ export async function createEventTemplateRuleClause(
   ruleId: string,
   clause: EventTemplateRuleClause
 ): Promise<EventTemplateRuleClause> {
+  const payload = {
+    ...clause,
+    tags: tagNamesToTags(clause.tags.map((t) => t.name)).map(
+      (t) => t.id
+    ),
+  };
   const response = await axios.post(
     `courses/${courseId}/templates/${templateId}/rules/${ruleId}/clauses/`,
-    clause
+    payload
   );
-  return response.data;
+  const data = response.data;
+  return { ...data, tags: tagIdsToTags(data.tags) };
 }
 
 export async function updateEventTemplateRuleClause(
@@ -134,11 +171,19 @@ export async function updateEventTemplateRuleClause(
   ruleId: string,
   clause: EventTemplateRuleClause
 ): Promise<EventTemplateRuleClause> {
+  const payload = {
+    ...clause,
+    tags: tagNamesToTags(clause.tags.map((t) => t.name)).map(
+      (t) => t.id
+    ),
+  };
+  console.log('PAYLOAD', payload, 'original', clause);
   const response = await axios.put(
     `courses/${courseId}/templates/${templateId}/rules/${ruleId}/clauses/${clause.id}/`,
-    clause
+    payload
   );
-  return response.data;
+  const data = response.data;
+  return { ...data, tags: tagIdsToTags(data.tags) };
 }
 
 export async function participateInEvent(

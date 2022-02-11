@@ -169,9 +169,10 @@
         <div v-else-if="modelValue.rule_type == tagBasedRuleType">
           <TagBasedEventTemplateRuleEditor
             :modelValue="modelValue.clauses"
+            :loading="loading"
             @addClause="onAddClause($event)"
             @removeClause="onRemoveClause($event)"
-            @clauseUpdate="onUpdateClause($event)"
+            @updateClause="onUpdateClause($event)"
           ></TagBasedEventTemplateRuleEditor>
         </div>
       </template>
@@ -185,7 +186,8 @@ import {
   EventTemplateRule,
   EventTemplateRuleClause,
   EventTemplateRuleType,
-  Exercise
+  Exercise,
+  Tag
 } from '@/models'
 import { defineComponent, PropType } from '@vue/runtime-core'
 import Btn from '@/components/ui/Btn.vue'
@@ -241,13 +243,13 @@ export default defineComponent({
   },
   methods: {
     onAddClause () {
-      return 1
+      this.$emit('addClause')
     },
     onRemoveClause (clauseId: string) {
       return 1
     },
-    onClauseUpdate (clause: EventTemplateRuleClause) {
-      return 1
+    onUpdateClause (clause: EventTemplateRuleClause) {
+      this.$emit('updateClause', clause)
     },
     emitUpdate (key: keyof EventTemplateRule, value: unknown) {
       this.$emit('update:modelValue', {
