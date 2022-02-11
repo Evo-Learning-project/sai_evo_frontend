@@ -6,7 +6,8 @@ import {
 import MainTeacher from '../views/teacher/MainTeacher.vue';
 import MainStudent from '../views/student/MainStudent.vue';
 import CourseList from '../views/shared/CourseList.vue';
-import CourseDashboard from '../views/teacher/CourseDashboard.vue';
+import TeacherCourseDashboard from '../views/teacher/CourseDashboard.vue';
+import StudentCourseDashboard from '../views/student/CourseDashboard.vue';
 import CourseExercises from '../views/teacher/CourseExercises.vue';
 import CourseExams from '../views/teacher/CourseExams.vue';
 import CoursePermissions from '../views/teacher/CoursePermissions.vue';
@@ -50,8 +51,8 @@ const routes: Array<RouteRecordRaw> = [
       },
       {
         path: 'courses/:courseId',
-        name: 'CourseDashboard',
-        component: CourseDashboard,
+        name: 'TeacherCourseDashboard',
+        component: TeacherCourseDashboard,
         meta: {
           routeTitle: _('headings.course_title'),
           sidebarOptions: courseDashboardSidebarOptions,
@@ -131,6 +132,14 @@ const routes: Array<RouteRecordRaw> = [
         component: CourseList,
         meta: {
           routeTitle: _('headings.course_list'),
+        },
+      },
+      {
+        path: 'courses/:courseId',
+        name: 'StudentCourseDashboard',
+        component: StudentCourseDashboard,
+        meta: {
+          routeTitle: _('headings.course_title'),
         },
       },
       {

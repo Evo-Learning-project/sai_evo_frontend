@@ -34,7 +34,7 @@ export const it = {
     more_filters: 'Filtri avanzati',
   },
   headings: {
-    course_title: 'Corso',
+    course_title: 'Corso ' + ROUTE_TITLE_COURSE_NAME_TOKEN,
     course_exercises:
       'Esercizi corso ' + ROUTE_TITLE_COURSE_NAME_TOKEN,
     course_exams: 'Esami corso ' + ROUTE_TITLE_COURSE_NAME_TOKEN,
@@ -293,6 +293,15 @@ export const it = {
   },
   exercise_wrapper: {
     select: 'Seleziona',
+  },
+  student_course_dashboard: {
+    practice_events: 'Esercitazioni',
+    new_practice_event: 'Nuova esercitazione',
+    exams_you_partecipated_in: 'Esami a cui hai partecipato',
+    review_submission: 'Rivedi le tue risposte',
+    view_assessment: 'Vedi voto',
+    assessment_available:
+      'Sono stati pubblicati i voti relativi a questo esame',
   },
   exercise_types: {
     [ExerciseType.MULTIPLE_CHOICE_SINGLE_POSSIBLE]:

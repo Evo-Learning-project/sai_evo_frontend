@@ -27,7 +27,7 @@ export const courseDashboardSidebarOptions: SidebarOption[] = [
   {
     label: _('sidebar_labels.course_dashboard_dashboard'),
     icon: 'home',
-    routeName: 'CourseDashboard',
+    routeName: 'TeacherCourseDashboard',
     requiredPrivileges: [],
   },
   {

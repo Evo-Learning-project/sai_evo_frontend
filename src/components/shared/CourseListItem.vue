@@ -16,7 +16,10 @@
     <template v-slot:side>
       <div class="flex flex-col items-stretch space-y-2">
         <router-link
-          :to="{ name: 'CourseDashboard', params: { courseId: course.id } }"
+          :to="{
+            name: 'TeacherCourseDashboard',
+            params: { courseId: course.id }
+          }"
           ><Btn v-if="canAccessCoursePanel" class="w-full">
             <span class="mr-1 text-base material-icons-outlined">
               shield
@@ -24,12 +27,19 @@
             {{ $t('courses.course_panel') }}
           </Btn></router-link
         >
-        <Btn>
-          <span class="mr-1 text-base material-icons-outlined">
-            chevron_right
-          </span>
-          {{ $t('courses.go_to_course') }}
-        </Btn>
+        <router-link
+          :to="{
+            name: 'StudentCourseDashboard',
+            params: { courseId: course.id }
+          }"
+        >
+          <Btn>
+            <span class="mr-1 text-base material-icons-outlined">
+              chevron_right
+            </span>
+            {{ $t('courses.go_to_course') }}
+          </Btn></router-link
+        >
       </div>
     </template>
   </Card>
