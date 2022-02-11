@@ -92,15 +92,18 @@ export default defineComponent({
       this.$emit('saving', false)
     },
     async onRuleAddClause (rule: EventTemplateRule) {
-      this.loading = true
-      await this.$store.dispatch('addEventTemplateRuleClause', {
-        courseId: this.courseId,
-        eventId: this.eventId,
-        templateId: this.modelValue.id,
-        ruleId: rule.id,
-        clause: getBlankTagBasedEventTemplateRuleClause()
-      })
-      this.loading = false
+      //this.loading = true
+      await this.withLoading(
+        async () =>
+          await this.$store.dispatch('addEventTemplateRuleClause', {
+            courseId: this.courseId,
+            eventId: this.eventId,
+            templateId: this.modelValue.id,
+            ruleId: rule.id,
+            clause: getBlankTagBasedEventTemplateRuleClause()
+          })
+      )
+      //this.loading = false
     },
     async onRuleUpdateClause (
       rule: EventTemplateRule,

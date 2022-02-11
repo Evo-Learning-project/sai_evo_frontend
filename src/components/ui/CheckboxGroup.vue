@@ -20,6 +20,7 @@
           <Toggle
             v-else
             class="order-1 mt-1 ml-4"
+            :overrideId="id + '-option-' + index"
             :modelValue="proxyModelValue.includes(option.value)"
             @update:modelValue="onToggleUpdate($event, option)"
           ></Toggle>

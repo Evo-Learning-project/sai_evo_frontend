@@ -31,7 +31,25 @@
         :existingOnly="true"
       ></TagInput>
     </div>
-    <Btn class="mt-8 w-max" @click="onAddClause" :loading="loading">
+    <div
+      @click="onAddClause"
+      class="mt-2 transition-opacity duration-75 opacity-50 cursor-pointer hover:opacity-100"
+    >
+      <p>
+        {{ $t('event_template_rule_editor.tag_based_and') }}
+        <strong>{{
+          $t('event_template_rule_editor.tag_based_at_least_one')
+        }}</strong>
+        {{ $t('event_template_rule_editor.tag_based_between') }}
+      </p>
+      <TagInput
+        :disabled="true"
+        class="cursor-pointer"
+        :placeholder="$t('exercise_editor.exercise_tags')"
+        :modelValue="[]"
+      ></TagInput>
+    </div>
+    <Btn class="hidden mt-8 w-max" @click="onAddClause" :loading="loading">
       <span class="mr-1 text-base material-icons-outlined">
         add_circle_outline </span
       >{{ $t('event_template_rule_editor.tag_based_add_condition') }}</Btn

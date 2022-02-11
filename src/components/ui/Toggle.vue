@@ -9,7 +9,7 @@
         name="toggle"
         :value="value"
         v-model="proxyModelValue"
-        :id="id"
+        :id="overrideId || id"
         :class="{
           'bg-white': !modelValue,
           'bg-primary-light': modelValue
@@ -47,6 +47,10 @@ export default defineComponent({
     labelOnLeft: {
       type: Boolean,
       default: false
+    },
+    overrideId: {
+      type: String,
+      default: ''
     }
   },
   created () {
