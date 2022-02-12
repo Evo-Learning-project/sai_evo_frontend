@@ -122,11 +122,13 @@ import {
 } from '@/models'
 import { getDebouncedForStudentText } from '@/utils'
 import { defineComponent } from '@vue/runtime-core'
-//import { mapState } from 'vuex'
 import { getTranslatedString as _ } from '@/i18n'
 import { DialogData } from '@/interfaces'
 import Card from '@/components/ui/Card.vue'
 import SkeletonCard from '@/components/ui/SkeletonCard.vue'
+
+import { createNamespacedHelpers } from 'vuex'
+const { mapState, mapActions } = createNamespacedHelpers('student')
 
 export default defineComponent({
   components: {
@@ -140,11 +142,12 @@ export default defineComponent({
   name: 'EventParticipationPage',
   mixins: [courseIdMixin, eventIdMixin, savingMixin],
   async created () {
-    this.firstLoading = true
     this.dispatchAnswerTextUpdate = getDebouncedForStudentText(
       this.dispatchAnswerTextUpdate
     )
-    await this.$store.dispatch('participateInEvent', {
+
+    this.firstLoading = true
+    await this.participateInEvent({
       courseId: this.courseId,
       eventId: this.eventId
     })
@@ -153,7 +156,6 @@ export default defineComponent({
   mounted () {
     this.mounted = true // prevent issues with teleported component
   },
-
   data () {
     return {
       saving: false,
@@ -171,29 +173,32 @@ export default defineComponent({
     }
   },
   methods: {
+    ...mapActions([
+      'participateInEvent',
+      'moveEventParticipationCurrentSlotCursorForward',
+      'moveEventParticipationCurrentSlotCursorBack',
+      'partialUpdateEventParticipation',
+      'partialUpdateEventParticipationSlot'
+    ]),
     async onGoForward () {
       this.loading = true
       this.showConfirmDialog = false
-      await this.$store.dispatch(
-        'moveEventParticipationCurrentSlotCursorForward',
-        { courseId: this.courseId }
-      )
+      await this.moveEventParticipationCurrentSlotCursorForward({
+        courseId: this.courseId
+      })
       this.loading = false
     },
     async onGoBack () {
       this.loading = true
-      await this.$store.dispatch(
-        'moveEventParticipationCurrentSlotCursorBack',
-        {
-          courseId: this.courseId
-        }
-      )
+      await this.moveEventParticipationCurrentSlotCursorBack({
+        courseId: this.courseId
+      })
       this.loading = false
     },
     async onTurnIn () {
       this.showConfirmDialog = false
       this.loading = true
-      await this.$store.dispatch('partialUpdateEventParticipation', {
+      await this.partialUpdateEventParticipation({
         courseId: this.courseId,
         changes: {
           state: EventParticipationState.TURNED_IN
@@ -227,7 +232,7 @@ export default defineComponent({
       this.saving = true
       this.savingError = false
       try {
-        await this.$store.dispatch('partialUpdateEventParticipationSlot', {
+        await this.partialUpdateEventParticipationSlot({
           courseId: this.courseId,
           eventId: this.eventId,
           participationId: this.proxyModelValue.id,
@@ -254,7 +259,7 @@ export default defineComponent({
       // }
     },
     async dispatchAnswerTextUpdate (slot: EventParticipationSlot, val: string) {
-      await this.$store.dispatch('partialUpdateEventParticipationSlot', {
+      await this.partialUpdateEventParticipationSlot({
         courseId: this.courseId,
         eventId: this.eventId,
         participationId: this.proxyModelValue.id,
@@ -266,9 +271,10 @@ export default defineComponent({
     }
   },
   computed: {
+    ...mapState(['eventParticipation']),
     proxyModelValue: {
       get (): EventParticipation {
-        return this.$store.state.eventParticipation ?? {}
+        return this.eventParticipation ?? {}
       },
       async set (val: EventParticipation) {
         await this.onChange(val)
@@ -278,7 +284,7 @@ export default defineComponent({
       return this.proxyModelValue.state == EventParticipationState.TURNED_IN
     },
     oneExerciseAtATime (): boolean {
-      return (this.proxyModelValue.event?.exercises_shown_at_a_time ?? 0) == 1
+      return (this.proxyModelValue.event?.exercises_shown_at_a_time ?? 0) === 1
     },
     canGoForward (): boolean {
       return (

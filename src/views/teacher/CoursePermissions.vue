@@ -48,8 +48,8 @@ import {
   RowNode
 } from 'ag-grid-community'
 
-import { createNamespacedHelpers } from 'vuex'
-const { mapState } = createNamespacedHelpers('teacher')
+import { createNamespacedHelpers, mapState } from 'vuex'
+const { mapActions } = createNamespacedHelpers('teacher')
 
 import { getTranslatedString as _ } from '@/i18n'
 import { Course, CoursePrivilege, User } from '@/models'
@@ -69,7 +69,7 @@ export default defineComponent({
   async created () {
     await this.withLoading(
       async () =>
-        await this.$store.dispatch('getUsersForCourse', {
+        await this.getUsersForCourse({
           courseId: this.courseId
         })
     )
@@ -82,6 +82,7 @@ export default defineComponent({
     }
   },
   methods: {
+    ...mapActions(['getUsersForCourse', 'updateUserCoursePrivileges']),
     onCellClicked (event: CellClickedEvent) {
       if (
         event.data.id !== this.user.id &&
@@ -104,11 +105,10 @@ export default defineComponent({
     }
   },
   computed: {
-    ...mapState(['user', 'users']),
+    ...mapState('shared', ['user']),
+    ...mapState('teacher', ['users']),
     editingUser (): User {
-      return this.$store.state.users.find(
-        (u: User) => u.id === this.editingUserId
-      )
+      return this.users.find((u: User) => u.id === this.editingUserId)
     },
     editingUserPrivileges: {
       get () {
@@ -119,7 +119,7 @@ export default defineComponent({
         //;(this.editingUser as User).course_privileges = val
         await this.withLoading(
           async () =>
-            await this.$store.dispatch('updateUserCoursePrivileges', {
+            await this.updateUserCoursePrivileges({
               courseId: this.courseId,
               userId: this.editingUserId,
               privileges: val
@@ -190,9 +190,7 @@ export default defineComponent({
       }))
     },
     currentCourse (): Course {
-      return this.$store.state.courses.find(
-        (c: Course) => c.id == this.courseId
-      )
+      return this.$store.getters['shared/course'](this.courseId)
     }
   }
 })

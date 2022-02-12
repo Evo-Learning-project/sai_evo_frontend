@@ -381,6 +381,6 @@ export const actions = {
       userId,
       privileges
     );
-    commit('setUser', { user, userId });
+    commit('setUser', { user });
   },
 };

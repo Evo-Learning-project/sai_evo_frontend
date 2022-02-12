@@ -161,7 +161,9 @@ import CloudSaveStatus from '@/components/ui/CloudSaveStatus.vue'
 import { getDebouncedForEditor } from '@/utils'
 import { courseIdMixin, savingMixin } from '@/mixins'
 import { DialogData } from '@/interfaces'
-import { DebouncedFunc } from 'lodash'
+
+import { createNamespacedHelpers } from 'vuex'
+const { mapActions } = createNamespacedHelpers('teacher')
 
 export default defineComponent({
   name: 'ExerciseEditor',
@@ -217,6 +219,13 @@ export default defineComponent({
     }
   },
   methods: {
+    ...mapActions([
+      'updateExercise',
+      'addExerciseChoice',
+      'updateExerciseChoice',
+      'addExerciseTag',
+      'removeExerciseTag'
+    ]),
     emitUpdate (key: keyof Exercise, value: unknown) {
       this.$emit('update:modelValue', {
         ...this.modelValue,
@@ -253,21 +262,21 @@ export default defineComponent({
       //;(this.dispatchExerciseUpdate as DebouncedFunc<any>).flush()
     },
     async onAddChoice () {
-      await this.$store.dispatch('addExerciseChoice', {
+      await this.addExerciseChoice({
         courseId: this.courseId,
         exerciseId: this.modelValue.id,
         choice: getBlankChoice()
       })
     },
     async onAddTag (tag: string) {
-      await this.$store.dispatch('addExerciseTag', {
+      await this.addExerciseTag({
         courseId: this.courseId,
         exerciseId: this.modelValue.id,
         tag
       })
     },
     async onRemoveTag (tag: string) {
-      await this.$store.dispatch('removeExerciseTag', {
+      await this.removeExerciseTag({
         courseId: this.courseId,
         exerciseId: this.modelValue.id,
         tag
@@ -318,7 +327,7 @@ export default defineComponent({
     // debounced dispatchers
     async dispatchExerciseUpdate (newVal: Exercise) {
       try {
-        await this.$store.dispatch('updateExercise', {
+        await this.updateExercise({
           courseId: this.courseId,
           exercise: newVal
         })
@@ -330,7 +339,7 @@ export default defineComponent({
     },
     async dispatchChoiceUpdate (newVal: ExerciseChoice) {
       try {
-        await this.$store.dispatch('updateExerciseChoice', {
+        await this.updateExerciseChoice({
           courseId: this.courseId,
           exerciseId: this.modelValue.id,
           choice: newVal

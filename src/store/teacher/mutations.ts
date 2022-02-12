@@ -4,9 +4,19 @@ import {
   EventParticipationSlot,
   EventParticipation,
   Event,
+  Exercise,
+  Tag,
+  User,
 } from '@/models';
 
 export const mutations = {
+  setExercises: (state: any, exercises: Exercise[]) =>
+    (state.exercises = exercises),
+  setCurrentExercisePage: (state: any, pageNumber: number) =>
+    (state.currentExercisePage = pageNumber),
+  setEvents: (state: any, events: Event[]) => (state.events = events),
+  setTags: (state: any, tags: Tag[]) => (state.tags = tags),
+
   // update an event in memory with the given payload
   setEvent: (
     state: any,
@@ -54,4 +64,11 @@ export const mutations = {
     state: any,
     participations: EventParticipation[]
   ) => (state.eventParticipations = participations),
+  // replace the user with same id as payload user with the given payload
+  setUser: (state: any, { user }: { user: User }) => {
+    Object.assign(
+      state.users.find((u: User) => u.id === user.id),
+      user
+    );
+  },
 };

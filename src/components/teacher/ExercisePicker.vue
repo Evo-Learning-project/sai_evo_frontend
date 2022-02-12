@@ -53,7 +53,7 @@
 <script lang="ts">
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { createNamespacedHelpers } from 'vuex'
-const { mapState } = createNamespacedHelpers('teacher')
+const { mapState, mapActions } = createNamespacedHelpers('teacher')
 
 import { VueEternalLoading, LoadAction } from '@ts-pro/vue-eternal-loading'
 import Spinner from '@/components/ui/Spinner.vue'
@@ -73,7 +73,7 @@ export default defineComponent({
     this.onFilterChange = getDebouncedForFilter(this.onFilterChange)
 
     this.firstLoading = true
-    await this.$store.dispatch('getExercises', {
+    await this.getExercises({
       courseId: this.courseId,
       fromFirstPage: true
     })
@@ -125,6 +125,7 @@ export default defineComponent({
     }
   },
   methods: {
+    ...mapActions(['getExercises']),
     isExerciseDraft (exercise: Exercise): boolean {
       return !this.allowPickingDraft && exercise.state == ExerciseState.DRAFT
     },
@@ -146,8 +147,7 @@ export default defineComponent({
     },
     async onLoadMore ({ loaded, noMore, error }: LoadAction) {
       try {
-        console.log('calling onloadmore', this.searchFilter)
-        const moreResults = await this.$store.dispatch('getExercises', {
+        const moreResults = await this.getExercises({
           courseId: this.courseId,
           fromFirstPage: false,
           filters: this.searchFilter
@@ -163,7 +163,7 @@ export default defineComponent({
       }
     },
     async onFilterChange () {
-      await this.$store.dispatch('getExercises', {
+      await this.getExercises({
         courseId: this.courseId,
         fromFirstPage: true,
         filters: this.searchFilter

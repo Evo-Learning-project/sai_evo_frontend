@@ -43,6 +43,15 @@ import {
   getBlankTagBasedEventTemplateRuleClause
 } from '@/models'
 import { courseIdMixin, loadingMixin } from '@/mixins'
+
+import { createNamespacedHelpers } from 'vuex'
+const {
+  mapState,
+  mapGetters,
+  mapActions,
+  mapMutations
+} = createNamespacedHelpers('teacher')
+
 export default defineComponent({
   components: {
     Btn,
@@ -67,9 +76,15 @@ export default defineComponent({
     }
   },
   methods: {
+    ...mapActions([
+      'addEventTemplateRule',
+      'updateEventTemplateRule',
+      'addEventTemplateRuleClause',
+      'updateEventTemplateRuleClause'
+    ]),
     async onAddRule () {
       this.loading = true
-      await this.$store.dispatch('addEventTemplateRule', {
+      await this.addEventTemplateRule({
         courseId: this.courseId,
         templateId: this.modelValue.id,
         rule: getBlankEventTemplateRule()
@@ -84,7 +99,7 @@ export default defineComponent({
       ;(this.modelValue.rules as EventTemplateRule[])[index] = newVal // TODO use a mutation
 
       // dispatch update to store
-      await this.$store.dispatch('updateEventTemplateRule', {
+      await this.updateEventTemplateRule({
         courseId: this.courseId,
         templateId: this.modelValue.id,
         rule: newVal
@@ -95,7 +110,7 @@ export default defineComponent({
       //this.loading = true
       await this.withLoading(
         async () =>
-          await this.$store.dispatch('addEventTemplateRuleClause', {
+          await this.addEventTemplateRuleClause({
             courseId: this.courseId,
             eventId: this.eventId,
             templateId: this.modelValue.id,
@@ -111,7 +126,7 @@ export default defineComponent({
     ) {
       await this.withLoading(
         async () =>
-          await this.$store.dispatch('updateEventTemplateRuleClause', {
+          await this.updateEventTemplateRuleClause({
             courseId: this.courseId,
             eventId: this.eventId,
             templateId: this.modelValue.id,

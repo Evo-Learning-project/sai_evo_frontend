@@ -13,7 +13,12 @@
         >
           {{ $t('exercise_editor.exercise_label') }}
         </TextInput>
-        <TextInput class="flex-grow" :rightIcon="'search'">
+        <TextInput
+          :modelValue="modelValue.text"
+          @update:modelValue="emitUpdate('text', $event)"
+          class="flex-grow"
+          :rightIcon="'search'"
+        >
           {{ $t('exercise_editor.exercise_text') }}
         </TextInput>
       </div>

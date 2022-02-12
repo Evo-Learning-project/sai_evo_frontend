@@ -64,6 +64,10 @@ import { defineComponent } from '@vue/runtime-core'
 import { courseIdMixin, coursePrivilegeMixin, loadingMixin } from '@/mixins'
 import SkeletonCard from '@/components/ui/SkeletonCard.vue'
 import Dialog from '@/components/ui/Dialog.vue'
+
+import { createNamespacedHelpers } from 'vuex'
+const { mapActions, mapGetters } = createNamespacedHelpers('teacher')
+
 export default defineComponent({
   components: {
     EventEditorPreview,
@@ -75,7 +79,7 @@ export default defineComponent({
   mixins: [courseIdMixin, loadingMixin, coursePrivilegeMixin],
   async created () {
     this.firstLoading = true
-    await this.$store.dispatch('getEvents', this.courseId)
+    await this.getEvents(this.courseId)
     this.firstLoading = false
   },
 
@@ -89,6 +93,7 @@ export default defineComponent({
     }
   },
   methods: {
+    ...mapActions(['partialUpdateEvent', 'createEvent', 'getEvents']),
     onClose (event: Event) {
       this.showCloseDialog = true
       this.closingExam = event
@@ -96,7 +101,7 @@ export default defineComponent({
     async closeExam () {
       await this.withLoading(
         async () =>
-          await this.$store.dispatch('partialUpdateEvent', {
+          await this.partialUpdateEvent({
             courseId: this.courseId,
             eventId: this.closingExam?.id,
             mutate: true,
@@ -108,11 +113,11 @@ export default defineComponent({
       )
       this.closingExam = null
       this.showCloseDialog = false
-      this.$store.commit('showSuccessFeedback')
+      this.$store.commit('shared/showSuccessFeedback')
     },
     async onAddExam () {
       this.buttonLoading = true
-      const newExam = await this.$store.dispatch('createEvent', {
+      const newExam = await this.createEvent({
         courseId: this.courseId,
         event: getBlankExam()
       })
@@ -126,9 +131,7 @@ export default defineComponent({
     }
   },
   computed: {
-    exams (): Event[] {
-      return this.$store.getters.exams
-    }
+    ...mapGetters(['exams'])
   }
 })
 </script>

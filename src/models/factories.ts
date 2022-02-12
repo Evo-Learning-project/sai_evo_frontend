@@ -1,4 +1,5 @@
 import {
+  Course,
   Event,
   EventParticipationSlot,
   EventState,
@@ -13,6 +14,12 @@ import {
   ExerciseType,
   Tag,
 } from '.';
+
+export const getBlankCourse = (): Course => ({
+  id: '',
+  name: '',
+  privileges: [],
+});
 
 export const getBlankChoice = (): ExerciseChoice => ({
   id: '',

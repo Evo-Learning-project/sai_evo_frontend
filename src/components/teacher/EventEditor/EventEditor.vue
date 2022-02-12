@@ -56,6 +56,14 @@ import {
 import Dialog from '@/components/ui/Dialog.vue'
 import { getTranslatedString as _ } from '@/i18n'
 
+import { createNamespacedHelpers } from 'vuex'
+const {
+  mapState,
+  mapGetters,
+  mapActions,
+  mapMutations
+} = createNamespacedHelpers('teacher')
+
 export default defineComponent({
   name: 'EventEditor',
   components: {
@@ -73,12 +81,13 @@ export default defineComponent({
     this.dispatchUpdate = getDebouncedForEditor(this.dispatchUpdate)
 
     await this.withLoading(async () => {
-      await this.$store.dispatch('getTags', this.courseId)
-      await this.$store.dispatch('getEvent', {
+      await this.getTags(this.courseId)
+      await this.getEvent({
         courseId: this.courseId,
         eventId: this.eventId
       })
-      await this.$store.dispatch('getExercises', { courseId: this.courseId })
+      //? is it necessary?
+      await this.getExercises({ courseId: this.courseId })
     })
 
     if (this.proxyModelValue.state == EventState.OPEN) {
@@ -93,21 +102,29 @@ export default defineComponent({
     }
   },
   methods: {
+    ...mapActions([
+      'getTags',
+      'getEvent',
+      'getExercises',
+      'partialUpdateEvent',
+      'updateEvent'
+    ]),
+    ...mapMutations(['setEvent']),
     async onStateUpdate (newVal: EventState) {
       this.stateSaving = true
-      this.$store.commit('setEvent', {
+      this.setEvent({
         eventId: this.eventId,
         event: { ...this.proxyModelValue, state: newVal }
       })
 
-      await this.$store.dispatch('partialUpdateEvent', {
+      await this.partialUpdateEvent({
         courseId: this.courseId,
         eventId: this.proxyModelValue.id,
         changes: { state: newVal }
       })
       this.stateSaving = false
       if (newVal === EventState.PLANNED) {
-        this.$store.commit('showSuccessFeedback')
+        this.$store.commit('shared/showSuccessFeedback')
       }
     },
     async onChange (newVal: Event) {
@@ -122,14 +139,14 @@ export default defineComponent({
       }
 
       // update the in-memory object corresponding to this event
-      this.$store.commit('setEvent', { eventId: this.eventId, event: newVal })
+      this.setEvent({ eventId: this.eventId, event: newVal })
 
       // persist update to server
       this.saving = true
       this.dispatchUpdate(newVal)
     },
     async dispatchUpdate (newVal: Event) {
-      await this.$store.dispatch('updateEvent', {
+      await this.updateEvent({
         courseId: this.courseId,
         event: newVal
       })
@@ -137,9 +154,10 @@ export default defineComponent({
     }
   },
   computed: {
+    ...mapGetters(['event']),
     proxyModelValue: {
       get (): Event {
-        return this.$store.getters.event(this.eventId)
+        return this.event(this.eventId)
       },
       async set (val: Event) {
         await this.onChange(val)

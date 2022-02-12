@@ -17,14 +17,14 @@
         class="absolute -left-0.5 block transition-all duration-100 rounded-full toggle-handle appearance-none cursor-pointer hover:ring-8  ring-blue-400 active:ring-opacity-40 ring-opacity-20 toggle-checkbox"
       />
       <label
-        :for="id"
+        :for="overrideId || id"
         :class="[proxyModelValue ? 'text-light' : 'text-gray-600']"
         class="absolute text-lg font-semibold transform translate-y-1/2 toggle-mark opacity-70 material-icons-outlined bottom-1/2"
         >&nbsp;</label
       >
 
       <label
-        :for="id"
+        :for="overrideId || id"
         class="block overflow-hidden bg-gray-400 rounded-full cursor-pointer toggle-rail toggle-label"
       ></label>
     </div>

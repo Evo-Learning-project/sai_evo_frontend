@@ -253,8 +253,10 @@ import {
 } from '@/models'
 import { defineComponent } from '@vue/runtime-core'
 
-import { createNamespacedHelpers } from 'vuex'
-const { mapState } = createNamespacedHelpers('teacher')
+import { createNamespacedHelpers, mapActions } from 'vuex'
+const { mapState, mapGetters, mapMutations } = createNamespacedHelpers(
+  'teacher'
+)
 
 import { getTranslatedString as _ } from '@/i18n'
 import {
@@ -295,11 +297,11 @@ export default defineComponent({
   mixins: [courseIdMixin, eventIdMixin, loadingMixin],
   async created () {
     this.firstLoading = true
-    await this.$store.dispatch('getEventParticipations', {
+    await this.getEventParticipations({
       courseId: this.courseId,
       eventId: this.eventId
     })
-    await this.$store.dispatch('getEvent', {
+    await this.getEvent({
       courseId: this.courseId,
       eventId: this.eventId
     })
@@ -308,12 +310,6 @@ export default defineComponent({
   data () {
     return {
       firstLoading: false,
-      //showDialog: false,
-      // dialogData: {
-      //   title: '',
-      //   noText: _('dialog.default_cancel_text'),
-      //   yesText: ''
-      // } as DialogData,
       editingSlot: null as EventParticipationSlot | null,
       editingSlotDirty: null as EventParticipationSlot | null,
       editingFullName: '',
@@ -322,7 +318,6 @@ export default defineComponent({
       selectedParticipations: [] as string[],
 
       // dialog functions
-      // TODO make dialogData be a computed based on these flags to avoid setting it manually inside of methods
       editingAssessmentSlotMode: false,
       publishingResultsMode: false,
       closingExamsMode: false,
@@ -330,6 +325,16 @@ export default defineComponent({
     }
   },
   methods: {
+    ...mapActions('teacher', [
+      'getEvent',
+      'partialUpdateEvent',
+      'getEventParticipation',
+      'getEventParticipations'
+    ]),
+    ...mapActions('shared', [
+      'partialUpdateEventParticipation',
+      'partialUpdateEventParticipationSlot'
+    ]),
     isRowSelectable (row: RowNode) {
       /**
        * Used by ag grid to determine whether the row is selectable
@@ -403,7 +408,7 @@ export default defineComponent({
       const unselectedUserIds = unselectedParticipations.map(p => p.user?.id)
       await this.withLoading(
         async () =>
-          await this.$store.dispatch('partialUpdateEvent', {
+          await this.partialUpdateEvent({
             courseId: this.courseId,
             eventId: this.eventId,
             mutate: true,
@@ -413,14 +418,14 @@ export default defineComponent({
             }
           })
       )
-      this.$store.commit('showSuccessFeedback')
+      this.$store.commit('shared/showSuccessFeedback')
       this.hideDialog()
       this.gridApi.refreshCells({ force: true })
     },
     async publishResults () {
       await this.withLoading(
         async () =>
-          await this.$store.dispatch('partialUpdateEventParticipation', {
+          await this.partialUpdateEventParticipation({
             courseId: this.courseId,
             eventId: this.eventId,
             participationIds: this.selectedParticipations,
@@ -429,13 +434,13 @@ export default defineComponent({
             }
           })
       )
-      this.$store.commit('showSuccessFeedback')
+      this.$store.commit('shared/showSuccessFeedback')
       this.hideDialog()
       this.gridApi.refreshCells({ force: true })
     },
     async reOpenSubmission () {
       await this.withLoading(async () => {
-        await this.$store.dispatch('partialUpdateEventParticipation', {
+        await this.partialUpdateEventParticipation({
           courseId: this.courseId,
           eventId: this.eventId,
           changes: {
@@ -445,12 +450,12 @@ export default defineComponent({
         })
       })
       this.hideDialog()
-      this.$store.commit('showSuccessFeedback')
+      this.$store.commit('shared/showSuccessFeedback')
       this.gridApi.refreshCells({ force: true })
     },
     async dispatchAssessmentUpdate () {
       await this.withLoading(async () => {
-        await this.$store.dispatch('partialUpdateEventParticipationSlot', {
+        await this.partialUpdateEventParticipationSlot({
           courseId: this.courseId,
           eventId: this.eventId,
           participationId: this.editingParticipationId,
@@ -460,7 +465,7 @@ export default defineComponent({
             comment: this.editingSlotDirty?.comment
           }
         })
-        await this.$store.dispatch('getEventParticipation', {
+        await this.getEventParticipation({
           courseId: this.courseId,
           eventId: this.eventId,
           participationId: this.editingParticipationId
@@ -553,7 +558,7 @@ export default defineComponent({
       )
     },
     event (): Event {
-      return this.$store.getters.event(this.eventId)
+      return this.$store.getters['teacher/event'](this.eventId)
     },
     resultsMode () {
       return (

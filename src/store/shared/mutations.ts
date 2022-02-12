@@ -28,21 +28,11 @@ export const mutations = {
     state.showSuccessFeedback = true;
     setTimeout(() => (state.showSuccessFeedback = false), 2000);
   },
-  setUser: (
-    state: any,
-    { user, userId }: { user: User; userId?: string }
-  ) => {
-    if (!userId) {
-      // used to set personal user account
-      state.user = user;
-      localStorage.setItem('user', JSON.stringify(user));
-    } else {
-      // teacher usage to replace a user when editing privileges
-      Object.assign(
-        state.users.find((u: User) => u.id == userId),
-        user
-      );
-    }
+  //set personal user account
+  setUser: (state: any, { user }: { user: User }) => {
+    Object.assign(state.user, user);
+    // TODO use plugin
+    localStorage.setItem('user', JSON.stringify(user));
   },
 
   setToken: (state: any, token: string) => {

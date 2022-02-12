@@ -45,8 +45,7 @@
 
 <script lang="ts">
 import { createNamespacedHelpers } from 'vuex'
-const { mapState } = createNamespacedHelpers('teacher')
-
+const { mapState, mapActions } = createNamespacedHelpers('teacher')
 import { getTranslatedString as _ } from '@/i18n'
 import { icons as exerciseTypesIcons } from '@/assets/exerciseTypesIcons'
 import { icons as exerciseStatesIcons } from '@/assets/exerciseStatesIcons'
@@ -78,7 +77,7 @@ export default defineComponent({
   mixins: [courseIdMixin],
   watch: {
     searchFilter: {
-      async handler (val: SearchFilter) {
+      async handler () {
         await this.onFilterChange()
         this.isInitialInfiniteLoad = true
       },
@@ -99,11 +98,11 @@ export default defineComponent({
     this.onFilterChange = getDebouncedForFilter(this.onFilterChange)
 
     this.firstLoading = true
-    await this.$store.dispatch('getExercises', {
+    await this.getExercises({
       courseId: this.courseId,
       fromFirstPage: true
     })
-    await this.$store.dispatch('getTags', this.courseId)
+    await this.getTags(this.courseId)
     this.firstLoading = false
   },
   data () {
@@ -122,8 +121,9 @@ export default defineComponent({
     }
   },
   methods: {
+    ...mapActions(['getExercises', 'getTags', 'createExercise']),
     async onFilterChange () {
-      await this.$store.dispatch('getExercises', {
+      await this.getExercises({
         courseId: this.courseId,
         fromFirstPage: true,
         filters: this.searchFilter
@@ -131,7 +131,7 @@ export default defineComponent({
     },
     async onLoadMore ({ loaded, noMore, error }: LoadAction) {
       try {
-        const moreResults = await this.$store.dispatch('getExercises', {
+        const moreResults = await this.getExercises({
           courseId: this.courseId,
           fromFirstPage: false,
           filters: this.searchFilter
@@ -147,7 +147,7 @@ export default defineComponent({
     },
     async onAddExercise () {
       this.loading = true
-      const newExercise = await this.$store.dispatch('createExercise', {
+      const newExercise = await this.createExercise({
         courseId: this.courseId,
         exercise: getBlankExercise()
       })
