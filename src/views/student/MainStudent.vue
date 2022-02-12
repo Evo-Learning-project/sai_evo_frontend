@@ -29,7 +29,7 @@
           </div>
           <div class="hidden md:block">
             <div class="flex items-center ml-4 md:ml-6">
-              <p class="text-lightText">{{ $store.getters.email }}</p>
+              <p class="text-lightText">{{ $store.getters['shared/email'] }}</p>
               <!-- <button
                 type="button"
                 class="p-1 text-gray-400 bg-gray-800 rounded-full hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white"
@@ -301,7 +301,6 @@
 
 <script lang="ts">
 import { courseIdMixin, eventIdMixin } from '@/mixins'
-import { Course, Event } from '@/models'
 import {
   ROUTE_TITLE_COURSE_NAME_TOKEN,
   ROUTE_TITLE_EVENT_NAME_TOKEN
@@ -312,25 +311,10 @@ import { defineComponent } from '@vue/runtime-core'
 export default defineComponent({
   name: 'MainStudent',
   data () {
-    return {
-      moved: true,
-      test: null
-    }
+    return {}
   },
   mixins: [courseIdMixin, eventIdMixin],
-  methods: {
-    // sidebarHandler () {
-    //   var sideBar = document.getElementById('mobile-nav')
-    //   sideBar.style.transform = 'translateX(-260px)'
-    //   if (this.$data.moved) {
-    //     sideBar.style.transform = 'translateX(0px)'
-    //     this.$data.moved = false
-    //   } else {
-    //     sideBar.style.transform = 'translateX(-260px)'
-    //     this.$data.moved = true
-    //   }
-    // }
-  },
+  methods: {},
   computed: {
     sidebarOptions (): SidebarOption[] {
       return (this.$route.meta?.sidebarOptions ?? []) as SidebarOption[]
@@ -341,18 +325,10 @@ export default defineComponent({
         ?.replace(ROUTE_TITLE_EVENT_NAME_TOKEN, this.currentEvent)
     },
     currentCourse (): string {
-      return (
-        this.$store.state.shared.courses.find(
-          (c: Course) => c.id == this.courseId
-        )?.name ?? ''
-      )
+      return this.$store.getters['shared/courses'](this.courseId)?.name ?? ''
     },
     currentEvent (): string {
-      return (
-        // this.$store.state.events.find((e: Event) => e.id == this.eventId)
-        //   ?.name ??
-        this.$store.state.student.eventParticipation?.event?.name ?? ''
-      )
+      return this.$store.state.student.eventParticipation?.event?.name ?? ''
     }
   }
 })

@@ -100,7 +100,7 @@
 
 <script lang="ts">
 import { courseIdMixin, coursePrivilegeMixin, eventIdMixin } from '@/mixins'
-import { Course, CoursePrivilege, Event } from '@/models'
+import { Course, Event } from '@/models'
 import {
   ROUTE_TITLE_COURSE_NAME_TOKEN,
   ROUTE_TITLE_EVENT_NAME_TOKEN
@@ -113,8 +113,7 @@ export default defineComponent({
   name: 'MainTeacher',
   data () {
     return {
-      moved: true,
-      test: null
+      moved: true
     }
   },
   mixins: [courseIdMixin, eventIdMixin, coursePrivilegeMixin],
@@ -129,17 +128,6 @@ export default defineComponent({
         option.children?.includes(this.$route.name as string)
       )
     }
-    // sidebarHandler () {
-    //   var sideBar = document.getElementById('mobile-nav')
-    //   sideBar.style.transform = 'translateX(-260px)'
-    //   if (this.$data.moved) {
-    //     sideBar.style.transform = 'translateX(0px)'
-    //     this.$data.moved = false
-    //   } else {
-    //     sideBar.style.transform = 'translateX(-260px)'
-    //     this.$data.moved = true
-    //   }
-    // }
   },
   computed: {
     allowedSidebarOptions (): SidebarOption[] {
@@ -154,15 +142,10 @@ export default defineComponent({
         ?.replace(ROUTE_TITLE_EVENT_NAME_TOKEN, this.currentEvent?.name ?? '')
     },
     currentCourse (): Course {
-      // TODO refactor and use getter
-      return this.$store.state.shared.courses.find(
-        (c: Course) => c.id == this.courseId
-      )
+      return this.$store.getters['shared/course'](this.courseId)
     },
     currentEvent (): Event {
-      return this.$store.state.teacher.events.find(
-        (e: Event) => e.id == this.eventId
-      )
+      return this.$store.getters['teacher/event'](this.eventId)
     }
   }
 })
