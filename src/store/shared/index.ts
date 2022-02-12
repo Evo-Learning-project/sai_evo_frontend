@@ -4,7 +4,21 @@ import { actions } from './actions';
 import { getters } from './getters';
 import { mutations } from './mutations';
 
-export const shared = {
+// import VuexPersistence from 'vuex-persist';
+
+// const vuexLocal = new VuexPersistence({
+//   storage: window.localStorage,
+//   modules: ['shared'],
+//   reducer: (state: any) => ({
+//     user: state.user,
+//     token: state.token,
+//     refreshToken: state.refreshToken,
+//   }),
+// });
+
+export const sharedStore = {
+  namespaced: true,
+  //plugins: [vuexLocal.plugin],
   state: () => ({
     user: {} as User,
     courses: [] as Course[],

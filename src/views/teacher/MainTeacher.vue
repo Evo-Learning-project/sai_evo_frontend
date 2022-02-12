@@ -154,12 +154,15 @@ export default defineComponent({
         ?.replace(ROUTE_TITLE_EVENT_NAME_TOKEN, this.currentEvent?.name ?? '')
     },
     currentCourse (): Course {
-      return this.$store.state.courses.find(
+      // TODO refactor and use getter
+      return this.$store.state.shared.courses.find(
         (c: Course) => c.id == this.courseId
       )
     },
     currentEvent (): Event {
-      return this.$store.state.events.find((e: Event) => e.id == this.eventId)
+      return this.$store.state.teacher.events.find(
+        (e: Event) => e.id == this.eventId
+      )
     }
   }
 })

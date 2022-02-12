@@ -252,7 +252,10 @@ import {
   ParticipationAssessmentProgress
 } from '@/models'
 import { defineComponent } from '@vue/runtime-core'
-import { mapState } from 'vuex'
+
+import { createNamespacedHelpers } from 'vuex'
+const { mapState } = createNamespacedHelpers('teacher')
+
 import { getTranslatedString as _ } from '@/i18n'
 import {
   CellClickedEvent,

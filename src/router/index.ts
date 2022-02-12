@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   createRouter,
   createWebHistory,
@@ -168,8 +169,8 @@ router.beforeEach((to, from) => {
     ) {
       return false;
     } else {
-      store.state.saving = false;
-      store.state.savingError = false;
+      (store.state as any).shared.saving = false;
+      (store.state as any).shared.savingError = false;
     }
   }
 });

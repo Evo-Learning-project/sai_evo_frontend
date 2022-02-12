@@ -4,7 +4,8 @@ import { actions } from './actions';
 import { getters } from './getters';
 import { mutations } from './mutations';
 
-export const shared = {
+export const studentStore = {
+  namespaced: true,
   state: () => ({
     eventParticipation: null as EventParticipation | null,
   }),

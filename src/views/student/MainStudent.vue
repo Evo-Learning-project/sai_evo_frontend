@@ -342,16 +342,16 @@ export default defineComponent({
     },
     currentCourse (): string {
       return (
-        this.$store.state.courses.find((c: Course) => c.id == this.courseId)
-          ?.name ?? ''
+        this.$store.state.shared.courses.find(
+          (c: Course) => c.id == this.courseId
+        )?.name ?? ''
       )
     },
     currentEvent (): string {
       return (
-        this.$store.state.events.find((e: Event) => e.id == this.eventId)
-          ?.name ??
-        this.$store.state.eventParticipation?.event?.name ??
-        ''
+        // this.$store.state.events.find((e: Event) => e.id == this.eventId)
+        //   ?.name ??
+        this.$store.state.student.eventParticipation?.event?.name ?? ''
       )
     }
   }

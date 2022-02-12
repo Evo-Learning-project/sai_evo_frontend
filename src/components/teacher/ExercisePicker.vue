@@ -52,7 +52,8 @@
 
 <script lang="ts">
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { mapState } from 'vuex'
+import { createNamespacedHelpers } from 'vuex'
+const { mapState } = createNamespacedHelpers('teacher')
 
 import { VueEternalLoading, LoadAction } from '@ts-pro/vue-eternal-loading'
 import Spinner from '@/components/ui/Spinner.vue'

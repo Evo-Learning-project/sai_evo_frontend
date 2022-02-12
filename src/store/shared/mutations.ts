@@ -1,9 +1,28 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import { User } from '@/models';
+import { Course, User } from '@/models';
 import axios from 'axios';
 
 export const mutations = {
+  initStore: (state: any) => {
+    // TODO refactor
+    const token = localStorage.getItem('token');
+    const refreshToken = localStorage.getItem('refreshToken');
+    const user = localStorage.getItem('user');
+
+    if (token) {
+      console.log('restoring token');
+      state.token = token;
+      axios.defaults.headers.common['Authorization'] =
+        'Bearer ' + state.token;
+    }
+    if (refreshToken) {
+      state.refreshToken = refreshToken;
+    }
+    if (user) {
+      state.user = JSON.parse(user);
+    }
+  },
   setLoading: (state: any, val: boolean) => (state.loading = val),
   showSuccessFeedback: (state: any) => {
     state.showSuccessFeedback = true;
@@ -42,4 +61,6 @@ export const mutations = {
     state.refreshToken = token;
     localStorage.setItem('refreshToken', token);
   },
+  setCourses: (state: any, courses: Course[]) =>
+    (state.courses = courses),
 };

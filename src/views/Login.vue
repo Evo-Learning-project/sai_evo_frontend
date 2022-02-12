@@ -94,8 +94,8 @@ export default {
         }
         this.user = googleUser.getBasicProfile().getEmail()
         const token = googleUser.getAuthResponse().access_token
-        await this.$store.dispatch('convertToken', token)
-        await this.$store.dispatch('getUserData')
+        await this.$store.dispatch('shared/convertToken', token)
+        await this.$store.dispatch('shared/getUserData')
 
         this.redirectToMainView()
       } catch (error) {
@@ -117,7 +117,7 @@ export default {
     }
   },
   created () {
-    this.$store.commit('resetToken')
+    this.$store.commit('shared/resetToken')
     // if (this.$store.getters.isAuthenticated) {
     //   this.$router.push(getMainView())
     // }

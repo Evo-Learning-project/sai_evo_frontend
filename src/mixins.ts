@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import { ComponentOptionsMixin, computed } from 'vue';
 import { Course, CoursePrivilege } from './models';
 import router from './router';
 import store from './store/index';
@@ -23,9 +22,10 @@ export const eventIdMixin = {
 export const loadingMixin = {
   methods: {
     async withLoading(callback: () => any) {
-      store.state.loading = true;
+      // TODO type the state
+      (store.state as any).shared.loading = true;
       await callback();
-      store.state.loading = false;
+      (store.state as any).shared.loading = false;
     },
   },
 };
@@ -33,10 +33,10 @@ export const loadingMixin = {
 export const savingMixin = {
   watch: {
     saving(newVal: boolean) {
-      store.state.saving = newVal;
+      (store.state as any).shared.saving = newVal;
     },
     savingError(newVal: boolean) {
-      store.state.savingError = newVal;
+      (store.state as any).savingError = newVal;
     },
   },
 };
@@ -49,7 +49,7 @@ export const coursePrivilegeMixin = {
        * user has such privileges for the current course
        */
       const myPrivileges =
-        store.state.courses.find(
+        (store.state as any).shared.courses.find(
           (c: Course) =>
             c.id ==
             (router.currentRoute.value.params.courseId as string)
@@ -60,13 +60,4 @@ export const coursePrivilegeMixin = {
       );
     },
   },
-  // computed: {
-  //   currentCoursePrivileges(): CoursePrivilege[] {
-  //     return store.state.courses.find(
-  //       (c: Course) =>
-  //         c.id ==
-  //         (router.currentRoute.value.params.courseId as string)
-  //     )?.privileges as CoursePrivilege[];
-  //   },
-  // },
 };

@@ -44,18 +44,13 @@
 </template>
 
 <script lang="ts">
-import { mapState } from 'vuex'
+import { createNamespacedHelpers } from 'vuex'
+const { mapState } = createNamespacedHelpers('teacher')
 
 import { getTranslatedString as _ } from '@/i18n'
 import { icons as exerciseTypesIcons } from '@/assets/exerciseTypesIcons'
 import { icons as exerciseStatesIcons } from '@/assets/exerciseStatesIcons'
-import {
-  Exercise,
-  ExerciseState,
-  ExerciseType,
-  getBlankExercise,
-  Tag
-} from '@/models'
+import { ExerciseState, ExerciseType, getBlankExercise, Tag } from '@/models'
 
 import { VueEternalLoading, LoadAction } from '@ts-pro/vue-eternal-loading'
 import { SelectableOption } from '@/interfaces'

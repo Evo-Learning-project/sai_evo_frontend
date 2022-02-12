@@ -11,7 +11,9 @@
 <script lang="ts">
 import { defineComponent } from '@vue/runtime-core'
 import CourseListItem from '@/components/shared/CourseListItem.vue'
-import { mapState } from 'vuex'
+
+import { createNamespacedHelpers } from 'vuex'
+const { mapState } = createNamespacedHelpers('shared')
 
 export default defineComponent({
   name: 'CourseList',
@@ -19,7 +21,7 @@ export default defineComponent({
     CourseListItem
   },
   async created () {
-    await this.$store.dispatch('getCourses')
+    await this.$store.dispatch('shared/getCourses')
   },
   computed: {
     ...mapState(['courses'])

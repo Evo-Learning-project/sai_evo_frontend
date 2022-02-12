@@ -48,13 +48,15 @@
 <script lang="ts">
 import { defineComponent } from '@vue/runtime-core'
 import Spinner from './components/ui/Spinner.vue'
-import { mapGetters, mapState } from 'vuex'
 import Notification from './components/ui/Notification.vue'
 import { getTranslatedString as _ } from './i18n'
 
+import { createNamespacedHelpers } from 'vuex'
+const { mapState, mapGetters } = createNamespacedHelpers('shared')
+
 export default defineComponent({
   beforeCreate (): void {
-    this.$store.commit('initStore')
+    this.$store.commit('shared/initStore')
   },
   beforeUnmount () {
     window.removeEventListener('beforeunload', this.beforeWindowUnload)
@@ -64,7 +66,7 @@ export default defineComponent({
     Notification
   },
   async created () {
-    await this.$store.dispatch('getCourses')
+    await this.$store.dispatch('shared/getCourses')
     window.addEventListener('beforeunload', this.beforeWindowUnload)
   },
   data () {

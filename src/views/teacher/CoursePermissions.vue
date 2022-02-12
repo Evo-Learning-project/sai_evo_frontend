@@ -47,7 +47,10 @@ import {
   RowClassParams,
   RowNode
 } from 'ag-grid-community'
-import { mapState } from 'vuex'
+
+import { createNamespacedHelpers } from 'vuex'
+const { mapState } = createNamespacedHelpers('teacher')
+
 import { getTranslatedString as _ } from '@/i18n'
 import { Course, CoursePrivilege, User } from '@/models'
 import { icons as coursePrivilegeIcons } from '@/assets/coursePrivilegeIcons'
@@ -101,7 +104,7 @@ export default defineComponent({
     }
   },
   computed: {
-    ...mapState(['user', 'users', 'loading']),
+    ...mapState(['user', 'users']),
     editingUser (): User {
       return this.$store.state.users.find(
         (u: User) => u.id === this.editingUserId

@@ -64,7 +64,9 @@ import TagInput from '@/components/ui/TagInput.vue'
 import { courseIdMixin, eventIdMixin, loadingMixin } from '@/mixins'
 import { EventTemplateRuleClause, Tag } from '@/models'
 import { defineComponent, PropType } from '@vue/runtime-core'
-import { mapState } from 'vuex'
+
+import { createNamespacedHelpers } from 'vuex'
+const { mapState } = createNamespacedHelpers('teacher')
 
 export default defineComponent({
   components: { TagInput, Btn },
