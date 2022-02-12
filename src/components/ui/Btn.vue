@@ -10,7 +10,7 @@
       'px-5 py-1 font-medium': size == 'base' && variant !== 'transparent',
       'px-2.5 py-0.5 text-sm': size == 'sm',
       'px-1.5 py-0.5 text-xs': size == 'xs',
-      'px-10 py-2 text-lg font-semibold': size == 'lg',
+      'px-14 py-2 text-lg font-medium': size == 'lg',
       'text-lightText bg-primary hover:bg-primary-dark':
         !outline && variant == 'primary',
       'text-danger-dark bg-danger': !outline && variant == 'danger',

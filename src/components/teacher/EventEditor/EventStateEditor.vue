@@ -164,7 +164,7 @@ export default defineComponent({
       return (
         window.location.origin +
         this.$router.resolve({
-          name: 'ExamParticipationPage',
+          name: 'ExamParticipationPreview',
           params: { examId: this.modelValue.id }
         }).fullPath
       )

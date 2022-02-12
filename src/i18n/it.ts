@@ -45,6 +45,7 @@ export const it = {
     exam_results: 'Risultati esame ' + ROUTE_TITLE_EVENT_NAME_TOKEN,
     ongoing_exam:
       'Esame ' + ROUTE_TITLE_EVENT_NAME_TOKEN + ' in corso',
+    exam_preview: 'Anteprima esame',
   },
   event_participation_page: {
     exercise: 'Esercizio',
@@ -65,7 +66,11 @@ export const it = {
     next_dialog_text:
       'Se vai avanti, non potrai più tornare indietro a questo esercizio.',
     next_dialog_confirm_button: 'Vai avanti',
+    participate: 'Partecipa',
+    exam_not_yet_begun: "L'esame non è ancora iniziato.",
+    exam_is_over: "L'esame è terminato.",
   },
+
   event_participation_slot: {
     text_answer_label: 'La tua risposta',
   },

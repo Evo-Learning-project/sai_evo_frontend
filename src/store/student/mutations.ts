@@ -11,4 +11,5 @@ export const mutations = {
     // TODO check if this correctly triggers reactivity
     state.eventParticipation.slots = slots;
   },
+  setEvent: (state: any, event: Event) => (state.event = event),
 };

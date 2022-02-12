@@ -19,6 +19,7 @@ import { getCourses, getTags } from '@/api/courses';
 import { Commit } from 'vuex';
 
 import {
+  getEvent,
   moveEventParticipationCurrentSlotCursor,
   partialUpdateEventParticipation,
   partialUpdateEventParticipationSlot,
@@ -57,5 +58,13 @@ export const actions = {
       'back'
     );
     commit('setEventParticipationSlots', [slot]);
+  },
+  getEvent: async (
+    { commit }: { commit: Commit },
+    { courseId, eventId }: { courseId: string; eventId: string }
+  ) => {
+    console.log('DATA: ', courseId, eventId);
+    const event = await getEvent(courseId, eventId);
+    commit('setEvent', event);
   },
 };

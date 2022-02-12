@@ -71,6 +71,7 @@ export interface Event {
   template?: EventTemplate;
   exercises_shown_at_a_time: number | null;
   allow_going_back: boolean;
+  participation_exists?: boolean;
 }
 
 export interface EventTemplate {

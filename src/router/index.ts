@@ -14,6 +14,7 @@ import CourseExams from '../views/teacher/CourseExams.vue';
 import CoursePermissions from '../views/teacher/CoursePermissions.vue';
 import EventEditor from '../components/teacher/EventEditor/EventEditor.vue';
 import EventParticipationPage from '../views/student/EventParticipationPage.vue';
+import ExamPreview from '../views/student/ExamPreview.vue';
 import EventParticipationsMonitor from '../views/teacher/EventParticipationsMonitor.vue';
 import Login from '../views/Login.vue';
 import {
@@ -145,6 +146,14 @@ const routes: Array<RouteRecordRaw> = [
       },
       {
         path: 'courses/:courseId/exams/:examId',
+        component: ExamPreview,
+        name: 'ExamParticipationPreview',
+        meta: {
+          routeTitle: _('headings.exam_preview'),
+        },
+      },
+      {
+        path: 'courses/:courseId/exams/:examId/participate',
         component: EventParticipationPage,
         name: 'ExamParticipationPage',
         meta: {

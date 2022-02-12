@@ -325,7 +325,7 @@ export default defineComponent({
         ?.replace(ROUTE_TITLE_EVENT_NAME_TOKEN, this.currentEvent)
     },
     currentCourse (): string {
-      return this.$store.getters['shared/courses'](this.courseId)?.name ?? ''
+      return this.$store.getters['shared/course'](this.courseId)?.name ?? ''
     },
     currentEvent (): string {
       return this.$store.state.student.eventParticipation?.event?.name ?? ''

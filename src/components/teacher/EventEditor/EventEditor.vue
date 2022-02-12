@@ -57,12 +57,9 @@ import Dialog from '@/components/ui/Dialog.vue'
 import { getTranslatedString as _ } from '@/i18n'
 
 import { createNamespacedHelpers } from 'vuex'
-const {
-  mapState,
-  mapGetters,
-  mapActions,
-  mapMutations
-} = createNamespacedHelpers('teacher')
+const { mapGetters, mapActions, mapMutations } = createNamespacedHelpers(
+  'teacher'
+)
 
 export default defineComponent({
   name: 'EventEditor',

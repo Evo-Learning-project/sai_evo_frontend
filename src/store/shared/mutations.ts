@@ -34,7 +34,6 @@ export const mutations = {
     // TODO use plugin
     localStorage.setItem('user', JSON.stringify(user));
   },
-
   setToken: (state: any, token: string) => {
     state.token = token;
     localStorage.setItem('token', token);
