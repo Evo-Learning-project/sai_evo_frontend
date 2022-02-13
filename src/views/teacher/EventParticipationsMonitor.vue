@@ -389,7 +389,11 @@ export default defineComponent({
         this.editingAssessmentSlotMode = true
       }
       // change turned in status
-      else if (event.colDef.field === 'state' && !this.resultsMode) {
+      else if (
+        event.colDef.field === 'state' &&
+        !this.resultsMode &&
+        event.data.state == EventParticipationState.TURNED_IN
+      ) {
         this.editingParticipationId = event.data.id
         this.reOpeningTurnedInParticipationMode = true
       }

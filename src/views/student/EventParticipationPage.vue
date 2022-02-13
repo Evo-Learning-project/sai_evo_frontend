@@ -271,10 +271,10 @@ export default defineComponent({
     }
   },
   computed: {
-    ...mapState(['eventParticipation']),
+    ...mapState(['currentEventParticipation']),
     proxyModelValue: {
       get (): EventParticipation {
-        return this.eventParticipation ?? {}
+        return this.currentEventParticipation ?? {}
       },
       async set (val: EventParticipation) {
         await this.onChange(val)

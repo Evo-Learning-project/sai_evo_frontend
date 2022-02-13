@@ -25,6 +25,9 @@ export interface Course {
   description?: string;
   privileges?: CoursePrivilege[];
   creator?: User;
+
+  // student fields
+  participations?: EventParticipation[];
 }
 
 export interface Exercise {
@@ -100,11 +103,16 @@ export interface EventParticipation {
   event: Event;
   user?: User;
   state: EventParticipationState;
-  assessment_progress?: ParticipationAssessmentProgress;
-  visibility?: AssessmentVisibility;
   slots: EventParticipationSlot[];
   score?: number;
   last_slot_number?: number;
+
+  // student-only field to indicate whether the assessment has been published for this participation
+  assessment_available?: boolean;
+
+  // teacher-only fields
+  assessment_progress?: ParticipationAssessmentProgress;
+  visibility?: AssessmentVisibility;
 }
 
 export interface EventParticipationSlot {

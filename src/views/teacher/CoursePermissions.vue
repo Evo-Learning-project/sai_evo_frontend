@@ -1,7 +1,7 @@
 <template>
   <div>
     <DataTable
-      v-if="usersData.length > 0"
+      :class="{ 'opacity-50': usersData.length === 0 }"
       :columnDefs="columns"
       :rowData="usersData"
       @cellClicked="onCellClicked"

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 
-import { getCourses } from '@/api/courses';
+import { getCourse, getCourses } from '@/api/courses';
 import {
   partialUpdateEventParticipationSlot,
   bulkPartialUpdateEventParticipation,
@@ -47,6 +47,19 @@ export const actions = {
         });
     });
   },
+  getCourse: async (
+    { commit }: { commit: Commit },
+    { courseId }: { courseId: string }
+  ) => {
+    const { participations, ...course } = await getCourse(courseId);
+    commit('setCourse', course);
+
+    if (participations) {
+      commit('student/setEventParticipations', participations, {
+        root: true,
+      });
+    }
+  },
   getCourses: async ({ commit }: { commit: Commit }) => {
     const courses = await getCourses();
     commit('setCourses', courses);
@@ -86,6 +99,7 @@ export const actions = {
       });
     }
   },
+  // TODO !! review this
   partialUpdateEventParticipation: async (
     { commit, state }: { commit: Commit; state: any },
     {

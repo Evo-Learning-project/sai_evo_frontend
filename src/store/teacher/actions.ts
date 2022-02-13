@@ -187,7 +187,7 @@ export const actions = {
       choice
     );
     state.exercises
-      .find((e: Exercise) => e.id === (exerciseId as string))
+      .find((e: Exercise) => e.id === exerciseId)
       ?.choices?.push(newChoice);
   },
   addEventTemplateRule: async (
@@ -209,7 +209,7 @@ export const actions = {
       rule
     );
     state.events
-      .find((e: Event) => e.template?.id === (templateId as string))
+      .find((e: Event) => e.template?.id === templateId)
       ?.template?.rules?.push(newRule);
   },
   addEventTemplateRuleClause: async (
@@ -322,7 +322,7 @@ export const actions = {
   ) => {
     await addTagToExercise(courseId, exerciseId, tag);
     state.exercises
-      .find((e: Exercise) => e.id === (exerciseId as string))
+      .find((e: Exercise) => e.id === exerciseId)
       ?.tags?.push({ name: tag } as Tag);
   },
   removeExerciseTag: async (
@@ -339,7 +339,7 @@ export const actions = {
   ) => {
     await removeTagFromExercise(courseId, exerciseId, tag);
     const target = state.exercises.find(
-      (e: Exercise) => e.id === (exerciseId as string)
+      (e: Exercise) => e.id === exerciseId
     ) as Exercise;
     target.tags = target.tags?.filter((t) => t.name != tag);
   },

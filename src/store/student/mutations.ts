@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import { EventParticipationSlot } from '@/models';
+import { EventParticipation, EventParticipationSlot } from '@/models';
 
 export const mutations = {
   // update the slots of the current event participation
@@ -9,7 +9,11 @@ export const mutations = {
     slots: EventParticipationSlot[]
   ) => {
     // TODO check if this correctly triggers reactivity
-    state.eventParticipation.slots = slots;
+    state.currentEventParticipation.slots = slots;
   },
+  setEventParticipations: (
+    state: any,
+    participations: EventParticipation[]
+  ) => (state.eventParticipations = participations),
   setEvent: (state: any, event: Event) => (state.event = event),
 };

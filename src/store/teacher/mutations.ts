@@ -39,13 +39,9 @@ export const mutations = {
       slot: EventParticipationSlot;
     }
   ) => {
-    const target =
-      state.eventParticipations
-        .find((p: EventParticipation) => p.id == participationId)
-        .slots?.find((s: EventParticipationSlot) => s.id == slotId) ??
-      state.eventParticipation?.slots?.find(
-        (s: EventParticipationSlot) => s.id == slotId
-      );
+    const target = state.eventParticipations
+      .find((p: EventParticipation) => p.id == participationId)
+      .slots?.find((s: EventParticipationSlot) => s.id == slotId);
     Object.assign(target, slot);
   },
   // updates the in-memory participation that has the same id as the

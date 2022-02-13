@@ -21,8 +21,6 @@ import { Commit } from 'vuex';
 import {
   getEvent,
   moveEventParticipationCurrentSlotCursor,
-  partialUpdateEventParticipation,
-  partialUpdateEventParticipationSlot,
   participateInEvent,
 } from '@/api/events';
 
@@ -40,11 +38,10 @@ export const actions = {
   ) => {
     const slot = await moveEventParticipationCurrentSlotCursor(
       courseId,
-      state.eventParticipation.event.id,
-      state.eventParticipation.id,
+      state.currentEventParticipation.event.id,
+      state.currentEventParticipation.id,
       'forward'
     );
-    console.log('slot', slot);
     commit('setEventParticipationSlots', [slot]);
   },
   moveEventParticipationCurrentSlotCursorBack: async (
@@ -53,8 +50,8 @@ export const actions = {
   ) => {
     const slot = await moveEventParticipationCurrentSlotCursor(
       courseId,
-      state.eventParticipation.event.id,
-      state.eventParticipation.id,
+      state.currentEventParticipation.event.id,
+      state.currentEventParticipation.id,
       'back'
     );
     commit('setEventParticipationSlots', [slot]);

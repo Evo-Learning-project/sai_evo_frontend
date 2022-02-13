@@ -50,6 +50,11 @@ export const mutations = {
     state.refreshToken = token;
     localStorage.setItem('refreshToken', token);
   },
+  setCourse: (state: any, course: Course) =>
+    Object.assign(
+      state.courses.find((c: Course) => c.id == course.id),
+      course
+    ),
   setCourses: (state: any, courses: Course[]) =>
     (state.courses = courses),
 };

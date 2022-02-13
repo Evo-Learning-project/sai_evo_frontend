@@ -8,12 +8,12 @@ export const getters = {
   course:
     (state: any) =>
     (courseId: string): Course =>
-      state.courses.find((c: Course) => c.id === courseId) ??
+      state.courses.find((c: Course) => c.id == courseId) ??
       getBlankCourse(),
   user:
     (state: any) =>
     (userId: string): User =>
-      state.users.find((u: User) => u.id === userId) ?? {},
+      state.users.find((u: User) => u.id == userId) ?? {},
   unsavedChanges: (state: any): boolean =>
     state.saving || state.savingError,
 };

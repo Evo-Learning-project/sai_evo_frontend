@@ -1,7 +1,10 @@
 <template>
   <div class="h-6">
     <div v-if="saving" class="flex items-center ml-auto space-x-1 text-muted">
-      <Spinner :size="'sm'"></Spinner>
+      <!-- <Spinner :size="'sm'"></Spinner> -->
+      <span class="text-base opacity-80 material-icons-outlined animate-spin">
+        sync
+      </span>
       <p class="text-sm">{{ $t('cloud.saving') }}</p>
     </div>
     <div
@@ -38,10 +41,12 @@
 
 <script lang="ts">
 import { defineComponent } from '@vue/runtime-core'
-import Spinner from './Spinner.vue'
+//import Spinner from './Spinner.vue'
 
 export default defineComponent({
-  components: { Spinner },
+  components: {
+    //Spinner
+  },
   name: 'CloudSaveStatus',
   props: {
     saving: {

@@ -75,14 +75,18 @@
           >
             <p class="mr-2" v-if="clause.tags.length > 1">
               {{ $t('event_template_rule_editor.tag_based_at_least_one') }}
-              {{ $t('misc.among') }}
+              {{ $t('misc.among') }} <span class="text-xl text-muted">(</span>
             </p>
             <Tag
               class="mx-0.5"
-              v-for="tag in clause.tags"
+              :class="{ '-ml-1.5': index === 0 }"
+              v-for="(tag, index) in clause.tags"
               :key="'clause-' + clause.id + '-tag-' + tag.id"
               :tag="tag"
-            ></Tag>
+            ></Tag
+            ><span v-if="clause.tags.length > 1" class="text-xl text-muted"
+              >)</span
+            >
             <p v-if="index !== modelValue.clauses.length - 1">,</p>
           </div>
         </div>

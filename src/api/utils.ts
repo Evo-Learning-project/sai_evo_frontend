@@ -5,10 +5,10 @@ import { Tag } from '@/models';
 export const tagNamesToTags = (names: string[]): Tag[] =>
   // converts a list of tag names to a list of their id's, as per
   // the format used by the backend
-  names.map((n) => store.getters.tagByName(n));
+  names.map((n) => store.getters['teacher/tagByName'](n));
 
 export const tagIdsToTags = (ids: string[]): Tag[] => {
-  return ids.map((i) => store.getters.tagById(i) as Tag);
+  return ids.map((i) => store.getters['teacher/tagById'](i) as Tag);
 };
 
 export const getUrlQueryParams = (

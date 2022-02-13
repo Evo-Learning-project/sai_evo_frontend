@@ -7,7 +7,8 @@ import { mutations } from './mutations';
 export const studentStore = {
   namespaced: true,
   state: () => ({
-    eventParticipation: null as EventParticipation | null,
+    currentEventParticipation: null as EventParticipation | null,
+    eventParticipations: [] as EventParticipation[],
   }),
   mutations: {
     ...mutations,
