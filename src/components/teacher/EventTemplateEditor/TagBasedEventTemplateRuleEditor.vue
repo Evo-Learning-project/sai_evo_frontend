@@ -23,7 +23,7 @@
         {{ $t('event_template_rule_editor.tag_based_among') }}
       </p>
       <TagInput
-        :placeholder="$t('exercise_editor.exercise_tags')"
+        :placeholder="$t('misc.tags')"
         :modelValue="clause.tags"
         @addTag="onAddTag(clause, $event)"
         @removeTag="onRemoveTag(clause, $event)"

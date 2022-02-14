@@ -133,6 +133,7 @@ export const it = {
     click_to_edit: 'Clicca per modificare',
     among: 'tra',
     and: 'e',
+    tags: 'Tag',
   },
   cloud: {
     saving: 'Salvataggio in corso...',
