@@ -39,22 +39,24 @@ export async function getExercisesById(
 export async function addTagToExercise(
   courseId: string,
   exerciseId: string,
-  tag: string
+  tag: string,
+  isPublic: boolean
 ): Promise<void> {
   await axios.put(
     `/courses/${courseId}/exercises/${exerciseId}/tags/`,
-    { tag }
+    { tag, public: isPublic }
   );
 }
 
 export async function removeTagFromExercise(
   courseId: string,
   exerciseId: string,
-  tag: string
+  tag: string,
+  isPublic: boolean
 ): Promise<void> {
   await axios.delete(
     `/courses/${courseId}/exercises/${exerciseId}/tags/`,
-    { data: { tag } }
+    { data: { tag, public: isPublic } }
   );
 }
 

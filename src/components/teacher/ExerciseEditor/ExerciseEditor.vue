@@ -73,11 +73,19 @@
             >{{ $t('exercise_editor.exercise_solution') }}</TextEditor
           >
           <TagInput
-            :modelValue="modelValue.tags"
+            :modelValue="modelValue.public_tags ?? []"
             :allow-edit-tags="false"
-            :placeholder="$t('exercise_editor.exercise_tags')"
-            @addTag="onAddTag($event)"
-            @removeTag="onRemoveTag($event)"
+            :placeholder="$t('exercise_editor.exercise_public_tags')"
+            @addTag="onAddTag($event, true)"
+            @removeTag="onRemoveTag($event, true)"
+          ></TagInput>
+
+          <TagInput
+            :modelValue="modelValue.private_tags ?? []"
+            :allow-edit-tags="false"
+            :placeholder="$t('exercise_editor.exercise_private_tags')"
+            @addTag="onAddTag($event, false)"
+            @removeTag="onRemoveTag($event, false)"
           ></TagInput>
         </div>
         <!-- Multiple-choice exercise types settings -->
@@ -268,18 +276,20 @@ export default defineComponent({
         choice: getBlankChoice()
       })
     },
-    async onAddTag (tag: string) {
+    async onAddTag (tag: string, isPublic: boolean) {
       await this.addExerciseTag({
         courseId: this.courseId,
         exerciseId: this.modelValue.id,
-        tag
+        tag,
+        isPublic
       })
     },
-    async onRemoveTag (tag: string) {
+    async onRemoveTag (tag: string, isPublic: boolean) {
       await this.removeExerciseTag({
         courseId: this.courseId,
         exerciseId: this.modelValue.id,
-        tag
+        tag,
+        isPublic
       })
     },
     async onChoiceUpdate (index: number, newVal: ExerciseChoice) {

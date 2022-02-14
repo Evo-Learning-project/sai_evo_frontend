@@ -1,3 +1,4 @@
+/* eslint-disable no-unexpected-multiline */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import axios from 'axios';
@@ -316,16 +317,22 @@ export const actions = {
       courseId,
       exerciseId,
       tag,
+      isPublic,
     }: {
       courseId: string;
       exerciseId: string;
       tag: string;
+      isPublic: boolean;
     }
   ) => {
-    await addTagToExercise(courseId, exerciseId, tag);
-    state.exercises
-      .find((e: Exercise) => e.id === exerciseId)
-      ?.tags?.push({ name: tag } as Tag);
+    await addTagToExercise(courseId, exerciseId, tag, isPublic);
+    const target = state.exercises.find(
+      (e: Exercise) => e.id === exerciseId
+    ) as Exercise;
+
+    target[isPublic ? 'public_tags' : 'private_tags']?.push({
+      name: tag,
+    } as Tag);
   },
   removeExerciseTag: async (
     { commit, state }: { commit: Commit; state: any },
@@ -333,17 +340,21 @@ export const actions = {
       courseId,
       exerciseId,
       tag,
+      isPublic,
     }: {
       courseId: string;
       exerciseId: string;
       tag: string;
+      isPublic: boolean;
     }
   ) => {
-    await removeTagFromExercise(courseId, exerciseId, tag);
+    await removeTagFromExercise(courseId, exerciseId, tag, isPublic);
     const target = state.exercises.find(
       (e: Exercise) => e.id === exerciseId
     ) as Exercise;
-    target.tags = target.tags?.filter((t) => t.name != tag);
+    target[isPublic ? 'public_tags' : 'private_tags'] = target[
+      isPublic ? 'public_tags' : 'private_tags'
+    ]?.filter((t) => t.name != tag);
   },
   getEvents: async (
     { commit }: { commit: Commit },

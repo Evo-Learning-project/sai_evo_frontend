@@ -5,7 +5,7 @@
         <h4>{{ previewTitle }}</h4>
         <div class="flex ml-2 space-x-1">
           <Tag
-            v-for="(tag, index) in exercise.tags"
+            v-for="(tag, index) in tags"
             :key="elementId + '-tag-' + index"
             :tag="tag"
           ></Tag>
@@ -70,6 +70,12 @@ export default defineComponent({
     },
     exerciseStateIcons () {
       return exerciseStatesIcons[this.exercise.state as ExerciseState]
+    },
+    tags () {
+      return [
+        ...(this.exercise.public_tags ?? []),
+        ...(this.exercise.private_tags ?? [])
+      ]
     }
   }
 })

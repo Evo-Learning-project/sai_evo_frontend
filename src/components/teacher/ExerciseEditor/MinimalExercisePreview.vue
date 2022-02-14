@@ -15,7 +15,7 @@
             <div class="flex hidden ml-2 space-x-1">
               <!-- hidden -->
               <Tag
-                v-for="(tag, index) in exercise.tags"
+                v-for="(tag, index) in tags"
                 :key="elementId + '-tag-' + index"
                 :tag="tag"
                 :small="true"
@@ -161,6 +161,12 @@ export default defineComponent({
     },
     exerciseStateIcons () {
       return exerciseStatesIcons[this.exercise.state as ExerciseState]
+    },
+    tags () {
+      return [
+        ...(this.exercise.public_tags ?? []),
+        ...(this.exercise.private_tags ?? [])
+      ]
     }
   }
 })

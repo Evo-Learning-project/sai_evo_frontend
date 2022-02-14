@@ -40,7 +40,8 @@ export interface Exercise {
   choices?: ExerciseChoice[];
   testcases?: ExerciseTestCase[];
   sub_exercises?: Exercise[];
-  tags?: Tag[];
+  public_tags?: Tag[];
+  private_tags?: Tag[];
 }
 
 export interface ExerciseChoice {
