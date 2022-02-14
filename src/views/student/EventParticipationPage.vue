@@ -205,6 +205,7 @@ export default defineComponent({
         }
       })
       this.loading = false
+      // TODO redirect to review page, with a prop set to show the message "hai consegnato! ..."
     },
     confirmGoForward () {
       console.log('confirm')
