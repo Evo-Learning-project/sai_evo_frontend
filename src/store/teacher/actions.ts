@@ -5,6 +5,7 @@ import {
   Course,
   CoursePrivilege,
   Event,
+  EventParticipation,
   EventTemplate,
   EventTemplateRule,
   EventTemplateRuleClause,
@@ -29,6 +30,7 @@ import {
 } from '@/api/exercises';
 
 import {
+  bulkPartialUpdateEventParticipation,
   createEvent,
   createEventTemplateRule,
   createEventTemplateRuleClause,
@@ -382,5 +384,27 @@ export const actions = {
       privileges
     );
     commit('setUser', { user });
+  },
+  partialUpdateEventParticipation: async (
+    { commit }: { commit: Commit },
+    {
+      courseId,
+      changes,
+      eventId,
+      participationIds,
+    }: {
+      courseId: string;
+      eventId: string;
+      changes: Record<keyof EventParticipation, unknown>;
+      participationIds: string[];
+    }
+  ) => {
+    const response = await bulkPartialUpdateEventParticipation(
+      courseId,
+      eventId,
+      participationIds,
+      changes
+    );
+    response.forEach((p) => commit('setEventParticipation', p));
   },
 };

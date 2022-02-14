@@ -46,6 +46,7 @@ export const it = {
     ongoing_exam:
       'Esame ' + ROUTE_TITLE_EVENT_NAME_TOKEN + ' in corso',
     exam_preview: 'Anteprima esame',
+    review_submission: 'Revisione risposte',
   },
   event_participation_page: {
     exercise: 'Esercizio',
@@ -300,11 +301,11 @@ export const it = {
     select: 'Seleziona',
   },
   student_course_dashboard: {
-    practice_events: 'Esercitazioni',
+    your_practice_events: 'Le tue esercitazioni',
     new_practice_event: 'Nuova esercitazione',
-    exams_you_partecipated_in: 'Esami a cui hai partecipato',
-    review_submission: 'Rivedi le tue risposte',
-    view_assessment: 'Vedi voto',
+    exams_you_participated_in: 'Esami a cui hai partecipato',
+    review_submission: 'Rivedi risposte',
+    view_assessment: 'Valutazione',
     assessment_available:
       'Sono stati pubblicati i voti relativi a questo esame',
   },

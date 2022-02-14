@@ -15,5 +15,9 @@ export const mutations = {
     state: any,
     participations: EventParticipation[]
   ) => (state.eventParticipations = participations),
+  setCurrentEventParticipation: (
+    state: any,
+    participation: EventParticipation
+  ) => (state.currentEventParticipation = participation),
   setEvent: (state: any, event: Event) => (state.event = event),
 };

@@ -99,40 +99,4 @@ export const actions = {
       });
     }
   },
-  // TODO !! review this
-  partialUpdateEventParticipation: async (
-    { commit, state }: { commit: Commit; state: any },
-    {
-      courseId,
-      changes,
-      eventId = undefined,
-      participationIds = undefined,
-    }: {
-      courseId: string;
-      eventId?: string;
-      changes: Record<keyof EventParticipation, unknown>;
-      participationIds?: string[];
-    }
-  ) => {
-    let response;
-    if (participationIds && eventId) {
-      // teacher usage with multiple ids
-      response = await bulkPartialUpdateEventParticipation(
-        courseId,
-        eventId,
-        participationIds,
-        changes
-      );
-      response.forEach((p) => commit('setEventParticipation', p));
-    } else {
-      // student usage, implicit id as the event participation is in the store
-      response = await partialUpdateEventParticipation(
-        courseId,
-        state.eventParticipation?.event.id,
-        state.eventParticipation?.id,
-        changes
-      );
-      commit('setEventParticipation', response);
-    }
-  },
 };

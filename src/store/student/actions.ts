@@ -20,7 +20,9 @@ import { Commit } from 'vuex';
 
 import {
   getEvent,
+  getEventParticipation,
   moveEventParticipationCurrentSlotCursor,
+  partialUpdateEventParticipation,
   participateInEvent,
 } from '@/api/events';
 
@@ -63,5 +65,38 @@ export const actions = {
     console.log('DATA: ', courseId, eventId);
     const event = await getEvent(courseId, eventId);
     commit('setEvent', event);
+  },
+  partialUpdateEventParticipation: async (
+    { commit, state }: { commit: Commit; state: any },
+    {
+      courseId,
+      changes,
+    }: {
+      courseId: string;
+      changes: Record<keyof EventParticipation, unknown>;
+    }
+  ) => {
+    const response = await partialUpdateEventParticipation(
+      courseId,
+      state.currentEventParticipation?.event.id,
+      state.currentEventParticipation?.id,
+      changes
+    );
+    commit('setCurrentEventParticipation', response);
+  },
+  getEventParticipation: async (
+    { commit }: { commit: Commit },
+    {
+      courseId,
+      eventId,
+      participationId,
+    }: { courseId: string; eventId: string; participationId: string }
+  ) => {
+    const participation = await getEventParticipation(
+      courseId,
+      eventId,
+      participationId
+    );
+    commit('setCurrentEventParticipation', participation);
   },
 };

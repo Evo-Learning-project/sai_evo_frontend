@@ -14,6 +14,7 @@ import CourseExams from '../views/teacher/CourseExams.vue';
 import CoursePermissions from '../views/teacher/CoursePermissions.vue';
 import EventEditor from '../components/teacher/EventEditor/EventEditor.vue';
 import EventParticipationPage from '../views/student/EventParticipationPage.vue';
+import EventParticipationFull from '../views/shared/EventParticipationFull.vue';
 import ExamPreview from '../views/student/ExamPreview.vue';
 import EventParticipationsMonitor from '../views/teacher/EventParticipationsMonitor.vue';
 import Login from '../views/Login.vue';
@@ -158,6 +159,14 @@ const routes: Array<RouteRecordRaw> = [
         name: 'ExamParticipationPage',
         meta: {
           routeTitle: _('headings.ongoing_exam'),
+        },
+      },
+      {
+        path: 'courses/:courseId/exams/:examId/review/:participationId',
+        component: EventParticipationFull,
+        name: 'ExamSubmissionReviewPage',
+        meta: {
+          routeTitle: _('headings.review_submission'),
         },
       },
     ],

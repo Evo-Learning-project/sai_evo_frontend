@@ -106,6 +106,8 @@ export interface EventParticipation {
   slots: EventParticipationSlot[];
   score?: number;
   last_slot_number?: number;
+  begin_timestamp: string;
+  end_timestamp?: string;
 
   // student-only field to indicate whether the assessment has been published for this participation
   assessment_available?: boolean;
