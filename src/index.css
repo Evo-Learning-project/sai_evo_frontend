@@ -255,6 +255,10 @@
     
 
     /* ag data table */
+    .ag-header-cell, .ag-cell {
+      @apply px-3 !important;
+    }
+
     .ag-theme-material {
       @apply font-sans text-sm !important
     }

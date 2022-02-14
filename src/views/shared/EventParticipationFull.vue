@@ -1,6 +1,7 @@
 <template>
   <div>
     <div v-if="!firstLoading">
+      <!-- TODO add begin/end timestamp and other data -->
       <div
         :class="{
           'pb-0 border-b-0': index === participation.slots.length - 1,

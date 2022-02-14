@@ -150,24 +150,38 @@
       </span>
       {{ $t('event_results.publish_results') }}</Btn
     >
-    <Btn
-      v-else-if="!firstLoading"
-      class="mt-8 mr-auto"
-      :variant="'danger'"
-      @click="onCloseSelectedExams"
-      :disabled="selectedParticipations.length == 0"
-    >
-      <span class="mr-1 text-base material-icons-outlined">
-        block
-      </span>
-      {{ $t('event_monitor.close_for_selected') }}</Btn
-    >
+    <div v-else-if="!firstLoading" class="flex mt-8 space-x-2">
+      <Btn
+        class=""
+        :variant="'danger'"
+        @click="onCloseSelectedExams"
+        :disabled="selectedCloseableParticipations.length === 0"
+      >
+        <span class="mr-1 text-base material-icons-outlined">
+          block
+        </span>
+        {{ $t('event_monitor.close_for_selected') }}</Btn
+      >
+
+      <Btn
+        class=""
+        :variant="'primary'"
+        :outline="true"
+        @click="onOpenSelectedExams"
+        :disabled="selectedOpenableParticipations.length === 0"
+      >
+        <span class="mr-1 text-base material-icons-outlined">
+          undo
+        </span>
+        {{ $t('event_monitor.open_for_selected') }}</Btn
+      >
+    </div>
     <Dialog
       :warning="!resultsMode && !editingSlot"
       :large="!!editingSlot"
       :showDialog="showDialog"
-      @no="dialogData.onNo()"
-      @yes="dialogData.onYes()"
+      @no="dialogData.onNo?.()"
+      @yes="dialogData.onYes?.()"
       :noText="dialogData.noText"
       :yesText="dialogData.yesText"
       :dismissible="!editingSlot"
@@ -178,7 +192,8 @@
     >
       <template v-if="editingSlot" v-slot:title>
         {{ $t('event_assessment.assess') }}
-        {{ $t('event_assessment.exercise') }} {{ editingSlot.slot_number + 1 }}
+        {{ $t('event_assessment.exercise') }}
+        {{ (editingSlot?.slot_number ?? 0) + 1 }}
         {{ $t('misc.for') }}
         {{ editingFullName }}
       </template>
@@ -208,23 +223,43 @@
         </div>
 
         <!-- closing exam for selected participants -->
-        <div v-else>
+        <div v-else-if="closingExamsMode">
           <p>
             {{ $t('event_monitor.close_for_selected_text_1') }}
-            <strong>{{ selectedParticipations.length }}</strong>
+            <strong>{{ selectedCloseableParticipations.length }}</strong>
             {{
-              selectedParticipations.length === 1
+              selectedCloseableParticipations.length === 1
                 ? $t('misc.participant')
                 : $t('misc.participants')
             }}.
           </p>
-          <p v-if="selectedParticipations.length < eventParticipations.length">
+          <!-- <p
+            v-if="
+              selectedCloseableParticipations.length <
+                eventParticipations.length
+            "
+          >
             {{ $t('event_monitor.close_for_selected_text_2') }}
             <strong>{{
-              eventParticipations.length - selectedParticipations.length
+              eventParticipations.length -
+                selectedCloseableParticipations.length
             }}</strong>
             {{
-              eventParticipations.length - selectedParticipations.length === 1
+              eventParticipations.length -
+                selectedCloseableParticipations.length ===
+              1
+                ? $t('misc.participant')
+                : $t('misc.participants')
+            }}.
+          </p> -->
+        </div>
+        <!-- re-opening closed exams -->
+        <div v-else>
+          <p>
+            {{ $t('event_monitor.open_for_selected_text') }}
+            <strong>{{ selectedOpenableParticipations.length }}</strong>
+            {{
+              selectedOpenableParticipations.length === 1
                 ? $t('misc.participant')
                 : $t('misc.participants')
             }}.
@@ -321,7 +356,8 @@ export default defineComponent({
       editingAssessmentSlotMode: false,
       publishingResultsMode: false,
       closingExamsMode: false,
-      reOpeningTurnedInParticipationMode: false
+      reOpeningTurnedInParticipationMode: false,
+      reOpeningClosedExamsMode: false
     }
   },
   methods: {
@@ -329,12 +365,10 @@ export default defineComponent({
       'getEvent',
       'partialUpdateEvent',
       'getEventParticipation',
-      'getEventParticipations'
+      'getEventParticipations',
+      'partialUpdateEventParticipation'
     ]),
-    ...mapActions('shared', [
-      'partialUpdateEventParticipation',
-      'partialUpdateEventParticipationSlot'
-    ]),
+    ...mapActions('shared', ['partialUpdateEventParticipationSlot']),
     isRowSelectable (row: RowNode) {
       /**
        * Used by ag grid to determine whether the row is selectable
@@ -401,15 +435,23 @@ export default defineComponent({
     onCloseSelectedExams () {
       this.closingExamsMode = true
     },
+    onOpenSelectedExams () {
+      this.reOpeningClosedExamsMode = true
+    },
     onPublish () {
       this.publishingResultsMode = true
     },
     async closeExams () {
+      // closing exams only for a group of participant means putting all of the
+      // participants except those ones inside the `users_allowed_past_closure`
+      // list of the exam and setting the exam state to CLOSED
+
       const unselectedParticipations = (this
         .eventParticipations as EventParticipation[]).filter(
         p => !this.selectedParticipations.includes(p.id)
-      )
-      const unselectedUserIds = unselectedParticipations.map(p => p.user?.id)
+      ) // these are the ones the exam will stay open for
+      console.log('UNSELECTED', unselectedParticipations)
+      const unselectedUserIds = unselectedParticipations.map(p => p.user.id)
       await this.withLoading(
         async () =>
           await this.partialUpdateEvent({
@@ -418,7 +460,47 @@ export default defineComponent({
             mutate: true,
             changes: {
               state: EventState.CLOSED,
-              users_allowed_past_closure: unselectedUserIds
+              users_allowed_past_closure: [
+                // id's that were in the list and haven't been selected
+                ...(this.event.users_allowed_past_closure ?? []).filter(
+                  i =>
+                    !this.selectedCloseableParticipations
+                      .map(p => p.user.id)
+                      .includes(i)
+                ),
+                // id's that were already in the list
+                ...unselectedUserIds.filter(i =>
+                  this.event.users_allowed_past_closure?.includes(i)
+                )
+              ]
+            }
+          })
+      )
+      this.$store.commit('shared/showSuccessFeedback')
+      this.hideDialog()
+      this.gridApi.refreshCells({ force: true })
+    },
+    async openExams () {
+      // re-opening exam for a group of participants means adding those
+      // participants to the `users_allowed_past_closure` list for the exam
+
+      const selectedParticipations = (this
+        .eventParticipations as EventParticipation[]).filter(p =>
+        this.selectedParticipations.includes(p.id)
+      ) // these are the ones the exam will stay open for
+
+      const selectedUserIds = selectedParticipations.map(p => p.user.id)
+      await this.withLoading(
+        async () =>
+          await this.partialUpdateEvent({
+            courseId: this.courseId,
+            eventId: this.eventId,
+            mutate: true,
+            changes: {
+              users_allowed_past_closure: [
+                ...(this.event.users_allowed_past_closure ?? []),
+                ...selectedUserIds
+              ]
             }
           })
       )
@@ -485,6 +567,7 @@ export default defineComponent({
       this.editingFullName = ''
       this.editingParticipationId = ''
       this.showDialog = false
+      this.selectedParticipations = []
     }
   },
   computed: {
@@ -495,7 +578,8 @@ export default defineComponent({
           this.editingAssessmentSlotMode ||
           this.publishingResultsMode ||
           this.closingExamsMode ||
-          this.reOpeningTurnedInParticipationMode
+          this.reOpeningTurnedInParticipationMode ||
+          this.reOpeningClosedExamsMode
         )
       },
       set (val: boolean) {
@@ -504,6 +588,7 @@ export default defineComponent({
           this.publishingResultsMode = false
           this.closingExamsMode = false
           this.reOpeningTurnedInParticipationMode = false
+          this.reOpeningClosedExamsMode = false
         }
       }
     },
@@ -545,13 +630,29 @@ export default defineComponent({
           yesText:
             _('misc.close') +
             ' ' +
-            this.selectedParticipations.length +
+            this.selectedCloseableParticipations.length +
             ' ' +
-            (this.selectedParticipations.length === 1
+            (this.selectedCloseableParticipations.length === 1
               ? _('misc.exam')
               : _('misc.exams')),
           noText: _('dialog.default_cancel_text'),
           onYes: this.closeExams
+        }
+      }
+
+      if (this.reOpeningClosedExamsMode) {
+        ret = {
+          title: _('event_monitor.open_for_selected'),
+          yesText:
+            _('misc.reopen') +
+            ' ' +
+            this.selectedOpenableParticipations.length +
+            ' ' +
+            (this.selectedOpenableParticipations.length === 1
+              ? _('misc.exam')
+              : _('misc.exams')),
+          noText: _('dialog.default_cancel_text'),
+          onYes: this.openExams
         }
       }
       return { ...defaultData, ...ret }
@@ -629,8 +730,10 @@ export default defineComponent({
           ? [
               {
                 field: 'state', // participation state (in progress / turned in)
-                width: 80,
-                headerName: _('event_participation_headings.state'),
+                width: 90,
+                headerName: _(
+                  'event_participation_headings.participation_state'
+                ),
                 cellRenderer: (params: any) =>
                   `<div class=" ag-selectable-cell">
                   <span title="${_(
@@ -675,7 +778,7 @@ export default defineComponent({
             ' ' +
             ((s.slot_number as number) + 1),
           cellRenderer: (params: any) =>
-            `<div class="ml-4 -mr-2 ag-selectable-cell ${params.value.score ??
+            `<div class="ml-10 -mr-2 ag-selectable-cell ${params.value.score ??
               'transition-opacity duration-75 hover:opacity-100 opacity-70 '}">` +
             `<span class="mx-auto ${params.value.score ??
               'text-lg text-yellow-900 material-icons-outlined'}">
@@ -700,6 +803,25 @@ export default defineComponent({
         )
         return ret
       })
+    },
+    selectedCloseableParticipations (): EventParticipation[] {
+      return this.eventParticipations.filter(
+        (p: EventParticipation) =>
+          this.selectedParticipations.includes(p.id) && // participation is selected
+          (this.event.state === EventState.OPEN || // event is open for everyone or...
+            //... event is still open for this participant
+            this.event.users_allowed_past_closure?.includes(p.user.id))
+      )
+    },
+    selectedOpenableParticipations (): EventParticipation[] {
+      return this.eventParticipations.filter(
+        (p: EventParticipation) =>
+          this.selectedParticipations.includes(p.id) && // participation is selected
+          // if event isn't closed, no participation can be opened as they all already are
+          this.event.state === EventState.CLOSED &&
+          // event is closed and participant isn't in the list of those still allowed
+          !this.event.users_allowed_past_closure?.includes(p.user.id)
+      )
     }
   }
 })

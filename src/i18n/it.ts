@@ -77,6 +77,7 @@ export const it = {
   },
   event_participation_headings: {
     state: 'Stato',
+    participation_state: 'Consegna',
     email: 'Email',
     exercise: 'Es.',
   },
@@ -121,6 +122,7 @@ export const it = {
     participants: 'partecipanti',
     participant: 'partecipante',
     close: 'Chiudi',
+    reopen: 'Riapri',
     exams: 'esami',
     exam: 'esame',
     edit: 'Modifica',
@@ -187,7 +189,9 @@ export const it = {
   },
   event_monitor: {
     close_for_selected: 'Chiudi esame per i selezionati',
+    open_for_selected: 'Apri esame per i selezionati',
     close_for_selected_text_1: "Stai per chiudere l'esame per",
+    open_for_selected_text: "Stai per riaprire l'esame per",
     close_for_selected_text_2: "L'esame rimarrà aperto per",
     some_exams_still_open:
       "L'esame è terminato, ma non è stato ancora chiuso per alcuni partecipanti. Ricorda di chiudere l'esame per tutti al termine. Le righe evidenziate in rosso corrispondono a esami già chiusi.",
