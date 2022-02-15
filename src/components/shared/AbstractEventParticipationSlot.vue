@@ -10,8 +10,9 @@
         }"
         v-html="exercise.text"
       ></div>
-      <div :class="{ 'flex space-x-8': allowEditScores }">
-        <div :class="{ 'w-1/2': allowEditScores }">
+      <div :class="{ 'flex space-x-8': allowEditScores || showAssessment }">
+        <!-- controls to submit -->
+        <div :class="{ 'w-1/2': allowEditScores || showAssessment }">
           <CheckboxGroup
             v-if="isMultipleChoiceMultiplePossible"
             :options="exerciseChoicesAsOptions"
@@ -46,6 +47,33 @@
             }}
           </TextEditor>
         </div>
+
+        <!-- show assesment-->
+        <div
+          class="w-1/2 p-2.5 mb-auto bg-indigo-100 rounded-md shadow-md bg-opacity-70"
+          v-if="showAssessment"
+        >
+          <!-- style="background-color: #e6f4ea; border: 1px solid #dadce0" -->
+          <p class="text-muted">
+            {{ $t('misc.score') }}:
+            <strong class="text-lg">{{ modelValue.score }}</strong>
+            <span v-if="!!modelValue.exercise.max_score"
+              >&nbsp;{{ $t('misc.out_of') }}
+              <strong class="text-lg">
+                {{ modelValue.exercise.max_score }}</strong
+              ></span
+            >
+          </p>
+          <p
+            v-if="(modelValue.comment?.length ?? 0) > 0"
+            class="mt-2 text-muted"
+          >
+            {{ $t('misc.teacher_comment') }}:
+          </p>
+          <p v-html="modelValue.comment"></p>
+        </div>
+
+        <!-- controls to assess -->
         <div v-if="allowEditScores" class="w-1/2">
           <!-- TODO work on this -->
           <p v-if="modelValue.seen_at">
@@ -131,6 +159,10 @@ export default defineComponent({
       default: false
     },
     showScores: {
+      type: Boolean,
+      default: false
+    },
+    showAssessment: {
       type: Boolean,
       default: false
     },

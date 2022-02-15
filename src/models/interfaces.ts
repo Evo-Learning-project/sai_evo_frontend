@@ -42,6 +42,7 @@ export interface Exercise {
   sub_exercises?: Exercise[];
   public_tags?: Tag[];
   private_tags?: Tag[];
+  max_score?: number;
 }
 
 export interface ExerciseChoice {

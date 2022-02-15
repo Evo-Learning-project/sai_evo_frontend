@@ -288,10 +288,8 @@ import {
 } from '@/models'
 import { defineComponent } from '@vue/runtime-core'
 
-import { createNamespacedHelpers, mapActions } from 'vuex'
-const { mapState, mapGetters, mapMutations } = createNamespacedHelpers(
-  'teacher'
-)
+import { createNamespacedHelpers } from 'vuex'
+const { mapState, mapActions } = createNamespacedHelpers('teacher')
 
 import { getTranslatedString as _ } from '@/i18n'
 import {
@@ -361,14 +359,14 @@ export default defineComponent({
     }
   },
   methods: {
-    ...mapActions('teacher', [
+    ...mapActions([
       'getEvent',
       'partialUpdateEvent',
       'getEventParticipation',
       'getEventParticipations',
-      'partialUpdateEventParticipation'
+      'partialUpdateEventParticipation',
+      'partialUpdateEventParticipationSlot'
     ]),
-    ...mapActions('shared', ['partialUpdateEventParticipationSlot']),
     isRowSelectable (row: RowNode) {
       /**
        * Used by ag grid to determine whether the row is selectable
@@ -735,10 +733,10 @@ export default defineComponent({
                   'event_participation_headings.participation_state'
                 ),
                 cellRenderer: (params: any) =>
-                  `<div class=" ag-selectable-cell">
-                  <span title="${_(
+                  `<div title="${_(
                     'event_participation_states.' + params.value
-                  )}" class="mx-auto ${
+                  )}" class=" ag-selectable-cell">
+                  <span  class="mx-auto ${
                     params.value == EventParticipationState.IN_PROGRESS
                       ? 'text-muted'
                       : 'text-success'

@@ -164,9 +164,21 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: 'courses/:courseId/exams/:examId/review/:participationId',
         component: EventParticipationFull,
-        name: 'ExamSubmissionReviewPage',
+        name: 'SubmissionReviewPage',
         meta: {
           routeTitle: _('headings.review_submission'),
+        },
+        props: true,
+      },
+      {
+        path: 'courses/:courseId/exams/:examId/assessment/:participationId',
+        component: EventParticipationFull,
+        name: 'AssessmentReviewPage',
+        meta: {
+          routeTitle: _('headings.review_assessment'),
+        },
+        props: {
+          showAssessment: true,
         },
       },
     ],

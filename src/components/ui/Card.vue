@@ -1,13 +1,13 @@
 <template>
   <div
     tabindex="0"
-    class="flex border-gray-300 rounded-md shadow-sm"
+    class="flex border-gray-300 rounded-md"
     :class="{
       'md:px-3.5 md:py-3': size == 'sm',
       'px-1 py-5  md:px-5': size == 'default',
       'my-4': size == 'default' && !marginLess,
       'border-2': highlighted,
-      border: !highlighted && !borderLess
+      'border shadow-sm': !highlighted && !borderLess
     }"
   >
     <div class="flex flex-col flex-grow w-full">

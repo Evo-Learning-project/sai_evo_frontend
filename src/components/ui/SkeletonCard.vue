@@ -33,9 +33,10 @@
   </Card>
 </template>
 
-<script>
+<script lang="ts">
+import { defineComponent } from '@vue/runtime-core'
 import Card from './Card.vue'
-export default {
+export default defineComponent({
   name: 'SkeletonCard',
   components: {
     Card
@@ -50,5 +51,5 @@ export default {
       default: false
     }
   }
-}
+})
 </script>

@@ -6,36 +6,18 @@
         :hadError="savingError"
       ></CloudSaveStatus
     ></teleport>
-    <Card v-if="turnedIn" class="mb-8 shadow-md bg-light">
-      <template v-slot:header
-        ><div class="flex items-center space-x-4">
-          <div>
-            <div class="icon-surrounding bg-success-light text-success-dark">
-              <span class="material-icons-outlined">
-                check
-              </span>
-            </div>
-          </div>
-          <p class="">{{ $t('event_participation_page.turned_in_text') }}</p>
-        </div>
-      </template></Card
-    >
+
     <div v-if="firstLoading">
       <skeleton-card :borderLess="true"></skeleton-card>
       <skeleton-card :borderLess="true"></skeleton-card>
       <skeleton-card :borderLess="true"></skeleton-card>
     </div>
-    <h2 v-if="turnedIn">{{ $t('event_participation_page.review_answers') }}</h2>
     <div
       :class="{
-        'flex-grow': oneExerciseAtATime && !turnedIn,
+        'flex-grow': oneExerciseAtATime,
         'mb-10 pb-10 border-b':
-          index !== proxyModelValue.slots.length - 1 &&
-          (!oneExerciseAtATime || turnedIn) &&
-          !turnedIn,
-        'pb-0 border-b-0': index === proxyModelValue.slots.length - 1,
-        'px-6 py-2 rounded-md bg-gray-50': turnedIn,
-        'pb-10': turnedIn && index !== proxyModelValue.slots.length - 1
+          index !== proxyModelValue.slots.length - 1 && !oneExerciseAtATime,
+        'pb-0 border-b-0': index === proxyModelValue.slots.length - 1
       }"
       class=""
       v-for="(slot, index) in proxyModelValue.slots"
@@ -44,7 +26,7 @@
       <h4>
         {{ $t('event_participation_page.exercise') }}
         {{ slot.slot_number + 1 }}
-        <span v-if="oneExerciseAtATime && !turnedIn"
+        <span v-if="oneExerciseAtATime"
           >{{ $t('event_participation_page.of') }}
           {{ proxyModelValue.last_slot_number + 1 }}
         </span>
@@ -53,7 +35,7 @@
         :modelValue="slot"
         @updateSelectedChoices="onUpdateChoices(slot, $event)"
         @updateAnswerText="onUpdateAnswerText(slot, $event)"
-        :allowEditSubmission="!turnedIn"
+        :allowEditSubmission="true"
         :saving="saving"
       ></AbstractEventParticipationSlot>
     </div>
@@ -114,7 +96,12 @@ import AbstractEventParticipationSlot from '@/components/shared/AbstractEventPar
 import Btn from '@/components/ui/Btn.vue'
 import CloudSaveStatus from '@/components/ui/CloudSaveStatus.vue'
 import Dialog from '@/components/ui/Dialog.vue'
-import { courseIdMixin, eventIdMixin, savingMixin } from '@/mixins'
+import {
+  courseIdMixin,
+  eventIdMixin,
+  loadingMixin,
+  savingMixin
+} from '@/mixins'
 import {
   EventParticipation,
   EventParticipationSlot,
@@ -124,11 +111,10 @@ import { getDebouncedForStudentText } from '@/utils'
 import { defineComponent } from '@vue/runtime-core'
 import { getTranslatedString as _ } from '@/i18n'
 import { DialogData } from '@/interfaces'
-import Card from '@/components/ui/Card.vue'
 import SkeletonCard from '@/components/ui/SkeletonCard.vue'
 
-import { createNamespacedHelpers } from 'vuex'
-const { mapState, mapActions } = createNamespacedHelpers('student')
+import { createNamespacedHelpers, mapState } from 'vuex'
+const { mapActions } = createNamespacedHelpers('student')
 
 export default defineComponent({
   components: {
@@ -136,11 +122,10 @@ export default defineComponent({
     CloudSaveStatus,
     Btn,
     Dialog,
-    Card,
     SkeletonCard
   },
   name: 'EventParticipationPage',
-  mixins: [courseIdMixin, eventIdMixin, savingMixin],
+  mixins: [courseIdMixin, eventIdMixin, savingMixin, loadingMixin],
   async created () {
     this.dispatchAnswerTextUpdate = getDebouncedForStudentText(
       this.dispatchAnswerTextUpdate
@@ -152,6 +137,16 @@ export default defineComponent({
       eventId: this.eventId
     })
     this.firstLoading = false
+
+    // already turned in, redirect to submission review page
+    if (this.proxyModelValue.state === EventParticipationState.TURNED_IN) {
+      this.$router.push({
+        name: 'SubmissionReviewPage',
+        params: {
+          participationId: this.currentEventParticipation.id
+        }
+      })
+    }
   },
   mounted () {
     this.mounted = true // prevent issues with teleported component
@@ -162,7 +157,6 @@ export default defineComponent({
       savingError: false,
       mounted: false,
       firstLoading: false,
-      loading: false,
       showConfirmDialog: false,
       dialogData: {
         title: '',
@@ -177,38 +171,48 @@ export default defineComponent({
       'participateInEvent',
       'moveEventParticipationCurrentSlotCursorForward',
       'moveEventParticipationCurrentSlotCursorBack',
-      'partialUpdateEventParticipation',
-      'partialUpdateEventParticipationSlot'
+      'partialUpdateEventParticipationSlot',
+      'partialUpdateEventParticipation'
     ]),
     async onGoForward () {
-      this.loading = true
       this.showConfirmDialog = false
-      await this.moveEventParticipationCurrentSlotCursorForward({
-        courseId: this.courseId
-      })
-      this.loading = false
+      await this.withLoading(
+        async () =>
+          await this.moveEventParticipationCurrentSlotCursorForward({
+            courseId: this.courseId
+          })
+      )
     },
     async onGoBack () {
-      this.loading = true
-      await this.moveEventParticipationCurrentSlotCursorBack({
-        courseId: this.courseId
-      })
-      this.loading = false
+      await this.withLoading(
+        async () =>
+          await this.moveEventParticipationCurrentSlotCursorBack({
+            courseId: this.courseId
+          })
+      )
     },
     async onTurnIn () {
       this.showConfirmDialog = false
-      this.loading = true
-      await this.partialUpdateEventParticipation({
-        courseId: this.courseId,
-        changes: {
-          state: EventParticipationState.TURNED_IN
+      this.withLoading(
+        async () =>
+          await this.partialUpdateEventParticipation({
+            courseId: this.courseId,
+            changes: {
+              state: EventParticipationState.TURNED_IN
+            }
+          })
+      )
+
+      this.$router.push({
+        name: 'SubmissionReviewPage',
+        params: {
+          participationId: this.currentEventParticipation.id,
+          showSubmissionConfirmationMessage: 1 // should be `true`, but TS complains about type
         }
       })
-      this.loading = false
-      // TODO redirect to review page, with a prop set to show the message "hai consegnato! ..."
+      this.$store.commit('shared/showSuccessFeedback')
     },
     confirmGoForward () {
-      console.log('confirm')
       this.dialogData = {
         title: _('event_participation_page.next_dialog_title'),
         text: _('event_participation_page.next_dialog_text'),
@@ -272,7 +276,8 @@ export default defineComponent({
     }
   },
   computed: {
-    ...mapState(['currentEventParticipation']),
+    ...mapState('student', ['currentEventParticipation']),
+    ...mapState('shared', ['loading']),
     proxyModelValue: {
       get (): EventParticipation {
         return this.currentEventParticipation ?? {}
@@ -280,9 +285,6 @@ export default defineComponent({
       async set (val: EventParticipation) {
         await this.onChange(val)
       }
-    },
-    turnedIn (): boolean {
-      return this.proxyModelValue.state == EventParticipationState.TURNED_IN
     },
     oneExerciseAtATime (): boolean {
       return (this.proxyModelValue.event?.exercises_shown_at_a_time ?? 0) === 1

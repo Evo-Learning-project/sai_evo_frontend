@@ -14,12 +14,22 @@
       </template>
       <template v-slot:body>
         <div class="flex items-end justify-between h-full">
-          <Btn v-if="participation.assessment_available">{{
-            $t('student_course_dashboard.view_assessment')
-          }}</Btn>
           <router-link
             :to="{
-              name: 'ExamSubmissionReviewPage',
+              name: 'AssessmentReviewPage',
+              params: {
+                participationId: participation.id,
+                examId: participation.event.id,
+                courseId: courseId
+              }
+            }"
+            ><Btn v-if="participation.assessment_available">{{
+              $t('student_course_dashboard.view_assessment')
+            }}</Btn></router-link
+          >
+          <router-link
+            :to="{
+              name: 'SubmissionReviewPage',
               params: {
                 participationId: participation.id,
                 examId: participation.event.id,

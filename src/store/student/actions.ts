@@ -1,20 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import axios from 'axios';
-import {
-  Course,
-  Event,
-  EventParticipation,
-  EventParticipationSlot,
-  EventTemplate,
-  EventTemplateRule,
-  EventType,
-  Exercise,
-  ExerciseChoice,
-  Tag,
-  User,
-} from '@/models';
-import { getCourses, getTags } from '@/api/courses';
+import { EventParticipation, EventParticipationSlot } from '@/models';
 
 import { Commit } from 'vuex';
 
@@ -23,6 +9,7 @@ import {
   getEventParticipation,
   moveEventParticipationCurrentSlotCursor,
   partialUpdateEventParticipation,
+  partialUpdateEventParticipationSlot,
   participateInEvent,
 } from '@/api/events';
 
@@ -32,7 +19,7 @@ export const actions = {
     { courseId, eventId }: { courseId: string; eventId: string }
   ) => {
     const participation = await participateInEvent(courseId, eventId);
-    commit('setEventParticipation', participation);
+    commit('setCurrentEventParticipation', participation);
   },
   moveEventParticipationCurrentSlotCursorForward: async (
     { commit, state }: { commit: Commit; state: any },
@@ -98,5 +85,36 @@ export const actions = {
       participationId
     );
     commit('setCurrentEventParticipation', participation);
+  },
+  partialUpdateEventParticipationSlot: async (
+    { commit, state }: { commit: Commit; state: any },
+    {
+      courseId,
+      eventId,
+      participationId,
+      slotId,
+      changes,
+      // true if action mutates the store state to reflect changes,
+      //false if action only dispatches api call
+      mutate = true,
+    }: {
+      courseId: string;
+      eventId: string;
+      participationId: string;
+      slotId: string;
+      changes: Record<keyof EventParticipationSlot, unknown>;
+      mutate: boolean;
+    }
+  ) => {
+    const response = await partialUpdateEventParticipationSlot(
+      courseId,
+      eventId,
+      participationId, //state.eventParticipation?.id,
+      slotId,
+      changes
+    );
+    if (mutate) {
+      commit('setCurrentEventParticipationSlot', response);
+    }
   },
 };

@@ -47,6 +47,7 @@ export const it = {
       'Esame ' + ROUTE_TITLE_EVENT_NAME_TOKEN + ' in corso',
     exam_preview: 'Anteprima esame',
     review_submission: 'Revisione risposte',
+    review_assessment: 'Correzione risposte',
   },
   event_participation_page: {
     exercise: 'Esercizio',
@@ -70,6 +71,8 @@ export const it = {
     participate: 'Partecipa',
     exam_not_yet_begun: "L'esame non è ancora iniziato.",
     exam_is_over: "L'esame è terminato.",
+    begin_timestamp: 'Data e ora di inizio',
+    turn_in_timestamp: 'Data e ora di consegna',
   },
 
   event_participation_slot: {
@@ -136,6 +139,9 @@ export const it = {
     among: 'tra',
     and: 'e',
     tags: 'Tag',
+    score: 'Punteggio',
+    teacher_comment: 'Commento del docente',
+    out_of: 'su',
   },
   cloud: {
     saving: 'Salvataggio in corso...',
