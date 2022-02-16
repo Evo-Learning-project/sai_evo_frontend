@@ -253,6 +253,7 @@ export default defineComponent({
     async onUpdateAnswerText (slot: EventParticipationSlot, newVal: string) {
       this.saving = true
       this.savingError = false
+      // update in-memory value
       slot.answer_text = newVal
       try {
         await this.dispatchAnswerTextUpdate(slot, newVal)

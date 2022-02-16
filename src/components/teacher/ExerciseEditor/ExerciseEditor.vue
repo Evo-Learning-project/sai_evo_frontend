@@ -253,7 +253,6 @@ export default defineComponent({
       'removeExerciseTag'
     ]),
     async onChoiceDragEnd (event: { oldIndex: number; newIndex: number }) {
-      console.log('DRAG END', event)
       const draggedChoice = (this.modelValue.choices as ExerciseChoice[])[
         event.oldIndex
       ]

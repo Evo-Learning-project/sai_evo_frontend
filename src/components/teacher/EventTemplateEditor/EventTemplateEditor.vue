@@ -100,7 +100,6 @@ export default defineComponent({
       'updateEventTemplateRuleClause'
     ]),
     async onRuleDragEnd (event: { oldIndex: number; newIndex: number }) {
-      console.log('DRAG END', event)
       const draggedRule = this.modelValue.rules[event.oldIndex]
 
       if (event.oldIndex !== event.newIndex) {
