@@ -5,6 +5,25 @@
       <p class="mb-6 text-muted">
         {{ $t('event_template_editor.introduction_text') }}
       </p>
+      <draggable
+        ghost-class="drag-ghost"
+        item-key="id"
+        :modelValue="modelValue.rules"
+        @end="onRuleDragEnd($event)"
+      >
+        <template #item="{element}">
+          <EventTemplateRuleEditor
+            :globallySelectedExercises="selectedExercises"
+            :modelValue="element"
+            @update:modelValue="onRuleUpdate($event)"
+            @addClause="onRuleAddClause(element)"
+            @updateClause="onRuleUpdateClause(element, $event)"
+            :parentLoading="loading"
+          >
+          </EventTemplateRuleEditor>
+        </template>
+      </draggable>
+      <!-- BEFORE DRAGGABLE
       <EventTemplateRuleEditor
         :globallySelectedExercises="selectedExercises"
         v-for="(rule, index) in modelValue.rules"
@@ -14,7 +33,7 @@
         @addClause="onRuleAddClause(rule)"
         @updateClause="onRuleUpdateClause(rule, $event)"
         :parentLoading="loading"
-      ></EventTemplateRuleEditor>
+      ></EventTemplateRuleEditor>-->
     </div>
 
     <div class="flex items-center mt-auto">
@@ -44,18 +63,16 @@ import {
 } from '@/models'
 import { courseIdMixin, loadingMixin } from '@/mixins'
 
+import draggable from 'vuedraggable'
+
 import { createNamespacedHelpers } from 'vuex'
-const {
-  mapState,
-  mapGetters,
-  mapActions,
-  mapMutations
-} = createNamespacedHelpers('teacher')
+const { mapActions } = createNamespacedHelpers('teacher')
 
 export default defineComponent({
   components: {
     Btn,
-    EventTemplateRuleEditor
+    EventTemplateRuleEditor,
+    draggable
   },
   mixins: [courseIdMixin, loadingMixin],
   name: 'EventTemplateEditor',
@@ -82,6 +99,20 @@ export default defineComponent({
       'addEventTemplateRuleClause',
       'updateEventTemplateRuleClause'
     ]),
+    async onRuleDragEnd (event: { oldIndex: number; newIndex: number }) {
+      console.log('DRAG END', event)
+      const draggedRule = this.modelValue.rules[event.oldIndex]
+
+      if (event.oldIndex !== event.newIndex) {
+        await this.onRuleUpdate(
+          {
+            ...draggedRule,
+            _ordering: event.newIndex
+          },
+          true
+        )
+      }
+    },
     async onAddRule () {
       this.loading = true
       await this.addEventTemplateRule({
@@ -91,18 +122,21 @@ export default defineComponent({
       })
       this.loading = false
     },
-    async onRuleUpdate (index: number, newVal: EventTemplateRule) {
+    async onRuleUpdate (newVal: EventTemplateRule, reFetch = false) {
       this.$emit('saving', true)
 
-      // update in-memory object
-      // eslint-disable-next-line @typescript-eslint/no-extra-semi
+      // TODO refactor this
+      const index = this.modelValue.rules.findIndex(r => r.id === newVal.id)
+        // update in-memory object
+        // eslint-disable-next-line @typescript-eslint/no-extra-semi
       ;(this.modelValue.rules as EventTemplateRule[])[index] = newVal // TODO use a mutation
 
       // dispatch update to store
       await this.updateEventTemplateRule({
         courseId: this.courseId,
         templateId: this.modelValue.id,
-        rule: newVal
+        rule: newVal,
+        reFetch
       })
       this.$emit('saving', false)
     },

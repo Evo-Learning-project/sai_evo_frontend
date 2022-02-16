@@ -8,7 +8,11 @@ import {
   EventTemplateRuleType,
 } from '@/models';
 import axios from 'axios';
-import { tagIdsToTags, tagNamesToTags } from './utils';
+import {
+  convertEventTemplateRules,
+  tagIdsToTags,
+  tagNamesToTags,
+} from './utils';
 
 export async function getEvents(courseId: string): Promise<Event[]> {
   const response = await axios.get(`/courses/${courseId}/events/`);
@@ -24,24 +28,10 @@ export async function getEvent(
   );
   const event = response.data as Event;
 
-  // convert tag-based template rules from backend's format (which uses a list of
-  //ids to represent the field `tags` on EventTemplateRuleClause) to the
-  // frontend's format, which uses Tag[] for that field
-  const processedRules = event.template?.rules.map((r) => {
-    if (r.rule_type != EventTemplateRuleType.TAG_BASED) {
-      return r;
-    }
-    return {
-      ...r,
-      clauses: r.clauses?.map((c) => ({
-        ...c,
-        // we're expecting to receive EventTemplateRuleClause, but the server is sending
-        // {id: string, tags: string[]}, so the conversion is needed here
-        // ? might fix this by having an EventPayload, EventTemplatePayload, ... interfaces
-        tags: tagIdsToTags(c.tags as unknown as string[]),
-      })),
-    };
-  }) as EventTemplateRule[];
+  const processedRules = convertEventTemplateRules(
+    event.template?.rules as EventTemplateRule[]
+  );
+
   const convertedEvent = {
     ...event,
     template: {
@@ -50,6 +40,18 @@ export async function getEvent(
     },
   } as Event;
   return convertedEvent;
+}
+
+export async function getEventTemplate(
+  courseId: string,
+  templateId: string
+): Promise<EventTemplate> {
+  const response = await axios.get(
+    `/courses/${courseId}/templates/${templateId}/`
+  );
+  const template = response.data as EventTemplate;
+  const processedRules = convertEventTemplateRules(template.rules);
+  return { ...template, rules: processedRules };
 }
 
 export async function createEvent(

@@ -41,6 +41,7 @@ import {
   getEventParticipation,
   getEventParticipations,
   getEvents,
+  getEventTemplate,
   partialUpdateEvent,
   partialUpdateEventParticipationSlot,
   updateEvent,
@@ -171,10 +172,12 @@ export const actions = {
       courseId,
       templateId,
       rule,
+      reFetch = false,
     }: {
       courseId: string;
       templateId: string;
       rule: EventTemplateRule;
+      reFetch: boolean;
     }
   ) => {
     await updateEventTemplateRule(
@@ -183,6 +186,16 @@ export const actions = {
       rule.id,
       rule
     );
+
+    if (reFetch) {
+      const rules = await (
+        await getEventTemplate(courseId, templateId)
+      ).rules;
+      commit('setEventTemplateRules', {
+        templateId,
+        payload: rules,
+      });
+    }
   },
   addExerciseChoice: async (
     // eslint-disable-next-line @typescript-eslint/no-unused-vars

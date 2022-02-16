@@ -95,7 +95,7 @@ export interface EventTemplateRule {
   rule_type?: EventTemplateRuleType;
   exercises?: string[];
   clauses?: EventTemplateRuleClause[];
-  target_slot_number?: number;
+  _ordering?: number;
 }
 
 export interface EventTemplateRuleClause {

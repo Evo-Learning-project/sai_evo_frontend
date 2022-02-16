@@ -1,6 +1,10 @@
 import { SearchFilter } from './interfaces';
 import store from '@/store';
-import { Tag } from '@/models';
+import {
+  EventTemplateRule,
+  EventTemplateRuleType,
+  Tag,
+} from '@/models';
 
 export const tagNamesToTags = (names: string[]): Tag[] =>
   // converts a list of tag names to a list of their id's, as per
@@ -32,4 +36,29 @@ export const getUrlQueryParams = (
   }
 
   return ret;
+};
+
+export const convertEventTemplateRules = (
+  rules: EventTemplateRule[]
+): EventTemplateRule[] => {
+  // convert tag-based template rules from backend's format (which uses a list of
+  //ids to represent the field `tags` on EventTemplateRuleClause) to the
+  // frontend's format, which uses Tag[] for that field
+  const processedRules = rules.map((r) => {
+    if (r.rule_type != EventTemplateRuleType.TAG_BASED) {
+      return r;
+    }
+    return {
+      ...r,
+      clauses: r.clauses?.map((c) => ({
+        ...c,
+        // we're expecting to receive EventTemplateRuleClause, but the server is sending
+        // {id: string, tags: string[]}, so the conversion is needed here
+        // ? might fix this by having an EventPayload, EventTemplatePayload, ... interfaces
+        tags: tagIdsToTags(c.tags as unknown as string[]),
+      })),
+    };
+  });
+
+  return processedRules;
 };

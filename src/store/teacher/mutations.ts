@@ -9,9 +9,9 @@ import {
   User,
   ExerciseChoice,
   ExerciseTestCase,
+  EventTemplateRule,
+  EventTemplate,
 } from '@/models';
-
-import Vue from 'vue';
 
 export const mutations = {
   setExercises: (state: any, exercises: Exercise[]) =>
@@ -90,6 +90,20 @@ export const mutations = {
     );
     if (target) {
       target[children] = payload as any;
+    }
+  },
+  setEventTemplateRules: (
+    state: any,
+    {
+      templateId,
+      payload,
+    }: { templateId: string; payload: EventTemplateRule[] }
+  ) => {
+    const target = (state.events as Event[]).find(
+      (e) => e.template?.id === templateId
+    );
+    if (target) {
+      (target.template as EventTemplate).rules = payload;
     }
   },
 };

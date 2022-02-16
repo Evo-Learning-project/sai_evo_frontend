@@ -2,23 +2,28 @@
   <div>
     <div
       class="px-3 py-4"
-      :class="[modelValue.target_slot_number % 2 ? 'bg-light' : 'bg-gray-50']"
+      :class="[modelValue._ordering % 2 ? 'bg-light' : 'bg-gray-50']"
     >
       <div class="flex items-center ">
+        <span
+          class="my-auto mr-2 text-lg cursor-move material-icons-outlined opacity-70"
+        >
+          drag_indicator
+        </span>
         <h4>
           {{ $t('event_template_rule_editor.exercise_number') }}
-          {{ modelValue.target_slot_number + 1 }}
+          {{ modelValue._ordering + 1 }}
         </h4>
         <div class="flex ml-auto space-x-2">
-          <btn @click="showRuleDialog()" :size="'sm'">
+          <Btn @click="showRuleDialog()" :size="'sm'">
             {{ $t('event_template_rule_editor.choose_exercise') }}
-          </btn>
+          </Btn>
           <!--@click="deleteRule()"-->
-          <btn :size="'xs'" :variant="'danger'" :outline="true"
+          <Btn :size="'sm'" :variant="'danger'" :outline="true"
             ><span style="font-size: 17px;" class="material-icons-outlined">
-              delete
+              close
             </span>
-          </btn>
+          </Btn>
         </div>
       </div>
       <div
