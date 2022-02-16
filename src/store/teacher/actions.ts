@@ -25,6 +25,7 @@ import {
   addTagToExercise,
   createExercise,
   createExerciseChoice,
+  getExerciseChoices,
   getExercises,
   removeTagFromExercise,
   updateExercise,
@@ -140,10 +141,12 @@ export const actions = {
       courseId,
       exerciseId,
       choice,
+      reFetch = false,
     }: {
       courseId: string;
       exerciseId: string;
       choice: ExerciseChoice;
+      reFetch: boolean;
     }
   ) => {
     await updateExerciseChoice(
@@ -152,6 +155,14 @@ export const actions = {
       choice.id,
       choice
     );
+    if (reFetch) {
+      const choices = await getExerciseChoices(courseId, exerciseId);
+      commit('setExerciseChildren', {
+        exerciseId,
+        children: 'choices',
+        payload: choices,
+      });
+    }
   },
   updateEventTemplateRule: async (
     // eslint-disable-next-line @typescript-eslint/no-unused-vars

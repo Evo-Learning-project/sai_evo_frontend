@@ -7,7 +7,11 @@ import {
   Exercise,
   Tag,
   User,
+  ExerciseChoice,
+  ExerciseTestCase,
 } from '@/models';
+
+import Vue from 'vue';
 
 export const mutations = {
   setExercises: (state: any, exercises: Exercise[]) =>
@@ -66,5 +70,26 @@ export const mutations = {
       state.users.find((u: User) => u.id === user.id),
       user
     );
+  },
+
+  // updates the list of elements related to an exercise (choices, sub-exercises, etc.)
+  setExerciseChildren: (
+    state: any,
+    {
+      exerciseId,
+      children,
+      payload,
+    }: {
+      exerciseId: string;
+      children: 'choices' | 'sub_exercises' | 'testcases';
+      payload: ExerciseChoice[] | Exercise[] | ExerciseTestCase[];
+    }
+  ) => {
+    const target = (state.exercises as Exercise[]).find(
+      (e) => e.id === exerciseId
+    );
+    if (target) {
+      target[children] = payload as any;
+    }
   },
 };

@@ -60,7 +60,6 @@ export default defineComponent({
   },
   watch: {
     saving (newVal: boolean, oldVal: boolean) {
-      console.log(newVal, oldVal)
       if (!newVal && oldVal) {
         // done saving
         this.showSaved = true

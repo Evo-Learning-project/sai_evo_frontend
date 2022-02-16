@@ -1,5 +1,10 @@
 <template>
-  <div class="flex my-6">
+  <div class="flex py-3 my-3">
+    <span
+      class="my-auto mr-2 text-lg cursor-move material-icons-outlined opacity-70"
+    >
+      drag_indicator
+    </span>
     <text-editor class="w-4/5 md:mr-4" v-model="choice.text">{{
       $t('exercise_editor.choice_text')
     }}</text-editor>

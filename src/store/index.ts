@@ -1,43 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-// import {
-//   Course,
-//   Event,
-//   EventParticipation,
-//   EventParticipationSlot,
-//   EventTemplate,
-//   EventType,
-//   Exercise,
-//   Tag,
-//   User,
-// } from '@/models';
-// import { Commit, createStore } from 'vuex';
-// import { getCourses, getTags } from '@/api/courses';
-// import {
-//   createExercise,
-//   createExerciseChoice,
-//   getExercises,
-//   updateExercise,
-//   updateExerciseChoice,
-// } from '@/api/exercises';
-// import axios from 'axios';
-// import {
-//   bulkPartialUpdateEventParticipation,
-//   createEvent,
-//   createEventTemplateRule,
-//   getEvent,
-//   getEvents,
-//   partialUpdateEventParticipation,
-//   partialUpdateEventParticipationSlot,
-//   updateEvent,
-//   updateEventTemplateRule,
-// } from '@/api/events';
-// import { SearchFilter } from '@/api/interfaces';
-// import { mutations } from './mutations';
-// import { getters } from './getters';
-// import { actions as teacherActions } from './teacherActions';
-// import { actions as studentActions } from './studentActions';
 
-import { User } from '@/models';
 import { createStore } from 'vuex';
 import { sharedStore } from './shared';
 import { teacherStore } from './teacher';

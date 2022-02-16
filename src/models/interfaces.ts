@@ -11,6 +11,9 @@ import {
   AssessmentVisibility,
 } from '.';
 
+interface Orderable {
+  _ordering?: number;
+}
 export interface User {
   id: string;
   email: string;
@@ -45,7 +48,7 @@ export interface Exercise {
   max_score?: number;
 }
 
-export interface ExerciseChoice {
+export interface ExerciseChoice extends Orderable {
   id: string;
   text: string;
   score?: number;

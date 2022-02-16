@@ -91,12 +91,27 @@
         <!-- Multiple-choice exercise types settings -->
         <div class="mt-8" v-if="isMultipleChoice">
           <h3 class="mb-8">{{ $t('exercise_editor.choices_title') }}</h3>
-          <ChoiceEditor
+          <draggable
+            :modelValue="modelValue.choices"
+            @end="onChoiceDragEnd($event)"
+            ghost-class="drag-ghost"
+            item-key="id"
+          >
+            <template #item="{element}">
+              <ChoiceEditor
+                :modelValue="element"
+                @update:modelValue="onChoiceUpdate($event)"
+              ></ChoiceEditor>
+            </template>
+          </draggable>
+          <!-- 
+            BEFORE ADDING DRAGGABLE
+            <ChoiceEditor
             v-for="(choice, index) in modelValue.choices"
             :key="elementId + '-choice-' + index"
             :modelValue="modelValue.choices[index]"
             @update:modelValue="onChoiceUpdate(index, $event)"
-          ></ChoiceEditor>
+          ></ChoiceEditor> -->
           <!--v-model="modelValue.choices[index]"-->
           <btn @click="onAddChoice()" :size="'sm'"
             ><span class="mr-1 text-base material-icons-outlined">
@@ -147,6 +162,7 @@ import { icons as exerciseStatesIcons } from '@/assets/exerciseStatesIcons'
 import { v4 as uuid4 } from 'uuid'
 import Dropdown from '@/components/ui/Dropdown.vue'
 import Dialog from '@/components/ui/Dialog.vue'
+import draggable from 'vuedraggable'
 
 import {
   getBlankChoice,
@@ -171,6 +187,7 @@ import { courseIdMixin, savingMixin } from '@/mixins'
 import { DialogData } from '@/interfaces'
 
 import { createNamespacedHelpers } from 'vuex'
+import { DebouncedFunc } from 'lodash'
 const { mapActions } = createNamespacedHelpers('teacher')
 
 export default defineComponent({
@@ -184,7 +201,8 @@ export default defineComponent({
     Btn,
     TagInput,
     CloudSaveStatus,
-    Dialog
+    Dialog,
+    draggable
   },
   props: {
     modelValue: {
@@ -234,6 +252,23 @@ export default defineComponent({
       'addExerciseTag',
       'removeExerciseTag'
     ]),
+    async onChoiceDragEnd (event: { oldIndex: number; newIndex: number }) {
+      console.log('DRAG END', event)
+      const draggedChoice = (this.modelValue.choices as ExerciseChoice[])[
+        event.oldIndex
+      ]
+
+      if (event.oldIndex !== event.newIndex) {
+        await this.dispatchChoiceUpdate(
+          {
+            ...draggedChoice,
+            _ordering: event.newIndex
+          },
+          true
+        )
+        ;(this.dispatchChoiceUpdate as DebouncedFunc<any>).flush()
+      }
+    },
     emitUpdate (key: keyof Exercise, value: unknown) {
       this.$emit('update:modelValue', {
         ...this.modelValue,
@@ -292,9 +327,14 @@ export default defineComponent({
         isPublic
       })
     },
-    async onChoiceUpdate (index: number, newVal: ExerciseChoice) {
-      // eslint-disable-next-line @typescript-eslint/no-extra-semi
+    async onChoiceUpdate (newVal: ExerciseChoice) {
+      // TODO refactor this
+      const index = (this.modelValue.choices as ExerciseChoice[]).findIndex(
+          c => c.id === newVal.id
+        )
+        // eslint-disable-next-line @typescript-eslint/no-extra-semi
       ;(this.modelValue.choices as ExerciseChoice[])[index] = newVal // TODO use a mutation
+      console.log('index', index, 'newVal', newVal)
       this.saving = true
       this.savingError = false
       await this.dispatchChoiceUpdate(newVal)
@@ -347,12 +387,13 @@ export default defineComponent({
         this.saving = false
       }
     },
-    async dispatchChoiceUpdate (newVal: ExerciseChoice) {
+    async dispatchChoiceUpdate (newVal: ExerciseChoice, reFetch = false) {
       try {
         await this.updateExerciseChoice({
           courseId: this.courseId,
           exerciseId: this.modelValue.id,
-          choice: newVal
+          choice: newVal,
+          reFetch
         })
       } catch {
         this.savingError = true

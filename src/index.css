@@ -36,6 +36,10 @@
       transition: opacity 0.2s linear;
     }
 
+    .drag-ghost {
+      @apply opacity-70 shadow-lg bg-primary bg-opacity-10
+    }
+
     .fade-enter-from,
     .fade-leave-to {
       opacity: 0;
