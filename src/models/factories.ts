@@ -6,7 +6,6 @@ import {
   EventTemplate,
   EventTemplateRule,
   EventTemplateRuleClause,
-  EventTemplateRuleType,
   EventType,
   Exercise,
   ExerciseChoice,
@@ -78,28 +77,10 @@ export const getEventTemplateFromExercises = (
   return template;
 };
 
-// export const getBlankIdBasedEventTemplateRule = (
-//   slotNumber: number
-// ): EventTemplateRule => ({
-//   rule_type: EventTemplateRuleType.ID_BASED,
-//   exercises: [],
-//   target_slot_number: slotNumber,
-// });
-
-export const getBlankEventTemplateRule = (): //slotNumber: number
-EventTemplateRule => ({
+export const getBlankEventTemplateRule = (): EventTemplateRule => ({
   id: '',
-  // target_slot_number: slotNumber,
-  // exercises: [],
+  amount: 1,
 });
-
-// export const getBlankTagBasedEventTemplateRule = (
-//   slotNumber: number
-// ): EventTemplateRule => ({
-//   rule_type: EventTemplateRuleType.TAG_BASED,
-//   clauses: [],
-//   target_slot_number: slotNumber,
-// });
 
 export const getBlankTag = (): Tag => ({
   id: '',

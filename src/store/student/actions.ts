@@ -4,18 +4,24 @@ import {
   Event,
   EventParticipation,
   EventParticipationSlot,
+  EventTemplateRule,
+  EventTemplateRuleClause,
 } from '@/models';
 
 import { Commit } from 'vuex';
 
 import {
   createEvent,
+  createEventTemplateRule,
+  createEventTemplateRuleClause,
   getEvent,
   getEventParticipation,
   moveEventParticipationCurrentSlotCursor,
   partialUpdateEventParticipation,
   partialUpdateEventParticipationSlot,
   participateInEvent,
+  updateEventTemplateRule,
+  updateEventTemplateRuleClause,
 } from '@/api/events';
 
 export const actions = {
@@ -129,5 +135,104 @@ export const actions = {
     if (mutate) {
       commit('setCurrentEventParticipationSlot', response);
     }
+  },
+  addEventTemplateRule: async (
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    { commit, state }: { commit: Commit; state: any },
+    {
+      courseId,
+      templateId,
+      rule,
+    }: {
+      courseId: string;
+      templateId: string;
+      rule: EventTemplateRule;
+    }
+  ) => {
+    const newRule = await createEventTemplateRule(
+      courseId,
+      templateId,
+      rule
+    );
+    commit('setEditingEventTemplateRule', newRule);
+
+    return newRule;
+  },
+  updateEventTemplateRule: async (
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    { commit }: { commit: Commit },
+    {
+      courseId,
+      templateId,
+      rule,
+    }: {
+      courseId: string;
+      templateId: string;
+      rule: EventTemplateRule;
+    }
+  ) => {
+    const updatedRule = await updateEventTemplateRule(
+      courseId,
+      templateId,
+      rule.id,
+      rule
+    );
+    commit('setEditingEventTemplateRule', updatedRule);
+
+    return updatedRule;
+  },
+  addEventTemplateRuleClause: async (
+    { commit, state }: { commit: Commit; state: any },
+    {
+      courseId,
+      templateId,
+      ruleId,
+      clause,
+    }: {
+      courseId: string;
+      templateId: string;
+      ruleId: string;
+      clause: EventTemplateRuleClause;
+    }
+  ) => {
+    const newClause = await createEventTemplateRuleClause(
+      courseId,
+      templateId,
+      ruleId,
+      clause
+    );
+
+    commit('setEditingEventTemplateRuleClause', {
+      ruleId,
+      clause: newClause,
+    });
+    return newClause;
+  },
+  updateEventTemplateRuleClause: async (
+    { commit, state }: { commit: Commit; state: any },
+    {
+      courseId,
+      templateId,
+      ruleId,
+      clause,
+    }: {
+      courseId: string;
+      templateId: string;
+      ruleId: string;
+      clause: EventTemplateRuleClause;
+    }
+  ) => {
+    const updatedClause = await updateEventTemplateRuleClause(
+      courseId,
+      templateId,
+      ruleId,
+      clause
+    );
+
+    commit('setEditingEventTemplateRuleClause', {
+      ruleId,
+      clause: updatedClause,
+    });
+    return updatedClause;
   },
 };

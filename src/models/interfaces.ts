@@ -96,6 +96,7 @@ export interface EventTemplateRule {
   rule_type?: EventTemplateRuleType;
   exercises?: string[];
   clauses?: EventTemplateRuleClause[];
+  amount: number;
   _ordering?: number;
 }
 
