@@ -318,8 +318,13 @@ export const it = {
     exams_you_participated_in: 'Esami a cui hai partecipato',
     review_submission: 'Rivedi risposte',
     view_assessment: 'Valutazione',
+    resume: 'Riprendi',
     assessment_available:
       'Sono stati pubblicati i voti relativi a questo esame',
+    new_practice: 'Nuova esercitazione',
+    resume_practice: 'Riprendi esercitazione',
+    draft_practice: 'Bozza esercitazione',
+    pending: 'In corso',
   },
   exercise_types: {
     [ExerciseType.MULTIPLE_CHOICE_SINGLE_POSSIBLE]:

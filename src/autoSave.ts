@@ -22,7 +22,7 @@ type RemotePatchFunction<T> = (
 ) => Promise<void>;
 type PatchFunction<T> = (changes: FieldValuesObject<T>) => void;
 type FieldList<T> = (keyof T)[];
-type FieldValuesObject<T> = Record<keyof T, T[keyof T]> | EmptyObject;
+type FieldValuesObject<T> = Partial<T>; // Record<keyof T, T[keyof T]> | EmptyObject;
 
 export class AutoSave<T> {
   //instance: T;
@@ -52,12 +52,12 @@ export class AutoSave<T> {
     this.successFunction = successFunction;
   }
 
-  async onChange(field: keyof T, value: T[keyof T]): Promise<void> {
+  async onChange(field: keyof T, value: unknown): Promise<void> {
     // record new change to field
-    this.unsavedChanges[field] = value;
+    this.unsavedChanges[field] = value as any;
 
     // instantly update in-memory instance
-    this.localPatchFunction({ [field]: value });
+    this.localPatchFunction({ [field]: value } as any);
 
     // dispatch update to backend
     await this.remotePatchFunction(this.unsavedChanges);

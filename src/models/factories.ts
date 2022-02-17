@@ -51,6 +51,18 @@ export const getBlankExam = (): Event => ({
   allow_going_back: true,
 });
 
+export const getBlankPractice = (): Event => ({
+  id: '',
+  name: '',
+  instructions: '',
+  begin_timestamp: null,
+  end_timestamp: null,
+  event_type: EventType.SELF_SERVICE_PRACTICE,
+  state: EventState.OPEN,
+  exercises_shown_at_a_time: null,
+  allow_going_back: true,
+});
+
 export const getBlankEventTemplate = (): EventTemplate => ({
   rules: [],
   name: '',

@@ -1,10 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import { EventParticipation, EventParticipationSlot } from '@/models';
+import {
+  Event,
+  EventParticipation,
+  EventParticipationSlot,
+} from '@/models';
 
 import { Commit } from 'vuex';
 
 import {
+  createEvent,
   getEvent,
   getEventParticipation,
   moveEventParticipationCurrentSlotCursor,
@@ -52,6 +57,14 @@ export const actions = {
     console.log('DATA: ', courseId, eventId);
     const event = await getEvent(courseId, eventId);
     commit('setEvent', event);
+  },
+  createEvent: async (
+    { commit, state }: { commit: Commit; state: any },
+    { courseId, event }: { courseId: string; event: Event }
+  ) => {
+    const newEvent = await createEvent(courseId, event);
+    //commit('setEvents', [newEvent, ...state.events]);
+    return newEvent;
   },
   partialUpdateEventParticipation: async (
     { commit, state }: { commit: Commit; state: any },
