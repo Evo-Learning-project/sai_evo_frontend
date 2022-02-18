@@ -7,30 +7,32 @@ import {
   EventTemplateRule,
   EventTemplateRuleClause,
 } from '@/models';
+import { MutationPayload, StudentState } from '../types';
 
 export const mutations = {
   // update the slots of the current event participation
   setEventParticipationSlots: (
-    state: any,
+    state: StudentState,
     slots: EventParticipationSlot[]
   ) => {
     // TODO check if this correctly triggers reactivity
-    state.currentEventParticipation.slots = slots;
+    if (state.currentEventParticipation) {
+      state.currentEventParticipation.slots = slots;
+    }
   },
   setEventParticipations: (
-    state: any,
+    state: StudentState,
     participations: EventParticipation[]
   ) => (state.eventParticipations = participations),
   setCurrentEventParticipation: (
-    state: any,
+    state: StudentState,
     participation: EventParticipation
   ) => (state.currentEventParticipation = participation),
-  setEvent: (state: any, event: Event) => (state.event = event),
   setCurrentEventParticipationSlot: (
-    state: any,
+    state: StudentState,
     slot: EventParticipationSlot
   ) => {
-    const target = state.currentEventParticipation.slots.find(
+    const target = state.currentEventParticipation?.slots.find(
       (s: EventParticipationSlot) => s.id == slot.id
     );
     Object.assign(target, slot);
@@ -38,11 +40,11 @@ export const mutations = {
 
   // updates the event template currently being edited
   setEditingEventTemplate: (
-    state: any,
+    state: StudentState,
     template: EventTemplate | null
   ) => (state.editingEventTemplate = template),
   setEditingEventTemplateRule: (
-    state: any,
+    state: StudentState,
     rule: EventTemplateRule
   ) => {
     const target = state.editingEventTemplate?.rules.find(
@@ -57,24 +59,21 @@ export const mutations = {
     }
   },
   setEditingEventTemplateRuleClause: (
-    state: any,
-    {
-      ruleId,
-      clause,
-    }: { ruleId: string; clause: EventTemplateRuleClause }
+    state: StudentState,
+    { ruleId, payload }: MutationPayload<EventTemplateRuleClause>
   ) => {
     const targetRule = state.editingEventTemplate?.rules.find(
       (r: EventTemplateRule) => r.id == ruleId
     ) as EventTemplateRule;
     const targetClause = targetRule.clauses?.find(
-      (c) => c.id == clause.id
+      (c) => c.id == payload.id
     );
     if (targetClause) {
       // updating existing clause
-      Object.assign(targetClause, clause);
+      Object.assign(targetClause, payload);
     } else {
       // pushing new clause
-      targetRule.clauses?.push(clause);
+      targetRule.clauses?.push(payload);
     }
   },
 };

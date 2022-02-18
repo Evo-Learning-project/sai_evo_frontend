@@ -3,55 +3,55 @@
 import {
   EventParticipationSlot,
   EventParticipation,
-  Event,
   Exercise,
   Tag,
   User,
+  Event,
   ExerciseChoice,
   ExerciseTestCase,
   EventTemplateRule,
   EventTemplate,
 } from '@/models';
+import { MutationPayload, TeacherState } from '../types';
 
 export const mutations = {
-  setExercises: (state: any, exercises: Exercise[]) =>
+  setExercises: (state: TeacherState, exercises: Exercise[]) =>
     (state.exercises = exercises),
-  setCurrentExercisePage: (state: any, pageNumber: number) =>
+  setCurrentExercisePage: (state: TeacherState, pageNumber: number) =>
     (state.currentExercisePage = pageNumber),
-  setEvents: (state: any, events: Event[]) => (state.events = events),
-  setTags: (state: any, tags: Tag[]) => (state.tags = tags),
+  setEvents: (state: TeacherState, events: Event[]) =>
+    (state.events = events),
+  setTags: (state: TeacherState, tags: Tag[]) => (state.tags = tags),
 
   // update an event in memory with the given payload
   setEvent: (
-    state: any,
-    { eventId, event }: { eventId: string; event: Event }
+    state: TeacherState,
+    { eventId, payload }: MutationPayload<Event>
   ) =>
     Object.assign(
       state.events.find((e: Event) => e.id == eventId),
-      event
+      payload
     ),
   // update the slot with id `slotId` using the given payload
   setEventParticipationSlot: (
-    state: any,
+    state: TeacherState,
     {
       participationId,
       slotId,
-      slot,
-    }: {
-      participationId: string;
-      slotId: string;
-      slot: EventParticipationSlot;
-    }
+      payload,
+    }: MutationPayload<EventParticipationSlot>
   ) => {
     const target = state.eventParticipations
       .find((p: EventParticipation) => p.id == participationId)
-      .slots?.find((s: EventParticipationSlot) => s.id == slotId);
-    Object.assign(target, slot);
+      ?.slots?.find((s: EventParticipationSlot) => s.id == slotId);
+    if (target) {
+      Object.assign(target, payload);
+    }
   },
   // updates the in-memory participation that has the same id as the
   // one in the payload with the given payload
   setEventParticipation: (
-    state: any,
+    state: TeacherState,
     participation: EventParticipation
   ) => {
     const target = state.eventParticipations.find(
@@ -61,11 +61,11 @@ export const mutations = {
   },
   // sets the array of participations to the event currently being watched
   setEventParticipations: (
-    state: any,
+    state: TeacherState,
     participations: EventParticipation[]
   ) => (state.eventParticipations = participations),
   // replace the user with same id as payload user with the given payload
-  setUser: (state: any, { user }: { user: User }) => {
+  setUser: (state: TeacherState, { user }: { user: User }) => {
     Object.assign(
       state.users.find((u: User) => u.id === user.id),
       user
@@ -74,32 +74,27 @@ export const mutations = {
 
   // updates the list of elements related to an exercise (choices, sub-exercises, etc.)
   setExerciseChildren: (
-    state: any,
+    state: TeacherState,
     {
       exerciseId,
       children,
       payload,
-    }: {
-      exerciseId: string;
-      children: 'choices' | 'sub_exercises' | 'testcases';
-      payload: ExerciseChoice[] | Exercise[] | ExerciseTestCase[];
-    }
+    }: MutationPayload<
+      ExerciseChoice[] | Exercise[] | ExerciseTestCase[]
+    >
   ) => {
     const target = (state.exercises as Exercise[]).find(
       (e) => e.id === exerciseId
     );
-    if (target) {
+    if (target && children) {
       target[children] = payload as any;
     }
   },
   setEventTemplateRules: (
-    state: any,
-    {
-      templateId,
-      payload,
-    }: { templateId: string; payload: EventTemplateRule[] }
+    state: TeacherState,
+    { templateId, payload }: MutationPayload<EventTemplateRule[]>
   ) => {
-    const target = (state.events as Event[]).find(
+    const target = state.events.find(
       (e) => e.template?.id === templateId
     );
     if (target) {

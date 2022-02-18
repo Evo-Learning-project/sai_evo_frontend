@@ -5,6 +5,7 @@ import {
   EventTemplate,
   Exercise,
   Tag,
+  Event,
   User,
 } from '@/models';
 
@@ -44,12 +45,16 @@ interface StoreOperationParameters<T> {
   fromFirstPage: boolean;
   participationIds: string[];
   participationId: string;
-  payload: T;
+  //payload: T;
   changes: Partial<T>;
   mutate: boolean;
   reFetch: boolean;
 }
 
-export type ActionPayload<T> = Partial<StoreOperationParameters<T>>;
+export type ActionPayload<T> = Partial<
+  StoreOperationParameters<T>
+> & { payload: T };
 
-export type MutationPayload<T> = Partial<StoreOperationParameters<T>>;
+export type MutationPayload<T> = Partial<
+  StoreOperationParameters<T>
+> & { payload: T };
