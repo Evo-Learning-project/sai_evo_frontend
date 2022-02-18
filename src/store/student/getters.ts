@@ -1,14 +1,14 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import { EventParticipation, EventType } from '@/models';
+import { EventType } from '@/models';
+import { StudentState } from '../types';
 
 export const getters = {
-  examParticipations: (state: any) =>
+  examParticipations: (state: StudentState) =>
     state.eventParticipations.filter(
-      (p: EventParticipation) => p.event.event_type === EventType.EXAM
+      (p) => p.event.event_type === EventType.EXAM
     ),
-  practiceParticipations: (state: any) =>
+  practiceParticipations: (state: StudentState) =>
     state.eventParticipations.filter(
-      (p: EventParticipation) =>
-        p.event.event_type === EventType.SELF_SERVICE_PRACTICE
+      (p) => p.event.event_type === EventType.SELF_SERVICE_PRACTICE
     ),
 };

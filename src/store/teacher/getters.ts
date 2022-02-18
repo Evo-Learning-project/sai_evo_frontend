@@ -9,21 +9,17 @@ import {
   getBlankTag,
   Tag,
 } from '@/models';
+import { TeacherState } from '../types';
 
 export const getters = {
-  exams: (state: any): Event[] =>
-    state.events.filter((e: Event) => e.event_type == EventType.EXAM),
-  event: (state: any) => (eventId: string) =>
-    state.events.find((e: Event) => e.id == eventId) ??
-    getBlankExam(),
-  tagById: (state: any) => (tagId: string) =>
-    state.tags.find((t: Tag) => t.id == tagId) ?? getBlankTag(),
-  tagByName: (state: any) => (tagName: string) =>
-    state.tags.find((t: Tag) => t.name == tagName) ?? getBlankTag(),
-  exercise: (state: any) => (exerciseId: string) =>
-    state.exercises.find((e: Exercise) => e.id == exerciseId) ?? {},
-  template: (state: any, getters: any) => (eventId: string) =>
-    state.templates.find(
-      (t: EventTemplate) => t.id == getters.event(eventId).template
-    ),
+  exams: (state: TeacherState): Event[] =>
+    state.events.filter((e) => e.event_type == EventType.EXAM),
+  event: (state: TeacherState) => (eventId: string) =>
+    state.events.find((e) => e.id == eventId) ?? getBlankExam(),
+  tagById: (state: TeacherState) => (tagId: string) =>
+    state.tags.find((t) => t.id == tagId) ?? getBlankTag(),
+  tagByName: (state: TeacherState) => (tagName: string) =>
+    state.tags.find((t) => t.name == tagName) ?? getBlankTag(),
+  exercise: (state: TeacherState) => (exerciseId: string) =>
+    state.exercises.find((e) => e.id == exerciseId) ?? {},
 };

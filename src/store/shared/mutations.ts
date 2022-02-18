@@ -2,9 +2,10 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import { Course, User } from '@/models';
 import axios from 'axios';
+import { SharedState } from '../types';
 
 export const mutations = {
-  initStore: (state: any) => {
+  initStore: (state: SharedState) => {
     // TODO refactor
     const token = localStorage.getItem('token');
     const refreshToken = localStorage.getItem('refreshToken');
@@ -23,38 +24,39 @@ export const mutations = {
       state.user = JSON.parse(user);
     }
   },
-  setLoading: (state: any, val: boolean) => (state.loading = val),
-  showSuccessFeedback: (state: any) => {
+  setLoading: (state: SharedState, val: boolean) =>
+    (state.loading = val),
+  showSuccessFeedback: (state: SharedState) => {
     state.showSuccessFeedback = true;
     setTimeout(() => (state.showSuccessFeedback = false), 2000);
   },
   //set personal user account
-  setUser: (state: any, { user }: { user: User }) => {
+  setUser: (state: SharedState, { user }: { user: User }) => {
     Object.assign(state.user, user);
     // TODO use plugin
     localStorage.setItem('user', JSON.stringify(user));
   },
-  setToken: (state: any, token: string) => {
+  setToken: (state: SharedState, token: string) => {
     state.token = token;
     localStorage.setItem('token', token);
     axios.defaults.headers.common['Authorization'] =
       'Bearer ' + token;
   },
   // todo merge into above mutation
-  resetToken: (state: any) => {
+  resetToken: (state: SharedState) => {
     state.token = '';
     localStorage.removeItem('token');
     axios.defaults.headers.common['Authorization'] = '';
   },
-  setRefreshToken: (state: any, token: string) => {
+  setRefreshToken: (state: SharedState, token: string) => {
     state.refreshToken = token;
     localStorage.setItem('refreshToken', token);
   },
-  setCourse: (state: any, course: Course) =>
+  setCourse: (state: SharedState, course: Course) =>
     Object.assign(
       state.courses.find((c: Course) => c.id == course.id),
       course
     ),
-  setCourses: (state: any, courses: Course[]) =>
+  setCourses: (state: SharedState, courses: Course[]) =>
     (state.courses = courses),
 };
