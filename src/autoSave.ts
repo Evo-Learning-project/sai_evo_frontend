@@ -52,7 +52,15 @@ export class AutoSave<T> {
     this.successFunction = successFunction;
   }
 
-  async onChange(field: keyof T, value: unknown): Promise<void> {
+  async onChange({
+    field,
+    value,
+  }: {
+    field: keyof T;
+    value: unknown;
+  }): Promise<void> {
+    console.log('calling onChange', { field, value });
+
     // record new change to field
     this.unsavedChanges[field] = value as any;
 

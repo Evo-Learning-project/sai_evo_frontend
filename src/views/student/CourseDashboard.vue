@@ -23,7 +23,7 @@
         <div v-if="(currentCourse.unstarted_practice_events?.length ?? 0) > 0">
           <Card
             :margin-less="true"
-            class="h-44 relative overflow-hidden bg-light text-gray-600 shadow-lg cursor-pointer"
+            class="relative overflow-hidden text-gray-600 shadow-lg cursor-pointer h-44 bg-light"
             @mousedown="onCardMouseDown"
             @click="
               onResumePractice(currentCourse.unstarted_practice_events[0])
@@ -37,7 +37,7 @@
             <template v-slot:body>
               <div class="flex">
                 <h1
-                  class="mx-auto text-5xl opacity-70 mt-1 material-icons-outlined"
+                  class="mx-auto mt-1 text-5xl opacity-70 material-icons-outlined"
                 >
                   redo
                 </h1>
@@ -48,7 +48,7 @@
         <Card
           v-else
           :margin-less="true"
-          class="h-44 relative overflow-hidden bg-light text-gray-600 shadow-lg cursor-pointer"
+          class="relative overflow-hidden text-gray-600 shadow-lg cursor-pointer h-44 bg-light"
           @mousedown="onCardMouseDown"
           @click="onCreatePractice()"
         >
@@ -60,7 +60,7 @@
           <template v-slot:body>
             <div class="flex">
               <h1
-                class="mx-auto text-5xl opacity-70 -mt-1 material-icons-outlined"
+                class="mx-auto -mt-1 text-5xl opacity-70 material-icons-outlined"
               >
                 add_circle_outline
               </h1>
@@ -79,7 +79,7 @@
         <SkeletonCard class="h-44"></SkeletonCard>
       </div>
     </div>
-    <Dialog :show-dialog="!!editingTemplate">
+    <Dialog :show-dialog="!!editingEventTemplate">
       <template v-slot:title>
         {{
           isResumingUnstartedPractice
@@ -88,8 +88,12 @@
         }}
       </template>
       <template v-slot:body
-        >Scegli come generare gli esercizi per questa esercitazione.</template
-      >
+        >Scegli come generare gli esercizi per questa esercitazione.
+        <PracticeTemplateEditor
+          v-if="editingEventTemplate"
+          :modelValue="editingEventTemplate"
+        ></PracticeTemplateEditor>
+      </template>
     </Dialog>
   </div>
 </template>
@@ -102,15 +106,22 @@ import { courseIdMixin, loadingMixin } from '@/mixins'
 import { defineComponent } from '@vue/runtime-core'
 import { rippleEffect } from '@/utils'
 
-import { mapGetters, mapActions } from 'vuex'
+import { mapGetters, mapActions, mapMutations, mapState } from 'vuex'
 import EventParticipationPreview from '@/components/student/EventParticipationPreview.vue'
 import SkeletonCard from '../../components/ui/SkeletonCard.vue'
 import Card from '@/components/ui/Card.vue'
 import { Event, EventTemplate, getBlankPractice } from '@/models'
 import Dialog from '@/components/ui/Dialog.vue'
+import PracticeTemplateEditor from '@/components/student/PracticeTemplateEditor.vue'
 
 export default defineComponent({
-  components: { EventParticipationPreview, SkeletonCard, Card, Dialog },
+  components: {
+    EventParticipationPreview,
+    SkeletonCard,
+    Card,
+    Dialog,
+    PracticeTemplateEditor
+  },
   name: 'CourseDashboard',
   mixins: [courseIdMixin, loadingMixin],
   async created () {
@@ -120,19 +131,19 @@ export default defineComponent({
   },
   data () {
     return {
-      firstLoading: false,
-      editingTemplate: undefined as EventTemplate | undefined
+      firstLoading: false
     }
   },
   methods: {
     ...mapActions('shared', ['getCourse']),
     ...mapActions('student', ['createEvent']),
+    ...mapMutations('student', ['setEditingEventTemplate']),
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onCardMouseDown (event: any) {
       rippleEffect(event, 'ripple-gray')
     },
     onResumePractice (event: Event) {
-      this.editingTemplate = event.template
+      this.setEditingEventTemplate(event.template)
     },
     async onCreatePractice () {
       if (this.loading) {
@@ -143,19 +154,20 @@ export default defineComponent({
         courseId: this.courseId,
         event: getBlankPractice()
       })
-      this.editingTemplate = newPracticeEvent.template
+      this.setEditingEventTemplate(newPracticeEvent.template)
       ;(this.$store.state as any).shared.loading = false
     }
   },
   computed: {
     ...mapGetters('student', ['examParticipations', 'practiceParticipations']),
     ...mapGetters('shared', ['course']),
+    ...mapState('student', ['editingEventTemplate']),
     currentCourse () {
       return this.course(this.courseId)
     },
     isResumingUnstartedPractice (): boolean {
       return (
-        this.editingTemplate?.id ===
+        this.editingEventTemplate?.id ===
         this.currentCourse.unstarted_practice_events?.[0]?.template.id
       )
     }

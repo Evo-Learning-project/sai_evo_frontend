@@ -146,6 +146,19 @@ export async function updateEventTemplateRule(
   return response.data;
 }
 
+export async function partialUpdateEventTemplateRule(
+  courseId: string,
+  templateId: string,
+  ruleId: string,
+  changes: Partial<EventTemplateRule>
+): Promise<EventTemplateRule> {
+  const response = await axios.put(
+    `/courses/${courseId}/templates/${templateId}/rules/${ruleId}/`,
+    changes
+  );
+  return response.data;
+}
+
 export async function createEventTemplateRuleClause(
   courseId: string,
   templateId: string,

@@ -55,7 +55,23 @@ export const mutations = {
       Object.assign(target, rule);
     } else {
       // push new rule
-      state.editingEventTemplate?.rules.push(rule);
+      console.log('pushing');
+      (state.editingEventTemplate as EventTemplate).rules.push(rule);
+    }
+  },
+  patchEditingEventTemplateRule: (
+    state: StudentState,
+    {
+      ruleId,
+      changes,
+    }: { ruleId: string; changes: Partial<EventTemplateRule> }
+  ) => {
+    const target = state.editingEventTemplate?.rules.find(
+      (r: EventTemplateRule) => r.id == ruleId
+    );
+    if (target) {
+      // update existing rule
+      Object.assign(target, { ...target, ...changes });
     }
   },
   setEditingEventTemplateRuleClause: (

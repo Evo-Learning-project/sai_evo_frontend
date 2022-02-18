@@ -19,6 +19,7 @@ import {
   moveEventParticipationCurrentSlotCursor,
   partialUpdateEventParticipation,
   partialUpdateEventParticipationSlot,
+  partialUpdateEventTemplateRule,
   participateInEvent,
   updateEventTemplateRule,
   updateEventTemplateRuleClause,
@@ -162,26 +163,28 @@ export const actions = {
 
     return newRule;
   },
-  updateEventTemplateRule: async (
+  partialUpdateEventTemplateRule: async (
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     { commit }: { commit: Commit },
     {
       courseId,
       templateId,
-      rule,
+      ruleId,
+      changes,
     }: {
       courseId: string;
       templateId: string;
-      rule: EventTemplateRule;
+      ruleId: string;
+      changes: Partial<EventTemplateRule>;
     }
   ) => {
-    const updatedRule = await updateEventTemplateRule(
+    const updatedRule = await partialUpdateEventTemplateRule(
       courseId,
       templateId,
-      rule.id,
-      rule
+      ruleId,
+      changes
     );
-    commit('setEditingEventTemplateRule', updatedRule);
+    //commit('setEditingEventTemplateRule', updatedRule);
 
     return updatedRule;
   },
