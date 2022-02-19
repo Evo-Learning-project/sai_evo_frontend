@@ -229,17 +229,19 @@ export const actions = {
       clause: EventTemplateRuleClause;
     }
   ) => {
+    console.log('calling action');
     const updatedClause = await updateEventTemplateRuleClause(
       courseId,
       templateId,
       ruleId,
       clause
     );
+    console.log('UPDATED CLAUSE', updatedClause);
 
-    commit('setEditingEventTemplateRuleClause', {
-      ruleId,
-      clause: updatedClause,
-    });
+    // commit('setEditingEventTemplateRuleClause', {
+    //   ruleId,
+    //   clause: updatedClause,
+    // });
     return updatedClause;
   },
 };

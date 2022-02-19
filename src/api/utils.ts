@@ -9,10 +9,10 @@ import {
 export const tagNamesToTags = (names: string[]): Tag[] =>
   // converts a list of tag names to a list of their id's, as per
   // the format used by the backend
-  names.map((n) => store.getters['teacher/tagByName'](n));
+  names.map((n) => store.getters['shared/tagByName'](n));
 
 export const tagIdsToTags = (ids: string[]): Tag[] => {
-  return ids.map((i) => store.getters['teacher/tagById'](i) as Tag);
+  return ids.map((i) => store.getters['shared/tagById'](i) as Tag);
 };
 
 export const getUrlQueryParams = (

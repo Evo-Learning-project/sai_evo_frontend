@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { Course, getBlankCourse, User } from '@/models';
+import { Course, getBlankCourse, getBlankTag, User } from '@/models';
 import { SharedState } from '../types';
 
 export const getters = {
@@ -17,4 +17,8 @@ export const getters = {
   //     state.users.find((u: User) => u.id == userId) ?? {},
   unsavedChanges: (state: SharedState): boolean =>
     state.saving || state.savingError,
+  tagById: (state: SharedState) => (tagId: string) =>
+    state.tags.find((t) => t.id == tagId) ?? getBlankTag(),
+  tagByName: (state: SharedState) => (tagName: string) =>
+    state.tags.find((t) => t.name == tagName) ?? getBlankTag(),
 };

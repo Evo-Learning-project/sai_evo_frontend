@@ -5,6 +5,7 @@ import {
   EventParticipationSlot,
   EventTemplate,
   EventTemplateRule,
+  Event,
   EventTemplateRuleClause,
 } from '@/models';
 import { MutationPayload, StudentState } from '../types';
@@ -39,15 +40,13 @@ export const mutations = {
   },
 
   // updates the event template currently being edited
-  setEditingEventTemplate: (
-    state: StudentState,
-    template: EventTemplate | null
-  ) => (state.editingEventTemplate = template),
+  setEditingEvent: (state: StudentState, event: Event | null) =>
+    (state.editingEvent = event),
   setEditingEventTemplateRule: (
     state: StudentState,
     rule: EventTemplateRule
   ) => {
-    const target = state.editingEventTemplate?.rules.find(
+    const target = state.editingEvent?.template?.rules.find(
       (r: EventTemplateRule) => r.id == rule.id
     );
     if (target) {
@@ -55,8 +54,9 @@ export const mutations = {
       Object.assign(target, rule);
     } else {
       // push new rule
-      console.log('pushing');
-      (state.editingEventTemplate as EventTemplate).rules.push(rule);
+      (state.editingEvent?.template as EventTemplate).rules.push(
+        rule
+      );
     }
   },
   patchEditingEventTemplateRule: (
@@ -66,7 +66,7 @@ export const mutations = {
       changes,
     }: { ruleId: string; changes: Partial<EventTemplateRule> }
   ) => {
-    const target = state.editingEventTemplate?.rules.find(
+    const target = state.editingEvent?.template?.rules.find(
       (r: EventTemplateRule) => r.id == ruleId
     );
     if (target) {
@@ -78,9 +78,10 @@ export const mutations = {
     state: StudentState,
     { ruleId, payload }: MutationPayload<EventTemplateRuleClause>
   ) => {
-    const targetRule = state.editingEventTemplate?.rules.find(
+    const targetRule = state.editingEvent?.template?.rules.find(
       (r: EventTemplateRule) => r.id == ruleId
     ) as EventTemplateRule;
+    console.log('target rule', targetRule, ruleId, payload);
     const targetClause = targetRule.clauses?.find(
       (c) => c.id == payload.id
     );

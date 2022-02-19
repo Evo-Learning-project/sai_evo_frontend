@@ -2,7 +2,6 @@ import { SearchFilter } from '@/api/interfaces';
 import {
   Course,
   EventParticipation,
-  EventTemplate,
   Exercise,
   Tag,
   Event,
@@ -12,13 +11,12 @@ import {
 export interface StudentState {
   currentEventParticipation: EventParticipation | null;
   eventParticipations: EventParticipation[];
-  editingEventTemplate: EventTemplate | null;
+  editingEvent: Event | null;
 }
 export interface TeacherState {
   exercises: Exercise[];
   events: Event[];
   eventParticipations: EventParticipation[];
-  tags: Tag[];
   currentExercisePage: number;
   users: User[];
 }
@@ -31,6 +29,7 @@ export interface SharedState {
   saving: boolean;
   savingError: boolean;
   showSuccessFeedback: boolean;
+  tags: Tag[];
 }
 
 interface StoreOperationParameters<T> {

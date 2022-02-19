@@ -2,6 +2,7 @@ import {
   CoursePrivilege,
   EventParticipationState,
   EventState,
+  EventTemplateRuleType,
   ExamValidationError,
   ExerciseState,
   ExerciseType,
@@ -246,7 +247,8 @@ export const it = {
       'Tutti gli studenti vedranno questo esercizio:',
     tag_based_introduction:
       'Ogni studente vedrà un esercizio scelto a caso che rispetta le condizioni definite qui. Un esercizio è idoneo se, per ogni gruppo di tag definito, contiene almeno un tag di quel gruppo.',
-    tag_based_select_exercises: 'Seleziona solo esercizi che hanno',
+    tag_based_select_exercises:
+      'Verranno scelti solo esercizi che hanno',
     tag_based_at_least_one: 'almeno uno',
     tag_based_among: 'tra i seguenti tag:',
     tag_based_and: '... e',
@@ -294,6 +296,7 @@ export const it = {
     exercise_type: 'Tipologia',
     exercise_state: 'Visibilità',
     exercise_public_tags: 'Tag pubblici',
+    exercise_tags: 'Tag',
     exercise_private_tags: 'Tag privati',
     choice_text: 'Testo',
     choice_score: 'Punteggio',
@@ -325,6 +328,11 @@ export const it = {
     resume_practice: 'Riprendi esercitazione',
     draft_practice: 'Bozza esercitazione',
     pending: 'In corso',
+  },
+  practice_template_editor: {
+    begin_practice: 'Inizia esercitazione',
+    choose_exercises_text:
+      'Scegli come generare gli esercizi per questa esercitazione. Puoi far scegliere gli esercizi al sistema completamente a caso oppure restringere la selezione a quelli che hanno tag da te scelti.',
   },
   exercise_types: {
     [ExerciseType.MULTIPLE_CHOICE_SINGLE_POSSIBLE]:
@@ -412,6 +420,10 @@ export const it = {
     [CoursePrivilege.MANAGE_EXERCISES]: 'Creare esercizi',
     [CoursePrivilege.UPDATE_COURSE]: 'Modificare impostazioni corso',
     //[CoursePrivilege.ALL_PRIVILEGES]: 'Tutti',
+  },
+  event_template_rule_type: {
+    [EventTemplateRuleType.TAG_BASED]: 'Per tag',
+    [EventTemplateRuleType.FULLY_RANDOM]: 'A caso',
   },
   course_privileges_page: {
     course_privileges: 'Permessi',

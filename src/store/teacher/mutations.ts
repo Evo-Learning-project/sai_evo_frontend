@@ -21,7 +21,6 @@ export const mutations = {
     (state.currentExercisePage = pageNumber),
   setEvents: (state: TeacherState, events: Event[]) =>
     (state.events = events),
-  setTags: (state: TeacherState, tags: Tag[]) => (state.tags = tags),
 
   // update an event in memory with the given payload
   setEvent: (

@@ -10,7 +10,6 @@ export const teacherStore = {
     exercises: [] as Exercise[],
     events: [] as Event[],
     eventParticipations: [] as EventParticipation[], // participations to current event
-    tags: [] as Tag[],
     currentExercisePage: 1, // for server-side pagination
     users: [] as User[], // for course permissions view
   }),

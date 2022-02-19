@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import { Course, User } from '@/models';
+import { Course, Tag, User } from '@/models';
 import { actions } from './actions';
 import { getters } from './getters';
 import { mutations } from './mutations';
@@ -28,6 +28,7 @@ export const sharedStore = {
     saving: false,
     savingError: false,
     showSuccessFeedback: false,
+    tags: [] as Tag[],
   }),
   mutations: {
     ...mutations,

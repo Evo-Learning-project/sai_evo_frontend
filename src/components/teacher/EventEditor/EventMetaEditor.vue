@@ -1,13 +1,13 @@
 <template>
   <div>
     <div class="flex mt-6 mb-6 space-x-4">
-      <text-input
+      <TextInput
         class="w-full mr-auto"
         :modelValue="modelValue.name"
         @update:modelValue="emitUpdate('name', $event)"
-        >{{ $t('event_editor.name') }}</text-input
+        >{{ $t('event_editor.name') }}</TextInput
       >
-      <calendar-input
+      <CalendarInput
         class=""
         :modelValue="modelValue.begin_timestamp"
         ref="beginTimestampElement"
@@ -15,29 +15,29 @@
         @update:modelValue="
           isDraft ? emitUpdate('begin_timestamp', $event) : () => null
         "
-        >{{ $t('event_editor.begin_timestamp') }}</calendar-input
+        >{{ $t('event_editor.begin_timestamp') }}</CalendarInput
       >
-      <calendar-input
+      <CalendarInput
         class=""
         :modelValue="modelValue.end_timestamp"
         @update:modelValue="emitUpdate('end_timestamp', $event)"
-        >{{ $t('event_editor.end_timestamp') }}</calendar-input
+        >{{ $t('event_editor.end_timestamp') }}</CalendarInput
       >
     </div>
-    <text-editor
+    <TextEditor
       :modelValue="modelValue.instructions"
       @update:modelValue="emitUpdate('instructions', $event)"
     >
-      {{ $t('event_editor.instructions') }}</text-editor
+      {{ $t('event_editor.instructions') }}</TextEditor
     >
     <div class="flex flex-col mt-12 space-y-4">
       <h3>{{ $t('event_editor.flow_rules') }}</h3>
       <div class="flex items-center space-x-4">
-        <radio-group
+        <RadioGroup
           :modelValue="modelValue.exercises_shown_at_a_time"
           :options="exercisesShownAtOnceOptions"
           @update:modelValue="emitUpdate('exercises_shown_at_a_time', $event)"
-        ></radio-group>
+        ></RadioGroup>
       </div>
       <toggle
         :labelOnLeft="true"
@@ -74,6 +74,7 @@ import { PropType } from 'vue'
 import RadioGroup from '@/components/ui/RadioGroup.vue'
 import { getTranslatedString as _ } from '@/i18n'
 import Dialog from '@/components/ui/Dialog.vue'
+import { SelectableOption } from '@/interfaces'
 
 export default defineComponent({
   name: 'EventMetaEditor',
@@ -128,7 +129,7 @@ export default defineComponent({
     isDraft () {
       return this.modelValue.state == EventState.DRAFT
     },
-    exercisesShownAtOnceOptions () {
+    exercisesShownAtOnceOptions (): SelectableOption[] {
       return [
         {
           value: null,

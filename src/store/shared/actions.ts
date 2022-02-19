@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 
-import { getCourse, getCourses } from '@/api/courses';
+import { getCourse, getCourses, getTags } from '@/api/courses';
 
 import axios from 'axios';
 import { Commit } from 'vuex';
@@ -47,6 +47,7 @@ export const actions = {
     { courseId }: { courseId: string }
   ) => {
     const { participations, ...course } = await getCourse(courseId);
+    console.log('GOTTEN COURSE', course);
     commit('setCourse', course);
 
     if (participations) {
@@ -58,5 +59,12 @@ export const actions = {
   getCourses: async ({ commit }: { commit: Commit }) => {
     const courses = await getCourses();
     commit('setCourses', courses);
+  },
+  getTags: async (
+    { commit }: { commit: Commit },
+    courseId: string
+  ) => {
+    const tags = await getTags(courseId);
+    commit('setTags', tags);
   },
 };

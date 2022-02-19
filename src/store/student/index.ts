@@ -9,7 +9,7 @@ export const studentStore = {
   state: () => ({
     currentEventParticipation: null as EventParticipation | null,
     eventParticipations: [] as EventParticipation[],
-    editingEventTemplate: null as EventTemplate | null,
+    editingEvent: null as Event | null,
   }),
   mutations: {
     ...mutations,

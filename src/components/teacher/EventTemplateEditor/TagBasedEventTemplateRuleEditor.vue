@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col">
-    <p class="mb-2 text-muted">
+    <p class="mb-2 text-muted" v-if="showTeacherIntroductionText">
       {{ $t('event_template_rule_editor.tag_based_introduction') }}
     </p>
     <div
@@ -32,6 +32,7 @@
       ></TagInput>
     </div>
     <div
+      v-if="allowCreateMoreClauses"
       @click="onAddClause"
       class="mt-2 transition-opacity duration-75 opacity-50 cursor-pointer hover:opacity-100"
     >
@@ -66,7 +67,7 @@ import { EventTemplateRuleClause, Tag } from '@/models'
 import { defineComponent, PropType } from '@vue/runtime-core'
 
 import { createNamespacedHelpers } from 'vuex'
-const { mapState } = createNamespacedHelpers('teacher')
+const { mapState } = createNamespacedHelpers('shared')
 
 export default defineComponent({
   components: { TagInput, Btn },
@@ -84,6 +85,14 @@ export default defineComponent({
     loading: {
       type: Boolean,
       default: false
+    },
+    showTeacherIntroductionText: {
+      type: Boolean,
+      default: true
+    },
+    allowCreateMoreClauses: {
+      type: Boolean,
+      default: true
     }
   },
   mixins: [courseIdMixin, eventIdMixin, loadingMixin],

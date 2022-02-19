@@ -162,6 +162,14 @@ const routes: Array<RouteRecordRaw> = [
         },
       },
       {
+        path: 'courses/:courseId/practice/:examId',
+        component: EventParticipationPage,
+        name: 'PracticeParticipationPage',
+        meta: {
+          routeTitle: _('headings.ongoing_practice'),
+        },
+      },
+      {
         path: 'courses/:courseId/exams/:examId/review/:participationId',
         component: EventParticipationFull,
         name: 'SubmissionReviewPage',

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import { Course, User } from '@/models';
+import { Course, Tag, User } from '@/models';
 import axios from 'axios';
 import { SharedState } from '../types';
 
@@ -24,6 +24,7 @@ export const mutations = {
       state.user = JSON.parse(user);
     }
   },
+  setTags: (state: SharedState, tags: Tag[]) => (state.tags = tags),
   setLoading: (state: SharedState, val: boolean) =>
     (state.loading = val),
   showSuccessFeedback: (state: SharedState) => {

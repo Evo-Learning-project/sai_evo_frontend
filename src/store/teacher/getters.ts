@@ -16,10 +16,6 @@ export const getters = {
     state.events.filter((e) => e.event_type == EventType.EXAM),
   event: (state: TeacherState) => (eventId: string) =>
     state.events.find((e) => e.id == eventId) ?? getBlankExam(),
-  tagById: (state: TeacherState) => (tagId: string) =>
-    state.tags.find((t) => t.id == tagId) ?? getBlankTag(),
-  tagByName: (state: TeacherState) => (tagName: string) =>
-    state.tags.find((t) => t.name == tagName) ?? getBlankTag(),
   exercise: (state: TeacherState) => (exerciseId: string) =>
     state.exercises.find((e) => e.id == exerciseId) ?? {},
 };

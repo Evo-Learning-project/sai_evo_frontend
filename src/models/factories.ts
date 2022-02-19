@@ -6,6 +6,7 @@ import {
   EventTemplate,
   EventTemplateRule,
   EventTemplateRuleClause,
+  EventTemplateRuleType,
   EventType,
   Exercise,
   ExerciseChoice,
@@ -77,9 +78,12 @@ export const getEventTemplateFromExercises = (
   return template;
 };
 
-export const getBlankEventTemplateRule = (): EventTemplateRule => ({
+export const getBlankEventTemplateRule = (
+  rule_type?: EventTemplateRuleType
+): EventTemplateRule => ({
   id: '',
   amount: 1,
+  rule_type,
 });
 
 export const getBlankTag = (): Tag => ({

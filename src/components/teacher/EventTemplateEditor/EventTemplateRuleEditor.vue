@@ -120,7 +120,7 @@
         {{
           $t('event_template_rule_editor.populate_slot_title') +
             ' ' +
-            (modelValue.target_slot_number + 1)
+            (modelValue._ordering + 1)
         }}
       </template>
       <template v-slot:body>
@@ -217,9 +217,9 @@
           <TagBasedEventTemplateRuleEditor
             :modelValue="modelValue.clauses"
             :loading="parentLoading"
-            @addClause="onAddClause($event)"
-            @removeClause="onRemoveClause($event)"
-            @updateClause="onUpdateClause($event)"
+            @addClause="$emit('addClause')"
+            @removeClause="$emit('removeClause', $event)"
+            @updateClause="$emit('updateClause', $event)"
           ></TagBasedEventTemplateRuleEditor>
         </div>
       </template>
@@ -296,15 +296,6 @@ export default defineComponent({
     }
   },
   methods: {
-    onAddClause () {
-      this.$emit('addClause')
-    },
-    onRemoveClause (clauseId: string) {
-      return 1
-    },
-    onUpdateClause (clause: EventTemplateRuleClause) {
-      this.$emit('updateClause', clause)
-    },
     emitUpdate (key: keyof EventTemplateRule, value: unknown) {
       this.$emit('update:modelValue', {
         ...this.modelValue,

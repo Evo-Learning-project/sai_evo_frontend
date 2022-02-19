@@ -8,6 +8,7 @@
     @before-adding-tag="beforeAddingTag($event)"
     @before-deleting-tag="beforeDeletingTag($event)"
     :autocomplete-items="autoCompleteItems"
+    :autocomplete-min-length="1"
   />
   <!--@tags-changed="newTags => onTagsChanged(newTags)"-->
   <!--

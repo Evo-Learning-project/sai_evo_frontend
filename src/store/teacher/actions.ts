@@ -330,13 +330,13 @@ export const actions = {
 
     return moreResults;
   },
-  getTags: async (
-    { commit }: { commit: Commit },
-    courseId: string
-  ) => {
-    const tags = await getTags(courseId);
-    commit('setTags', tags);
-  },
+  // getTags: async (
+  //   { commit }: { commit: Commit },
+  //   courseId: string
+  // ) => {
+  //   const tags = await getTags(courseId);
+  //   commit('setTags', tags);
+  // },
   addExerciseTag: async (
     { commit, state }: { commit: Commit; state: any },
     {

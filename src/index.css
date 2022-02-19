@@ -158,7 +158,7 @@
     }
 
     .ti-autocomplete {
-      @apply p-2 z-20 bg-gray-50 rounded-b-md shadow-popup !important
+      @apply p-2 absolute z-20 bg-gray-50 rounded-b-md shadow-popup !important
     }
 
     .ti-selected-item {
