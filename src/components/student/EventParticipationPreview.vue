@@ -13,11 +13,44 @@
         </h4>
       </template>
       <template v-slot:body>
-        <div class="flex items-end h-full">
-          <div class="flex justify-between w-full" v-if="isParticipable">
+        <div class="flex flex-col h-full">
+          <div
+            class=""
+            v-if="
+              participation.event.event_type ===
+                EventType.SELF_SERVICE_PRACTICE &&
+                participation.assessment_available
+            "
+          >
+            <p class="text-lg text-center">
+              <span
+                class="text-4xl font-semibold"
+                :class="{
+                  'text-success':
+                    participation.score >= participation.max_score * 0.6,
+                  'text-yellow-700':
+                    participation.score >= participation.max_score / 2 &&
+                    participation.score < participation.max_score * 0.6,
+                  'text-danger-dark':
+                    participation.score < participation.max_score / 2
+                }"
+                >{{ participation.score }}</span
+              ><span class="ml-1 text-muted"
+                >/{{ participation.max_score }}</span
+              >
+            </p>
+          </div>
+          <div
+            class="flex justify-between w-full mt-auto"
+            v-if="isParticipable"
+          >
             <router-link
               :to="{
-                name: 'ExamParticipationPage',
+                name:
+                  participation.event.event_type ===
+                  EventType.SELF_SERVICE_PRACTICE
+                    ? 'PracticeParticipationPage'
+                    : 'ExamParticipationPage',
                 params: {
                   examId: participation.event.id,
                   courseId: courseId
@@ -40,12 +73,16 @@
               {{ $t('student_course_dashboard.pending') }}
             </div>
           </div>
-          <div class="flex w-full" v-else>
+          <div class="flex w-full mt-auto" v-else>
             <router-link
               class="mr-auto"
               v-if="participation.assessment_available"
               :to="{
-                name: 'AssessmentReviewPage',
+                name:
+                  participation.event.event_type ===
+                  EventType.SELF_SERVICE_PRACTICE
+                    ? 'PracticeSummaryPage'
+                    : 'AssessmentReviewPage',
                 params: {
                   participationId: participation.id,
                   examId: participation.event.id,
@@ -54,12 +91,21 @@
               }"
             >
               <Btn
-                ><span class="material-icons-outlined text-base mr-2">
+                ><span class="mr-2 text-base material-icons-outlined">
                   assignment_turned_in </span
-                >{{ $t('student_course_dashboard.view_assessment') }}</Btn
+                >{{
+                  participation.event.event_type ===
+                  EventType.SELF_SERVICE_PRACTICE
+                    ? $t('student_course_dashboard.practice_summary')
+                    : $t('student_course_dashboard.view_assessment')
+                }}</Btn
               >
             </router-link>
             <router-link
+              v-if="
+                participation.event.event_type !==
+                  EventType.SELF_SERVICE_PRACTICE
+              "
               :to="{
                 name: 'SubmissionReviewPage',
                 params: {

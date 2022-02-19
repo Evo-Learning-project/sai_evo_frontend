@@ -105,7 +105,8 @@ import {
 import {
   EventParticipation,
   EventParticipationSlot,
-  EventParticipationState
+  EventParticipationState,
+  EventType
 } from '@/models'
 import { getDebouncedForStudentText } from '@/utils'
 import { defineComponent } from '@vue/runtime-core'
@@ -141,7 +142,11 @@ export default defineComponent({
     // already turned in, redirect to submission review page
     if (this.proxyModelValue.state === EventParticipationState.TURNED_IN) {
       this.$router.push({
-        name: 'SubmissionReviewPage',
+        name:
+          this.proxyModelValue.event.event_type ===
+          EventType.SELF_SERVICE_PRACTICE
+            ? 'PracticeSummaryPage'
+            : 'SubmissionReviewPage',
         params: {
           participationId: this.currentEventParticipation.id
         }
@@ -204,7 +209,11 @@ export default defineComponent({
       )
 
       this.$router.push({
-        name: 'SubmissionReviewPage',
+        name:
+          this.proxyModelValue.event.event_type ===
+          EventType.SELF_SERVICE_PRACTICE
+            ? 'PracticeSummaryPage'
+            : 'SubmissionReviewPage',
         params: {
           participationId: this.currentEventParticipation.id,
           showSubmissionConfirmationMessage: 1 // should be `true`, but TS complains about type

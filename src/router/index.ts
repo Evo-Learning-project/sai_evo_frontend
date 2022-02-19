@@ -189,6 +189,17 @@ const routes: Array<RouteRecordRaw> = [
           showAssessment: true,
         },
       },
+      {
+        path: 'courses/:courseId/practice/:examId/summary/:participationId',
+        component: EventParticipationFull,
+        name: 'PracticeSummaryPage',
+        meta: {
+          routeTitle: _('headings.practice_summary'),
+        },
+        props: {
+          showAssessment: true,
+        },
+      },
     ],
   },
 ];

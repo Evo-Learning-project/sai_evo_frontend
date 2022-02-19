@@ -44,11 +44,13 @@ export const it = {
     course_list: 'Corsi',
     exam_progress: 'Progresso esame ' + ROUTE_TITLE_EVENT_NAME_TOKEN,
     exam_results: 'Risultati esame ' + ROUTE_TITLE_EVENT_NAME_TOKEN,
+    ongoing_practice: 'Esercitazione in corso',
     ongoing_exam:
       'Esame ' + ROUTE_TITLE_EVENT_NAME_TOKEN + ' in corso',
     exam_preview: 'Anteprima esame',
     review_submission: 'Revisione risposte',
     review_assessment: 'Correzione risposte',
+    practice_summary: 'Riepilogo esercitazione',
   },
   event_participation_page: {
     exercise: 'Esercizio',
@@ -328,6 +330,7 @@ export const it = {
     resume_practice: 'Riprendi esercitazione',
     draft_practice: 'Bozza esercitazione',
     pending: 'In corso',
+    practice_summary: 'Riepilogo',
   },
   practice_template_editor: {
     begin_practice: 'Inizia esercitazione',
