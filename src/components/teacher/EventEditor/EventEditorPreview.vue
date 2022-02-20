@@ -48,20 +48,21 @@
                 {{ $t('event_preview.editor') }}</Btn
               ></router-link
             >
-            <Btn
-              :variant="'danger'"
-              v-if="hasBegun && hasPrivileges([CoursePrivilege.MANAGE_EVENTS])"
-              @click="$emit('close')"
-              ><span class="mr-1 text-base material-icons-outlined">
-                block </span
-              >{{ $t('event_preview.close') }}</Btn
-            >
           </div>
-
+          <Btn
+            class="mr-1"
+            :variant="'danger'"
+            v-if="hasBegun && hasPrivileges([CoursePrivilege.MANAGE_EVENTS])"
+            @click="$emit('close')"
+            ><span class="mr-1 text-base material-icons-outlined"> block </span
+            >{{ $t('event_preview.close') }}</Btn
+          >
           <router-link
             v-if="hasBegun"
             :to="{ name: 'ExamProgress', params: { examId: event.id } }"
-            ><Btn v-if="hasPrivileges([CoursePrivilege.MANAGE_EVENTS])"
+            ><Btn
+              :outline="true"
+              v-if="hasPrivileges([CoursePrivilege.MANAGE_EVENTS])"
               ><span class="mr-1.5 -ml-1 text-base material-icons-outlined">
                 visibility </span
               >{{ $t('event_preview.monitor') }}</Btn

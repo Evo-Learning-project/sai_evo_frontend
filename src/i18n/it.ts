@@ -441,8 +441,9 @@ export const it = {
   errors: {
     retry: 'Riprova',
     no_connection: 'Connessione assente',
-    403: 'Non hai i permessi necessari per accedere a questa pagina',
+    403: "Non hai i permessi necessari per effettuare quest'azione",
     404: 'La pagina richiesta non sembra esistere',
+    500: 'Si è verificato un errore interno',
     unknown_error: 'Si è verificato un errore sconosciuto',
   },
 };

@@ -136,3 +136,9 @@ export const setPageWideError = (e: any) => {
   sharedState.pageWideErrorData = getErrorData(e);
   console.error(e);
 };
+
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+export const setErrorNotification = (e: any) =>
+  store.commit('shared/setErrorNotificationData', {
+    data: getErrorData(e),
+  });

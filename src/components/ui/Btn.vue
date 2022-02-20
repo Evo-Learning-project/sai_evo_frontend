@@ -7,30 +7,32 @@
       'shadow-inner bg-light': forceActive,
       'bg-success-light bg-opacity-30':
         forceActive && variant === 'success-borderless',
-      'px-5 py-1 font-medium': size == 'base' && variant !== 'transparent',
-      'px-2.5 py-0.5 text-sm': size == 'sm',
-      'px-1.5 py-0.5 text-xs': size == 'xs',
-      'px-14 py-2 text-lg font-medium': size == 'lg',
+      'px-5 py-1 font-medium':
+        !outline && size === 'base' && variant !== 'transparent',
+      'px-4 py-2.5px font-medium': outline && size === 'base',
+      'px-2.5 py-0.5 text-sm': size === 'sm',
+      'px-1.5 py-0.5 text-xs': size === 'xs',
+      'px-14 py-2 text-lg font-medium': size === 'lg',
       'text-lightText bg-primary hover:bg-primary-dark':
-        !outline && variant == 'primary',
-      'text-danger-dark bg-danger': !outline && variant == 'danger',
+        !outline && variant === 'primary',
+      'text-danger-dark bg-danger': !outline && variant === 'danger',
       'text-danger-dark border-danger-dark bg-white border hover:bg-danger-dark hover:text-white':
-        outline && variant == 'danger',
-      'text-success-dark bg-success-light': !outline && variant == 'success',
+        outline && variant === 'danger',
+      'text-success-dark bg-success-light': !outline && variant === 'success',
       'transition-colors duration-100 shadow-inner': outline,
-      'focus:outline-primary': false && variant == 'primary',
-      'focus:outline-danger-dark': variant == 'danger',
-      'focus:outline-success': false && variant == 'success',
-      'hover:bg-light hover:shadow-inner': variant == 'light',
+      'focus:outline-primary': false && variant === 'primary',
+      'focus:outline-danger-dark': variant === 'danger',
+      'focus:outline-success': false && variant === 'success',
+      'hover:bg-light hover:shadow-inner': variant === 'light',
       'text-primary hover:text-lightText bg-transparent border-primary border-1.5 hover:bg-primary':
-        outline && variant == 'primary',
+        outline && variant === 'primary',
       'text-lg font-bold text-primary hover:bg-light px-6 focus:bg-primary-light focus:bg-opacity-30':
-        variant == 'primary-borderless',
+        variant === 'primary-borderless',
       'text-lg font-bold text-success hover:bg-light px-6 focus:bg-success-light focus:bg-opacity-30':
-        variant == 'success-borderless',
+        variant === 'success-borderless',
       'text-lg font-bold text-success hover:bg-light px-6':
-        variant == 'success-borderless',
-      'border-gray-300 bg-white hover:bg-light': variant == 'transparent',
+        variant === 'success-borderless',
+      'border-gray-300 bg-white hover:bg-light': variant === 'transparent',
       'rounded-md': variant !== 'transparent'
     }"
   >
@@ -79,7 +81,7 @@ export default defineComponent({
       default: 'primary'
     },
     size: {
-      type: String as PropType<'sm' | 'base' | 'lg'>,
+      type: String as PropType<'xs' | 'sm' | 'base' | 'lg'>,
       default: 'base'
     },
     forceActive: {

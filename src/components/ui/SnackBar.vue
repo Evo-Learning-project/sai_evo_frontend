@@ -1,5 +1,5 @@
 <template>
-  <div style="width: 80%" class="fixed -ml-5 bottom-3">
+  <div style="width: 80%; z-index: 9999" class="fixed -ml-5 bottom-3">
     <div
       class="w-full px-4 py-3 rounded opacity-100 shadow-popup text-lightText bg-dark bg-opacity-90 border-danger-dark"
       role="alert"

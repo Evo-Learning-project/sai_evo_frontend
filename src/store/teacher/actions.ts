@@ -132,7 +132,7 @@ export const actions = {
       changes
     );
     if (mutate) {
-      commit('setEvent', { eventId, event });
+      commit('setEvent', { eventId, payload: event });
     }
   },
   updateExerciseChoice: async (

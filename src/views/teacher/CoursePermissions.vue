@@ -71,7 +71,8 @@ export default defineComponent({
       async () =>
         await this.getUsersForCourse({
           courseId: this.courseId
-        })
+        }),
+      this.setPageWideError
     )
   },
   data () {
@@ -123,7 +124,8 @@ export default defineComponent({
               courseId: this.courseId,
               userId: this.editingUserId,
               privileges: val
-            })
+            }),
+          this.setErrorNotification
         )
         this.gridApi.refreshCells()
       }

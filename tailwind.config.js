@@ -19,6 +19,7 @@ module.exports = {
         '0.4px': '0.4px',
         '1.25px': '1.25px',
         '5px': '5px',
+        '2.5px': '2.5px',
         '4.5': '18px'
       },
       transitionProperty: {

@@ -2,9 +2,7 @@
   <Card class="transition-all duration-75 hover:bg-gray-50">
     <template v-slot:header>
       <div class="flex items-center">
-        <span class="mr-2 opacity-50 material-icons-outlined"
-          >space_dashboard</span
-        >
+        <span class="mr-2 opacity-50 material-icons-two-tone">book</span>
         <h3>{{ course.name }}</h3>
       </div>
     </template>

@@ -6,7 +6,11 @@ import { Course, CoursePrivilege } from './models';
 import router from './router';
 import store from './store/index';
 import { SharedState } from './store/types';
-import { getErrorData, setPageWideError } from './utils';
+import {
+  getErrorData,
+  setErrorNotification,
+  setPageWideError,
+} from './utils';
 export const courseIdMixin = {
   computed: {
     courseId(): string {
@@ -27,7 +31,8 @@ export const loadingMixin = {
   methods: {
     async withLoading(
       callback: () => unknown,
-      onError?: (e?: unknown) => unknown
+      onError?: (e?: unknown) => unknown,
+      onSuccess?: () => void
     ) {
       const sharedState = (store.state as { shared: SharedState })
         .shared;
@@ -35,6 +40,7 @@ export const loadingMixin = {
       sharedState.loading = true;
       try {
         await callback();
+        onSuccess?.();
       } catch (e) {
         onError?.(e);
       } finally {
@@ -65,14 +71,13 @@ export const loadingMixin = {
       try {
         await callback();
       } catch (e: any) {
-        store.commit('shared/setErrorNotificationData', {
-          data: getErrorData(e),
-        });
+        setErrorNotification(e);
       } finally {
         sharedState.localLoading = false;
       }
     },
     setPageWideError,
+    setErrorNotification,
   },
   computed: {
     ...mapState('shared', ['firstLoading', 'localLoading']),

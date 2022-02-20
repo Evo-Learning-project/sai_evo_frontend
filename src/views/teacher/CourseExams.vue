@@ -4,7 +4,7 @@
       <Btn
         v-if="hasPrivileges([CoursePrivilege.MANAGE_EVENTS])"
         @click="onAddExam()"
-        :loading="buttonLoading"
+        :loading="localLoading"
         class="ml-auto"
         ><span class="mr-1 text-base material-icons-outlined">
           add_circle_outline
@@ -106,24 +106,24 @@ export default defineComponent({
               state: EventState.CLOSED,
               users_allowed_past_closure: []
             }
-          })
+          }),
+        this.setErrorNotification,
+        () => this.$store.commit('shared/showSuccessFeedback')
       )
       this.closingExam = null
       this.showCloseDialog = false
-      this.$store.commit('shared/showSuccessFeedback')
     },
     async onAddExam () {
-      this.buttonLoading = true
-      const newExam = await this.createEvent({
-        courseId: this.courseId,
-        event: getBlankExam()
-      })
-      this.buttonLoading = false
-
-      // redirect to exam editor for newly created exam
-      this.$router.push({
-        name: 'ExamEditor',
-        params: { examId: newExam.id }
+      await this.withLocalLoading(async () => {
+        const newExam = await this.createEvent({
+          courseId: this.courseId,
+          event: getBlankExam()
+        })
+        // redirect to exam editor for newly created exam
+        this.$router.push({
+          name: 'ExamEditor',
+          params: { examId: newExam.id }
+        })
       })
     }
   },

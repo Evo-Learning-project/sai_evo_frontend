@@ -105,23 +105,13 @@
       @apply w-8 h-8 text-xl rounded-full flex place-items-center justify-center shadow-md
     }
 
-    /** Icons
 
     .material-icons-two-tone {
-  filter: invert(0.5) sepia(1) saturate(10) hue-rotate(180deg);
-  font-size: 48px;
-}
+      @apply select-none;
+      filter: invert(32%) sepia(68%) saturate(2000%) hue-rotate(213deg) brightness(94%) contrast(97%); 
+    }
 
-.material-icons,
-.material-icons-outlined,
-.material-icons-round,
-.material-icons-sharp {
-  color: #0099ff;
-  font-size: 48px;
-}
-
-    */
-
+    
     .tooltip {
       @apply relative
     }
