@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+import { ErrorMessage } from '@/interfaces';
 import { Course, Tag, User } from '@/models';
+import { SharedState } from '../types';
 import { actions } from './actions';
 import { getters } from './getters';
 import { mutations } from './mutations';
@@ -19,12 +21,16 @@ import { mutations } from './mutations';
 export const sharedStore = {
   namespaced: true,
   //plugins: [vuexLocal.plugin],
-  state: () => ({
+  state: (): SharedState => ({
     user: {} as User,
     courses: [] as Course[],
     token: '',
     refreshToken: '',
     loading: false,
+    firstLoading: false,
+    localLoading: false,
+    pageWideErrorData: null as ErrorMessage | null,
+    errorNotificationData: null as ErrorMessage | null,
     saving: false,
     savingError: false,
     showSuccessFeedback: false,

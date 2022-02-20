@@ -93,7 +93,15 @@
       <h2 class="">
         {{ routeTitle }}
       </h2>
-      <router-view class="flex-grow"></router-view>
+      <ErrorView v-if="!!$store.state.shared.pageWideErrorData"></ErrorView>
+      <router-view v-else class="flex-grow"></router-view>
+      <transition name="quick-bounce"
+        ><SnackBar
+          v-if="!!$store.state.shared.errorNotificationData"
+          :icon="$store.state.shared.errorNotificationData.icon"
+          :message="$store.state.shared.errorNotificationData.title"
+        ></SnackBar
+      ></transition>
     </div>
   </div>
 </template>
@@ -108,6 +116,8 @@ import {
 import { SidebarOption } from '@/navigation/sidebar'
 import { rippleEffect } from '@/utils'
 import { defineComponent } from '@vue/runtime-core'
+import ErrorView from '../shared/ErrorView.vue'
+import SnackBar from '@/components/ui/SnackBar.vue'
 
 export default defineComponent({
   name: 'MainTeacher',
@@ -147,6 +157,7 @@ export default defineComponent({
     currentEvent (): Event {
       return this.$store.getters['teacher/event'](this.eventId)
     }
-  }
+  },
+  components: { ErrorView, SnackBar }
 })
 </script>

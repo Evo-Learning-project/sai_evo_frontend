@@ -1,8 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+import { mapState } from 'vuex';
+import { getTranslatedString as _ } from './i18n';
 import { Course, CoursePrivilege } from './models';
 import router from './router';
 import store from './store/index';
+import { SharedState } from './store/types';
+import { getErrorData, setPageWideError } from './utils';
 export const courseIdMixin = {
   computed: {
     courseId(): string {
@@ -21,12 +25,57 @@ export const eventIdMixin = {
 
 export const loadingMixin = {
   methods: {
-    async withLoading(callback: () => any) {
-      // TODO type the state
-      (store.state as any).shared.loading = true;
-      await callback();
-      (store.state as any).shared.loading = false;
+    async withLoading(
+      callback: () => unknown,
+      onError?: (e?: unknown) => unknown
+    ) {
+      const sharedState = (store.state as { shared: SharedState })
+        .shared;
+
+      sharedState.loading = true;
+      try {
+        await callback();
+      } catch (e) {
+        onError?.(e);
+      } finally {
+        sharedState.loading = false;
+      }
     },
+    async withFirstLoading(
+      callback: () => unknown,
+      onError = setPageWideError
+    ) {
+      const sharedState = (store.state as { shared: SharedState })
+        .shared;
+
+      sharedState.firstLoading = true;
+      try {
+        await callback();
+      } catch (e: any) {
+        onError?.(e);
+      } finally {
+        sharedState.firstLoading = false;
+      }
+    },
+    async withLocalLoading(callback: () => unknown) {
+      const sharedState = (store.state as { shared: SharedState })
+        .shared;
+
+      sharedState.localLoading = true;
+      try {
+        await callback();
+      } catch (e: any) {
+        store.commit('shared/setErrorNotificationData', {
+          data: getErrorData(e),
+        });
+      } finally {
+        sharedState.localLoading = false;
+      }
+    },
+    setPageWideError,
+  },
+  computed: {
+    ...mapState('shared', ['firstLoading', 'localLoading']),
   },
 };
 

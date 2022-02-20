@@ -7,11 +7,11 @@
     </Card>
 
     <div class="flex w-full mb-2">
-      <btn @click="onAddExercise()" :loading="loading" class="ml-auto"
+      <Btn @click="onAddExercise()" :loading="localLoading" class="ml-auto"
         ><span class="mr-1 text-base material-icons-outlined">
           add_circle_outline
         </span>
-        {{ $t('course_exercises.new_exercise') }}</btn
+        {{ $t('course_exercises.new_exercise') }}</Btn
       >
     </div>
     <div v-if="!firstLoading">
@@ -64,7 +64,7 @@ import Spinner from '@/components/ui/Spinner.vue'
 import ExerciseSearchFilters from '@/components/teacher/ExerciseSearchFilters.vue'
 import { SearchFilter } from '@/api/interfaces'
 import { getDebouncedForFilter } from '@/utils'
-import { courseIdMixin } from '@/mixins'
+import { courseIdMixin, loadingMixin } from '@/mixins'
 export default defineComponent({
   name: 'CourseExercises',
   props: {
@@ -74,7 +74,7 @@ export default defineComponent({
     },
     options: Array
   },
-  mixins: [courseIdMixin],
+  mixins: [courseIdMixin, loadingMixin],
   watch: {
     searchFilter: {
       async handler () {
@@ -97,20 +97,18 @@ export default defineComponent({
   async created () {
     this.onFilterChange = getDebouncedForFilter(this.onFilterChange)
 
-    this.firstLoading = true
-    await this.getExercises({
-      courseId: this.courseId,
-      fromFirstPage: true
+    this.withFirstLoading(async () => {
+      await this.getExercises({
+        courseId: this.courseId,
+        fromFirstPage: true
+      })
+      await this.getTags(this.courseId)
     })
-    await this.getTags(this.courseId)
-    this.firstLoading = false
   },
   data () {
     return {
       isInitialInfiniteLoad: false,
       expandResultFilter: true,
-      loading: false,
-      firstLoading: false,
       searchFilter: {
         label: '',
         text: '',
@@ -146,23 +144,23 @@ export default defineComponent({
       }
     },
     async onAddExercise () {
-      this.loading = true
-      const newExercise = await this.createExercise({
-        courseId: this.courseId,
-        exercise: getBlankExercise()
+      await this.withLocalLoading(async () => {
+        const newExercise = await this.createExercise({
+          courseId: this.courseId,
+          exercise: getBlankExercise()
+        })
+        ;(this.$refs[
+          'course-' + this.courseId + '-exercise-' + newExercise.id
+        ] as { showEditor: boolean }).showEditor = true
       })
-      this.loading = false
-      ;(this.$refs[
-        'course-' + this.courseId + '-exercise-' + newExercise.id
-      ] as { showEditor: boolean }).showEditor = true
     }
   },
   computed: {
-    tags (): Tag[] {
-      return [{ name: 'tag1' }, { name: 'tag2' }, { name: 'tag3' }]
-    },
+    // tags (): Tag[] {
+    //   return [{ name: 'tag1' }, { name: 'tag2' }, { name: 'tag3' }]
+    // },
     tagsOptions () {
-      return this.tags.map(t => ({
+      return this.tags.map((t: Tag) => ({
         value: t.name,
         content: t.name
       }))
@@ -186,7 +184,7 @@ export default defineComponent({
           description: _('exercise_states_descriptions.' + key)
         }))
     },
-    ...mapState(['exercises'])
+    ...mapState(['exercises', 'tags'])
   }
 })
 </script>

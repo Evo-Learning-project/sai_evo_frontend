@@ -78,15 +78,12 @@ export default defineComponent({
   name: 'CourseExams',
   mixins: [courseIdMixin, loadingMixin, coursePrivilegeMixin],
   async created () {
-    this.firstLoading = true
-    await this.getEvents(this.courseId)
-    this.firstLoading = false
+    await this.withFirstLoading(async () => await this.getEvents(this.courseId))
   },
 
   data () {
     return {
       CoursePrivilege,
-      firstLoading: false,
       buttonLoading: false,
       showCloseDialog: false,
       closingExam: null as Event | null

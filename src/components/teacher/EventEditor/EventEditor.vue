@@ -56,10 +56,8 @@ import {
 import Dialog from '@/components/ui/Dialog.vue'
 import { getTranslatedString as _ } from '@/i18n'
 
-import { createNamespacedHelpers } from 'vuex'
-const { mapGetters, mapActions, mapMutations } = createNamespacedHelpers(
-  'teacher'
-)
+import { createNamespacedHelpers, mapActions } from 'vuex'
+const { mapGetters, mapMutations } = createNamespacedHelpers('teacher')
 
 export default defineComponent({
   name: 'EventEditor',
@@ -85,7 +83,7 @@ export default defineComponent({
       })
       //? is it necessary?
       await this.getExercises({ courseId: this.courseId })
-    })
+    }, this.setPageWideError)
 
     if (this.proxyModelValue.state == EventState.OPEN) {
       this.showConfirmationDialog = true
@@ -99,8 +97,8 @@ export default defineComponent({
     }
   },
   methods: {
-    ...mapActions([
-      'getTags',
+    ...mapActions('shared', ['getTags']),
+    ...mapActions('teacher', [
       'getEvent',
       'getExercises',
       'partialUpdateEvent',

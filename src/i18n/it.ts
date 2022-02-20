@@ -438,4 +438,11 @@ export const it = {
     contains: 'Contenuto',
     noRowsToShow: 'Non ci sono dati da mostrare',
   },
+  errors: {
+    retry: 'Riprova',
+    no_connection: 'Connessione assente',
+    403: 'Non hai i permessi necessari per accedere a questa pagina',
+    404: 'La pagina richiesta non sembra esistere',
+    unknown_error: 'Si è verificato un errore sconosciuto',
+  },
 };

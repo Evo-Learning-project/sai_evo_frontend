@@ -1,4 +1,5 @@
 import { SearchFilter } from '@/api/interfaces';
+import { ErrorMessage } from '@/interfaces';
 import {
   Course,
   EventParticipation,
@@ -25,7 +26,11 @@ export interface SharedState {
   courses: Course[];
   token: string;
   refreshToken: string;
-  loading: boolean;
+  loading: boolean; // global spinner
+  firstLoading: boolean; // skeletons on page
+  localLoading: boolean; // spinners in buttons and local components
+  pageWideErrorData: ErrorMessage | null; // for errors that entirely replace the current view
+  errorNotificationData: ErrorMessage | null; // for small errors that can be ignored
   saving: boolean;
   savingError: boolean;
   showSuccessFeedback: boolean;

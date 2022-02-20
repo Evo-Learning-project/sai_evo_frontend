@@ -22,11 +22,9 @@ import {
   courseDashboardSidebarOptions,
   courseListSidebarOptions,
 } from '@/navigation/sidebar';
-import {
-  getTranslatedString,
-  getTranslatedString as _,
-} from '@/i18n';
+import { getTranslatedString as _ } from '@/i18n';
 import store from '@/store';
+import { SharedState } from '@/store/types';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -210,18 +208,21 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from) => {
+  const sharedState = (store.state as { shared: SharedState }).shared;
+
   if (store.getters.unsavedChanges) {
-    if (
-      !confirm(
-        getTranslatedString('misc.confirm_exiting_unsaved_changes')
-      )
-    ) {
+    if (!confirm(_('misc.confirm_exiting_unsaved_changes'))) {
       return false;
     } else {
-      (store.state as any).shared.saving = false;
-      (store.state as any).shared.savingError = false;
+      sharedState.saving = false;
+      sharedState.savingError = false;
     }
   }
+});
+
+router.afterEach(() => {
+  const sharedState = (store.state as { shared: SharedState }).shared;
+  sharedState.pageWideErrorData = null;
 });
 
 export default router;

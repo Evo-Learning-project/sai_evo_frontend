@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+import { ErrorMessage } from '@/interfaces';
 import { Course, Tag, User } from '@/models';
 import axios from 'axios';
 import { SharedState } from '../types';
@@ -60,4 +61,19 @@ export const mutations = {
     ),
   setCourses: (state: SharedState, courses: Course[]) =>
     (state.courses = courses),
+  setErrorNotificationData: (
+    state: SharedState,
+    {
+      data,
+      hideTimeout = 4000,
+    }: { data: ErrorMessage | null; hideTimeout: number }
+  ) => {
+    state.errorNotificationData = data;
+    if (data) {
+      setTimeout(
+        () => (state.errorNotificationData = null),
+        hideTimeout
+      );
+    }
+  },
 };

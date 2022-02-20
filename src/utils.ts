@@ -2,7 +2,10 @@
 import debounce from 'lodash/debounce';
 import moment from 'moment';
 import 'moment/locale/it';
-import { getTranslatedString } from './i18n';
+import { getTranslatedString as _ } from './i18n';
+import { ErrorMessage } from './interfaces';
+import store from './store';
+import { SharedState } from './store/types';
 
 const EDITOR_DEBOUNCE_TIME_MS = 1500;
 const EDITOR_DEBOUNCE_MAX_WAIT_MS = 4000;
@@ -40,10 +43,7 @@ export const getFormattedTimestamp = (
     moment(timestamp)
       //.calendar()
       .format(
-        'DD MMMM YYYY' +
-          (dateOnly
-            ? ''
-            : `, [${getTranslatedString('misc.at')}] HH:mm`)
+        'DD MMMM YYYY' + (dateOnly ? '' : `, [${_('misc.at')}] HH:mm`)
       )
   );
 };
@@ -111,4 +111,28 @@ const getOffset = (el: {
     el = el.offsetParent;
   }
   return { offsetTop: _y, offsetLeft: _x };
+};
+
+export const getErrorData = (e: any): ErrorMessage => {
+  if (e.response) {
+    return {
+      icon: 'error_outline',
+      title: _('errors.' + e.response.status),
+    };
+  } else if (e.request) {
+    return {
+      title: _('errors.no_connection'),
+      icon: 'cloud_off',
+    };
+  } else {
+    // TODO implement
+    throw new Error();
+  }
+};
+
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+export const setPageWideError = (e: any) => {
+  const sharedState = (store.state as { shared: SharedState }).shared;
+  sharedState.pageWideErrorData = getErrorData(e);
+  console.error(e);
 };

@@ -20,3 +20,9 @@ export interface DialogData {
   error?: boolean;
   warning?: boolean;
 }
+
+export interface ErrorMessage {
+  icon?: string;
+  title: string;
+  content?: string;
+}
