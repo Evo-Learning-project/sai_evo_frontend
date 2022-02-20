@@ -334,6 +334,7 @@ export const it = {
   },
   practice_template_editor: {
     begin_practice: 'Inizia esercitazione',
+    add_rule: 'Aggiungi esercizi',
     choose_exercises_text:
       'Scegli come generare gli esercizi per questa esercitazione. Puoi far scegliere gli esercizi al sistema completamente a caso oppure restringere la selezione a quelli che hanno tag da te scelti.',
   },

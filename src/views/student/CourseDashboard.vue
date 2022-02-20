@@ -3,7 +3,6 @@
     <div class="mb-8">
       <h2>{{ $t('student_course_dashboard.exams_you_participated_in') }}</h2>
       <div class="grid grid-cols-3 gap-4" v-if="!firstLoading">
-        <!-- TODO distinguish between those still open and those turned in, like "Continua esercitazioni" -->
         <EventParticipationPreview
           v-for="participation in examParticipations"
           :key="'exam-participation-' + participation.id"

@@ -1,16 +1,23 @@
 <template>
-  <div>
-    <PracticeTemplateRuleEditor
-      class="px-8 py-4 my-2 -mx-8"
-      :class="{ 'bg-gray-50': false && index % 2 === 0 }"
-      v-for="(rule, index) in modelValue.rules"
-      :key="'practice-rule-' + rule.id"
-      :modelValue="rule"
-      @partialUpdate="rulesAutoSaveInstances[rule.id].onChange($event)"
-      @addClause="onRuleAddClause(rule)"
-      @updateClause="onRuleUpdateClause($event)"
-    ></PracticeTemplateRuleEditor>
-    <Btn @click="onAddRule">Aggiungi regola</Btn>
+  <div class="flex flex-col">
+    <div class="flex-grow">
+      <PracticeTemplateRuleEditor
+        class="px-8 py-4 my-2 -mx-8"
+        :class="{ 'bg-gray-50': false && index % 2 === 0 }"
+        v-for="(rule, index) in modelValue.rules"
+        :key="'practice-rule-' + rule.id"
+        :modelValue="rule"
+        @partialUpdate="rulesAutoSaveInstances[rule.id].onChange($event)"
+        @addClause="onRuleAddClause(rule)"
+        @updateClause="onRuleUpdateClause($event)"
+      ></PracticeTemplateRuleEditor>
+    </div>
+
+    <Btn class="mt-2 mr-auto" @click="onAddRule">
+      <span class="mr-1 text-base material-icons-outlined">
+        add_circle_outline </span
+      >{{ $t('practice_template_editor.add_rule') }}</Btn
+    >
   </div>
 </template>
 

@@ -21,11 +21,11 @@
         class="flex items-center cursor-pointer"
         :for="'chipset-' + id + '-option-' + index"
       >
-        <multi-icon
+        <MultiIcon
           v-if="option.icons"
           class="w-6 mr-1"
           :icons="option.icons"
-        ></multi-icon>
+        ></MultiIcon>
         <p v-html="option.content"></p
       ></label>
     </div>

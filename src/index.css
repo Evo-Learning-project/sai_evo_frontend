@@ -61,7 +61,9 @@
       @apply bg-gray-50 rounded-sm pr-2 pl-4 py-5 border-2 border-l-10 border-primary
     }
     .text-muted {
-        @apply font-light text-gray-600
+      font-weight: 400;
+      color: rgba(0,0,0,.6);
+       /* @apply font-light text-gray-600*/
     }
     .shadow-all-around {
       box-shadow: 0px 11px 15px -7px rgb(0 0 0 / 20%), 0px 24px 38px 3px rgb(0 0 0 / 14%), 0px 9px 46px 8px rgb(0 0 0 / 12%);
@@ -102,6 +104,23 @@
     .icon-surrounding {
       @apply w-8 h-8 text-xl rounded-full flex place-items-center justify-center shadow-md
     }
+
+    /** Icons
+
+    .material-icons-two-tone {
+  filter: invert(0.5) sepia(1) saturate(10) hue-rotate(180deg);
+  font-size: 48px;
+}
+
+.material-icons,
+.material-icons-outlined,
+.material-icons-round,
+.material-icons-sharp {
+  color: #0099ff;
+  font-size: 48px;
+}
+
+    */
 
     .tooltip {
       @apply relative
