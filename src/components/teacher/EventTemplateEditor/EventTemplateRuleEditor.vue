@@ -216,7 +216,7 @@
         >
           <TagBasedEventTemplateRuleEditor
             :modelValue="modelValue.clauses"
-            :loading="parentLoading"
+            :satisfying="modelValue.satisfying"
             @addClause="$emit('addClause')"
             @removeClause="$emit('removeClause', $event)"
             @updateClause="$emit('updateClause', $event)"
@@ -265,10 +265,6 @@ export default defineComponent({
     globallySelectedExercises: {
       type: Object as PropType<string[]>,
       required: true
-    },
-    parentLoading: {
-      type: Boolean,
-      default: false
     }
   },
   mixins: [courseIdMixin],

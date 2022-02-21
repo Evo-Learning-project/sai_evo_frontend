@@ -18,22 +18,10 @@
             @update:modelValue="onRuleUpdate($event)"
             @addClause="onRuleAddClause(element)"
             @updateClause="onRuleUpdateClause(element, $event)"
-            :parentLoading="loading"
           >
           </EventTemplateRuleEditor>
         </template>
       </draggable>
-      <!-- BEFORE DRAGGABLE
-      <EventTemplateRuleEditor
-        :globallySelectedExercises="selectedExercises"
-        v-for="(rule, index) in modelValue.rules"
-        :key="'template-' + elementId + '-rule-' + index"
-        :modelValue="modelValue.rules[index]"
-        @update:modelValue="onRuleUpdate(index, $event)"
-        @addClause="onRuleAddClause(rule)"
-        @updateClause="onRuleUpdateClause(rule, $event)"
-        :parentLoading="loading"
-      ></EventTemplateRuleEditor>-->
     </div>
 
     <div class="flex items-center mt-auto">
@@ -44,8 +32,6 @@
       >
     </div>
   </div>
-  <!-- </template>
-  </card> -->
 </template>
 
 <script lang="ts">
@@ -140,33 +126,33 @@ export default defineComponent({
       this.$emit('saving', false)
     },
     async onRuleAddClause (rule: EventTemplateRule) {
-      //this.loading = true
-      await this.withLoading(
-        async () =>
-          await this.addEventTemplateRuleClause({
-            courseId: this.courseId,
-            eventId: this.eventId,
-            templateId: this.modelValue.id,
-            ruleId: rule.id,
-            clause: getBlankTagBasedEventTemplateRuleClause()
-          })
-      )
-      //this.loading = false
+      await this.withLocalLoading(async () => {
+        await this.addEventTemplateRuleClause({
+          courseId: this.courseId,
+          eventId: this.eventId,
+          templateId: this.modelValue.id,
+          ruleId: rule.id,
+          clause: getBlankTagBasedEventTemplateRuleClause()
+        })
+        // reload rule to change preview
+        await this.onRuleUpdate(rule, true)
+      })
     },
     async onRuleUpdateClause (
       rule: EventTemplateRule,
       clause: EventTemplateRuleClause
     ) {
-      await this.withLoading(
-        async () =>
-          await this.updateEventTemplateRuleClause({
-            courseId: this.courseId,
-            eventId: this.eventId,
-            templateId: this.modelValue.id,
-            ruleId: rule.id,
-            clause
-          })
-      )
+      await this.withLocalLoading(async () => {
+        await this.updateEventTemplateRuleClause({
+          courseId: this.courseId,
+          eventId: this.eventId,
+          templateId: this.modelValue.id,
+          ruleId: rule.id,
+          clause
+        })
+        // reload rule to change preview
+        await this.onRuleUpdate(rule, true)
+      })
     }
   },
   computed: {

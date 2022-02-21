@@ -12,7 +12,7 @@
         <div class="relative">
           <div class="flex items-center">
             <h5>{{ previewTitle }}</h5>
-            <div class="flex hidden ml-2 space-x-1">
+            <div v-if="showTags" class="flex ml-2 space-x-1">
               <!-- hidden -->
               <Tag
                 v-for="(tag, index) in tags"
@@ -53,6 +53,7 @@
           <Btn
             class="flex-grow"
             :size="'xs'"
+            v-if="previewable"
             :variant="'primary-borderless'"
             @click="showPreview = true"
             ><span class="text-base material-icons-outlined">
@@ -119,6 +120,10 @@ export default defineComponent({
       type: Boolean,
       default: true
     },
+    previewable: {
+      type: Boolean,
+      default: true
+    },
     selectionDisabled: {
       type: Boolean,
       default: false
@@ -126,6 +131,10 @@ export default defineComponent({
     selectButtonTitle: {
       type: String,
       default: ''
+    },
+    showTags: {
+      type: Boolean,
+      default: false
     }
   },
   components: {

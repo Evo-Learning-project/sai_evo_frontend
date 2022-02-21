@@ -75,7 +75,14 @@
           </div>
           <div class="flex w-full mt-auto" v-else>
             <router-link
-              class="mr-auto"
+              :class="{
+                'mx-auto':
+                  participation.event.event_type ===
+                  EventType.SELF_SERVICE_PRACTICE,
+                'mr-auto':
+                  participation.event.event_type !==
+                  EventType.SELF_SERVICE_PRACTICE
+              }"
               v-if="participation.assessment_available"
               :to="{
                 name:
@@ -114,7 +121,7 @@
                   courseId: courseId
                 }
               }"
-              :class="{ 'ml-auto': !participation.assessment_available }"
+              :class="{ 'mx-auto': !participation.assessment_available }"
             >
               <Btn :outline="true">{{
                 $t('student_course_dashboard.review_submission')

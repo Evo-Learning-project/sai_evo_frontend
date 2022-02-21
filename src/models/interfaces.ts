@@ -98,6 +98,7 @@ export interface EventTemplateRule {
   clauses?: EventTemplateRuleClause[];
   amount: number;
   _ordering?: number;
+  satisfying?: { count: number; example?: Exercise };
 }
 
 export interface EventTemplateRuleClause {

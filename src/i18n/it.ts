@@ -351,7 +351,7 @@ export const it = {
   },
   exercise_states: {
     [ExerciseState.PUBLIC]: 'Pubblico',
-    [ExerciseState.PRIVATE]: 'Nascosto',
+    [ExerciseState.PRIVATE]: 'Solo esami',
     [ExerciseState.DRAFT]: 'Bozza',
   },
   event_states: {

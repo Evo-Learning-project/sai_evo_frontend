@@ -28,6 +28,21 @@ export default defineComponent({
   components: {
     VueTagsInput
   },
+  watch: {
+    serializedProcessedModelValue (_newVal, _oldVal) {
+      if (this.ignoreWatcher) {
+        return
+      }
+      const newVal = JSON.parse(_newVal)
+      const oldVal = JSON.parse(_oldVal)
+
+      if (this.addingTag.length > 0 && newVal.length > oldVal.length) {
+        this.addingTag = ''
+      } else if (this.removingTag.length > 0 && newVal.length < oldVal.length) {
+        this.removingTag = ''
+      }
+    }
+  },
   props: {
     modelValue: {
       type: Array as PropType<Tag[]>,
@@ -48,7 +63,10 @@ export default defineComponent({
   },
   data () {
     return {
-      tag: ''
+      tag: '',
+      addingTag: '',
+      removingTag: '',
+      ignoreWatcher: false
     }
   },
   methods: {
@@ -68,12 +86,17 @@ export default defineComponent({
           this.autoCompleteItems.map(i => i.text).includes(event.tag.text))
       ) {
         this.$emit('addTag', event.tag.text)
+
+        // this triggers ghost tag without having the watcher immediately remove it
+        this.ignoreWatcher = true
+        this.addingTag = event.tag.text
+        this.$nextTick(() => (this.ignoreWatcher = false))
+
         this.tag = ''
       }
     },
     beforeDeletingTag (event: any) {
-      console.log('before deleting', event.tag.text)
-      //event.deleteTag()
+      this.removingTag = event.tag.text
       this.$emit('removeTag', event.tag.text)
     },
     processTag (tag: { text: string }) {
@@ -83,10 +106,22 @@ export default defineComponent({
     }
   },
   computed: {
+    serializedProcessedModelValue () {
+      return JSON.stringify(this.processedModelValue)
+    },
     processedModelValue () {
-      return this.modelValue.map((t: Tag) => ({
-        text: t.name
+      const ret = this.modelValue.map((t: Tag) => ({
+        text: t.name,
+        classes:
+          t.name === this.removingTag ? 'opacity-50 pointer-events-none' : ''
       }))
+
+      const ghostTag = {
+        text: this.addingTag,
+        classes: 'opacity-50 pointer-events-none'
+      }
+
+      return [...ret, ...(this.addingTag.length > 0 ? [ghostTag] : [])]
     },
     processedChoices () {
       return this.choices.map((t: Tag) => ({

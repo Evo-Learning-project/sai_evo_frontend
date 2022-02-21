@@ -1,76 +1,106 @@
-<template>
-  <div class="flex flex-col">
+<template
+  ><div>
     <p class="mb-2 text-muted" v-if="showTeacherIntroductionText">
       {{ $t('event_template_rule_editor.tag_based_introduction') }}
     </p>
-    <div
-      v-for="(clause, index) in modelValue"
-      :key="'clause-' + clause.id"
-      class="my-2"
-    >
-      <p v-if="index === 0" class="mb-2">
-        {{ $t('event_template_rule_editor.tag_based_select_exercises') }}
-        <strong>{{
-          $t('event_template_rule_editor.tag_based_at_least_one')
-        }}</strong>
-        {{ $t('event_template_rule_editor.tag_based_among') }}
-      </p>
-      <p v-else>
-        {{ $t('event_template_rule_editor.tag_based_and') }}
-        <strong>{{
-          $t('event_template_rule_editor.tag_based_at_least_one')
-        }}</strong>
-        {{ $t('event_template_rule_editor.tag_based_among') }}
-      </p>
-      <TagInput
-        :placeholder="$t('misc.tags')"
-        :modelValue="clause.tags"
-        @addTag="onAddTag(clause, $event)"
-        @removeTag="onRemoveTag(clause, $event)"
-        :choices="tags"
-        :existingOnly="true"
-      ></TagInput>
+    <div class="flex">
+      <div class="flex flex-col w-full">
+        <div
+          v-for="(clause, index) in modelValue"
+          :key="'clause-' + clause.id"
+          class="my-2"
+        >
+          <p v-if="index === 0" class="mb-2">
+            {{ $t('event_template_rule_editor.tag_based_select_exercises') }}
+            <strong>{{
+              $t('event_template_rule_editor.tag_based_at_least_one')
+            }}</strong>
+            {{ $t('event_template_rule_editor.tag_based_among') }}
+          </p>
+          <p v-else>
+            {{ $t('event_template_rule_editor.tag_based_and') }}
+            <strong>{{
+              $t('event_template_rule_editor.tag_based_at_least_one')
+            }}</strong>
+            {{ $t('event_template_rule_editor.tag_based_among') }}
+          </p>
+          <TagInput
+            :placeholder="$t('misc.tags')"
+            :modelValue="clause.tags"
+            @addTag="onAddTag(clause, $event)"
+            @removeTag="onRemoveTag(clause, $event)"
+            :choices="tags"
+            :existingOnly="true"
+          ></TagInput>
+        </div>
+        <div
+          v-if="allowCreateMoreClauses"
+          @click="onAddClause"
+          class="mt-2 transition-opacity duration-75 opacity-50 cursor-pointer hover:opacity-100"
+        >
+          <p>
+            {{ $t('event_template_rule_editor.tag_based_and') }}
+            <strong>{{
+              $t('event_template_rule_editor.tag_based_at_least_one')
+            }}</strong>
+            {{ $t('event_template_rule_editor.tag_based_among') }}
+          </p>
+          <TagInput
+            :disabled="true"
+            class="cursor-pointer"
+            :placeholder="$t('exercise_editor.exercise_tags')"
+            :modelValue="[]"
+          ></TagInput>
+        </div>
+      </div>
+      <div
+        v-if="showPreview"
+        class="flex flex-grow w-9/12 px-5 py-5 ml-8 border border-gray-200 rounded-md shadow-md bg-gray-50"
+      >
+        <SkeletonCard
+          v-if="localLoading"
+          :borderLess="true"
+          class="w-full"
+        ></SkeletonCard>
+        <div class="flex flex-col justify-between flex-grow" v-else>
+          <p class="mb-auto text-muted">
+            Esercizi che soddisfano queste condizioni:
+            <strong>{{ satisfying.count }}</strong>
+          </p>
+          <h4 v-if="!!satisfying.example">Esempio</h4>
+          <MinimalExercisePreview
+            :selectable="false"
+            :previewable="false"
+            :showTags="true"
+            v-if="!!satisfying.example"
+            :exercise="satisfying.example"
+          ></MinimalExercisePreview>
+          <div v-else class="flex flex-col items-center my-auto opacity-60">
+            <span class="material-icons-outlined">error_outline</span>
+            <p>
+              Non ci sono esercizi con i tag richiesti: modifica le condizioni
+            </p>
+          </div>
+        </div>
+      </div>
     </div>
-    <div
-      v-if="allowCreateMoreClauses"
-      @click="onAddClause"
-      class="mt-2 transition-opacity duration-75 opacity-50 cursor-pointer hover:opacity-100"
-    >
-      <p>
-        {{ $t('event_template_rule_editor.tag_based_and') }}
-        <strong>{{
-          $t('event_template_rule_editor.tag_based_at_least_one')
-        }}</strong>
-        {{ $t('event_template_rule_editor.tag_based_among') }}
-      </p>
-      <TagInput
-        :disabled="true"
-        class="cursor-pointer"
-        :placeholder="$t('exercise_editor.exercise_tags')"
-        :modelValue="[]"
-      ></TagInput>
-    </div>
-    <Btn class="hidden mt-8 w-max" @click="onAddClause" :loading="loading">
-      <span class="mr-1 text-base material-icons-outlined">
-        add_circle_outline </span
-      >{{ $t('event_template_rule_editor.tag_based_add_condition') }}</Btn
-    >
   </div>
 </template>
 
 <script lang="ts">
 import { tagNamesToTags } from '@/api/utils'
-import Btn from '@/components/ui/Btn.vue'
 import TagInput from '@/components/ui/TagInput.vue'
 import { courseIdMixin, eventIdMixin, loadingMixin } from '@/mixins'
-import { EventTemplateRuleClause, Tag } from '@/models'
+import { EventTemplateRuleClause, Exercise, Tag } from '@/models'
 import { defineComponent, PropType } from '@vue/runtime-core'
 
 import { createNamespacedHelpers } from 'vuex'
+import MinimalExercisePreview from '../ExerciseEditor/MinimalExercisePreview.vue'
+import SkeletonCard from '@/components/ui/SkeletonCard.vue'
 const { mapState } = createNamespacedHelpers('shared')
 
 export default defineComponent({
-  components: { TagInput, Btn },
+  components: { TagInput, MinimalExercisePreview, SkeletonCard },
   name: 'TagBasedEventTemplateRuleEditor',
   async created () {
     if (this.modelValue.length === 0) {
@@ -82,15 +112,21 @@ export default defineComponent({
       type: Array as PropType<EventTemplateRuleClause[]>,
       required: true
     },
-    loading: {
-      type: Boolean,
-      default: false
+    satisfying: {
+      type: Object as PropType<{ count: number; example?: Exercise }>,
+      default: () => ({
+        count: 0
+      })
     },
     showTeacherIntroductionText: {
       type: Boolean,
       default: true
     },
     allowCreateMoreClauses: {
+      type: Boolean,
+      default: true
+    },
+    showPreview: {
       type: Boolean,
       default: true
     }

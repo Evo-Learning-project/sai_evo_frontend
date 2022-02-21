@@ -34,6 +34,7 @@ export class AutoSave<T> {
   successFunction?: () => void;
   debouncedFields: FieldList<T>;
   revertOnFailure: boolean;
+  alwaysPatchLocal: boolean;
 
   constructor(
     instance: T,
@@ -43,7 +44,8 @@ export class AutoSave<T> {
     debounceTime: number,
     successFunction?: () => void,
     errorFunction?: (e: any) => void,
-    revertOnFailure = false
+    revertOnFailure = false,
+    alwaysPatchLocal = true
   ) {
     this.instance = instance;
     this.localPatchFunction = localPatchFunction;
@@ -57,6 +59,7 @@ export class AutoSave<T> {
     this.successFunction = successFunction;
     this.errorFunction = errorFunction;
     this.revertOnFailure = revertOnFailure;
+    this.alwaysPatchLocal = alwaysPatchLocal;
   }
 
   async onChange({
@@ -76,8 +79,10 @@ export class AutoSave<T> {
       JSON.stringify(this.instance[field])
     );
 
-    // instantly update in-memory instance
-    this.localPatchFunction({ [field]: value } as any);
+    if (this.alwaysPatchLocal) {
+      // instantly update in-memory instance
+      this.localPatchFunction({ [field]: value } as any);
+    }
 
     // dispatch update to backend
     await this.remotePatchFunction(this.unsavedChanges);
@@ -97,6 +102,10 @@ export class AutoSave<T> {
     return async (changes: FieldValuesObject<T>) => {
       try {
         await callback(changes);
+        if (!this.alwaysPatchLocal) {
+          // update in-memory instance
+          this.localPatchFunction(changes);
+        }
         this.unsavedChanges = {};
         this.beforeChanges = {};
         this.successFunction?.();

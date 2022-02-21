@@ -13,9 +13,9 @@
       'px-2.5 py-0.5 text-sm': size === 'sm',
       'px-1.5 py-0.5 text-xs': size === 'xs',
       'px-14 py-2 text-lg font-medium': size === 'lg',
-      'text-lightText bg-primary hover:bg-primary-dark shadow-md':
+      'text-lightText bg-primary hover:bg-primary-dark shadow-btn':
         !outline && variant === 'primary',
-      'text-danger-dark bg-danger shadow-md': !outline && variant === 'danger',
+      'text-danger-dark bg-danger shadow-btn': !outline && variant === 'danger',
       'text-danger-dark border-danger-dark bg-white border hover:bg-danger-dark hover:text-white':
         outline && variant === 'danger',
       'text-success-dark bg-success-light': !outline && variant === 'success',
