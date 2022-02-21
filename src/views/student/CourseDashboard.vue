@@ -135,15 +135,13 @@ export default defineComponent({
   name: 'CourseDashboard',
   mixins: [courseIdMixin, loadingMixin],
   async created () {
-    this.firstLoading = true
-    await this.getTags(this.courseId)
-    await this.getCourse({ courseId: this.courseId })
-    this.firstLoading = false
+    await this.withFirstLoading(async () => {
+      await this.getTags(this.courseId)
+      await this.getCourse({ courseId: this.courseId })
+    })
   },
   data () {
-    return {
-      firstLoading: false
-    }
+    return {}
   },
   methods: {
     ...mapActions('shared', ['getCourse', 'getTags']),

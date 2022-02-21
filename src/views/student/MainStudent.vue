@@ -273,7 +273,7 @@
       class="sticky top-0 z-20 bg-indigo-100 shadow-md bg-opacity-70 backdrop-blur-sm backdrop-filter"
     >
       <div
-        class="flex items-center px-4 py-4 mx-auto max-w-7xl sm:px-6 lg:px-10"
+        class="flex items-center px-4 py-4 mx-auto max-w-7xl sm:px-6 lg:px-12"
       >
         <!-- <h1 class="text-3xl font-bold text-gray-900">
           Dashboard
@@ -285,14 +285,22 @@
       </div>
     </header>
     <main class="flex-grow bg-white">
-      <div class="h-full py-6 mx-auto max-w-7xl sm:px-5 lg:px-10">
+      <div class="h-full py-6 mx-auto max-w-7xl sm:px-5 lg:px-12">
         <!-- Replace with your content -->
         <!-- <div class="px-4 py-6 sm:px-0">
           <div
             class="border-4 border-gray-200 border-dashed rounded-lg h-96"
           ></div>
         </div> -->
-        <router-view />
+        <ErrorView v-if="!!$store.state.shared.pageWideErrorData"></ErrorView>
+        <router-view v-else />
+        <transition name="quick-bounce"
+          ><SnackBar
+            v-if="!!$store.state.shared.errorNotificationData"
+            :icon="$store.state.shared.errorNotificationData.icon"
+            :message="$store.state.shared.errorNotificationData.title"
+          ></SnackBar
+        ></transition>
         <!-- /End replace -->
       </div>
     </main>
@@ -307,6 +315,8 @@ import {
 } from '@/navigation/const'
 import { SidebarOption } from '@/navigation/sidebar'
 import { defineComponent } from '@vue/runtime-core'
+import ErrorView from '../shared/ErrorView.vue'
+import SnackBar from '@/components/ui/SnackBar.vue'
 
 export default defineComponent({
   name: 'MainStudent',
@@ -330,6 +340,7 @@ export default defineComponent({
     currentEvent (): string {
       return this.$store.state.student.eventParticipation?.event?.name ?? ''
     }
-  }
+  },
+  components: { ErrorView, SnackBar }
 })
 </script>

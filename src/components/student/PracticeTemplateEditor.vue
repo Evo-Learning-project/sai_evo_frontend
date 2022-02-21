@@ -56,8 +56,8 @@ export default defineComponent({
       await this.onAddRule()
     }
     this.modelValue.rules.forEach(r => {
-      this.instantiateRuleAutoSave(r.id)
-      r.clauses?.forEach(c => this.instantiateRuleClauseAutoSave(r.id, c.id))
+      this.instantiateRuleAutoSave(r)
+      r.clauses?.forEach(c => this.instantiateRuleClauseAutoSave(r.id, c))
     })
   },
   data () {
@@ -90,7 +90,7 @@ export default defineComponent({
           ruleId: rule.id,
           clause: getBlankTagBasedEventTemplateRuleClause()
         })
-        this.instantiateRuleClauseAutoSave(rule.id, newClause.id)
+        this.instantiateRuleClauseAutoSave(rule.id, newClause)
       })
     },
     async onRuleUpdateClause (clause: EventTemplateRuleClause) {
@@ -107,44 +107,52 @@ export default defineComponent({
         rule: getBlankEventTemplateRule(EventTemplateRuleType.FULLY_RANDOM)
       })
 
-      this.instantiateRuleAutoSave(newRule.id)
+      this.instantiateRuleAutoSave(newRule)
     },
-    instantiateRuleAutoSave (ruleId: string) {
-      this.rulesAutoSaveInstances[ruleId] = new AutoSave<EventTemplateRule>(
+    instantiateRuleAutoSave (rule: EventTemplateRule) {
+      this.rulesAutoSaveInstances[rule.id] = new AutoSave<EventTemplateRule>(
+        rule,
         async changes =>
           await this.partialUpdateEventTemplateRule({
             changes,
-            ruleId,
+            ruleId: rule.id,
             templateId: this.modelValue.id,
             courseId: this.courseId
           }),
         changes =>
           this.patchEditingEventTemplateRule({
             changes,
-            ruleId
+            ruleId: rule.id
           }),
         [],
         0
       )
     },
-    instantiateRuleClauseAutoSave (ruleId: string, clauseId: string) {
-      this.ruleClausesAutoSaveInstances[clauseId] = new AutoSave<
+    instantiateRuleClauseAutoSave (
+      ruleId: string,
+      clause: EventTemplateRuleClause
+    ) {
+      this.ruleClausesAutoSaveInstances[clause.id] = new AutoSave<
         EventTemplateRuleClause
       >(
+        clause,
         async changes =>
           await this.updateEventTemplateRuleClause({
             courseId: this.courseId,
             templateId: this.modelValue.id,
             ruleId,
-            clause: { id: clauseId, ...changes }
+            clause: { ...clause, ...changes }
           }),
         changes =>
           this.setEditingEventTemplateRuleClause({
             ruleId,
-            payload: { id: clauseId, ...changes }
+            payload: { ...clause, ...changes }
           }),
         [],
-        0
+        0,
+        undefined,
+        this.setErrorNotification,
+        true
       )
     }
   },

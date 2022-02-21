@@ -25,23 +25,27 @@ type FieldList<T> = (keyof T)[];
 type FieldValuesObject<T> = Partial<T>; // Record<keyof T, T[keyof T]> | EmptyObject;
 
 export class AutoSave<T> {
-  //instance: T;
+  instance: T;
   unsavedChanges: FieldValuesObject<T>;
+  beforeChanges: FieldValuesObject<T>;
   remotePatchFunction: DebouncedFunc<RemotePatchFunction<T>>;
   localPatchFunction: PatchFunction<T>;
-  errorFunction?: () => void;
+  errorFunction?: (e: any) => void;
   successFunction?: () => void;
   debouncedFields: FieldList<T>;
+  revertOnFailure: boolean;
 
   constructor(
-    //instance: T,
+    instance: T,
     remotePatchFunction: RemotePatchFunction<T>,
     localPatchFunction: PatchFunction<T>,
     debouncedFields: FieldList<T>,
     debounceTime: number,
-    successFunction?: () => void
+    successFunction?: () => void,
+    errorFunction?: (e: any) => void,
+    revertOnFailure = false
   ) {
-    //this.instance = instance;
+    this.instance = instance;
     this.localPatchFunction = localPatchFunction;
     this.remotePatchFunction = debounce(
       this.wrapRemotePatchFunction(remotePatchFunction),
@@ -49,7 +53,10 @@ export class AutoSave<T> {
     );
     this.debouncedFields = debouncedFields;
     this.unsavedChanges = {};
+    this.beforeChanges = {};
     this.successFunction = successFunction;
+    this.errorFunction = errorFunction;
+    this.revertOnFailure = revertOnFailure;
   }
 
   async onChange({
@@ -63,6 +70,11 @@ export class AutoSave<T> {
 
     // record new change to field
     this.unsavedChanges[field] = value as any;
+
+    // make deep copy of field that's about to change
+    this.beforeChanges[field] = JSON.parse(
+      JSON.stringify(this.instance[field])
+    );
 
     // instantly update in-memory instance
     this.localPatchFunction({ [field]: value } as any);
@@ -86,9 +98,16 @@ export class AutoSave<T> {
       try {
         await callback(changes);
         this.unsavedChanges = {};
+        this.beforeChanges = {};
         this.successFunction?.();
-      } catch {
-        this.errorFunction?.();
+      } catch (e) {
+        this.errorFunction?.(e);
+        if (this.revertOnFailure) {
+          console.log('rolling back changes', this.beforeChanges);
+          // roll back unsaved changes
+          this.localPatchFunction(this.beforeChanges);
+          console.log('unsaved', this.unsavedChanges);
+        }
       } finally {
         // TODO cleanup
       }
@@ -96,60 +115,60 @@ export class AutoSave<T> {
   }
 }
 
-const courseId = 'abc';
-const eventId = 'def';
-const exerciseId = 'ghi';
-const choiceId = 'jkl';
+// const courseId = 'abc';
+// const eventId = 'def';
+// const exerciseId = 'ghi';
+// const choiceId = 'jkl';
 
-/** EXAMPLE with EventEditor */
-const EventEditorAutoSave = new AutoSave<Event>(
-  async (changes) =>
-    await store.dispatch('patchEvent', {
-      courseId,
-      eventId,
-      changes,
-    }),
-  (changes) =>
-    store.commit('patchEvent', { courseId, eventId, changes }),
-  ['name', 'instructions'],
-  2000,
-  () => store.commit('shared/showSuccessFeedback')
-);
+// /** EXAMPLE with EventEditor */
+// const EventEditorAutoSave = new AutoSave<Event>(
+//   async (changes) =>
+//     await store.dispatch('patchEvent', {
+//       courseId,
+//       eventId,
+//       changes,
+//     }),
+//   (changes) =>
+//     store.commit('patchEvent', { courseId, eventId, changes }),
+//   ['name', 'instructions'],
+//   2000,
+//   () => store.commit('shared/showSuccessFeedback')
+// );
 
-/** Example with ExerciseEditor */
-const ExerciseEditorAutoSave = new AutoSave<Exercise>(
-  async (changes) =>
-    await store.dispatch('patchExercise', {
-      courseId,
-      exerciseId,
-      changes,
-    }),
-  (changes) =>
-    store.commit('patchExercise', { courseId, exerciseId, changes }),
-  ['label', 'text', 'solution'],
-  3000
-);
+// /** Example with ExerciseEditor */
+// const ExerciseEditorAutoSave = new AutoSave<Exercise>(
+//   async (changes) =>
+//     await store.dispatch('patchExercise', {
+//       courseId,
+//       exerciseId,
+//       changes,
+//     }),
+//   (changes) =>
+//     store.commit('patchExercise', { courseId, exerciseId, changes }),
+//   ['label', 'text', 'solution'],
+//   3000
+// );
 
-// in exercise editor, you'd keep a structure that associates each choice id
-// with an AutoSave<ExerciseChoice> instance. the choice editor needs to be refactored
-// in order to send a single field update at a time, and in the exercise editor, when
-// you receive an update, you just call onChange on the appropriate AutoSave
+// // in exercise editor, you'd keep a structure that associates each choice id
+// // with an AutoSave<ExerciseChoice> instance. the choice editor needs to be refactored
+// // in order to send a single field update at a time, and in the exercise editor, when
+// // you receive an update, you just call onChange on the appropriate AutoSave
 
-const ExerciseChoiceAutoSave = new AutoSave<ExerciseChoice>(
-  async (changes) =>
-    await store.dispatch('patchExerciseChoice', {
-      courseId,
-      exerciseId,
-      choiceId,
-      changes,
-    }),
-  (changes) =>
-    store.commit('patchExerciseChoice', {
-      courseId,
-      exerciseId,
-      choiceId,
-      changes,
-    }),
-  ['text'],
-  2000
-);
+// const ExerciseChoiceAutoSave = new AutoSave<ExerciseChoice>(
+//   async (changes) =>
+//     await store.dispatch('patchExerciseChoice', {
+//       courseId,
+//       exerciseId,
+//       choiceId,
+//       changes,
+//     }),
+//   (changes) =>
+//     store.commit('patchExerciseChoice', {
+//       courseId,
+//       exerciseId,
+//       choiceId,
+//       changes,
+//     }),
+//   ['text'],
+//   2000
+// );
