@@ -110,7 +110,7 @@ export default defineComponent({
       this.stateSaving = true
       this.setEvent({
         eventId: this.eventId,
-        event: { ...this.proxyModelValue, state: newVal }
+        payload: { ...this.proxyModelValue, state: newVal }
       })
 
       await this.partialUpdateEvent({
@@ -135,7 +135,10 @@ export default defineComponent({
       }
 
       // update the in-memory object corresponding to this event
-      this.setEvent({ eventId: this.eventId, event: newVal })
+      this.setEvent({
+        eventId: this.eventId,
+        payload: newVal
+      })
 
       // persist update to server
       this.saving = true
