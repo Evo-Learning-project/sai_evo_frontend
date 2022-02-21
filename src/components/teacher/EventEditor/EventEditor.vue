@@ -92,6 +92,7 @@ export default defineComponent({
   data () {
     return {
       saving: false,
+      savingError: false,
       stateSaving: false,
       showConfirmationDialog: false
     }
@@ -141,6 +142,7 @@ export default defineComponent({
       this.dispatchUpdate(newVal)
     },
     async dispatchUpdate (newVal: Event) {
+      // TODO set savingError on error
       await this.updateEvent({
         courseId: this.courseId,
         event: newVal

@@ -329,16 +329,16 @@ export default defineComponent({
   },
   mixins: [courseIdMixin, eventIdMixin, loadingMixin],
   async created () {
-    this.firstLoading = true
-    await this.getEventParticipations({
-      courseId: this.courseId,
-      eventId: this.eventId
+    await this.withFirstLoading(async () => {
+      await this.getEventParticipations({
+        courseId: this.courseId,
+        eventId: this.eventId
+      })
+      await this.getEvent({
+        courseId: this.courseId,
+        eventId: this.eventId
+      })
     })
-    await this.getEvent({
-      courseId: this.courseId,
-      eventId: this.eventId
-    })
-    this.firstLoading = false
   },
   data () {
     return {
@@ -516,9 +516,10 @@ export default defineComponent({
             changes: {
               visibility: AssessmentVisibility.PUBLISHED
             }
-          })
+          }),
+        this.setErrorNotification,
+        () => this.$store.commit('shared/showSuccessFeedback')
       )
-      this.$store.commit('shared/showSuccessFeedback')
       this.hideDialog()
       this.gridApi.refreshCells({ force: true })
     },
@@ -554,7 +555,7 @@ export default defineComponent({
           eventId: this.eventId,
           participationId: this.editingParticipationId
         })
-      })
+      }, this.setErrorNotification)
       this.hideDialog()
       this.gridApi.refreshCells({ force: true })
     },
