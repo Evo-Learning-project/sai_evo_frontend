@@ -13,9 +13,9 @@
       'px-2.5 py-0.5 text-sm': size === 'sm',
       'px-1.5 py-0.5 text-xs': size === 'xs',
       'px-14 py-2 text-lg font-medium': size === 'lg',
-      'text-lightText bg-primary hover:bg-primary-dark':
+      'text-lightText bg-primary hover:bg-primary-dark shadow-md':
         !outline && variant === 'primary',
-      'text-danger-dark bg-danger': !outline && variant === 'danger',
+      'text-danger-dark bg-danger shadow-md': !outline && variant === 'danger',
       'text-danger-dark border-danger-dark bg-white border hover:bg-danger-dark hover:text-white':
         outline && variant === 'danger',
       'text-success-dark bg-success-light': !outline && variant === 'success',
@@ -24,7 +24,7 @@
       'focus:outline-danger-dark': variant === 'danger',
       'focus:outline-success': false && variant === 'success',
       'hover:bg-light hover:shadow-inner': variant === 'light',
-      'text-primary hover:text-lightText bg-transparent border-primary border-1.5 hover:bg-primary':
+      'text-primary bg-transparent border-primary border-1.5 ':
         outline && variant === 'primary',
       'text-lg font-bold text-primary hover:bg-light px-6 focus:bg-primary-light focus:bg-opacity-30':
         variant === 'primary-borderless',
@@ -115,6 +115,11 @@ export default defineComponent({
           return 'ripple-success'
         case 'transparent':
           return 'ripple-gray'
+        case 'primary':
+          if (this.outline) {
+            return 'ripple-primary'
+          }
+          return 'ripple-white'
         default:
           return 'ripple-white'
       }
