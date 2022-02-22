@@ -39,6 +39,7 @@ export const practiceParticipationBreadCrumbs: BreadCrumb[] = [
   courseDashBoardBreadCrumb,
   {
     title: _('breadcrumbs.practice_participation_page'),
+    routeName: 'PracticeParticipationPage',
   },
 ];
 
@@ -47,6 +48,16 @@ export const submissionReviewBreadCrumbs: BreadCrumb[] = [
   courseDashBoardBreadCrumb,
   {
     title: _('breadcrumbs.submission_review'),
+    routeName: 'SubmissionReviewPage',
+  },
+];
+
+export const practiceReviewBreadCrumbs: BreadCrumb[] = [
+  courseListBreadCrumb,
+  courseDashBoardBreadCrumb,
+  {
+    title: _('breadcrumbs.practice_review'),
+    routeName: 'PracticeSummaryPage',
   },
 ];
 
@@ -55,5 +66,6 @@ export const examAssessmentBreadCrumbs: BreadCrumb[] = [
   courseDashBoardBreadCrumb,
   {
     title: _('breadcrumbs.exam_assessment'),
+    routeName: 'AssessmentReviewPage',
   },
 ];

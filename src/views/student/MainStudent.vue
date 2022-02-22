@@ -278,9 +278,12 @@
         <!-- <h1 class="text-3xl font-bold text-gray-900">
           Dashboard
         </h1> -->
-        <h2 class="mb-0">
-          {{ routeTitle }}
-        </h2>
+        <div class="flex space-x-5">
+          <h2 class="mb-0">
+            {{ routeTitle }}
+          </h2>
+          <BreadCrumbs :route="$route" class="mt-auto"></BreadCrumbs>
+        </div>
         <div id="main-student-header-right" class="ml-auto"></div>
       </div>
     </header>
@@ -317,6 +320,7 @@ import { SidebarOption } from '@/navigation/sidebar'
 import { defineComponent } from '@vue/runtime-core'
 import ErrorView from '../shared/ErrorView.vue'
 import SnackBar from '@/components/ui/SnackBar.vue'
+import BreadCrumbs from '@/components/ui/BreadCrumbs.vue'
 
 export default defineComponent({
   name: 'MainStudent',
@@ -324,23 +328,21 @@ export default defineComponent({
     return {}
   },
   mixins: [courseIdMixin, eventIdMixin],
-  methods: {},
+  methods: {
+    replaceTitleTokens (str: string) {
+      return str
+        ?.replace(ROUTE_TITLE_COURSE_NAME_TOKEN, this.currentCourse)
+        ?.replace(ROUTE_TITLE_EVENT_NAME_TOKEN, this.currentEvent)
+    }
+  },
   computed: {
     sidebarOptions (): SidebarOption[] {
       return (this.$route.meta?.sidebarOptions ?? []) as SidebarOption[]
     },
     routeTitle (): string {
-      return (this.$route.meta.routeTitle as string)
-        ?.replace(ROUTE_TITLE_COURSE_NAME_TOKEN, this.currentCourse)
-        ?.replace(ROUTE_TITLE_EVENT_NAME_TOKEN, this.currentEvent)
-    },
-    currentCourse (): string {
-      return this.$store.getters['shared/course'](this.courseId)?.name ?? ''
-    },
-    currentEvent (): string {
-      return this.$store.state.student.eventParticipation?.event?.name ?? ''
+      return this.replaceTitleTokens(this.$route.meta.routeTitle as string)
     }
   },
-  components: { ErrorView, SnackBar }
+  components: { ErrorView, SnackBar, BreadCrumbs }
 })
 </script>

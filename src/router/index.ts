@@ -25,6 +25,15 @@ import {
 import { getTranslatedString as _ } from '@/i18n';
 import store from '@/store';
 import { SharedState } from '@/store/types';
+import {
+  courseDashBoardBreadCrumbs,
+  courseListBreadCrumbs,
+  examAssessmentBreadCrumbs,
+  examParticipationBreadCrumbs,
+  practiceParticipationBreadCrumbs,
+  practiceReviewBreadCrumbs,
+  submissionReviewBreadCrumbs,
+} from '@/navigation/breadcrumbs';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -133,6 +142,7 @@ const routes: Array<RouteRecordRaw> = [
         component: CourseList,
         meta: {
           routeTitle: _('headings.course_list'),
+          breadcrumbs: courseListBreadCrumbs,
         },
       },
       {
@@ -141,6 +151,7 @@ const routes: Array<RouteRecordRaw> = [
         component: StudentCourseDashboard,
         meta: {
           routeTitle: _('headings.course_title'),
+          breadcrumbs: courseDashBoardBreadCrumbs,
         },
       },
       {
@@ -149,6 +160,7 @@ const routes: Array<RouteRecordRaw> = [
         name: 'ExamParticipationPreview',
         meta: {
           routeTitle: _('headings.exam_preview'),
+          breadcrumbs: examParticipationBreadCrumbs,
         },
       },
       {
@@ -157,6 +169,7 @@ const routes: Array<RouteRecordRaw> = [
         name: 'ExamParticipationPage',
         meta: {
           routeTitle: _('headings.ongoing_exam'),
+          breadcrumbs: examParticipationBreadCrumbs,
         },
       },
       {
@@ -165,6 +178,7 @@ const routes: Array<RouteRecordRaw> = [
         name: 'PracticeParticipationPage',
         meta: {
           routeTitle: _('headings.ongoing_practice'),
+          breadcrumbs: practiceParticipationBreadCrumbs,
         },
       },
       {
@@ -173,6 +187,7 @@ const routes: Array<RouteRecordRaw> = [
         name: 'SubmissionReviewPage',
         meta: {
           routeTitle: _('headings.review_submission'),
+          breadcrumbs: submissionReviewBreadCrumbs,
         },
         props: true,
       },
@@ -182,6 +197,7 @@ const routes: Array<RouteRecordRaw> = [
         name: 'AssessmentReviewPage',
         meta: {
           routeTitle: _('headings.review_assessment'),
+          breadcrumbs: examAssessmentBreadCrumbs,
         },
         props: {
           showAssessment: true,
@@ -193,6 +209,7 @@ const routes: Array<RouteRecordRaw> = [
         name: 'PracticeSummaryPage',
         meta: {
           routeTitle: _('headings.practice_summary'),
+          breadcrumbs: practiceReviewBreadCrumbs,
         },
         props: {
           showAssessment: true,

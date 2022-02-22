@@ -5,16 +5,17 @@ import { getTranslatedString as _ } from './i18n';
 import { Course, CoursePrivilege } from './models';
 import router from './router';
 import store from './store/index';
-import { SharedState } from './store/types';
-import {
-  getErrorData,
-  setErrorNotification,
-  setPageWideError,
-} from './utils';
+import { SharedState, StudentState } from './store/types';
+import { setErrorNotification, setPageWideError } from './utils';
 export const courseIdMixin = {
   computed: {
     courseId(): string {
       return router.currentRoute.value.params.courseId as string;
+    },
+    currentCourse(): string {
+      return (
+        store.getters['shared/course'](this.courseId)?.name ?? ''
+      );
     },
   },
 };
@@ -23,6 +24,12 @@ export const eventIdMixin = {
   computed: {
     eventId(): string {
       return router.currentRoute.value.params.examId as string;
+    },
+    currentEvent(): string {
+      return (
+        (store.state as { student: StudentState }).student
+          .currentEventParticipation?.event?.name ?? ''
+      );
     },
   },
 };

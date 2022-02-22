@@ -448,4 +448,15 @@ export const it = {
     500: 'Si è verificato un errore interno',
     unknown_error: 'Si è verificato un errore sconosciuto',
   },
+  breadcrumbs: {
+    course_list: 'Lista dei corsi',
+    course_dashboard:
+      'Dashboard corso ' + ROUTE_TITLE_COURSE_NAME_TOKEN,
+    exam_participation_page: 'Esame ' + ROUTE_TITLE_EVENT_NAME_TOKEN,
+    practice_participation_page: 'Esercitazione in corso',
+    submission_review:
+      'Revisione risposte ' + ROUTE_TITLE_EVENT_NAME_TOKEN,
+    practice_review: 'Riepilogo esercitazione',
+    exam_assessment: 'Valutazione ' + ROUTE_TITLE_EVENT_NAME_TOKEN,
+  },
 };

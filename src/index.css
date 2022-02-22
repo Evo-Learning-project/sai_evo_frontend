@@ -112,7 +112,7 @@
 
     .material-icons-two-tone {
       @apply select-none;
-      filter: invert(32%) sepia(68%) saturate(2000%) hue-rotate(213deg) brightness(94%) contrast(97%); 
+      filter: invert(32%) sepia(68%) saturate(2000%) hue-rotate(213deg) brightness(94%) contrast(97%) brightness(90%); 
     }
 
     
