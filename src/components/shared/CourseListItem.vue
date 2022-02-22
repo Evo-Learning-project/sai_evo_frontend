@@ -31,8 +31,8 @@
             params: { courseId: course.id }
           }"
         >
-          <Btn>
-            <span class="mr-1 text-base material-icons-outlined">
+          <Btn class="w-full">
+            <span class="mr-0.5 text-base material-icons-outlined">
               chevron_right
             </span>
             {{ $t('courses.go_to_course') }}

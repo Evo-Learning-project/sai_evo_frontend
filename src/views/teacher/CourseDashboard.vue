@@ -1,11 +1,100 @@
 <template>
-  <div>CourseDashboard</div>
+  <div class="mt-4">
+    <div>
+      <h3>Esami recenti</h3>
+      <div>
+        <div v-if="!firstLoading" class="grid grid-cols-3 gap-4 mt-4">
+          <EventEditorPreview
+            v-for="(exam, index) in recentExams"
+            :key="exam + '-' + index"
+            :event="exam"
+          ></EventEditorPreview>
+        </div>
+        <div class="grid grid-cols-3 gap-4 mt-4" v-else>
+          <SkeletonCard :marginLess="true"></SkeletonCard>
+          <SkeletonCard :marginLess="true"></SkeletonCard>
+          <SkeletonCard :marginLess="true"></SkeletonCard>
+        </div>
+        <div class="flex w-full mt-4">
+          <router-link class="mx-auto link" :to="{ name: 'CourseExams' }"
+            ><Btn :variant="'primary-borderless'"
+              >Visualizza tutti</Btn
+            ></router-link
+          >
+        </div>
+      </div>
+    </div>
+    <div class="mt-8">
+      <h3>Esercizi modificati di recente</h3>
+      <div v-if="!firstLoading" class="grid grid-cols-2 gap-4 mt-4">
+        <MinimalExercisePreview
+          v-for="exercise in recentExercises"
+          :key="'e-' + exercise.id"
+          :exercise="exercise"
+          :selectable="false"
+        ></MinimalExercisePreview>
+      </div>
+      <div v-else class="grid grid-cols-2 gap-4">
+        <SkeletonCard :marginLess="true"></SkeletonCard>
+        <SkeletonCard :marginLess="true"></SkeletonCard>
+        <SkeletonCard :marginLess="true"></SkeletonCard>
+        <SkeletonCard :marginLess="true"></SkeletonCard>
+      </div>
+      <div class="flex w-full mt-4">
+        <router-link class="mx-auto link" :to="{ name: 'CourseExercises' }"
+          ><Btn :variant="'primary-borderless'"
+            >Visualizza tutti</Btn
+          ></router-link
+        >
+      </div>
+    </div>
+  </div>
 </template>
 
-<script>
-export default {
-  name: 'CourseDashboard'
-}
+<script lang="ts">
+import { defineComponent } from '@vue/runtime-core'
+import { createNamespacedHelpers } from 'vuex'
+const { mapActions, mapGetters, mapState } = createNamespacedHelpers('teacher')
+import { courseIdMixin, coursePrivilegeMixin, loadingMixin } from '@/mixins'
+import EventEditorPreview from '@/components/teacher/EventEditor/EventEditorPreview.vue'
+import SkeletonCard from '@/components/ui/SkeletonCard.vue'
+import { Event, Exercise } from '@/models'
+import MinimalExercisePreview from '@/components/teacher/ExerciseEditor/MinimalExercisePreview.vue'
+import Btn from '@/components/ui/Btn.vue'
+
+export default defineComponent({
+  name: 'CourseDashboard',
+  components: {
+    EventEditorPreview,
+    SkeletonCard,
+    MinimalExercisePreview,
+    Btn
+  },
+  mixins: [courseIdMixin, loadingMixin, coursePrivilegeMixin],
+  async created () {
+    await this.withFirstLoading(async () => {
+      await this.getEvents(this.courseId)
+      await this.getExercises({
+        courseId: this.courseId,
+        fromFirstPage: true
+      })
+      await this.getTags(this.courseId)
+    })
+  },
+  methods: {
+    ...mapActions(['getExercises', 'getEvents', 'getTags'])
+  },
+  computed: {
+    ...mapGetters(['exams']),
+    ...mapState(['exercises']),
+    recentExams (): Event[] {
+      return this.exams.slice(0, 3)
+    },
+    recentExercises (): Exercise[] {
+      return this.exercises.slice(0, 4)
+    }
+  }
+})
 </script>
 
 <style></style>

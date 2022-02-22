@@ -147,11 +147,11 @@ export default defineComponent({
     ...mapActions('shared', ['getCourse', 'getTags']),
     ...mapActions('student', ['createEvent']),
     ...mapMutations('student', ['setEditingEvent']),
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onCardMouseDown (event: any) {
       rippleEffect(event, 'ripple-gray')
     },
     onBeginPractice (event: Event) {
+      this.setEditingEvent(null)
       this.$router.push({
         name: 'PracticeParticipationPage',
         params: {

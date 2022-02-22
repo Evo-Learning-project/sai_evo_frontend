@@ -278,11 +278,11 @@
         <!-- <h1 class="text-3xl font-bold text-gray-900">
           Dashboard
         </h1> -->
-        <div class="flex space-x-5">
+        <div class="flex items-center space-x-6">
           <h2 class="mb-0">
             {{ routeTitle }}
           </h2>
-          <BreadCrumbs :route="$route" class="mt-auto"></BreadCrumbs>
+          <BreadCrumbs :route="$route" class=""></BreadCrumbs>
         </div>
         <div id="main-student-header-right" class="ml-auto"></div>
       </div>

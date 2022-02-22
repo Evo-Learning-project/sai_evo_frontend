@@ -5,10 +5,10 @@
     :class="{ 'bg-light': isDraft }"
   >
     <template v-slot:header>
-      <div class="flex items-center w-full m2-4">
-        <h3>{{ previewTitle }}</h3>
-        <div class="w-40">
-          <div class="my-auto ml-4 chip">
+      <div class="flex items-start w-full">
+        <h3 class="flex-grow">{{ previewTitle }}</h3>
+        <div class="ml-auto">
+          <div class="mr-0 chip">
             <div class="flex items-center">
               <MultiIcon class="w-6" :icons="eventStateIcons"></MultiIcon>
               <p v-html="$t('event_states.' + event.state)"></p>

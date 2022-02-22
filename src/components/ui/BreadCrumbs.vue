@@ -11,16 +11,15 @@
       :key="'breadcrumb-' + index"
       class="flex items-center"
     >
-      <span class="font-semibold" v-if="breadcrumb.routeName === $route.name">{{
-        breadcrumb.title
-      }}</span>
+      <span
+        class="font-semibold opacity-80"
+        v-if="breadcrumb.routeName === $route.name"
+        >{{ breadcrumb.title }}</span
+      >
       <router-link
         v-else
         :to="{
-          name: breadcrumb.routeName,
-          params: {
-            ...breadcrumb.routeParams
-          }
+          name: breadcrumb.routeName
         }"
         class="link"
         >{{ breadcrumb.title }}</router-link
