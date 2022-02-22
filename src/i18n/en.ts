@@ -1,7 +1,12 @@
 import { ExerciseState, ExerciseType } from '@/models';
 
 export const en = {
+  dialog: {
+    default_ok_text: 'OK',
+    default_cancel_text: 'Cancel',
+  },
   exercise_editor: {
+    exercise_tags: 'Tags',
     exercise_editor_title: 'Exercise editor',
     draft_notice: 'Draft',
     choices_title: 'Choices',
@@ -42,5 +47,41 @@ export const en = {
     [ExerciseState.PUBLIC]: 'Public',
     [ExerciseState.PRIVATE]: 'Hidden',
     [ExerciseState.DRAFT]: 'Draft',
+  },
+  misc: {
+    tags: 'Tags',
+    example: 'Example',
+  },
+  event_template_rule_editor: {
+    exercise_number: 'Slot',
+    choose_exercise: 'Scegli esercizio',
+    change_exercise: 'Cambia esercizio',
+    populate_slot_title: 'Select exercise(s) for slot',
+    mode_selection_text:
+      "Come vuoi scegliere l'esercizio per questo slot?",
+    pick_single_exercise: 'Seleziona un esercizio',
+    pick_exercise_from_pool: 'Seleziona esercizio da un insieme',
+    pick_exercise_tag_based: 'Seleziona esercizio in base ai tag',
+    pick_single_exercise_help_text:
+      'Tutti gli studenti vedranno lo stesso esercizio',
+    pick_exercise_from_pool_help_text:
+      "Ogni studente vedrà un esercizio scelto a caso dall'insieme selezionato",
+    pick_exercise_tag_based_help_text:
+      'Ogni studente vedrà un esercizio scelto a caso con i tag selezionati',
+    one_exercise_from_set_description:
+      'Ogni studente vedrà un esercizio scelto a caso tra questi:',
+    tag_based_description:
+      'Ogni studente vedrà un esercizio a caso che tra i tag ha:',
+    same_exercise_for_everyone_description:
+      'Tutti gli studenti vedranno questo esercizio:',
+    tag_based_introduction:
+      'Each student will see one exercise chosen randomly among those that meet the conditions defined here. An exercise is eligible if, for each group of tags defined, it contains at least one tag from that group.',
+    tag_based_select_exercises:
+      'Exercises will be eligible only if they have',
+    tag_based_at_least_one: 'at least one',
+    tag_based_among: 'among the following tags:',
+    tag_based_and: '... and',
+    tag_based_add_condition: 'Aggiungi condizione',
+    eligible_exercises: 'Eligible exercises:',
   },
 };

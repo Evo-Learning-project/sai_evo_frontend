@@ -1,6 +1,6 @@
 <template
   ><div>
-    <p class="mb-2 text-muted" v-if="showTeacherIntroductionText">
+    <p class="mb-6 text-muted" v-if="showTeacherIntroductionText">
       {{ $t('event_template_rule_editor.tag_based_introduction') }}
     </p>
     <div class="flex">
@@ -55,19 +55,28 @@
       </div>
       <div
         v-if="showPreview"
-        class="flex flex-grow w-9/12 px-5 py-5 ml-8 border border-gray-200 rounded-md shadow-md bg-gray-50"
+        class="relative flex w-9/12 px-5 py-5 ml-16 border border-gray-200 rounded-md max-h-60 bg-gray-50"
       >
         <SkeletonCard
-          v-if="localLoading"
+          v-if="false && localLoading"
           :borderLess="true"
           class="w-full"
         ></SkeletonCard>
-        <div class="flex flex-col justify-between flex-grow" v-else>
-          <p class="mb-auto text-muted">
-            Esercizi che soddisfano queste condizioni:
+        <Spinner
+          :size="'xl'"
+          :fast="true"
+          class="absolute transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
+          v-if="localLoading"
+        ></Spinner>
+        <div
+          class="flex flex-col justify-between flex-grow"
+          :class="{ 'opacity-50 pointer-events-none': localLoading }"
+        >
+          <p class="mb-8 text-muted">
+            {{ $t('event_template_rule_editor.eligible_exercises') }}
             <strong>{{ satisfying.count }}</strong>
           </p>
-          <h4 v-if="!!satisfying.example">Esempio</h4>
+          <h4 v-if="!!satisfying.example">{{ $t('misc.example') }}</h4>
           <MinimalExercisePreview
             :selectable="false"
             :previewable="false"
@@ -97,10 +106,11 @@ import { defineComponent, PropType } from '@vue/runtime-core'
 import { createNamespacedHelpers } from 'vuex'
 import MinimalExercisePreview from '../ExerciseEditor/MinimalExercisePreview.vue'
 import SkeletonCard from '@/components/ui/SkeletonCard.vue'
+import Spinner from '@/components/ui/Spinner.vue'
 const { mapState } = createNamespacedHelpers('shared')
 
 export default defineComponent({
-  components: { TagInput, MinimalExercisePreview, SkeletonCard },
+  components: { TagInput, MinimalExercisePreview, SkeletonCard, Spinner },
   name: 'TagBasedEventTemplateRuleEditor',
   async created () {
     if (this.modelValue.length === 0) {

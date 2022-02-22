@@ -119,6 +119,7 @@ export const it = {
     exercises_answered_at: 'Risposto:',
   },
   misc: {
+    example: 'Esempio',
     select_empty_option: 'Seleziona',
     changes_saved_to_server:
       'Tutte le modifiche sono state salvate sul server',
@@ -255,6 +256,7 @@ export const it = {
     tag_based_among: 'tra i seguenti tag:',
     tag_based_and: '... e',
     tag_based_add_condition: 'Aggiungi condizione',
+    eligible_exercises: 'Esercizi che soddisfano queste condizioni:',
   },
   event_editor: {
     name: 'Nome',

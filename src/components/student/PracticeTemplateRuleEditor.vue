@@ -29,6 +29,7 @@
       v-if="modelValue.rule_type === EventTemplateRuleType.TAG_BASED"
       :modelValue="modelValue.clauses"
       :showTeacherIntroductionText="false"
+      :showPreview="false"
       :allowCreateMoreClauses="false"
       @addClause="$emit('addClause')"
       @removeClause="$emit('removeClause', $event)"
