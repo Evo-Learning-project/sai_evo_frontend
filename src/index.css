@@ -10,7 +10,7 @@
         @apply text-darkText
     }
     h1 {
-      @apply font-bold text-3xl mb-8
+      @apply font-semibold text-2.5xl mb-6
     }
     h2 {
       @apply font-semibold text-2xl mb-4
@@ -189,14 +189,24 @@
     .floating-label:focus-within ~ label {
       @apply duration-300 transform scale-75 -translate-y-6 text-primary;
      }
+     .floating-label-error:focus-within ~ label {
+      @apply duration-300 transform scale-75 -translate-y-6 text-danger-dark;
+     }
      .floating-label:focus-within ~ label,
      .floating-label:not(:placeholder-shown) ~ label {
        @apply text-gray-500 duration-300 transform scale-75 -translate-y-6;
+     }
+     .floating-label-error:focus-within ~ label,
+     .floating-label-error:not(:placeholder-shown) ~ label {
+       @apply duration-300 transform scale-75 -translate-y-6 text-danger-dark;
      }
      
      .floating-label:focus-within ~ label {
        @apply text-primary;
      }
+     .floating-label-error:focus-within ~ label {
+      @apply text-danger-dark;
+    }
 
      /* quill editor floating label */
      .ql-editor-container ~ label {

@@ -13,6 +13,8 @@
     "@dafcoe/vue-collapsible-panel": "^0.2.0",
     "@sipec/vue3-tags-input": "^3.0.4",
     "@ts-pro/vue-eternal-loading": "^1.2.0",
+    "@vuelidate/core": "^2.0.0-alpha.34",
+    "@vuelidate/validators": "^2.0.0-alpha.26",
     "ag-grid-community": "^26.2.1",
     "ag-grid-vue": "^26.2.0",
     "ag-grid-vue3": "^26.2.0",
@@ -34,6 +36,7 @@
     "vue3-google-oauth2": "^1.0.6",
     "vue3-quill": "^0.2.6",
     "vuedraggable": "^4.1.0",
+    "vuelidate": "^0.7.7",
     "vuex": "^4.0.2",
     "vuex-persist": "^3.1.3"
   },

@@ -90,9 +90,9 @@
     <!--Mobile responsive sidebar-->
     <!-- Sidebar ends -->
     <div class="flex flex-col w-11/12 px-4 py-6 mx-auto md:w-4/5">
-      <h2 class="">
+      <h1 class="">
         {{ routeTitle }}
-      </h2>
+      </h1>
       <ErrorView v-if="!!$store.state.shared.pageWideErrorData"></ErrorView>
       <router-view v-else class="flex-grow"></router-view>
       <transition name="quick-bounce"
@@ -150,9 +150,6 @@ export default defineComponent({
       return (this.$route.meta.routeTitle as string)
         ?.replace(ROUTE_TITLE_COURSE_NAME_TOKEN, this.currentCourse?.name ?? '')
         ?.replace(ROUTE_TITLE_EVENT_NAME_TOKEN, this.currentEvent?.name ?? '')
-    },
-    currentCourse (): Course {
-      return this.$store.getters['shared/course'](this.courseId)
     },
     currentEvent (): Event {
       return this.$store.getters['teacher/event'](this.eventId)

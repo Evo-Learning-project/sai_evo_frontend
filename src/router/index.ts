@@ -18,6 +18,7 @@ import EventParticipationFull from '../views/shared/EventParticipationFull.vue';
 import ExamPreview from '../views/student/ExamPreview.vue';
 import EventParticipationsMonitor from '../views/teacher/EventParticipationsMonitor.vue';
 import Login from '../views/Login.vue';
+import CourseCreationForm from '../views/teacher/CourseCreationForm.vue';
 import {
   courseDashboardSidebarOptions,
   courseListSidebarOptions,
@@ -60,11 +61,20 @@ const routes: Array<RouteRecordRaw> = [
         },
       },
       {
+        path: 'courses/create',
+        name: 'CourseCreationForm',
+        component: CourseCreationForm,
+        meta: {
+          routeTitle: _('headings.new_course'),
+          sidebarOptions: courseListSidebarOptions,
+        },
+      },
+      {
         path: 'courses/:courseId',
         name: 'TeacherCourseDashboard',
         component: TeacherCourseDashboard,
         meta: {
-          routeTitle: _('headings.course_title'),
+          routeTitle: _('headings.course_dashboard'),
           sidebarOptions: courseDashboardSidebarOptions,
         },
       },

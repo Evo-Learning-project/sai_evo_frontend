@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import { mapState } from 'vuex';
 import { getTranslatedString as _ } from './i18n';
-import { Course, CoursePrivilege } from './models';
+import { Course, CoursePrivilege, getBlankCourse } from './models';
 import router from './router';
 import store from './store/index';
 import { SharedState, StudentState } from './store/types';
@@ -12,9 +12,10 @@ export const courseIdMixin = {
     courseId(): string {
       return router.currentRoute.value.params.courseId as string;
     },
-    currentCourse(): string {
+    currentCourse(): Course {
       return (
-        store.getters['shared/course'](this.courseId)?.name ?? ''
+        store.getters['shared/course'](this.courseId) ??
+        getBlankCourse()
       );
     },
   },

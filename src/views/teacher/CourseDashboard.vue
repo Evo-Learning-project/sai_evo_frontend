@@ -1,7 +1,7 @@
 <template>
   <div class="mt-4">
     <div>
-      <h3>Esami recenti</h3>
+      <h3>{{ $t('teacher_course_dashboard.recent_exams') }}</h3>
       <div>
         <div v-if="!firstLoading" class="grid grid-cols-3 gap-4 mt-4">
           <EventEditorPreview
@@ -17,15 +17,15 @@
         </div>
         <div class="flex w-full mt-4">
           <router-link class="mx-auto link" :to="{ name: 'CourseExams' }"
-            ><Btn :variant="'primary-borderless'"
-              >Visualizza tutti</Btn
-            ></router-link
+            ><Btn :variant="'primary-borderless'">{{
+              $t('teacher_course_dashboard.see_all')
+            }}</Btn></router-link
           >
         </div>
       </div>
     </div>
     <div class="mt-8">
-      <h3>Esercizi modificati di recente</h3>
+      <h3>{{ $t('teacher_course_dashboard.recently_edited_exercises') }}</h3>
       <div v-if="!firstLoading" class="grid grid-cols-2 gap-4 mt-4">
         <MinimalExercisePreview
           v-for="exercise in recentExercises"
@@ -42,9 +42,9 @@
       </div>
       <div class="flex w-full mt-4">
         <router-link class="mx-auto link" :to="{ name: 'CourseExercises' }"
-          ><Btn :variant="'primary-borderless'"
-            >Visualizza tutti</Btn
-          ></router-link
+          ><Btn :variant="'primary-borderless'">{{
+            $t('teacher_course_dashboard.see_all')
+          }}</Btn></router-link
         >
       </div>
     </div>
@@ -78,7 +78,7 @@ export default defineComponent({
         courseId: this.courseId,
         fromFirstPage: true
       })
-      await this.getTags(this.courseId)
+      //await this.getTags(this.courseId)
     })
   },
   methods: {

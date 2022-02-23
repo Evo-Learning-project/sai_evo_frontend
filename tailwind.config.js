@@ -36,7 +36,8 @@ module.exports = {
         sans: ['"Source Sans Pro"']
       },
       fontSize: {
-        '2xs': '.7rem'
+        '2xs': '.7rem',
+        '2.5xl': '28px'
       },
       borderWidth: {
         '1.5': '1.5px',

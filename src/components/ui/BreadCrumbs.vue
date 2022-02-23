@@ -55,7 +55,7 @@ export default defineComponent({
   methods: {
     replaceTitleTokens (str: string) {
       return str
-        ?.replace(ROUTE_TITLE_COURSE_NAME_TOKEN, this.currentCourse)
+        ?.replace(ROUTE_TITLE_COURSE_NAME_TOKEN, this.currentCourse.name)
         ?.replace(ROUTE_TITLE_EVENT_NAME_TOKEN, this.currentEvent)
     }
   },

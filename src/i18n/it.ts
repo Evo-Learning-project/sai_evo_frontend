@@ -36,6 +36,8 @@ export const it = {
   },
   headings: {
     course_title: 'Corso ' + ROUTE_TITLE_COURSE_NAME_TOKEN,
+    new_course: 'Nuovo corso',
+    course_dashboard: 'Dashboard',
     course_exercises:
       'Esercizi corso ' + ROUTE_TITLE_COURSE_NAME_TOKEN,
     course_exams: 'Esami corso ' + ROUTE_TITLE_COURSE_NAME_TOKEN,
@@ -146,6 +148,7 @@ export const it = {
     score: 'Punteggio',
     teacher_comment: 'Commento del docente',
     out_of: 'su',
+    save: 'Salva',
   },
   cloud: {
     saving: 'Salvataggio in corso...',
@@ -164,6 +167,31 @@ export const it = {
     course_dashboard_back_to_courses: 'Torna ai corsi',
     course_list_courses: 'Corsi',
     course_list_new_course: 'Nuovo corso',
+  },
+  teacher_course_dashboard: {
+    dashboard: 'Dashboard',
+    see_all: 'Visualizza tutti',
+    recent_exams: 'Esami recenti',
+    recently_edited_exercises: 'Esercizi modificati di recente',
+    course_creator: 'Creatore del corso',
+    course_name: 'Nome del corso',
+    course_description: 'Descrizione del corso (opzionale)',
+  },
+  course_creation_form: {
+    course_name: 'Nome del corso',
+    course_description: 'Descrizione del corso (opzionale)',
+    name_required: 'Il nome del corso non può essere vuoto',
+    name_already_taken: 'Esiste già un corso con questo nome',
+    course_visibility: 'Visibilità',
+    hide_course: 'Nascondi corso',
+    public_description:
+      'Visibile da subito sia agli studenti che agli altri insegnanti',
+    hidden_description:
+      'Non comparirà nella lista dei corsi mostrata agli studenti, ma sarà visible agli altri insegnanti. Potrai rendere il corso pubblico in un secondo momento.',
+    create: 'Crea',
+    import_exercises: 'Importa esercizi',
+    import_exercises_description:
+      'Puoi importare da subito esercizi per questo corso. Se non li importi ora, potrai farlo in un secondo momento dalla pagina degli esercizi per questo corso.',
   },
   course_exercises: {
     new_exercise: 'Nuovo esercizio',
@@ -381,6 +409,12 @@ export const it = {
       "L'esame non è visibile agli studenti e non sarà accessibile fino a quando viene pubblicato.",
     [EventState.OPEN]: '',
     [EventState.CLOSED]: '',
+  },
+  validation_errors: {
+    course: {
+      'name-required': 'Il nome del corso non può essere vuoto',
+      'name-unique': 'Esiste già un corso con questo nome',
+    },
   },
   exam_validation_errors: {
     [ExamValidationError.NO_NAME]:

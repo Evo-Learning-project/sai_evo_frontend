@@ -14,6 +14,7 @@ import {
 interface Orderable {
   _ordering?: number;
 }
+
 export interface User {
   id: string;
   email: string;
@@ -27,6 +28,7 @@ export interface Course {
   name: string;
   description?: string;
   privileges?: CoursePrivilege[];
+  hidden?: boolean;
   creator?: User;
 
   // student fields

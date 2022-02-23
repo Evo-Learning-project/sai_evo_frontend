@@ -282,19 +282,13 @@
           <h2 class="mb-0">
             {{ routeTitle }}
           </h2>
-          <BreadCrumbs :route="$route" class=""></BreadCrumbs>
+          <BreadCrumbs :route="$route" class="mt-1"></BreadCrumbs>
         </div>
         <div id="main-student-header-right" class="ml-auto"></div>
       </div>
     </header>
     <main class="flex-grow bg-white">
       <div class="h-full py-6 mx-auto max-w-7xl sm:px-5 lg:px-12">
-        <!-- Replace with your content -->
-        <!-- <div class="px-4 py-6 sm:px-0">
-          <div
-            class="border-4 border-gray-200 border-dashed rounded-lg h-96"
-          ></div>
-        </div> -->
         <ErrorView v-if="!!$store.state.shared.pageWideErrorData"></ErrorView>
         <router-view v-else />
         <transition name="quick-bounce"
@@ -304,7 +298,6 @@
             :message="$store.state.shared.errorNotificationData.title"
           ></SnackBar
         ></transition>
-        <!-- /End replace -->
       </div>
     </main>
   </div>
@@ -331,7 +324,7 @@ export default defineComponent({
   methods: {
     replaceTitleTokens (str: string) {
       return str
-        ?.replace(ROUTE_TITLE_COURSE_NAME_TOKEN, this.currentCourse)
+        ?.replace(ROUTE_TITLE_COURSE_NAME_TOKEN, this.currentCourse.name)
         ?.replace(ROUTE_TITLE_EVENT_NAME_TOKEN, this.currentEvent)
     }
   },

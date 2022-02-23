@@ -179,9 +179,9 @@ export default defineComponent({
     ...mapGetters('student', ['examParticipations', 'practiceParticipations']),
     ...mapGetters('shared', ['course']),
     ...mapState('student', ['editingEvent']),
-    currentCourse () {
-      return this.course(this.courseId)
-    },
+    // currentCourse () {
+    //   return this.course(this.courseId)
+    // },
     isResumingUnstartedPractice (): boolean {
       return (
         this.editingEvent?.id ===

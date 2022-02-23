@@ -190,10 +190,10 @@ export default defineComponent({
         icons: [coursePrivilegeIcons[key]],
         description: _('course_privileges.' + key)
       }))
-    },
-    currentCourse (): Course {
-      return this.$store.getters['shared/course'](this.courseId)
     }
+    // currentCourse (): Course {
+    //   return this.$store.getters['shared/course'](this.courseId)
+    // }
   }
 })
 </script>
