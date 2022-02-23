@@ -77,7 +77,7 @@ export async function updateEvent(
   return response.data;
 }
 
-// TODO https://stackoverflow.com/a/49286056/12424975
+// TODO change Record<keyof Event, unknown> to Partial<Event>
 export async function partialUpdateEvent(
   courseId: string,
   eventId: string,

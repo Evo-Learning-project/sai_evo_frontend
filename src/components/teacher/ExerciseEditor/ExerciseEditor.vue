@@ -4,18 +4,20 @@
       @click="onFocusNonDraft"
       style="z-index: 20"
       class="absolute top-0 left-0 w-full h-full bg-gray-500 bg-opacity-0 cursor-pointer"
-      v-if="!isDraft && preventEdit"
+      v-if="modelValue.state !== ExerciseState.DRAFT && preventEdit"
     ></div>
     <Card
       :marginLess="true"
       class="transition-shadow duration-100 focus-within:shadow-lg"
-      :class="{ 'bg-gray-50': isDraft }"
+      :class="{ 'bg-gray-50': modelValue.state === ExerciseState.DRAFT }"
     >
       <template v-slot:header>
         <div class="flex">
           <h3>
             {{ $t('exercise_editor.exercise_editor_title') }}
-            <span v-if="isDraft" class="text-muted"
+            <span
+              v-if="modelValue.state === ExerciseState.DRAFT"
+              class="text-muted"
               >({{ $t('exercise_editor.draft_notice') }})</span
             >
           </h3>
@@ -166,7 +168,7 @@ import {
   ExerciseChoice,
   getExerciseValidationErrors
 } from '@/models'
-import { ExerciseType, multipleChoiceExerciseTypes } from '@/models'
+import { multipleChoiceExerciseTypes } from '@/models'
 import Card from '@/components/ui/Card.vue'
 //import Dropdown from '@/components/ui/Dropdown.vue'
 import { defineComponent, PropType } from '@vue/runtime-core'
@@ -181,9 +183,10 @@ import { courseIdMixin, savingMixin } from '@/mixins'
 import { DialogData } from '@/interfaces'
 
 import { createNamespacedHelpers } from 'vuex'
-import { DebouncedFunc } from 'lodash'
 import { AutoSaveManager } from '@/autoSave'
 import {
+  exerciseStateOptions,
+  exerciseTypeOptions,
   EXERCISE_AUTO_SAVE_DEBOUNCED_FIELDS,
   EXERCISE_AUTO_SAVE_DEBOUNCE_TIME_MS,
   EXERCISE_CHOICE_AUTO_SAVE_DEBOUNCED_FIELDS,
@@ -257,7 +260,10 @@ export default defineComponent({
         onYes: null as null | (() => void),
         error: false,
         confirmOnly: false
-      } as DialogData
+      } as DialogData,
+      exerciseTypeOptions,
+      exerciseStateOptions,
+      ExerciseState
     }
   },
   methods: {
@@ -399,32 +405,10 @@ export default defineComponent({
     }
   },
   computed: {
-    exerciseTypeOptions () {
-      return ((Object.keys(ExerciseType) as unknown[]) as ExerciseType[])
-        .filter((key: string | number) => parseInt(key as string) == key) //(ExerciseType[key] as unknown) == 'number')
-        .map(key => ({
-          icons: exerciseTypesIcons[key],
-          value: key,
-          content: _('exercise_types.' + key)
-        }))
-    },
-    exerciseStateOptions () {
-      return ((Object.keys(ExerciseState) as unknown[]) as ExerciseState[])
-        .filter((key: string | number) => parseInt(key as string) == key) //(ExerciseType[key] as unknown) == 'number')
-        .map(key => ({
-          icons: exerciseStatesIcons[key],
-          value: key,
-          content: _('exercise_states.' + key),
-          description: _('exercise_states_descriptions.' + key)
-        }))
-    },
     isMultipleChoice (): boolean {
       return multipleChoiceExerciseTypes.includes(
         parseInt((this.modelValue.exercise_type?.toString() ?? '') as string)
       )
-    },
-    isDraft (): boolean {
-      return this.modelValue.state == ExerciseState.DRAFT
     },
     validationErrors () {
       return getExerciseValidationErrors(this.modelValue).map(e =>
