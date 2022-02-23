@@ -8,6 +8,7 @@
             v-for="(exam, index) in recentExams"
             :key="exam + '-' + index"
             :event="exam"
+            :buttonIconsOnly="true"
           ></EventEditorPreview>
         </div>
         <div class="grid grid-cols-3 gap-4 mt-4" v-else>

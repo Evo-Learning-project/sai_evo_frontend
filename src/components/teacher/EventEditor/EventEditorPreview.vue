@@ -1,7 +1,7 @@
 <template>
   <Card
     :marginLess="true"
-    class="transition-all duration-75 hover:bg-light"
+    class="transition-all duration-75 hover:bg-gray-50"
     :class="{ 'bg-light': isDraft }"
   >
     <template v-slot:header>
@@ -42,10 +42,12 @@
             <router-link
               :to="{ name: 'ExamEditor', params: { examId: event.id } }"
               ><Btn v-if="hasPrivileges([CoursePrivilege.MANAGE_EVENTS])"
-                ><span class="-ml-1 mr-1.5 text-base material-icons-outlined">
+                ><span class="text-base material-icons-outlined">
                   edit
                 </span>
-                {{ $t('event_preview.editor') }}</Btn
+                <span class="ml-1.5" v-if="!buttonIconsOnly">{{
+                  $t('event_preview.editor')
+                }}</span></Btn
               ></router-link
             >
           </div>
@@ -54,8 +56,10 @@
             :variant="'danger'"
             v-if="hasBegun && hasPrivileges([CoursePrivilege.MANAGE_EVENTS])"
             @click="$emit('close')"
-            ><span class="mr-1 text-base material-icons-outlined"> block </span
-            >{{ $t('event_preview.close') }}</Btn
+            ><span class="text-base material-icons-outlined"> block </span>
+            <span class="ml-1" v-if="!buttonIconsOnly">{{
+              $t('event_preview.close')
+            }}</span></Btn
           >
           <router-link
             v-if="hasBegun"
@@ -63,9 +67,12 @@
             ><Btn
               :outline="true"
               v-if="hasPrivileges([CoursePrivilege.MANAGE_EVENTS])"
-              ><span class="mr-1.5 -ml-1 text-base material-icons-outlined">
-                visibility </span
-              >{{ $t('event_preview.monitor') }}</Btn
+              ><span class="text-base material-icons-outlined">
+                visibility
+              </span>
+              <span class="ml-1.5" v-if="!buttonIconsOnly">{{
+                $t('event_preview.monitor')
+              }}</span></Btn
             ></router-link
           >
           <router-link
@@ -74,10 +81,12 @@
               hasEnded && hasPrivileges([CoursePrivilege.ASSESS_PARTICIPATIONS])
             "
             ><Btn :outline="true"
-              ><span class="mr-1.5 text-base material-icons-outlined">
+              ><span class="text-base material-icons-outlined">
                 bar_chart
               </span>
-              {{ $t('event_preview.results') }}</Btn
+              <span class="ml-1.5" v-if="!buttonIconsOnly">{{
+                $t('event_preview.results')
+              }}</span></Btn
             ></router-link
           >
         </div>
@@ -111,6 +120,10 @@ export default defineComponent({
     event: {
       type: Object as PropType<Event>,
       required: true
+    },
+    buttonIconsOnly: {
+      type: Boolean,
+      default: false
     }
   },
   data () {

@@ -223,6 +223,15 @@
     .mx-input {
       @apply transition-all duration-300 border-0 rounded-none shadow-none !important;
     }
+    .mx-datepicker-popup, .mx-date-time, .mx-time {
+      @apply rounded-md !important;
+    }
+    .mx-calendar-content .cell.active {
+      @apply text-lightText bg-primary rounded-md !important;
+    }
+    .mx-time-column .mx-time-item.active {
+      @apply text-primary !important;
+  }
     .mx-input:hover {
       @apply border-gray-300 !important;
     }
