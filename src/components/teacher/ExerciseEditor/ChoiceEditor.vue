@@ -5,46 +5,42 @@
     >
       drag_indicator
     </span>
-    <text-editor class="w-4/5 md:mr-4" v-model="choice.text">{{
-      $t('exercise_editor.choice_text')
-    }}</text-editor>
-    <number-input class="mb-auto" v-model="choice.score">{{
-      $t('exercise_editor.choice_score')
-    }}</number-input>
+    <TextEditor
+      class="w-4/5 md:mr-4"
+      :modelValue="modelValue.text"
+      @update:modelValue="onUpdate('text', $event)"
+      >{{ $t('exercise_editor.choice_text') }}</TextEditor
+    >
+    <NumberInput
+      class="mb-auto"
+      :modelValue="modelValue.score"
+      @update:modelValue="onUpdate('score', $event)"
+      >{{ $t('exercise_editor.choice_score') }}</NumberInput
+    >
   </div>
 </template>
 
 <script lang="ts">
 import { ExerciseChoice } from '@/models'
-import { defineComponent } from '@vue/runtime-core'
+import { defineComponent, PropType } from '@vue/runtime-core'
 import TextEditor from '@/components/ui/TextEditor.vue'
 import NumberInput from '@/components/ui/NumberInput.vue'
 
 export default defineComponent({
   name: 'ChoiceEditor',
-  props: ['modelValue'],
+  props: {
+    modelValue: {
+      type: Object as PropType<ExerciseChoice>,
+      required: true
+    }
+  },
   components: {
     TextEditor,
     NumberInput
   },
-  created () {
-    this.choice = this.modelValue
-  },
-  watch: {
-    serializedModelValue (newVal: string, oldVal: string) {
-      if (oldVal !== '{}') {
-        this.$emit('update:modelValue', JSON.parse(newVal))
-      }
-    }
-  },
-  data () {
-    return {
-      choice: {} as ExerciseChoice
-    }
-  },
-  computed: {
-    serializedModelValue () {
-      return JSON.stringify(this.choice)
+  methods: {
+    onUpdate (field: keyof ExerciseChoice, value: unknown) {
+      this.$emit('choiceUpdate', { field, value })
     }
   }
 })

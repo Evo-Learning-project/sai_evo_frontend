@@ -44,8 +44,8 @@
 </template>
 
 <script lang="ts">
-import { createNamespacedHelpers } from 'vuex'
-const { mapState, mapActions } = createNamespacedHelpers('teacher')
+import { createNamespacedHelpers, mapActions } from 'vuex'
+const { mapState } = createNamespacedHelpers('teacher')
 import { getTranslatedString as _ } from '@/i18n'
 import { icons as exerciseTypesIcons } from '@/assets/exerciseTypesIcons'
 import { icons as exerciseStatesIcons } from '@/assets/exerciseStatesIcons'
@@ -119,7 +119,8 @@ export default defineComponent({
     }
   },
   methods: {
-    ...mapActions(['getExercises', 'getTags', 'createExercise']),
+    ...mapActions('teacher', ['getExercises', 'createExercise']),
+    ...mapActions('shared', ['getTags']),
     async onFilterChange () {
       await this.getExercises({
         courseId: this.courseId,

@@ -218,6 +218,7 @@ export const actions = {
     state.exercises
       .find((e: Exercise) => e.id === exerciseId)
       ?.choices?.push(newChoice);
+    return newChoice;
   },
   addEventTemplateRule: async (
     // eslint-disable-next-line @typescript-eslint/no-unused-vars

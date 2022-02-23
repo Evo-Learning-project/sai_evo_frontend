@@ -77,6 +77,17 @@ export const mutations = {
       payload
     );
   },
+  setExerciseChoice: (
+    state: TeacherState,
+    { exerciseId, payload }: MutationPayload<ExerciseChoice>
+  ) => {
+    const target = state.exercises
+      .find((e) => e.id == exerciseId)
+      ?.choices?.find((c) => c.id == payload.id);
+
+    console.log(target, exerciseId, payload);
+    Object.assign(target, payload);
+  },
 
   // updates the list of elements related to an exercise (choices, sub-exercises, etc.)
   setExerciseChildren: (

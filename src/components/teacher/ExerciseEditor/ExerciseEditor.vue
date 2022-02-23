@@ -102,7 +102,9 @@
             <template #item="{element}">
               <ChoiceEditor
                 :modelValue="element"
-                @update:modelValue="onChoiceUpdate($event)"
+                @choiceUpdate="
+                  onUpdateChoice(element.id, $event.field, $event.value)
+                "
               ></ChoiceEditor>
             </template>
           </draggable>
@@ -183,7 +185,9 @@ import { DebouncedFunc } from 'lodash'
 import { AutoSaveManager } from '@/autoSave'
 import {
   EXERCISE_AUTO_SAVE_DEBOUNCED_FIELDS,
-  EXERCISE_AUTO_SAVE_DEBOUNCE_TIME_MS
+  EXERCISE_AUTO_SAVE_DEBOUNCE_TIME_MS,
+  EXERCISE_CHOICE_AUTO_SAVE_DEBOUNCED_FIELDS,
+  EXERCISE_CHOICE_AUTO_SAVE_DEBOUNCE_TIME_MS
 } from '@/const'
 const { mapActions, mapMutations } = createNamespacedHelpers('teacher')
 
@@ -209,8 +213,6 @@ export default defineComponent({
   },
   mixins: [courseIdMixin, savingMixin],
   created () {
-    this.elementId = uuid4()
-
     this.autoSaveManager = new AutoSaveManager<Exercise>(
       this.modelValue,
       async changes =>
@@ -229,11 +231,19 @@ export default defineComponent({
       () => (this.savingError = true),
       () => (this.saving = false)
     )
+
+    this.modelValue.choices?.forEach(c =>
+      this.instantiateChoiceAutoSaveManager(c)
+    )
   },
   data () {
     return {
       autoSaveManager: null as AutoSaveManager<Exercise> | null,
-      elementId: '',
+      choiceAutoSaveManagers: {} as Record<
+        string,
+        AutoSaveManager<ExerciseChoice>
+      >,
+      elementId: uuid4(),
       showSaved: false,
       saving: false,
       savingError: false,
@@ -258,25 +268,18 @@ export default defineComponent({
       'addExerciseTag',
       'removeExerciseTag'
     ]),
-    ...mapMutations(['setExercise']),
+    ...mapMutations(['setExercise', 'setExerciseChoice']),
     async onChoiceDragEnd (event: { oldIndex: number; newIndex: number }) {
       const draggedChoice = (this.modelValue.choices as ExerciseChoice[])[
         event.oldIndex
       ]
 
       if (event.oldIndex !== event.newIndex) {
-        await this.dispatchChoiceUpdate(
-          {
-            ...draggedChoice,
-            _ordering: event.newIndex
-          },
-          true
-        )
-        ;(this.dispatchChoiceUpdate as DebouncedFunc<any>).flush()
+        await this.onUpdateChoice(draggedChoice.id, '_ordering', event.newIndex)
       }
     },
-    onBaseExerciseChange (key: keyof Exercise, value: unknown) {
-      this.autoSaveManager?.onChange({ field: key, value })
+    async onBaseExerciseChange (key: keyof Exercise, value: unknown) {
+      await this.autoSaveManager?.onChange({ field: key, value })
     },
     onFocusNonDraft () {
       this.showDialog = true
@@ -297,13 +300,13 @@ export default defineComponent({
     //   this.modelValue.exercise_type = newVal
     // }
 
-    // event handlers
     async onAddChoice () {
-      await this.addExerciseChoice({
+      const newChoice: ExerciseChoice = await this.addExerciseChoice({
         courseId: this.courseId,
         exerciseId: this.modelValue.id,
         choice: getBlankChoice()
       })
+      this.instantiateChoiceAutoSaveManager(newChoice)
     },
     async onAddTag (tag: string, isPublic: boolean) {
       await this.addExerciseTag({
@@ -320,18 +323,6 @@ export default defineComponent({
         tag,
         isPublic
       })
-    },
-    async onChoiceUpdate (newVal: ExerciseChoice) {
-      // TODO refactor this
-      const index = (this.modelValue.choices as ExerciseChoice[]).findIndex(
-          c => c.id === newVal.id
-        )
-        // eslint-disable-next-line @typescript-eslint/no-extra-semi
-      ;(this.modelValue.choices as ExerciseChoice[])[index] = newVal // TODO use a mutation
-      console.log('index', index, 'newVal', newVal)
-      this.saving = true
-      this.savingError = false
-      await this.dispatchChoiceUpdate(newVal)
     },
     onExerciseStateChange (newState: ExerciseState) {
       if (newState != ExerciseState.DRAFT && this.validationErrors.length > 0) {
@@ -366,36 +357,46 @@ export default defineComponent({
         this.onBaseExerciseChange('state', newState)
       }
     },
-    // end event handlers
-
-    // debounced dispatchers
-    async dispatchExerciseUpdate (newVal: Exercise) {
-      try {
-        await this.updateExercise({
-          courseId: this.courseId,
-          exercise: newVal
-        })
-      } catch {
-        this.savingError = true
-      } finally {
-        this.saving = false
-      }
+    async onUpdateChoice (
+      choiceId: string,
+      key: keyof ExerciseChoice,
+      value: unknown
+    ) {
+      await this.choiceAutoSaveManagers[choiceId].onChange({
+        field: key,
+        value
+      })
     },
-    async dispatchChoiceUpdate (newVal: ExerciseChoice, reFetch = false) {
-      try {
-        await this.updateExerciseChoice({
-          courseId: this.courseId,
-          exerciseId: this.modelValue.id,
-          choice: newVal,
-          reFetch
-        })
-      } catch {
-        this.savingError = true
-      } finally {
-        this.saving = false
-      }
+    instantiateChoiceAutoSaveManager (choice: ExerciseChoice) {
+      this.choiceAutoSaveManagers[choice.id] = new AutoSaveManager<
+        ExerciseChoice
+      >(
+        choice,
+        async changes => {
+          // if choices are re-ordered, re-fetch them from server
+          const reFetch = Object.keys(changes).includes('_ordering')
+          await this.updateExerciseChoice({
+            courseId: this.courseId,
+            exerciseId: this.modelValue.id,
+            choice: { ...choice, ...changes },
+            reFetch
+          })
+        },
+        changes => {
+          this.saving = true
+          this.savingError = false
+          this.setExerciseChoice({
+            exerciseId: this.modelValue.id,
+            payload: { ...choice, ...changes }
+          })
+        },
+        EXERCISE_CHOICE_AUTO_SAVE_DEBOUNCED_FIELDS,
+        EXERCISE_CHOICE_AUTO_SAVE_DEBOUNCE_TIME_MS,
+        undefined,
+        () => (this.savingError = true),
+        () => (this.saving = false)
+      )
     }
-    // end debounced dispatchers
   },
   computed: {
     exerciseTypeOptions () {
