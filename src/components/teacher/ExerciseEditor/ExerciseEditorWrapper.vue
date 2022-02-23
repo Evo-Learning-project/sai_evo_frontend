@@ -14,7 +14,7 @@
     <ExerciseEditor
       :saving="saving"
       v-show="showEditor"
-      v-model="proxyModelValue"
+      :modelValue="modelValue"
     ></ExerciseEditor>
   </div>
 </template>
@@ -57,14 +57,14 @@ export default defineComponent({
     }
   },
   computed: {
-    proxyModelValue: {
-      get (): Exercise {
-        return this.modelValue
-      },
-      set (val: Exercise) {
-        this.$emit('update:modelValue', val)
-      }
-    }
+    // proxyModelValue: {
+    //   get (): Exercise {
+    //     return this.modelValue
+    //   },
+    //   set (val: Exercise) {
+    //     this.$emit('update:modelValue', val)
+    //   }
+    // }
   }
 })
 </script>

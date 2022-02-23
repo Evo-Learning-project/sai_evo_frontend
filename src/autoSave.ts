@@ -6,7 +6,7 @@ type RemotePatchFunction<T> = (
   changes: FieldValuesObject<T>
 ) => Promise<void>;
 type PatchFunction<T> = (changes: FieldValuesObject<T>) => void;
-type FieldList<T> = (keyof T)[];
+export type FieldList<T> = (keyof T)[];
 type FieldValuesObject<T> = Partial<T>;
 
 export class AutoSaveManager<T> {
@@ -17,6 +17,7 @@ export class AutoSaveManager<T> {
   localPatchFunction: PatchFunction<T>;
   errorFunction?: (e: any) => void;
   successFunction?: () => void;
+  cleanupFunction?: () => void;
   debouncedFields: FieldList<T>;
   revertOnFailure: boolean;
   alwaysPatchLocal: boolean;
@@ -29,6 +30,7 @@ export class AutoSaveManager<T> {
     debounceTime: number,
     successFunction?: () => void,
     errorFunction?: (e: any) => void,
+    cleanupFunction?: () => void,
     revertOnFailure = false,
     alwaysPatchLocal = true
   ) {
@@ -43,6 +45,7 @@ export class AutoSaveManager<T> {
     this.beforeChanges = {};
     this.successFunction = successFunction;
     this.errorFunction = errorFunction;
+    this.cleanupFunction = cleanupFunction;
     this.revertOnFailure = revertOnFailure;
     this.alwaysPatchLocal = alwaysPatchLocal;
   }
@@ -110,7 +113,7 @@ export class AutoSaveManager<T> {
           this.localPatchFunction(this.beforeChanges);
         }
       } finally {
-        // TODO cleanup
+        this.cleanupFunction?.();
       }
     };
   }

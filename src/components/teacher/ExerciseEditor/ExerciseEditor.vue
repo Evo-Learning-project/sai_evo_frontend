@@ -32,7 +32,7 @@
             <div class="w-full mr-auto md:w-4/12">
               <TextInput
                 :modelValue="modelValue.label"
-                @update:modelValue="emitUpdate('label', $event)"
+                @update:modelValue="onBaseExerciseChange('label', $event)"
                 >{{ $t('exercise_editor.exercise_label') }}</TextInput
               >
             </div>
@@ -43,7 +43,7 @@
                 :modelValue="modelValue.state"
                 @update:modelValue="onExerciseStateChange($event)"
               >
-                <!--emitUpdate('state', $event)-->
+                <!--onBaseExerciseChange('state', $event)-->
                 {{ $t('exercise_editor.exercise_state') }}
               </Dropdown>
             </div>
@@ -53,7 +53,9 @@
                 :id="'exercise_type_' + elementId"
                 :options="exerciseTypeOptions"
                 :modelValue="modelValue.exercise_type"
-                @update:modelValue="emitUpdate('exercise_type', $event)"
+                @update:modelValue="
+                  onBaseExerciseChange('exercise_type', $event)
+                "
               >
                 {{ $t('exercise_editor.exercise_type') }}
               </Dropdown>
@@ -63,13 +65,13 @@
           </div>
           <TextEditor
             :modelValue="modelValue.text"
-            @update:modelValue="emitUpdate('text', $event)"
+            @update:modelValue="onBaseExerciseChange('text', $event)"
             >{{ $t('exercise_editor.exercise_text') }}</TextEditor
           >
           <!-- TODO show code editor if the exercise type is js -->
           <TextEditor
             :modelValue="modelValue.solution"
-            @update:modelValue="emitUpdate('solution', $event)"
+            @update:modelValue="onBaseExerciseChange('solution', $event)"
             >{{ $t('exercise_editor.exercise_solution') }}</TextEditor
           >
           <TagInput
@@ -104,20 +106,11 @@
               ></ChoiceEditor>
             </template>
           </draggable>
-          <!-- 
-            BEFORE ADDING DRAGGABLE
-            <ChoiceEditor
-            v-for="(choice, index) in modelValue.choices"
-            :key="elementId + '-choice-' + index"
-            :modelValue="modelValue.choices[index]"
-            @update:modelValue="onChoiceUpdate(index, $event)"
-          ></ChoiceEditor> -->
-          <!--v-model="modelValue.choices[index]"-->
-          <btn @click="onAddChoice()" :size="'sm'"
+          <Btn @click="onAddChoice()" :size="'sm'"
             ><span class="mr-1 text-base material-icons-outlined">
               add_circle_outline
             </span>
-            {{ $t('exercise_editor.new_choice') }}</btn
+            {{ $t('exercise_editor.new_choice') }}</Btn
           >
           <!-- Js exercise settings -->
 
@@ -182,13 +175,17 @@ import TagInput from '@/components/ui/TagInput.vue'
 
 import ChoiceEditor from '@/components/teacher/ExerciseEditor/ChoiceEditor.vue'
 import CloudSaveStatus from '@/components/ui/CloudSaveStatus.vue'
-import { getDebouncedForEditor } from '@/utils'
 import { courseIdMixin, savingMixin } from '@/mixins'
 import { DialogData } from '@/interfaces'
 
 import { createNamespacedHelpers } from 'vuex'
 import { DebouncedFunc } from 'lodash'
-const { mapActions } = createNamespacedHelpers('teacher')
+import { AutoSaveManager } from '@/autoSave'
+import {
+  EXERCISE_AUTO_SAVE_DEBOUNCED_FIELDS,
+  EXERCISE_AUTO_SAVE_DEBOUNCE_TIME_MS
+} from '@/const'
+const { mapActions, mapMutations } = createNamespacedHelpers('teacher')
 
 export default defineComponent({
   name: 'ExerciseEditor',
@@ -211,22 +208,31 @@ export default defineComponent({
     }
   },
   mixins: [courseIdMixin, savingMixin],
-  watch: {
-    async serializedBaseExerciseFields (newVal: string, oldVal: string) {
-      if (oldVal !== '{}' && newVal !== oldVal) {
-        await this.onBaseFieldsChange(JSON.parse(newVal) as Exercise)
-      }
-    }
-  },
   created () {
     this.elementId = uuid4()
-    this.dispatchExerciseUpdate = getDebouncedForEditor(
-      this.dispatchExerciseUpdate
+
+    this.autoSaveManager = new AutoSaveManager<Exercise>(
+      this.modelValue,
+      async changes =>
+        await this.updateExercise({
+          courseId: this.courseId,
+          exercise: { ...this.modelValue, ...changes }
+        }),
+      changes => {
+        this.saving = true
+        this.savingError = false
+        this.setExercise({ ...this.modelValue, ...changes })
+      },
+      EXERCISE_AUTO_SAVE_DEBOUNCED_FIELDS,
+      EXERCISE_AUTO_SAVE_DEBOUNCE_TIME_MS,
+      undefined,
+      () => (this.savingError = true),
+      () => (this.saving = false)
     )
-    this.dispatchChoiceUpdate = getDebouncedForEditor(this.dispatchChoiceUpdate)
   },
   data () {
     return {
+      autoSaveManager: null as AutoSaveManager<Exercise> | null,
       elementId: '',
       showSaved: false,
       saving: false,
@@ -252,6 +258,7 @@ export default defineComponent({
       'addExerciseTag',
       'removeExerciseTag'
     ]),
+    ...mapMutations(['setExercise']),
     async onChoiceDragEnd (event: { oldIndex: number; newIndex: number }) {
       const draggedChoice = (this.modelValue.choices as ExerciseChoice[])[
         event.oldIndex
@@ -268,11 +275,8 @@ export default defineComponent({
         ;(this.dispatchChoiceUpdate as DebouncedFunc<any>).flush()
       }
     },
-    emitUpdate (key: keyof Exercise, value: unknown) {
-      this.$emit('update:modelValue', {
-        ...this.modelValue,
-        [key]: value
-      })
+    onBaseExerciseChange (key: keyof Exercise, value: unknown) {
+      this.autoSaveManager?.onChange({ field: key, value })
     },
     onFocusNonDraft () {
       this.showDialog = true
@@ -294,15 +298,6 @@ export default defineComponent({
     // }
 
     // event handlers
-    async onBaseFieldsChange (newVal: Exercise) {
-      this.saving = true
-      this.savingError = false
-      await this.dispatchExerciseUpdate(newVal)
-
-      // TODO call flush if the modified field isn't a text field
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      //;(this.dispatchExerciseUpdate as DebouncedFunc<any>).flush()
-    },
     async onAddChoice () {
       await this.addExerciseChoice({
         courseId: this.courseId,
@@ -360,7 +355,7 @@ export default defineComponent({
           title: _('exercise_editor.make_public_confirmation_title'),
           text: _('exercise_editor.make_public_confirmation_body'),
           onYes: () => {
-            this.emitUpdate('state', newState)
+            this.onBaseExerciseChange('state', newState)
             this.showDialog = false
           },
           onNo: () => (this.showDialog = false),
@@ -368,7 +363,7 @@ export default defineComponent({
           confirmOnly: false
         }
       } else {
-        this.emitUpdate('state', newState)
+        this.onBaseExerciseChange('state', newState)
       }
     },
     // end event handlers
@@ -403,20 +398,6 @@ export default defineComponent({
     // end debounced dispatchers
   },
   computed: {
-    serializedExercise () {
-      return JSON.stringify(this.modelValue)
-    },
-    serializedBaseExerciseFields () {
-      const {
-        id,
-        text,
-        exercise_type,
-        solution,
-        state,
-        label
-      } = this.modelValue
-      return JSON.stringify({ id, text, exercise_type, solution, state, label })
-    },
     exerciseTypeOptions () {
       return ((Object.keys(ExerciseType) as unknown[]) as ExerciseType[])
         .filter((key: string | number) => parseInt(key as string) == key) //(ExerciseType[key] as unknown) == 'number')
