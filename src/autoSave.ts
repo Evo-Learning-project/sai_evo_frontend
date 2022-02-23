@@ -1,30 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-// interface IAutoSave<T> {
-//   instance: T;
-//   unsavedChanges: Record<keyof T, unknown>;
-//   disremotePatchFunction: () => Promise<void>;
-//   debouncedFields: (keyof T)[];
-// }
 
 import { debounce, DebouncedFunc } from 'lodash';
-import {
-  Event,
-  Exercise,
-  ExerciseChoice,
-  getBlankExam,
-} from './models';
-import store from './store';
-
-type EmptyObject = any; // Record<string, never>;
 
 type RemotePatchFunction<T> = (
   changes: FieldValuesObject<T>
 ) => Promise<void>;
 type PatchFunction<T> = (changes: FieldValuesObject<T>) => void;
 type FieldList<T> = (keyof T)[];
-type FieldValuesObject<T> = Partial<T>; // Record<keyof T, T[keyof T]> | EmptyObject;
+type FieldValuesObject<T> = Partial<T>;
 
-export class AutoSave<T> {
+export class AutoSaveManager<T> {
   instance: T;
   unsavedChanges: FieldValuesObject<T>;
   beforeChanges: FieldValuesObject<T>;
@@ -74,7 +59,7 @@ export class AutoSave<T> {
     // record new change to field
     this.unsavedChanges[field] = value as any;
 
-    // make deep copy of field that's about to change
+    // make deep copy of field about to change in case rollback becomes necessary
     this.beforeChanges[field] = JSON.parse(
       JSON.stringify(this.instance[field])
     );
@@ -92,6 +77,10 @@ export class AutoSave<T> {
     }
   }
 
+  flush(): void {
+    this.remotePatchFunction.flush();
+  }
+
   private wrapRemotePatchFunction(
     callback: RemotePatchFunction<T>
   ): RemotePatchFunction<T> {
@@ -106,16 +95,19 @@ export class AutoSave<T> {
           // update in-memory instance
           this.localPatchFunction(changes);
         }
+        // reset bookkeeping about recent changes
         this.unsavedChanges = {};
         this.beforeChanges = {};
+
+        // call user-supplied success callback
         this.successFunction?.();
       } catch (e) {
+        // call user-supplied error callback
         this.errorFunction?.(e);
+
         if (this.revertOnFailure) {
-          console.log('rolling back changes', this.beforeChanges);
           // roll back unsaved changes
           this.localPatchFunction(this.beforeChanges);
-          console.log('unsaved', this.unsavedChanges);
         }
       } finally {
         // TODO cleanup
@@ -123,61 +115,3 @@ export class AutoSave<T> {
     };
   }
 }
-
-// const courseId = 'abc';
-// const eventId = 'def';
-// const exerciseId = 'ghi';
-// const choiceId = 'jkl';
-
-// /** EXAMPLE with EventEditor */
-// const EventEditorAutoSave = new AutoSave<Event>(
-//   async (changes) =>
-//     await store.dispatch('patchEvent', {
-//       courseId,
-//       eventId,
-//       changes,
-//     }),
-//   (changes) =>
-//     store.commit('patchEvent', { courseId, eventId, changes }),
-//   ['name', 'instructions'],
-//   2000,
-//   () => store.commit('shared/showSuccessFeedback')
-// );
-
-// /** Example with ExerciseEditor */
-// const ExerciseEditorAutoSave = new AutoSave<Exercise>(
-//   async (changes) =>
-//     await store.dispatch('patchExercise', {
-//       courseId,
-//       exerciseId,
-//       changes,
-//     }),
-//   (changes) =>
-//     store.commit('patchExercise', { courseId, exerciseId, changes }),
-//   ['label', 'text', 'solution'],
-//   3000
-// );
-
-// // in exercise editor, you'd keep a structure that associates each choice id
-// // with an AutoSave<ExerciseChoice> instance. the choice editor needs to be refactored
-// // in order to send a single field update at a time, and in the exercise editor, when
-// // you receive an update, you just call onChange on the appropriate AutoSave
-
-// const ExerciseChoiceAutoSave = new AutoSave<ExerciseChoice>(
-//   async (changes) =>
-//     await store.dispatch('patchExerciseChoice', {
-//       courseId,
-//       exerciseId,
-//       choiceId,
-//       changes,
-//     }),
-//   (changes) =>
-//     store.commit('patchExerciseChoice', {
-//       courseId,
-//       exerciseId,
-//       choiceId,
-//       changes,
-//     }),
-//   ['text'],
-//   2000
-// );

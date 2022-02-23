@@ -37,7 +37,7 @@ import { PropType } from 'vue'
 import { createNamespacedHelpers } from 'vuex'
 import PracticeTemplateRuleEditor from './PracticeTemplateRuleEditor.vue'
 import Btn from '../ui/Btn.vue'
-import { AutoSave } from '@/autoSave'
+import { AutoSaveManager } from '@/autoSave'
 const { mapState, mapActions, mapMutations } = createNamespacedHelpers(
   'student'
 )
@@ -56,16 +56,21 @@ export default defineComponent({
       await this.onAddRule()
     }
     this.modelValue.rules.forEach(r => {
-      this.instantiateRuleAutoSave(r)
-      r.clauses?.forEach(c => this.instantiateRuleClauseAutoSave(r.id, c))
+      this.instantiateRuleAutoSaveManager(r)
+      r.clauses?.forEach(c =>
+        this.instantiateRuleClauseAutoSaveManager(r.id, c)
+      )
     })
   },
   data () {
     return {
-      rulesAutoSaveInstances: {} as Record<string, AutoSave<EventTemplateRule>>,
+      rulesAutoSaveInstances: {} as Record<
+        string,
+        AutoSaveManager<EventTemplateRule>
+      >,
       ruleClausesAutoSaveInstances: {} as Record<
         string,
-        AutoSave<EventTemplateRuleClause>
+        AutoSaveManager<EventTemplateRuleClause>
       >
     }
   },
@@ -90,7 +95,7 @@ export default defineComponent({
           ruleId: rule.id,
           clause: getBlankTagBasedEventTemplateRuleClause()
         })
-        this.instantiateRuleClauseAutoSave(rule.id, newClause)
+        this.instantiateRuleClauseAutoSaveManager(rule.id, newClause)
       })
     },
     async onRuleUpdateClause (clause: EventTemplateRuleClause) {
@@ -107,10 +112,12 @@ export default defineComponent({
         rule: getBlankEventTemplateRule(EventTemplateRuleType.FULLY_RANDOM)
       })
 
-      this.instantiateRuleAutoSave(newRule)
+      this.instantiateRuleAutoSaveManager(newRule)
     },
-    instantiateRuleAutoSave (rule: EventTemplateRule) {
-      this.rulesAutoSaveInstances[rule.id] = new AutoSave<EventTemplateRule>(
+    instantiateRuleAutoSaveManager (rule: EventTemplateRule) {
+      this.rulesAutoSaveInstances[rule.id] = new AutoSaveManager<
+        EventTemplateRule
+      >(
         rule,
         async changes =>
           await this.partialUpdateEventTemplateRule({
@@ -128,11 +135,11 @@ export default defineComponent({
         0
       )
     },
-    instantiateRuleClauseAutoSave (
+    instantiateRuleClauseAutoSaveManager (
       ruleId: string,
       clause: EventTemplateRuleClause
     ) {
-      this.ruleClausesAutoSaveInstances[clause.id] = new AutoSave<
+      this.ruleClausesAutoSaveInstances[clause.id] = new AutoSaveManager<
         EventTemplateRuleClause
       >(
         clause,
