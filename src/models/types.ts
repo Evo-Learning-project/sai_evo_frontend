@@ -28,6 +28,7 @@ export enum EventState {
   PLANNED,
   OPEN,
   CLOSED,
+  RESTRICTED,
 }
 
 export enum EventTemplateRuleType {

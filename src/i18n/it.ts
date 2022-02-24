@@ -389,6 +389,7 @@ export const it = {
     [EventState.PLANNED]: 'Pianificato',
     [EventState.OPEN]: 'In corso',
     [EventState.CLOSED]: 'Terminato',
+    [EventState.RESTRICTED]: 'Aperto per alcuni',
   },
   event_participation_states: {
     [EventParticipationState.IN_PROGRESS]: 'In corso',
