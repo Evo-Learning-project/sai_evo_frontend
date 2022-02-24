@@ -198,7 +198,7 @@ export default defineComponent({
     },
     async onTurnIn () {
       this.showConfirmDialog = false
-      this.withLoading(
+      await this.withLoading(
         async () =>
           await this.partialUpdateEventParticipation({
             courseId: this.courseId,

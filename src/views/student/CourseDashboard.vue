@@ -2,14 +2,14 @@
   <div class="mb-4">
     <div class="mb-8">
       <h2>{{ $t('student_course_dashboard.exams_you_participated_in') }}</h2>
-      <div class="grid grid-cols-3 gap-4" v-if="!firstLoading">
+      <div class="grid grid-cols-2 gap-4 lg:grid-cols-3" v-if="!firstLoading">
         <EventParticipationPreview
           v-for="participation in examParticipations"
           :key="'exam-participation-' + participation.id"
           :participation="participation"
         ></EventParticipationPreview>
       </div>
-      <div class="grid grid-cols-3 gap-4" v-else>
+      <div class="grid grid-cols-2 gap-4 lg:grid-cols-3" v-else>
         <SkeletonCard class="h-44"></SkeletonCard>
         <SkeletonCard class="h-44"></SkeletonCard>
         <SkeletonCard class="h-44"></SkeletonCard>
@@ -18,7 +18,10 @@
 
     <div>
       <h2>{{ $t('student_course_dashboard.your_practice_events') }}</h2>
-      <div class="grid grid-cols-4 gap-4" v-if="!firstLoading">
+      <div
+        class="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4"
+        v-if="!firstLoading"
+      >
         <div v-if="(currentCourse.unstarted_practice_events?.length ?? 0) > 0">
           <Card
             :margin-less="true"
@@ -72,7 +75,7 @@
           :participation="participation"
         ></EventParticipationPreview>
       </div>
-      <div class="grid grid-cols-4 gap-4" v-else>
+      <div class="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4" v-else>
         <SkeletonCard class="h-44"></SkeletonCard>
         <SkeletonCard class="h-44"></SkeletonCard>
         <SkeletonCard class="h-44"></SkeletonCard>
