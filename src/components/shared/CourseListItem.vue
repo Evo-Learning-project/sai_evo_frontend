@@ -1,14 +1,14 @@
 <template>
-  <Card class="transition-all duration-75 hover:bg-gray-50">
+  <Card :hoverable="true">
     <template v-slot:header>
       <div class="flex items-center">
         <span class="mr-2 opacity-50 material-icons-two-tone">book</span>
         <h3>{{ course.name }}</h3>
       </div>
     </template>
-    <template v-if="course.description?.length > 0" v-slot:body>
+    <template v-if="(course.description?.length ?? 0) > 0" v-slot:body>
       <div class="flex items-center">
-        <p class="text-sm text-muted">{{ course.description }}</p>
+        <p class="text-sm text-muted" v-html="course.description"></p>
       </div>
     </template>
     <template v-slot:side>

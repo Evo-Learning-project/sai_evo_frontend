@@ -16,7 +16,16 @@
           <EventEditorPreviewSkeleton></EventEditorPreviewSkeleton>
           <EventEditorPreviewSkeleton></EventEditorPreviewSkeleton>
         </div>
-        <div class="flex w-full mt-4">
+        <div
+          class="flex flex-col w-full mt-6 mb-16 -ml-5 text-center select-none"
+          v-if="!firstLoading && exams.length === 0"
+        >
+          <p style="font-size: 6rem" class="material-icons-outlined opacity-10">
+            assignment
+          </p>
+          <h2 class="opacity-40">{{ $t('course_events.no_exams') }}</h2>
+        </div>
+        <div v-else-if="!firstLoading" class="flex w-full mt-4">
           <router-link class="mx-auto link" :to="{ name: 'CourseExams' }"
             ><Btn :variant="'primary-borderless'">{{
               $t('teacher_course_dashboard.see_all')
@@ -41,7 +50,16 @@
         <MinimalExercisePreviewSkeleton></MinimalExercisePreviewSkeleton>
         <MinimalExercisePreviewSkeleton></MinimalExercisePreviewSkeleton>
       </div>
-      <div class="flex w-full mt-4">
+      <div
+        class="flex flex-col w-full mt-6 -ml-5 text-center select-none mb-14"
+        v-if="!firstLoading && exercises.length === 0"
+      >
+        <p style="font-size: 6rem" class="material-icons-outlined opacity-10">
+          topic
+        </p>
+        <h2 class="opacity-40">{{ $t('course_exercises.no_exercises') }}</h2>
+      </div>
+      <div v-else-if="!firstLoading" class="flex w-full">
         <router-link class="mx-auto link" :to="{ name: 'CourseExercises' }"
           ><Btn :variant="'primary-borderless'">{{
             $t('teacher_course_dashboard.see_all')

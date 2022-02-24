@@ -195,6 +195,7 @@ export const it = {
   },
   course_exercises: {
     new_exercise: 'Nuovo esercizio',
+    no_exercises: 'Non ci sono ancora esercizi',
     selected_exercises: 'esercizi selezionati',
     selected_exercise: 'esercizio selezionato',
     create_exam_from_selected_exercises:
@@ -206,6 +207,7 @@ export const it = {
   },
   course_events: {
     new_exam: 'Nuovo esame',
+    no_exams: 'Non ci sono ancora esami',
     close_exam_for_everyone_title: "Chiudi l'esame per tutti",
     close_for_everyone: 'Chiudi per tutti',
     close_exam_for_everyone_body_1: "Stai per chiudere l'esame",

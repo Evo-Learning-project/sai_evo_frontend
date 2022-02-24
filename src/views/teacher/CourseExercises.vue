@@ -28,6 +28,15 @@
       <ExerciseEditorWrapperSkeleton></ExerciseEditorWrapperSkeleton>
       <ExerciseEditorWrapperSkeleton></ExerciseEditorWrapperSkeleton>
     </div>
+    <div
+      class="flex flex-col w-full mt-12 mb-12 -ml-5 text-center select-none"
+      v-if="!firstLoading && exercises.length === 0"
+    >
+      <p style="font-size: 10rem" class="material-icons-outlined opacity-10">
+        topic
+      </p>
+      <h2 class="opacity-40">{{ $t('course_exercises.no_exercises') }}</h2>
+    </div>
     <VueEternalLoading
       :load="onLoadMore"
       v-model:is-initial="isInitialInfiniteLoad"

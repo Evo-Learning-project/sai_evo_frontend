@@ -50,6 +50,7 @@
         @click="v$.$invalid ? v$.$touch() : onCreate()"
         class="mt-auto mr-auto"
         :variant="'success'"
+        :loading="localLoading"
       >
         <span class="mr-1 text-base material-icons-outlined">done</span
         >{{ $t('course_creation_form.create') }}</Btn
@@ -70,12 +71,17 @@ import useVuelidate from '@vuelidate/core'
 import { required } from '@vuelidate/validators'
 import { mapState } from 'vuex'
 
+import { createNamespacedHelpers } from 'vuex'
+import { loadingMixin } from '@/mixins'
+const { mapActions } = createNamespacedHelpers('teacher')
+
 export default defineComponent({
   name: 'CourseCreationForm',
   components: { TextInput, TextEditor, Toggle, FileUpload, Btn },
   setup () {
     return { v$: useVuelidate() }
   },
+  mixins: [loadingMixin],
   data () {
     return {
       course: getBlankCourse()
@@ -93,8 +99,20 @@ export default defineComponent({
     }
   },
   methods: {
+    ...mapActions(['createCourse']),
     async onCreate () {
-      return 1
+      await this.withLocalLoading(async () => {
+        const course = await this.createCourse(this.course)
+        await this.$store.dispatch('shared/getCourses')
+        this.$router.push({
+          name: 'TeacherCourseDashboard',
+          params: {
+            courseId: course.id
+          }
+        })
+      })
+
+      this.$store.commit('shared/showSuccessFeedback')
     },
     courseNameUnique (name: string) {
       return (this.courses as Course[]).every(c => c.name !== name)

@@ -17,7 +17,7 @@ import {
   Tag,
   User,
 } from '@/models';
-import { getCourses, getTags } from '@/api/courses';
+import { createCourse, getCourses, getTags } from '@/api/courses';
 
 import { Commit } from 'vuex';
 
@@ -52,14 +52,19 @@ import { SearchFilter } from '@/api/interfaces';
 import { getUsers, updateUserCoursePrivileges } from '@/api/users';
 
 export const actions = {
+  createCourse: async (
+    { commit }: { commit: Commit },
+    course: Course
+  ) => {
+    const newCourse = await createCourse(course);
+    return newCourse;
+  },
   createExercise: async (
     { commit, state }: { commit: Commit; state: any },
     { courseId, exercise }: { courseId: string; exercise: Exercise }
   ) => {
     const newExercise = await createExercise(courseId, exercise);
-    //if (courseId == state.activeCourseId) {
     commit('setExercises', [newExercise, ...state.exercises]);
-    //}
     return newExercise;
   },
   createEvent: async (
@@ -67,9 +72,7 @@ export const actions = {
     { courseId, event }: { courseId: string; event: Event }
   ) => {
     const newEvent = await createEvent(courseId, event);
-    //if (courseId == state.activeCourseId) {
     commit('setEvents', [newEvent, ...state.events]);
-    //}
     return newEvent;
   },
   getEventParticipations: async (
