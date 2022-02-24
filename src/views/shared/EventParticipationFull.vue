@@ -80,7 +80,7 @@ import AbstractEventParticipationSlot from '@/components/shared/AbstractEventPar
 import { createNamespacedHelpers } from 'vuex'
 import SkeletonCard from '../../components/ui/SkeletonCard.vue'
 import Card from '@/components/ui/Card.vue'
-import { EventParticipationState } from '@/models'
+import { EventParticipationState, EventState } from '@/models'
 import Timestamp from '@/components/ui/Timestamp.vue'
 const { mapState, mapActions } = createNamespacedHelpers('student')
 
@@ -116,8 +116,12 @@ export default defineComponent({
     })
     this.firstLoading = false
 
-    // participation is still in progress, redirect to participation page
-    if (this.participation.state !== EventParticipationState.TURNED_IN) {
+    // participation is still in progress and exam is
+    // still open, redirect to participation page
+    if (
+      this.participation.state !== EventParticipationState.TURNED_IN &&
+      this.participation.event.state === EventState.OPEN
+    ) {
       this.$router.push({
         name: 'ExamParticipationPage',
         params: {
