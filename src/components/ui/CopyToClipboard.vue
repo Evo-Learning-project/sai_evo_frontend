@@ -3,7 +3,7 @@
     <Btn
       v-clipboard:copy="value"
       v-clipboard:success="onCopy"
-      :title="$t('misc.copy')"
+      :title="title || $t('misc.copy')"
       :outline="true"
       :variant="'icon'"
     >
@@ -15,7 +15,7 @@
       v-if="showFeedback"
       class="tooltip-text tooltip-bottom"
       :class="{ 'tooltip-text-force': showFeedback }"
-      >{{ $t('misc.copied') }}</span
+      >{{ confirmationMessage || $t('misc.copied') }}</span
     >
   </div>
   <div
@@ -69,6 +69,14 @@ export default defineComponent({
     iconOnly: {
       type: Boolean,
       default: false
+    },
+    title: {
+      type: String,
+      default: ''
+    },
+    confirmationMessage: {
+      type: String,
+      default: ''
     }
   },
   data () {

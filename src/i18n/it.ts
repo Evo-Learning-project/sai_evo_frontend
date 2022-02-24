@@ -226,6 +226,8 @@ export const it = {
     close: 'Chiudi',
     still_open_for_some:
       "L'esame è ancora aperto per alcuni studenti.",
+    copy_link: 'Copia link per gli studenti',
+    copied_link: 'Copiato link per gli studenti',
   },
   event_monitor: {
     close_for_selected: 'Chiudi esame per i selezionati',

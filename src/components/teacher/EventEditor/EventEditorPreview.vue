@@ -59,6 +59,8 @@
             v-if="!isDraft && !hasEnded"
             :value="permalink"
             :iconOnly="true"
+            :title="$t('event_preview.copy_link')"
+            :confirmationMessage="$t('event_preview.copied_link')"
           ></CopyToClipboard>
           <Btn
             class="mx-1"

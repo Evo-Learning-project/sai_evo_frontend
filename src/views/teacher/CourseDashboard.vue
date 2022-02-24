@@ -3,7 +3,10 @@
     <div>
       <h3>{{ $t('teacher_course_dashboard.recent_exams') }}</h3>
       <div>
-        <div v-if="!firstLoading" class="grid grid-cols-3 gap-4 mt-4">
+        <div
+          v-if="!firstLoading"
+          class="grid grid-cols-1 gap-4 mt-4 lg:grid-cols-2 xl:grid-cols-3"
+        >
           <EventEditorPreview
             v-for="(exam, index) in recentExams"
             :key="exam + '-' + index"
@@ -11,7 +14,10 @@
             :buttonIconsOnly="true"
           ></EventEditorPreview>
         </div>
-        <div class="grid grid-cols-3 gap-4 mt-4" v-else>
+        <div
+          class="grid grid-cols-1 gap-4 mt-4 lg:grid-cols-2 xl:grid-cols-3"
+          v-else
+        >
           <EventEditorPreviewSkeleton></EventEditorPreviewSkeleton>
           <EventEditorPreviewSkeleton></EventEditorPreviewSkeleton>
           <EventEditorPreviewSkeleton></EventEditorPreviewSkeleton>
@@ -36,7 +42,10 @@
     </div>
     <div class="mt-8">
       <h3>{{ $t('teacher_course_dashboard.recently_edited_exercises') }}</h3>
-      <div v-if="!firstLoading" class="grid grid-cols-2 gap-4 mt-4">
+      <div
+        v-if="!firstLoading"
+        class="grid grid-cols-1 gap-4 mt-4 lg:grid-cols-2"
+      >
         <MinimalExercisePreview
           v-for="exercise in recentExercises"
           :key="'e-' + exercise.id"
@@ -44,7 +53,7 @@
           :selectable="false"
         ></MinimalExercisePreview>
       </div>
-      <div v-else class="grid grid-cols-2 gap-4">
+      <div v-else class="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <MinimalExercisePreviewSkeleton></MinimalExercisePreviewSkeleton>
         <MinimalExercisePreviewSkeleton></MinimalExercisePreviewSkeleton>
         <MinimalExercisePreviewSkeleton></MinimalExercisePreviewSkeleton>
@@ -59,7 +68,7 @@
         </p>
         <h2 class="opacity-40">{{ $t('course_exercises.no_exercises') }}</h2>
       </div>
-      <div v-else-if="!firstLoading" class="flex w-full">
+      <div v-else-if="!firstLoading" class="flex w-full mt-4">
         <router-link class="mx-auto link" :to="{ name: 'CourseExercises' }"
           ><Btn :variant="'primary-borderless'">{{
             $t('teacher_course_dashboard.see_all')

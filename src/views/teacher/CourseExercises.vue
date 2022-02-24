@@ -6,7 +6,7 @@
       </template>
     </Card>
 
-    <div class="flex w-full mb-2">
+    <div class="flex w-full mt-12 mb-6">
       <Btn @click="onAddExercise()" :loading="localLoading" class="ml-auto"
         ><span class="mr-1 text-base material-icons-outlined">
           add_circle_outline
