@@ -16,11 +16,15 @@ export default defineComponent({
     dateOnly: {
       type: Boolean,
       default: false
+    },
+    reduced: {
+      type: Boolean,
+      default: false
     }
   },
   computed: {
     formattedValue (): string {
-      return getFormattedTimestamp(this.value, this.dateOnly)
+      return getFormattedTimestamp(this.value, this.dateOnly, this.reduced)
     }
   }
 })

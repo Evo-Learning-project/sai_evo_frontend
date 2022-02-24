@@ -11,11 +11,6 @@
             :buttonIconsOnly="true"
           ></EventEditorPreview>
         </div>
-        <div class="grid grid-cols-3 gap-4 mt-4" v-else-if="false">
-          <SkeletonCard :marginLess="true"></SkeletonCard>
-          <SkeletonCard :marginLess="true"></SkeletonCard>
-          <SkeletonCard :marginLess="true"></SkeletonCard>
-        </div>
         <div class="grid grid-cols-3 gap-4 mt-4" v-else>
           <EventEditorPreviewSkeleton></EventEditorPreviewSkeleton>
           <EventEditorPreviewSkeleton></EventEditorPreviewSkeleton>
@@ -41,10 +36,10 @@
         ></MinimalExercisePreview>
       </div>
       <div v-else class="grid grid-cols-2 gap-4">
-        <SkeletonCard :marginLess="true"></SkeletonCard>
-        <SkeletonCard :marginLess="true"></SkeletonCard>
-        <SkeletonCard :marginLess="true"></SkeletonCard>
-        <SkeletonCard :marginLess="true"></SkeletonCard>
+        <MinimalExercisePreviewSkeleton></MinimalExercisePreviewSkeleton>
+        <MinimalExercisePreviewSkeleton></MinimalExercisePreviewSkeleton>
+        <MinimalExercisePreviewSkeleton></MinimalExercisePreviewSkeleton>
+        <MinimalExercisePreviewSkeleton></MinimalExercisePreviewSkeleton>
       </div>
       <div class="flex w-full mt-4">
         <router-link class="mx-auto link" :to="{ name: 'CourseExercises' }"
@@ -63,20 +58,20 @@ import { createNamespacedHelpers } from 'vuex'
 const { mapActions, mapGetters, mapState } = createNamespacedHelpers('teacher')
 import { courseIdMixin, coursePrivilegeMixin, loadingMixin } from '@/mixins'
 import EventEditorPreview from '@/components/teacher/EventEditor/EventEditorPreview.vue'
-import SkeletonCard from '@/components/ui/SkeletonCard.vue'
 import { Event, Exercise } from '@/models'
 import MinimalExercisePreview from '@/components/teacher/ExerciseEditor/MinimalExercisePreview.vue'
 import Btn from '@/components/ui/Btn.vue'
 import EventEditorPreviewSkeleton from '@/components/ui/skeletons/EventEditorPreviewSkeleton.vue'
+import MinimalExercisePreviewSkeleton from '@/components/ui/skeletons/MinimalExercisePreviewSkeleton.vue'
 
 export default defineComponent({
   name: 'CourseDashboard',
   components: {
     EventEditorPreview,
-    SkeletonCard,
     MinimalExercisePreview,
     Btn,
-    EventEditorPreviewSkeleton
+    EventEditorPreviewSkeleton,
+    MinimalExercisePreviewSkeleton
   },
   mixins: [courseIdMixin, loadingMixin, coursePrivilegeMixin],
   async created () {

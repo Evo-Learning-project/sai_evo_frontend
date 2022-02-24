@@ -28,11 +28,17 @@
         <div class="mt-1 mb-4 space-y-1 text-sm">
           <div class="flex space-x-1" v-if="event.begin_timestamp">
             <p class="text-muted">{{ $t('event_editor.begin_timestamp') }}:</p>
-            <Timestamp :value="event.begin_timestamp"></Timestamp>
+            <Timestamp
+              :reduced="buttonIconsOnly"
+              :value="event.begin_timestamp"
+            ></Timestamp>
           </div>
           <div class="flex space-x-1" v-if="event.end_timestamp">
             <p class="text-muted">{{ $t('event_editor.end_timestamp') }}:</p>
-            <Timestamp :value="event.end_timestamp"></Timestamp>
+            <Timestamp
+              :reduced="buttonIconsOnly"
+              :value="event.end_timestamp"
+            ></Timestamp>
           </div>
         </div>
         <div class="flex items-end mt-auto">

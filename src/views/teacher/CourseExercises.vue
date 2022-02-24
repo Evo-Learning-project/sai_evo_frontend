@@ -23,10 +23,10 @@
       ></ExerciseEditorWrapper>
     </div>
     <div v-else>
-      <SkeletonCard></SkeletonCard>
-      <SkeletonCard></SkeletonCard>
-      <SkeletonCard></SkeletonCard>
-      <SkeletonCard></SkeletonCard>
+      <ExerciseEditorWrapperSkeleton></ExerciseEditorWrapperSkeleton>
+      <ExerciseEditorWrapperSkeleton></ExerciseEditorWrapperSkeleton>
+      <ExerciseEditorWrapperSkeleton></ExerciseEditorWrapperSkeleton>
+      <ExerciseEditorWrapperSkeleton></ExerciseEditorWrapperSkeleton>
     </div>
     <VueEternalLoading
       :load="onLoadMore"
@@ -59,12 +59,12 @@ import Card from '@/components/ui/Card.vue'
 //import TagInput from '@/components/ui/TagInput.vue'
 import ExerciseEditorWrapper from '@/components/teacher/ExerciseEditor/ExerciseEditorWrapper.vue'
 import { defineComponent } from '@vue/runtime-core'
-import SkeletonCard from '@/components/ui/SkeletonCard.vue'
 import Spinner from '@/components/ui/Spinner.vue'
 import ExerciseSearchFilters from '@/components/teacher/ExerciseSearchFilters.vue'
 import { SearchFilter } from '@/api/interfaces'
 import { getDebouncedForFilter } from '@/utils'
 import { courseIdMixin, loadingMixin } from '@/mixins'
+import ExerciseEditorWrapperSkeleton from '@/components/ui/skeletons/ExerciseEditorWrapperSkeleton.vue'
 export default defineComponent({
   name: 'CourseExercises',
   props: {
@@ -90,9 +90,9 @@ export default defineComponent({
     VueEternalLoading,
     Card,
     Btn,
-    SkeletonCard,
     Spinner,
-    ExerciseSearchFilters
+    ExerciseSearchFilters,
+    ExerciseEditorWrapperSkeleton
   },
   async created () {
     this.onFilterChange = getDebouncedForFilter(this.onFilterChange)

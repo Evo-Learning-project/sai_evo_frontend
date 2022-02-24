@@ -36,14 +36,18 @@ export const getDebouncedForStudentText = (callback: any) =>
 
 export const getFormattedTimestamp = (
   timestamp: string,
-  dateOnly = false
+  dateOnly = false,
+  reduced = false
 ): string => {
   moment().locale('it');
   return (
     moment(timestamp)
       //.calendar()
       .format(
-        'DD MMMM YYYY' + (dateOnly ? '' : `, [${_('misc.at')}] HH:mm`)
+        reduced
+          ? 'DD MMM YYYY' + (dateOnly ? '' : ', HH:mm')
+          : 'DD MMMM YYYY' +
+              (dateOnly ? '' : `, [${_('misc.at')}] HH:mm`)
       )
   );
 };

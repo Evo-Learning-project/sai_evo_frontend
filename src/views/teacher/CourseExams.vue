@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="flex w-full mb-2">
+    <div class="flex w-full mb-8">
       <Btn
         v-if="firstLoading || hasPrivileges([CoursePrivilege.MANAGE_EVENTS])"
         @click="onAddExam()"
@@ -23,14 +23,6 @@
         :event="exam"
         @close="onClose(exam)"
       ></EventEditorPreview>
-    </div>
-    <div class="grid grid-cols-1 gap-4 mt-4 lg:grid-cols-2" v-else-if="false">
-      <SkeletonCard :marginLess="true"></SkeletonCard>
-      <SkeletonCard :marginLess="true"></SkeletonCard>
-      <SkeletonCard :marginLess="true"></SkeletonCard>
-      <SkeletonCard :marginLess="true"></SkeletonCard>
-      <SkeletonCard :marginLess="true"></SkeletonCard>
-      <SkeletonCard :marginLess="true"></SkeletonCard>
     </div>
     <div class="grid grid-cols-1 gap-4 mt-4 lg:grid-cols-2" v-else>
       <EventEditorPreviewSkeleton></EventEditorPreviewSkeleton>
@@ -74,7 +66,6 @@ import Btn from '@/components/ui/Btn.vue'
 
 import { defineComponent } from '@vue/runtime-core'
 import { courseIdMixin, coursePrivilegeMixin, loadingMixin } from '@/mixins'
-import SkeletonCard from '@/components/ui/SkeletonCard.vue'
 import Dialog from '@/components/ui/Dialog.vue'
 
 import { createNamespacedHelpers } from 'vuex'
@@ -85,7 +76,6 @@ export default defineComponent({
   components: {
     EventEditorPreview,
     Btn,
-    SkeletonCard,
     Dialog,
     EventEditorPreviewSkeleton
   },
