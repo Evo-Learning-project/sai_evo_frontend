@@ -2,17 +2,21 @@
   <div>
     <div class="flex w-full mb-2">
       <Btn
-        v-if="hasPrivileges([CoursePrivilege.MANAGE_EVENTS])"
+        v-if="firstLoading || hasPrivileges([CoursePrivilege.MANAGE_EVENTS])"
         @click="onAddExam()"
         :loading="localLoading"
         class="ml-auto"
+        :disabled="firstLoading"
         ><span class="mr-1 text-base material-icons-outlined">
           add_circle_outline
         </span>
         {{ $t('course_events.new_exam') }}</Btn
       >
     </div>
-    <div v-if="!firstLoading" class="grid grid-cols-2 gap-4 mt-4">
+    <div
+      v-if="!firstLoading"
+      class="grid grid-cols-1 gap-4 mt-4 lg:grid-cols-2"
+    >
       <EventEditorPreview
         v-for="(exam, index) in exams"
         :key="exam + '-' + index"
@@ -20,13 +24,21 @@
         @close="onClose(exam)"
       ></EventEditorPreview>
     </div>
-    <div class="grid grid-cols-2 gap-4 mt-4" v-else>
+    <div class="grid grid-cols-1 gap-4 mt-4 lg:grid-cols-2" v-else-if="false">
       <SkeletonCard :marginLess="true"></SkeletonCard>
       <SkeletonCard :marginLess="true"></SkeletonCard>
       <SkeletonCard :marginLess="true"></SkeletonCard>
       <SkeletonCard :marginLess="true"></SkeletonCard>
       <SkeletonCard :marginLess="true"></SkeletonCard>
       <SkeletonCard :marginLess="true"></SkeletonCard>
+    </div>
+    <div class="grid grid-cols-1 gap-4 mt-4 lg:grid-cols-2" v-else>
+      <EventEditorPreviewSkeleton></EventEditorPreviewSkeleton>
+      <EventEditorPreviewSkeleton></EventEditorPreviewSkeleton>
+      <EventEditorPreviewSkeleton></EventEditorPreviewSkeleton>
+      <EventEditorPreviewSkeleton></EventEditorPreviewSkeleton>
+      <EventEditorPreviewSkeleton></EventEditorPreviewSkeleton>
+      <EventEditorPreviewSkeleton></EventEditorPreviewSkeleton>
     </div>
     <Dialog
       :warning="true"
@@ -66,6 +78,7 @@ import SkeletonCard from '@/components/ui/SkeletonCard.vue'
 import Dialog from '@/components/ui/Dialog.vue'
 
 import { createNamespacedHelpers } from 'vuex'
+import EventEditorPreviewSkeleton from '@/components/ui/skeletons/EventEditorPreviewSkeleton.vue'
 const { mapActions, mapGetters } = createNamespacedHelpers('teacher')
 
 export default defineComponent({
@@ -73,7 +86,8 @@ export default defineComponent({
     EventEditorPreview,
     Btn,
     SkeletonCard,
-    Dialog
+    Dialog,
+    EventEditorPreviewSkeleton
   },
   name: 'CourseExams',
   mixins: [courseIdMixin, loadingMixin, coursePrivilegeMixin],

@@ -1,12 +1,18 @@
 <template>
-  <Card
-    :marginLess="true"
-    class="transition-all duration-75 hover:bg-gray-50"
-    :class="{ 'bg-light': isDraft }"
-  >
+  <Card :marginLess="true" :filled="isDraft">
     <template v-slot:header>
       <div class="flex items-start w-full">
-        <h3 class="flex-grow">{{ previewTitle }}</h3>
+        <h3
+          class="flex-grow"
+          style="
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow:hidden
+            "
+        >
+          {{ previewTitle }}
+        </h3>
         <div class="ml-auto">
           <div class="mr-0 chip">
             <div class="flex items-center">
@@ -19,11 +25,6 @@
     </template>
     <template v-slot:body
       ><div class="flex flex-col h-full">
-        <!-- <div
-          v-if="event.instructions.length > 0"
-          class="mb-2 overflow-hidden overflow-ellipsis"
-          v-html="event.instructions"
-        ></div> -->
         <div class="mt-1 mb-4 space-y-1 text-sm">
           <div class="flex space-x-1" v-if="event.begin_timestamp">
             <p class="text-muted">{{ $t('event_editor.begin_timestamp') }}:</p>
@@ -34,9 +35,6 @@
             <Timestamp :value="event.end_timestamp"></Timestamp>
           </div>
         </div>
-        <p class="mb-2 text-muted text-danger-dark" v-if="halfClosed">
-          {{ $t('event_preview.still_open_for_some') }}
-        </p>
         <div class="flex items-end mt-auto">
           <div class="flex mr-auto space-x-2">
             <router-link
@@ -51,8 +49,13 @@
               ></router-link
             >
           </div>
+          <CopyToClipboard
+            v-if="!isDraft && !hasEnded"
+            :value="permalink"
+            :iconOnly="true"
+          ></CopyToClipboard>
           <Btn
-            class="mr-1"
+            class="mx-1"
             :variant="'danger'"
             v-if="hasBegun && hasPrivileges([CoursePrivilege.MANAGE_EVENTS])"
             @click="$emit('close')"
@@ -106,13 +109,15 @@ import { icons as eventStatesIcons } from '@/assets/eventStateIcons'
 import MultiIcon from '@/components/ui/MultiIcon.vue'
 import Btn from '@/components/ui/Btn.vue'
 import { coursePrivilegeMixin } from '@/mixins'
+import CopyToClipboard from '@/components/ui/CopyToClipboard.vue'
 
 export default defineComponent({
   components: {
     Card,
     Timestamp,
     MultiIcon,
-    Btn
+    Btn,
+    CopyToClipboard
   },
   name: 'EventEditorPreview',
   mixins: [coursePrivilegeMixin],
@@ -128,7 +133,8 @@ export default defineComponent({
   },
   data () {
     return {
-      CoursePrivilege
+      CoursePrivilege,
+      EventState
     }
   },
   computed: {
@@ -146,20 +152,22 @@ export default defineComponent({
     hasBegun () {
       return (
         this.event.state === EventState.OPEN ||
-        (this.event.state === EventState.CLOSED &&
-          (this.event.users_allowed_past_closure?.length ?? 0) > 0)
+        this.event.state === EventState.RESTRICTED
       )
     },
     hasEnded () {
-      return (
-        this.event.state === EventState.CLOSED &&
-        (this.event.users_allowed_past_closure?.length ?? -1) === 0
-      )
+      return this.event.state === EventState.CLOSED
     },
     halfClosed () {
+      return this.event.state === EventState.RESTRICTED
+    },
+    permalink (): string {
       return (
-        this.event.state === EventState.CLOSED &&
-        (this.event.users_allowed_past_closure?.length ?? 0) > 0
+        window.location.origin +
+        this.$router.resolve({
+          name: 'ExamParticipationPreview',
+          params: { examId: this.event.id }
+        }).fullPath
       )
     }
   }

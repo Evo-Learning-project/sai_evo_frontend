@@ -1,6 +1,12 @@
 <template>
   <div>
-    <Card :margin-less="true" class="h-44">
+    <Card
+      :class="{
+        'bg-primary bg-opacity-10 ': isParticipable
+      }"
+      :margin-less="true"
+      class="h-44"
+    >
       <template v-slot:header>
         <p class="text-sm font-medium text-center uppercase text-muted">
           <Timestamp
@@ -57,15 +63,15 @@
                 }
               }"
             >
-              <Btn :outline="true"
-                ><span class="text-base mr-1.5 material-icons-outlined">
+              <Btn>
+                <span class="text-base mr-1.5 material-icons-outlined">
                   meeting_room
                 </span>
-                {{ $t('student_course_dashboard.resume') }}</Btn
-              >
+                {{ $t('student_course_dashboard.resume') }}
+              </Btn>
             </router-link>
             <div
-              class="chip animate-pulse border-primary bg-primary bg-opacity-20 text-primary mb-0 pt-0.5"
+              class="chip border-primary bg-primary bg-opacity-20 text-primary mb-0 pt-0.5"
             >
               <span class="material-icons-outlined text-base mr-1 mt-1.25px">
                 more_horiz

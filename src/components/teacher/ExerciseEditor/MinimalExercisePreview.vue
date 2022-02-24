@@ -3,6 +3,7 @@
     <Card
       :size="'sm'"
       :highlighted="highlighted"
+      :hoverable="false"
       :class="{
         'border-success': highlighted,
         'bg-gray-50 opacity-60': selectionDisabled
@@ -42,7 +43,7 @@
             -webkit-box-orient: vertical;
             overflow:hidden
             "
-            class="w-11/12 overflow-x-hidden overflow-ellipsis "
+            class="w-11/12 overflow-x-hidden overflow-ellipsis text-muted"
             v-html="previewText"
           ></div>
         </div>

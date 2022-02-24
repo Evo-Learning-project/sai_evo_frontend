@@ -9,10 +9,11 @@
         forceActive && variant === 'success-borderless',
       'px-5 py-1 font-medium':
         !outline && size === 'base' && variant !== 'transparent',
-      'px-4 py-2.5px font-medium': outline && size === 'base',
-      'px-2.5 py-0.5 text-sm': size === 'sm',
-      'px-1.5 py-0.5 text-xs': size === 'xs',
-      'px-14 py-2 text-lg font-medium': size === 'lg',
+      'px-4 py-2.5px font-medium':
+        outline && size === 'base' && variant !== 'icon',
+      'px-2.5 py-0.5 text-sm': size === 'sm' && variant !== 'icon',
+      'px-1.5 py-0.5 text-xs': size === 'xs' && variant !== 'icon',
+      'px-14 py-2 text-lg font-medium': size === 'lg' && variant !== 'icon',
       'text-lightText bg-primary hover:bg-primary-dark shadow-btn':
         !outline && variant === 'primary',
       'text-danger-dark bg-danger shadow-btn': !outline && variant === 'danger',
@@ -33,7 +34,9 @@
       'text-lg font-bold text-success hover:bg-light px-6':
         variant === 'success-borderless',
       'border-gray-300 bg-white hover:bg-light': variant === 'transparent',
-      'rounded-md': variant !== 'transparent'
+      'rounded-md': variant !== 'transparent',
+      'rounded-full p-0 h-8 w-8 bg-transparent hover:bg-gray-200 hover:border border-light text-gray-600':
+        variant === 'icon'
     }"
   >
     <div class="flex w-full">
@@ -77,6 +80,7 @@ export default defineComponent({
         | 'primary-borderless'
         | 'success-borderless'
         | 'transparent'
+        | 'icon'
       >,
       default: 'primary'
     },

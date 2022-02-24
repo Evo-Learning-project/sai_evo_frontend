@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col">
-    <div class="mb-2" v-if="halfClosed">
+    <div class="mb-2" v-if="event.state === EventState.RESTRICTED">
       <Card class="bg-light">
         <template v-slot:body>
           <div class="flex items-center space-x-3">
@@ -342,6 +342,7 @@ export default defineComponent({
   },
   data () {
     return {
+      EventState,
       firstLoading: false,
       editingSlot: null as EventParticipationSlot | null,
       editingSlotDirty: null as EventParticipationSlot | null,
@@ -393,7 +394,7 @@ export default defineComponent({
           ? ['bg-success-important', 'hover:bg-success-important']
           : ''
       }
-      return this.event.state === EventState.CLOSED &&
+      return this.event.state === EventState.RESTRICTED &&
         !this.event.users_allowed_past_closure?.includes(
           this.eventParticipations.find(
             (p: EventParticipation) =>
@@ -448,7 +449,6 @@ export default defineComponent({
         .eventParticipations as EventParticipation[]).filter(
         p => !this.selectedParticipations.includes(p.id)
       ) // these are the ones the exam will stay open for
-      console.log('UNSELECTED', unselectedParticipations)
       const unselectedUserIds = unselectedParticipations.map(p => p.user.id)
       await this.withLoading(
         async () =>
@@ -457,7 +457,7 @@ export default defineComponent({
             eventId: this.eventId,
             mutate: true,
             changes: {
-              state: EventState.CLOSED,
+              state: EventState.RESTRICTED,
               users_allowed_past_closure: [
                 // id's that were in the list and haven't been selected
                 ...(this.event.users_allowed_past_closure ?? []).filter(
@@ -666,14 +666,9 @@ export default defineComponent({
     },
     resultsMode () {
       return (
-        this.event.state === EventState.CLOSED &&
-        (this.event.users_allowed_past_closure?.length ?? -1) === 0
-      )
-    },
-    halfClosed () {
-      return (
-        this.event.state === EventState.CLOSED &&
-        (this.event.users_allowed_past_closure?.length ?? 0) > 0
+        this.event.state === EventState.CLOSED
+        // &&
+        // (this.event.users_allowed_past_closure?.length ?? -1) === 0
       )
     },
     participantCount () {
@@ -817,7 +812,7 @@ export default defineComponent({
         (p: EventParticipation) =>
           this.selectedParticipations.includes(p.id) && // participation is selected
           // if event isn't closed, no participation can be opened as they all already are
-          this.event.state === EventState.CLOSED &&
+          this.event.state === EventState.RESTRICTED &&
           // event is closed and participant isn't in the list of those still allowed
           !this.event.users_allowed_past_closure?.includes(p.user.id)
       )

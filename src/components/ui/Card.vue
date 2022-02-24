@@ -1,13 +1,15 @@
 <template>
   <div
     tabindex="0"
-    class="flex border-gray-300 rounded-md"
+    class="flex border-gray-300 rounded card"
     :class="{
       'md:px-3.5 md:py-3': size == 'sm',
       'px-1 py-5  md:px-5': size == 'default',
       'my-4': size == 'default' && !marginLess,
+      border: !highlighted,
       'border-2': highlighted,
-      'border shadow-sm': !highlighted && !borderLess
+      'transition-shadow duration-75 ease-linear shadow-elevation': hoverable,
+      'bg-light bg-opacity-80': filled
     }"
   >
     <div class="flex flex-col flex-grow w-full">
@@ -56,6 +58,14 @@ export default defineComponent({
     borderLess: {
       type: Boolean,
       default: false
+    },
+    filled: {
+      type: Boolean,
+      default: false
+    },
+    hoverable: {
+      type: Boolean,
+      default: true
     }
   }
 })

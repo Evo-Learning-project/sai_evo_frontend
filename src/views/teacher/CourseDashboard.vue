@@ -11,10 +11,15 @@
             :buttonIconsOnly="true"
           ></EventEditorPreview>
         </div>
+        <div class="grid grid-cols-3 gap-4 mt-4" v-else-if="false">
+          <SkeletonCard :marginLess="true"></SkeletonCard>
+          <SkeletonCard :marginLess="true"></SkeletonCard>
+          <SkeletonCard :marginLess="true"></SkeletonCard>
+        </div>
         <div class="grid grid-cols-3 gap-4 mt-4" v-else>
-          <SkeletonCard :marginLess="true"></SkeletonCard>
-          <SkeletonCard :marginLess="true"></SkeletonCard>
-          <SkeletonCard :marginLess="true"></SkeletonCard>
+          <EventEditorPreviewSkeleton></EventEditorPreviewSkeleton>
+          <EventEditorPreviewSkeleton></EventEditorPreviewSkeleton>
+          <EventEditorPreviewSkeleton></EventEditorPreviewSkeleton>
         </div>
         <div class="flex w-full mt-4">
           <router-link class="mx-auto link" :to="{ name: 'CourseExams' }"
@@ -62,6 +67,7 @@ import SkeletonCard from '@/components/ui/SkeletonCard.vue'
 import { Event, Exercise } from '@/models'
 import MinimalExercisePreview from '@/components/teacher/ExerciseEditor/MinimalExercisePreview.vue'
 import Btn from '@/components/ui/Btn.vue'
+import EventEditorPreviewSkeleton from '@/components/ui/skeletons/EventEditorPreviewSkeleton.vue'
 
 export default defineComponent({
   name: 'CourseDashboard',
@@ -69,7 +75,8 @@ export default defineComponent({
     EventEditorPreview,
     SkeletonCard,
     MinimalExercisePreview,
-    Btn
+    Btn,
+    EventEditorPreviewSkeleton
   },
   mixins: [courseIdMixin, loadingMixin, coursePrivilegeMixin],
   async created () {

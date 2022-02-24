@@ -74,8 +74,20 @@
     .shadow-popup {
       box-shadow: 0 2px 4px -1px rgb(0 0 0 / 20%), 0 4px 5px 0 rgb(0 0 0 / 14%), 0 1px 10px 0 rgb(0 0 0 / 12%);
     }
+    /* .shadow-elevation {
+      @apply transition-shadow duration-1000 ease-in-out;
+    } */
+    .shadow-elevation:hover {
+      box-shadow: 0px 2px 1px -1px rgb(0 0 0 / 15%), 0px 1px 1px 0px rgb(0 0 0 / 12%), 0px 1px 3px 0px rgb(0 0 0 / 9%);
+    }
+    .card button {
+      @apply shadow-none !important;
+    }
     .link {
-        @apply text-primary hover:underline
+        @apply text-primary hover:underline;
+    }
+    .skeleton-unit {
+      @apply h-6 bg-gray-200 animate-pulse;
     }
 
     /* .primary-bottom-faded:after {
