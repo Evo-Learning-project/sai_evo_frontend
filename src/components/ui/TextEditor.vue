@@ -1,6 +1,6 @@
 <template>
   <div
-    class="relative z-10 rounded-t-sm bg-light"
+    class="relative z-10 rounded-t-sm light-input bg-light"
     :class="{ 'opacity-60 pointer-events-none': disabled }"
   >
     <div class="z-10 ql-editor-container">

@@ -20,7 +20,7 @@
       'text-danger-dark border-danger-dark bg-white border hover:bg-danger-dark hover:text-white':
         outline && variant === 'danger',
       'text-success-dark bg-success-light': !outline && variant === 'success',
-      'transition-colors duration-100 shadow-inner': outline,
+      'transition-colors duration-100': outline,
       'focus:outline-primary': false && variant === 'primary',
       'focus:outline-danger-dark': variant === 'danger',
       'focus:outline-success': false && variant === 'success',

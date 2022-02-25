@@ -90,6 +90,21 @@
       @apply h-6 bg-gray-200 animate-pulse;
     }
 
+    .bg-light .light-input {
+      /* EXPERIMENT TO DIFFERENTIATE INPUTS ON LIGHT BG */
+      @apply bg-gray-200 border-gray-300;
+    }
+
+    .bg-light .ql-editor-container {
+      @apply border-gray-300 !important;
+    }
+    .bg-light .ql-editor-container:focus-within {
+      @apply border-primary !important;
+    }
+    /* .bg-light .floating-label ~ label {
+      @apply text-gray-900 duration-300 !important
+    } */
+
     /* .primary-bottom-faded:after {
         content: '';
         position: absolute;

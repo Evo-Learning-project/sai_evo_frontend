@@ -1,6 +1,6 @@
 <template>
   <div
-    class="transition-border duration-300 relative z-10 px-2 py-1.5 bg-light border-b-2 rounded-t-sm focus-within:border-primary"
+    class="light-input transition-border duration-300 relative z-10 px-2 py-1.5 bg-light border-b-2 rounded-t-sm focus-within:border-primary"
   >
     <input
       type="number"

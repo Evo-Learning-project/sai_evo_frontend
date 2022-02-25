@@ -2,7 +2,7 @@
   <div>
     <div
       :class="{ 'border-danger focus-within:border-danger': $slots.errors }"
-      class="relative z-10 px-2 py-1.5  bg-light border-b-2 rounded-t-sm focus-within:border-primary transition-border duration-300"
+      class="light-input relative z-10 px-2 py-1.5  bg-light border-b-2 rounded-t-sm focus-within:border-primary transition-border duration-300"
     >
       <input
         type="text"

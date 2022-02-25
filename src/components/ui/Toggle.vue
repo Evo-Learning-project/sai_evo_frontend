@@ -1,5 +1,10 @@
 <template>
-  <div class="flex items-center">
+  <div
+    class="flex items-center"
+    :class="{
+      'opacity-40 pointer-events-none': disabled
+    }"
+  >
     <div
       :class="{ 'order-12 ml-2': labelOnLeft }"
       class="relative inline-block w-10 h-4 mt-1 mr-2 align-middle transition duration-200 ease-in bg-transparent rounded-full shadow-sm select-none"
@@ -51,6 +56,10 @@ export default defineComponent({
     overrideId: {
       type: String,
       default: ''
+    },
+    disabled: {
+      type: Boolean,
+      default: false
     }
   },
   created () {
