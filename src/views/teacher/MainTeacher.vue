@@ -97,6 +97,7 @@
       <router-view v-else class="flex-grow"></router-view>
       <transition name="quick-bounce"
         ><SnackBar
+          class="-ml-5"
           v-if="!!$store.state.shared.errorNotificationData"
           :icon="$store.state.shared.errorNotificationData.icon"
           :message="$store.state.shared.errorNotificationData.title"

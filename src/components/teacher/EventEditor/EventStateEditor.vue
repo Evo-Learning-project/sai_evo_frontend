@@ -1,7 +1,7 @@
 <template>
   <div class="">
     <h3 class="mb-3">{{ $t('event_editor.state_editor_title') }}</h3>
-    <Card class="bg-light" v-if="isDraft || isPlanned">
+    <Card :hoverable="false" class="bg-light" v-if="isDraft || isPlanned">
       <template v-slot:header
         ><div class="flex items-center space-x-4">
           <div v-if="isDraft">

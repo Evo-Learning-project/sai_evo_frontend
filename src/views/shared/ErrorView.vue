@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col items-center w-full mx-auto mt-16 -ml-5">
+  <div class="flex flex-col items-center w-full mx-auto mt-16">
     <p style="font-size: 10rem" class="material-icons-outlined opacity-10">
       {{ pageWideErrorData.icon }}
     </p>

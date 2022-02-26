@@ -5,121 +5,120 @@
         <h3>Impostazioni corso</h3>
       </template>
       <template v-slot:body>
-        <div class="flex flex-col mt-2 space-y-6">
-          <div class="flex justify-between">
-            <div>
-              <div class="flex items-center" v-show="!editingName">
-                <p class="mr-2 text-muted">Nome</p>
-                <p class="mr-3">{{ currentCourse.name }}</p>
-                <Btn
-                  v-if="hasPrivileges([CoursePrivilege.UPDATE_COURSE])"
-                  :outline="true"
-                  :variant="'icon'"
-                  @click="editCourseName"
-                >
-                  <span class="text-xl material-icons-outlined">
-                    edit
-                  </span>
-                </Btn>
-              </div>
-              <div v-show="editingName" class="flex items-center">
-                <TextInput class="mr-2 w-96" v-model="dirtyCourseName">
-                  {{ $t('course_creation_form.course_name') }}
-                  <template
-                    v-if="v$.dirtyCourse.name.$errors.length > 0"
-                    v-slot:errors
-                  >
-                    <div
-                      class="input-errors"
-                      v-for="error of v$.dirtyCourse.name.$errors"
-                      :key="error.$uid"
-                    >
-                      <div class="error-msg">
-                        {{ $t('validation_errors.' + error.$uid) }}
-                      </div>
-                    </div>
-                  </template></TextInput
-                >
-                <Btn
-                  :outline="true"
-                  :variant="'icon'"
-                  :loading="localLoading"
-                  @click="v$.$invalid ? v$.$touch() : onDoneEditingName()"
-                >
-                  <span class="text-xl text-primary material-icons-outlined">
-                    save
-                  </span>
-                </Btn>
-                <Btn
-                  :outline="true"
-                  class=""
-                  :variant="'icon'"
-                  @click="onDoneEditingName(true)"
-                >
-                  <span
-                    class="text-xl text-danger-dark material-icons-outlined"
-                  >
-                    close
-                  </span>
-                </Btn>
-              </div>
-            </div>
-
-            <div>
-              <Toggle
-                :disabled="!hasPrivileges([CoursePrivilege.UPDATE_COURSE])"
-                :modelValue="currentCourse.hidden"
+        <div class="flex justify-between mt-2">
+          <div class="flex flex-col space-y-3">
+            <div class="flex items-center" v-show="!editingName">
+              <p class="mr-2 text-muted">Nome</p>
+              <p class="mr-3">{{ currentCourse.name }}</p>
+              <Btn
+                v-if="hasPrivileges([CoursePrivilege.UPDATE_COURSE])"
+                :outline="true"
+                :variant="'icon'"
+                @click="editCourseName"
               >
-                {{ $t('course_creation_form.hide_course') }}
-              </Toggle>
-              <p class="text-muted" v-if="currentCourse.hidden">
-                {{ $t('course_creation_form.hidden_description') }}
+                <span class="text-xl material-icons-outlined">
+                  edit
+                </span>
+              </Btn>
+            </div>
+            <div v-show="editingName" class="flex items-center">
+              <TextInput class="mr-2 w-96" v-model="dirtyCourseName">
+                {{ $t('course_creation_form.course_name') }}
+                <template
+                  v-if="v$.dirtyCourse.name.$errors.length > 0"
+                  v-slot:errors
+                >
+                  <div
+                    class="input-errors"
+                    v-for="error of v$.dirtyCourse.name.$errors"
+                    :key="error.$uid"
+                  >
+                    <div class="error-msg">
+                      {{ $t('validation_errors.' + error.$uid) }}
+                    </div>
+                  </div>
+                </template></TextInput
+              >
+              <Btn
+                :outline="true"
+                :variant="'icon'"
+                :loading="localLoading"
+                @click="v$.$invalid ? v$.$touch() : onDoneEditingName()"
+              >
+                <span class="text-xl text-primary material-icons-outlined">
+                  save
+                </span>
+              </Btn>
+              <Btn
+                :outline="true"
+                class=""
+                :variant="'icon'"
+                @click="onDoneEditingName(true)"
+              >
+                <span class="text-xl text-danger-dark material-icons-outlined">
+                  close
+                </span>
+              </Btn>
+            </div>
+            <div class="flex items-center" v-show="!editingDescription">
+              <p class="mr-2 text-muted">
+                {{ $t('course_creation_form.course_description') }}
               </p>
-              <p class="text-muted" v-else>
-                {{ $t('course_creation_form.public_description') }}
-              </p>
+              <p class="mr-3" v-html="currentCourse.description"></p>
+              <Btn
+                v-if="hasPrivileges([CoursePrivilege.UPDATE_COURSE])"
+                :outline="true"
+                :variant="'icon'"
+                @click="editCourseDescription"
+              >
+                <span class="text-xl material-icons-outlined">
+                  edit
+                </span>
+              </Btn>
+            </div>
+            <div v-show="editingDescription" class="flex items-center">
+              <TextEditor class="w-1/2 mr-2" v-model="dirtyCourseDescription">
+                {{ $t('course_creation_form.course_description') }}
+              </TextEditor>
+              <Btn
+                :outline="true"
+                :variant="'icon'"
+                :loading="localLoading"
+                @click="onDoneEditingDescription()"
+              >
+                <span class="text-xl text-primary material-icons-outlined">
+                  save
+                </span>
+              </Btn>
+              <Btn
+                :outline="true"
+                class=""
+                :variant="'icon'"
+                @click="onDoneEditingDescription(true)"
+              >
+                <span class="text-xl text-danger-dark material-icons-outlined">
+                  close
+                </span>
+              </Btn>
             </div>
           </div>
-          <div class="flex items-center" v-show="!editingDescription">
-            <p class="mr-2 text-muted">
-              {{ $t('course_creation_form.course_description') }}
+
+          <div class="flex flex-col items-end w-2/5">
+            <Toggle
+              :disabled="!hasPrivileges([CoursePrivilege.UPDATE_COURSE])"
+              :modelValue="currentCourse.hidden"
+              @update:modelValue="onChangeCourseVisibility($event)"
+              class="mb-2 mr-auto"
+              :labelOnLeft="true"
+            >
+              {{ $t('course_creation_form.hide_course') }}
+            </Toggle>
+            <p class="mr-auto text-muted" v-if="currentCourse.hidden">
+              {{ $t('course_creation_form.hidden_description') }}
             </p>
-            <p class="mr-3" v-html="currentCourse.description"></p>
-            <Btn
-              v-if="hasPrivileges([CoursePrivilege.UPDATE_COURSE])"
-              :outline="true"
-              :variant="'icon'"
-              @click="editCourseDescription"
-            >
-              <span class="text-xl material-icons-outlined">
-                edit
-              </span>
-            </Btn>
-          </div>
-          <div v-show="editingDescription" class="flex items-center">
-            <TextEditor class="w-2/3 mr-2" v-model="dirtyCourseDescription">
-              {{ $t('course_creation_form.course_description') }}
-            </TextEditor>
-            <Btn
-              :outline="true"
-              :variant="'icon'"
-              :loading="localLoading"
-              @click="onDoneEditingDescription()"
-            >
-              <span class="text-xl text-primary material-icons-outlined">
-                save
-              </span>
-            </Btn>
-            <Btn
-              :outline="true"
-              class=""
-              :variant="'icon'"
-              @click="onDoneEditingDescription(true)"
-            >
-              <span class="text-xl text-danger-dark material-icons-outlined">
-                close
-              </span>
-            </Btn>
+            <p class="mr-auto text-muted" v-else>
+              {{ $t('course_creation_form.public_description') }}
+            </p>
           </div>
         </div>
       </template>
@@ -147,7 +146,7 @@
           <EventEditorPreviewSkeleton></EventEditorPreviewSkeleton>
         </div>
         <div
-          class="flex flex-col w-full mt-6 mb-16 -ml-5 text-center select-none"
+          class="flex flex-col w-full mt-6 mb-16 text-center select-none"
           v-if="!firstLoading && exams.length === 0"
         >
           <p style="font-size: 6rem" class="material-icons-outlined opacity-10">
@@ -184,7 +183,7 @@
         <MinimalExercisePreviewSkeleton></MinimalExercisePreviewSkeleton>
       </div>
       <div
-        class="flex flex-col w-full mt-6 -ml-5 text-center select-none mb-14"
+        class="flex flex-col w-full mt-6 text-center select-none mb-14"
         v-if="!firstLoading && exercises.length === 0"
       >
         <p style="font-size: 6rem" class="material-icons-outlined opacity-10">
@@ -303,6 +302,11 @@ export default defineComponent({
       } else {
         this.editingDescription = false
       }
+    },
+    async onChangeCourseVisibility (value: boolean) {
+      await this.withLoading(async () => {
+        await this.updateCourse({ ...this.currentCourse, hidden: value })
+      })
     }
   },
   computed: {

@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-col">
     <div class="mb-2" v-if="event.state === EventState.RESTRICTED">
-      <Card class="bg-light">
+      <Card class="bg-light" :hoverable="false">
         <template v-slot:body>
           <div class="flex items-center space-x-3">
             <div>
@@ -19,7 +19,7 @@
       </Card>
     </div>
     <div class="mb-2" v-if="!firstLoading && resultsMode">
-      <Card class="bg-light">
+      <Card :hoverable="false" class="bg-light">
         <template v-slot:body>
           <div class="flex space-x-3">
             <div>
@@ -83,7 +83,7 @@
       </Card>
     </div>
     <div class="grid grid-cols-3 gap-12" v-if="!resultsMode && !firstLoading">
-      <Card class="shadow-sm">
+      <Card :hoverable="false" class="shadow-sm">
         <template v-slot:header>
           <h4 class="text-center text-muted">Partecipanti</h4>
         </template>
@@ -96,7 +96,7 @@
           </div>
         </template>
       </Card>
-      <Card class="shadow-sm">
+      <Card :hoverable="false" class="shadow-sm">
         <template v-slot:header>
           <h4 class="text-center text-muted">Partecipanti</h4>
         </template>
@@ -106,7 +106,7 @@
           </div>
         </template>
       </Card>
-      <Card class="shadow-sm">
+      <Card :hoverable="false" class="shadow-sm">
         <template v-slot:header>
           <h4 class="text-center text-muted">Esami consegnati</h4>
         </template>

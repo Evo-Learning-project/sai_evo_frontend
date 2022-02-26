@@ -22,7 +22,7 @@
     class="flex items-center w-full h-12 px-6 py-3 mt-auto text-sm text-white bg-dark"
   >
     <p>
-      Crafted with &lt;3
+      Crafted with ❤️
       <!-- <img
         alt="love"
         class="inline-block mb-0.5"
@@ -37,12 +37,12 @@
         >Samuele Bonini</a
       >
     </p>
-    <p class="ml-auto cursor-pointer" @click="showReportForm = true">
+    <!-- <p class="ml-auto cursor-pointer" @click="showReportForm = true">
       <i class="text-red-500 opacity-70 mr-0.5 fas fa-exclamation-triangle"></i>
       <span class="hidden ml-1 animated-underline md:inline"
         >Segnala malfunzionamento</span
       >
-    </p>
+    </p> -->
   </footer>
 </template>
 <script lang="ts">

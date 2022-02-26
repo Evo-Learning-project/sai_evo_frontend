@@ -33,7 +33,7 @@
       <EventEditorPreviewSkeleton></EventEditorPreviewSkeleton>
     </div>
     <div
-      class="flex flex-col w-full -ml-5 text-center select-none mt-9"
+      class="flex flex-col w-full text-center select-none mt-9"
       v-if="!firstLoading && exams.length === 0"
     >
       <p style="font-size: 10rem" class="material-icons-outlined opacity-10">

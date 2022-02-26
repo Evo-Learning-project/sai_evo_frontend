@@ -29,7 +29,7 @@
       <ExerciseEditorWrapperSkeleton></ExerciseEditorWrapperSkeleton>
     </div>
     <div
-      class="flex flex-col w-full mt-12 mb-12 -ml-5 text-center select-none"
+      class="flex flex-col w-full mt-12 mb-12 text-center select-none"
       v-if="!firstLoading && exercises.length === 0"
     >
       <p style="font-size: 10rem" class="material-icons-outlined opacity-10">
