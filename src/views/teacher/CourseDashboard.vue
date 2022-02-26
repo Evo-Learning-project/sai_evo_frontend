@@ -23,10 +23,29 @@
                 </Btn>
               </div>
               <div v-show="editingName" class="flex items-center">
-                <TextInput class="mr-2 w-96" v-model="dirtyCourseName"
-                  >Nome del corso</TextInput
+                <TextInput class="mr-2 w-96" v-model="dirtyCourseName">
+                  {{ $t('course_creation_form.course_name') }}
+                  <template
+                    v-if="v$.dirtyCourse.name.$errors.length > 0"
+                    v-slot:errors
+                  >
+                    <div
+                      class="input-errors"
+                      v-for="error of v$.dirtyCourse.name.$errors"
+                      :key="error.$uid"
+                    >
+                      <div class="error-msg">
+                        {{ $t('validation_errors.' + error.$uid) }}
+                      </div>
+                    </div>
+                  </template></TextInput
                 >
-                <Btn :outline="true" :variant="'icon'" @click="onDoneEditing()">
+                <Btn
+                  :outline="true"
+                  :variant="'icon'"
+                  :loading="localLoading"
+                  @click="v$.$invalid ? v$.$touch() : onDoneEditingName()"
+                >
                   <span class="text-xl text-primary material-icons-outlined">
                     save
                   </span>
@@ -35,7 +54,7 @@
                   :outline="true"
                   class=""
                   :variant="'icon'"
-                  @click="onDoneEditing(true)"
+                  @click="onDoneEditingName(true)"
                 >
                   <span
                     class="text-xl text-danger-dark material-icons-outlined"
@@ -62,8 +81,10 @@
             </div>
           </div>
           <div class="flex items-center" v-show="!editingDescription">
-            <p class="mr-2 text-muted">Descrizione</p>
-            <p class="mr-3">{{ currentCourse.description }}</p>
+            <p class="mr-2 text-muted">
+              {{ $t('course_creation_form.course_description') }}
+            </p>
+            <p class="mr-3" v-html="currentCourse.description"></p>
             <Btn
               v-if="hasPrivileges([CoursePrivilege.UPDATE_COURSE])"
               :outline="true"
@@ -76,10 +97,15 @@
             </Btn>
           </div>
           <div v-show="editingDescription" class="flex items-center">
-            <TextEditor class="w-2/3 mr-2" v-model="dirtyCourseDescription"
-              >Descrizione del corso (opzionale)</TextEditor
+            <TextEditor class="w-2/3 mr-2" v-model="dirtyCourseDescription">
+              {{ $t('course_creation_form.course_description') }}
+            </TextEditor>
+            <Btn
+              :outline="true"
+              :variant="'icon'"
+              :loading="localLoading"
+              @click="onDoneEditingDescription()"
             >
-            <Btn :outline="true" :variant="'icon'" @click="onDoneEditing()">
               <span class="text-xl text-primary material-icons-outlined">
                 save
               </span>
@@ -88,7 +114,7 @@
               :outline="true"
               class=""
               :variant="'icon'"
-              @click="onDoneEditing(true)"
+              @click="onDoneEditingDescription(true)"
             >
               <span class="text-xl text-danger-dark material-icons-outlined">
                 close
@@ -183,7 +209,7 @@ import { createNamespacedHelpers } from 'vuex'
 const { mapActions, mapGetters, mapState } = createNamespacedHelpers('teacher')
 import { courseIdMixin, coursePrivilegeMixin, loadingMixin } from '@/mixins'
 import EventEditorPreview from '@/components/teacher/EventEditor/EventEditorPreview.vue'
-import { CoursePrivilege, Event, Exercise } from '@/models'
+import { Course, CoursePrivilege, Event, Exercise } from '@/models'
 import MinimalExercisePreview from '@/components/teacher/ExerciseEditor/MinimalExercisePreview.vue'
 import Btn from '@/components/ui/Btn.vue'
 import EventEditorPreviewSkeleton from '@/components/ui/skeletons/EventEditorPreviewSkeleton.vue'
@@ -192,6 +218,10 @@ import TextInput from '@/components/ui/TextInput.vue'
 import Toggle from '@/components/ui/Toggle.vue'
 import Card from '@/components/ui/Card.vue'
 import TextEditor from '@/components/ui/TextEditor.vue'
+
+import useVuelidate from '@vuelidate/core'
+
+import { courseValidation } from '@/validation/models'
 
 export default defineComponent({
   name: 'CourseDashboard',
@@ -207,6 +237,9 @@ export default defineComponent({
     TextEditor
   },
   mixins: [courseIdMixin, loadingMixin, coursePrivilegeMixin],
+  setup () {
+    return { v$: useVuelidate() }
+  },
   async created () {
     await this.withFirstLoading(async () => {
       await this.getEvents(this.courseId)
@@ -230,8 +263,13 @@ export default defineComponent({
       CoursePrivilege
     }
   },
+  validations () {
+    return {
+      dirtyCourse: courseValidation
+    }
+  },
   methods: {
-    ...mapActions(['getExercises', 'getEvents', 'getTags']),
+    ...mapActions(['getExercises', 'getEvents', 'getTags', 'updateCourse']),
     editCourseName () {
       this.dirtyCourseName = this.currentCourse.name
       this.editingName = true
@@ -240,8 +278,31 @@ export default defineComponent({
       this.dirtyCourseDescription = this.currentCourse.description ?? ''
       this.editingDescription = true
     },
-    async onDoneEditing (discard = false) {
-      this.editingName = false
+    async onDoneEditingName (discard = false) {
+      if (!discard) {
+        await this.withLocalLoading(async () => {
+          await this.updateCourse({
+            ...this.currentCourse,
+            name: this.dirtyCourseName
+          })
+          this.editingName = false
+        })
+      } else {
+        this.editingName = false
+      }
+    },
+    async onDoneEditingDescription (discard = false) {
+      if (!discard) {
+        await this.withLocalLoading(async () => {
+          await this.updateCourse({
+            ...this.currentCourse,
+            description: this.dirtyCourseDescription
+          })
+          this.editingDescription = false
+        })
+      } else {
+        this.editingDescription = false
+      }
     }
   },
   computed: {
@@ -252,6 +313,13 @@ export default defineComponent({
     },
     recentExercises (): Exercise[] {
       return this.exercises.slice(0, 4)
+    },
+    dirtyCourse (): Course {
+      return {
+        ...this.currentCourse,
+        name: this.dirtyCourseName,
+        description: this.dirtyCourseDescription
+      }
     }
   }
 })

@@ -420,6 +420,10 @@ export const it = {
       'name-required': 'Il nome del corso non può essere vuoto',
       'name-unique': 'Esiste già un corso con questo nome',
     },
+    dirtyCourse: {
+      'name-required': 'Il nome del corso non può essere vuoto',
+      'name-unique': 'Esiste già un corso con questo nome',
+    },
   },
   exam_validation_errors: {
     [ExamValidationError.NO_NAME]:

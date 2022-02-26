@@ -17,7 +17,12 @@ import {
   Tag,
   User,
 } from '@/models';
-import { createCourse, getCourses, getTags } from '@/api/courses';
+import {
+  createCourse,
+  getCourses,
+  getTags,
+  updateCourse,
+} from '@/api/courses';
 
 import { Commit } from 'vuex';
 
@@ -58,6 +63,14 @@ export const actions = {
   ) => {
     const newCourse = await createCourse(course);
     return newCourse;
+  },
+  updateCourse: async (
+    { commit }: { commit: Commit },
+    course: Course
+  ) => {
+    const updatedCourse = await updateCourse(course.id, course);
+    commit('shared/setCourse', course, { root: true });
+    return updatedCourse;
   },
   createExercise: async (
     { commit, state }: { commit: Commit; state: any },
