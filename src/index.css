@@ -1,0 +1,464 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,wght@0,300;0,400;0,600;0,700;0,900;1,400&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    body {
+        @apply text-darkText
+    }
+    h1 {
+      @apply font-semibold text-2.5xl mb-6
+    }
+    h2 {
+      @apply font-semibold text-2xl mb-4
+    }
+    h3 {
+      @apply font-semibold text-xl
+    }
+    h4 {
+      @apply font-semibold text-lg
+    }
+    h5 {
+      @apply font-semibold
+    }
+    strong {
+      @apply font-bold text-primary;
+    }
+    
+  }
+
+@layer components {
+    .animate-pulse {
+        animation: my-pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite !important;
+    }
+
+    @keyframes my-pulse {
+      0%, 100% {
+        opacity: 1;
+      }
+      50% {
+        opacity: .55;
+      }
+    }
+
+    .fade-enter-active,
+    .fade-leave-active {
+      transition: opacity 0.2s linear;
+    }
+
+    .drag-ghost {
+      @apply opacity-70 shadow-lg bg-primary bg-opacity-10
+    }
+
+    .fade-enter-from,
+    .fade-leave-to {
+      opacity: 0;
+    }
+    .user-content {
+      @apply py-5 pl-4 pr-2 border-l-8 rounded-sm bg-gray-50 border-primary-light;
+    }
+
+    .bg-gray-50 .user-content {
+      @apply bg-light
+    }
+    
+    .text-muted {
+      font-weight: 400;
+      color: rgba(0,0,0,.6);
+       /* @apply font-light text-gray-600*/
+    }
+    .shadow-all-around {
+      box-shadow: 0px 11px 15px -7px rgb(0 0 0 / 20%), 0px 24px 38px 3px rgb(0 0 0 / 14%), 0px 9px 46px 8px rgb(0 0 0 / 12%);
+    }
+    .shadow-btn {
+      box-shadow: 0px 3px 1px -2px rgb(0 0 0 / 20%), 0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 1px 5px 0px rgb(0 0 0 / 12%);
+    }
+    .shadow-popup {
+      box-shadow: 0 2px 4px -1px rgb(0 0 0 / 20%), 0 4px 5px 0 rgb(0 0 0 / 14%), 0 1px 10px 0 rgb(0 0 0 / 12%);
+    }
+    /* .shadow-elevation {
+      @apply transition-shadow duration-1000 ease-in-out;
+    } */
+    .hover-shadow-elevation:hover, .shadow-elevation {
+      box-shadow: 0px 2px 1px -1px rgb(0 0 0 / 15%), 
+      0px 1px 1px 0px rgb(0 0 0 / 12%),
+       0px 1px 3px 0px rgb(0 0 0 / 9%);
+      
+       /* box-shadow: 0.5px -1px 1px -1px rgb(0 0 0 / 15%), 
+      -0.5px 1.5px 1px 0px rgb(0 0 0 / 12%), 
+      1px 1.5px 3px 0px rgb(0 0 0 / 9%) */
+
+      /* box-shadow: 0.5px 2px 1px -1px rgb(0 0 0 / 15%), 
+      -0.5px 1.5px 1px 0px rgb(0 0 0 / 12%),
+       0.5px 1.5px 3px 0px rgb(0 0 0 / 9%); */
+    }
+    .card button {
+      @apply shadow-none !important;
+    }
+    .link {
+        @apply text-primary hover:underline;
+    }
+    .skeleton-unit {
+      @apply h-6 bg-gray-200 animate-pulse;
+    }
+
+    .bg-light .light-input {
+      /* EXPERIMENT TO DIFFERENTIATE INPUTS ON LIGHT BG */
+      @apply bg-gray-200 border-gray-300;
+    }
+
+    .bg-light .ql-editor-container {
+      @apply border-gray-300 !important;
+    }
+    .bg-light .ql-editor-container:focus-within {
+      @apply border-primary !important;
+    }
+    /* .bg-light .floating-label ~ label {
+      @apply text-gray-900 duration-300 !important
+    } */
+
+    /* .primary-bottom-faded:after {
+        content: '';
+        position: absolute;
+        bottom: -2px;
+        width: 100%;
+        height: 10px;
+        display: block;
+        background-image: linear-gradient(to bottom, rgba(209, 213, 219,1), transparent);
+    } */
+
+    .chip, .chip-sm {
+      @apply mr-2.5 mb-2.5 border border-gray-300 flex h-8 px-3 my-auto w-max rounded-full;
+      /* @apply border-0 border-primary bg-primary bg-opacity-20 text-primary; */
+    }
+
+    .chip .material-icons-outlined {
+      /* @apply bg-gray-400 text-gray-300 bg-opacity-60 py-0.5 px-2 rounded-full -ml-3 */
+    }
+
+    .chip-sm {
+      @apply h-6 px-2
+    }
+
+    .material-icons-outlined {
+      @apply select-none
+    }
+
+    .icon-surrounding {
+      @apply w-8 h-8 text-xl rounded-full flex place-items-center justify-center shadow-md
+    }
+
+
+    .material-icons-two-tone {
+      @apply select-none;
+      filter: invert(32%) sepia(68%) saturate(2000%) hue-rotate(213deg) brightness(94%) contrast(97%) brightness(90%); 
+    }
+
+    
+    .tooltip {
+      @apply relative
+    }
+
+    .tooltip .tooltip-text {
+      @apply absolute opacity-0 text-sm w-max bg-dark text-light px-2 py-1.5 rounded-md transition-opacity duration-100 ease-in-out shadow-md bg-opacity-60
+    }
+
+    .tooltip-text-force {
+      @apply opacity-100 !important;
+    }
+
+    .tooltip:hover .tooltip-text {
+      @apply opacity-100;
+    }
+
+    .tooltip-top {
+      @apply bottom-full left-1/2 transform -translate-x-1/2
+    }
+
+    .tooltip-bottom {
+      @apply top-full left-1/2 transform -translate-x-1/2
+    }
+
+    .tooltip-left {
+      @apply -top-1 right-full mr-1.5
+    }
+
+    .tooltip-left::after {
+      content: ' ';
+      border-color: transparent transparent transparent rgba(17, 24, 39, 0.6) !important;
+      @apply absolute -mt-1 border-4 border-transparent border-solid top-1/2 left-full;
+    }
+
+    .tooltip-bottom::after {
+      content: ' ';
+      border-color: transparent  transparent rgba(17, 24, 39, 0.6) transparent !important;
+      @apply absolute -mt-1 border-4 border-transparent border-solid bottom-full left-1/2;
+    }
+
+    /* tag input */
+    .ti-input, .ti-new-tag-input {
+      @apply bg-light !important
+    }
+    .ti-tag {
+      @apply rounded-full bg-primary text-lightText px-3 py-0.5 text-sm !important
+    }
+    .ti-tag-sm {
+      @apply h-6 px-2
+    }
+    .ti-deletion-mark {
+      @apply bg-danger !important
+    }
+
+    .ti-autocomplete {
+      z-index: 9999 !important;
+      @apply p-2 absolute bg-gray-50 rounded-b-md shadow-popup !important
+    }
+
+    .ti-selected-item {
+      @apply bg-primary -mx-2 p-0 pl-2 !important
+    }
+
+    .vue-tags-input {
+      @apply max-w-screen-2xl !important
+    }
+    /* text and number input floating label */
+    .floating-label ~ label {
+      @apply text-gray-500 duration-300
+    }
+    .floating-label:focus-within ~ label {
+      @apply duration-300 transform scale-75 -translate-y-6 text-primary;
+     }
+     .floating-label-error:focus-within ~ label {
+      @apply duration-300 transform scale-75 -translate-y-6 text-danger-dark;
+     }
+     .floating-label:focus-within ~ label,
+     .floating-label:not(:placeholder-shown) ~ label {
+       @apply text-gray-500 duration-300 transform scale-75 -translate-y-6;
+     }
+     .floating-label-error:focus-within ~ label,
+     .floating-label-error:not(:placeholder-shown) ~ label {
+       @apply duration-300 transform scale-75 -translate-y-6 text-danger-dark;
+     }
+     
+     .floating-label:focus-within ~ label {
+       @apply text-primary;
+     }
+     .floating-label-error:focus-within ~ label {
+      @apply text-danger-dark;
+    }
+
+     /* quill editor floating label */
+     .ql-editor-container ~ label {
+      @apply text-gray-500 duration-300
+    }
+    .ql-editor-container:focus-within ~ label {
+      @apply duration-300 transform scale-75 -translate-y-7 text-primary;
+     }
+    .fixed-label {
+      @apply top-0 text-gray-500 duration-300 transform scale-75 -translate-y-7;
+     }
+
+     /* calendar input */
+    .mx-input {
+      @apply transition-all duration-300 border-0 rounded-none shadow-none !important;
+    }
+    .mx-datepicker-popup, .mx-date-time, .mx-time {
+      @apply rounded-md !important;
+    }
+    .mx-calendar-content .cell.active {
+      @apply text-lightText bg-primary rounded-md !important;
+    }
+    .mx-time-column .mx-time-item.active {
+      @apply text-primary !important;
+  }
+    .mx-input:hover {
+      @apply border-gray-300 !important;
+    }
+    .mx-input:focus {
+      @apply border-primary !important;
+    }
+    .calendar-floating-label ~ label {
+      @apply text-gray-500 duration-300
+    }
+    .calendar-floating-label:focus-within ~ label {
+      @apply duration-300 transform scale-75 -translate-y-6 text-primary;
+     }
+     .calendar-fixed-label {
+      @apply top-0 text-gray-500 duration-300 transform scale-75 -translate-y-4.5 !important;
+     }
+     /* .calendar-floating-label:focus-within ~ label {
+     /* .floating-label:not(:placeholder-shown) ~ label 
+       @apply text-gray-500 duration-300 transform scale-75 -translate-y-5;
+     }
+      */
+     .calendar-floating-label:focus-within ~ label {
+       @apply text-primary !important;
+     }
+
+     /* floating label border */
+     .ql-editor-container {
+       @apply transition-border duration-300
+     }
+
+     /* animations */
+     .bounce-enter-active {
+      animation: bounce-in 0.25s ease;
+    }
+    .bounce-leave-active {
+      animation: shrink-out 0.25s ease;
+    }
+    .quick-bounce-enter-active {
+      animation: quick-bounce-in 0.1s linear;
+    }
+    .quick-bounce-leave-active {
+      animation: shrink-out 0.1s ease;
+    }
+    @keyframes bounce-in {
+      0% {
+        transform: scale(0.8);
+        opacity: 0;
+      }
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    @keyframes quick-bounce-in {
+      0% {
+        transform: scale(0.95);
+        opacity: 0;
+      }
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+    
+    @keyframes shrink-out {
+      0% {
+        /* transform: scale(1); */
+        opacity: 1;
+      }
+      /* 50% {
+        transform: scale(1);
+        opacity: 1;
+      } */
+      100% {
+        /* transform: scale(0.85); */
+        opacity: 0;
+      }
+    }
+    .fade-enter-active,
+    .fade-leave-active {
+      transition: opacity 0.25s ease;
+    }
+    
+    .fade-enter-from,
+    .fade-leave-to {
+      opacity: 0;
+    }
+    
+
+    /* ag data table */
+    .ag-header-cell, .ag-cell {
+      @apply px-3 !important;
+    }
+
+    .ag-theme-material {
+      @apply font-sans text-sm !important
+    }
+    .ag-row-hover, .ag-header-active {
+      @apply bg-light !important
+    }
+    .ag-has-focus, .ag-cell-focus {
+      @apply border-0 outline-none !important
+    }
+    .ag-cell {
+      @apply border-0 !important
+    }
+    .ag-header-row {
+      @apply text-gray-600 font-semibold font-sans text-sm !important
+    }
+    .ag-row {
+      @apply border-l-0 border-r-0 border-b border-light hover:bg-light transition-colors duration-75 !important
+    }
+    .ag-theme-material .ag-checkbox-input-wrapper.ag-checked::after {
+      @apply text-primary !important
+    }
+
+    .ag-theme-material .ag-checkbox-input-wrapper {
+      font-family: 'Material Icons Outlined' !important;
+    }
+    .ag-theme-material .ag-checkbox-input-wrapper::after {
+      content: "check_box_outline_blank" !important
+    }
+    .ag-theme-material .ag-checkbox-input-wrapper.ag-checked::after {
+      content: "check_box" !important;
+    }
+    .ag-theme-material .ag-checkbox-input-wrapper.ag-indeterminate::after {
+      content: "indeterminate_check_box" !important
+    }
+
+    .ag-selectable-cell {
+      @apply flex items-center h-full rounded-md cursor-pointer hover:bg-gray-200 !important
+    }
+
+    .ag-popup-child {
+      @apply shadow-popup !important
+    }
+
+    .ag-popup-child::after {
+      content: ' sdf';
+      border-color: transparent  transparent rgba(17, 24, 39, 0.6) transparent !important;
+      @apply absolute -mt-1 border-4 border-transparent border-solid bottom-full left-1/2;
+    }
+
+    .ag-menu {
+      @apply px-4 py-2 rounded-md bg-light !important
+    }
+
+    .bg-success-important {
+      @apply bg-success-light bg-opacity-20 hover:bg-success-light hover:bg-opacity-20 !important
+    }
+
+    .bg-danger-important {
+      @apply bg-danger-light bg-opacity-30 hover:bg-danger-light hover:bg-opacity-30 !important
+    }
+
+    .bg-light-important {
+      @apply bg-light hover:bg-light  !important
+    }
+
+    /* ripple */
+    span.ripple {
+      position: absolute;
+      border-radius: 50%;
+      transform: scale(0);
+      animation: ripple 500ms linear;
+    }
+    .ripple-white {
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+    .ripple-gray {
+      background-color: rgba(255, 255, 255, 0.7);
+    }
+    .ripple-primary {
+      background-color: rgba(68, 56, 202, 0.25);
+    }
+    .ripple-light {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+    .ripple-success {
+      background-color: rgba(52, 211, 153, 0.4);
+    }
+    @keyframes ripple {
+      to {
+        transform: scale(4);
+        opacity: 0;
+      }
+    }
+  }

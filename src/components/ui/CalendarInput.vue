@@ -1,0 +1,92 @@
+<template>
+  <div class="relative z-10 border-b-2 border-gray-200 bg-light w-max">
+    <!-- <div class="z-10 bg-transparent floating-label"> -->
+    <date-picker
+      class="z-10 bg-transparent calendar-floating-label"
+      @open="onOpen()"
+      :open="calendarOpen"
+      @close="onClose()"
+      @focus="$emit('focus')"
+      v-model:value="proxyModelValue"
+      type="datetime"
+      :ref="'calendar-' + elementId"
+    >
+      <template v-slot:icon-calendar
+        ><span class="text-base material-icons-outlined">
+          calendar_today
+        </span>
+      </template>
+      <template v-slot:icon-clear
+        ><span class="text-base material-icons-outlined">
+          close
+        </span>
+      </template>
+    </date-picker>
+    <!-- </div> -->
+    <label
+      class="absolute left-1.5 origin-0 -z-1"
+      :class="{
+        'calendar-fixed-label': proxyModelValue != null || calendarOpen,
+        'bottom-1.5': proxyModelValue == null
+      }"
+    >
+      <slot></slot>
+    </label>
+    <!-- <date-picker v-model:value="time1" type="datetime"></date-picker>
+    <date-picker v-model:value="time2" valueType="format"></date-picker>
+    <date-picker v-model:value="time3" range></date-picker> -->
+  </div>
+</template>
+
+<script lang="ts">
+import { defineComponent } from '@vue/runtime-core'
+import { v4 as uuid4 } from 'uuid'
+
+import DatePicker from 'vue-datepicker-next'
+import 'vue-datepicker-next/index.css'
+export default defineComponent({
+  name: 'CalendarInput',
+  components: { DatePicker },
+  props: ['modelValue'],
+  created () {
+    this.elementId = uuid4()
+  },
+  data () {
+    return {
+      calendarOpen: false,
+      elementId: ''
+    }
+  },
+  methods: {
+    onOpen () {
+      console.log('open')
+      this.calendarOpen = true
+      this.$emit('open')
+    },
+    onClose () {
+      this.calendarOpen = false
+      this.$emit('close')
+    },
+    close () {
+      this.calendarOpen = false
+    }
+  },
+  computed: {
+    proxyModelValue: {
+      get () {
+        return this.modelValue ? new Date(this.modelValue) : null
+      },
+      set (val: unknown) {
+        this.$emit('update:modelValue', val)
+      }
+    }
+  }
+})
+</script>
+
+<style>
+.mx-input-wrapper,
+.mx-input {
+  background-color: transparent !important;
+}
+</style>
