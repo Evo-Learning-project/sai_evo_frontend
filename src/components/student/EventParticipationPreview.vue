@@ -47,10 +47,11 @@
             </p>
           </div>
           <div
-            class="flex justify-between w-full mt-auto"
+            class="flex flex-col items-center w-full mt-auto xl:justify-between xl:flex-row xl:space-y-0"
             v-if="isParticipable"
           >
             <router-link
+              class="order-12 mt-6 xl:mt-0 xl:order-1"
               :to="{
                 name:
                   participation.event.event_type ===
@@ -64,14 +65,14 @@
               }"
             >
               <Btn>
-                <span class="text-base mr-1.5 material-icons-outlined">
+                <span class="text-base material-icons-outlined">
                   meeting_room
                 </span>
                 {{ $t('student_course_dashboard.resume') }}
               </Btn>
             </router-link>
             <div
-              class="chip border-primary bg-primary bg-opacity-20 text-primary mb-0 pt-0.5"
+              class="chip mx-0 order-1 xl:order-2 border-primary bg-primary bg-opacity-20 text-primary mb-0 pt-0.5"
             >
               <span class="material-icons-outlined text-base mr-1 mt-1.25px">
                 more_horiz

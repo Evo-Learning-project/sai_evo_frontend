@@ -58,8 +58,13 @@
       opacity: 0;
     }
     .user-content {
-      @apply bg-gray-50 rounded-sm pr-2 pl-4 py-5 border-2 border-l-10 border-primary
+      @apply py-5 pl-4 pr-2 border-l-8 rounded-sm bg-gray-50 border-primary-light;
     }
+
+    .bg-gray-50 .user-content {
+      @apply bg-light
+    }
+    
     .text-muted {
       font-weight: 400;
       color: rgba(0,0,0,.6);
@@ -77,18 +82,18 @@
     /* .shadow-elevation {
       @apply transition-shadow duration-1000 ease-in-out;
     } */
-    .shadow-elevation:hover {
-      /* box-shadow: 0px 2px 1px -1px rgb(0 0 0 / 15%), 
+    .hover-shadow-elevation:hover, .shadow-elevation {
+      box-shadow: 0px 2px 1px -1px rgb(0 0 0 / 15%), 
       0px 1px 1px 0px rgb(0 0 0 / 12%),
-       0px 1px 3px 0px rgb(0 0 0 / 9%); */
+       0px 1px 3px 0px rgb(0 0 0 / 9%);
       
        /* box-shadow: 0.5px -1px 1px -1px rgb(0 0 0 / 15%), 
       -0.5px 1.5px 1px 0px rgb(0 0 0 / 12%), 
       1px 1.5px 3px 0px rgb(0 0 0 / 9%) */
 
-      box-shadow: 0.5px 2px 1px -1px rgb(0 0 0 / 15%), 
+      /* box-shadow: 0.5px 2px 1px -1px rgb(0 0 0 / 15%), 
       -0.5px 1.5px 1px 0px rgb(0 0 0 / 12%),
-       0.5px 1.5px 3px 0px rgb(0 0 0 / 9%);
+       0.5px 1.5px 3px 0px rgb(0 0 0 / 9%); */
     }
     .card button {
       @apply shadow-none !important;

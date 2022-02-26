@@ -64,15 +64,15 @@
         </span></Btn
       >
       <Btn
-        class="ml-auto"
+        class="mt-4"
         @click="confirmTurnIn"
         v-else-if="canTurnIn"
         :variant="'success'"
-        >{{ $t('event_participation_page.turn_in') }}
-        <span class="material-icons-outlined mt-0.5 text-base ml-1">
-          check
-        </span></Btn
       >
+        <span class="material-icons-outlined mt-0.5 text-base mr-1">
+          check </span
+        >{{ $t('event_participation_page.turn_in') }}
+      </Btn>
     </div>
     <Dialog
       :showDialog="showConfirmDialog"

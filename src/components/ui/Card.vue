@@ -8,7 +8,7 @@
       'my-4': size == 'default' && !marginLess,
       border: !highlighted,
       'border-2': highlighted,
-      'transition-shadow duration-75 ease-linear shadow-elevation': hoverable,
+      'transition-shadow duration-75 ease-linear hover-shadow-elevation': hoverable,
       'bg-light bg-opacity-80': filled
     }"
   >

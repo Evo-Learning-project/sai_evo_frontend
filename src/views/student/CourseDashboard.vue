@@ -24,6 +24,7 @@
       >
         <div v-if="(currentCourse.unstarted_practice_events?.length ?? 0) > 0">
           <Card
+            :hoverable="false"
             :margin-less="true"
             class="relative overflow-hidden text-gray-600 shadow-lg cursor-pointer h-44 bg-light"
             @mousedown="onCardMouseDown"
@@ -50,6 +51,7 @@
         <Card
           v-else
           :margin-less="true"
+          :hoverable="false"
           class="relative overflow-hidden text-gray-600 shadow-lg cursor-pointer h-44 bg-light"
           @mousedown="onCardMouseDown"
           @click="onCreatePractice()"

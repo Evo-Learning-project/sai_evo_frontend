@@ -20,9 +20,7 @@
     <div class="px-6 py-6 rounded-md bg-gray-50" v-if="!firstLoading">
       <div class="flex mb-12">
         <div class="" v-if="showAssessment && !firstLoading">
-          <div
-            class="px-6 py-3 bg-indigo-100 rounded-md shadow-md bg-opacity-70"
-          >
+          <div class="px-6 py-3 rounded bg-light shadow-elevation">
             <h4 class="text-muted">
               {{ $t('misc.score') }}: <strong>{{ participation.score }}</strong>
             </h4>

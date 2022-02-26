@@ -50,7 +50,7 @@
 
         <!-- show assesment-->
         <div
-          class="w-1/2 p-2.5 mb-auto bg-indigo-100 rounded-md shadow-md bg-opacity-70"
+          class="w-1/2 px-6 py-3 mb-auto rounded bg-light shadow-elevation bg-opacity-70"
           v-if="showAssessment"
         >
           <!-- style="background-color: #e6f4ea; border: 1px solid #dadce0" -->
