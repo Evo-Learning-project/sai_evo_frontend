@@ -63,16 +63,16 @@
 import { defineComponent } from '@vue/runtime-core'
 import TextInput from '@/components/ui/TextInput.vue'
 import TextEditor from '@/components/ui/TextEditor.vue'
-import { Course, getBlankCourse } from '@/models'
+import { getBlankCourse } from '@/models'
 import Toggle from '@/components/ui/Toggle.vue'
 import FileUpload from '../../components/ui/FileUpload.vue'
 import Btn from '@/components/ui/Btn.vue'
 import useVuelidate from '@vuelidate/core'
-import { required } from '@vuelidate/validators'
 import { mapState } from 'vuex'
 
 import { createNamespacedHelpers } from 'vuex'
 import { loadingMixin } from '@/mixins'
+import { courseValidation } from '@/validation/models'
 const { mapActions } = createNamespacedHelpers('teacher')
 
 export default defineComponent({
@@ -89,13 +89,7 @@ export default defineComponent({
   },
   validations () {
     return {
-      course: {
-        name: {
-          required,
-          unique: this.courseNameUnique,
-          $autoDirty: true
-        }
-      }
+      course: courseValidation
     }
   },
   methods: {
@@ -113,9 +107,6 @@ export default defineComponent({
       })
 
       this.$store.commit('shared/showSuccessFeedback')
-    },
-    courseNameUnique (name: string) {
-      return (this.courses as Course[]).every(c => c.name !== name)
     }
   },
   computed: {

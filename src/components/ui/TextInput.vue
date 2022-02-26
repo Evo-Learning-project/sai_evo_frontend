@@ -16,8 +16,8 @@
         <slot></slot>
       </label>
       <div
-        v-if="true || rightIcon.length > 0"
-        class="absolute bottom-0 right-1 -z-1"
+        v-if="rightIcon.length > 0"
+        class="absolute bottom-0.5 right-1.5 -z-1"
       >
         <span class="text-base text-muted material-icons-outlined">
           {{ rightIcon }}
