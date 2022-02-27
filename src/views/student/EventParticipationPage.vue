@@ -346,6 +346,7 @@ export default defineComponent({
       });
       this.saving = false;
     },
+    //TODO  -----------------
   },
   computed: {
     ...mapState("student", ["currentEventParticipation"]),
