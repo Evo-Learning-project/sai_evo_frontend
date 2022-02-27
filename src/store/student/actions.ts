@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import {
   Event,
@@ -6,9 +7,9 @@ import {
   EventParticipationSlot,
   EventTemplateRule,
   EventTemplateRuleClause,
-} from '@/models';
+} from "@/models";
 
-import { Commit } from 'vuex';
+import { Commit } from "vuex";
 
 import {
   createEvent,
@@ -23,8 +24,8 @@ import {
   participateInEvent,
   updateEventTemplateRule,
   updateEventTemplateRuleClause,
-} from '@/api/events';
-import { StudentState } from '../types';
+} from "@/api/events";
+import { StudentState } from "../types";
 
 export const actions = {
   participateInEvent: async (
@@ -32,7 +33,7 @@ export const actions = {
     { courseId, eventId }: { courseId: string; eventId: string }
   ) => {
     const participation = await participateInEvent(courseId, eventId);
-    commit('setCurrentEventParticipation', participation);
+    commit("setCurrentEventParticipation", participation);
   },
   moveEventParticipationCurrentSlotCursorForward: async (
     { commit, state }: { commit: Commit; state: StudentState },
@@ -40,12 +41,11 @@ export const actions = {
   ) => {
     const slot = await moveEventParticipationCurrentSlotCursor(
       courseId,
-      (state.currentEventParticipation as EventParticipation).event
-        .id,
+      (state.currentEventParticipation as EventParticipation).event.id,
       (state.currentEventParticipation as EventParticipation).id,
-      'forward'
+      "forward"
     );
-    commit('setEventParticipationSlots', [slot]);
+    commit("setEventParticipationSlots", [slot]);
   },
   moveEventParticipationCurrentSlotCursorBack: async (
     { commit, state }: { commit: Commit; state: StudentState },
@@ -53,20 +53,19 @@ export const actions = {
   ) => {
     const slot = await moveEventParticipationCurrentSlotCursor(
       courseId,
-      (state.currentEventParticipation as EventParticipation).event
-        .id,
+      (state.currentEventParticipation as EventParticipation).event.id,
       (state.currentEventParticipation as EventParticipation).id,
-      'back'
+      "back"
     );
-    commit('setEventParticipationSlots', [slot]);
+    commit("setEventParticipationSlots", [slot]);
   },
   getEvent: async (
     { commit }: { commit: Commit },
     { courseId, eventId }: { courseId: string; eventId: string }
   ) => {
-    console.log('DATA: ', courseId, eventId);
+    console.log("DATA: ", courseId, eventId);
     const event = await getEvent(courseId, eventId);
-    commit('setEvent', event);
+    commit("setPreviewingEvent", event);
   },
   createEvent: async (
     { commit, state }: { commit: Commit; state: StudentState },
@@ -88,12 +87,11 @@ export const actions = {
   ) => {
     const response = await partialUpdateEventParticipation(
       courseId,
-      (state.currentEventParticipation as EventParticipation).event
-        .id,
+      (state.currentEventParticipation as EventParticipation).event.id,
       (state.currentEventParticipation as EventParticipation).id,
       changes
     );
-    commit('setCurrentEventParticipation', response);
+    commit("setCurrentEventParticipation", response);
   },
   getEventParticipation: async (
     { commit }: { commit: Commit },
@@ -108,7 +106,7 @@ export const actions = {
       eventId,
       participationId
     );
-    commit('setCurrentEventParticipation', participation);
+    commit("setCurrentEventParticipation", participation);
   },
   partialUpdateEventParticipationSlot: async (
     { commit, state }: { commit: Commit; state: StudentState },
@@ -138,7 +136,7 @@ export const actions = {
       changes
     );
     if (mutate) {
-      commit('setCurrentEventParticipationSlot', response);
+      commit("setCurrentEventParticipationSlot", response);
     }
   },
   addEventTemplateRule: async (
@@ -154,12 +152,8 @@ export const actions = {
       rule: EventTemplateRule;
     }
   ) => {
-    const newRule = await createEventTemplateRule(
-      courseId,
-      templateId,
-      rule
-    );
-    commit('setEditingEventTemplateRule', newRule);
+    const newRule = await createEventTemplateRule(courseId, templateId, rule);
+    commit("setEditingEventTemplateRule", newRule);
 
     return newRule;
   },
@@ -209,7 +203,7 @@ export const actions = {
       clause
     );
 
-    commit('setEditingEventTemplateRuleClause', {
+    commit("setEditingEventTemplateRuleClause", {
       ruleId,
       clause: newClause,
     });
@@ -229,14 +223,14 @@ export const actions = {
       clause: EventTemplateRuleClause;
     }
   ) => {
-    console.log('calling action');
+    console.log("calling action");
     const updatedClause = await updateEventTemplateRuleClause(
       courseId,
       templateId,
       ruleId,
       clause
     );
-    console.log('UPDATED CLAUSE', updatedClause);
+    console.log("UPDATED CLAUSE", updatedClause);
 
     // commit('setEditingEventTemplateRuleClause', {
     //   ruleId,

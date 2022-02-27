@@ -7,8 +7,8 @@ import {
   EventTemplateRule,
   Event,
   EventTemplateRuleClause,
-} from '@/models';
-import { MutationPayload, StudentState } from '../types';
+} from "@/models";
+import { MutationPayload, StudentState } from "../types";
 
 export const mutations = {
   // update the slots of the current event participation
@@ -39,6 +39,9 @@ export const mutations = {
     Object.assign(target, slot);
   },
 
+  // updates the event currently being previewed
+  setPreviewingEvent: (state: StudentState, event: Event | null) =>
+    (state.previewingEvent = event),
   // updates the event template currently being edited
   setEditingEvent: (state: StudentState, event: Event | null) =>
     (state.editingEvent = event),
@@ -54,17 +57,12 @@ export const mutations = {
       Object.assign(target, rule);
     } else {
       // push new rule
-      (state.editingEvent?.template as EventTemplate).rules.push(
-        rule
-      );
+      (state.editingEvent?.template as EventTemplate).rules.push(rule);
     }
   },
   patchEditingEventTemplateRule: (
     state: StudentState,
-    {
-      ruleId,
-      changes,
-    }: { ruleId: string; changes: Partial<EventTemplateRule> }
+    { ruleId, changes }: { ruleId: string; changes: Partial<EventTemplateRule> }
   ) => {
     const target = state.editingEvent?.template?.rules.find(
       (r: EventTemplateRule) => r.id == ruleId
@@ -81,10 +79,8 @@ export const mutations = {
     const targetRule = state.editingEvent?.template?.rules.find(
       (r: EventTemplateRule) => r.id == ruleId
     ) as EventTemplateRule;
-    console.log('target rule', targetRule, ruleId, payload);
-    const targetClause = targetRule.clauses?.find(
-      (c) => c.id == payload.id
-    );
+    console.log("target rule", targetRule, ruleId, payload);
+    const targetClause = targetRule.clauses?.find((c) => c.id == payload.id);
     if (targetClause) {
       // updating existing clause
       Object.assign(targetClause, payload);

@@ -1,5 +1,5 @@
-import { SearchFilter } from '@/api/interfaces';
-import { ErrorMessage } from '@/interfaces';
+import { SearchFilter } from "@/api/interfaces";
+import { ErrorMessage } from "@/interfaces";
 import {
   Course,
   EventParticipation,
@@ -7,12 +7,13 @@ import {
   Tag,
   Event,
   User,
-} from '@/models';
+} from "@/models";
 
 export interface StudentState {
   currentEventParticipation: EventParticipation | null;
   eventParticipations: EventParticipation[];
   editingEvent: Event | null;
+  previewingEvent: Event | null;
 }
 export interface TeacherState {
   exercises: Exercise[];
@@ -45,7 +46,7 @@ interface StoreOperationParameters<T> {
   slotId: string;
   templateId: string;
   filters: SearchFilter;
-  children: 'choices' | 'sub_exercises' | 'testcases';
+  children: "choices" | "sub_exercises" | "testcases";
   fromFirstPage: boolean;
   participationIds: string[];
   participationId: string;
@@ -55,10 +56,10 @@ interface StoreOperationParameters<T> {
   reFetch: boolean;
 }
 
-export type ActionPayload<T> = Partial<
-  StoreOperationParameters<T>
-> & { payload: T };
+export type ActionPayload<T> = Partial<StoreOperationParameters<T>> & {
+  payload: T;
+};
 
-export type MutationPayload<T> = Partial<
-  StoreOperationParameters<T>
-> & { payload: T };
+export type MutationPayload<T> = Partial<StoreOperationParameters<T>> & {
+  payload: T;
+};

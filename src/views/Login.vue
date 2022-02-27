@@ -60,14 +60,13 @@
   </div>
 </template>
 
-<script lang="ts">
+<script>
 /* eslint-disable */
 import Btn from '@/components/ui/Btn.vue'
-import { inject, toRefs, defineComponent } from 'vue'
+import { inject, toRefs } from 'vue'
 //import { getMainView } from '@/router'
 import Spinner from '@/components/ui/Spinner.vue'
-export default defineComponent(
-  {
+export default {
   name: 'Login',
   components: {
     Btn,
@@ -89,7 +88,6 @@ export default defineComponent(
         this.loading = true
         const googleUser = await this.$gAuth.signIn()
         console.log(googleUser)
-
         if (!googleUser) {
           return null
         }
@@ -97,7 +95,6 @@ export default defineComponent(
         const token = googleUser.getAuthResponse().access_token
         await this.$store.dispatch('shared/convertToken', token)
         await this.$store.dispatch('shared/getUserData')
-
         this.redirectToMainView()
       } catch (error) {
         // this.$store.commit('pushNotification', {
@@ -132,8 +129,4 @@ export default defineComponent(
     }
   }
 }
-<<<<<<< HEAD
-)
-=======
->>>>>>> 885600893f2ddf61971ec2cf519dd42a27cb817a
 </script>

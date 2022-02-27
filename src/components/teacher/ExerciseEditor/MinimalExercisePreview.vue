@@ -11,10 +11,9 @@
     >
       <template v-slot:header>
         <div class="relative">
-          <div class="flex items-center">
+          <div class="flex flex-wrap items-center">
             <h5>{{ previewTitle }}</h5>
             <div v-if="showTags" class="flex ml-2 space-x-1">
-              <!-- hidden -->
               <Tag
                 v-for="(tag, index) in tags"
                 :key="elementId + '-tag-' + index"

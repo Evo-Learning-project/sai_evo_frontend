@@ -1,11 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { debounce, DebouncedFunc } from 'lodash';
+import { debounce, DebouncedFunc } from "lodash";
 
-type RemotePatchFunction<T> = (
-  changes: FieldValuesObject<T>
-) => Promise<void>;
-type PatchFunction<T> = (changes: FieldValuesObject<T>) => void;
+type RemotePatchFunction<T> = (changes: FieldValuesObject<T>) => Promise<void>;
+type PatchFunction<T> = (
+  changes: FieldValuesObject<T>,
+  reverting?: boolean
+) => void;
 export type FieldList<T> = (keyof T)[];
 type FieldValuesObject<T> = Partial<T>;
 
@@ -57,15 +58,19 @@ export class AutoSaveManager<T> {
     field: keyof T;
     value: unknown;
   }): Promise<void> {
-    console.log('calling onChange', { field, value });
+    console.log("calling onChange", { field, value });
 
     // record new change to field
     this.unsavedChanges[field] = value as any;
 
     // make deep copy of field about to change in case rollback becomes necessary
-    this.beforeChanges[field] = JSON.parse(
-      JSON.stringify(this.instance[field])
-    );
+    // (only for non-debounced fields as it would be disconcerting to roll back
+    // debounced changes like in text fields)
+    if (!this.debouncedFields.includes(field)) {
+      this.beforeChanges[field] = JSON.parse(
+        JSON.stringify(this.instance[field])
+      );
+    }
 
     if (this.alwaysPatchLocal) {
       // instantly update in-memory instance
@@ -76,12 +81,12 @@ export class AutoSaveManager<T> {
     await this.remotePatchFunction(this.unsavedChanges);
     if (!this.debouncedFields.includes(field)) {
       // field isn't to be debounced; call remote update immediately
-      this.remotePatchFunction.flush();
+      await this.remotePatchFunction.flush();
     }
   }
 
-  flush(): void {
-    this.remotePatchFunction.flush();
+  async flush(): Promise<void> {
+    await this.remotePatchFunction.flush();
   }
 
   private wrapRemotePatchFunction(
@@ -110,7 +115,7 @@ export class AutoSaveManager<T> {
 
         if (this.revertOnFailure) {
           // roll back unsaved changes
-          this.localPatchFunction(this.beforeChanges);
+          this.localPatchFunction(this.beforeChanges, true);
         }
       } finally {
         this.cleanupFunction?.();

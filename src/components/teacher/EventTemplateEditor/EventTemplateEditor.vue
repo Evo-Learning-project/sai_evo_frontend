@@ -7,6 +7,7 @@
       </p>
       <draggable
         ghost-class="drag-ghost"
+        handle=".drag-handle"
         item-key="id"
         :modelValue="modelValue.rules"
         @end="onRuleDragEnd($event)"

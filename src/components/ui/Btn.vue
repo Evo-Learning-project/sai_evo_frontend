@@ -2,7 +2,7 @@
   <button
     @mousedown="onMouseDown"
     :disabled="disabled || loading"
-    class="relative overflow-hidden disabled:cursor-not-allowed disabled:opacity-70"
+    class="relative overflow-hidden  disabled:cursor-not-allowed disabled:opacity-70"
     :class="{
       'shadow-inner bg-light': forceActive,
       'bg-success-light bg-opacity-30':
@@ -17,9 +17,10 @@
       'text-lightText bg-primary hover:bg-primary-dark shadow-btn':
         !outline && variant === 'primary',
       'text-danger-dark bg-danger shadow-btn': !outline && variant === 'danger',
-      'text-danger-dark border-danger-dark bg-white border hover:bg-danger-dark hover:text-white':
+      'text-danger-dark border-danger-dark bg-white border':
         outline && variant === 'danger',
-      'text-success-dark bg-success-light': !outline && variant === 'success',
+      'text-success-dark bg-success-light shadow-btn':
+        !outline && variant === 'success',
       'transition-colors duration-100': outline,
       'focus:outline-primary': false && variant === 'primary',
       'focus:outline-danger-dark': variant === 'danger',
@@ -36,7 +37,7 @@
       'border-gray-300 bg-white hover:bg-light': variant === 'transparent',
       'rounded-md': variant !== 'transparent',
       'rounded-full p-0 h-8 w-8 bg-transparent hover:bg-gray-200 hover:border border-light text-gray-600':
-        variant === 'icon'
+        variant === 'icon',
     }"
   >
     <div class="flex w-full">
@@ -46,7 +47,7 @@
     </div>
     <p
       v-if="loading"
-      class="absolute transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
+      class="absolute transform -translate-x-1/2 -translate-y-1/2  top-1/2 left-1/2"
     >
       <spinner
         :size="'md'"
@@ -58,76 +59,76 @@
 </template>
 
 <script lang="ts">
-import { rippleEffect } from '@/utils'
-import { defineComponent, PropType } from '@vue/runtime-core'
-import Spinner from './Spinner.vue'
+import { rippleEffect } from "@/utils";
+import { defineComponent, PropType } from "@vue/runtime-core";
+import Spinner from "./Spinner.vue";
 
 export default defineComponent({
   components: { Spinner },
-  name: 'Btn',
+  name: "Btn",
   props: {
     outline: {
       type: Boolean,
-      default: false
+      default: false,
     },
     variant: {
       type: String as PropType<
-        | 'primary'
-        | 'danger'
-        | 'success'
-        | 'dark'
-        | 'light'
-        | 'primary-borderless'
-        | 'success-borderless'
-        | 'transparent'
-        | 'icon'
+        | "primary"
+        | "danger"
+        | "success"
+        | "dark"
+        | "light"
+        | "primary-borderless"
+        | "success-borderless"
+        | "transparent"
+        | "icon"
       >,
-      default: 'primary'
+      default: "primary",
     },
     size: {
-      type: String as PropType<'xs' | 'sm' | 'base' | 'lg'>,
-      default: 'base'
+      type: String as PropType<"xs" | "sm" | "base" | "lg">,
+      default: "base",
     },
     forceActive: {
       type: Boolean,
-      default: false
+      default: false,
     },
     loading: {
       type: Boolean,
-      default: false
+      default: false,
     },
     disabled: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
-  data () {
-    return {}
+  data() {
+    return {};
   },
   methods: {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    onMouseDown (event: any) {
-      rippleEffect(event, this.rippleClass)
-    }
+    onMouseDown(event: any) {
+      rippleEffect(event, this.rippleClass);
+    },
   },
   computed: {
-    rippleClass () {
+    rippleClass() {
       switch (this.variant) {
-        case 'primary-borderless':
-          return 'ripple-primary'
-        case 'success-borderless':
-          return 'ripple-success'
-        case 'transparent':
-          return 'ripple-gray'
-        case 'primary':
+        case "primary-borderless":
+          return "ripple-primary";
+        case "success-borderless":
+          return "ripple-success";
+        case "transparent":
+          return "ripple-gray";
+        case "primary":
           if (this.outline) {
-            return 'ripple-primary'
+            return "ripple-primary";
           }
-          return 'ripple-white'
+          return "ripple-white";
         default:
-          return 'ripple-white'
+          return "ripple-white";
       }
-    }
-  }
-})
+    },
+  },
+});
 </script>

@@ -6,7 +6,7 @@
     >
       <div class="flex items-center ">
         <span
-          class="my-auto mr-2 text-lg cursor-move material-icons-outlined opacity-70"
+          class="my-auto mr-2 text-lg cursor-move drag-handle material-icons-outlined opacity-70"
         >
           drag_indicator
         </span>
@@ -14,13 +14,13 @@
           {{ $t('event_template_rule_editor.exercise_number') }}
           {{ modelValue._ordering + 1 }}
         </h4>
-        <div class="flex ml-auto space-x-2">
+        <div class="flex items-center ml-auto space-x-2">
           <Btn @click="showRuleDialog()" :size="'sm'">
             {{ $t('event_template_rule_editor.choose_exercise') }}
           </Btn>
           <!--@click="deleteRule()"-->
-          <Btn :size="'sm'" :variant="'danger'" :outline="true"
-            ><span style="font-size: 17px;" class="material-icons-outlined">
+          <Btn :size="'sm'" :variant="'icon'" :outline="true"
+            ><span style="font-size: 17px;" class="material-icons-outlined text-danger-dark">
               close
             </span>
           </Btn>
@@ -231,14 +231,12 @@
 import Dialog from '@/components/ui/Dialog.vue'
 import {
   EventTemplateRule,
-  EventTemplateRuleClause,
   EventTemplateRuleType,
   Exercise
   //Tag as ITag
 } from '@/models'
 import { defineComponent, PropType } from '@vue/runtime-core'
 import Btn from '@/components/ui/Btn.vue'
-import { getTranslatedString as _ } from '@/i18n'
 import ExercisePicker from '@/components/teacher/ExercisePicker.vue'
 import MinimalExercisePreview from '../ExerciseEditor/MinimalExercisePreview.vue'
 import { getExercisesById } from '@/api/exercises'

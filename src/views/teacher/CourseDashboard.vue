@@ -6,7 +6,7 @@
       </template>
       <template v-slot:body>
         <div class="flex justify-between mt-2">
-          <div class="flex flex-col space-y-3">
+          <div class="flex flex-col space-y-6">
             <div class="flex items-center" v-show="!editingName">
               <p class="mr-2 text-muted">Nome</p>
               <p class="mr-3">{{ currentCourse.name }}</p>
@@ -77,7 +77,7 @@
               </Btn>
             </div>
             <div v-show="editingDescription" class="flex items-center">
-              <TextEditor class="w-1/2 mr-2" v-model="dirtyCourseDescription">
+              <TextEditor class="w-full mr-2" v-model="dirtyCourseDescription">
                 {{ $t('course_creation_form.course_description') }}
               </TextEditor>
               <Btn

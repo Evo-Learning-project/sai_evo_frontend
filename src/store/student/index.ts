@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import { EventParticipation, EventTemplate } from '@/models';
-import { actions } from './actions';
-import { getters } from './getters';
-import { mutations } from './mutations';
+import { EventParticipation } from "@/models";
+import { actions } from "./actions";
+import { getters } from "./getters";
+import { mutations } from "./mutations";
 
 export const studentStore = {
   namespaced: true,
@@ -10,6 +10,7 @@ export const studentStore = {
     currentEventParticipation: null as EventParticipation | null,
     eventParticipations: [] as EventParticipation[],
     editingEvent: null as Event | null,
+    previewingEvent: null as Event | null,
   }),
   mutations: {
     ...mutations,

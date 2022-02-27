@@ -1,22 +1,30 @@
-import { FieldList } from './autoSave';
-import { SelectableOption } from './interfaces';
+import { FieldList } from "./autoSave";
+import { SelectableOption } from "./interfaces";
 import {
+  EventParticipationSlot,
   Exercise,
   ExerciseChoice,
   ExerciseState,
   ExerciseType,
-} from './models';
-import { icons as exerciseTypesIcons } from '@/assets/exerciseTypesIcons';
-import { icons as exerciseStatesIcons } from '@/assets/exerciseStatesIcons';
-import { getTranslatedString as _ } from '@/i18n';
+} from "./models";
+import { icons as exerciseTypesIcons } from "@/assets/exerciseTypesIcons";
+import { icons as exerciseStatesIcons } from "@/assets/exerciseStatesIcons";
+import { getTranslatedString as _ } from "@/i18n";
 
 export const EXERCISE_AUTO_SAVE_DEBOUNCE_TIME_MS = 3000;
-export const EXERCISE_AUTO_SAVE_DEBOUNCED_FIELDS: FieldList<Exercise> =
-  ['label', 'text', 'solution'];
+export const EXERCISE_AUTO_SAVE_DEBOUNCED_FIELDS: FieldList<Exercise> = [
+  "label",
+  "text",
+  "solution",
+];
 
 export const EXERCISE_CHOICE_AUTO_SAVE_DEBOUNCE_TIME_MS = 3000;
 export const EXERCISE_CHOICE_AUTO_SAVE_DEBOUNCED_FIELDS: FieldList<ExerciseChoice> =
-  ['text'];
+  ["text"];
+
+export const EVENT_PARTICIPATION_SLOT_DEBOUNCE_TIME_MS = 10000;
+export const EVENT_PARTICIPATION_SLOT_DEBOUNCED_FIELDS: FieldList<EventParticipationSlot> =
+  ["answer_text"];
 
 export const exerciseTypeOptions: SelectableOption[] = (
   Object.keys(ExerciseType) as unknown[] as ExerciseType[]
@@ -25,7 +33,7 @@ export const exerciseTypeOptions: SelectableOption[] = (
   .map((key) => ({
     icons: exerciseTypesIcons[key],
     value: parseInt(String(key)),
-    content: _('exercise_types.' + key),
+    content: _("exercise_types." + key),
   }));
 
 export const exerciseStateOptions: SelectableOption[] = (
@@ -35,6 +43,6 @@ export const exerciseStateOptions: SelectableOption[] = (
   .map((key) => ({
     icons: exerciseStatesIcons[key],
     value: parseInt(String(key)),
-    content: _('exercise_states.' + key),
-    description: _('exercise_states_descriptions.' + key),
+    content: _("exercise_states." + key),
+    description: _("exercise_states_descriptions." + key),
   }));

@@ -4,23 +4,21 @@ import {
   EventParticipationSlot,
   EventParticipation,
   Exercise,
-  Tag,
   User,
   Event,
   ExerciseChoice,
   ExerciseTestCase,
   EventTemplateRule,
   EventTemplate,
-} from '@/models';
-import { MutationPayload, TeacherState } from '../types';
+} from "@/models";
+import { MutationPayload, TeacherState } from "../types";
 
 export const mutations = {
   setExercises: (state: TeacherState, exercises: Exercise[]) =>
     (state.exercises = exercises),
   setCurrentExercisePage: (state: TeacherState, pageNumber: number) =>
     (state.currentExercisePage = pageNumber),
-  setEvents: (state: TeacherState, events: Event[]) =>
-    (state.events = events),
+  setEvents: (state: TeacherState, events: Event[]) => (state.events = events),
 
   // update an event in memory with the given payload
   setEvent: (
@@ -96,9 +94,7 @@ export const mutations = {
       exerciseId,
       children,
       payload,
-    }: MutationPayload<
-      ExerciseChoice[] | Exercise[] | ExerciseTestCase[]
-    >
+    }: MutationPayload<ExerciseChoice[] | Exercise[] | ExerciseTestCase[]>
   ) => {
     const target = (state.exercises as Exercise[]).find(
       (e) => e.id === exerciseId
@@ -111,9 +107,7 @@ export const mutations = {
     state: TeacherState,
     { templateId, payload }: MutationPayload<EventTemplateRule[]>
   ) => {
-    const target = state.events.find(
-      (e) => e.template?.id === templateId
-    );
+    const target = state.events.find((e) => e.template?.id === templateId);
     if (target) {
       (target.template as EventTemplate).rules = payload;
     }

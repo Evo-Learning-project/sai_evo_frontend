@@ -58,7 +58,7 @@
       opacity: 0;
     }
     .user-content {
-      @apply py-5 pl-4 pr-2 border-l-8 rounded-sm bg-gray-50 border-primary-light;
+      @apply py-5 pl-4 pr-2 rounded-sm border-l-6 bg-gray-50 border-primary-light;
     }
 
     .bg-gray-50 .user-content {
@@ -203,7 +203,7 @@
       @apply bg-light !important
     }
     .ti-tag {
-      @apply rounded-full bg-primary text-lightText px-3 py-0.5 text-sm !important
+      @apply rounded-full bg-primary text-lightText px-3 py-0.5 text-sm overflow-hidden overflow-ellipsis !important
     }
     .ti-tag-sm {
       @apply h-6 px-2

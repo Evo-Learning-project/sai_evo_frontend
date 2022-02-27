@@ -277,7 +277,7 @@ export const it = {
     one_exercise_from_set_description:
       'Ogni studente vedrà un esercizio scelto a caso tra questi:',
     tag_based_description:
-      'Ogni studente vedrà un esercizio a caso che tra i tag ha:',
+      'Ogni studente vedrà un esercizio scelto a caso che tra i tag ha:',
     same_exercise_for_everyone_description:
       'Tutti gli studenti vedranno questo esercizio:',
     tag_based_introduction:
