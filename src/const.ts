@@ -1,6 +1,7 @@
 import { FieldList } from "./autoSave";
 import { SelectableOption } from "./interfaces";
 import {
+  Event,
   EventParticipationSlot,
   Exercise,
   ExerciseChoice,
@@ -10,6 +11,12 @@ import {
 import { icons as exerciseTypesIcons } from "@/assets/exerciseTypesIcons";
 import { icons as exerciseStatesIcons } from "@/assets/exerciseStatesIcons";
 import { getTranslatedString as _ } from "@/i18n";
+
+export const EVENT_AUTO_SAVE_DEBOUNCE_TIME_MS = 3000;
+export const EVENT_AUTO_SAVE_DEBOUNCED_FIELDS: FieldList<Event> = [
+  "name",
+  "instructions",
+];
 
 export const EXERCISE_AUTO_SAVE_DEBOUNCE_TIME_MS = 3000;
 export const EXERCISE_AUTO_SAVE_DEBOUNCED_FIELDS: FieldList<Exercise> = [
