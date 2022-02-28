@@ -1,31 +1,29 @@
-<template
-  ><div>
+<template>
+  <div>
     <spinner v-if="loading"></spinner>
-    <div class="relative transform -translate-y-1/2 top-1/2">
-      <h1 class="mx-auto mb-10 text-4xl text-center">
-        Esercitazioni Unipi
+    <div class="my-auto">
+      <h1 class="mx-auto mb-10 text-4xl text-center text-primary">
+        SAI Evo &mdash; ver. &alpha; 1.0
       </h1>
       <!-- <button @click="printDebug()">debug</button>
     <button @click="testGetUser()">test get user</button> -->
       <div
-        class="w-full px-6 py-12 mx-auto my-auto text-center border shadow-xl rounded-xl md:px-20 md:mx-auto md:w-2/3 border-gray-150"
+        class="w-full px-6 py-12 mx-auto my-auto text-center rounded-md  shadow-elevation-2 md:px-20 md:mx-auto md:w-2/3 border-gray-150"
       >
-        <h1 class="mx-auto mb-4 text-2xl text-center">
-          Login {{ $route.params.role == 'teacher' ? 'docente' : 'studente' }}
+        <h1 class="mx-auto text-center">
+          {{ $t("headings.login") }}
         </h1>
         <p class="mb-3">
-          Effettua l'accesso con il tuo indirizzo email
+          {{ $t("login_screen.login_text") }}
           <strong
             >@{{
-              $route.params.role == 'teacher' ? '' : 'studenti.'
+              $route.params.role == "teacher" ? "" : "studenti."
             }}unipi.it</strong
           >.
         </p>
         <p class="mb-3">
-          <i class="mr-1 text-sm text-red-700 fas fa-exclamation-circle"></i>
-          <span class="font-semibold text-red-700">Attenzione:</span> i cookie
-          devono essere abilitati per effettuare il login, e non si deve essere
-          in modalità incognito.
+          <strong> {{ $t("login_screen.warning") }}:</strong>
+          {{ $t("login_screen.cookies_warning") }}
         </p>
         <!-- <div class="mb-4">
         <span class="mr-3 font-medium">Browser supportati:</span>
@@ -38,21 +36,17 @@
           src="../assets/firefox.png"
         />
       </div> -->
-        <div class="mt-6 text-center">
+        <div class="mt-12 text-center">
           <Btn
             @click="handleClickSignIn"
-            :variant="'green'"
+            :variant="'success'"
             :size="'lg'"
             class="relative md:w-max"
-            :disabled="!googleOauthReady || loading"
+            :disabled="!googleOauthReady || localLoading"
+            :loading="!googleOauthReady && !googleOauthHadError"
           >
-            <div
-              class="absolute ml-2.5 mt-0.5 left-1/2 top-1/2"
-              v-if="!googleOauthReady && !googleOauthHadError"
-            >
-              <spinner :fixed="false"></spinner>
-            </div>
-            <i class="mr-1 fas fa-lock"></i> Entra
+            <span class="mr-3 material-icons-outlined">login</span>
+            {{ $t("login_screen.login") }}
           </Btn>
         </div>
       </div>
@@ -60,73 +54,76 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 /* eslint-disable */
-import Btn from '@/components/ui/Btn.vue'
-import { inject, toRefs } from 'vue'
+import Btn from "@/components/ui/Btn.vue";
+import { inject, toRefs } from "vue";
 //import { getMainView } from '@/router'
-import Spinner from '@/components/ui/Spinner.vue'
-export default {
-  name: 'Login',
+import Spinner from "@/components/ui/Spinner.vue";
+import { defineComponent } from "@vue/runtime-core";
+import { loadingMixin } from "@/mixins";
+
+export default defineComponent({
+  name: "Login",
   components: {
     Btn,
-    Spinner
+    Spinner,
   },
-  data () {
+  data() {
     return {
-      user: '',
+      user: "",
       loadingLogin: true,
-      loading: false
-    }
+    };
   },
+  mixins: [loadingMixin],
   methods: {
-    redirectToMainView () {
-      this.$router.push('/teacher/courses')
+    redirectToMainView() {
+      this.$router.push("/teacher/courses");
     },
-    async handleClickSignIn () {
+    async handleClickSignIn() {
       try {
-        this.loading = true
-        const googleUser = await this.$gAuth.signIn()
-        console.log(googleUser)
+        this.loading = true;
+        const googleUser = await this.$gAuth.signIn();
+        console.log(googleUser);
         if (!googleUser) {
-          return null
+          return null;
         }
-        this.user = googleUser.getBasicProfile().getEmail()
-        const token = googleUser.getAuthResponse().access_token
-        await this.$store.dispatch('shared/convertToken', token)
-        await this.$store.dispatch('shared/getUserData')
-        this.redirectToMainView()
+        this.user = googleUser.getBasicProfile().getEmail();
+        const token = googleUser.getAuthResponse().access_token;
+        await this.$store.dispatch("shared/convertToken", token);
+        await this.$store.dispatch("shared/getUserData");
+        this.redirectToMainView();
       } catch (error) {
         // this.$store.commit('pushNotification', {
         //   severity: 2,
         //   autoHide: 9000,
         //   message: 'Si è verificato un errore durante il login. Riprova.'
         // })
-        throw error
+        throw error;
       } finally {
-        this.loading = false
+        this.loading = false;
       }
-    }
+    },
   },
-  setup () {
-    const Vue3GoogleOauth = inject('Vue3GoogleOauth')
+  setup() {
+    const Vue3GoogleOauth = inject("Vue3GoogleOauth");
     return {
-      Vue3GoogleOauth
-    }
+      Vue3GoogleOauth,
+    };
   },
-  created () {
-    this.$store.commit('shared/resetToken')
+  created() {
+    this.$store.commit("shared/resetToken");
     // if (this.$store.getters.isAuthenticated) {
     //   this.$router.push(getMainView())
     // }
   },
   computed: {
-    googleOauthReady () {
-      return this.Vue3GoogleOauth.isInit
+    googleOauthReady() {
+      return (this as any).Vue3GoogleOauth.isInit;
     },
-    googleOauthHadError () {
-      return this.Vue3GoogleOauth.hadError
-    }
-  }
-}
+    googleOauthHadError() {
+      return (this as any).Vue3GoogleOauth.hadError;
+    },
+  },
+});
 </script>

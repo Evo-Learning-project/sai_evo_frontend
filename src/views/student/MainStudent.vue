@@ -29,7 +29,7 @@
           </div>
           <div class="hidden md:block">
             <div class="flex items-center ml-4 md:ml-6">
-              <p class="text-lightText">{{ $store.getters['shared/email'] }}</p>
+              <p class="text-lightText">{{ $store.getters["shared/email"] }}</p>
               <!-- <button
                 type="button"
                 class="p-1 text-gray-400 bg-gray-800 rounded-full hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white"
@@ -122,7 +122,7 @@
             <!-- Mobile menu button -->
             <button
               type="button"
-              class="inline-flex items-center justify-center p-2 text-gray-400 bg-gray-800 rounded-md hover:text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white"
+              class="inline-flex items-center justify-center p-2 text-gray-400 bg-gray-800 rounded-md  hover:text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white"
               aria-controls="mobile-menu"
               aria-expanded="false"
             >
@@ -178,32 +178,32 @@
           <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
           <a
             href="#"
-            class="block px-3 py-2 text-base font-medium text-white bg-gray-900 rounded-md"
+            class="block px-3 py-2 text-base font-medium text-white bg-gray-900 rounded-md "
             aria-current="page"
             >Dashboard</a
           >
 
           <a
             href="#"
-            class="block px-3 py-2 text-base font-medium text-gray-300 rounded-md hover:bg-gray-700 hover:text-white"
+            class="block px-3 py-2 text-base font-medium text-gray-300 rounded-md  hover:bg-gray-700 hover:text-white"
             >Team</a
           >
 
           <a
             href="#"
-            class="block px-3 py-2 text-base font-medium text-gray-300 rounded-md hover:bg-gray-700 hover:text-white"
+            class="block px-3 py-2 text-base font-medium text-gray-300 rounded-md  hover:bg-gray-700 hover:text-white"
             >Projects</a
           >
 
           <a
             href="#"
-            class="block px-3 py-2 text-base font-medium text-gray-300 rounded-md hover:bg-gray-700 hover:text-white"
+            class="block px-3 py-2 text-base font-medium text-gray-300 rounded-md  hover:bg-gray-700 hover:text-white"
             >Calendar</a
           >
 
           <a
             href="#"
-            class="block px-3 py-2 text-base font-medium text-gray-300 rounded-md hover:bg-gray-700 hover:text-white"
+            class="block px-3 py-2 text-base font-medium text-gray-300 rounded-md  hover:bg-gray-700 hover:text-white"
             >Reports</a
           >
         </div>
@@ -226,7 +226,7 @@
             </div>
             <button
               type="button"
-              class="flex-shrink-0 p-1 ml-auto text-gray-400 bg-gray-800 rounded-full hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white"
+              class="flex-shrink-0 p-1 ml-auto text-gray-400 bg-gray-800 rounded-full  hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white"
             >
               <span class="sr-only">View notifications</span>
               <!-- Heroicon name: outline/bell -->
@@ -270,11 +270,9 @@
       </div>
     </nav>
     <header
-      class="sticky top-0 z-20 px-12 bg-indigo-100 shadow-md bg-opacity-70 backdrop-blur-sm backdrop-filter"
+      class="sticky top-0 z-20 px-12 bg-indigo-100 shadow-md  bg-opacity-70 backdrop-blur-sm backdrop-filter"
     >
-      <div
-        class="flex items-center px-4 py-4 mx-auto sm:px-6 lg:px-8"
-      >
+      <div class="flex items-center px-4 py-4 mx-auto sm:px-6 lg:px-8">
         <!-- <h1 class="text-3xl font-bold text-gray-900">
           Dashboard
         </h1> -->
@@ -282,7 +280,11 @@
           <h2 class="mb-0">
             {{ routeTitle }}
           </h2>
-          <BreadCrumbs :route="$route" class="mt-1"></BreadCrumbs>
+          <BreadCrumbs
+            v-if="!$route.meta.hideBreadcrumbs"
+            :route="$route"
+            class="mt-1"
+          ></BreadCrumbs>
         </div>
         <div id="main-student-header-right" class="ml-auto"></div>
       </div>
@@ -304,38 +306,38 @@
 </template>
 
 <script lang="ts">
-import { courseIdMixin, eventIdMixin } from '@/mixins'
+import { courseIdMixin, eventIdMixin } from "@/mixins";
 import {
   ROUTE_TITLE_COURSE_NAME_TOKEN,
-  ROUTE_TITLE_EVENT_NAME_TOKEN
-} from '@/navigation/const'
-import { SidebarOption } from '@/navigation/sidebar'
-import { defineComponent } from '@vue/runtime-core'
-import ErrorView from '../shared/ErrorView.vue'
-import SnackBar from '@/components/ui/SnackBar.vue'
-import BreadCrumbs from '@/components/ui/BreadCrumbs.vue'
+  ROUTE_TITLE_EVENT_NAME_TOKEN,
+} from "@/navigation/const";
+import { SidebarOption } from "@/navigation/sidebar";
+import { defineComponent } from "@vue/runtime-core";
+import ErrorView from "../shared/ErrorView.vue";
+import SnackBar from "@/components/ui/SnackBar.vue";
+import BreadCrumbs from "@/components/ui/BreadCrumbs.vue";
 
 export default defineComponent({
-  name: 'MainStudent',
-  data () {
-    return {}
+  name: "MainStudent",
+  data() {
+    return {};
   },
   mixins: [courseIdMixin, eventIdMixin],
   methods: {
-    replaceTitleTokens (str: string) {
+    replaceTitleTokens(str: string) {
       return str
         ?.replace(ROUTE_TITLE_COURSE_NAME_TOKEN, this.currentCourse.name)
-        ?.replace(ROUTE_TITLE_EVENT_NAME_TOKEN, this.currentEvent)
-    }
+        ?.replace(ROUTE_TITLE_EVENT_NAME_TOKEN, this.currentEvent);
+    },
   },
   computed: {
-    sidebarOptions (): SidebarOption[] {
-      return (this.$route.meta?.sidebarOptions ?? []) as SidebarOption[]
+    sidebarOptions(): SidebarOption[] {
+      return (this.$route.meta?.sidebarOptions ?? []) as SidebarOption[];
     },
-    routeTitle (): string {
-      return this.replaceTitleTokens(this.$route.meta.routeTitle as string)
-    }
+    routeTitle(): string {
+      return this.replaceTitleTokens(this.$route.meta.routeTitle as string);
+    },
   },
-  components: { ErrorView, SnackBar, BreadCrumbs }
-})
+  components: { ErrorView, SnackBar, BreadCrumbs },
+});
 </script>
