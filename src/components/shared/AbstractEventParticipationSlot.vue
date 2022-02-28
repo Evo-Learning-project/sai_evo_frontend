@@ -6,7 +6,7 @@
         class="mb-8 user-content"
         :class="{
           'bg-gray-200 p-2 border border-dark rounded-md':
-            false && allowEditScores
+            false && allowEditScores,
         }"
         v-html="exercise.text"
       ></div>
@@ -42,23 +42,23 @@
           >
             {{
               allowEditSubmission
-                ? $t('event_participation_slot.text_answer_label')
-                : $t('event_assessment.text_answer_label')
+                ? $t("event_participation_slot.text_answer_label")
+                : $t("event_assessment.text_answer_label")
             }}
           </TextEditor>
         </div>
 
         <!-- show assesment-->
         <div
-          class="w-1/2 px-6 py-3 mb-auto rounded bg-light shadow-elevation bg-opacity-70"
+          class="w-1/2 px-6 py-3 mb-auto rounded  bg-light shadow-elevation-2 bg-opacity-70"
           v-if="showAssessment"
         >
           <!-- style="background-color: #e6f4ea; border: 1px solid #dadce0" -->
           <p class="text-muted">
-            {{ $t('misc.score') }}:
+            {{ $t("misc.score") }}:
             <strong class="text-lg">{{ modelValue.score }}</strong>
             <span v-if="!!modelValue.exercise.max_score"
-              >&nbsp;{{ $t('misc.out_of') }}
+              >&nbsp;{{ $t("misc.out_of") }}
               <strong class="text-lg">
                 {{ modelValue.exercise.max_score }}</strong
               ></span
@@ -68,7 +68,7 @@
             v-if="(modelValue.comment?.length ?? 0) > 0"
             class="mt-2 text-muted"
           >
-            {{ $t('misc.teacher_comment') }}:
+            {{ $t("misc.teacher_comment") }}:
           </p>
           <p v-html="modelValue.comment"></p>
         </div>
@@ -77,21 +77,21 @@
         <div v-if="allowEditScores" class="w-1/2">
           <!-- TODO work on this -->
           <p v-if="modelValue.seen_at">
-            {{ $t('event_assessment.exercise_seen_at') }}
+            {{ $t("event_assessment.exercise_seen_at") }}
             <Timestamp :value="modelValue.seen_at"></Timestamp>
           </p>
           <p v-if="modelValue.answered_at">
-            {{ $t('event_assessment.exercise_answered_at') }}
+            {{ $t("event_assessment.exercise_answered_at") }}
             <Timestamp :value="modelValue.answered_at"></Timestamp>
           </p>
           <!-- -->
-          <h3>{{ $t('event_assessment.your_assessment') }}</h3>
+          <h3>{{ $t("event_assessment.your_assessment") }}</h3>
           <p
             class="mb-4 text-muted"
             v-if="modelValue.score == null || modelValue.score.length == 0"
           >
             {{
-              $t('event_assessment.this_exercise_requires_manual_assessment')
+              $t("event_assessment.this_exercise_requires_manual_assessment")
             }}
           </p>
           <div class="mt-4">
@@ -100,13 +100,13 @@
                 class="mb-4"
                 :modelValue="modelValue.score"
                 @update:modelValue="emitUpdate('score', $event)"
-                >{{ $t('event_assessment.assigned_score') }}
+                >{{ $t("event_assessment.assigned_score") }}
               </NumberInput>
               <TextEditor
                 class="w-full"
                 :modelValue="modelValue.comment"
                 @update:modelValue="emitUpdate('comment', $event)"
-                >{{ $t('event_assessment.comment_for_student') }}</TextEditor
+                >{{ $t("event_assessment.comment_for_student") }}</TextEditor
               >
             </p>
           </div>
@@ -121,16 +121,16 @@ import {
   EventParticipationSlot,
   Exercise,
   ExerciseChoice,
-  ExerciseType
-} from '@/models'
-import { defineComponent, PropType } from '@vue/runtime-core'
-import CheckboxGroup from '@/components/ui/CheckboxGroup.vue'
-import { SelectableOption } from '@/interfaces'
-import RadioGroup from '../ui/RadioGroup.vue'
-import { getTranslatedString as _ } from '@/i18n'
-import TextEditor from '../ui/TextEditor.vue'
-import NumberInput from '../ui/NumberInput.vue'
-import Timestamp from '../ui/Timestamp.vue'
+  ExerciseType,
+} from "@/models";
+import { defineComponent, PropType } from "@vue/runtime-core";
+import CheckboxGroup from "@/components/ui/CheckboxGroup.vue";
+import { SelectableOption } from "@/interfaces";
+import RadioGroup from "../ui/RadioGroup.vue";
+import { getTranslatedString as _ } from "@/i18n";
+import TextEditor from "../ui/TextEditor.vue";
+import NumberInput from "../ui/NumberInput.vue";
+import Timestamp from "../ui/Timestamp.vue";
 
 export default defineComponent({
   components: {
@@ -138,114 +138,114 @@ export default defineComponent({
     RadioGroup,
     TextEditor,
     NumberInput,
-    Timestamp
+    Timestamp,
   },
-  name: 'AbstractEventParticipationSlot',
+  name: "AbstractEventParticipationSlot",
   props: {
     modelValue: {
       type: Object as PropType<EventParticipationSlot>,
-      required: true
+      required: true,
     },
     allowEditScores: {
       type: Boolean,
-      default: false
+      default: false,
     },
     allowEditSubmission: {
       type: Boolean,
-      default: false
+      default: false,
     },
     showExerciseLabel: {
       type: Boolean,
-      default: false
+      default: false,
     },
     showScores: {
       type: Boolean,
-      default: false
+      default: false,
     },
     showAssessment: {
       type: Boolean,
-      default: false
+      default: false,
     },
     saving: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   methods: {
-    emitUpdate (key: keyof EventParticipationSlot, value: unknown) {
-      console.log(key, value)
-      this.$emit('update:modelValue', {
+    emitUpdate(key: keyof EventParticipationSlot, value: unknown) {
+      console.log(key, value);
+      this.$emit("update:modelValue", {
         ...this.modelValue,
-        [key]: value
-      })
-    }
+        [key]: value,
+      });
+    },
   },
   computed: {
-    exercise (): Exercise {
-      return this.modelValue.exercise
+    exercise(): Exercise {
+      return this.modelValue.exercise;
     },
-    isMultipleChoiceSinglePossible (): boolean {
+    isMultipleChoiceSinglePossible(): boolean {
       return (
         this.exercise.exercise_type ==
         ExerciseType.MULTIPLE_CHOICE_SINGLE_POSSIBLE
-      )
+      );
     },
-    isMultipleChoiceMultiplePossible (): boolean {
+    isMultipleChoiceMultiplePossible(): boolean {
       return (
         this.exercise.exercise_type ==
         ExerciseType.MULTIPLE_CHOICE_MULTIPLE_POSSIBLE
-      )
+      );
     },
-    exerciseChoicesAsOptions (): SelectableOption[] {
+    exerciseChoicesAsOptions(): SelectableOption[] {
       if (
         !this.isMultipleChoiceSinglePossible &&
         !this.isMultipleChoiceMultiplePossible
       ) {
-        return []
+        return [];
       }
 
-      return (this.exercise.choices as ExerciseChoice[]).map(c => ({
+      return (this.exercise.choices as ExerciseChoice[]).map((c) => ({
         value: c.id,
         content: c.text,
         ...(this.showScores && {
           description:
             c.score +
-            ' ' +
+            " " +
             _(
               `exercise.choice_score_word_${
-                c.score == 1 || c.score == -1 ? 'singular' : 'plural'
+                c.score == 1 || c.score == -1 ? "singular" : "plural"
               }`
-            )
-        })
-      }))
+            ),
+        }),
+      }));
     },
-    isOpenAnswer (): boolean {
+    isOpenAnswer(): boolean {
       return (
-        parseInt((this.exercise?.exercise_type?.toString() ?? '') as string) ==
+        parseInt((this.exercise?.exercise_type?.toString() ?? "") as string) ==
         ExerciseType.OPEN_ANSWER
-      )
+      );
     },
     selectedChoicesProxy: {
-      get () {
-        return this.modelValue.selected_choices
+      get() {
+        return this.modelValue.selected_choices;
       },
-      set (val: string | string[]) {
+      set(val: string | string[]) {
         this.$emit(
-          'updateSelectedChoices',
-          typeof val === 'object' ? val : [val]
-        )
-      }
+          "updateSelectedChoices",
+          typeof val === "object" ? val : [val]
+        );
+      },
     },
     answerTextProxy: {
-      get () {
-        return this.modelValue.answer_text
+      get() {
+        return this.modelValue.answer_text;
       },
-      set (val: string) {
-        this.$emit('updateAnswerText', val)
-      }
-    }
-  }
-})
+      set(val: string) {
+        this.$emit("updateAnswerText", val);
+      },
+    },
+  },
+});
 </script>
 
 <style></style>

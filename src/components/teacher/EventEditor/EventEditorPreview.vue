@@ -8,13 +8,21 @@
             display: -webkit-box;
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
-            overflow:hidden
-            "
+            overflow: hidden;
+          "
         >
           {{ previewTitle }}
         </h3>
         <div class="ml-auto">
-          <div class="mr-0 chip">
+          <div
+            class="mr-0 chip"
+            :class="{
+              'chip-primary':
+                event.state === EventState.OPEN ||
+                event.state === EventState.RESTRICTED,
+              'chip-light': event.state === EventState.CLOSED,
+            }"
+          >
             <div class="flex items-center">
               <MultiIcon class="w-6" :icons="eventStateIcons"></MultiIcon>
               <p v-html="$t('event_states.' + event.state)"></p>
@@ -27,14 +35,14 @@
       ><div class="flex flex-col h-full">
         <div class="mt-1 mb-4 space-y-1 text-sm">
           <div class="flex space-x-1" v-if="event.begin_timestamp">
-            <p class="text-muted">{{ $t('event_editor.begin_timestamp') }}:</p>
+            <p class="text-muted">{{ $t("event_editor.begin_timestamp") }}:</p>
             <Timestamp
               :reduced="buttonIconsOnly"
               :value="event.begin_timestamp"
             ></Timestamp>
           </div>
           <div class="flex space-x-1" v-if="event.end_timestamp">
-            <p class="text-muted">{{ $t('event_editor.end_timestamp') }}:</p>
+            <p class="text-muted">{{ $t("event_editor.end_timestamp") }}:</p>
             <Timestamp
               :reduced="buttonIconsOnly"
               :value="event.end_timestamp"
@@ -46,11 +54,9 @@
             <router-link
               :to="{ name: 'ExamEditor', params: { examId: event.id } }"
               ><Btn v-if="hasPrivileges([CoursePrivilege.MANAGE_EVENTS])"
-                ><span class="text-base material-icons-outlined">
-                  edit
-                </span>
+                ><span class="text-base material-icons-outlined"> edit </span>
                 <span class="ml-1.5" v-if="!buttonIconsOnly">{{
-                  $t('event_preview.editor')
+                  $t("event_preview.editor")
                 }}</span></Btn
               ></router-link
             >
@@ -69,7 +75,7 @@
             @click="$emit('close')"
             ><span class="text-base material-icons-outlined"> block </span>
             <span class="ml-1" v-if="!buttonIconsOnly">{{
-              $t('event_preview.close')
+              $t("event_preview.close")
             }}</span></Btn
           >
           <router-link
@@ -82,7 +88,7 @@
                 visibility
               </span>
               <span class="ml-1.5" v-if="!buttonIconsOnly">{{
-                $t('event_preview.monitor')
+                $t("event_preview.monitor")
               }}</span></Btn
             ></router-link
           >
@@ -96,7 +102,7 @@
                 bar_chart
               </span>
               <span class="ml-1.5" v-if="!buttonIconsOnly">{{
-                $t('event_preview.results')
+                $t("event_preview.results")
               }}</span></Btn
             ></router-link
           >
@@ -107,17 +113,17 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/runtime-core'
-import { PropType } from 'vue'
-import { Event, EventState, CoursePrivilege } from '@/models'
-import Card from '@/components/ui/Card.vue'
-import Timestamp from '@/components/ui/Timestamp.vue'
-import { getTranslatedString as _ } from '@/i18n'
-import { icons as eventStatesIcons } from '@/assets/eventStateIcons'
-import MultiIcon from '@/components/ui/MultiIcon.vue'
-import Btn from '@/components/ui/Btn.vue'
-import { coursePrivilegeMixin } from '@/mixins'
-import CopyToClipboard from '@/components/ui/CopyToClipboard.vue'
+import { defineComponent } from "@vue/runtime-core";
+import { PropType } from "vue";
+import { Event, EventState, CoursePrivilege } from "@/models";
+import Card from "@/components/ui/Card.vue";
+import Timestamp from "@/components/ui/Timestamp.vue";
+import { getTranslatedString as _ } from "@/i18n";
+import { icons as eventStatesIcons } from "@/assets/eventStateIcons";
+import MultiIcon from "@/components/ui/MultiIcon.vue";
+import Btn from "@/components/ui/Btn.vue";
+import { coursePrivilegeMixin } from "@/mixins";
+import CopyToClipboard from "@/components/ui/CopyToClipboard.vue";
 
 export default defineComponent({
   components: {
@@ -125,61 +131,61 @@ export default defineComponent({
     Timestamp,
     MultiIcon,
     Btn,
-    CopyToClipboard
+    CopyToClipboard,
   },
-  name: 'EventEditorPreview',
+  name: "EventEditorPreview",
   mixins: [coursePrivilegeMixin],
   props: {
     event: {
       type: Object as PropType<Event>,
-      required: true
+      required: true,
     },
     buttonIconsOnly: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
-  data () {
+  data() {
     return {
       CoursePrivilege,
-      EventState
-    }
+      EventState,
+    };
   },
   computed: {
-    previewTitle (): string {
-      return (this.event?.name ?? '').trim().length > 0
+    previewTitle(): string {
+      return (this.event?.name ?? "").trim().length > 0
         ? (this.event.name as string)
-        : _('event_preview.unnamed_event')
+        : _("event_preview.unnamed_event");
     },
-    isDraft (): boolean {
-      return this.event.state === EventState.DRAFT
+    isDraft(): boolean {
+      return this.event.state === EventState.DRAFT;
     },
-    eventStateIcons () {
-      return eventStatesIcons[this.event.state as EventState]
+    eventStateIcons() {
+      return eventStatesIcons[this.event.state as EventState];
     },
-    hasBegun () {
+    hasBegun() {
       return (
         this.event.state === EventState.OPEN ||
         this.event.state === EventState.RESTRICTED
-      )
+      );
     },
-    hasEnded () {
-      return this.event.state === EventState.CLOSED
+    hasEnded() {
+      return this.event.state === EventState.CLOSED;
     },
-    halfClosed () {
-      return this.event.state === EventState.RESTRICTED
+    halfClosed() {
+      return this.event.state === EventState.RESTRICTED;
     },
-    permalink (): string {
+    permalink(): string {
       return (
         window.location.origin +
         this.$router.resolve({
-          name: 'ExamParticipationPreview',
-          params: { examId: this.event.id }
+          name: "ExamParticipationPreview",
+          params: { examId: this.event.id },
         }).fullPath
-      )
-    }
-  }
-})
+      );
+    },
+  },
+});
 </script>
 
 <style></style>

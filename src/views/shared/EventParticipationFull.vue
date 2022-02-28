@@ -5,6 +5,7 @@
       v-if="showSubmissionConfirmationMessage"
       class="mb-8 shadow-md bg-light"
     >
+      <!-- FIXME review shadow (make a shadow specifically for banners like this?)-->
       <template v-slot:header
         ><div class="flex items-center space-x-4">
           <div>
@@ -19,7 +20,7 @@
     <div class="px-6 py-6 rounded-md bg-gray-50" v-if="!firstLoading">
       <div class="flex mb-12">
         <div class="" v-if="showAssessment && !firstLoading">
-          <div class="px-6 py-3 rounded bg-light shadow-elevation">
+          <div class="px-6 py-3 rounded bg-light shadow-elevation-2">
             <h4 class="text-muted">
               {{ $t("misc.score") }}: <strong>{{ participation.score }}</strong>
             </h4>

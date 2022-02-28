@@ -2,28 +2,25 @@
   <div class="flex flex-no-wrap flex-grow">
     <!-- bg-gray-500 -->
     <!-- Sidebar starts -->
+    <!-- FIXME review shadow here and in the other two spots in this file -->
     <div
-      style="box-shadow: 2px 0 5px rgba(0,0,0,0.3)"
-      class="flex-col justify-between ease-in-out w-96 sm:relative md:w-60 bg-primary"
+      style="box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3)"
+      class="flex-col justify-between ease-in-out  w-96 sm:relative md:w-60 bg-primary"
       id="mobile-nav"
     >
       <div
         id="openSideBar"
-        class="absolute z-40 flex items-center justify-center w-10 h-10 mt-16 -mr-10 rounded-tr rounded-br shadow cursor-pointer left-28 top-4 text-lightText bg-primary md:hidden"
+        class="absolute z-40 flex items-center justify-center w-10 h-10 mt-16 -mr-10 rounded-tr rounded-br shadow cursor-pointer  left-28 top-4 text-lightText bg-primary md:hidden"
         @click="sidebarHandler(true)"
       >
-        <span class="material-icons-outlined">
-          cancel
-        </span>
+        <span class="material-icons-outlined"> cancel </span>
       </div>
       <div
         id="closeSideBar"
-        class="absolute right-0 flex items-center justify-center hidden w-10 h-10 mt-16 -mr-10 rounded-tr rounded-br shadow cursor-pointer text-lightText bg-primary"
+        class="absolute right-0 flex items-center justify-center hidden w-10 h-10 mt-16 -mr-10 rounded-tr rounded-br shadow cursor-pointer  text-lightText bg-primary"
         @click="sidebarHandler(false)"
       >
-        <span class="material-icons-outlined">
-          cancel
-        </span>
+        <span class="material-icons-outlined"> cancel </span>
       </div>
       <div class="fixed h-full px-2" style="width: inherit">
         <div class="flex items-center w-full px-8 mt-4">
@@ -40,18 +37,30 @@
             :key="'sidebar-' + option.label"
             :to="{ name: option.routeName }"
             :class="{
-              'mt-auto mb-44': false && index == sidebarOptions.length - 1
+              'mt-auto mb-44': false && index == sidebarOptions.length - 1,
             }"
           >
             <li
-              class="flex items-center justify-between w-full px-2 py-2.5 rounded-md cursor-pointer hover:transition-colors text-lightText hover:bg-primary-dark hover:duration-100"
+              class="
+                flex
+                items-center
+                justify-between
+                w-full
+                px-2
+                py-2.5
+                rounded-md
+                cursor-pointer
+                hover:transition-colors
+                text-lightText
+                hover:bg-primary-dark hover:duration-100
+              "
               :class="{
-                'bg-primary-dark pointer-events-none': isRouteActive(option)
+                'bg-primary-dark pointer-events-none': isRouteActive(option),
               }"
             >
               <div class="flex items-center space-x-2.5">
                 <span
-                  class="text-2xl text-gray-200 material-icons-outlined opacity-70"
+                  class="text-2xl text-gray-200  material-icons-outlined opacity-70"
                 >
                   {{ option.icon }}
                 </span>
@@ -108,54 +117,53 @@
 </template>
 
 <script lang="ts">
-import { courseIdMixin, coursePrivilegeMixin, eventIdMixin } from '@/mixins'
-import { Course, Event } from '@/models'
+import { courseIdMixin, coursePrivilegeMixin, eventIdMixin } from "@/mixins";
+import { Course, Event } from "@/models";
 import {
   ROUTE_TITLE_COURSE_NAME_TOKEN,
-  ROUTE_TITLE_EVENT_NAME_TOKEN
-} from '@/navigation/const'
-import { SidebarOption } from '@/navigation/sidebar'
-import { rippleEffect } from '@/utils'
-import { defineComponent } from '@vue/runtime-core'
-import ErrorView from '../shared/ErrorView.vue'
-import SnackBar from '@/components/ui/SnackBar.vue'
+  ROUTE_TITLE_EVENT_NAME_TOKEN,
+} from "@/navigation/const";
+import { SidebarOption } from "@/navigation/sidebar";
+import { rippleEffect } from "@/utils";
+import { defineComponent } from "@vue/runtime-core";
+import ErrorView from "../shared/ErrorView.vue";
+import SnackBar from "@/components/ui/SnackBar.vue";
 
 export default defineComponent({
-  name: 'MainTeacher',
-  data () {
+  name: "MainTeacher",
+  data() {
     return {
-      moved: true
-    }
+      moved: true,
+    };
   },
   mixins: [courseIdMixin, eventIdMixin, coursePrivilegeMixin],
   methods: {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    onRouteMouseDown (event: any) {
-      rippleEffect(event, 'ripple-light')
+    onRouteMouseDown(event: any) {
+      rippleEffect(event, "ripple-light");
     },
-    isRouteActive (option: SidebarOption) {
+    isRouteActive(option: SidebarOption) {
       return (
         option.routeName === this.$route.name ||
         option.children?.includes(this.$route.name as string)
-      )
-    }
+      );
+    },
   },
   computed: {
-    allowedSidebarOptions (): SidebarOption[] {
-      return ((this.$route.meta?.sidebarOptions ??
-        []) as SidebarOption[]).filter(o =>
-        this.hasPrivileges(o.requiredPrivileges)
-      )
+    allowedSidebarOptions(): SidebarOption[] {
+      return (
+        (this.$route.meta?.sidebarOptions ?? []) as SidebarOption[]
+      ).filter((o) => this.hasPrivileges(o.requiredPrivileges));
     },
-    routeTitle (): string {
+    routeTitle(): string {
       return (this.$route.meta.routeTitle as string)
-        ?.replace(ROUTE_TITLE_COURSE_NAME_TOKEN, this.currentCourse?.name ?? '')
-        ?.replace(ROUTE_TITLE_EVENT_NAME_TOKEN, this.currentEvent?.name ?? '')
+        ?.replace(ROUTE_TITLE_COURSE_NAME_TOKEN, this.currentCourse?.name ?? "")
+        ?.replace(ROUTE_TITLE_EVENT_NAME_TOKEN, this.currentEvent?.name ?? "");
     },
-    currentEvent (): Event {
-      return this.$store.getters['teacher/event'](this.eventId)
-    }
+    currentEvent(): Event {
+      return this.$store.getters["teacher/event"](this.eventId);
+    },
   },
-  components: { ErrorView, SnackBar }
-})
+  components: { ErrorView, SnackBar },
+});
 </script>

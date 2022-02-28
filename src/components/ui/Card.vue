@@ -8,10 +8,12 @@
       'my-4': size == 'default' && !marginLess,
       border: !highlighted,
       'border-2': highlighted,
-      'transition-shadow duration-75 ease-linear hover-shadow-elevation': hoverable,
-      'bg-light bg-opacity-80': filled
+      'transition-shadow duration-75 ease-linear hover-shadow-elevation':
+        hoverable,
+      'bg-light bg-opacity-80': filled,
     }"
   >
+    <!-- FIXME review shadow -->
     <div class="flex flex-col flex-grow w-full">
       <div v-if="$slots.header" class="">
         <slot name="header"></slot>
@@ -21,7 +23,7 @@
         class="flex-grow"
         :class="{
           'mt-4': size == 'default' && $slots.header,
-          'mt-1.5': size == 'sm'
+          'mt-1.5': size == 'sm',
         }"
       >
         <slot name="body"></slot>
@@ -38,37 +40,37 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from '@vue/runtime-core'
+import { defineComponent, PropType } from "@vue/runtime-core";
 
 export default defineComponent({
-  name: 'Card',
+  name: "Card",
   props: {
     size: {
-      type: String as PropType<'sm' | 'default'>,
-      default: 'default'
+      type: String as PropType<"sm" | "default">,
+      default: "default",
     },
     highlighted: {
       type: Boolean,
-      default: false
+      default: false,
     },
     marginLess: {
       type: Boolean,
-      default: false
+      default: false,
     },
     borderLess: {
       type: Boolean,
-      default: false
+      default: false,
     },
     filled: {
       type: Boolean,
-      default: false
+      default: false,
     },
     hoverable: {
       type: Boolean,
-      default: true
-    }
-  }
-})
+      default: true,
+    },
+  },
+});
 </script>
 
 <style></style>

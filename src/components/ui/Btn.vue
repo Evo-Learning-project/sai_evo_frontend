@@ -40,6 +40,7 @@
         variant === 'icon',
     }"
   >
+    <!-- FIXME review shadow -->
     <div class="flex w-full">
       <p class="flex items-center mx-auto" :class="loading ? 'invisible' : ''">
         <slot></slot>
