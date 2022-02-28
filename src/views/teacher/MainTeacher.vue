@@ -26,8 +26,16 @@
         <div class="flex items-center w-full px-8 mt-4">
           <img class="w-36" src="../../../public/unipi-logo.svg" />
         </div>
-        <div class="w-full mx-auto mt-4 mb-8 text-sm text-center text-light">
-          {{ $store.getters.email }}
+        <div
+          v-if="$store.getters['shared/isAuthenticated']"
+          class="flex items-center justify-center w-full mx-auto mt-8 mb-4 space-x-1 text-sm  text-light"
+        >
+          <p>{{ $store.getters["shared/email"] }}</p>
+          <Btn @click="logOut()" :variant="'icon'" :outline="true"
+            ><span class="text-lg text-lightText material-icons-outlined">
+              logout
+            </span></Btn
+          >
         </div>
         <ul class="flex flex-col w-full h-full mt-6">
           <router-link
@@ -124,13 +132,20 @@ import {
   ROUTE_TITLE_EVENT_NAME_TOKEN,
 } from "@/navigation/const";
 import { SidebarOption } from "@/navigation/sidebar";
-import { rippleEffect } from "@/utils";
+import { logOut, rippleEffect } from "@/utils";
 import { defineComponent } from "@vue/runtime-core";
 import ErrorView from "../shared/ErrorView.vue";
 import SnackBar from "@/components/ui/SnackBar.vue";
+import Btn from "@/components/ui/Btn.vue";
+import { redirectToMainView } from "@/utils";
 
 export default defineComponent({
   name: "MainTeacher",
+  created() {
+    if (!this.hasAnyPrivileges()) {
+      this.redirectToMainView();
+    }
+  },
   data() {
     return {
       moved: true,
@@ -138,6 +153,8 @@ export default defineComponent({
   },
   mixins: [courseIdMixin, eventIdMixin, coursePrivilegeMixin],
   methods: {
+    redirectToMainView,
+    logOut,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onRouteMouseDown(event: any) {
       rippleEffect(event, "ripple-light");
@@ -164,6 +181,6 @@ export default defineComponent({
       return this.$store.getters["teacher/event"](this.eventId);
     },
   },
-  components: { ErrorView, SnackBar },
+  components: { ErrorView, SnackBar, Btn },
 });
 </script>

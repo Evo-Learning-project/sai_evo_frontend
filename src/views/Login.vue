@@ -62,6 +62,7 @@ import { inject, toRefs } from "vue";
 import Spinner from "@/components/ui/Spinner.vue";
 import { defineComponent } from "@vue/runtime-core";
 import { loadingMixin } from "@/mixins";
+import { redirectToMainView } from "@/utils";
 
 export default defineComponent({
   name: "Login",
@@ -77,31 +78,23 @@ export default defineComponent({
   },
   mixins: [loadingMixin],
   methods: {
-    redirectToMainView() {
-      this.$router.push("/teacher/courses");
-    },
+    redirectToMainView,
     async handleClickSignIn() {
       try {
-        this.loading = true;
-        const googleUser = await this.$gAuth.signIn();
-        console.log(googleUser);
-        if (!googleUser) {
-          return null;
-        }
-        this.user = googleUser.getBasicProfile().getEmail();
-        const token = googleUser.getAuthResponse().access_token;
-        await this.$store.dispatch("shared/convertToken", token);
-        await this.$store.dispatch("shared/getUserData");
-        this.redirectToMainView();
+        await this.withLocalLoading(async () => {
+          const googleUser = await this.$gAuth.signIn();
+          console.log(googleUser);
+          if (!googleUser) {
+            return null;
+          }
+          this.user = googleUser.getBasicProfile().getEmail();
+          const token = googleUser.getAuthResponse().access_token;
+          await this.$store.dispatch("shared/convertToken", token);
+          await this.$store.dispatch("shared/getUserData");
+          this.redirectToMainView();
+        });
       } catch (error) {
-        // this.$store.commit('pushNotification', {
-        //   severity: 2,
-        //   autoHide: 9000,
-        //   message: 'Si è verificato un errore durante il login. Riprova.'
-        // })
         throw error;
-      } finally {
-        this.loading = false;
       }
     },
   },
@@ -112,10 +105,10 @@ export default defineComponent({
     };
   },
   created() {
-    this.$store.commit("shared/resetToken");
-    // if (this.$store.getters.isAuthenticated) {
-    //   this.$router.push(getMainView())
-    // }
+    //this.$store.commit("shared/resetToken");
+    if (this.$store.getters["shared/isAuthenticated"]) {
+      this.redirectToMainView();
+    }
   },
   computed: {
     googleOauthReady() {

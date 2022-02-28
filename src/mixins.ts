@@ -104,13 +104,21 @@ export const coursePrivilegeMixin = {
        * Given a list of required privileges, returns true iff the current
        * user has such privileges for the current course
        */
-      const myPrivileges =
+      const myPrivileges: CoursePrivilege[] =
         (store.state as any).shared.courses.find(
           (c: Course) =>
             c.id == (router.currentRoute.value.params.courseId as string)
         )?.privileges ?? [];
 
       return requiredPrivilegesList.every((p) => myPrivileges.includes(p));
+    },
+    hasAnyPrivileges() {
+      const myPrivileges: CoursePrivilege[] =
+        (store.state as any).shared.courses.find(
+          (c: Course) =>
+            c.id == (router.currentRoute.value.params.courseId as string)
+        )?.privileges ?? [];
+      return myPrivileges.length > 0;
     },
   },
 };

@@ -218,14 +218,18 @@ export default defineComponent({
       await this.withLoading(async () => {
         // flush any pending changes to any slot(s)
         this.proxyModelValue.slots.forEach(async (s) => {
+          console.log("flushing", s.id);
           await this.slotAutoSaveManagers[s.id].flush();
+          console.log("flushed", s.id);
         });
+        console.log("turning in");
         await this.partialUpdateEventParticipation({
           courseId: this.courseId,
           changes: {
             state: EventParticipationState.TURNED_IN,
           },
         });
+        console.log("turned in");
       });
 
       this.$router.push({
@@ -332,7 +336,7 @@ export default defineComponent({
         (!this.oneExerciseAtATime ||
           ((this.proxyModelValue.slots?.length ?? 0) > 0 &&
             (this.proxyModelValue.slots[0].is_last ?? false))) &&
-        !this.turnedIn
+        this.proxyModelValue.state !== EventParticipationState.TURNED_IN
       );
     },
     goingBackAllowed(): boolean {

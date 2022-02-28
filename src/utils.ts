@@ -4,6 +4,7 @@ import moment from "moment";
 import "moment/locale/it";
 import { getTranslatedString as _ } from "./i18n";
 import { ErrorMessage } from "./interfaces";
+import router from "./router";
 import store from "./store";
 import { SharedState } from "./store/types";
 
@@ -15,6 +16,21 @@ const SEARCH_DEBOUNCE_MAX_WAIT_MS = 1000;
 
 const STUDENT_DEBOUNCE_TEXT_TIME_MS = 5000;
 const STUDENT_DEBOUNCE_TEXT_MAX_WAIT_MS = 10000;
+
+export const logOut = (): void => {
+  store.commit("shared/resetToken");
+  router.push({
+    name: "Login",
+  });
+};
+
+export const redirectToMainView = (): void => {
+  if ((store.state as { shared: SharedState }).shared.user.is_teacher) {
+    router.push("/teacher/courses");
+  } else {
+    router.push("/student/courses");
+  }
+};
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const getDebouncedForFilter = (callback: any) =>

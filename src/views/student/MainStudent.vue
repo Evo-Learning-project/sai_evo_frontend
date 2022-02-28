@@ -28,8 +28,16 @@
             </div>
           </div>
           <div class="hidden md:block">
-            <div class="flex items-center ml-4 md:ml-6">
+            <div
+              v-if="$store.getters['shared/isAuthenticated']"
+              class="flex items-center ml-4 space-x-2 md:ml-6"
+            >
               <p class="text-lightText">{{ $store.getters["shared/email"] }}</p>
+              <Btn @click="logOut()" :variant="'icon'" :outline="true"
+                ><span class="text-lg text-lightText material-icons-outlined">
+                  logout
+                </span></Btn
+              >
               <!-- <button
                 type="button"
                 class="p-1 text-gray-400 bg-gray-800 rounded-full hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white"
@@ -316,6 +324,8 @@ import { defineComponent } from "@vue/runtime-core";
 import ErrorView from "../shared/ErrorView.vue";
 import SnackBar from "@/components/ui/SnackBar.vue";
 import BreadCrumbs from "@/components/ui/BreadCrumbs.vue";
+import Btn from "@/components/ui/Btn.vue";
+import { logOut } from "@/utils";
 
 export default defineComponent({
   name: "MainStudent",
@@ -329,6 +339,7 @@ export default defineComponent({
         ?.replace(ROUTE_TITLE_COURSE_NAME_TOKEN, this.currentCourse.name)
         ?.replace(ROUTE_TITLE_EVENT_NAME_TOKEN, this.currentEvent);
     },
+    logOut,
   },
   computed: {
     sidebarOptions(): SidebarOption[] {
@@ -338,6 +349,6 @@ export default defineComponent({
       return this.replaceTitleTokens(this.$route.meta.routeTitle as string);
     },
   },
-  components: { ErrorView, SnackBar, BreadCrumbs },
+  components: { ErrorView, SnackBar, BreadCrumbs, Btn },
 });
 </script>
