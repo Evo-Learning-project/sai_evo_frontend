@@ -1,22 +1,19 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import { mapState } from 'vuex';
-import { getTranslatedString as _ } from './i18n';
-import { Course, CoursePrivilege, getBlankCourse } from './models';
-import router from './router';
-import store from './store/index';
-import { SharedState, StudentState } from './store/types';
-import { setErrorNotification, setPageWideError } from './utils';
+import { mapState } from "vuex";
+import { getTranslatedString as _ } from "./i18n";
+import { Course, CoursePrivilege, getBlankCourse } from "./models";
+import router from "./router";
+import store from "./store/index";
+import { SharedState, StudentState } from "./store/types";
+import { setErrorNotification, setPageWideError } from "./utils";
 export const courseIdMixin = {
   computed: {
     courseId(): string {
       return router.currentRoute.value.params.courseId as string;
     },
     currentCourse(): Course {
-      return (
-        store.getters['shared/course'](this.courseId) ??
-        getBlankCourse()
-      );
+      return store.getters["shared/course"](this.courseId) ?? getBlankCourse();
     },
   },
 };
@@ -29,7 +26,7 @@ export const eventIdMixin = {
     currentEvent(): string {
       return (
         (store.state as { student: StudentState }).student
-          .currentEventParticipation?.event?.name ?? ''
+          .currentEventParticipation?.event?.name ?? ""
       );
     },
   },
@@ -42,8 +39,7 @@ export const loadingMixin = {
       onError?: (e?: unknown) => unknown,
       onSuccess?: () => void
     ) {
-      const sharedState = (store.state as { shared: SharedState })
-        .shared;
+      const sharedState = (store.state as { shared: SharedState }).shared;
 
       sharedState.loading = true;
       try {
@@ -59,8 +55,7 @@ export const loadingMixin = {
       callback: () => unknown,
       onError = setPageWideError
     ) {
-      const sharedState = (store.state as { shared: SharedState })
-        .shared;
+      const sharedState = (store.state as { shared: SharedState }).shared;
 
       sharedState.firstLoading = true;
       try {
@@ -72,8 +67,7 @@ export const loadingMixin = {
       }
     },
     async withLocalLoading(callback: () => unknown) {
-      const sharedState = (store.state as { shared: SharedState })
-        .shared;
+      const sharedState = (store.state as { shared: SharedState }).shared;
 
       sharedState.localLoading = true;
       try {
@@ -88,7 +82,7 @@ export const loadingMixin = {
     setErrorNotification,
   },
   computed: {
-    ...mapState('shared', ['firstLoading', 'localLoading']),
+    ...mapState("shared", ["firstLoading", "localLoading", "loading"]),
   },
 };
 
@@ -113,13 +107,10 @@ export const coursePrivilegeMixin = {
       const myPrivileges =
         (store.state as any).shared.courses.find(
           (c: Course) =>
-            c.id ==
-            (router.currentRoute.value.params.courseId as string)
+            c.id == (router.currentRoute.value.params.courseId as string)
         )?.privileges ?? [];
 
-      return requiredPrivilegesList.every((p) =>
-        myPrivileges.includes(p)
-      );
+      return requiredPrivilegesList.every((p) => myPrivileges.includes(p));
     },
   },
 };

@@ -6,17 +6,18 @@
     </div>
     <div class="flex flex-col space-y-12">
       <EventMetaEditor
-        :modelValue="proxyModelValue"
+        :modelValue="modelValue"
         @updateEvent="onChange($event.field, $event.value)"
       ></EventMetaEditor>
 
       <EventTemplateEditor
-        :modelValue="proxyModelValueTemplate"
+        v-if="!loading"
+        :modelValue="modelValueTemplate"
       ></EventTemplateEditor>
 
       <EventStateEditor
         class="pb-10"
-        :modelValue="proxyModelValue"
+        :modelValue="modelValue"
         @update:modelValue="onChange('state', $event)"
       ></EventStateEditor>
     </div>
@@ -47,7 +48,6 @@ import EventTemplateEditor from "@/components/teacher/EventTemplateEditor/EventT
 //import CollapsiblePanelGroup from '@/components/ui/CollapsiblePanelGroup.vue'
 import CloudSaveStatus from "@/components/ui/CloudSaveStatus.vue";
 import { defineComponent } from "@vue/runtime-core";
-import { getDebouncedForEditor } from "@/utils";
 import { Event, EventState, EventTemplate } from "@/models";
 import {
   courseIdMixin,
@@ -90,11 +90,11 @@ export default defineComponent({
     }, this.setPageWideError);
 
     this.autoSaveManager = new AutoSaveManager<Event>(
-      this.proxyModelValue,
+      this.modelValue,
       async (changes) => {
         await this.partialUpdateEvent({
           courseId: this.courseId,
-          eventId: this.proxyModelValue.id,
+          eventId: this.modelValue.id,
           changes,
         });
         if (changes.state === EventState.PLANNED) {
@@ -106,7 +106,7 @@ export default defineComponent({
         this.$store.state.shared.localLoading = true;
         this.setEvent({
           eventId: this.eventId,
-          payload: { ...this.proxyModelValue, ...changes },
+          payload: { ...this.modelValue, ...changes },
         });
       },
       EVENT_AUTO_SAVE_DEBOUNCED_FIELDS,
@@ -119,7 +119,7 @@ export default defineComponent({
       }
     );
 
-    if (this.proxyModelValue.state == EventState.OPEN) {
+    if (this.modelValue.state == EventState.OPEN) {
       this.showConfirmationDialog = true;
     }
   },
@@ -147,17 +147,12 @@ export default defineComponent({
   },
   computed: {
     ...mapGetters(["event"]),
-    proxyModelValue: {
-      get(): Event {
-        return this.event(this.eventId);
-      },
-      async set(val: Event) {
-        // await this.onChange(val);
-      },
+    modelValue(): Event {
+      return this.event(this.eventId);
     },
-    proxyModelValueTemplate(): EventTemplate {
+    modelValueTemplate(): EventTemplate {
       // return a blank object until the event has been retrieved
-      return this.proxyModelValue?.template ?? { rules: [] };
+      return this.modelValue?.template ?? { rules: [] };
     },
   },
 });

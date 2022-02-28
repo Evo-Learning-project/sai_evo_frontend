@@ -1,3 +1,4 @@
+import { EventTemplateRuleClause } from "./../../models/interfaces";
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import {
@@ -102,6 +103,37 @@ export const mutations = {
     if (target && children) {
       target[children] = payload as any;
     }
+  },
+  patchEventTemplateRule: (
+    state: TeacherState,
+    { templateId, ruleId, payload }: MutationPayload<Partial<EventTemplateRule>>
+  ) => {
+    const targetTemplate = state.events.find(
+      (e) => e.template?.id == templateId
+    );
+    console.log(targetTemplate);
+    if (targetTemplate) {
+      const targetRule = (targetTemplate.template as EventTemplate).rules.find(
+        (r) => r.id == ruleId
+      );
+      console.log("target RULE", targetRule, payload);
+      Object.assign(targetRule, { ...targetRule, ...payload });
+    }
+  },
+  patchEventTemplateRuleClause: (
+    state: TeacherState,
+    {
+      templateId,
+      ruleId,
+      clauseId,
+      payload,
+    }: MutationPayload<Partial<EventTemplateRuleClause>>
+  ) => {
+    const target = state.events
+      .find((e: Event) => e.template?.id == templateId)
+      ?.template?.rules?.find((r: EventTemplateRule) => r.id == ruleId)
+      ?.clauses?.find((c: EventTemplateRuleClause) => c.id == clauseId);
+    Object.assign(target, { ...target, ...payload });
   },
   setEventTemplateRules: (
     state: TeacherState,

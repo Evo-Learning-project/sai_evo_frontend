@@ -43,6 +43,7 @@ interface StoreOperationParameters<T> {
   eventId: string;
   exerciseId: string;
   ruleId: string;
+  clauseId: string;
   slotId: string;
   templateId: string;
   filters: SearchFilter;

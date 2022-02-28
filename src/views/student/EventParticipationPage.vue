@@ -107,7 +107,6 @@ import {
   EventParticipationState,
   EventType,
 } from "@/models";
-import { getDebouncedForStudentText } from "@/utils";
 import { defineComponent } from "@vue/runtime-core";
 import { getTranslatedString as _ } from "@/i18n";
 import { DialogData } from "@/interfaces";
@@ -138,10 +137,6 @@ export default defineComponent({
     },
   },
   async created() {
-    this.dispatchAnswerTextUpdate = getDebouncedForStudentText(
-      this.dispatchAnswerTextUpdate
-    );
-
     await this.withFirstLoading(
       async () =>
         await this.participateInEvent({
@@ -302,51 +297,6 @@ export default defineComponent({
           true
         );
     },
-
-    // TODO get rid of these methods
-    async onUpdateChoices(slot: EventParticipationSlot, newVal: string[]) {
-      this.saving = true;
-      this.savingError = false;
-      try {
-        await this.partialUpdateEventParticipationSlot({
-          courseId: this.courseId,
-          eventId: this.eventId,
-          participationId: this.proxyModelValue.id,
-          slotId: slot.id,
-          changes: { selected_choices: newVal },
-        });
-      } catch {
-        this.savingError = true;
-      } finally {
-        this.saving = false;
-      }
-    },
-    async onUpdateAnswerText(slot: EventParticipationSlot, newVal: string) {
-      this.saving = true;
-      this.savingError = false;
-      // update in-memory value
-      slot.answer_text = newVal;
-      try {
-        await this.dispatchAnswerTextUpdate(slot, newVal);
-      } catch {
-        this.savingError = true;
-      }
-      // finally {
-      //   this.saving = false
-      // }
-    },
-    async dispatchAnswerTextUpdate(slot: EventParticipationSlot, val: string) {
-      await this.partialUpdateEventParticipationSlot({
-        courseId: this.courseId,
-        eventId: this.eventId,
-        participationId: this.proxyModelValue.id,
-        slotId: slot.id,
-        changes: { answer_text: val },
-        mutate: false,
-      });
-      this.saving = false;
-    },
-    //TODO  -----------------
   },
   computed: {
     ...mapState("student", ["currentEventParticipation"]),

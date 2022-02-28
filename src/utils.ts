@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import debounce from 'lodash/debounce';
-import moment from 'moment';
-import 'moment/locale/it';
-import { getTranslatedString as _ } from './i18n';
-import { ErrorMessage } from './interfaces';
-import store from './store';
-import { SharedState } from './store/types';
+import debounce from "lodash/debounce";
+import moment from "moment";
+import "moment/locale/it";
+import { getTranslatedString as _ } from "./i18n";
+import { ErrorMessage } from "./interfaces";
+import store from "./store";
+import { SharedState } from "./store/types";
 
 const EDITOR_DEBOUNCE_TIME_MS = 1500;
 const EDITOR_DEBOUNCE_MAX_WAIT_MS = 4000;
@@ -17,21 +17,9 @@ const STUDENT_DEBOUNCE_TEXT_TIME_MS = 5000;
 const STUDENT_DEBOUNCE_TEXT_MAX_WAIT_MS = 10000;
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-export const getDebouncedForEditor = (callback: any) =>
-  debounce(callback, EDITOR_DEBOUNCE_TIME_MS, {
-    maxWait: EDITOR_DEBOUNCE_MAX_WAIT_MS,
-  });
-
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const getDebouncedForFilter = (callback: any) =>
   debounce(callback, SEARCH_DEBOUNCE_TIME_MS, {
     maxWait: SEARCH_DEBOUNCE_MAX_WAIT_MS,
-  });
-
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-export const getDebouncedForStudentText = (callback: any) =>
-  debounce(callback, STUDENT_DEBOUNCE_TEXT_TIME_MS, {
-    maxWait: STUDENT_DEBOUNCE_TEXT_MAX_WAIT_MS,
   });
 
 export const getFormattedTimestamp = (
@@ -39,15 +27,14 @@ export const getFormattedTimestamp = (
   dateOnly = false,
   reduced = false
 ): string => {
-  moment().locale('it');
+  moment().locale("it");
   return (
     moment(timestamp)
       //.calendar()
       .format(
         reduced
-          ? 'DD MMM YYYY' + (dateOnly ? '' : ', HH:mm')
-          : 'DD MMMM YYYY' +
-              (dateOnly ? '' : `, [${_('misc.at')}] HH:mm`)
+          ? "DD MMM YYYY" + (dateOnly ? "" : ", HH:mm")
+          : "DD MMMM YYYY" + (dateOnly ? "" : `, [${_("misc.at")}] HH:mm`)
       )
   );
 };
@@ -61,11 +48,11 @@ export const rippleEffect = (
     pageY: number;
     clientY: number;
   },
-  rippleClass = 'ripple-primary'
+  rippleClass = "ripple-primary"
 ): void => {
   //console.log('EVENT', event)
   const btn = event.currentTarget;
-  const circle = document.createElement('span');
+  const circle = document.createElement("span");
   const diameter = Math.max(btn.clientWidth, btn.clientHeight);
   const radius = diameter / 2;
 
@@ -73,11 +60,11 @@ export const rippleEffect = (
   const parentPosition = getComputedStyle(btn.offsetParent).position;
 
   const offsetX =
-    parentPosition === 'fixed' || parentPosition === 'absolute'
+    parentPosition === "fixed" || parentPosition === "absolute"
       ? event.clientX
       : event.pageX;
   const offsetY =
-    parentPosition === 'fixed' || parentPosition === 'absolute'
+    parentPosition === "fixed" || parentPosition === "absolute"
       ? event.clientY
       : event.pageY;
 
@@ -87,10 +74,10 @@ export const rippleEffect = (
   circle.style.width = circle.style.height = `${diameter}px`;
   circle.style.left = `${offsetX - (offsetLeft + radius)}px`;
   circle.style.top = `${offsetY - (offsetTop + radius)}px`;
-  circle.classList.add('ripple');
+  circle.classList.add("ripple");
   circle.classList.add(rippleClass);
 
-  const ripple = btn.getElementsByClassName('ripple')[0];
+  const ripple = btn.getElementsByClassName("ripple")[0];
   //console.log('ripple', ripple, 'offsetY', offsetY)
   if (ripple) {
     ripple.remove();
@@ -120,13 +107,13 @@ const getOffset = (el: {
 export const getErrorData = (e: any): ErrorMessage => {
   if (e.response) {
     return {
-      icon: 'error_outline',
-      title: _('errors.' + e.response.status),
+      icon: "error_outline",
+      title: _("errors." + e.response.status),
     };
   } else if (e.request) {
     return {
-      title: _('errors.no_connection'),
-      icon: 'cloud_off',
+      title: _("errors.no_connection"),
+      icon: "cloud_off",
     };
   } else {
     // TODO implement
@@ -143,6 +130,6 @@ export const setPageWideError = (e: any) => {
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const setErrorNotification = (e: any) =>
-  store.commit('shared/setErrorNotificationData', {
+  store.commit("shared/setErrorNotificationData", {
     data: getErrorData(e),
   });

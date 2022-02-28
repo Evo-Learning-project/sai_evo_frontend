@@ -99,7 +99,7 @@
 
     .hover-shadow-elevation-2:hover, .shadow-elevation-2 {
       /* DARK box-shadow: rgba(0,0,0, .3) 0 1px 2px 0, rgba(0,0,0, .15) 0 2px 6px 2px; */
-      box-shadow:  rgba(60, 64, 67, .3) 0 1px 2px 0, rgba(60, 64, 67, .15) 0 2px 6px 2px;
+      box-shadow: rgba(60, 64, 67, .3) 0 1px 2px 0, rgba(60, 64, 67, .15) 0 2px 6px 2px !important;
     }
     
     .card button {
@@ -234,7 +234,7 @@
 
     .ti-autocomplete {
       z-index: 9999 !important;
-      @apply p-2 absolute bg-gray-50 rounded-b-md shadow-popup !important
+      @apply px-2 py-1 absolute bg-gray-50 rounded-md mt-2 shadow-popup !important;
     }
 
     .ti-selected-item {

@@ -1,7 +1,7 @@
 /* eslint-disable no-unexpected-multiline */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import axios from 'axios';
+import axios from "axios";
 import {
   Course,
   CoursePrivilege,
@@ -16,15 +16,10 @@ import {
   ExerciseChoice,
   Tag,
   User,
-} from '@/models';
-import {
-  createCourse,
-  getCourses,
-  getTags,
-  updateCourse,
-} from '@/api/courses';
+} from "@/models";
+import { createCourse, getCourses, getTags, updateCourse } from "@/api/courses";
 
-import { Commit } from 'vuex';
+import { Commit } from "vuex";
 
 import {
   addTagToExercise,
@@ -35,7 +30,7 @@ import {
   removeTagFromExercise,
   updateExercise,
   updateExerciseChoice,
-} from '@/api/exercises';
+} from "@/api/exercises";
 
 import {
   bulkPartialUpdateEventParticipation,
@@ -47,29 +42,25 @@ import {
   getEventParticipations,
   getEvents,
   getEventTemplate,
+  getEventTemplateRule,
   partialUpdateEvent,
   partialUpdateEventParticipationSlot,
+  partialUpdateEventTemplateRule,
   updateEvent,
   updateEventTemplateRule,
   updateEventTemplateRuleClause,
-} from '@/api/events';
-import { SearchFilter } from '@/api/interfaces';
-import { getUsers, updateUserCoursePrivileges } from '@/api/users';
+} from "@/api/events";
+import { SearchFilter } from "@/api/interfaces";
+import { getUsers, updateUserCoursePrivileges } from "@/api/users";
 
 export const actions = {
-  createCourse: async (
-    { commit }: { commit: Commit },
-    course: Course
-  ) => {
+  createCourse: async ({ commit }: { commit: Commit }, course: Course) => {
     const newCourse = await createCourse(course);
     return newCourse;
   },
-  updateCourse: async (
-    { commit }: { commit: Commit },
-    course: Course
-  ) => {
+  updateCourse: async ({ commit }: { commit: Commit }, course: Course) => {
     const updatedCourse = await updateCourse(course.id, course);
-    commit('shared/setCourse', course, { root: true });
+    commit("shared/setCourse", course, { root: true });
     return updatedCourse;
   },
   createExercise: async (
@@ -77,7 +68,7 @@ export const actions = {
     { courseId, exercise }: { courseId: string; exercise: Exercise }
   ) => {
     const newExercise = await createExercise(courseId, exercise);
-    commit('setExercises', [newExercise, ...state.exercises]);
+    commit("setExercises", [newExercise, ...state.exercises]);
     return newExercise;
   },
   createEvent: async (
@@ -85,18 +76,15 @@ export const actions = {
     { courseId, event }: { courseId: string; event: Event }
   ) => {
     const newEvent = await createEvent(courseId, event);
-    commit('setEvents', [newEvent, ...state.events]);
+    commit("setEvents", [newEvent, ...state.events]);
     return newEvent;
   },
   getEventParticipations: async (
     { commit }: { commit: Commit },
     { courseId, eventId }: { courseId: string; eventId: string }
   ) => {
-    const participations = await getEventParticipations(
-      courseId,
-      eventId
-    );
-    commit('setEventParticipations', participations);
+    const participations = await getEventParticipations(courseId, eventId);
+    commit("setEventParticipations", participations);
   },
   getEventParticipation: async (
     { commit }: { commit: Commit },
@@ -111,7 +99,7 @@ export const actions = {
       eventId,
       participationId
     );
-    commit('setEventParticipation', participation);
+    commit("setEventParticipation", participation);
   },
   updateExercise: async (
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -142,13 +130,9 @@ export const actions = {
       mutate: boolean;
     }
   ) => {
-    const event = await partialUpdateEvent(
-      courseId,
-      eventId,
-      changes
-    );
+    const event = await partialUpdateEvent(courseId, eventId, changes);
     if (mutate) {
-      commit('setEvent', { eventId, payload: event });
+      commit("setEvent", { eventId, payload: event });
     }
   },
   updateExerciseChoice: async (
@@ -166,48 +150,38 @@ export const actions = {
       reFetch: boolean;
     }
   ) => {
-    await updateExerciseChoice(
-      courseId,
-      exerciseId,
-      choice.id,
-      choice
-    );
+    await updateExerciseChoice(courseId, exerciseId, choice.id, choice);
     if (reFetch) {
       const choices = await getExerciseChoices(courseId, exerciseId);
-      commit('setExerciseChildren', {
+      commit("setExerciseChildren", {
         exerciseId,
-        children: 'choices',
+        children: "choices",
         payload: choices,
       });
     }
   },
-  updateEventTemplateRule: async (
+  partialUpdateEventTemplateRule: async (
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     { commit }: { commit: Commit },
     {
       courseId,
       templateId,
-      rule,
+      ruleId,
+      changes,
       reFetch = false,
     }: {
       courseId: string;
       templateId: string;
-      rule: EventTemplateRule;
+      ruleId: string;
+      changes: Partial<EventTemplateRule>;
       reFetch: boolean;
     }
   ) => {
-    await updateEventTemplateRule(
-      courseId,
-      templateId,
-      rule.id,
-      rule
-    );
+    await partialUpdateEventTemplateRule(courseId, templateId, ruleId, changes);
 
     if (reFetch) {
-      const rules = await (
-        await getEventTemplate(courseId, templateId)
-      ).rules;
-      commit('setEventTemplateRules', {
+      const rules = (await getEventTemplate(courseId, templateId)).rules;
+      commit("setEventTemplateRules", {
         templateId,
         payload: rules,
       });
@@ -226,15 +200,30 @@ export const actions = {
       choice: ExerciseChoice;
     }
   ) => {
-    const newChoice = await createExerciseChoice(
-      courseId,
-      exerciseId,
-      choice
-    );
+    const newChoice = await createExerciseChoice(courseId, exerciseId, choice);
     state.exercises
       .find((e: Exercise) => e.id === exerciseId)
       ?.choices?.push(newChoice);
     return newChoice;
+  },
+  getEventTemplateRule: async (
+    { commit }: { commit: Commit },
+    {
+      courseId,
+      templateId,
+      ruleId,
+    }: {
+      courseId: string;
+      templateId: string;
+      ruleId: string;
+    }
+  ) => {
+    const rule = await getEventTemplateRule(courseId, templateId, ruleId);
+    commit("patchEventTemplateRule", {
+      templateId,
+      ruleId,
+      payload: rule,
+    });
   },
   addEventTemplateRule: async (
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -249,11 +238,7 @@ export const actions = {
       rule: EventTemplateRule;
     }
   ) => {
-    const newRule = await createEventTemplateRule(
-      courseId,
-      templateId,
-      rule
-    );
+    const newRule = await createEventTemplateRule(courseId, templateId, rule);
     state.events
       .find((e: Event) => e.template?.id === templateId)
       ?.template?.rules?.push(newRule);
@@ -280,10 +265,9 @@ export const actions = {
     );
     state.events
       .find((e: Event) => e.template?.id === templateId)
-      ?.template?.rules?.find(
-        (r: EventTemplateRule) => r.id === ruleId
-      )
+      ?.template?.rules?.find((r: EventTemplateRule) => r.id === ruleId)
       ?.clauses.push(newClause);
+    return newClause;
   },
   updateEventTemplateRuleClause: async (
     { commit, state }: { commit: Commit; state: any },
@@ -299,22 +283,19 @@ export const actions = {
       clause: EventTemplateRuleClause;
     }
   ) => {
-    const newClause = await updateEventTemplateRuleClause(
+    const updatedClause = await updateEventTemplateRuleClause(
       courseId,
       templateId,
       ruleId,
       clause
     );
-    const target = state.events
-      .find((e: Event) => e.template?.id === templateId)
-      ?.template?.rules?.find(
-        (r: EventTemplateRule) => r.id === ruleId
-      )
-      ?.clauses?.find(
-        (c: EventTemplateRuleClause) => c.id == clause.id
-      );
+    return updatedClause;
+    //const target = state.events
+    //   .find((e: Event) => e.template?.id === templateId)
+    //   ?.template?.rules?.find((r: EventTemplateRule) => r.id === ruleId)
+    //   ?.clauses?.find((c: EventTemplateRuleClause) => c.id == clause.id);
 
-    Object.assign(target, newClause);
+    // Object.assign(target, newClause);
   },
   getExercises: async (
     { commit, state }: { commit: Commit; state: any },
@@ -329,7 +310,7 @@ export const actions = {
     }
   ) => {
     if (fromFirstPage) {
-      commit('setCurrentExercisePage', 1);
+      commit("setCurrentExercisePage", 1);
     }
     const { exercises, moreResults } = await getExercises(
       courseId,
@@ -337,12 +318,12 @@ export const actions = {
       filters
     );
     commit(
-      'setExercises',
+      "setExercises",
       fromFirstPage ? exercises : [...state.exercises, ...exercises]
     );
     //commit('setActiveCourseId', courseId);
     if (exercises.length > 0) {
-      commit('setCurrentExercisePage', state.currentExercisePage + 1);
+      commit("setCurrentExercisePage", state.currentExercisePage + 1);
     }
 
     return moreResults;
@@ -373,7 +354,7 @@ export const actions = {
       (e: Exercise) => e.id === exerciseId
     ) as Exercise;
 
-    target[isPublic ? 'public_tags' : 'private_tags']?.push({
+    target[isPublic ? "public_tags" : "private_tags"]?.push({
       name: tag,
     } as Tag);
   },
@@ -395,23 +376,20 @@ export const actions = {
     const target = state.exercises.find(
       (e: Exercise) => e.id === exerciseId
     ) as Exercise;
-    target[isPublic ? 'public_tags' : 'private_tags'] = target[
-      isPublic ? 'public_tags' : 'private_tags'
+    target[isPublic ? "public_tags" : "private_tags"] = target[
+      isPublic ? "public_tags" : "private_tags"
     ]?.filter((t) => t.name != tag);
   },
-  getEvents: async (
-    { commit }: { commit: Commit },
-    courseId: string
-  ) => {
+  getEvents: async ({ commit }: { commit: Commit }, courseId: string) => {
     const events = await getEvents(courseId);
-    commit('setEvents', events);
+    commit("setEvents", events);
   },
   getEvent: async (
     { commit, state }: { commit: Commit; state: any },
     { courseId, eventId }: { courseId: string; eventId: string }
   ) => {
     const event = await getEvent(courseId, eventId);
-    commit('setEvents', [event, ...state.events]);
+    commit("setEvents", [event, ...state.events]);
   },
   getUsersForCourse: async (
     { commit, state }: { commit: Commit; state: any },
@@ -432,12 +410,8 @@ export const actions = {
       privileges: CoursePrivilege[];
     }
   ) => {
-    const user = await updateUserCoursePrivileges(
-      courseId,
-      userId,
-      privileges
-    );
-    commit('setUser', { user });
+    const user = await updateUserCoursePrivileges(courseId, userId, privileges);
+    commit("setUser", { user });
   },
   partialUpdateEventParticipation: async (
     { commit }: { commit: Commit },
@@ -459,7 +433,7 @@ export const actions = {
       participationIds,
       changes
     );
-    response.forEach((p) => commit('setEventParticipation', p));
+    response.forEach((p) => commit("setEventParticipation", p));
   },
   partialUpdateEventParticipationSlot: async (
     { commit, state }: { commit: Commit; state: any },
@@ -489,7 +463,7 @@ export const actions = {
       changes
     );
     if (mutate) {
-      commit('setEventParticipationSlot', {
+      commit("setEventParticipationSlot", {
         slotId,
         slot: response,
         participationId,

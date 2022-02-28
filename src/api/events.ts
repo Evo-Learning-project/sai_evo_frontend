@@ -6,13 +6,13 @@ import {
   EventTemplateRule,
   EventTemplateRuleClause,
   EventTemplateRuleType,
-} from '@/models';
-import axios from 'axios';
+} from "@/models";
+import axios from "axios";
 import {
   convertEventTemplateRules,
   tagIdsToTags,
   tagNamesToTags,
-} from './utils';
+} from "./utils";
 
 export async function getEvents(courseId: string): Promise<Event[]> {
   const response = await axios.get(`/courses/${courseId}/events/`);
@@ -23,9 +23,7 @@ export async function getEvent(
   courseId: string,
   eventId: string
 ): Promise<Event> {
-  const response = await axios.get(
-    `/courses/${courseId}/events/${eventId}/`
-  );
+  const response = await axios.get(`/courses/${courseId}/events/${eventId}/`);
   const event = response.data as Event;
 
   const processedRules = convertEventTemplateRules(
@@ -54,14 +52,24 @@ export async function getEventTemplate(
   return { ...template, rules: processedRules };
 }
 
+export async function getEventTemplateRule(
+  courseId: string,
+  templateId: string,
+  ruleId: string
+): Promise<EventTemplateRule> {
+  const response = await axios.get(
+    `/courses/${courseId}/templates/${templateId}/rules/${ruleId}/`
+  );
+  const rule = response.data as EventTemplateRule;
+  const processedRule = convertEventTemplateRules([rule]);
+  return processedRule[0];
+}
+
 export async function createEvent(
   courseId: string,
   event: Event
 ): Promise<Event> {
-  const response = await axios.post(
-    `courses/${courseId}/events/`,
-    event
-  );
+  const response = await axios.post(`courses/${courseId}/events/`, event);
   return response.data;
 }
 
@@ -167,9 +175,7 @@ export async function createEventTemplateRuleClause(
 ): Promise<EventTemplateRuleClause> {
   const payload = {
     ...clause,
-    tags: tagNamesToTags(clause.tags.map((t) => t.name)).map(
-      (t) => t.id
-    ),
+    tags: tagNamesToTags(clause.tags.map((t) => t.name)).map((t) => t.id),
   };
   const response = await axios.post(
     `courses/${courseId}/templates/${templateId}/rules/${ruleId}/clauses/`,
@@ -187,9 +193,7 @@ export async function updateEventTemplateRuleClause(
 ): Promise<EventTemplateRuleClause> {
   const payload = {
     ...clause,
-    tags: tagNamesToTags(clause.tags.map((t) => t.name)).map(
-      (t) => t.id
-    ),
+    tags: tagNamesToTags(clause.tags.map((t) => t.name)).map((t) => t.id),
   };
   const response = await axios.put(
     `courses/${courseId}/templates/${templateId}/rules/${ruleId}/clauses/${clause.id}/`,
@@ -229,7 +233,7 @@ export async function bulkPartialUpdateEventParticipation(
   changes: Record<keyof EventParticipation, unknown>
 ): Promise<EventParticipation[]> {
   let url = `/courses/${courseId}/events/${eventId}/participations/`;
-  url += `bulk_patch/?ids=${participationIds.join(',')}`;
+  url += `bulk_patch/?ids=${participationIds.join(",")}`;
   const response = await axios.patch(url, changes);
   return response.data;
 }
@@ -252,7 +256,7 @@ export async function moveEventParticipationCurrentSlotCursor(
   courseId: string,
   eventId: string,
   participationId: string,
-  direction: 'forward' | 'back'
+  direction: "forward" | "back"
 ): Promise<EventParticipationSlot> {
   const response = await axios.post(
     `/courses/${courseId}/events/${eventId}/participations/${participationId}/go_${direction}/`

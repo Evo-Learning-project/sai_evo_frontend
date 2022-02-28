@@ -3,30 +3,38 @@
     <!--@after-enter="showContent = true"-->
     <!--@after-leave="$emit(choice)"-->
     <div
-      class="fixed top-0 left-0 z-50 flex items-center justify-center w-full h-full"
+      class="fixed top-0 left-0 z-50 flex items-center justify-center w-full h-full "
     >
       <div
         @click="dismiss()"
         style="width: 100vw !important; height: 100vh !important"
-        class="absolute z-10 w-full h-full transition-none bg-gray-900 opacity-80"
+        class="absolute z-10 w-full h-full transition-none bg-gray-900  opacity-80"
       ></div>
       <transition name="bounce">
         <div
           v-if="showDialog"
-          class="z-20 max-h-full overflow-y-auto mx-1.5 bg-white rounded-md shadow-all-around md:mx-0"
+          class="
+            z-20
+            max-h-full
+            overflow-y-auto
+            mx-1.5
+            bg-white
+            rounded-md
+            shadow-all-around
+            md:mx-0
+          "
           :class="{
             'md:max-w-4xl md:min-w-md': !large,
-            'md:w-full md:mx-4': large
+            'md:w-full md:mx-4': large,
           }"
         >
           <div class="w-full px-4 py-6 overflow-y-auto md:px-8">
+            <!-- overflow-y-auto-->
             <div v-if="$slots.title" class="flex items-center mb-2 space-x-3">
               <slot class="my-auto" name="backButton"></slot>
               <div v-if="error">
                 <div class="icon-surrounding bg-danger-light text-danger-dark">
-                  <span class="material-icons-outlined">
-                    priority_high
-                  </span>
+                  <span class="material-icons-outlined"> priority_high </span>
                 </div>
               </div>
               <div v-else-if="warning">
@@ -40,9 +48,7 @@
                 <div
                   class="icon-surrounding bg-success-light text-success-dark"
                 >
-                  <span class="material-icons-outlined">
-                    check
-                  </span>
+                  <span class="material-icons-outlined"> check </span>
                 </div>
               </div>
               <h2 class="mb-0">
@@ -57,7 +63,7 @@
           <div
             class="flex flex-col pt-5 pb-4 pr-2 md:flex-row"
             :class="{
-              'border-t border-gray-200': footerBorder
+              'border-t border-gray-200': footerBorder,
             }"
           >
             <div class="mt-auto"><slot name="footerButtons"></slot></div>
@@ -69,8 +75,8 @@
               >
                 {{
                   confirmOnly
-                    ? $t('dialog.default_ok_text')
-                    : yesText || $t('dialog.default_yes_text')
+                    ? $t("dialog.default_ok_text")
+                    : yesText || $t("dialog.default_yes_text")
                 }}
               </Btn>
               <Btn
@@ -78,7 +84,7 @@
                 @click="emitChoice('no')"
                 :variant="'primary-borderless'"
               >
-                {{ noText || $t('dialog.default_no_text') }}
+                {{ noText || $t("dialog.default_no_text") }}
               </Btn>
               <!-- <btn
                 class="mr-2"
@@ -104,82 +110,82 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/runtime-core'
-import Btn from '@/components/ui/Btn.vue'
+import { defineComponent } from "@vue/runtime-core";
+import Btn from "@/components/ui/Btn.vue";
 export default defineComponent({
-  name: 'Dialog',
+  name: "Dialog",
   props: {
     title: String,
     showDialog: {
       type: Boolean,
-      required: true
+      required: true,
     },
     large: {
       type: Boolean,
-      default: false
+      default: false,
     },
     dismissible: {
       type: Boolean,
-      default: true
+      default: true,
     },
     severity: {
       type: Number,
-      default: 1
+      default: 1,
     },
     yesText: {
       type: String,
-      default: ''
+      default: "",
     },
     noText: {
       type: String,
-      default: ''
+      default: "",
     },
     error: {
       type: Boolean,
-      default: false
+      default: false,
     },
     warning: {
       type: Boolean,
-      default: false
+      default: false,
     },
     success: {
       type: Boolean,
-      default: false
+      default: false,
     },
     footerBorder: {
       type: Boolean,
-      default: false
+      default: false,
     },
     confirmOnly: Boolean,
-    disableOk: Boolean
+    disableOk: Boolean,
   },
   components: {
-    Btn
+    Btn,
   },
-  created () {
-    setTimeout(() => (this.showContent = true), 0)
+  created() {
+    setTimeout(() => (this.showContent = true), 0);
   },
-  data () {
+  data() {
     return {
-      choice: '',
-      showContent: false
-    }
+      choice: "",
+      showContent: false,
+    };
   },
   methods: {
-    emitChoice (choice: string) {
+    emitChoice(choice: string) {
       //   this.choice = choice
       //   this.showContent = false
-      console.log('emitting', choice)
-      this.$emit(choice)
+      console.log("emitting", choice);
+      this.$emit(choice);
     },
-    dismiss () {
+    dismiss() {
       if (!this.dismissible) {
-        return
+        return;
       }
-      this.emitChoice(this.confirmOnly ? 'yes' : 'no')
-    }
-  }
-})
+      this.emitChoice(this.confirmOnly ? "yes" : "no");
+    },
+  },
+});
 </script>
 
 <style></style>
