@@ -1,3 +1,4 @@
+import { ExerciseTestCase } from "./interfaces";
 import {
   Course,
   Event,
@@ -11,38 +12,46 @@ import {
   Exercise,
   ExerciseChoice,
   ExerciseState,
+  ExerciseTestCaseType,
   ExerciseType,
   Tag,
-} from '.';
+} from ".";
 
 export const getBlankCourse = (): Course => ({
-  id: '',
-  name: '',
+  id: "",
+  name: "",
   privileges: [],
 });
 
 export const getBlankChoice = (): ExerciseChoice => ({
-  id: '',
-  text: '',
+  id: "",
+  text: "",
   score: 0,
 });
 
+export const getBlankTestCase = (): ExerciseTestCase => ({
+  id: "",
+  text: "",
+  code: "",
+  testcase_type: ExerciseTestCaseType.SHOW_CODE_SHOW_TEXT,
+});
+
 export const getBlankExercise = (): Exercise => ({
-  id: '',
-  label: '',
-  text: '',
+  id: "",
+  label: "",
+  text: "",
   exercise_type: ExerciseType.MULTIPLE_CHOICE_SINGLE_POSSIBLE,
   state: ExerciseState.DRAFT,
-  solution: '',
+  solution: "",
   // FIXME remove default tags
   //tags: [{ name: 'tag1' }, { name: 'tag2' }, { name: 'tag3' }],
   choices: [],
 });
 
 export const getBlankExam = (): Event => ({
-  id: '',
-  name: '',
-  instructions: '',
+  id: "",
+  name: "",
+  instructions: "",
   begin_timestamp: null,
   end_timestamp: null,
   event_type: EventType.EXAM,
@@ -52,9 +61,9 @@ export const getBlankExam = (): Event => ({
 });
 
 export const getBlankPractice = (): Event => ({
-  id: '',
-  name: '',
-  instructions: '',
+  id: "",
+  name: "",
+  instructions: "",
   begin_timestamp: null,
   end_timestamp: null,
   event_type: EventType.SELF_SERVICE_PRACTICE,
@@ -65,34 +74,34 @@ export const getBlankPractice = (): Event => ({
 
 export const getBlankEventTemplate = (): EventTemplate => ({
   rules: [],
-  name: '',
+  name: "",
 });
 
 export const getBlankEventTemplateRule = (
   rule_type?: EventTemplateRuleType
 ): EventTemplateRule => ({
-  id: '',
+  id: "",
   amount: 1,
   rule_type,
 });
 
 export const getBlankTag = (): Tag => ({
-  id: '',
-  name: '',
+  id: "",
+  name: "",
 });
 
 export const getBlankTagBasedEventTemplateRuleClause =
   (): EventTemplateRuleClause => ({
-    id: '',
+    id: "",
     tags: [],
   });
 
 export const getFakeEventParticipationSlot = (
   exercise: Exercise
 ): EventParticipationSlot => ({
-  id: '',
+  id: "",
   exercise,
-  answer_text: '',
+  answer_text: "",
   selected_choices: [],
   sub_slots: [],
 });

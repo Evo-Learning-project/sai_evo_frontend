@@ -71,11 +71,17 @@
             @update:modelValue="onBaseExerciseChange('text', $event)"
             >{{ $t("exercise_editor.exercise_text") }}</TextEditor
           >
-          <!-- TODO show code editor if the exercise type is js -->
           <TextEditor
+            v-if="modelValue.exercise_type !== ExerciseType.JS"
             :modelValue="modelValue.solution"
             @update:modelValue="onBaseExerciseChange('solution', $event)"
             >{{ $t("exercise_editor.exercise_solution") }}</TextEditor
+          >
+          <CodeEditor
+            :modelValue="modelValue.solution"
+            @update:modelValue="onBaseExerciseChange('solution', $event)"
+            v-else
+            >{{ $t("exercise_editor.exercise_solution") }}</CodeEditor
           >
           <TagInput
             :modelValue="modelValue.public_tags ?? []"
@@ -141,6 +147,12 @@
               ></TestCaseEditor>
             </template>
           </draggable>
+          <Btn @click="onAddTestCase()" :size="'sm'"
+            ><span class="mr-1 text-base material-icons-outlined">
+              add_circle_outline
+            </span>
+            {{ $t("exercise_editor.new_choice") }}</Btn
+          >
         </div>
         <Dialog
           :showDialog="showDialog"
@@ -189,6 +201,7 @@ import {
   getExerciseValidationErrors,
   ExerciseType,
   ExerciseTestCase,
+  getBlankTestCase,
 } from "@/models";
 import { multipleChoiceExerciseTypes } from "@/models";
 import Card from "@/components/ui/Card.vue";
@@ -306,6 +319,7 @@ export default defineComponent({
     ...mapActions([
       "updateExercise",
       "addExerciseChoice",
+      "addExerciseTestCase",
       "updateExerciseChoice",
       "addExerciseTag",
       "removeExerciseTag",
@@ -354,6 +368,14 @@ export default defineComponent({
         choice: getBlankChoice(),
       });
       this.instantiateChoiceAutoSaveManager(newChoice);
+    },
+    async onAddTestCase() {
+      const newTestcase: ExerciseTestCase = await this.addExerciseTestCase({
+        courseId: this.courseId,
+        exerciseId: this.modelValue.id,
+        testcase: getBlankTestCase(),
+      });
+      this.instantiateTestCaseAutoSaveManager(newTestcase);
     },
     async onAddTag(tag: string, isPublic: boolean) {
       await this.addExerciseTag({

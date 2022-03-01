@@ -37,7 +37,7 @@ export default defineComponent({
   props: {
     modelValue: {
       type: String,
-      required: true,
+      //required: true,
     },
     size: {
       type: String as PropType<"sm" | "md" | "lg">,
@@ -55,7 +55,8 @@ export default defineComponent({
   },
   methods: {
     onChange(newVal: string) {
-      console.log("ON CHANGE", newVal);
+      // console.log("ON CHANGE", newVal);
+      this.$emit("update:modelValue", newVal);
     },
     onWillMount() {
       console.log("will mount");

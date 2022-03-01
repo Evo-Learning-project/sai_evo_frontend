@@ -1,5 +1,5 @@
 <template>
-  <div class="flex space-x-4">
+  <div class="flex py-3 mb-12 space-x-4">
     <span
       class="row-span-2 my-auto text-lg cursor-move  material-icons-outlined opacity-70"
     >
