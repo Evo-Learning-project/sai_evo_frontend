@@ -121,9 +121,26 @@
         <!-- Completion exercise settings -->
 
         <!-- Aggregated exercise settings -->
+
         <!-- Js exercise settings -->
         <div class="mt-8" v-if="modelValue.exercise_type === ExerciseType.JS">
-          <CodeEditor></CodeEditor>
+          <CodeEditor v-if="false"></CodeEditor>
+          <h3 class="mb-8">{{ $t("exercise_editor.testcases_title") }}</h3>
+
+          <draggable
+            :modelValue="modelValue.testcases"
+            ghost-class="drag-ghost"
+            item-key="id"
+          >
+            <template #item="{ element }">
+              <TestCaseEditor
+                :modelValue="element"
+                @testCaseUpdate="
+                  onUpdateTestCase(element.id, $event.field, $event.value)
+                "
+              ></TestCaseEditor>
+            </template>
+          </draggable>
         </div>
         <Dialog
           :showDialog="showDialog"
@@ -171,6 +188,7 @@ import {
   ExerciseChoice,
   getExerciseValidationErrors,
   ExerciseType,
+  ExerciseTestCase,
 } from "@/models";
 import { multipleChoiceExerciseTypes } from "@/models";
 import Card from "@/components/ui/Card.vue";
@@ -195,8 +213,11 @@ import {
   EXERCISE_AUTO_SAVE_DEBOUNCE_TIME_MS,
   EXERCISE_CHOICE_AUTO_SAVE_DEBOUNCED_FIELDS,
   EXERCISE_CHOICE_AUTO_SAVE_DEBOUNCE_TIME_MS,
+  TEST_CASE_AUTO_SAVE_DEBOUNCED_FIELDS,
+  TEST_CASE_AUTO_SAVE_DEBOUNCE_TIME_MS,
 } from "@/const";
 import CodeEditor from "@/components/ui/CodeEditor.vue";
+import TestCaseEditor from "./TestCaseEditor.vue";
 const { mapActions, mapMutations } = createNamespacedHelpers("teacher");
 
 export default defineComponent({
@@ -213,6 +234,7 @@ export default defineComponent({
     Dialog,
     draggable,
     CodeEditor,
+    TestCaseEditor,
   },
   props: {
     modelValue: {
@@ -244,6 +266,9 @@ export default defineComponent({
     this.modelValue.choices?.forEach((c) =>
       this.instantiateChoiceAutoSaveManager(c)
     );
+    this.modelValue.testcases?.forEach((t) =>
+      this.instantiateTestCaseAutoSaveManager(t)
+    );
   },
   data() {
     return {
@@ -251,6 +276,10 @@ export default defineComponent({
       choiceAutoSaveManagers: {} as Record<
         string,
         AutoSaveManager<ExerciseChoice>
+      >,
+      testCaseAutoSaveManagers: {} as Record<
+        string,
+        AutoSaveManager<ExerciseTestCase>
       >,
       elementId: uuid4(),
       showSaved: false,
@@ -280,8 +309,9 @@ export default defineComponent({
       "updateExerciseChoice",
       "addExerciseTag",
       "removeExerciseTag",
+      "updateExerciseChild",
     ]),
-    ...mapMutations(["setExercise", "setExerciseChoice"]),
+    ...mapMutations(["setExercise", "setExerciseChoice", "setExerciseChild"]),
     async onChoiceDragEnd(event: { oldIndex: number; newIndex: number }) {
       const draggedChoice = (this.modelValue.choices as ExerciseChoice[])[
         event.oldIndex
@@ -384,6 +414,16 @@ export default defineComponent({
         value,
       });
     },
+    async onUpdateTestCase(
+      testCaseId: string,
+      key: keyof ExerciseTestCase,
+      value: unknown
+    ) {
+      await this.testCaseAutoSaveManagers[testCaseId].onChange({
+        field: key,
+        value,
+      });
+    },
     instantiateChoiceAutoSaveManager(choice: ExerciseChoice) {
       this.choiceAutoSaveManagers[choice.id] =
         new AutoSaveManager<ExerciseChoice>(
@@ -391,23 +431,56 @@ export default defineComponent({
           async (changes) => {
             // if choices are re-ordered, re-fetch them from server
             const reFetch = Object.keys(changes).includes("_ordering");
-            await this.updateExerciseChoice({
+            await this.updateExerciseChild({
+              childType: "choice",
               courseId: this.courseId,
               exerciseId: this.modelValue.id,
-              choice: { ...choice, ...changes },
+              payload: { ...choice, ...changes },
               reFetch,
             });
           },
           (changes) => {
             this.saving = true;
             this.savingError = false;
-            this.setExerciseChoice({
+            this.setExerciseChild({
+              childType: "choice",
               exerciseId: this.modelValue.id,
               payload: { ...choice, ...changes },
             });
           },
           EXERCISE_CHOICE_AUTO_SAVE_DEBOUNCED_FIELDS,
           EXERCISE_CHOICE_AUTO_SAVE_DEBOUNCE_TIME_MS,
+          undefined,
+          () => (this.savingError = true),
+          () => (this.saving = false)
+        );
+    },
+    instantiateTestCaseAutoSaveManager(testcase: ExerciseTestCase) {
+      this.testCaseAutoSaveManagers[testcase.id] =
+        new AutoSaveManager<ExerciseTestCase>(
+          testcase,
+          async (changes) => {
+            // if choices are re-ordered, re-fetch them from server
+            const reFetch = Object.keys(changes).includes("_ordering");
+            await this.updateExerciseChild({
+              childType: "testcase",
+              courseId: this.courseId,
+              exerciseId: this.modelValue.id,
+              payload: { ...testcase, ...changes },
+              reFetch,
+            });
+          },
+          (changes) => {
+            this.saving = true;
+            this.savingError = false;
+            this.setExerciseChild({
+              childType: "testcase",
+              exerciseId: this.modelValue.id,
+              payload: { ...testcase, ...changes },
+            });
+          },
+          TEST_CASE_AUTO_SAVE_DEBOUNCED_FIELDS,
+          TEST_CASE_AUTO_SAVE_DEBOUNCE_TIME_MS,
           undefined,
           () => (this.savingError = true),
           () => (this.saving = false)

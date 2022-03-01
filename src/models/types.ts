@@ -9,6 +9,12 @@ export enum ExerciseType {
   //EXTERNAL_RESOURCE,
 }
 
+export enum ExerciseTestCaseType {
+  SHOW_CODE_SHOW_TEXT,
+  SHOW_TEXT_ONLY,
+  HIDDEN,
+}
+
 export enum ExerciseState {
   DRAFT,
   PRIVATE,
@@ -61,9 +67,9 @@ export enum AssessmentSlotState {
 
 export enum CoursePrivilege {
   //ALL_PRIVILEGES = '__all__',
-  UPDATE_COURSE = 'update_course',
-  ACCESS_EXERCISES = 'access_exercises',
-  MANAGE_EXERCISES = 'manage_exercises',
-  ASSESS_PARTICIPATIONS = 'assess_participations',
-  MANAGE_EVENTS = 'manage_events',
+  UPDATE_COURSE = "update_course",
+  ACCESS_EXERCISES = "access_exercises",
+  MANAGE_EXERCISES = "manage_exercises",
+  ASSESS_PARTICIPATIONS = "assess_participations",
+  MANAGE_EVENTS = "manage_events",
 }

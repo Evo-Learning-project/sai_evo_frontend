@@ -48,6 +48,7 @@ interface StoreOperationParameters<T> {
   templateId: string;
   filters: SearchFilter;
   children: "choices" | "sub_exercises" | "testcases";
+  childType: "choice" | "sub_exercise" | "testcase";
   fromFirstPage: boolean;
   participationIds: string[];
   participationId: string;

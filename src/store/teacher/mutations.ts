@@ -87,6 +87,39 @@ export const mutations = {
     console.log(target, exerciseId, payload);
     Object.assign(target, payload);
   },
+  setExerciseChild: (
+    state: TeacherState,
+    {
+      exerciseId,
+      childType,
+      payload,
+    }: MutationPayload<ExerciseChoice | Exercise | ExerciseTestCase>
+  ) => {
+    const targetExercise = (state.exercises as Exercise[]).find(
+      (e) => e.id === exerciseId
+    );
+    let childrenName: "choices" | "sub_exercises" | "testcases";
+    switch (childType) {
+      case "choice":
+        childrenName = "choices";
+        break;
+      case "sub_exercise":
+        childrenName = "sub_exercises";
+        break;
+      case "testcase":
+        childrenName = "testcases";
+        break;
+      default:
+        throw new Error("unreachable");
+    }
+    const children = targetExercise?.[childrenName];
+    console.log("CHILDREN", children, childType, targetExercise);
+
+    if (children) {
+      const target = (children as any)?.find((c: any) => c.id == payload.id);
+      Object.assign(target, payload);
+    }
+  },
 
   // updates the list of elements related to an exercise (choices, sub-exercises, etc.)
   setExerciseChildren: (

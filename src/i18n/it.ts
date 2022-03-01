@@ -1,3 +1,4 @@
+import { ExerciseTestCaseType } from "./../models/types";
 import {
   CoursePrivilege,
   EventParticipationState,
@@ -322,6 +323,7 @@ export const it = {
     exercise_editor_title: "Editor esercizio",
     draft_notice: "Bozza",
     choices_title: "Scelte",
+    testcases_title: "Test case",
     exercise_label: "Etichetta dell'esercizio",
     exercise_text: "Testo dell'esercizio",
     exercise_solution: "Soluzione dell'esercizio (opzionale)",
@@ -333,6 +335,9 @@ export const it = {
     exercise_private_tags: "Tag privati",
     choice_text: "Testo",
     choice_score: "Punteggio",
+    testcase_type: "Visibilità",
+    testcase_text: "Descrizione",
+    testcase_code: "Codice",
     edit_non_draft_title: "Modifica di un esercizio non bozza",
     edit_non_draft_body:
       "Stai per modificare un esercizio non in stato di bozza. Potrebbe essere già presente in un esame o essere già stato visto dagli studenti. Sei sicuro di volerlo modificare?",
@@ -463,6 +468,11 @@ export const it = {
     [CoursePrivilege.MANAGE_EXERCISES]: "Creare esercizi",
     [CoursePrivilege.UPDATE_COURSE]: "Modificare impostazioni corso",
     //[CoursePrivilege.ALL_PRIVILEGES]: 'Tutti',
+  },
+  testcase_types: {
+    [ExerciseTestCaseType.SHOW_CODE_SHOW_TEXT]: "Pubblico",
+    [ExerciseTestCaseType.SHOW_TEXT_ONLY]: "Solo descrizione",
+    [ExerciseTestCaseType.HIDDEN]: "Nascosto",
   },
   event_template_rule_type: {
     [EventTemplateRuleType.TAG_BASED]: "Per tag",

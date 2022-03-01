@@ -14,6 +14,7 @@ import {
   EventType,
   Exercise,
   ExerciseChoice,
+  ExerciseTestCase,
   Tag,
   User,
 } from "@/models";
@@ -30,6 +31,8 @@ import {
   removeTagFromExercise,
   updateExercise,
   updateExerciseChoice,
+  updateExerciseSubExercise,
+  updateExerciseTestCase,
 } from "@/api/exercises";
 
 import {
@@ -133,6 +136,54 @@ export const actions = {
     const event = await partialUpdateEvent(courseId, eventId, changes);
     if (mutate) {
       commit("setEvent", { eventId, payload: event });
+    }
+  },
+  updateExerciseChild: async (
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    { commit }: { commit: Commit },
+    {
+      courseId,
+      exerciseId,
+      childType,
+      payload,
+      reFetch = false,
+    }: {
+      courseId: string;
+      exerciseId: string;
+      childType: "testcase" | "sub_exercise" | "choice";
+      payload: ExerciseChoice | Exercise | ExerciseTestCase;
+      reFetch: boolean;
+    }
+  ) => {
+    let apiCall;
+    let childrenName;
+
+    switch (childType) {
+      case "choice":
+        apiCall = updateExerciseChoice;
+        childrenName = "choices";
+        break;
+      case "sub_exercise":
+        apiCall = updateExerciseSubExercise;
+        childrenName = "sub_exercises";
+        break;
+      case "testcase":
+        apiCall = updateExerciseTestCase;
+        childrenName = "testcases";
+        break;
+      default:
+        throw new Error("unreachable");
+    }
+    await apiCall(courseId, exerciseId, payload.id as string, payload as any);
+    if (reFetch) {
+      if (childType !== "choice") return;
+      // TODO fix!!
+      const choices = await getExerciseChoices(courseId, exerciseId);
+      commit("setExerciseChildren", {
+        exerciseId,
+        children: "choices",
+        payload: choices,
+      });
     }
   },
   updateExerciseChoice: async (

@@ -1,18 +1,24 @@
 <template>
   <div
-    class="overflow-hidden rounded-sm"
-    :style="'height: ' + editorHeight + ';'"
+    class="relative floating-label"
+    :style="'height: ' + containerHeight + ';'"
   >
-    <MonacoEditor
-      @editorDidMount="onDidMount($event)"
-      @editorWillMount="onWillMount()"
-      @change="onChange($event)"
-      v-show="true || showEditor"
-      theme="vs-dark"
-      class="rounded-md"
-      :style="'height: ' + editorHeight + ';'"
-      language="typescript"
-    />
+    <label class="absolute top-2 left-1.5 origin-0 fixed-label"
+      ><slot></slot
+    ></label>
+    <div class="overflow-hidden rounded-sm">
+      <MonacoEditor
+        @editorDidMount="onDidMount($event)"
+        @editorWillMount="onWillMount()"
+        @change="onChange($event)"
+        v-show="true || showEditor"
+        :value="modelValue"
+        theme="vs-dark"
+        class="rounded-md"
+        :style="'height: ' + editorHeight + ';'"
+        language="typescript"
+      />
+    </div>
   </div>
 </template>
 
@@ -29,6 +35,10 @@ export default defineComponent({
     MonacoEditor,
   },
   props: {
+    modelValue: {
+      type: String,
+      required: true,
+    },
     size: {
       type: String as PropType<"sm" | "md" | "lg">,
       default: "md",
@@ -56,16 +66,22 @@ export default defineComponent({
     },
   },
   computed: {
-    editorHeight(): string {
+    baseHeight(): number {
       switch (this.size) {
         case "sm":
-          return "100px";
+          return 150;
         case "md":
-          return "200px";
+          return 200;
         case "lg":
-          return "300px";
+          return 300;
       }
       throw new Error("unreachable");
+    },
+    editorHeight(): string {
+      return this.baseHeight + "px";
+    },
+    containerHeight(): string {
+      return this.baseHeight + "px";
     },
   },
 });

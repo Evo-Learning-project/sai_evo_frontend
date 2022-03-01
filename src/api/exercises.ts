@@ -1,8 +1,9 @@
+import { ExerciseTestCase } from "./../models/interfaces";
 /* eslint-disable no-constant-condition */
-import { Exercise, ExerciseChoice } from '@/models';
-import axios from 'axios';
-import { SearchFilter } from './interfaces';
-import { getUrlQueryParams } from './utils';
+import { Exercise, ExerciseChoice } from "@/models";
+import axios from "axios";
+import { SearchFilter } from "./interfaces";
+import { getUrlQueryParams } from "./utils";
 
 // export async function getExercises(
 //   courseId: string
@@ -31,7 +32,7 @@ export async function getExercisesById(
   exerciseIds: string[]
 ): Promise<Exercise[]> {
   let url = `/courses/${courseId}/exercises/`;
-  url += `bulk_get/?ids=${exerciseIds.join(',')}`;
+  url += `bulk_get/?ids=${exerciseIds.join(",")}`;
   const response = await axios.get(url);
   return response.data;
 }
@@ -42,10 +43,10 @@ export async function addTagToExercise(
   tag: string,
   isPublic: boolean
 ): Promise<void> {
-  await axios.put(
-    `/courses/${courseId}/exercises/${exerciseId}/tags/`,
-    { tag, public: isPublic }
-  );
+  await axios.put(`/courses/${courseId}/exercises/${exerciseId}/tags/`, {
+    tag,
+    public: isPublic,
+  });
 }
 
 export async function removeTagFromExercise(
@@ -54,20 +55,16 @@ export async function removeTagFromExercise(
   tag: string,
   isPublic: boolean
 ): Promise<void> {
-  await axios.delete(
-    `/courses/${courseId}/exercises/${exerciseId}/tags/`,
-    { data: { tag, public: isPublic } }
-  );
+  await axios.delete(`/courses/${courseId}/exercises/${exerciseId}/tags/`, {
+    data: { tag, public: isPublic },
+  });
 }
 
 export async function createExercise(
   courseId: string,
   exercise: Exercise
 ): Promise<Exercise> {
-  const response = await axios.post(
-    `courses/${courseId}/exercises/`,
-    exercise
-  );
+  const response = await axios.post(`courses/${courseId}/exercises/`, exercise);
   return response.data;
 }
 
@@ -181,6 +178,31 @@ export async function deleteExerciseSubExercise(
 ): Promise<void> {
   const response = await axios.delete(
     `/courses/${courseId}/exercises/${exerciseId}/sub_exercises/${subExerciseId}/`
+  );
+  return response.data;
+}
+
+export async function createExerciseTestCase(
+  courseId: string,
+  exerciseId: string,
+  testcase: ExerciseTestCase
+): Promise<ExerciseTestCase> {
+  const response = await axios.post(
+    `/courses/${courseId}/exercises/${exerciseId}/testcases/`,
+    testcase
+  );
+  return response.data;
+}
+
+export async function updateExerciseTestCase(
+  courseId: string,
+  exerciseId: string,
+  testcaseId: string,
+  testcase: ExerciseTestCase
+): Promise<ExerciseTestCase> {
+  const response = await axios.put(
+    `/courses/${courseId}/exercises/${exerciseId}/testcases/${testcaseId}/`,
+    testcase
   );
   return response.data;
 }

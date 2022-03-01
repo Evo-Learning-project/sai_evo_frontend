@@ -78,9 +78,9 @@
         </template>
       </Card>
     </div>
-    <div class="grid grid-cols-3 gap-12" v-if="!resultsMode && !firstLoading">
-      <!-- TODO review shadow -->
-      <Card :hoverable="false" class="shadow-sm">
+    <!-- <div class="grid grid-cols-3 gap-12" v-if="!resultsMode && !firstLoading"> -->
+    <!-- TODO review shadow -->
+    <!-- <Card :hoverable="false" class="shadow-sm">
         <template v-slot:header>
           <h4 class="text-center text-muted">Partecipanti</h4>
         </template>
@@ -92,8 +92,8 @@
             <h2 class="mt-1 mb-0 material-icons-outlined">people</h2>
           </div>
         </template>
-      </Card>
-      <Card :hoverable="false" class="shadow-sm">
+      </Card> -->
+    <!-- <Card :hoverable="false" class="shadow-sm">
         <template v-slot:header>
           <h4 class="text-center text-muted">Partecipanti</h4>
         </template>
@@ -115,8 +115,8 @@
             </h2>
           </div>
         </template>
-      </Card>
-    </div>
+      </Card> -->
+    <!-- </div> -->
     <div class="flex-grow">
       <DataTable
         v-if="!firstLoading"

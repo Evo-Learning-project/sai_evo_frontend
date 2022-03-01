@@ -62,6 +62,7 @@
             >
           </div>
           <CopyToClipboard
+            class="mr-1"
             v-if="!isDraft && !hasEnded"
             :value="permalink"
             :iconOnly="true"
@@ -71,7 +72,11 @@
           <Btn
             class="mx-1"
             :variant="'danger'"
-            v-if="hasBegun && hasPrivileges([CoursePrivilege.MANAGE_EVENTS])"
+            v-if="
+              !buttonIconsOnly &&
+              hasBegun &&
+              hasPrivileges([CoursePrivilege.MANAGE_EVENTS])
+            "
             @click="$emit('close')"
             ><span class="text-base material-icons-outlined"> block </span>
             <span class="ml-1" v-if="!buttonIconsOnly">{{

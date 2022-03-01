@@ -1,6 +1,6 @@
 <template>
   <div class="relative">
-    <label class="absolute top-2 left-1.5 origin-0 fixed-label"
+    <label class="absolute top-2 left-3 origin-0 fixed-label"
       ><slot></slot
     ></label>
 
@@ -8,14 +8,31 @@
       <label
         @mousedown="onMouseDown"
         :for="id + '-input-' + index"
-        class="flex text-center w-20 text-gray-600 font-semibold relative overflow-hidden max-h-screen py-1.5 px-3 overflow-y-hidden rounded-md cursor-pointer items-top"
+        class="
+          flex flex-grow
+          text-center
+          min-w-fit
+          overflow-ellipsis
+          whitespace-nowrap
+          text-gray-600
+          font-semibold
+          relative
+          overflow-hidden
+          max-h-screen
+          py-1.5
+          px-2
+          overflow-y-hidden overflow-x-hidden
+          rounded-md
+          cursor-pointer
+          items-top
+        "
         :class="{
           'rounded-r-none': index < options.length - 1,
           'rounded-l-none': index !== 0,
           'border border-primary bg-primary bg-opacity-20 text-primary ':
             option.value == modelValue,
           'border hover:text-gray-800 hover:bg-light':
-            option.value != modelValue
+            option.value != modelValue,
         }"
         v-for="(option, index) in options"
         :key="id + '-option-' + index"
@@ -42,7 +59,7 @@
               v-if="(option.description?.length ?? 0) > 0"
               v-html="option.description"
             ></p> -->
-            <slot v-bind:description="option.description"></slot>
+            <!-- <slot v-bind:description="option.description"></slot> -->
           </div>
         </div>
       </label>
@@ -51,38 +68,38 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/runtime-core'
-import { v4 as uuid4 } from 'uuid'
-import MultiIcon from '@/components/ui/MultiIcon.vue'
-import { rippleEffect } from '@/utils'
+import { defineComponent } from "@vue/runtime-core";
+import { v4 as uuid4 } from "uuid";
+import MultiIcon from "@/components/ui/MultiIcon.vue";
+import { rippleEffect } from "@/utils";
 
 export default defineComponent({
-  name: 'SegmentedControls',
-  props: ['options', 'modelValue', 'disabled'],
+  name: "SegmentedControls",
+  props: ["options", "modelValue", "disabled"],
   components: {
-    MultiIcon
+    MultiIcon,
   },
-  created () {
-    this.id = uuid4()
+  created() {
+    this.id = uuid4();
   },
-  data () {
+  data() {
     return {
       showFeedback: false,
-      id: ''
-    }
+      id: "",
+    };
   },
   methods: {
-    onMouseDown (event: any) {
-      rippleEffect(event, 'ripple-primary')
+    onMouseDown(event: any) {
+      rippleEffect(event, "ripple-primary");
     },
-    onInput (value: string, inputEvent: Event) {
+    onInput(value: string, inputEvent: Event) {
       // eslint-disable-next-line @typescript-eslint/no-extra-semi
-      ;((inputEvent.target as unknown) as { checked: boolean }).checked = false
-      inputEvent.preventDefault()
-      this.$emit('update:modelValue', value)
-    }
-  }
-})
+      (inputEvent.target as unknown as { checked: boolean }).checked = false;
+      inputEvent.preventDefault();
+      this.$emit("update:modelValue", value);
+    },
+  },
+});
 </script>
 
 <style></style>

@@ -1,3 +1,4 @@
+import { ExerciseTestCaseType } from "./types";
 import {
   EventState,
   EventType,
@@ -9,7 +10,7 @@ import {
   ParticipationAssessmentProgress,
   AssessmentSlotState,
   AssessmentVisibility,
-} from '.';
+} from ".";
 
 interface Orderable {
   _ordering?: number;
@@ -58,10 +59,10 @@ export interface ExerciseChoice extends Orderable {
 }
 
 export interface ExerciseTestCase {
-  id?: string;
+  id: string;
   code: string;
-  label: string;
-  hidden?: boolean;
+  text: string;
+  testcase_type: ExerciseTestCaseType;
 }
 
 export interface Tag {
