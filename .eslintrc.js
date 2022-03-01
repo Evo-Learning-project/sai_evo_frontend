@@ -20,5 +20,6 @@ module.exports = {
   plugins: ["vue", "@typescript-eslint"],
   rules: {
     "no-unused-vars": "off",
+    "vue/no-multiple-template-root": "off",
   },
 };
