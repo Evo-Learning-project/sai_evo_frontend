@@ -117,11 +117,13 @@
             </span>
             {{ $t("exercise_editor.new_choice") }}</Btn
           >
-          <!-- Js exercise settings -->
+        </div>
+        <!-- Completion exercise settings -->
 
-          <!-- Completion exercise settings -->
-
-          <!-- Aggregated exercise settings -->
+        <!-- Aggregated exercise settings -->
+        <!-- Js exercise settings -->
+        <div class="mt-8" v-if="modelValue.exercise_type === ExerciseType.JS">
+          <CodeEditor></CodeEditor>
         </div>
         <Dialog
           :showDialog="showDialog"
@@ -168,6 +170,7 @@ import {
   ExerciseState,
   ExerciseChoice,
   getExerciseValidationErrors,
+  ExerciseType,
 } from "@/models";
 import { multipleChoiceExerciseTypes } from "@/models";
 import Card from "@/components/ui/Card.vue";
@@ -193,6 +196,7 @@ import {
   EXERCISE_CHOICE_AUTO_SAVE_DEBOUNCED_FIELDS,
   EXERCISE_CHOICE_AUTO_SAVE_DEBOUNCE_TIME_MS,
 } from "@/const";
+import CodeEditor from "@/components/ui/CodeEditor.vue";
 const { mapActions, mapMutations } = createNamespacedHelpers("teacher");
 
 export default defineComponent({
@@ -208,6 +212,7 @@ export default defineComponent({
     CloudSaveStatus,
     Dialog,
     draggable,
+    CodeEditor,
   },
   props: {
     modelValue: {
@@ -265,6 +270,7 @@ export default defineComponent({
       exerciseTypeOptions,
       exerciseStateOptions,
       ExerciseState,
+      ExerciseType,
     };
   },
   methods: {

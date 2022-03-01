@@ -7,19 +7,15 @@
       :open="calendarOpen"
       @close="onClose()"
       @focus="$emit('focus')"
-      v-model:value="proxyModelValue"
+      v-model="proxyModelValue"
       type="datetime"
       :ref="'calendar-' + elementId"
     >
       <template v-slot:icon-calendar
-        ><span class="text-base material-icons-outlined">
-          calendar_today
-        </span>
+        ><span class="text-base material-icons-outlined"> calendar_today </span>
       </template>
       <template v-slot:icon-clear
-        ><span class="text-base material-icons-outlined">
-          close
-        </span>
+        ><span class="text-base material-icons-outlined"> close </span>
       </template>
     </date-picker>
     <!-- </div> -->
@@ -27,7 +23,7 @@
       class="absolute left-1.5 origin-0 -z-1"
       :class="{
         'calendar-fixed-label': proxyModelValue != null || calendarOpen,
-        'bottom-1.5': proxyModelValue == null
+        'bottom-1.5': proxyModelValue == null,
       }"
     >
       <slot></slot>
@@ -39,49 +35,49 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/runtime-core'
-import { v4 as uuid4 } from 'uuid'
+import { defineComponent } from "@vue/runtime-core";
+import { v4 as uuid4 } from "uuid";
 
-import DatePicker from 'vue-datepicker-next'
-import 'vue-datepicker-next/index.css'
+import DatePicker from "vue-datepicker-next";
+import "vue-datepicker-next/index.css";
 export default defineComponent({
-  name: 'CalendarInput',
+  name: "CalendarInput",
   components: { DatePicker },
-  props: ['modelValue'],
-  created () {
-    this.elementId = uuid4()
+  props: ["modelValue"],
+  created() {
+    this.elementId = uuid4();
   },
-  data () {
+  data() {
     return {
       calendarOpen: false,
-      elementId: ''
-    }
+      elementId: "",
+    };
   },
   methods: {
-    onOpen () {
-      console.log('open')
-      this.calendarOpen = true
-      this.$emit('open')
+    onOpen() {
+      console.log("open");
+      this.calendarOpen = true;
+      this.$emit("open");
     },
-    onClose () {
-      this.calendarOpen = false
-      this.$emit('close')
+    onClose() {
+      this.calendarOpen = false;
+      this.$emit("close");
     },
-    close () {
-      this.calendarOpen = false
-    }
+    close() {
+      this.calendarOpen = false;
+    },
   },
   computed: {
     proxyModelValue: {
-      get () {
-        return this.modelValue ? new Date(this.modelValue) : null
+      get() {
+        return this.modelValue ? new Date(this.modelValue) : null;
       },
-      set (val: unknown) {
-        this.$emit('update:modelValue', val)
-      }
-    }
-  }
-})
+      set(val: unknown) {
+        this.$emit("update:modelValue", val);
+      },
+    },
+  },
+});
 </script>
 
 <style>

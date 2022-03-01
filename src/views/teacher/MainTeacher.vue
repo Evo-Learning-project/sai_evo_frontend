@@ -141,10 +141,14 @@ import { redirectToMainView } from "@/utils";
 
 export default defineComponent({
   name: "MainTeacher",
-  created() {
-    if (!this.hasAnyPrivileges()) {
-      this.redirectToMainView();
-    }
+  mounted() {
+    // TODO this is called before courses have been retrieved, you should probably do this check in App.vue if the route has a meta flag
+    this.hasAnyPrivileges();
+    setTimeout(() => {
+      if (!this.hasAnyPrivileges()) {
+        this.redirectToMainView();
+      }
+    }, 1000);
   },
   data() {
     return {

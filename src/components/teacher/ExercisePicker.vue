@@ -34,10 +34,7 @@
       <skeleton-card :short="true"></skeleton-card>
       <skeleton-card :short="true"></skeleton-card>
     </div>
-    <VueEternalLoading
-      :load="onLoadMore"
-      v-model:is-initial="isInitialInfiniteLoad"
-    >
+    <VueEternalLoading :load="onLoadMore" v-model="isInitialInfiniteLoad">
       <template #loading>
         <spinner></spinner>
         <!-- <Btn @click="onLoadMore()">Carica di più</Btn> -->
@@ -52,128 +49,128 @@
 
 <script lang="ts">
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { createNamespacedHelpers } from 'vuex'
-const { mapState, mapActions } = createNamespacedHelpers('teacher')
+import { createNamespacedHelpers } from "vuex";
+const { mapState, mapActions } = createNamespacedHelpers("teacher");
 
-import { VueEternalLoading, LoadAction } from '@ts-pro/vue-eternal-loading'
-import Spinner from '@/components/ui/Spinner.vue'
+import { VueEternalLoading, LoadAction } from "@ts-pro/vue-eternal-loading";
+import Spinner from "@/components/ui/Spinner.vue";
 
-import { Exercise, ExerciseState, ExerciseType } from '@/models'
-import { defineComponent, PropType } from '@vue/runtime-core'
-import MinimalExercisePreview from '@/components/teacher/ExerciseEditor/MinimalExercisePreview.vue'
-import Btn from '@/components/ui/Btn.vue'
-import SkeletonCard from '../ui/SkeletonCard.vue'
-import ExerciseSearchFilters from './ExerciseSearchFilters.vue'
-import { SearchFilter } from '@/api/interfaces'
-import { getDebouncedForFilter } from '@/utils'
-import { courseIdMixin } from '@/mixins'
+import { Exercise, ExerciseState, ExerciseType } from "@/models";
+import { defineComponent, PropType } from "@vue/runtime-core";
+import MinimalExercisePreview from "@/components/teacher/ExerciseEditor/MinimalExercisePreview.vue";
+import Btn from "@/components/ui/Btn.vue";
+import SkeletonCard from "../ui/SkeletonCard.vue";
+import ExerciseSearchFilters from "./ExerciseSearchFilters.vue";
+import { SearchFilter } from "@/api/interfaces";
+import { getDebouncedForFilter } from "@/utils";
+import { courseIdMixin } from "@/mixins";
 export default defineComponent({
-  name: 'ExercisePicker',
-  async created () {
-    this.onFilterChange = getDebouncedForFilter(this.onFilterChange)
+  name: "ExercisePicker",
+  async created() {
+    this.onFilterChange = getDebouncedForFilter(this.onFilterChange);
 
-    this.firstLoading = true
+    this.firstLoading = true;
     await this.getExercises({
       courseId: this.courseId,
-      fromFirstPage: true
-    })
-    this.firstLoading = false
+      fromFirstPage: true,
+    });
+    this.firstLoading = false;
   },
   mixins: [courseIdMixin],
   watch: {
     searchFilter: {
-      async handler (val: SearchFilter) {
-        await this.onFilterChange()
-        this.isInitialInfiniteLoad = true
+      async handler(val: SearchFilter) {
+        await this.onFilterChange();
+        this.isInitialInfiniteLoad = true;
       },
-      deep: true
-    }
+      deep: true,
+    },
   },
   components: {
     MinimalExercisePreview,
     SkeletonCard,
     VueEternalLoading,
     Spinner,
-    ExerciseSearchFilters
+    ExerciseSearchFilters,
     //Btn
   },
-  data () {
+  data() {
     return {
       firstLoading: false,
       isInitialInfiniteLoad: false,
       searchFilter: {
-        label: '',
-        text: '',
+        label: "",
+        text: "",
         tags: [] as string[],
         exercise_types: [] as ExerciseType[],
-        states: [] as ExerciseState[]
-      } as SearchFilter
-    }
+        states: [] as ExerciseState[],
+      } as SearchFilter,
+    };
   },
   props: {
     modelValue: {
       type: Object as PropType<string[]>,
-      required: true
+      required: true,
     },
     allowPickingDraft: {
       type: Boolean,
-      default: false
+      default: false,
     },
     alreadySelected: {
       type: Object as PropType<string[]>,
-      required: true
-    }
+      required: true,
+    },
   },
   methods: {
-    ...mapActions(['getExercises']),
-    isExerciseDraft (exercise: Exercise): boolean {
-      return !this.allowPickingDraft && exercise.state == ExerciseState.DRAFT
+    ...mapActions(["getExercises"]),
+    isExerciseDraft(exercise: Exercise): boolean {
+      return !this.allowPickingDraft && exercise.state == ExerciseState.DRAFT;
     },
-    isSelectedInAnotherRule (exercise: Exercise): boolean {
+    isSelectedInAnotherRule(exercise: Exercise): boolean {
       return (
         this.alreadySelected.includes(exercise.id) && !this.isSelected(exercise)
-      )
+      );
     },
-    onSelection (exercise: Exercise) {
-      const index = this.modelValue.findIndex(e => e == exercise.id)
+    onSelection(exercise: Exercise) {
+      const index = this.modelValue.findIndex((e) => e == exercise.id);
       if (index === -1) {
-        this.$emit('addExercise', exercise)
+        this.$emit("addExercise", exercise);
       } else {
-        this.$emit('removeExercise', exercise)
+        this.$emit("removeExercise", exercise);
       }
     },
-    isSelected (exercise: Exercise): boolean {
-      return this.modelValue.find(e => e == exercise.id) != null
+    isSelected(exercise: Exercise): boolean {
+      return this.modelValue.find((e) => e == exercise.id) != null;
     },
-    async onLoadMore ({ loaded, noMore, error }: LoadAction) {
+    async onLoadMore({ loaded, noMore, error }: LoadAction) {
       try {
         const moreResults = await this.getExercises({
           courseId: this.courseId,
           fromFirstPage: false,
-          filters: this.searchFilter
-        })
+          filters: this.searchFilter,
+        });
         if (!moreResults) {
-          noMore()
+          noMore();
         } else {
-          loaded()
+          loaded();
         }
       } catch (e) {
-        console.log('ERROR', e)
-        error()
+        console.log("ERROR", e);
+        error();
       }
     },
-    async onFilterChange () {
+    async onFilterChange() {
       await this.getExercises({
         courseId: this.courseId,
         fromFirstPage: true,
-        filters: this.searchFilter
-      })
-    }
+        filters: this.searchFilter,
+      });
+    },
   },
   computed: {
-    ...mapState(['exercises'])
-  }
-})
+    ...mapState(["exercises"]),
+  },
+});
 </script>
 
 <style></style>

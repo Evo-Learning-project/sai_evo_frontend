@@ -13,7 +13,7 @@ module.exports = {
     SharedArrayBuffer: "readonly",
   },
   parserOptions: {
-    ecmaVersion: 2020,
+    ecmaVersion: 2022,
     parser: "@typescript-eslint/parser",
     sourceType: "module",
   },
