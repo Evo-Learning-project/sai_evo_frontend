@@ -338,6 +338,7 @@ export const it = {
     testcase_type: "Visibilità",
     testcase_text: "Descrizione",
     testcase_code: "Codice",
+    hidden_to_students: "Nascosto agli studenti",
     edit_non_draft_title: "Modifica di un esercizio non bozza",
     edit_non_draft_body:
       "Stai per modificare un esercizio non in stato di bozza. Potrebbe essere già presente in un esame o essere già stato visto dagli studenti. Sei sicuro di volerlo modificare?",
