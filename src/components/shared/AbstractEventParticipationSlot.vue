@@ -8,7 +8,9 @@
           'bg-gray-200 p-2 border border-dark rounded-md':
             false && allowEditScores,
         }"
-        v-if="exercise.exercise_type !== ExerciseType.JS"
+        v-if="
+          exercise.exercise_type !== ExerciseType.JS || !allowEditSubmission
+        "
         v-html="exercise.text"
       ></div>
       <div :class="{ 'flex space-x-8': allowEditScores || showAssessment }">
@@ -54,13 +56,24 @@
             }}
           </TextEditor>
           <ProgrammingExercise
-            v-else-if="exercise.exercise_type === ExerciseType.JS"
+            v-else-if="
+              exercise.exercise_type === ExerciseType.JS && allowEditSubmission
+            "
             :exercise="modelValue.exercise"
             v-model="answerTextProxy"
             :executionResults="modelValue.execution_results"
+            :slot="modelValue"
             :running="running"
             @runCode="$emit('runCode')"
           ></ProgrammingExercise>
+          <div
+            v-else-if="
+              exercise.exercise_type === ExerciseType.JS && !allowEditSubmission
+            "
+          >
+            <CodeFragment :value="modelValue.answer_text"></CodeFragment>
+            <CodeExecutionResults :slot="modelValue"></CodeExecutionResults>
+          </div>
         </div>
 
         <!-- show assesment-->
@@ -147,6 +160,8 @@ import TextEditor from "../ui/TextEditor.vue";
 import NumberInput from "../ui/NumberInput.vue";
 import Timestamp from "../ui/Timestamp.vue";
 import ProgrammingExercise from "./ProgrammingExercise.vue";
+import CodeFragment from "../ui/CodeFragment.vue";
+import CodeExecutionResults from "./CodeExecutionResults.vue";
 
 export default defineComponent({
   components: {
@@ -156,6 +171,8 @@ export default defineComponent({
     NumberInput,
     Timestamp,
     ProgrammingExercise,
+    CodeFragment,
+    CodeExecutionResults,
   },
   name: "AbstractEventParticipationSlot",
   props: {

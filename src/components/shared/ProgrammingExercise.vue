@@ -25,7 +25,7 @@
           ><template v-slot:title>
             <h5>Risultato esecuzione</h5>
           </template>
-          <div class="">{{ executionResults }}</div>
+          <CodeExecutionResults :slot="slot"></CodeExecutionResults>
         </Backdrop>
         <div class="absolute top-0 right-0 mt-0.5 mr-4">
           <Btn :loading="running" :variant="'success'" @click="$emit('runCode')"
@@ -55,7 +55,7 @@ import {
   programmingExerciseTabsOptions,
   ProgrammingExerciseTabs,
 } from "@/const";
-import { Exercise } from "@/models";
+import { EventParticipationSlot, Exercise } from "@/models";
 import { defineComponent, PropType } from "@vue/runtime-core";
 import SegmentedControls from "../ui/SegmentedControls.vue";
 import CodeEditor from "../ui/CodeEditor.vue";
@@ -63,6 +63,7 @@ import ExerciseTestCase from "./ExerciseTestCase.vue";
 import Btn from "../ui/Btn.vue";
 import { loadingMixin } from "@/mixins";
 import Backdrop from "../ui/Backdrop.vue";
+import CodeExecutionResults from "./CodeExecutionResults.vue";
 export default defineComponent({
   name: "ProgrammingExercise",
   mixins: [loadingMixin],
@@ -75,6 +76,10 @@ export default defineComponent({
   props: {
     exercise: {
       type: Object as PropType<Exercise>,
+      required: true,
+    },
+    slot: {
+      type: Object as PropType<EventParticipationSlot>,
       required: true,
     },
     modelValue: {
@@ -113,6 +118,7 @@ export default defineComponent({
     ExerciseTestCase,
     Btn,
     Backdrop,
+    CodeExecutionResults,
   },
 });
 </script>
