@@ -6,7 +6,7 @@
     >
       <div class="flex items-center">
         <span
-          class="my-auto mr-2 text-lg cursor-move  drag-handle material-icons-outlined opacity-70"
+          class="my-auto mr-2 text-lg cursor-move drag-handle material-icons-outlined opacity-70"
         >
           drag_indicator
         </span>
@@ -30,21 +30,14 @@
         </div>
       </div>
       <div
-        v-if="
-          isSlotPopulated &&
-          modelValue.rule_type == EventTemplateRuleType.ID_BASED
-        "
+        v-if="isSlotPopulated && modelValue.rule_type == EventTemplateRuleType.ID_BASED"
         class="mt-4"
       >
         <p class="mb-2 text-muted">
           {{
             ruleExercises.length == 1
-              ? $t(
-                  "event_template_rule_editor.same_exercise_for_everyone_description"
-                )
-              : $t(
-                  "event_template_rule_editor.one_exercise_from_set_description"
-                )
+              ? $t("event_template_rule_editor.same_exercise_for_everyone_description")
+              : $t("event_template_rule_editor.one_exercise_from_set_description")
           }}
         </p>
         <div>
@@ -67,8 +60,7 @@
       </div>
       <div
         v-else-if="
-          isSlotPopulated &&
-          modelValue.rule_type == EventTemplateRuleType.TAG_BASED
+          isSlotPopulated && modelValue.rule_type == EventTemplateRuleType.TAG_BASED
         "
         class="mt-4"
       >
@@ -92,9 +84,7 @@
               :key="'clause-' + clause.id + '-tag-' + tag.id"
               :tag="tag"
             ></Tag
-            ><span v-if="clause.tags.length > 1" class="text-xl text-muted"
-              >)</span
-            >
+            ><span v-if="clause.tags.length > 1" class="text-xl text-muted">)</span>
             <p v-if="index !== modelValue.clauses.length - 1">,</p>
           </div>
         </div>
@@ -108,12 +98,7 @@
       @yes="() => (showDialog = false)"
     >
       <template v-if="modelValue.rule_type != null" v-slot:backButton>
-        <btn
-          :variant="'light'"
-          :size="'sm'"
-          class=""
-          @click="setRuleMode(null)"
-        >
+        <btn :variant="'light'" :size="'sm'" class="" @click="setRuleMode(null)">
           <span class="material-icons-outlined"> arrow_back </span>
         </btn>
       </template>
@@ -138,11 +123,7 @@
                   {{ $t("event_template_rule_editor.pick_single_exercise") }}
                 </h4>
                 <p>
-                  {{
-                    $t(
-                      "event_template_rule_editor.pick_single_exercise_help_text"
-                    )
-                  }}
+                  {{ $t("event_template_rule_editor.pick_single_exercise_help_text") }}
                 </p></template
               >
             </Btn>
@@ -156,11 +137,7 @@
                   {{ $t("event_template_rule_editor.pick_exercise_from_pool") }}
                 </h4>
                 <p>
-                  {{
-                    $t(
-                      "event_template_rule_editor.pick_exercise_from_pool_help_text"
-                    )
-                  }}
+                  {{ $t("event_template_rule_editor.pick_exercise_from_pool_help_text") }}
                 </p></template
               >
             </Btn>
@@ -174,11 +151,7 @@
                   {{ $t("event_template_rule_editor.pick_exercise_tag_based") }}
                 </h4>
                 <p>
-                  {{
-                    $t(
-                      "event_template_rule_editor.pick_exercise_tag_based_help_text"
-                    )
-                  }}
+                  {{ $t("event_template_rule_editor.pick_exercise_tag_based_help_text") }}
                 </p>
               </template>
             </Btn>
@@ -195,12 +168,8 @@
           <p>
             {{
               pickOneExerciseOnly
-                ? $t(
-                    "event_template_rule_editor.pick_single_exercise_help_text"
-                  )
-                : $t(
-                    "event_template_rule_editor.pick_exercise_from_pool_help_text"
-                  )
+                ? $t("event_template_rule_editor.pick_single_exercise_help_text")
+                : $t("event_template_rule_editor.pick_exercise_from_pool_help_text")
             }}
           </p>
           <div class="mt-4 max-h-96">
@@ -212,9 +181,7 @@
             ></ExercisePicker>
           </div>
         </div>
-        <div
-          v-else-if="modelValue.rule_type == EventTemplateRuleType.TAG_BASED"
-        >
+        <div v-else-if="modelValue.rule_type == EventTemplateRuleType.TAG_BASED">
           <TagBasedEventTemplateRuleEditor
             :modelValue="modelValue.clauses"
             :satisfying="modelValue.satisfying"
@@ -291,6 +258,7 @@ export default defineComponent({
   },
   methods: {
     emitUpdate(key: keyof EventTemplateRule, value: unknown) {
+      console.log("EMITTING", { key, value });
       this.$emit("updateRule", {
         field: key,
         value,
@@ -306,10 +274,11 @@ export default defineComponent({
         ]);
       }
       // fetch exercise from server and add to local array for preview
-      await this.withLoading(async () => {
-        const preview = await getExercisesById(this.courseId, [exercise.id]);
-        this.previewExercises.push(...preview);
-      });
+      // TODO the withLoading caused dialog to disappear on adding an exercise - investigate
+      // await this.withLoading(async () => {
+      const preview = await getExercisesById(this.courseId, [exercise.id]);
+      this.previewExercises.push(...preview);
+      // });
     },
     onRemoveExercise(exercise: Exercise) {
       // emit modelValue update of new exercise list without removed one
@@ -318,9 +287,7 @@ export default defineComponent({
         this.modelValue?.exercises?.filter((e) => e != exercise.id)
       );
       // remove exercise from local array of exercises for preview
-      this.previewExercises = this.previewExercises.filter(
-        (e) => e.id != exercise.id
-      );
+      this.previewExercises = this.previewExercises.filter((e) => e.id != exercise.id);
     },
     showRuleDialog() {
       this.showDialog = true;
