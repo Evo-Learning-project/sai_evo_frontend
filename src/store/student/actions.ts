@@ -22,6 +22,7 @@ import {
   partialUpdateEventParticipationSlot,
   partialUpdateEventTemplateRule,
   participateInEvent,
+  runEventParticipationSlotCode,
   updateEventTemplateRule,
   updateEventTemplateRuleClause,
 } from "@/api/events";
@@ -139,9 +140,31 @@ export const actions = {
       commit("setCurrentEventParticipationSlot", response);
     }
   },
+  runEventParticipationSlotCode: async (
+    { commit }: { commit: Commit },
+    {
+      courseId,
+      eventId,
+      participationId,
+      slotId,
+    }: {
+      courseId: string;
+      eventId: string;
+      participationId: string;
+      slotId: string;
+    }
+  ) => {
+    const response = await runEventParticipationSlotCode(
+      courseId,
+      eventId,
+      participationId,
+      slotId
+    );
+    commit("setCurrentEventParticipationSlot", response);
+  },
   addEventTemplateRule: async (
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    { commit, state }: { commit: Commit; state: StudentState },
+    { commit }: { commit: Commit },
     {
       courseId,
       templateId,

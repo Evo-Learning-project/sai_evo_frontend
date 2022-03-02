@@ -57,6 +57,9 @@
             v-else-if="exercise.exercise_type === ExerciseType.JS"
             :exercise="modelValue.exercise"
             v-model="answerTextProxy"
+            :executionResults="modelValue.execution_results"
+            :running="running"
+            @runCode="$emit('runCode')"
           ></ProgrammingExercise>
         </div>
 
@@ -183,6 +186,9 @@ export default defineComponent({
     saving: {
       type: Boolean,
       default: false,
+    },
+    running: {
+      type: Boolean,
     },
   },
   methods: {

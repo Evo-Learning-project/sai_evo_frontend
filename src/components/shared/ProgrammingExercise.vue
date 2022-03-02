@@ -6,7 +6,7 @@
         :options="programmingExerciseTabsOptions"
       ></SegmentedControls>
     </div>
-    <div class="mt-7">
+    <div class="mt-4">
       <div
         class="user-content"
         v-if="currentTab === ProgrammingExerciseTabs.TEXT"
@@ -21,8 +21,14 @@
           :size="'lg'"
           v-model="proxyModelValue"
         ></CodeEditor>
+        <Backdrop ref="executionResultsBackdrop" v-if="!!executionResults"
+          ><template v-slot:title>
+            <h5>Risultato esecuzione</h5>
+          </template>
+          <div class="">{{ executionResults }}</div>
+        </Backdrop>
         <div class="absolute top-0 right-0 mt-0.5 mr-4">
-          <Btn :variant="'success'"
+          <Btn :loading="running" :variant="'success'" @click="$emit('runCode')"
             ><span class="mr-1 text-base material-icons"> play_arrow </span
             >{{ $t("programming_exercise.run_code") }}</Btn
           >
@@ -55,8 +61,17 @@ import SegmentedControls from "../ui/SegmentedControls.vue";
 import CodeEditor from "../ui/CodeEditor.vue";
 import ExerciseTestCase from "./ExerciseTestCase.vue";
 import Btn from "../ui/Btn.vue";
+import { loadingMixin } from "@/mixins";
+import Backdrop from "../ui/Backdrop.vue";
 export default defineComponent({
   name: "ProgrammingExercise",
+  mixins: [loadingMixin],
+  watch: {
+    executionResults(newVal) {
+      console.log("changed execution results");
+      (this.$refs.executionResultsBackdrop as any).expanded = true;
+    },
+  },
   props: {
     exercise: {
       type: Object as PropType<Exercise>,
@@ -65,6 +80,13 @@ export default defineComponent({
     modelValue: {
       type: String,
       required: true,
+    },
+    executionResults: {
+      type: Object as PropType<Record<string, string>>,
+      required: false,
+    },
+    running: {
+      type: Boolean,
     },
   },
   data() {
@@ -85,7 +107,13 @@ export default defineComponent({
       },
     },
   },
-  components: { SegmentedControls, CodeEditor, ExerciseTestCase, Btn },
+  components: {
+    SegmentedControls,
+    CodeEditor,
+    ExerciseTestCase,
+    Btn,
+    Backdrop,
+  },
 });
 </script>
 

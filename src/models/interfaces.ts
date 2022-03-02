@@ -143,4 +143,5 @@ export interface EventParticipationSlot {
   answered_at?: string;
   is_first?: boolean;
   is_last?: boolean;
+  execution_results?: Record<string, string>;
 }

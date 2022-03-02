@@ -80,7 +80,7 @@ export default defineComponent({
         case "md":
           return 200;
         case "lg":
-          return 400;
+          return 480;
       }
       throw new Error("unreachable");
     },

@@ -101,6 +101,12 @@
       /* DARK box-shadow: rgba(0,0,0, .3) 0 1px 2px 0, rgba(0,0,0, .15) 0 2px 6px 2px; */
       box-shadow: rgba(60, 64, 67, .3) 0 1px 2px 0, rgba(60, 64, 67, .15) 0 2px 6px 2px !important;
     }
+
+    .shadow-t-elevation-2 {
+      /* DARK box-shadow: rgba(0,0,0, .3) 0 1px 2px 0, rgba(0,0,0, .15) 0 2px 6px 2px; */
+      box-shadow: rgba(60, 64, 67, .3) 0 -2.5px 2px 0, rgba(60, 64, 67, .15) 0 -3px 6px 2px !important;
+    }
+    
     
     .card button {
       @apply shadow-none !important;
@@ -488,5 +494,22 @@
     }
     .ssh-pre--dark {
       @apply bg-dark text-lightText !important;
+    }
+
+    .vs-dark,
+    .monaco-editor-vue3,
+    .monaco-editor,
+    .monaco-editor-background,
+    .monaco-editor .margin,
+    .minimap, .slider-mouseover,
+    .minimap-decorations-layer,
+    .decorationsOverviewRuler,
+    /*.monaco-editor .scrollbar,
+    .monaco-editor .slider  */
+    .scrollbar,
+    .vertical
+    {
+      /* background-color: #070914 !important; */
+      background-color: #161b3d !important;
     }
   }

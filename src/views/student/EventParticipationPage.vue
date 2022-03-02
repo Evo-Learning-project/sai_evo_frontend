@@ -23,7 +23,7 @@
       v-for="(slot, index) in proxyModelValue.slots"
       :key="'p-' + proxyModelValue.id + '-s-' + slot.id"
     >
-      <h4 class="mb-3">
+      <h4 class="mb-1">
         {{ $t("event_participation_page.exercise") }}
         {{ slot.slot_number + 1 }}
         <span v-if="oneExerciseAtATime"
@@ -35,8 +35,10 @@
         :modelValue="slot"
         @updateSelectedChoices="onChange(slot, 'selected_choices', $event)"
         @updateAnswerText="onChange(slot, 'answer_text', $event)"
+        @runCode="onRunCode(slot)"
         :allowEditSubmission="true"
         :saving="saving"
+        :running="running"
       ></AbstractEventParticipationSlot>
     </div>
     <div class="flex items-center w-full mt-8">
@@ -172,6 +174,7 @@ export default defineComponent({
       savingError: false,
       mounted: false,
       showConfirmDialog: false,
+      running: false,
       dialogData: {
         title: "",
         text: "",
@@ -187,8 +190,21 @@ export default defineComponent({
       "moveEventParticipationCurrentSlotCursorBack",
       "partialUpdateEventParticipationSlot",
       "partialUpdateEventParticipation",
+      "runEventParticipationSlotCode",
     ]),
     ...mapMutations(["setCurrentEventParticipationSlot"]),
+    async onRunCode(slot: EventParticipationSlot) {
+      this.running = true;
+      // flush queued changes before moving on to next slot
+      await this.slotAutoSaveManagers[slot.id].flush();
+      await this.runEventParticipationSlotCode({
+        courseId: this.courseId,
+        eventId: this.eventId,
+        participationId: this.currentEventParticipation.id,
+        slotId: slot.id,
+      });
+      this.running = false;
+    },
     async onGoForward() {
       this.showConfirmDialog = false;
 
