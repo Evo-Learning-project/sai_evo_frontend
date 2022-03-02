@@ -481,4 +481,12 @@
         opacity: 0;
       }
     }
+
+    /* code highlight */
+    .ssh-pre {
+      @apply relative block rounded-sm text-sm mt-0 border-0 py-2 px-3 !important;
+    }
+    .ssh-pre--dark {
+      @apply bg-dark text-lightText !important;
+    }
   }

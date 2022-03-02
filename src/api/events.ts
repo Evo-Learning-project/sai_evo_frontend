@@ -252,6 +252,18 @@ export async function partialUpdateEventParticipationSlot(
   return response.data;
 }
 
+export async function runEventParticipationSlotCode(
+  courseId: string,
+  eventId: string,
+  participationId: string,
+  slotId: string
+): Promise<EventParticipationSlot> {
+  const response = await axios.post(
+    `/courses/${courseId}/events/${eventId}/participations/${participationId}/slots/${slotId}/run/`
+  );
+  return response.data;
+}
+
 export async function moveEventParticipationCurrentSlotCursor(
   courseId: string,
   eventId: string,

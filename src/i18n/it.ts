@@ -375,6 +375,13 @@ export const it = {
     choose_exercises_text:
       "Scegli come generare gli esercizi per questa esercitazione. Puoi far scegliere gli esercizi al sistema completamente a caso oppure restringere la selezione a quelli che hanno tag da te scelti.",
   },
+  programming_exercise: {
+    tab_text: "Testo",
+    tab_testcases: "Test case",
+    tab_editor: "Editor",
+    run_code: "Esegui",
+    testcase: "Test case",
+  },
   exercise_types: {
     [ExerciseType.MULTIPLE_CHOICE_SINGLE_POSSIBLE]:
       "Scelta multipla con una sola scelta possibile",

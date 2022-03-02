@@ -8,13 +8,17 @@
           'bg-gray-200 p-2 border border-dark rounded-md':
             false && allowEditScores,
         }"
+        v-if="exercise.exercise_type !== ExerciseType.JS"
         v-html="exercise.text"
       ></div>
       <div :class="{ 'flex space-x-8': allowEditScores || showAssessment }">
         <!-- controls to submit -->
         <div :class="{ 'w-1/2': allowEditScores || showAssessment }">
           <CheckboxGroup
-            v-if="isMultipleChoiceMultiplePossible"
+            v-if="
+              exercise.exercise_type ===
+              ExerciseType.MULTIPLE_CHOICE_MULTIPLE_POSSIBLE
+            "
             :options="exerciseChoicesAsOptions"
             v-model="selectedChoicesProxy"
             :disabled="!allowEditSubmission || saving"
@@ -27,7 +31,10 @@
       </div> -->
           </CheckboxGroup>
           <RadioGroup
-            v-else-if="isMultipleChoiceSinglePossible"
+            v-else-if="
+              exercise.exercise_type ===
+              ExerciseType.MULTIPLE_CHOICE_SINGLE_POSSIBLE
+            "
             :options="exerciseChoicesAsOptions"
             v-model="selectedChoicesProxy"
             :disabled="!allowEditSubmission || saving"
@@ -37,7 +44,7 @@
           </RadioGroup>
           <TextEditor
             :disabled="!allowEditSubmission"
-            v-else-if="isOpenAnswer"
+            v-else-if="exercise.exercise_type === ExerciseType.OPEN_ANSWER"
             v-model="answerTextProxy"
           >
             {{
@@ -46,6 +53,11 @@
                 : $t("event_assessment.text_answer_label")
             }}
           </TextEditor>
+          <ProgrammingExercise
+            v-else-if="exercise.exercise_type === ExerciseType.JS"
+            :exercise="modelValue.exercise"
+            v-model="answerTextProxy"
+          ></ProgrammingExercise>
         </div>
 
         <!-- show assesment-->
@@ -131,6 +143,7 @@ import { getTranslatedString as _ } from "@/i18n";
 import TextEditor from "../ui/TextEditor.vue";
 import NumberInput from "../ui/NumberInput.vue";
 import Timestamp from "../ui/Timestamp.vue";
+import ProgrammingExercise from "./ProgrammingExercise.vue";
 
 export default defineComponent({
   components: {
@@ -139,6 +152,7 @@ export default defineComponent({
     TextEditor,
     NumberInput,
     Timestamp,
+    ProgrammingExercise,
   },
   name: "AbstractEventParticipationSlot",
   props: {
@@ -180,26 +194,21 @@ export default defineComponent({
       });
     },
   },
+  data() {
+    return {
+      ExerciseType,
+    };
+  },
   computed: {
     exercise(): Exercise {
       return this.modelValue.exercise;
     },
-    isMultipleChoiceSinglePossible(): boolean {
-      return (
-        this.exercise.exercise_type ==
-        ExerciseType.MULTIPLE_CHOICE_SINGLE_POSSIBLE
-      );
-    },
-    isMultipleChoiceMultiplePossible(): boolean {
-      return (
-        this.exercise.exercise_type ==
-        ExerciseType.MULTIPLE_CHOICE_MULTIPLE_POSSIBLE
-      );
-    },
     exerciseChoicesAsOptions(): SelectableOption[] {
       if (
-        !this.isMultipleChoiceSinglePossible &&
-        !this.isMultipleChoiceMultiplePossible
+        this.exercise.exercise_type !==
+          ExerciseType.MULTIPLE_CHOICE_SINGLE_POSSIBLE &&
+        this.exercise.exercise_type !==
+          ExerciseType.MULTIPLE_CHOICE_MULTIPLE_POSSIBLE
       ) {
         return [];
       }
@@ -218,12 +227,6 @@ export default defineComponent({
             ),
         }),
       }));
-    },
-    isOpenAnswer(): boolean {
-      return (
-        parseInt((this.exercise?.exercise_type?.toString() ?? "") as string) ==
-        ExerciseType.OPEN_ANSWER
-      );
     },
     selectedChoicesProxy: {
       get() {

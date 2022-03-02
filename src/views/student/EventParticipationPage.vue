@@ -23,7 +23,7 @@
       v-for="(slot, index) in proxyModelValue.slots"
       :key="'p-' + proxyModelValue.id + '-s-' + slot.id"
     >
-      <h4>
+      <h4 class="mb-3">
         {{ $t("event_participation_page.exercise") }}
         {{ slot.slot_number + 1 }}
         <span v-if="oneExerciseAtATime"

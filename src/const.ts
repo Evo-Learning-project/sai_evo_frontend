@@ -71,3 +71,27 @@ export const testcaseTypeOptions: SelectableOption[] = (
     content: _("testcase_types." + key),
     description: _("exercise_states_descriptions." + key),
   }));
+
+export enum ProgrammingExerciseTabs {
+  TEXT,
+  EDITOR,
+  TEST_CASES,
+}
+
+export const programmingExerciseTabsOptions: SelectableOption[] = [
+  {
+    value: ProgrammingExerciseTabs.TEXT,
+    content: _("programming_exercise.tab_text"),
+    icons: ["description-sm"],
+  },
+  {
+    value: ProgrammingExerciseTabs.EDITOR,
+    content: _("programming_exercise.tab_editor"),
+    icons: ["code-sm"],
+  },
+  {
+    value: ProgrammingExerciseTabs.TEST_CASES,
+    content: _("programming_exercise.tab_testcases"),
+    icons: ["integration_instructions-sm"],
+  },
+];

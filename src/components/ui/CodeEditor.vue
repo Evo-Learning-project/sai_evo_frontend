@@ -15,6 +15,7 @@
         :value="modelValue"
         theme="vs-dark"
         class="rounded-md"
+        :options="monacoOptions"
         :style="'height: ' + editorHeight + ';'"
         language="typescript"
       />
@@ -49,8 +50,13 @@ export default defineComponent({
   },
   data() {
     return {
-      code: "const noop = () => {}",
       showEditor: false,
+      monacoOptions: {
+        fontSize: 14,
+        minimap: {
+          scale: 2,
+        },
+      },
     };
   },
   methods: {
@@ -74,7 +80,7 @@ export default defineComponent({
         case "md":
           return 200;
         case "lg":
-          return 300;
+          return 400;
       }
       throw new Error("unreachable");
     },
