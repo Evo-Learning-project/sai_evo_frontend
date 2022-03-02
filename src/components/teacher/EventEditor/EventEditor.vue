@@ -49,12 +49,7 @@ import EventTemplateEditor from "@/components/teacher/EventTemplateEditor/EventT
 import CloudSaveStatus from "@/components/ui/CloudSaveStatus.vue";
 import { defineComponent } from "@vue/runtime-core";
 import { Event, EventState, EventTemplate } from "@/models";
-import {
-  courseIdMixin,
-  eventIdMixin,
-  loadingMixin,
-  savingMixin,
-} from "@/mixins";
+import { courseIdMixin, eventIdMixin, loadingMixin, savingMixin } from "@/mixins";
 import Dialog from "@/components/ui/Dialog.vue";
 import { getTranslatedString as _ } from "@/i18n";
 
@@ -103,7 +98,7 @@ export default defineComponent({
       },
       (changes) => {
         this.saving = true;
-        this.$store.state.shared.localLoading = true;
+        //this.$store.state.shared.localLoading = true;
         this.setEvent({
           eventId: this.eventId,
           payload: { ...this.modelValue, ...changes },
@@ -114,7 +109,7 @@ export default defineComponent({
       undefined,
       () => (this.savingError = true),
       () => {
-        this.$store.state.shared.localLoading = false;
+        //this.$store.state.shared.localLoading = false;
         this.saving = false;
       }
     );

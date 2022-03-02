@@ -21,5 +21,6 @@ module.exports = {
   rules: {
     "no-unused-vars": "off",
     "vue/no-multiple-template-root": "off",
+    "vue/no-v-model-argument": "off",
   },
 };

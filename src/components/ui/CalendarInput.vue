@@ -7,16 +7,16 @@
       :open="calendarOpen"
       @close="onClose()"
       @focus="$emit('focus')"
-      v-model="proxyModelValue"
+      v-model:value="proxyModelValue"
       type="datetime"
       :ref="'calendar-' + elementId"
     >
-      <template v-slot:icon-calendar
+      <!-- <template v-slot:icon-calendar
         ><span class="text-base material-icons-outlined"> calendar_today </span>
       </template>
       <template v-slot:icon-clear
         ><span class="text-base material-icons-outlined"> close </span>
-      </template>
+      </template> -->
     </date-picker>
     <!-- </div> -->
     <label
@@ -73,6 +73,7 @@ export default defineComponent({
         return this.modelValue ? new Date(this.modelValue) : null;
       },
       set(val: unknown) {
+        console.log("SHOULD EMIT", val);
         this.$emit("update:modelValue", val);
       },
     },
