@@ -19,6 +19,7 @@
             @updateRule="onRuleUpdate(element, $event.field, $event.value)"
             @addClause="onRuleAddClause(element)"
             @updateClause="onRuleUpdateClause(element, $event)"
+            @deleteRule="onRuleDelete(element)"
           >
           </EventTemplateRuleEditor>
         </template>
@@ -27,7 +28,8 @@
 
     <div class="flex items-center mt-auto">
       <Btn @click="onAddRule()" :loading="loading"
-        ><span class="mr-1 text-base material-icons-outlined"> add_circle_outline </span
+        ><span class="mr-1 text-base material-icons-outlined">
+          add_circle_outline </span
         >{{ $t("event_template_editor.add_rule") }}</Btn
       >
     </div>
@@ -72,13 +74,18 @@ export default defineComponent({
   created() {
     this.modelValue.rules.forEach((r) => {
       this.instantiateRuleAutoSaveManager(r);
-      r.clauses?.forEach((c) => this.instantiateRuleClauseAutoSaveManager(r.id, c));
+      r.clauses?.forEach((c) =>
+        this.instantiateRuleClauseAutoSaveManager(r.id, c)
+      );
     });
   },
   data() {
     return {
       elementId: uuid4(),
-      rulesAutoSaveInstances: {} as Record<string, AutoSaveManager<EventTemplateRule>>,
+      rulesAutoSaveInstances: {} as Record<
+        string,
+        AutoSaveManager<EventTemplateRule>
+      >,
       ruleClausesAutoSaveInstances: {} as Record<
         string,
         AutoSaveManager<EventTemplateRuleClause>
@@ -95,57 +102,57 @@ export default defineComponent({
     ]),
     ...mapMutations(["patchEventTemplateRule", "patchEventTemplateRuleClause"]),
     instantiateRuleAutoSaveManager(rule: EventTemplateRule) {
-      this.rulesAutoSaveInstances[rule.id] = new AutoSaveManager<EventTemplateRule>(
-        rule,
-        async (changes) =>
-          await this.partialUpdateEventTemplateRule({
-            changes,
-            ruleId: rule.id,
-            templateId: this.modelValue.id,
-            courseId: this.courseId,
-            // re-fetch rules if ordering changed
-            reFetch: typeof changes._ordering !== "undefined",
-          }),
-        (changes) =>
-          this.patchEventTemplateRule({
-            payload: changes,
-            ruleId: rule.id,
-            templateId: this.modelValue.id,
-          }),
-        [],
-        0
-      );
+      this.rulesAutoSaveInstances[rule.id] =
+        new AutoSaveManager<EventTemplateRule>(
+          rule,
+          async (changes) =>
+            await this.partialUpdateEventTemplateRule({
+              changes,
+              ruleId: rule.id,
+              templateId: this.modelValue.id,
+              courseId: this.courseId,
+              // re-fetch rules if ordering changed
+              reFetch: typeof changes._ordering !== "undefined",
+            }),
+          (changes) =>
+            this.patchEventTemplateRule({
+              payload: changes,
+              ruleId: rule.id,
+              templateId: this.modelValue.id,
+            }),
+          [],
+          0
+        );
     },
     instantiateRuleClauseAutoSaveManager(
       ruleId: string,
       clause: EventTemplateRuleClause
     ) {
-      this.ruleClausesAutoSaveInstances[
-        clause.id
-      ] = new AutoSaveManager<EventTemplateRuleClause>(
-        clause,
-        async (changes) =>
-          await this.updateEventTemplateRuleClause({
-            courseId: this.courseId,
-            templateId: this.modelValue.id,
-            ruleId,
-            clause: { ...clause, ...changes },
-          }),
-        (changes) =>
-          this.patchEventTemplateRuleClause({
-            ruleId,
-            templateId: this.modelValue.id,
-            clauseId: clause.id,
-            payload: changes,
-          }),
-        [],
-        0,
-        undefined,
-        this.setErrorNotification,
-        undefined,
-        true,
-        false
-      );
+      this.ruleClausesAutoSaveInstances[clause.id] =
+        new AutoSaveManager<EventTemplateRuleClause>(
+          clause,
+          async (changes) =>
+            await this.updateEventTemplateRuleClause({
+              courseId: this.courseId,
+              templateId: this.modelValue.id,
+              ruleId,
+              clause: { ...clause, ...changes },
+            }),
+          (changes) =>
+            this.patchEventTemplateRuleClause({
+              ruleId,
+              templateId: this.modelValue.id,
+              clauseId: clause.id,
+              payload: changes,
+            }),
+          [],
+          0,
+          undefined,
+          this.setErrorNotification,
+          undefined,
+          true,
+          false
+        );
     },
 
     async onRuleDragEnd(event: { oldIndex: number; newIndex: number }) {
@@ -194,7 +201,13 @@ export default defineComponent({
         );
       });
     },
-    async onRuleUpdateClause(rule: EventTemplateRule, clause: EventTemplateRuleClause) {
+    async onRuleDelete(rule: EventTemplateRule) {
+      alert("Questa funzionalità non è ancora disponibile");
+    },
+    async onRuleUpdateClause(
+      rule: EventTemplateRule,
+      clause: EventTemplateRuleClause
+    ) {
       await this.ruleClausesAutoSaveInstances[clause.id].onChange({
         field: "tags",
         value: clause.tags,

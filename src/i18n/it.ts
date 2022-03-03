@@ -516,4 +516,12 @@ export const it = {
     practice_review: "Riepilogo esercitazione",
     exam_assessment: "Valutazione " + ROUTE_TITLE_EVENT_NAME_TOKEN,
   },
+  help_texts: {
+    exercise_editor: {
+      public_tags:
+        "Se pubblichi questo esercizio, i tag pubblici potranno essere utilizzati dagli studenti per cercarlo quando compongono un'esercitazione",
+      private_tags:
+        "Questi tag non verranno mai mostrati agli studenti e possono essere utilizzati per organizzare gli esercizi e aggiungerli agli esami",
+    },
+  },
 };

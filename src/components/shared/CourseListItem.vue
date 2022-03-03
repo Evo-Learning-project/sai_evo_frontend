@@ -2,7 +2,7 @@
   <Card :hoverable="true">
     <template v-slot:header>
       <div class="flex items-center">
-        <span class="mr-2 opacity-50 material-icons-two-tone">book</span>
+        <span class="mr-2 material-icons-two-tone two-tone-primary">book</span>
         <h3>{{ course.name }}</h3>
       </div>
     </template>
@@ -16,26 +16,24 @@
         <router-link
           :to="{
             name: 'TeacherCourseDashboard',
-            params: { courseId: course.id }
+            params: { courseId: course.id },
           }"
           ><Btn v-if="canAccessCoursePanel" class="w-full">
-            <span class="mr-1 text-base material-icons-outlined">
-              shield
-            </span>
-            {{ $t('courses.course_panel') }}
+            <span class="mr-1 text-base material-icons-outlined"> shield </span>
+            {{ $t("courses.course_panel") }}
           </Btn></router-link
         >
         <router-link
           :to="{
             name: 'StudentCourseDashboard',
-            params: { courseId: course.id }
+            params: { courseId: course.id },
           }"
         >
           <Btn class="w-full">
             <span class="mr-0.5 text-base material-icons-outlined">
               chevron_right
             </span>
-            {{ $t('courses.go_to_course') }}
+            {{ $t("courses.go_to_course") }}
           </Btn></router-link
         >
       </div>
@@ -44,34 +42,34 @@
 </template>
 
 <script lang="ts">
-import Card from '@/components/ui/Card.vue'
-import Btn from '@/components/ui/Btn.vue'
-import { Course } from '@/models'
-import { defineComponent, PropType } from '@vue/runtime-core'
+import Card from "@/components/ui/Card.vue";
+import Btn from "@/components/ui/Btn.vue";
+import { Course } from "@/models";
+import { defineComponent, PropType } from "@vue/runtime-core";
 export default defineComponent({
-  name: 'CourseListItem',
+  name: "CourseListItem",
   props: {
     course: {
       type: Object as PropType<Course>,
-      required: true
-    }
+      required: true,
+    },
   },
-  data () {
-    return {}
+  data() {
+    return {};
   },
   components: {
     Card,
-    Btn
+    Btn,
   },
   computed: {
-    canAccessCoursePanel (): boolean {
+    canAccessCoursePanel(): boolean {
       return (
         this.course.creator?.id === this.$store.state.user?.id ||
         (this.course.privileges?.length ?? 0) > 0
-      )
-    }
-  }
-})
+      );
+    },
+  },
+});
 </script>
 
 <style></style>

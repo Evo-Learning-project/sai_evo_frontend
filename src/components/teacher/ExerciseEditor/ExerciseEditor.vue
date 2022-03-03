@@ -83,21 +83,33 @@
             v-else
             >{{ $t("exercise_editor.exercise_solution") }}</CodeEditor
           >
-          <TagInput
-            :modelValue="modelValue.public_tags ?? []"
-            :allow-edit-tags="false"
-            :placeholder="$t('exercise_editor.exercise_public_tags')"
-            @addTag="onAddTag($event, true)"
-            @removeTag="onRemoveTag($event, true)"
-          ></TagInput>
+          <div>
+            <Tooltip
+              class=""
+              :text-code="'exercise_editor.public_tags'"
+            ></Tooltip>
+            <TagInput
+              :modelValue="modelValue.public_tags ?? []"
+              :allow-edit-tags="false"
+              :placeholder="$t('exercise_editor.exercise_public_tags')"
+              @addTag="onAddTag($event, true)"
+              @removeTag="onRemoveTag($event, true)"
+            ></TagInput>
+          </div>
 
-          <TagInput
-            :modelValue="modelValue.private_tags ?? []"
-            :allow-edit-tags="false"
-            :placeholder="$t('exercise_editor.exercise_private_tags')"
-            @addTag="onAddTag($event, false)"
-            @removeTag="onRemoveTag($event, false)"
-          ></TagInput>
+          <div>
+            <Tooltip
+              class=""
+              :text-code="'exercise_editor.private_tags'"
+            ></Tooltip>
+            <TagInput
+              :modelValue="modelValue.private_tags ?? []"
+              :allow-edit-tags="false"
+              :placeholder="$t('exercise_editor.exercise_private_tags')"
+              @addTag="onAddTag($event, false)"
+              @removeTag="onRemoveTag($event, false)"
+            ></TagInput>
+          </div>
         </div>
         <!-- Multiple-choice exercise types settings -->
         <div class="mt-8" v-if="isMultipleChoice">
@@ -231,6 +243,7 @@ import {
 } from "@/const";
 import CodeEditor from "@/components/ui/CodeEditor.vue";
 import TestCaseEditor from "./TestCaseEditor.vue";
+import Tooltip from "@/components/ui/Tooltip.vue";
 const { mapActions, mapMutations } = createNamespacedHelpers("teacher");
 
 export default defineComponent({
@@ -248,6 +261,7 @@ export default defineComponent({
     draggable,
     CodeEditor,
     TestCaseEditor,
+    Tooltip,
   },
   props: {
     modelValue: {

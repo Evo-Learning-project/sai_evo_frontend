@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h3>{{ $t('filter_results.title') }}</h3>
+    <h3>{{ $t("filter_results.title") }}</h3>
 
     <div class="mt-5">
       <!-- <chipset :options="tagsOptions" :modelValue="modelValue.tags"></chipset> -->
@@ -11,7 +11,7 @@
           class="flex-grow"
           :rightIcon="'search'"
         >
-          {{ $t('exercise_editor.exercise_label') }}
+          {{ $t("exercise_editor.exercise_label") }}
         </TextInput>
         <TextInput
           :modelValue="modelValue.text"
@@ -19,17 +19,19 @@
           class="flex-grow"
           :rightIcon="'search'"
         >
-          {{ $t('exercise_editor.exercise_text') }}
+          {{ $t("exercise_editor.exercise_text") }}
         </TextInput>
       </div>
       <div class="mt-8" v-show="full || expanded">
         <chipset
           :options="exerciseTypeOptions"
           :modelValue="modelValue.exercise_types"
+          @update:modelValue="onExerciseTypeUpdate($event)"
         ></chipset>
         <chipset
           :options="exerciseStateOptions"
           :modelValue="modelValue.states"
+          @update:modelValue="onExerciseTypeUpdate($event)"
         ></chipset>
       </div>
       <!-- <tag-input
@@ -47,8 +49,8 @@
           @click="expanded = !expanded"
           class="mt-4 ml-auto"
           ><span class="material-icons-outlined">
-            {{ expanded ? 'expand_less' : 'expand_more' }} </span
-          >{{ $t('filter_results.more_filters') }}
+            {{ expanded ? "expand_less" : "expand_more" }} </span
+          >{{ $t("filter_results.more_filters") }}
         </Btn>
       </div>
     </div>
@@ -56,7 +58,7 @@
 </template>
 
 <script lang="ts">
-import { getTranslatedString as _ } from '@/i18n'
+import { getTranslatedString as _ } from "@/i18n";
 // import { icons as exerciseTypesIcons } from '@/assets/exerciseTypesIcons'
 // import { icons as exerciseStatesIcons } from '@/assets/exerciseStatesIcons'
 // import {
@@ -66,47 +68,50 @@ import { getTranslatedString as _ } from '@/i18n'
 //   getBlankExercise,
 //   Tag
 // } from '@/models'
-import { SearchFilter } from '@/api/interfaces'
-import Btn from '@/components/ui/Btn.vue'
-import Chipset from '@/components/ui/Chipset.vue'
-import { ExerciseState, ExerciseType, Tag } from '@/models'
-import { defineComponent, PropType } from '@vue/runtime-core'
-import { icons as exerciseTypesIcons } from '@/assets/exerciseTypesIcons'
-import { icons as exerciseStatesIcons } from '@/assets/exerciseStatesIcons'
-import TextInput from '../ui/TextInput.vue'
+import { SearchFilter } from "@/api/interfaces";
+import Btn from "@/components/ui/Btn.vue";
+import Chipset from "@/components/ui/Chipset.vue";
+import { ExerciseState, ExerciseType, Tag } from "@/models";
+import { defineComponent, PropType } from "@vue/runtime-core";
+import { icons as exerciseTypesIcons } from "@/assets/exerciseTypesIcons";
+import { icons as exerciseStatesIcons } from "@/assets/exerciseStatesIcons";
+import TextInput from "../ui/TextInput.vue";
 export default defineComponent({
-  name: 'ExerciseSearchFilters',
+  name: "ExerciseSearchFilters",
   components: {
     Chipset,
     Btn,
-    TextInput
+    TextInput,
   },
   props: {
     modelValue: {
       type: Object as PropType<SearchFilter>,
-      required: true
+      required: true,
     },
     full: {
       type: Boolean,
-      default: true
-    }
+      default: true,
+    },
   },
-  data () {
+  data() {
     return {
-      expanded: false
-    }
+      expanded: false,
+    };
   },
   methods: {
-    emitUpdate (key: keyof SearchFilter, value: unknown) {
-      this.$emit('update:modelValue', {
+    onExerciseTypeUpdate(val: unknown) {
+      alert("Questa funzionalità non è ancora disponibile");
+    },
+    emitUpdate(key: keyof SearchFilter, value: unknown) {
+      this.$emit("update:modelValue", {
         ...this.modelValue,
-        [key]: value
-      })
-    }
+        [key]: value,
+      });
+    },
   },
   computed: {
-    tags (): Tag[] {
-      return [{ name: 'tag1' }, { name: 'tag2' }, { name: 'tag3' }]
+    tags(): Tag[] {
+      return [{ name: "tag1" }, { name: "tag2" }, { name: "tag3" }];
     },
     // tagsOptions () {
     //   return this.tags.map(t => ({
@@ -114,27 +119,27 @@ export default defineComponent({
     //     content: t.name
     //   }))
     // },
-    exerciseTypeOptions () {
-      return ((Object.keys(ExerciseType) as unknown[]) as ExerciseType[])
+    exerciseTypeOptions() {
+      return (Object.keys(ExerciseType) as unknown[] as ExerciseType[])
         .filter((key: string | number) => parseInt(key as string) == key) //(ExerciseType[key] as unknown) == 'number')
-        .map(key => ({
+        .map((key) => ({
           icons: exerciseTypesIcons[key],
           value: key,
-          content: _('exercise_types.' + key)
-        }))
+          content: _("exercise_types." + key),
+        }));
     },
-    exerciseStateOptions () {
-      return ((Object.keys(ExerciseState) as unknown[]) as ExerciseState[])
+    exerciseStateOptions() {
+      return (Object.keys(ExerciseState) as unknown[] as ExerciseState[])
         .filter((key: string | number) => parseInt(key as string) == key) //(ExerciseType[key] as unknown) == 'number')
-        .map(key => ({
+        .map((key) => ({
           icons: exerciseStatesIcons[key],
           value: key,
-          content: _('exercise_states.' + key),
-          description: _('exercise_states_descriptions.' + key)
-        }))
-    }
-  }
-})
+          content: _("exercise_states." + key),
+          description: _("exercise_states_descriptions." + key),
+        }));
+    },
+  },
+});
 </script>
 
 <style></style>

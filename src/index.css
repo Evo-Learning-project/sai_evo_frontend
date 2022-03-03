@@ -31,6 +31,10 @@
   }
 
 @layer components {
+    .bg-primary .hover\:bg-gray-200 {
+      @apply bg-opacity-20 !important;
+    }
+
     .animate-pulse {
         animation: my-pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite !important;
     }
@@ -177,10 +181,39 @@
       @apply w-8 h-8 text-xl rounded-full flex place-items-center justify-center shadow-md
     }
 
+    .two-tone-primary {
+      filter: invert(31%) sepia(65%) saturate(1500%) hue-rotate(212deg) brightness(90%) contrast(87%);
+    }
+
+    .two-tone-light {
+      filter: invert(32%) sepia(17%) saturate(495%) hue-rotate(175deg) brightness(93%) contrast(89%);
+    }
+
+    .two-tone-dark {
+      filter: invert(0%) sepia(100%) saturate(7500%) hue-rotate(347deg) brightness(89%) contrast(111%);
+    }
+
+    .two-tone-secondary {
+      filter: invert(18%) sepia(65%) saturate(6206%) hue-rotate(262deg) brightness(87%) contrast(95%);
+    }
+
+    .two-tone-success {
+      filter: invert(21%) sepia(13%) saturate(4214%) hue-rotate(124deg) brightness(99%) contrast(95%);
+    }
 
     .material-icons-two-tone {
       @apply select-none;
-      filter: invert(32%) sepia(68%) saturate(2000%) hue-rotate(213deg) brightness(94%) contrast(97%) brightness(90%); 
+      /* invert(0.5) sepia(1) saturate(10) hue-rotate(195deg); */
+      /*filter: invert(32%) sepia(68%) saturate(2000%) hue-rotate(213deg) brightness(94%) contrast(97%) brightness(90%); */
+      /*filter: invert(0.35) sepia(0.7)  saturate(9) hue-rotate(203deg);*/
+      /* filter: invert(0.35) sepia(0.7)  saturate(9) hue-rotate(203deg) */
+
+      
+      /* filter: brightness(0) saturate(100%) invert(0.45) sepia(0.7) saturate(260) hue-rotate(230deg); */
+      /* if only I could make this work...
+      filter: invert(0.35) sepia(0.7)  saturate(9) hue-rotate(203deg)
+      */
+      /* filter: brightness(0) saturate(100%) invert(36%) sepia(75%) saturate(4141%) hue-rotate(224deg) brightness(85%) contrast(83%); */
     }
 
     
@@ -216,6 +249,16 @@
       content: ' ';
       border-color: transparent transparent transparent rgba(17, 24, 39, 0.6) !important;
       @apply absolute -mt-1 border-4 border-transparent border-solid top-1/2 left-full;
+    }
+
+    .tooltip-right {
+      @apply -top-1 left-full ml-1.5
+    }
+
+    .tooltip-right::before {
+      content: ' ';
+      border-color: transparent rgba(17, 24, 39, 0.6) transparent transparent !important;
+      @apply absolute -mt-1 border-4 border-transparent border-solid top-1/2 right-full;
     }
 
     .tooltip-bottom::after {
