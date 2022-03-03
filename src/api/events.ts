@@ -243,10 +243,13 @@ export async function partialUpdateEventParticipationSlot(
   eventId: string,
   participationId: string,
   slotId: string,
-  changes: Record<keyof EventParticipationSlot, unknown>
+  changes: Record<keyof EventParticipationSlot, unknown>,
+  forceStudent = false
 ): Promise<EventParticipationSlot> {
   const response = await axios.patch(
-    `/courses/${courseId}/events/${eventId}/participations/${participationId}/slots/${slotId}/`,
+    `/courses/${courseId}/events/${eventId}/participations/${participationId}/slots/${slotId}/${
+      forceStudent ? "?as_student=1" : ""
+    }`,
     changes
   );
   return response.data;

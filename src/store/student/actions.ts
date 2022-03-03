@@ -134,7 +134,8 @@ export const actions = {
       eventId,
       participationId, //state.eventParticipation?.id,
       slotId,
-      changes
+      changes,
+      true
     );
     if (mutate) {
       commit("setCurrentEventParticipationSlot", response);
