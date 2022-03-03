@@ -85,6 +85,7 @@ const routes: Array<RouteRecordRaw> = [
           routeTitle: _("headings.course_dashboard"),
           sidebarOptions: courseDashboardSidebarOptions,
         },
+        props: true,
       },
       {
         path: "courses/:courseId/permissions",

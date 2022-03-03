@@ -78,6 +78,53 @@ export enum ProgrammingExerciseTabs {
   TEST_CASES,
 }
 
+export const teacherTourSteps = [
+  {
+    // exercises
+    target: "#sidebar-option-2",
+    header: {
+      title: _("tour.add_exercises_header"),
+    },
+    content: _("tour.add_exercises_content"),
+    params: {
+      placement: "right",
+    },
+  },
+  {
+    // exams
+    target: "#sidebar-option-1",
+    header: {
+      title: _("tour.add_exams_header"),
+    },
+    content: _("tour.add_exams_content"),
+    params: {
+      placement: "right",
+    },
+  },
+  {
+    // permissions
+    target: "#sidebar-option-3",
+    header: {
+      title: _("tour.permissions_header"),
+    },
+    content: _("tour.permissions_content"),
+    params: {
+      placement: "right",
+    },
+  },
+];
+
+export const tourOptions = {
+  highlight: true,
+
+  labels: {
+    buttonSkip: _("tour.skip"),
+    buttonPrevious: _("tour.previous"),
+    buttonNext: _("tour.next"),
+    buttonStop: _("tour.finish"),
+  },
+};
+
 export const programmingExerciseTabsOptions: SelectableOption[] = [
   {
     value: ProgrammingExerciseTabs.TEXT,

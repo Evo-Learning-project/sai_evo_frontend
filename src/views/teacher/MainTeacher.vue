@@ -49,6 +49,7 @@
             }"
           >
             <li
+              :id="'sidebar-option-' + index"
               class="
                 flex
                 items-center

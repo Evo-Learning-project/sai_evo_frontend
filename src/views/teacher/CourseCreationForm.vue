@@ -105,6 +105,7 @@ export default defineComponent({
           name: "TeacherCourseDashboard",
           params: {
             courseId: course.id,
+            showTour: 1,
           },
         });
       });

@@ -126,6 +126,7 @@ export const it = {
     exercises_answered_at: "Risposto:",
   },
   misc: {
+    course_settings: "Impostazioni corso",
     example: "Esempio",
     select_empty_option: "Seleziona",
     changes_saved_to_server: "Tutte le modifiche sono state salvate sul server",
@@ -526,5 +527,20 @@ export const it = {
       private_tags:
         "Questi tag non verranno mai mostrati agli studenti e possono essere utilizzati per organizzare gli esercizi e aggiungerli agli esami",
     },
+  },
+  tour: {
+    skip: "Salta tour",
+    next: "Avanti",
+    previous: "Indietro",
+    finish: "Termina",
+    add_exercises_header: "Creazione esercizi",
+    add_exercises_content:
+      "Per prima cosa, aggiungi esercizi al corso. Dalla pagina degli esercizi, puoi crearne e modificare quelli esistenti. Gli esercizi che crei potranno essere usati per comporre esami oppure resi disponibili agli studenti per esercitarsi.",
+    add_exams_header: "Creazione esami",
+    add_exams_content:
+      "Dopo aver creato gli esercizi, puoi utilizzarli per comporre esami. ",
+    permissions_header: "Aggiungi docenti",
+    permissions_content:
+      "Dalla pagina dei permessi puoi consentire l'accesso alle funzionalità di gestione del corso ad altri docenti o figure di rilievo, come i tutor.",
   },
 };

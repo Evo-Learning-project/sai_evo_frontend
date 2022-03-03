@@ -2,7 +2,7 @@
   <div>
     <Card :hoverable="false" :filled="true">
       <template v-slot:header>
-        <h3>Impostazioni corso</h3>
+        <h3>{{ $t("misc.course_settings") }}</h3>
       </template>
       <template v-slot:body>
         <div class="flex justify-between mt-2">
@@ -16,14 +16,12 @@
                 :variant="'icon'"
                 @click="editCourseName"
               >
-                <span class="text-xl material-icons-outlined">
-                  edit
-                </span>
+                <span class="text-xl material-icons-outlined"> edit </span>
               </Btn>
             </div>
             <div v-show="editingName" class="flex items-center">
               <TextInput class="mr-2 w-96" v-model="dirtyCourseName">
-                {{ $t('course_creation_form.course_name') }}
+                {{ $t("course_creation_form.course_name") }}
                 <template
                   v-if="v$.dirtyCourse.name.$errors.length > 0"
                   v-slot:errors
@@ -34,7 +32,7 @@
                     :key="error.$uid"
                   >
                     <div class="error-msg">
-                      {{ $t('validation_errors.' + error.$uid) }}
+                      {{ $t("validation_errors." + error.$uid) }}
                     </div>
                   </div>
                 </template></TextInput
@@ -62,7 +60,7 @@
             </div>
             <div class="flex items-center" v-show="!editingDescription">
               <p class="mr-2 text-muted">
-                {{ $t('course_creation_form.course_description') }}
+                {{ $t("course_creation_form.course_description") }}
               </p>
               <p class="mr-3" v-html="currentCourse.description"></p>
               <Btn
@@ -71,14 +69,12 @@
                 :variant="'icon'"
                 @click="editCourseDescription"
               >
-                <span class="text-xl material-icons-outlined">
-                  edit
-                </span>
+                <span class="text-xl material-icons-outlined"> edit </span>
               </Btn>
             </div>
             <div v-show="editingDescription" class="flex items-center">
               <TextEditor class="w-full mr-2" v-model="dirtyCourseDescription">
-                {{ $t('course_creation_form.course_description') }}
+                {{ $t("course_creation_form.course_description") }}
               </TextEditor>
               <Btn
                 :outline="true"
@@ -111,20 +107,20 @@
               class="mb-2 mr-auto"
               :labelOnLeft="true"
             >
-              {{ $t('course_creation_form.hide_course') }}
+              {{ $t("course_creation_form.hide_course") }}
             </Toggle>
             <p class="mr-auto text-muted" v-if="currentCourse.hidden">
-              {{ $t('course_creation_form.hidden_description') }}
+              {{ $t("course_creation_form.hidden_description") }}
             </p>
             <p class="mr-auto text-muted" v-else>
-              {{ $t('course_creation_form.public_description') }}
+              {{ $t("course_creation_form.public_description") }}
             </p>
           </div>
         </div>
       </template>
     </Card>
     <div class="mt-8">
-      <h3>{{ $t('teacher_course_dashboard.recent_exams') }}</h3>
+      <h3>{{ $t("teacher_course_dashboard.recent_exams") }}</h3>
       <div>
         <div
           v-if="!firstLoading"
@@ -152,19 +148,19 @@
           <p style="font-size: 6rem" class="material-icons-outlined opacity-10">
             assignment
           </p>
-          <h2 class="opacity-40">{{ $t('course_events.no_exams') }}</h2>
+          <h2 class="opacity-40">{{ $t("course_events.no_exams") }}</h2>
         </div>
         <div v-else-if="!firstLoading" class="flex w-full mt-4">
           <router-link class="mx-auto link" :to="{ name: 'CourseExams' }"
             ><Btn :variant="'primary-borderless'">{{
-              $t('teacher_course_dashboard.see_all')
+              $t("teacher_course_dashboard.see_all")
             }}</Btn></router-link
           >
         </div>
       </div>
     </div>
     <div class="mt-8">
-      <h3>{{ $t('teacher_course_dashboard.recently_edited_exercises') }}</h3>
+      <h3>{{ $t("teacher_course_dashboard.recently_edited_exercises") }}</h3>
       <div
         v-if="!firstLoading"
         class="grid grid-cols-1 gap-4 mt-4 lg:grid-cols-2"
@@ -189,41 +185,47 @@
         <p style="font-size: 6rem" class="material-icons-outlined opacity-10">
           topic
         </p>
-        <h2 class="opacity-40">{{ $t('course_exercises.no_exercises') }}</h2>
+        <h2 class="opacity-40">{{ $t("course_exercises.no_exercises") }}</h2>
       </div>
       <div v-else-if="!firstLoading" class="flex w-full mt-4">
         <router-link class="mx-auto link" :to="{ name: 'CourseExercises' }"
           ><Btn :variant="'primary-borderless'">{{
-            $t('teacher_course_dashboard.see_all')
+            $t("teacher_course_dashboard.see_all")
           }}</Btn></router-link
         >
       </div>
     </div>
+    <v-tour
+      name="teacherTour"
+      :steps="teacherTourSteps"
+      :options="tourOptions"
+    ></v-tour>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/runtime-core'
-import { createNamespacedHelpers } from 'vuex'
-const { mapActions, mapGetters, mapState } = createNamespacedHelpers('teacher')
-import { courseIdMixin, coursePrivilegeMixin, loadingMixin } from '@/mixins'
-import EventEditorPreview from '@/components/teacher/EventEditor/EventEditorPreview.vue'
-import { Course, CoursePrivilege, Event, Exercise } from '@/models'
-import MinimalExercisePreview from '@/components/teacher/ExerciseEditor/MinimalExercisePreview.vue'
-import Btn from '@/components/ui/Btn.vue'
-import EventEditorPreviewSkeleton from '@/components/ui/skeletons/EventEditorPreviewSkeleton.vue'
-import MinimalExercisePreviewSkeleton from '@/components/ui/skeletons/MinimalExercisePreviewSkeleton.vue'
-import TextInput from '@/components/ui/TextInput.vue'
-import Toggle from '@/components/ui/Toggle.vue'
-import Card from '@/components/ui/Card.vue'
-import TextEditor from '@/components/ui/TextEditor.vue'
+import { defineComponent } from "@vue/runtime-core";
+import { createNamespacedHelpers } from "vuex";
+const { mapActions, mapGetters, mapState } = createNamespacedHelpers("teacher");
+import { courseIdMixin, coursePrivilegeMixin, loadingMixin } from "@/mixins";
+import EventEditorPreview from "@/components/teacher/EventEditor/EventEditorPreview.vue";
+import { Course, CoursePrivilege, Event, Exercise } from "@/models";
+import MinimalExercisePreview from "@/components/teacher/ExerciseEditor/MinimalExercisePreview.vue";
+import Btn from "@/components/ui/Btn.vue";
+import EventEditorPreviewSkeleton from "@/components/ui/skeletons/EventEditorPreviewSkeleton.vue";
+import MinimalExercisePreviewSkeleton from "@/components/ui/skeletons/MinimalExercisePreviewSkeleton.vue";
+import TextInput from "@/components/ui/TextInput.vue";
+import Toggle from "@/components/ui/Toggle.vue";
+import Card from "@/components/ui/Card.vue";
+import TextEditor from "@/components/ui/TextEditor.vue";
 
-import useVuelidate from '@vuelidate/core'
+import useVuelidate from "@vuelidate/core";
 
-import { courseValidation } from '@/validation/models'
+import { courseValidation } from "@/validation/models";
+import { teacherTourSteps, tourOptions } from "@/const";
 
 export default defineComponent({
-  name: 'CourseDashboard',
+  name: "CourseDashboard",
   components: {
     EventEditorPreview,
     MinimalExercisePreview,
@@ -233,100 +235,113 @@ export default defineComponent({
     TextInput,
     Toggle,
     Card,
-    TextEditor
+    TextEditor,
   },
   mixins: [courseIdMixin, loadingMixin, coursePrivilegeMixin],
-  setup () {
-    return { v$: useVuelidate() }
+  setup() {
+    return { v$: useVuelidate() };
   },
-  async created () {
+  async created() {
     await this.withFirstLoading(async () => {
-      await this.getEvents(this.courseId)
+      await this.getEvents(this.courseId);
       try {
         await this.getExercises({
           courseId: this.courseId,
-          fromFirstPage: true
-        })
+          fromFirstPage: true,
+        });
       } catch {
         // TODO don't render exercises stuff
       }
       //await this.getTags(this.courseId)
-    })
+    });
   },
-  data () {
+  props: {
+    showTour: {
+      type: Boolean,
+      default: false,
+    },
+  },
+  mounted() {
+    if (this.showTour) {
+      setTimeout(() => (this.$tours["teacherTour"] as any).start(), 500);
+    }
+  },
+  data() {
     return {
       editingName: false,
-      dirtyCourseName: '',
+      dirtyCourseName: "",
       editingDescription: false,
-      dirtyCourseDescription: '',
-      CoursePrivilege
-    }
+      dirtyCourseDescription: "",
+      CoursePrivilege,
+      teacherTourSteps,
+      tourOptions,
+    };
   },
-  validations () {
+  validations() {
     return {
-      dirtyCourse: courseValidation
-    }
+      dirtyCourse: courseValidation,
+    };
   },
   methods: {
-    ...mapActions(['getExercises', 'getEvents', 'getTags', 'updateCourse']),
-    editCourseName () {
-      this.dirtyCourseName = this.currentCourse.name
-      this.editingName = true
+    ...mapActions(["getExercises", "getEvents", "getTags", "updateCourse"]),
+    editCourseName() {
+      this.dirtyCourseName = this.currentCourse.name;
+      this.editingName = true;
     },
-    editCourseDescription () {
-      this.dirtyCourseDescription = this.currentCourse.description ?? ''
-      this.editingDescription = true
+    editCourseDescription() {
+      this.dirtyCourseDescription = this.currentCourse.description ?? "";
+      this.editingDescription = true;
     },
-    async onDoneEditingName (discard = false) {
+    async onDoneEditingName(discard = false) {
       if (!discard) {
         await this.withLocalLoading(async () => {
           await this.updateCourse({
             ...this.currentCourse,
-            name: this.dirtyCourseName
-          })
-          this.editingName = false
-        })
+            name: this.dirtyCourseName,
+          });
+          this.editingName = false;
+        });
       } else {
-        this.editingName = false
+        this.editingName = false;
       }
     },
-    async onDoneEditingDescription (discard = false) {
+    async onDoneEditingDescription(discard = false) {
       if (!discard) {
         await this.withLocalLoading(async () => {
           await this.updateCourse({
             ...this.currentCourse,
-            description: this.dirtyCourseDescription
-          })
-          this.editingDescription = false
-        })
+            description: this.dirtyCourseDescription,
+          });
+          this.editingDescription = false;
+        });
       } else {
-        this.editingDescription = false
+        this.editingDescription = false;
       }
     },
-    async onChangeCourseVisibility (value: boolean) {
+    async onChangeCourseVisibility(value: boolean) {
       await this.withLoading(async () => {
-        await this.updateCourse({ ...this.currentCourse, hidden: value })
-      })
-    }
+        await this.updateCourse({ ...this.currentCourse, hidden: value });
+      });
+    },
   },
   computed: {
-    ...mapGetters(['exams']),
-    ...mapState(['exercises']),
-    recentExams (): Event[] {
-      return this.exams.slice(0, 3)
+    ...mapGetters(["exams"]),
+    ...mapState(["exercises"]),
+    recentExams(): Event[] {
+      return this.exams.slice(0, 3);
     },
-    recentExercises (): Exercise[] {
-      return this.exercises.slice(0, 4)
+    recentExercises(): Exercise[] {
+      return this.exercises.slice(0, 4);
     },
-    dirtyCourse (): Course {
+    dirtyCourse(): Course {
       return {
         ...this.currentCourse,
         name: this.dirtyCourseName,
-        description: this.dirtyCourseDescription
-      }
-    }
-  }
-})
+        description: this.dirtyCourseDescription,
+      };
+    },
+  },
+});
 </script>
 
 <style></style>

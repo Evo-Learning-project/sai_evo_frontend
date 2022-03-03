@@ -267,6 +267,28 @@
       @apply absolute -mt-1 border-4 border-transparent border-solid bottom-full left-1/2;
     }
 
+    .v-step {
+      @apply shadow-popup bg-light text-darkText rounded-sm py-3 px-4 text-center z-50 !important;
+      box-shadow: 0 0 0 99999px rgba(0,0,0,.2);
+    }
+    .v-step__header {
+      @apply bg-light font-semibold text-lg !important;
+    }
+    .v-step__button {
+      @apply bg-primary hover:bg-primary-dark  text-lightText hover:text-lightText rounded-md px-2 pt-1 pb-1 !important;
+    }
+    .v-step .v-step__arrow--dark {
+      @apply border-light !important;
+      border-left-color: transparent !important;
+      border-top-color: transparent !important;
+      border-bottom-color: transparent !important;
+      max-width: 400px !important;
+    }
+    .v-tour__target--highlighted {
+      z-index: 99999;
+      box-shadow: 0 0 0 99999px rgba(0,0,0,.4) !important;
+    }
+
     /* tag input */
     .ti-input, .ti-new-tag-input {
       @apply bg-light !important
