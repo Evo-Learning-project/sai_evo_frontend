@@ -381,6 +381,10 @@ export const it = {
     tab_editor: "Editor",
     run_code: "Esegui",
     testcase: "Test case",
+    passed: "Superato",
+    not_passed: "Non superato",
+    test_failed_with_error: "Il test ha fallito producendo il seguente errore",
+    code_errored: "L'esecuzione del codice ha prodotto il seguente errore",
   },
   exercise_types: {
     [ExerciseType.MULTIPLE_CHOICE_SINGLE_POSSIBLE]:

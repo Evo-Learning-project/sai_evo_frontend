@@ -1,5 +1,7 @@
 <template>
-  <SshPre :language="'js'" :dark="true">{{ value }}</SshPre>
+  <SshPre :language="'js'" :dark="true" :class="{ 'ssh-pre-small': small }">{{
+    value
+  }}</SshPre>
 </template>
 
 <script lang="ts">
@@ -14,6 +16,10 @@ export default defineComponent({
   props: {
     value: {
       type: String,
+    },
+    small: {
+      type: Boolean,
+      default: false,
     },
   },
   methods: {},

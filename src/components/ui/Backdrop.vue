@@ -1,8 +1,8 @@
 <template>
   <div
-    class="absolute z-20 w-full px-4 py-2 border-b rounded-t-lg rounded-b-sm  -bottom-0 shadow-t-elevation-2 bg-light"
+    class="absolute z-20 w-full py-2 border-b rounded-t-lg rounded-b-sm  -bottom-0 shadow-t-elevation-2 bg-light"
   >
-    <div class="flex items-center w-full py-1">
+    <div class="flex items-center w-full px-4 py-1">
       <div>
         <div class="">
           <slot name="title"></slot>

@@ -262,7 +262,7 @@ export async function runEventParticipationSlotCode(
   slotId: string
 ): Promise<EventParticipationSlot> {
   const response = await axios.post(
-    `/courses/${courseId}/events/${eventId}/participations/${participationId}/slots/${slotId}/run/`
+    `/courses/${courseId}/events/${eventId}/participations/${participationId}/slots/${slotId}/run/?as_student=1`
   );
   return response.data;
 }

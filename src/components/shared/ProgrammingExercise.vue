@@ -70,7 +70,9 @@ export default defineComponent({
   watch: {
     executionResults(newVal) {
       console.log("changed execution results");
-      (this.$refs.executionResultsBackdrop as any).expanded = true;
+      if (this.$refs.executionResultsBackdrop) {
+        (this.$refs.executionResultsBackdrop as any).expanded = true;
+      }
     },
   },
   props: {
