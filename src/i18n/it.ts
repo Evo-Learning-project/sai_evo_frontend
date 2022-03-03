@@ -516,6 +516,9 @@ export const it = {
     practice_review: "Riepilogo esercitazione",
     exam_assessment: "Valutazione " + ROUTE_TITLE_EVENT_NAME_TOKEN,
   },
+  course_list: {
+    no_courses: "Non ci sono ancora corsi",
+  },
   help_texts: {
     exercise_editor: {
       public_tags:
