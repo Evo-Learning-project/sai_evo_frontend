@@ -56,9 +56,7 @@
                 :id="'exercise_type_' + elementId"
                 :options="exerciseTypeOptions"
                 :modelValue="modelValue.exercise_type"
-                @update:modelValue="
-                  onBaseExerciseChange('exercise_type', $event)
-                "
+                @update:modelValue="onExerciseTypeChange($event)"
               >
                 {{ $t("exercise_editor.exercise_type") }}
               </Dropdown>
@@ -370,11 +368,19 @@ export default defineComponent({
         },
       };
     },
-    // onExerciseTypeChange (newVal: ExerciseType) {
-    //   if (!confirm('Are you sure?')) return
-    //   this.modelValue.exercise_type = newVal
-    // }
-
+    onExerciseTypeChange(newVal: ExerciseType) {
+      if (
+        [
+          ExerciseType.AGGREGATED,
+          ExerciseType.ATTACHMENT,
+          ExerciseType.COMPLETION,
+        ].includes(newVal)
+      ) {
+        alert("Questo tipo di esercizio non è ancora disponibile");
+      } else {
+        this.onBaseExerciseChange("exercise_type", newVal);
+      }
+    },
     async onAddChoice() {
       const newChoice: ExerciseChoice = await this.addExerciseChoice({
         courseId: this.courseId,
