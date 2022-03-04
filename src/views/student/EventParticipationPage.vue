@@ -196,14 +196,19 @@ export default defineComponent({
     async onRunCode(slot: EventParticipationSlot) {
       this.running = true;
       // flush queued changes before moving on to next slot
-      await this.slotAutoSaveManagers[slot.id].flush();
-      await this.runEventParticipationSlotCode({
-        courseId: this.courseId,
-        eventId: this.eventId,
-        participationId: this.currentEventParticipation.id,
-        slotId: slot.id,
-      });
-      this.running = false;
+      try {
+        await this.slotAutoSaveManagers[slot.id].flush();
+        await this.runEventParticipationSlotCode({
+          courseId: this.courseId,
+          eventId: this.eventId,
+          participationId: this.currentEventParticipation.id,
+          slotId: slot.id,
+        });
+      } catch (e) {
+        this.setErrorNotification(e);
+      } finally {
+        this.running = false;
+      }
     },
     async onGoForward() {
       this.showConfirmDialog = false;

@@ -110,6 +110,10 @@
               {{ $t("course_creation_form.hide_course") }}
             </Toggle>
             <p class="mr-auto text-muted" v-if="currentCourse.hidden">
+              <span
+                class="mt-auto mr-1 text-lg  text-danger-dark material-icons-outlined"
+                >error_outline</span
+              >
               {{ $t("course_creation_form.hidden_description") }}
             </p>
             <p class="mr-auto text-muted" v-else>

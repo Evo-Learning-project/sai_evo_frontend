@@ -71,7 +71,10 @@
               exercise.exercise_type === ExerciseType.JS && !allowEditSubmission
             "
           >
-            <CodeFragment :value="modelValue.answer_text"></CodeFragment>
+            <CodeFragment
+              class="mb-4"
+              :value="modelValue.answer_text"
+            ></CodeFragment>
             <CodeExecutionResults :slot="modelValue"></CodeExecutionResults>
           </div>
         </div>
