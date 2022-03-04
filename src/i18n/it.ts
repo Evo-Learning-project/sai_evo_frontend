@@ -439,6 +439,11 @@ export const it = {
       "name-required": "Il nome del corso non può essere vuoto",
       "name-unique": "Esiste già un corso con questo nome",
     },
+    eventTemplateRule: {
+      no_exercises: "Questo slot non contiene esercizi",
+      no_rule_type: "Non hai impostato un criterio per popolare questo slot",
+      no_valid_clauses: "Questo slot non contiene tag",
+    },
   },
   exam_validation_errors: {
     [ExamValidationError.NO_NAME]: "Non hai assegnato un nome all'esame",

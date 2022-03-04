@@ -12,7 +12,7 @@
         :modelValue="modelValue.rules"
         @end="onRuleDragEnd($event)"
       >
-        <template #item="{ element }">
+        <template #item="{ element, index }">
           <EventTemplateRuleEditor
             :globallySelectedExercises="selectedExercises"
             :modelValue="element"
@@ -20,7 +20,34 @@
             @addClause="onRuleAddClause(element)"
             @updateClause="onRuleUpdateClause(element, $event)"
             @deleteRule="onRuleDelete(element)"
+            @ruleDialogClose="v$.$touch()"
           >
+            <template v-slot:error>
+              <p
+                class="font-light text-muted text-danger-dark"
+                v-if="
+                  v$.$errors[0]?.$response?.$errors[index].rule_type.length > 0
+                "
+              >
+                {{ $t("validation_errors.eventTemplateRule.no_rule_type") }}
+              </p>
+              <p
+                class="font-light text-muted text-danger-dark"
+                v-if="
+                  v$.$errors[0]?.$response?.$errors[index].exercises.length > 0
+                "
+              >
+                {{ $t("validation_errors.eventTemplateRule.no_exercises") }}
+              </p>
+              <p
+                class="font-light text-muted text-danger-dark"
+                v-if="
+                  v$.$errors[0]?.$response?.$errors[index].clauses.length > 0
+                "
+              >
+                {{ $t("validation_errors.eventTemplateRule.no_valid_clauses") }}
+              </p>
+            </template>
           </EventTemplateRuleEditor>
         </template>
       </draggable>
@@ -57,7 +84,17 @@ import { createNamespacedHelpers } from "vuex";
 import { AutoSaveManager } from "@/autoSave";
 const { mapActions, mapMutations } = createNamespacedHelpers("teacher");
 
+import { eventTemplateValidation } from "@/validation/models";
+import useVuelidate from "@vuelidate/core";
 export default defineComponent({
+  setup() {
+    return { v$: useVuelidate() };
+  },
+  validations() {
+    return {
+      modelValue: eventTemplateValidation,
+    };
+  },
   components: {
     Btn,
     EventTemplateRuleEditor,

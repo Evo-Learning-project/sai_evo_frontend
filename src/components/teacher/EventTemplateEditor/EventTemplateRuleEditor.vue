@@ -103,13 +103,14 @@
           </div>
         </div>
       </div>
+      <slot name="error"></slot>
     </div>
     <Dialog
       :showDialog="showDialog"
       :large="true"
       :footerBorder="true"
       :confirmOnly="true"
-      @yes="() => (showDialog = false)"
+      @yes="onCloseDialog()"
     >
       <template v-if="modelValue.rule_type != null" v-slot:backButton>
         <btn
@@ -249,6 +250,9 @@ import SkeletonCard from "@/components/ui/SkeletonCard.vue";
 import { courseIdMixin, loadingMixin } from "@/mixins";
 import TagBasedEventTemplateRuleEditor from "./TagBasedEventTemplateRuleEditor.vue";
 import Tag from "@/components/ui/Tag.vue";
+// import { eventTemplateRuleValidation } from "@/validation/models";
+// import useVuelidate from "@vuelidate/core";
+
 export default defineComponent({
   components: {
     Dialog,
@@ -270,6 +274,14 @@ export default defineComponent({
       required: true,
     },
   },
+  // setup() {
+  //   return { v$: useVuelidate() };
+  // },
+  // validations() {
+  //   return {
+  //     modelValue: eventTemplateRuleValidation,
+  //   };
+  // },
   mixins: [courseIdMixin, loadingMixin],
   async created() {
     await this.withLocalLoading(async () => {
@@ -294,6 +306,10 @@ export default defineComponent({
     };
   },
   methods: {
+    onCloseDialog() {
+      this.showDialog = false;
+      this.$emit("ruleDialogClose");
+    },
     emitUpdate(key: keyof EventTemplateRule, value: unknown) {
       console.log("EMITTING", { key, value });
       this.$emit("updateRule", {
