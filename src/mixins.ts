@@ -32,6 +32,15 @@ export const eventIdMixin = {
   },
 };
 
+export const texMixin = {
+  methods: {
+    triggerTexRender() {
+      const sharedState = (store.state as { shared: SharedState }).shared;
+      sharedState.dirtyTex = true;
+    },
+  },
+};
+
 export const loadingMixin = {
   methods: {
     async withLoading(
@@ -44,6 +53,7 @@ export const loadingMixin = {
       sharedState.loading = true;
       try {
         await callback();
+        sharedState.dirtyTex = true; // trigger tex rendering
         onSuccess?.();
       } catch (e) {
         onError?.(e);
@@ -60,6 +70,7 @@ export const loadingMixin = {
       sharedState.firstLoading = true;
       try {
         await callback();
+        sharedState.dirtyTex = true; // trigger tex rendering
       } catch (e: any) {
         onError?.(e);
       } finally {
@@ -72,6 +83,7 @@ export const loadingMixin = {
       sharedState.localLoading = true;
       try {
         await callback();
+        sharedState.dirtyTex = true; // trigger tex rendering
       } catch (e: any) {
         setErrorNotification(e);
       } finally {

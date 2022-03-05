@@ -36,6 +36,7 @@ export interface SharedState {
   savingError: boolean;
   showSuccessFeedback: boolean;
   tags: Tag[];
+  dirtyTex: boolean;
 }
 
 interface StoreOperationParameters<T> {

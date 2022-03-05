@@ -149,3 +149,8 @@ export const setErrorNotification = (e: any) =>
   store.commit("shared/setErrorNotificationData", {
     data: getErrorData(e),
   });
+
+export const typesetTex = debounce(() => {
+  console.log("typesetting");
+  (window as any).MathJax.typeset();
+}, 100);

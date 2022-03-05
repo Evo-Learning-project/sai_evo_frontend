@@ -1,13 +1,11 @@
 <template>
   <div class="relative">
-    <label class="absolute top-2 left-1.5 origin-0 fixed-label"
-      ><slot></slot
-    ></label>
+    <label class="absolute top-2 left-1.5 origin-0 fixed-label"><slot></slot></label>
 
     <div class="w-full">
       <label
         :for="id + '-input-' + index"
-        class="flex max-h-screen space-x-1.5 overflow-y-hidden cursor-pointer items-top"
+        class="flex my-0.5 max-h-screen space-x-1.5 overflow-y-hidden cursor-pointer items-top"
         v-for="(option, index) in options"
         :key="id + '-option-' + index"
       >
@@ -22,11 +20,7 @@
           :disabled="disabled"
         />
         <div class="flex space-x-2 items-top">
-          <multi-icon
-            v-if="option.icons"
-            class="w-6"
-            :icons="option.icons"
-          ></multi-icon>
+          <multi-icon v-if="option.icons" class="w-6" :icons="option.icons"></multi-icon>
           <div class="flex flex-col">
             <p class="" v-html="option.content"></p>
             <!-- <p
@@ -43,34 +37,34 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/runtime-core'
-import { v4 as uuid4 } from 'uuid'
-import MultiIcon from '@/components/ui/MultiIcon.vue'
+import { defineComponent } from "@vue/runtime-core";
+import { v4 as uuid4 } from "uuid";
+import MultiIcon from "@/components/ui/MultiIcon.vue";
 
 export default defineComponent({
-  name: 'RadioGroup',
-  props: ['options', 'modelValue', 'disabled'],
+  name: "RadioGroup",
+  props: ["options", "modelValue", "disabled"],
   components: {
-    MultiIcon
+    MultiIcon,
   },
-  created () {
-    this.id = uuid4()
+  created() {
+    this.id = uuid4();
   },
-  data () {
+  data() {
     return {
       showFeedback: false,
-      id: ''
-    }
+      id: "",
+    };
   },
   methods: {
-    onInput (value: string, inputEvent: Event) {
+    onInput(value: string, inputEvent: Event) {
       // eslint-disable-next-line @typescript-eslint/no-extra-semi
-      ;((inputEvent.target as unknown) as { checked: boolean }).checked = false
-      inputEvent.preventDefault()
-      this.$emit('update:modelValue', value)
-    }
-  }
-})
+      ((inputEvent.target as unknown) as { checked: boolean }).checked = false;
+      inputEvent.preventDefault();
+      this.$emit("update:modelValue", value);
+    },
+  },
+});
 </script>
 
 <style></style>

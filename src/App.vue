@@ -20,7 +20,7 @@
   </transition>
   <router-view class="" />
   <footer
-    class="flex items-center w-full h-12 px-6 py-3 mt-auto text-sm text-white  bg-dark"
+    class="flex items-center w-full h-12 px-6 py-3 mt-auto text-sm text-white bg-dark"
   >
     <p>
       Crafted with ❤️
@@ -54,6 +54,7 @@ import Notification from "./components/ui/Notification.vue";
 import { getTranslatedString as _ } from "./i18n";
 
 import { createNamespacedHelpers } from "vuex";
+import { typesetTex } from "./utils";
 const { mapState, mapGetters } = createNamespacedHelpers("shared");
 
 export default defineComponent({
@@ -70,6 +71,14 @@ export default defineComponent({
   async created() {
     await this.$store.dispatch("shared/getCourses");
     window.addEventListener("beforeunload", this.beforeWindowUnload);
+  },
+  watch: {
+    dirtyTex(newVal) {
+      if (newVal) {
+        typesetTex();
+        this.$store.state.shared.dirtyTex = false;
+      }
+    },
   },
   data() {
     return {
@@ -90,7 +99,7 @@ export default defineComponent({
     },
   },
   computed: {
-    ...mapState(["loading", "showSuccessFeedback"]),
+    ...mapState(["loading", "showSuccessFeedback", "dirtyTex"]),
     ...mapGetters(["unsavedChanges"]),
   },
 });

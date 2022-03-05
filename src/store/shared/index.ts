@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import { ErrorMessage } from '@/interfaces';
-import { Course, Tag, User } from '@/models';
-import { SharedState } from '../types';
-import { actions } from './actions';
-import { getters } from './getters';
-import { mutations } from './mutations';
+import { ErrorMessage } from "@/interfaces";
+import { Course, Tag, User } from "@/models";
+import { SharedState } from "../types";
+import { actions } from "./actions";
+import { getters } from "./getters";
+import { mutations } from "./mutations";
 
 // import VuexPersistence from 'vuex-persist';
 
@@ -24,8 +24,8 @@ export const sharedStore = {
   state: (): SharedState => ({
     user: {} as User,
     courses: [] as Course[],
-    token: '',
-    refreshToken: '',
+    token: "",
+    refreshToken: "",
     loading: false,
     firstLoading: false,
     localLoading: false,
@@ -35,6 +35,7 @@ export const sharedStore = {
     savingError: false,
     showSuccessFeedback: false,
     tags: [] as Tag[],
+    dirtyTex: false,
   }),
   mutations: {
     ...mutations,
