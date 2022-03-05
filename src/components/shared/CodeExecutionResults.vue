@@ -8,9 +8,7 @@
         class="px-6 py-6 -mx-2 bg-opacity-5"
       >
         <div class="flex items-center mb-2 space-x-3">
-          <h5 class="">
-            {{ $t("programming_exercise.testcase") }} {{ index + 1 }}
-          </h5>
+          <h5 class="">{{ $t("programming_exercise.testcase") }} {{ index + 1 }}</h5>
           <div
             v-if="test.passed"
             class="flex items-center font-semibold text-success-dark"
@@ -36,11 +34,12 @@
         </div>
       </div>
     </div>
-    <div class="px-4 pt-1 bg-danger bg-opacity-5" v-else>
-      <p class="mb-1 text-muted">
-        {{ $t("programming_exercise.code_errored") }}:
-      </p>
-      <CodeFragment :value="slot.execution_results.error"></CodeFragment>
+    <div class="px-4 pt-1 bg-danger bg-opacity-5" v-else-if="!!slot.execution_results">
+      <p class="mb-1 text-muted">{{ $t("programming_exercise.code_errored") }}:</p>
+      <CodeFragment
+        v-if="slot.execution_results?.error"
+        :value="slot.execution_results?.error"
+      ></CodeFragment>
     </div>
   </div>
 </template>
@@ -61,8 +60,7 @@ export default defineComponent({
   methods: {},
   computed: {
     exerciseTestCase() {
-      return (id: string) =>
-        this.slot.exercise.testcases?.find((t) => t.id == id);
+      return (id: string) => this.slot.exercise.testcases?.find((t) => t.id == id);
     },
   },
   components: { ExerciseTestCase, CodeFragment },

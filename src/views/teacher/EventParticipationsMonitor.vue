@@ -330,6 +330,17 @@ export default defineComponent({
         eventId: this.eventId,
       });
     });
+
+    if (this.refreshData) {
+      setInterval(
+        async () =>
+          await this.getEventParticipations({
+            courseId: this.courseId,
+            eventId: this.eventId,
+          }),
+        3000
+      );
+    }
   },
   data() {
     return {
