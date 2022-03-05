@@ -237,9 +237,9 @@ export const it = {
     open_for_selected_text: "Stai per riaprire l'esame per",
     close_for_selected_text_2: "L'esame rimarrà aperto per",
     some_exams_still_open:
-      "L'esame è terminato, ma non è stato ancora chiuso per alcuni partecipanti. Ricorda di chiudere l'esame per tutti al termine. Le righe evidenziate in rosso corrispondono a esami già chiusi.",
+      "L'esame è stato chiuso per alcuni partecipanti. Ricorda di chiudere l'esame per tutti al termine. Le righe evidenziate in rosso corrispondono a esami già chiusi.",
     un_turn_in_text:
-      "Questo studente ha già consegnato. Puoi annullare la sua consegna per permettergli di modificare le sue risposte. Vuoi annullare la conferma di ",
+      "Questo studente ha già consegnato. Puoi annullare la sua consegna per permettergli di modificare le sue risposte. Vuoi annullare la consegna di ",
   },
   event_results: {
     publish_results: "Pubblica risultati",
