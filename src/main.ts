@@ -14,6 +14,7 @@ import VueClipboard from "vue3-clipboard";
 import Vue3Tour from "vue3-tour";
 
 import "vue3-tour/dist/vue3-tour.css";
+import { logOut } from "./utils";
 
 const gAuthOptions = {
   clientId:
@@ -29,6 +30,23 @@ const dev = process.env.NODE_ENV !== "production";
 axios.defaults.baseURL = dev
   ? "http://127.0.0.1:8000"
   : process.env.VUE_APP_AXIOS_BASE;
+
+axios.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  (error) => {
+    if (
+      // error.response?.status == 403 ||
+      error.response?.status === 401
+    ) {
+      // TODO use  refresh token
+      logOut();
+    } else {
+      throw error;
+    }
+  }
+);
 
 createApp(App)
   .use(GAuth, gAuthOptions)
