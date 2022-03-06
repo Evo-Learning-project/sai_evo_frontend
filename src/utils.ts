@@ -150,7 +150,7 @@ export const setErrorNotification = (e: any) =>
     data: getErrorData(e),
   });
 
-export const typesetTex = debounce(() => {
-  console.log("typesetting");
-  (window as any).MathJax.typeset();
-}, 100);
+// export const typesetTex = () => {
+//   console.log("typesetting");
+//   (window as any).MathJax.typeset();
+// };

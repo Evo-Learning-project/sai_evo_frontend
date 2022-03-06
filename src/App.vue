@@ -20,7 +20,7 @@
   </transition>
   <router-view class="" />
   <footer
-    class="flex items-center w-full h-12 px-6 py-3 mt-auto text-sm text-white bg-dark"
+    class="flex items-center w-full h-12 px-6 py-3 mt-auto text-sm text-white  bg-dark"
   >
     <p>
       Crafted with ❤️
@@ -54,7 +54,8 @@ import Notification from "./components/ui/Notification.vue";
 import { getTranslatedString as _ } from "./i18n";
 
 import { createNamespacedHelpers } from "vuex";
-import { typesetTex } from "./utils";
+import { debounce } from "lodash";
+//import { typesetTex } from "./utils";
 const { mapState, mapGetters } = createNamespacedHelpers("shared");
 
 export default defineComponent({
@@ -71,11 +72,13 @@ export default defineComponent({
   async created() {
     await this.$store.dispatch("shared/getCourses");
     window.addEventListener("beforeunload", this.beforeWindowUnload);
+
+    this.typesetTex = debounce(this.typesetTex, 100);
   },
   watch: {
     dirtyTex(newVal) {
       if (newVal) {
-        typesetTex();
+        this.typesetTex();
         this.$store.state.shared.dirtyTex = false;
       }
     },
@@ -86,6 +89,10 @@ export default defineComponent({
     };
   },
   methods: {
+    // TODO this should live in utils.ts, but importing it from here causes all sorts of problems with other components
+    typesetTex() {
+      (window as any).MathJax.typeset();
+    },
     beforeWindowUnload(e: { preventDefault: () => void; returnValue: string }) {
       if (
         this.unsavedChanges &&
