@@ -126,6 +126,7 @@ export const it = {
     exercises_answered_at: "Risposto:",
   },
   misc: {
+    file_upload: "Trascina qui il tuo file oppure clicca qui",
     course_settings: "Impostazioni corso",
     example: "Esempio",
     select_empty_option: "Seleziona",
@@ -188,7 +189,7 @@ export const it = {
     course_visibility: "Visibilità",
     hide_course: "Nascondi corso",
     public_description:
-      "Visibile da subito sia agli studenti che agli altri insegnanti",
+      "Visibile da subito sia agli studenti che agli altri insegnanti.",
     hidden_description:
       "Non comparirà nella lista dei corsi mostrata agli studenti, ma sarà visible agli altri insegnanti. Potrai rendere il corso pubblico in un secondo momento.",
     create: "Crea",

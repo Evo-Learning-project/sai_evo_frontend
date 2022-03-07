@@ -35,11 +35,13 @@
         :modelValue="slot"
         @updateSelectedChoices="onChange(slot, 'selected_choices', $event)"
         @updateAnswerText="onChange(slot, 'answer_text', $event)"
+        @updateAttachment="onUpdateAttachment(slot, $event)"
         @runCode="onRunCode(slot)"
         :allowEditSubmission="true"
         :saving="saving"
         :running="running"
-      ></AbstractEventParticipationSlot>
+      ></AbstractEventParticipationSlot
+      ><!---@updateAttachment="onChange(slot, 'attachment', $event)"-->
     </div>
     <div class="flex items-center w-full mt-8">
       <Btn
@@ -120,6 +122,7 @@ import {
   EVENT_PARTICIPATION_SLOT_DEBOUNCED_FIELDS,
   EVENT_PARTICIPATION_SLOT_DEBOUNCE_TIME_MS,
 } from "@/const";
+import { partialUpdateEventParticipationSlot } from "@/api/events";
 const { mapActions, mapMutations } = createNamespacedHelpers("student");
 
 export default defineComponent({
@@ -284,11 +287,26 @@ export default defineComponent({
       };
       this.showConfirmDialog = true;
     },
+    async onUpdateAttachment(slot: EventParticipationSlot, attachment: Blob) {
+      // TODO refactor and use the generic onChange
+      let formData = new FormData();
+      formData.append("attachment", attachment);
+      console.log("sending FORM DATA", formData);
+      await partialUpdateEventParticipationSlot(
+        this.courseId,
+        this.eventId,
+        this.proxyModelValue.id,
+        slot.id,
+        formData as any,
+        true
+      );
+    },
     async onChange(
       slot: EventParticipationSlot,
       field: keyof EventParticipationSlot,
       value: unknown
     ) {
+      console.log("ONCHANGE", field, value);
       await this.slotAutoSaveManagers[slot.id].onChange({ field, value });
     },
     instantiateSlotAutoSaveManager(slot: EventParticipationSlot) {

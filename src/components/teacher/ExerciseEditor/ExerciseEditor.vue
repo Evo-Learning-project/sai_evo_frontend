@@ -372,7 +372,7 @@ export default defineComponent({
       if (
         [
           ExerciseType.AGGREGATED,
-          ExerciseType.ATTACHMENT,
+          // ExerciseType.ATTACHMENT,
           ExerciseType.COMPLETION,
         ].includes(newVal)
       ) {

@@ -44,7 +44,8 @@
         <p class="text-muted">
           {{ $t("course_creation_form.import_exercises_description") }}
         </p>
-        <FileUpload @click.prevent="onFileUploadClick()"></FileUpload>
+        <FileUpload></FileUpload
+        ><!--@click.prevent="onFileUploadClick()"-->
       </div>
       <Btn
         @click="v$.$invalid ? v$.$touch() : onCreate()"

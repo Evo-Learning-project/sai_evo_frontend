@@ -580,4 +580,8 @@
       /* background-color: #070914 !important; */
       background-color: #161b3d !important;
     }
+
+    .file-uploads label {
+      @apply cursor-pointer;
+    }
   }
