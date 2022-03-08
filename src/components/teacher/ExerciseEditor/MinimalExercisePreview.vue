@@ -3,7 +3,7 @@
     <Card
       :size="'sm'"
       :highlighted="highlighted"
-      :hoverable="false"
+      :hoverable="hoverable"
       :class="{
         'border-success': highlighted,
         'bg-gray-50 opacity-60': selectionDisabled,
@@ -130,6 +130,10 @@ export default defineComponent({
       default: "",
     },
     showTags: {
+      type: Boolean,
+      default: false,
+    },
+    hoverable: {
       type: Boolean,
       default: false,
     },
