@@ -90,6 +90,7 @@ module.exports = {
       ringOpacity: ["active"],
       borderColor: ["responsive", "hover", "focus", "focus-within"],
       backgroundColor: ["hover"],
+      backgroundOpacity: ["hover"],
     },
   },
   // eslint-disable-next-line @typescript-eslint/no-var-requires

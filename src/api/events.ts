@@ -7,6 +7,7 @@ import {
   EventTemplateRuleClause,
   EventTemplateRuleType,
 } from "@/models";
+import { forceFileDownload } from "@/utils";
 import axios from "axios";
 import {
   convertEventTemplateRules,
@@ -259,6 +260,25 @@ export async function partialUpdateEventParticipationSlot(
     // }
   );
   return response.data;
+}
+
+export async function downloadEventParticipationSlotAttachment(
+  courseId: string,
+  eventId: string,
+  participationId: string,
+  slotId: string
+): Promise<any> {
+  const response = await axios.get(
+    `/courses/${courseId}/events/${eventId}/participations/${participationId}/slots/${slotId}/attachment/`
+  );
+  console.log(
+    "SPLIT",
+    response.headers["content-disposition"].split(/.*filename=(.*)/)
+  );
+  const fileName = response.headers["content-disposition"]
+    .split(/.*filename=(.*)/)[1]
+    .replace('"', "");
+  forceFileDownload(response, fileName);
 }
 
 export async function runEventParticipationSlotCode(

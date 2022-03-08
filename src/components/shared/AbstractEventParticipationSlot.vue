@@ -5,12 +5,9 @@
       <div
         class="mb-8 user-content"
         :class="{
-          'bg-gray-200 p-2 border border-dark rounded-md':
-            false && allowEditScores,
+          'bg-gray-200 p-2 border border-dark rounded-md': false && allowEditScores,
         }"
-        v-if="
-          exercise.exercise_type !== ExerciseType.JS || !allowEditSubmission
-        "
+        v-if="exercise.exercise_type !== ExerciseType.JS || !allowEditSubmission"
         v-html="exercise.text"
       ></div>
       <div :class="{ 'flex space-x-8': allowEditScores || showAssessment }">
@@ -19,8 +16,7 @@
           <!-- multiple choice multiple possible -->
           <CheckboxGroup
             v-if="
-              exercise.exercise_type ===
-              ExerciseType.MULTIPLE_CHOICE_MULTIPLE_POSSIBLE
+              exercise.exercise_type === ExerciseType.MULTIPLE_CHOICE_MULTIPLE_POSSIBLE
             "
             :options="exerciseChoicesAsOptions"
             v-model="selectedChoicesProxy"
@@ -37,8 +33,7 @@
           <!-- multiple choice single possible -->
           <RadioGroup
             v-else-if="
-              exercise.exercise_type ===
-              ExerciseType.MULTIPLE_CHOICE_SINGLE_POSSIBLE
+              exercise.exercise_type === ExerciseType.MULTIPLE_CHOICE_SINGLE_POSSIBLE
             "
             :options="exerciseChoicesAsOptions"
             v-model="selectedChoicesProxy"
@@ -63,9 +58,7 @@
 
           <!-- programming exercise -->
           <ProgrammingExercise
-            v-else-if="
-              exercise.exercise_type === ExerciseType.JS && allowEditSubmission
-            "
+            v-else-if="exercise.exercise_type === ExerciseType.JS && allowEditSubmission"
             :exercise="modelValue.exercise"
             v-model="answerTextProxy"
             :executionResults="modelValue.execution_results"
@@ -74,30 +67,24 @@
             @runCode="$emit('runCode')"
           ></ProgrammingExercise>
           <div
-            v-else-if="
-              exercise.exercise_type === ExerciseType.JS && !allowEditSubmission
-            "
+            v-else-if="exercise.exercise_type === ExerciseType.JS && !allowEditSubmission"
           >
-            <CodeFragment
-              class="mb-4"
-              :value="modelValue.answer_text"
-            ></CodeFragment>
+            <CodeFragment class="mb-4" :value="modelValue.answer_text"></CodeFragment>
             <CodeExecutionResults :slot="modelValue"></CodeExecutionResults>
           </div>
 
           <!-- attachment exercise-->
           <FileUpload
+            @download="$emit('download')"
             v-model="attachmentProxy"
-            v-else-if="
-              exercise.exercise_type === ExerciseType.ATTACHMENT &&
-              allowEditSubmission
-            "
+            :disabled="!allowEditSubmission"
+            v-else-if="exercise.exercise_type === ExerciseType.ATTACHMENT"
           ></FileUpload>
         </div>
 
-        <!-- show assesment-->
+        <!-- show assessment-->
         <div
-          class="w-1/2 px-6 py-3 mb-auto rounded  bg-light shadow-elevation-2 bg-opacity-70"
+          class="w-1/2 px-6 py-3 mb-auto rounded bg-light shadow-elevation-2 bg-opacity-70"
           v-if="showAssessment"
         >
           <!-- style="background-color: #e6f4ea; border: 1px solid #dadce0" -->
@@ -106,15 +93,10 @@
             <strong class="text-lg">{{ modelValue.score }}</strong>
             <span v-if="!!modelValue.exercise.max_score"
               >&nbsp;{{ $t("misc.out_of") }}
-              <strong class="text-lg">
-                {{ modelValue.exercise.max_score }}</strong
-              ></span
+              <strong class="text-lg"> {{ modelValue.exercise.max_score }}</strong></span
             >
           </p>
-          <p
-            v-if="(modelValue.comment?.length ?? 0) > 0"
-            class="mt-2 text-muted"
-          >
+          <p v-if="(modelValue.comment?.length ?? 0) > 0" class="mt-2 text-muted">
             {{ $t("misc.teacher_comment") }}:
           </p>
           <p v-html="modelValue.comment"></p>
@@ -137,9 +119,7 @@
             class="mb-4 text-muted"
             v-if="modelValue.score == null || modelValue.score.length == 0"
           >
-            {{
-              $t("event_assessment.this_exercise_requires_manual_assessment")
-            }}
+            {{ $t("event_assessment.this_exercise_requires_manual_assessment") }}
           </p>
           <div class="mt-4">
             <p>
@@ -164,12 +144,7 @@
 </template>
 
 <script lang="ts">
-import {
-  EventParticipationSlot,
-  Exercise,
-  ExerciseChoice,
-  ExerciseType,
-} from "@/models";
+import { EventParticipationSlot, Exercise, ExerciseChoice, ExerciseType } from "@/models";
 import { defineComponent, PropType } from "@vue/runtime-core";
 import CheckboxGroup from "@/components/ui/CheckboxGroup.vue";
 import { SelectableOption } from "@/interfaces";
@@ -183,6 +158,7 @@ import CodeFragment from "../ui/CodeFragment.vue";
 import CodeExecutionResults from "./CodeExecutionResults.vue";
 import { texMixin } from "@/mixins";
 import FileUpload from "../ui/FileUpload.vue";
+import { downloadEventParticipationSlotAttachment } from "@/api/events";
 
 export default defineComponent({
   components: {
@@ -254,10 +230,8 @@ export default defineComponent({
     },
     exerciseChoicesAsOptions(): SelectableOption[] {
       if (
-        this.exercise.exercise_type !==
-          ExerciseType.MULTIPLE_CHOICE_SINGLE_POSSIBLE &&
-        this.exercise.exercise_type !==
-          ExerciseType.MULTIPLE_CHOICE_MULTIPLE_POSSIBLE
+        this.exercise.exercise_type !== ExerciseType.MULTIPLE_CHOICE_SINGLE_POSSIBLE &&
+        this.exercise.exercise_type !== ExerciseType.MULTIPLE_CHOICE_MULTIPLE_POSSIBLE
       ) {
         return [];
       }
@@ -282,10 +256,7 @@ export default defineComponent({
         return this.modelValue.selected_choices;
       },
       set(val: string | string[]) {
-        this.$emit(
-          "updateSelectedChoices",
-          typeof val === "object" ? val : [val]
-        );
+        this.$emit("updateSelectedChoices", typeof val === "object" ? val : [val]);
       },
     },
     answerTextProxy: {
@@ -298,10 +269,11 @@ export default defineComponent({
     },
     attachmentProxy: {
       get() {
-        return this.modelValue.attachment;
+        return this.modelValue.attachment
+          ? [{ success: true, ...this.modelValue.attachment }]
+          : [];
       },
       set(val: any) {
-        console.log("SETTING");
         this.$emit("updateAttachment", val);
       },
     },

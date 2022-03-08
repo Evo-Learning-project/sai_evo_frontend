@@ -154,3 +154,13 @@ export const setErrorNotification = (e: any) =>
 //   console.log("typesetting");
 //   (window as any).MathJax.typeset();
 // };
+
+export function forceFileDownload(response: { data: BlobPart }, title: string) {
+  console.log(title);
+  const url = window.URL.createObjectURL(new Blob([response.data]));
+  const link = document.createElement("a");
+  link.href = url;
+  link.setAttribute("download", title);
+  document.body.appendChild(link);
+  link.click();
+}

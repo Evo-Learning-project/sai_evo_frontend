@@ -144,5 +144,7 @@ export interface EventParticipationSlot {
   is_first?: boolean;
   is_last?: boolean;
   execution_results?: Record<string, string>;
-  attachment?: any;
+  attachment?:
+    | { name: string; size: number } // download representation
+    | Blob; // upload representation
 }

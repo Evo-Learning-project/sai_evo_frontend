@@ -1,7 +1,12 @@
 <template>
-  <div>
-    <div>
+  <div class="w-full">
+    <div class="w-full relative">
+      <div
+        v-if="disabled"
+        class="absolute top-0 w-full h-44 z-10 bg-red-500 bg-opacity-0"
+      ></div>
       <VueUploadComponent
+        class="w-full"
         @input-filter="inputFilter"
         @input-file="inputFile"
         ref="upload"
@@ -9,28 +14,50 @@
         :custom-action="emitUpload"
       >
         <div
-          style="width: 30rem"
-          class="relative flex text-xl border-2 border-gray-200 border-dashed rounded cursor-pointer  h-44 hover:bg-gray-200 bg-light"
+          style="width: 100%"
+          class="relative flex text-xl border-2 border-gray-200 border-dashed rounded cursor-pointer h-44 bg-light"
         >
-          <div
-            :class="{ invisible: files.length > 0 }"
-            class="p-4 mx-auto my-auto"
-          >
+          <div :class="{ invisible: files.length > 0 }" class="p-4 mx-auto my-auto">
             <p class="opacity-60">{{ $t("misc.file_upload") }}</p>
-            <p
-              class="opacity-30 material-icons-outlined"
-              style="font-size: 6rem"
-            >
+            <p class="opacity-30 material-icons-outlined" style="font-size: 6rem">
               cloud_upload
             </p>
           </div>
           <div v-if="files.length > 0" class="absolute flex w-full">
             <div
-              class="flex flex-col items-center w-full mx-auto space-x-2 align-middle "
+              class="relative flex flex-col items-center mx-auto space-x-2 align-middle z-20 w-max p-8 pt-0"
               v-for="(file, index) in files"
               :key="'file-' + index + '-' + file.id"
             >
+              <!-- <span
+                class="material-icons-outlined text-success absolute top-0 right-0 mt-4 mr-4"
+                v-if="file.success"
+                >done</span
+              > -->
+              <div
+                @click="download"
+                class="absolute z-50 top-0 py-10 hover:bg-opacity-70 transition-all duration-75 hover:opacity-100 hover:bg-gray-700 opacity-0 w-full"
+              >
+                <span
+                  style="font-size: 6rem"
+                  class="material-icons-outlined opacity-100 text-gray-50"
+                >
+                  cloud_download
+                </span>
+              </div>
+              <AnimatedIcon
+                class="absolute top-0 right-0 mt-2 mr-3"
+                v-if="false && file.success"
+              ></AnimatedIcon>
               <img class="mt-4 w-28 h-28" v-if="file.thumb" :src="file.thumb" />
+              <span
+                v-else
+                style="font-size: 6rem"
+                class="mt-4 material-icons-outlined text-gray-400"
+              >
+                insert_drive_file
+              </span>
+              <!-- <img class="mt-4 w-28 h-28" v-else src="../../../public/pdf_thmb.png" /> -->
               <p class="text-base text-muted">{{ file.name }}</p>
             </div>
           </div>
@@ -39,9 +66,11 @@
     </div>
 
     <Btn
-      v-if="!$refs.upload || !$refs.upload.active"
+      v-if="!disabled"
+      class="mt-4"
+      :loading="$refs.upload?.active"
       @click.prevent="$refs.upload.active = true"
-      ><span class="mr-2 text-xl material-icons-outlined"> cloud_upload </span>
+      ><span class="mr-2 text-xl material-icons-outlined">cloud_upload</span>
       Carica
     </Btn>
   </div>
@@ -49,20 +78,38 @@
 
 <script lang="ts">
 import { defineComponent } from "@vue/runtime-core";
+import { PropType } from "vue";
 
 import VueUploadComponent from "vue-upload-component";
 import Btn from "./Btn.vue";
+import AnimatedIcon from "./AnimatedIcon.vue";
+import { loadingMixin } from "@/mixins";
 
 export default defineComponent({
   name: "FileUpload",
+  mixins: [loadingMixin],
   components: {
     VueUploadComponent,
     Btn,
+    AnimatedIcon,
   },
   props: {
     maxFilesNum: {
       type: Number,
       default: 1,
+    },
+    modelValue: {
+      type: Array as PropType<any[]>,
+      required: true,
+    },
+    disabled: {
+      type: Boolean,
+      default: false,
+    },
+  },
+  watch: {
+    uploading(newVal) {
+      this.$store.state.shared.loading = newVal;
     },
   },
   data() {
@@ -73,31 +120,30 @@ export default defineComponent({
       uploadAuto: false,
     };
   },
+  created() {
+    this.files = this.modelValue;
+  },
   methods: {
+    download() {
+      this.$emit("download");
+    },
     async emitUpload(
-      file: any, //VueUploadItem,
+      file: { blob: Blob }, //VueUploadItem,
       component: any
     ) {
-      console.log("FFFFILE", file.blob, component);
-
-      const fileBlob = await fetch(file.blob).then((r) => r.blob());
-
-      console.log("BLOB", fileBlob);
+      const fileBlob = file.blob;
       this.$emit("update:modelValue", fileBlob);
 
       return component;
     },
-    doUpload() {
-      1;
-    },
     inputFilter(
       newFile: {
         name: string;
-        file: Blob | MediaSource;
+        file: Blob;
         error: string;
         type: string;
         size: number;
-        blob: string;
+        blob: Blob;
         thumb: string;
       },
       oldFile: { file: any; blob: any },
@@ -123,18 +169,14 @@ export default defineComponent({
         newFile.file &&
         (!oldFile || newFile.file !== oldFile.file)
       ) {
-        // Create a blob field
-        newFile.blob = "";
-        let URL = window.URL || window.webkitURL;
-        if (URL) {
-          newFile.blob = URL.createObjectURL(newFile.file);
-        }
-        // Thumbnails
+        newFile.blob = newFile.file;
         newFile.thumb = "";
         if (newFile.blob && isImage) {
-          newFile.thumb = newFile.blob;
+          newFile.thumb = URL.createObjectURL(newFile.file);
+        } else {
+          // TODO thumbnails for other file types
+          // newFile.thumb = "../../../public/pdf_thumb.png";
         }
-        // TODO thumbnails for other file types
       }
       // image size
       if (
@@ -158,7 +200,7 @@ export default defineComponent({
             error: "parsing image size",
           });
         };
-        img.src = newFile.blob;
+        img.src = URL.createObjectURL(newFile.file); // newFile.blob;
       }
     },
     // add, update, remove File Event
@@ -184,11 +226,7 @@ export default defineComponent({
         if (newFile.active && !oldFile.active) {
           // beforeSend
           // min size
-          if (
-            newFile.size >= 0 &&
-            this.minSize > 0 &&
-            newFile.size < this.minSize
-          ) {
+          if (newFile.size >= 0 && this.minSize > 0 && newFile.size < this.minSize) {
             (this.$refs as any).upload.update(newFile, { error: "size" });
           }
         }
@@ -205,19 +243,21 @@ export default defineComponent({
       }
       if (!newFile && oldFile) {
         // remove
-        if (oldFile.success && oldFile.response.id) {
+        if (oldFile.success && oldFile.response?.id) {
           // delete
         }
       }
       // Automatically activate upload
-      if (
-        Boolean(newFile) !== Boolean(oldFile) ||
-        oldFile.error !== newFile.error
-      ) {
+      if (Boolean(newFile) !== Boolean(oldFile) || oldFile.error !== newFile.error) {
         if (this.uploadAuto && !(this.$refs as any).upload.active) {
           (this.$refs as any).upload.active = true;
         }
       }
+    },
+  },
+  computed: {
+    uploading(): boolean {
+      return !!(this.$refs as any).upload?.active;
     },
   },
 });
