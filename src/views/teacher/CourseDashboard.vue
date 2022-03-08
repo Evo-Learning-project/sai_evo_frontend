@@ -161,6 +161,7 @@
           :exercise="exercise"
           :selectable="false"
           :hoverable="true"
+          :showEdit="true"
         ></MinimalExercisePreview>
       </div>
       <div v-else class="grid grid-cols-1 gap-4 lg:grid-cols-2">

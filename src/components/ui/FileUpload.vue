@@ -10,8 +10,10 @@
         @input-filter="inputFilter"
         @input-file="inputFile"
         ref="upload"
+        :drop="true"
         v-model="files"
         :custom-action="emitUpload"
+        :input-id="elementId"
       >
         <div
           class="relative flex border-2 border-gray-200 border-dashed rounded cursor-pointer w-full h-44 bg-light"
@@ -60,7 +62,7 @@
     </div>
 
     <Btn
-      v-if="!disabled"
+      v-if="!disabled && showUpload"
       class="mt-4"
       :loading="$refs.upload?.active"
       @click.prevent="$refs.upload.active = true"
@@ -78,6 +80,7 @@ import VueUploadComponent from "vue-upload-component";
 import Btn from "./Btn.vue";
 import AnimatedIcon from "./AnimatedIcon.vue";
 import { loadingMixin } from "@/mixins";
+import { v4 as uuid4 } from "uuid";
 
 export default defineComponent({
   name: "FileUpload",
@@ -104,6 +107,9 @@ export default defineComponent({
   watch: {
     uploading(newVal) {
       this.$store.state.shared.loading = newVal;
+      if (!newVal) {
+        this.showUpload = false;
+      }
     },
   },
   data() {
@@ -112,6 +118,8 @@ export default defineComponent({
       minSize: 0,
       maxSize: 1000000000,
       uploadAuto: false,
+      showUpload: false,
+      elementId: uuid4(),
     };
   },
   created() {
@@ -216,6 +224,7 @@ export default defineComponent({
     ) {
       console.log("INPUT FILE", newFile);
       if (newFile && oldFile) {
+        this.showUpload = true;
         // update
         if (newFile.active && !oldFile.active) {
           // beforeSend
@@ -232,7 +241,7 @@ export default defineComponent({
           (this.$refs as any).upload.active = false;
         }
         if (newFile.success && !oldFile.success) {
-          // success
+          this.showUpload = false;
         }
       }
       if (!newFile && oldFile) {
@@ -243,6 +252,8 @@ export default defineComponent({
       }
       // Automatically activate upload
       if (Boolean(newFile) !== Boolean(oldFile) || oldFile.error !== newFile.error) {
+        this.showUpload = true;
+
         if (this.uploadAuto && !(this.$refs as any).upload.active) {
           (this.$refs as any).upload.active = true;
         }

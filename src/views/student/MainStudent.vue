@@ -130,7 +130,7 @@
             <!-- Mobile menu button -->
             <button
               type="button"
-              class="inline-flex items-center justify-center p-2 text-gray-400 bg-gray-800 rounded-md  hover:text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white"
+              class="inline-flex items-center justify-center p-2 text-gray-400 bg-gray-800 rounded-md hover:text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white"
               aria-controls="mobile-menu"
               aria-expanded="false"
             >
@@ -186,32 +186,32 @@
           <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
           <a
             href="#"
-            class="block px-3 py-2 text-base font-medium text-white bg-gray-900 rounded-md "
+            class="block px-3 py-2 text-base font-medium text-white bg-gray-900 rounded-md"
             aria-current="page"
             >Dashboard</a
           >
 
           <a
             href="#"
-            class="block px-3 py-2 text-base font-medium text-gray-300 rounded-md  hover:bg-gray-700 hover:text-white"
+            class="block px-3 py-2 text-base font-medium text-gray-300 rounded-md hover:bg-gray-700 hover:text-white"
             >Team</a
           >
 
           <a
             href="#"
-            class="block px-3 py-2 text-base font-medium text-gray-300 rounded-md  hover:bg-gray-700 hover:text-white"
+            class="block px-3 py-2 text-base font-medium text-gray-300 rounded-md hover:bg-gray-700 hover:text-white"
             >Projects</a
           >
 
           <a
             href="#"
-            class="block px-3 py-2 text-base font-medium text-gray-300 rounded-md  hover:bg-gray-700 hover:text-white"
+            class="block px-3 py-2 text-base font-medium text-gray-300 rounded-md hover:bg-gray-700 hover:text-white"
             >Calendar</a
           >
 
           <a
             href="#"
-            class="block px-3 py-2 text-base font-medium text-gray-300 rounded-md  hover:bg-gray-700 hover:text-white"
+            class="block px-3 py-2 text-base font-medium text-gray-300 rounded-md hover:bg-gray-700 hover:text-white"
             >Reports</a
           >
         </div>
@@ -225,16 +225,14 @@
               />
             </div>
             <div class="ml-3">
-              <div class="text-base font-medium leading-none text-white">
-                Tom Cook
-              </div>
+              <div class="text-base font-medium leading-none text-white">Tom Cook</div>
               <div class="text-sm font-medium leading-none text-gray-400">
                 tom@example.com
               </div>
             </div>
             <button
               type="button"
-              class="flex-shrink-0 p-1 ml-auto text-gray-400 bg-gray-800 rounded-full  hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white"
+              class="flex-shrink-0 p-1 ml-auto text-gray-400 bg-gray-800 rounded-full hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white"
             >
               <span class="sr-only">View notifications</span>
               <!-- Heroicon name: outline/bell -->
@@ -278,7 +276,7 @@
       </div>
     </nav>
     <header
-      class="sticky top-0 z-20 px-12 bg-indigo-100 shadow-md  bg-opacity-70 backdrop-blur-sm backdrop-filter"
+      class="sticky top-0 z-50 px-12 bg-indigo-100 shadow-md bg-opacity-70 backdrop-blur-sm backdrop-filter"
     >
       <div class="flex items-center px-4 py-4 mx-auto sm:px-6 lg:px-8">
         <!-- <h1 class="text-3xl font-bold text-gray-900">

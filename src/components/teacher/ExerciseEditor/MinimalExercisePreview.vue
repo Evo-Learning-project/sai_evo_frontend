@@ -34,7 +34,7 @@
       </template>
 
       <template v-slot:body>
-        <div class="relative h-12 overflow-y-hidden">
+        <div class="relative h-14 overflow-y-hidden">
           <div
             style="
               display: -webkit-box;
@@ -58,9 +58,16 @@
             @click="showPreview = true"
             ><span class="text-base material-icons-outlined"> open_in_full </span>
           </Btn>
-          <div class="mt-auto" :title="selectButtonTitle">
+          <router-link
+            class="mt-auto"
+            v-if="showEdit"
+            :to="{ name: 'CourseExercises', hash: '#editor-' + exercise.id }"
+            ><Btn :size="'xs'" :variant="'primary-borderless'" @click="showPreview = true"
+              ><span class="text-base material-icons-outlined"> edit </span>
+            </Btn></router-link
+          >
+          <div class="mt-auto" :title="selectButtonTitle" v-if="selectable">
             <Btn
-              v-if="selectable"
               :size="'xs'"
               :variant="'success-borderless'"
               :forceActive="highlighted"
@@ -134,6 +141,10 @@ export default defineComponent({
       default: false,
     },
     hoverable: {
+      type: Boolean,
+      default: false,
+    },
+    showEdit: {
       type: Boolean,
       default: false,
     },
