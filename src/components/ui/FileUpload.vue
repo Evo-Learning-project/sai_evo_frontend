@@ -18,9 +18,11 @@
           class="relative flex text-xl border-2 border-gray-200 border-dashed rounded cursor-pointer h-44 bg-light"
         >
           <div :class="{ invisible: files.length > 0 }" class="p-4 mx-auto my-auto">
-            <p class="opacity-60">{{ $t("misc.file_upload") }}</p>
-            <p class="opacity-30 material-icons-outlined" style="font-size: 6rem">
-              cloud_upload
+            <p class="opacity-60 mb-4">
+              {{ disabled ? $t("misc.file_upload_no_files") : $t("misc.file_upload") }}
+            </p>
+            <p class="opacity-30 material-icons-outlined" style="font-size: 4rem">
+              {{ disabled ? "file_download_off" : "cloud_upload" }}
             </p>
           </div>
           <div v-if="files.length > 0" class="absolute flex w-full">
@@ -36,10 +38,10 @@
               > -->
               <div
                 @click="download"
-                class="absolute z-50 top-0 py-10 hover:bg-opacity-70 transition-all duration-75 hover:opacity-100 hover:bg-gray-700 opacity-0 w-full"
+                class="absolute z-50 top-0 py-16 hover:bg-opacity-70 transition-all duration-75 hover:opacity-100 hover:bg-gray-700 opacity-0 w-full"
               >
                 <span
-                  style="font-size: 6rem"
+                  style="font-size: 4rem"
                   class="material-icons-outlined opacity-100 text-gray-50"
                 >
                   cloud_download
@@ -49,16 +51,16 @@
                 class="absolute top-0 right-0 mt-2 mr-3"
                 v-if="false && file.success"
               ></AnimatedIcon>
-              <img class="mt-4 w-28 h-28" v-if="file.thumb" :src="file.thumb" />
+              <img class="mt-7 w-28 h-28" v-if="file.thumb" :src="file.thumb" />
               <span
                 v-else
-                style="font-size: 6rem"
-                class="mt-4 material-icons-outlined text-gray-400"
+                style="font-size: 4rem"
+                class="mt-7 material-icons-outlined text-gray-400"
               >
                 insert_drive_file
               </span>
               <!-- <img class="mt-4 w-28 h-28" v-else src="../../../public/pdf_thmb.png" /> -->
-              <p class="text-base text-muted">{{ file.name }}</p>
+              <p class="text-base text-muted mt-4">{{ file.name }}</p>
             </div>
           </div>
         </div>

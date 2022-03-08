@@ -126,6 +126,7 @@ export const it = {
     exercises_answered_at: "Risposto:",
   },
   misc: {
+    file_upload_no_files: "Nessun file presente",
     file_upload: "Trascina qui il tuo file oppure clicca qui",
     course_settings: "Impostazioni corso",
     example: "Esempio",

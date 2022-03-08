@@ -185,6 +185,7 @@
         <div class="text-darkText" v-if="editingSlot">
           <AbstractEventParticipationSlot
             :allowEditScores="true"
+            @download="onAttachmentDownload(editingSlotDirty)"
             v-model="editingSlotDirty"
           ></AbstractEventParticipationSlot>
         </div>
@@ -280,6 +281,7 @@ import AbstractEventParticipationSlot from "@/components/shared/AbstractEventPar
 import { DialogData } from "@/interfaces";
 import SkeletonCard from "@/components/ui/SkeletonCard.vue";
 import Btn from "@/components/ui/Btn.vue";
+import { downloadEventParticipationSlotAttachment } from "@/api/events";
 
 export default defineComponent({
   components: {
@@ -360,6 +362,18 @@ export default defineComponent({
       "partialUpdateEventParticipation",
       "partialUpdateEventParticipationSlot",
     ]),
+    async onAttachmentDownload(slot: EventParticipationSlot) {
+      // TODO refactor as another component is using this method as well
+      await this.withLoading(
+        async () =>
+          await downloadEventParticipationSlotAttachment(
+            this.courseId,
+            this.eventId,
+            this.editingParticipationId,
+            slot.id
+          )
+      );
+    },
     isRowSelectable(row: RowNode) {
       /**
        * Used by ag grid to determine whether the row is selectable
