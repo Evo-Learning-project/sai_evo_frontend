@@ -11,7 +11,7 @@
       ></EventMetaEditor>
 
       <EventTemplateEditor
-        v-if="!loading"
+        v-if="!loading || modelValue.id"
         :modelValue="modelValueTemplate"
       ></EventTemplateEditor>
 
@@ -49,12 +49,7 @@ import EventTemplateEditor from "@/components/teacher/EventTemplateEditor/EventT
 import CloudSaveStatus from "@/components/ui/CloudSaveStatus.vue";
 import { defineComponent } from "@vue/runtime-core";
 import { Event, EventState, EventTemplate } from "@/models";
-import {
-  courseIdMixin,
-  eventIdMixin,
-  loadingMixin,
-  savingMixin,
-} from "@/mixins";
+import { courseIdMixin, eventIdMixin, loadingMixin, savingMixin } from "@/mixins";
 import Dialog from "@/components/ui/Dialog.vue";
 import { getTranslatedString as _ } from "@/i18n";
 

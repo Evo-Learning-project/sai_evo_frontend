@@ -1,6 +1,6 @@
 <template>
-  <div v-if="examParticipations.length > 0" class="mb-4">
-    <div class="mb-8">
+  <div class="mb-4">
+    <div class="mb-8" v-if="examParticipations.length > 0">
       <h2>{{ $t("student_course_dashboard.exams_you_participated_in") }}</h2>
       <div class="grid grid-cols-2 gap-4 lg:grid-cols-3" v-if="!firstLoading">
         <EventParticipationPreview

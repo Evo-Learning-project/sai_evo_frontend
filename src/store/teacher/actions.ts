@@ -319,6 +319,7 @@ export const actions = {
     state.events
       .find((e: Event) => e.template?.id === templateId)
       ?.template?.rules?.push(newRule);
+    return newRule;
   },
   addEventTemplateRuleClause: async (
     { commit, state }: { commit: Commit; state: any },

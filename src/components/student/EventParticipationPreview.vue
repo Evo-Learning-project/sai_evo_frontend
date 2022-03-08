@@ -56,13 +56,11 @@
               }"
             >
               <Btn>
-                <span class="text-base material-icons-outlined"> meeting_room </span>
+                <span class="text-base material-icons-outlined mr-1"> meeting_room </span>
                 {{ $t("student_course_dashboard.resume") }}
               </Btn>
             </router-link>
-            <div
-              class="chip mx-0 order-1 xl:order-2 border-primary bg-primary bg-opacity-20 text-primary mb-0 pt-0.5"
-            >
+            <div class="chip mx-0 order-1 xl:order-2 chip-primary mb-0 pt-0.5">
               <span class="material-icons-outlined text-base mr-1 mt-1.25px">
                 more_horiz
               </span>
