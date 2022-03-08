@@ -132,8 +132,9 @@ export const getErrorData = (e: any): ErrorMessage => {
       icon: "cloud_off",
     };
   } else {
-    // TODO implement
-    throw new Error();
+    return {
+      title: _("errors.unknown_error"),
+    };
   }
 };
 

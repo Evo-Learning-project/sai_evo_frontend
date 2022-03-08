@@ -13,129 +13,128 @@
   <!--@tags-changed="newTags => onTagsChanged(newTags)"-->
   <!--
           
--->
-</template>
+--></template>
 
 <script lang="ts">
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { Tag } from '@/models'
-import VueTagsInput from '@sipec/vue3-tags-input'
-import { defineComponent, PropType } from '@vue/runtime-core'
+import { getTranslatedString as _ } from "@/i18n";
+import { Tag } from "@/models";
+import VueTagsInput from "@sipec/vue3-tags-input";
+import { defineComponent, PropType } from "@vue/runtime-core";
 
 export default defineComponent({
-  name: 'TagInput',
+  name: "TagInput",
   components: {
-    VueTagsInput
+    VueTagsInput,
   },
   watch: {
-    serializedProcessedModelValue (_newVal, _oldVal) {
+    serializedProcessedModelValue(_newVal, _oldVal) {
       if (this.ignoreWatcher) {
-        return
+        return;
       }
-      const newVal = JSON.parse(_newVal)
-      const oldVal = JSON.parse(_oldVal)
+      const newVal = JSON.parse(_newVal);
+      const oldVal = JSON.parse(_oldVal);
 
       if (this.addingTag.length > 0 && newVal.length > oldVal.length) {
-        this.addingTag = ''
+        this.addingTag = "";
       } else if (this.removingTag.length > 0 && newVal.length < oldVal.length) {
-        this.removingTag = ''
+        this.removingTag = "";
       }
-    }
+    },
   },
   props: {
     modelValue: {
       type: Array as PropType<Tag[]>,
-      required: true
+      required: true,
     },
     placeholder: {
-      type: String
-      // TODO default
+      type: String,
+      default: _("misc.tags"),
     },
     choices: {
       type: Array as PropType<Tag[]>,
-      default: () => []
+      default: () => [],
     },
     existingOnly: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
-  data () {
+  data() {
     return {
-      tag: '',
-      addingTag: '',
-      removingTag: '',
-      ignoreWatcher: false
-    }
+      tag: "",
+      addingTag: "",
+      removingTag: "",
+      ignoreWatcher: false,
+    };
   },
   methods: {
-    onTagsChanged (newTags: any) {
+    onTagsChanged(newTags: any) {
       this.$emit(
-        'update:modelValue',
+        "update:modelValue",
         newTags.map((t: { text: string }) => this.processTag(t))
-      )
+      );
     },
-    beforeAddingTag (event: any) {
-      console.log('before adding', event.tag.text)
+    beforeAddingTag(event: any) {
+      console.log("before adding", event.tag.text);
       if (
         !this.processedModelValue
           .map((t: { text: string }) => t.text)
           .includes(event.tag.text) &&
         (!this.existingOnly ||
-          this.autoCompleteItems.map(i => i.text).includes(event.tag.text))
+          this.autoCompleteItems.map((i) => i.text).includes(event.tag.text))
       ) {
-        this.$emit('addTag', event.tag.text)
+        this.$emit("addTag", event.tag.text);
 
         // this triggers ghost tag without having the watcher immediately remove it
-        this.ignoreWatcher = true
-        this.addingTag = event.tag.text
-        this.$nextTick(() => (this.ignoreWatcher = false))
+        this.ignoreWatcher = true;
+        this.addingTag = event.tag.text;
+        this.$nextTick(() => (this.ignoreWatcher = false));
 
-        this.tag = ''
+        this.tag = "";
       }
     },
-    beforeDeletingTag (event: any) {
-      this.removingTag = event.tag.text
-      this.$emit('removeTag', event.tag.text)
+    beforeDeletingTag(event: any) {
+      this.removingTag = event.tag.text;
+      this.$emit("removeTag", event.tag.text);
     },
-    processTag (tag: { text: string }) {
+    processTag(tag: { text: string }) {
       return {
-        name: tag.text
-      }
-    }
+        name: tag.text,
+      };
+    },
   },
   computed: {
-    serializedProcessedModelValue () {
-      return JSON.stringify(this.processedModelValue)
+    serializedProcessedModelValue() {
+      return JSON.stringify(this.processedModelValue);
     },
-    processedModelValue () {
+    processedModelValue() {
       const ret = this.modelValue.map((t: Tag) => ({
         text: t.name,
-        classes:
-          t.name === this.removingTag ? 'opacity-50 pointer-events-none' : ''
-      }))
+        classes: t.name === this.removingTag ? "opacity-50 pointer-events-none" : "",
+      }));
 
       const ghostTag = {
         text: this.addingTag,
-        classes: 'opacity-50 pointer-events-none'
-      }
+        classes: "opacity-50 pointer-events-none",
+      };
 
-      return [...ret, ...(this.addingTag.length > 0 ? [ghostTag] : [])]
+      return [...ret, ...(this.addingTag.length > 0 ? [ghostTag] : [])];
     },
-    processedChoices () {
+    processedChoices() {
       return this.choices.map((t: Tag) => ({
-        text: t.name
-      }))
+        text: t.name,
+      }));
     },
-    autoCompleteItems () {
+    autoCompleteItems() {
       return this.processedChoices.filter(
         (c: { text: string }) =>
           c.text.toLowerCase().indexOf(this.tag.toLowerCase()) !== -1
-      )
-    }
-  }
-})
+      );
+    },
+  },
+});
 </script>
 
 <style>

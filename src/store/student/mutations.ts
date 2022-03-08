@@ -16,7 +16,6 @@ export const mutations = {
     state: StudentState,
     slots: EventParticipationSlot[]
   ) => {
-    // TODO check if this correctly triggers reactivity
     if (state.currentEventParticipation) {
       state.currentEventParticipation.slots = slots;
     }

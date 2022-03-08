@@ -292,7 +292,7 @@ export default defineComponent({
       // TODO refactor and use the generic onChange
       let formData = new FormData();
       formData.append("attachment", attachment);
-      console.log("sending FORM DATA", formData);
+
       await partialUpdateEventParticipationSlot(
         this.courseId,
         this.eventId,

@@ -38,7 +38,6 @@ const routes: Array<RouteRecordRaw> = [
     name: "Main",
     component: MainStudent,
     meta: {
-      // TODO permissions
       routeTitle: _("headings.login"),
       hideBreadcrumbs: true,
     },
@@ -55,9 +54,6 @@ const routes: Array<RouteRecordRaw> = [
     name: "MainTeacher",
     component: MainTeacher,
     redirect: { name: "TeacherCourseList" },
-    meta: {
-      // TODO permissions
-    },
     children: [
       {
         path: "courses",
@@ -151,9 +147,6 @@ const routes: Array<RouteRecordRaw> = [
     name: "MainStudent",
     component: MainStudent,
     redirect: { name: "StudentCourseList" },
-    meta: {
-      // TODO permissions
-    },
     children: [
       {
         path: "courses",

@@ -252,12 +252,6 @@ export async function partialUpdateEventParticipationSlot(
       forceStudent ? "?as_student=1" : ""
     }`,
     changes
-    // TODO you need these for uploading attachments
-    // {
-    //   headers: {
-    //     "Content-Type": "multipart/form-data",
-    //   },
-    // }
   );
   return response.data;
 }

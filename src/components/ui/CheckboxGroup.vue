@@ -27,11 +27,6 @@
           <slot v-bind:icons="option.icons"></slot>
           <p :class="labelClass" v-html="option.content"></p>
         </div>
-        <!-- <p
-          class="mb-2 text-sm text-muted"
-          v-if="(option.description?.length ?? 0) > 0"
-          v-html="option.description"
-        ></p> -->
         <slot v-bind:description="option.description"></slot>
       </div>
     </label>
@@ -39,75 +34,72 @@
 </template>
 
 <script lang="ts">
-import { SelectableOption } from '@/interfaces'
-import { defineComponent, PropType } from '@vue/runtime-core'
-import { v4 as uuid4 } from 'uuid'
-import Toggle from './Toggle.vue'
+import { SelectableOption } from "@/interfaces";
+import { defineComponent, PropType } from "@vue/runtime-core";
+import { v4 as uuid4 } from "uuid";
+import Toggle from "./Toggle.vue";
 
 export default defineComponent({
   components: { Toggle },
-  name: 'CheckboxGroup',
+  name: "CheckboxGroup",
   //props: ['options', 'modelValue', 'disabled'],
   props: {
     options: {
       type: Object as PropType<SelectableOption[]>,
-      required: true
+      required: true,
     },
     modelValue: {
       type: Array as PropType<unknown[]>,
-      required: true
+      required: true,
     },
     disabled: {
       type: Boolean,
-      default: false
+      default: false,
     },
     labelClass: {
       type: String,
-      default: ''
+      default: "",
     },
     optionClass: {
       type: String,
-      default: ''
+      default: "",
     },
     useToggles: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
-  created () {
-    this.id = uuid4()
+  created() {
+    this.id = uuid4();
   },
-  data () {
+  data() {
     return {
-      id: ''
-    }
+      id: "",
+    };
   },
   methods: {
-    onToggleUpdate (event: unknown, option: SelectableOption) {
-      console.log(event, option)
+    onToggleUpdate(event: unknown, option: SelectableOption) {
+      console.log(event, option);
       if (event) {
         // new selection
-        this.proxyModelValue = [...this.proxyModelValue, option.value]
+        this.proxyModelValue = [...this.proxyModelValue, option.value];
       } else {
         // deselection
-        this.proxyModelValue = this.proxyModelValue.filter(
-          v => v !== option.value
-        )
+        this.proxyModelValue = this.proxyModelValue.filter((v) => v !== option.value);
       }
-    }
+    },
   },
   computed: {
     proxyModelValue: {
-      get (): unknown[] {
-        return this.modelValue
+      get(): unknown[] {
+        return this.modelValue;
       },
-      set (val: Array<{ value: string; content: string }>) {
-        // TODO make interface
-        this.$emit('update:modelValue', val)
-      }
-    }
-  }
-})
+      set(val: SelectableOption[]) {
+        this.$emit("update:modelValue", val);
+      },
+    },
+  },
+});
 </script>
 
 <style></style>
