@@ -7,7 +7,10 @@
         :class="{
           'bg-gray-200 p-2 border border-dark rounded-md': false && allowEditScores,
         }"
-        v-if="exercise.exercise_type !== ExerciseType.JS || !allowEditSubmission"
+        v-if="
+          exercise.exercise_type !== ExerciseType.JS ||
+          (!allowEditSubmission && !showExerciseLabel)
+        "
         v-html="exercise.text"
       ></div>
       <div :class="{ 'flex space-x-8': allowEditScores || showAssessment }">
@@ -58,19 +61,30 @@
 
           <!-- programming exercise -->
           <ProgrammingExercise
-            v-else-if="exercise.exercise_type === ExerciseType.JS && allowEditSubmission"
+            v-else-if="
+              exercise.exercise_type === ExerciseType.JS &&
+              (allowEditSubmission || showExerciseLabel)
+            "
             :exercise="modelValue.exercise"
             v-model="answerTextProxy"
             :executionResults="modelValue.execution_results"
             :slot="modelValue"
             :running="running"
             @runCode="$emit('runCode')"
+            :showEditor="allowEditSubmission"
           ></ProgrammingExercise>
           <div
             v-else-if="exercise.exercise_type === ExerciseType.JS && !allowEditSubmission"
           >
-            <CodeFragment class="mb-4" :value="modelValue.answer_text"></CodeFragment>
-            <CodeExecutionResults :slot="modelValue"></CodeExecutionResults>
+            <CodeFragment
+              class="mb-4"
+              :value="modelValue.answer_text"
+              v-if="!showExerciseLabel"
+            ></CodeFragment>
+            <CodeExecutionResults
+              :slot="modelValue"
+              v-if="!showExerciseLabel"
+            ></CodeExecutionResults>
           </div>
 
           <!-- attachment exercise-->
@@ -270,7 +284,7 @@ export default defineComponent({
     attachmentProxy: {
       get() {
         return this.modelValue.attachment
-          ? [{ success: true, ...this.modelValue.attachment }]
+          ? [{ ...this.modelValue.attachment }] //  success: true,
           : [];
       },
       set(val: any) {

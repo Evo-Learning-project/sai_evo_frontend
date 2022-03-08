@@ -3,7 +3,7 @@
     <div class="w-2/5 mx-auto">
       <SegmentedControls
         v-model="currentTab"
-        :options="programmingExerciseTabsOptions"
+        :options="filteredTabsOptions"
       ></SegmentedControls>
     </div>
     <div class="mt-4">
@@ -16,11 +16,7 @@
         v-else-if="currentTab === ProgrammingExerciseTabs.EDITOR"
         class="relative flex"
       >
-        <CodeEditor
-          class="w-full"
-          :size="'lg'"
-          v-model="proxyModelValue"
-        ></CodeEditor>
+        <CodeEditor class="w-full" :size="'lg'" v-model="proxyModelValue"></CodeEditor>
         <Backdrop ref="executionResultsBackdrop" v-if="!!executionResults"
           ><template v-slot:title>
             <h5>Risultato esecuzione</h5>
@@ -40,9 +36,7 @@
           v-for="(testcase, index) in exercise.testcases"
           :key="'t-' + testcase.id"
         >
-          <h4 class="mb-1">
-            {{ $t("programming_exercise.testcase") }} {{ index + 1 }}
-          </h4>
+          <h4 class="mb-1">{{ $t("programming_exercise.testcase") }} {{ index + 1 }}</h4>
           <ExerciseTestCase :test-case="testcase"></ExerciseTestCase>
         </div>
       </div>
@@ -51,10 +45,7 @@
 </template>
 
 <script lang="ts">
-import {
-  programmingExerciseTabsOptions,
-  ProgrammingExerciseTabs,
-} from "@/const";
+import { programmingExerciseTabsOptions, ProgrammingExerciseTabs } from "@/const";
 import { EventParticipationSlot, Exercise } from "@/models";
 import { defineComponent, PropType } from "@vue/runtime-core";
 import SegmentedControls from "../ui/SegmentedControls.vue";
@@ -64,6 +55,7 @@ import Btn from "../ui/Btn.vue";
 import { loadingMixin } from "@/mixins";
 import Backdrop from "../ui/Backdrop.vue";
 import CodeExecutionResults from "./CodeExecutionResults.vue";
+import { SelectableOption } from "@/interfaces";
 export default defineComponent({
   name: "ProgrammingExercise",
   mixins: [loadingMixin],
@@ -95,6 +87,10 @@ export default defineComponent({
     running: {
       type: Boolean,
     },
+    showEditor: {
+      type: Boolean,
+      default: true,
+    },
   },
   data() {
     return {
@@ -112,6 +108,11 @@ export default defineComponent({
       set(newVal: string) {
         this.$emit("update:modelValue", newVal);
       },
+    },
+    filteredTabsOptions(): SelectableOption[] {
+      return this.programmingExerciseTabsOptions.filter(
+        (o) => this.showEditor || o.value !== ProgrammingExerciseTabs.EDITOR
+      );
     },
   },
   components: {
