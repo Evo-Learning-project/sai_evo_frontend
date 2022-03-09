@@ -117,20 +117,35 @@
         </div>
 
         <!-- controls to assess -->
-        <div v-if="allowEditScores" class="w-1/2">
-          <!-- TODO work on this -->
-          <p v-if="modelValue.seen_at">
-            {{ $t("event_assessment.exercise_seen_at") }}
-            <Timestamp :value="modelValue.seen_at"></Timestamp>
-          </p>
-          <p v-if="modelValue.answered_at">
-            {{ $t("event_assessment.exercise_answered_at") }}
-            <Timestamp :value="modelValue.answered_at"></Timestamp>
-          </p>
+        <div v-if="allowEditScores" class="w-1/2 flex flex-col">
           <!-- -->
-          <h3>{{ $t("event_assessment.your_assessment") }}</h3>
+          <div class="flex items-center">
+            <h3>{{ $t("event_assessment.your_assessment") }}</h3>
+            <div
+              class="text-sm flex flex-col ml-auto"
+              v-if="modelValue.seen_at || modelValue.answered_at"
+            >
+              <div class="flex items-center" v-if="modelValue.seen_at">
+                <span class="material-icons-outlined text-sm mr-1 text-muted">
+                  visibility
+                </span>
+                <span class="text-muted"
+                  >{{ $t("event_assessment.exercise_seen_at") }}&nbsp;</span
+                >
+                <Timestamp :value="modelValue.seen_at"></Timestamp>
+              </div>
+              <div class="flex items-center" v-if="modelValue.answered_at">
+                <span class="material-icons-outlined text-sm mr-1 text-muted">
+                  question_answer
+                </span>
+                <span class="text-muted"
+                  >{{ $t("event_assessment.exercise_answered_at") }}&nbsp;</span
+                ><Timestamp :value="modelValue.answered_at"></Timestamp>
+              </div>
+            </div>
+          </div>
           <p
-            class="mb-4 text-muted"
+            class="text-muted text-danger-dark text-sm"
             v-if="modelValue.score == null || modelValue.score.length == 0"
           >
             {{ $t("event_assessment.this_exercise_requires_manual_assessment") }}

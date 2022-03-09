@@ -123,7 +123,7 @@ export const it = {
     your_assessment: "La tua valutazione",
     text_answer_label: "Risposta dello studente",
     exercise_seen_at: "Visto:",
-    exercises_answered_at: "Risposto:",
+    exercise_answered_at: "Risposto:",
   },
   misc: {
     file_upload_no_files: "Nessun file presente",
