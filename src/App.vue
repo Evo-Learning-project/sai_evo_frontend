@@ -70,7 +70,9 @@ export default defineComponent({
     Notification,
   },
   async created() {
-    await this.$store.dispatch("shared/getCourses");
+    if (this.$route.name && this.$route.name !== "Login") {
+      await this.$store.dispatch("shared/getCourses");
+    }
     window.addEventListener("beforeunload", this.beforeWindowUnload);
 
     this.typesetTex = debounce(this.typesetTex, 100);

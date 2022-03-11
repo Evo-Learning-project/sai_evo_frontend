@@ -142,7 +142,7 @@ export const getErrorData = (e: any): ErrorMessage => {
 export const setPageWideError = (e: any) => {
   const sharedState = (store.state as { shared: SharedState }).shared;
   sharedState.pageWideErrorData = getErrorData(e);
-  console.error(e);
+  throw e;
 };
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
