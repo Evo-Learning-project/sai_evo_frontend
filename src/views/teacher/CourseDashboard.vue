@@ -5,7 +5,7 @@
         <h3>{{ $t("misc.course_settings") }}</h3>
       </template>
       <template v-slot:body>
-        <div class="flex justify-between mt-2">
+        <div class="flex flex-col justify-between mt-2 md:flex-row">
           <div class="flex flex-col space-y-6">
             <div class="flex items-center" v-show="!editingName">
               <p class="mr-2 text-muted">Nome</p>
@@ -22,7 +22,10 @@
             <div v-show="editingName" class="flex items-center">
               <TextInput class="mr-2 w-96" v-model="dirtyCourseName">
                 {{ $t("course_creation_form.course_name") }}
-                <template v-if="v$.dirtyCourse.name.$errors.length > 0" v-slot:errors>
+                <template
+                  v-if="v$.dirtyCourse.name.$errors.length > 0"
+                  v-slot:errors
+                >
                   <div
                     class="input-errors"
                     v-for="error of v$.dirtyCourse.name.$errors"
@@ -40,7 +43,9 @@
                 :loading="localLoading"
                 @click="v$.$invalid ? v$.$touch() : onDoneEditingName()"
               >
-                <span class="text-xl text-primary material-icons-outlined"> save </span>
+                <span class="text-xl text-primary material-icons-outlined">
+                  save
+                </span>
               </Btn>
               <Btn
                 :outline="true"
@@ -77,7 +82,9 @@
                 :loading="localLoading"
                 @click="onDoneEditingDescription()"
               >
-                <span class="text-xl text-primary material-icons-outlined"> save </span>
+                <span class="text-xl text-primary material-icons-outlined">
+                  save
+                </span>
               </Btn>
               <Btn
                 :outline="true"
@@ -92,7 +99,7 @@
             </div>
           </div>
 
-          <div class="flex flex-col items-end w-2/5">
+          <div class="flex flex-col items-end mt-4 md:mt-0 md:w-2/5">
             <Toggle
               :disabled="!hasPrivileges([CoursePrivilege.UPDATE_COURSE])"
               :modelValue="currentCourse.hidden"
@@ -103,7 +110,8 @@
               {{ $t("course_creation_form.hide_course") }}
             </Toggle>
             <p class="mr-auto text-muted" v-if="currentCourse.hidden">
-              <span class="mt-auto mr-1 text-lg text-danger-dark material-icons-outlined"
+              <span
+                class="mt-auto mr-1 text-lg  text-danger-dark material-icons-outlined"
                 >error_outline</span
               >
               {{ $t("course_creation_form.hidden_description") }}
@@ -129,7 +137,10 @@
             :buttonIconsOnly="true"
           ></EventEditorPreview>
         </div>
-        <div class="grid grid-cols-1 gap-4 mt-4 lg:grid-cols-2 xl:grid-cols-3" v-else>
+        <div
+          class="grid grid-cols-1 gap-4 mt-4 lg:grid-cols-2 xl:grid-cols-3"
+          v-else
+        >
           <EventEditorPreviewSkeleton></EventEditorPreviewSkeleton>
           <EventEditorPreviewSkeleton></EventEditorPreviewSkeleton>
           <EventEditorPreviewSkeleton></EventEditorPreviewSkeleton>
@@ -154,7 +165,10 @@
     </div>
     <div class="mt-8">
       <h3>{{ $t("teacher_course_dashboard.recently_edited_exercises") }}</h3>
-      <div v-if="!firstLoading" class="grid grid-cols-1 gap-4 mt-4 lg:grid-cols-2">
+      <div
+        v-if="!firstLoading"
+        class="grid grid-cols-1 gap-4 mt-4 lg:grid-cols-2"
+      >
         <MinimalExercisePreview
           v-for="exercise in recentExercises"
           :key="'e-' + exercise.id"
@@ -174,7 +188,9 @@
         class="flex flex-col w-full mt-6 text-center select-none mb-14"
         v-if="!firstLoading && exercises.length === 0"
       >
-        <p style="font-size: 6rem" class="material-icons-outlined opacity-10">topic</p>
+        <p style="font-size: 6rem" class="material-icons-outlined opacity-10">
+          topic
+        </p>
         <h2 class="opacity-40">{{ $t("course_exercises.no_exercises") }}</h2>
       </div>
       <div v-else-if="!firstLoading" class="flex w-full mt-4">
@@ -185,7 +201,11 @@
         >
       </div>
     </div>
-    <v-tour name="teacherTour" :steps="teacherTourSteps" :options="tourOptions"></v-tour>
+    <v-tour
+      name="teacherTour"
+      :steps="teacherTourSteps"
+      :options="tourOptions"
+    ></v-tour>
   </div>
 </template>
 

@@ -1,8 +1,6 @@
 <template>
-  <div class="flex items-center text-xs text-muted">
-    <span class="text-base material-icons-outlined">
-      home
-    </span>
+  <div class="flex flex-wrap items-center text-xs text-muted">
+    <span class="text-base material-icons-outlined"> home </span>
     <span class="text-base material-icons-outlined opacity-60"
       >navigate_next</span
     >
@@ -19,7 +17,7 @@
       <router-link
         v-else
         :to="{
-          name: breadcrumb.routeName
+          name: breadcrumb.routeName,
         }"
         class="link"
         >{{ breadcrumb.title }}</router-link
@@ -34,40 +32,40 @@
 </template>
 
 <script lang="ts">
-import { courseIdMixin, eventIdMixin } from '@/mixins'
-import { BreadCrumb } from '@/navigation/breadcrumbs'
+import { courseIdMixin, eventIdMixin } from "@/mixins";
+import { BreadCrumb } from "@/navigation/breadcrumbs";
 import {
   ROUTE_TITLE_COURSE_NAME_TOKEN,
-  ROUTE_TITLE_EVENT_NAME_TOKEN
-} from '@/navigation/const'
-import { defineComponent, PropType } from '@vue/runtime-core'
-import { RouteLocationNormalizedLoaded } from 'vue-router'
+  ROUTE_TITLE_EVENT_NAME_TOKEN,
+} from "@/navigation/const";
+import { defineComponent, PropType } from "@vue/runtime-core";
+import { RouteLocationNormalizedLoaded } from "vue-router";
 
 export default defineComponent({
-  name: 'BreadCrumbs',
+  name: "BreadCrumbs",
   mixins: [courseIdMixin, eventIdMixin],
   props: {
     route: {
       type: Object as PropType<RouteLocationNormalizedLoaded>,
-      required: true
-    }
+      required: true,
+    },
   },
   methods: {
-    replaceTitleTokens (str: string) {
+    replaceTitleTokens(str: string) {
       return str
         ?.replace(ROUTE_TITLE_COURSE_NAME_TOKEN, this.currentCourse.name)
-        ?.replace(ROUTE_TITLE_EVENT_NAME_TOKEN, this.currentEvent)
-    }
+        ?.replace(ROUTE_TITLE_EVENT_NAME_TOKEN, this.currentEvent);
+    },
   },
   computed: {
-    breadcrumbs (): BreadCrumb[] {
-      return ((this.route.meta.breadcrumbs as BreadCrumb[]) ?? []).map(b => ({
+    breadcrumbs(): BreadCrumb[] {
+      return ((this.route.meta.breadcrumbs as BreadCrumb[]) ?? []).map((b) => ({
         ...b,
-        title: this.replaceTitleTokens(b.title)
-      }))
-    }
-  }
-})
+        title: this.replaceTitleTokens(b.title),
+      }));
+    },
+  },
+});
 </script>
 
 <style></style>

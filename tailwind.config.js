@@ -23,6 +23,7 @@ module.exports = {
         4.5: "18px",
       },
       transitionProperty: {
+        width: "width",
         border: "border",
         "max-height": "max-height",
       },

@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col flex-grow">
-    <nav class="relative z-50 px-12 bg-primary">
+    <nav class="relative z-50 md:px-12 bg-primary">
       <div class="px-4 mx-auto sm:px-6 lg:px-8">
         <div class="flex items-center justify-between h-14">
           <div class="flex items-center">
@@ -278,13 +278,13 @@
       </div>
     </nav>
     <header
-      class="sticky top-0 z-50 px-12 bg-indigo-100 shadow-md  bg-opacity-70 backdrop-blur-sm backdrop-filter"
+      class="sticky top-0 z-50 bg-indigo-100 shadow-md  md:px-12 bg-opacity-70 backdrop-blur-sm backdrop-filter"
     >
       <div class="flex items-center px-4 py-4 mx-auto sm:px-6 lg:px-8">
         <!-- <h1 class="text-3xl font-bold text-gray-900">
           Dashboard
         </h1> -->
-        <div class="flex items-center space-x-6">
+        <div class="flex flex-col md:items-center md:space-x-6 md:flex-row">
           <h2 class="mb-0">
             {{ routeTitle }}
           </h2>
@@ -297,7 +297,7 @@
         <div id="main-student-header-right" class="ml-auto"></div>
       </div>
     </header>
-    <main class="flex-grow px-12 bg-white">
+    <main class="flex-grow px-4 bg-white md:px-12">
       <div class="h-full py-6 mx-auto sm:px-5 lg:px-8">
         <ErrorView v-if="!!$store.state.shared.pageWideErrorData"></ErrorView>
         <router-view v-else />

@@ -1,11 +1,28 @@
 <template>
-  <div class="flex flex-no-wrap flex-grow">
+  <div class="relative flex flex-col flex-no-wrap flex-grow md:flex-row">
+    <div
+      @click="showMobileSidebar = false"
+      class="absolute z-50 w-full h-full opacity-50 bg-dark"
+      v-if="showMobileSidebar"
+    ></div>
     <!-- bg-gray-500 -->
+    <nav
+      class="flex items-center w-full px-4 py-2  shadow-elevation-2 md:hidden bg-primary"
+    >
+      <img class="w-32" src="../../../public/unipi-logo.svg" />
+      <Btn
+        :variant="'icon'"
+        :outline="true"
+        class="ml-auto"
+        @click="showMobileSidebar = true"
+        ><span class="material-icons-outlined text-lightText"> menu </span></Btn
+      >
+    </nav>
     <!-- Sidebar starts -->
     <!-- FIXME review shadow here and in the other two spots in this file -->
     <div
       style="box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3)"
-      class="flex-col justify-between ease-in-out w-96 md:w-60 bg-primary"
+      class="flex-col justify-between hidden ease-in-out  w-96 md:block md:w-60 bg-primary"
       id="mobile-nav"
     >
       <div
@@ -108,8 +125,76 @@
       </div>-->
     </div>
     <!--Mobile responsive sidebar-->
+    <div
+      style="z-index: 99999"
+      class="fixed flex-col justify-between block w-9/12 h-full overflow-y-auto transition-transform duration-300 ease-in-out transform  md:hidden bg-primary"
+      id="mobile-nav"
+      :class="{
+        '-translate-x-full': !showMobileSidebar,
+        'translate-x-0 shadow-all-around': showMobileSidebar,
+      }"
+    >
+      <div class="fixed w-full h-full px-2">
+        <div class="flex items-center w-full mt-4">
+          <img class="mx-auto w-36" src="../../../public/unipi-logo.svg" />
+        </div>
+        <div
+          v-if="$store.getters['shared/isAuthenticated']"
+          class="flex items-center justify-center w-full mx-auto mt-8 mb-4 space-x-1 text-sm  text-light"
+        >
+          <p>{{ $store.getters["shared/email"] }}</p>
+          <Btn @click="logOut()" :variant="'icon'" :outline="true"
+            ><span class="text-lg text-lightText material-icons-outlined">
+              logout
+            </span></Btn
+          >
+        </div>
+        <ul class="flex flex-col w-full h-full mt-6">
+          <router-link
+            class="relative my-1 overflow-hidden rounded-md"
+            @mousedown="onRouteMouseDown"
+            v-for="(option, index) in allowedSidebarOptions"
+            :key="'sidebar-' + option.label"
+            :to="{ name: option.routeName }"
+            :class="{
+              'mt-auto mb-44': false && index == sidebarOptions.length - 1,
+            }"
+          >
+            <li
+              :id="'sidebar-option-' + index"
+              class="
+                flex
+                items-center
+                justify-between
+                w-full
+                px-3
+                md:px-2
+                py-2.5
+                rounded-md
+                cursor-pointer
+                hover:transition-colors
+                text-lightText
+                hover:bg-primary-dark hover:duration-100
+              "
+              :class="{
+                'bg-primary-dark pointer-events-none': isRouteActive(option),
+              }"
+            >
+              <div class="flex items-center space-x-2.5">
+                <span
+                  class="text-2xl text-gray-200  material-icons-outlined opacity-70"
+                >
+                  {{ option.icon }}
+                </span>
+                <span class="ml-4 md:inline">{{ option.label }}</span>
+              </div>
+            </li>
+          </router-link>
+        </ul>
+      </div>
+    </div>
     <!-- Sidebar ends -->
-    <div class="flex flex-col w-10/12 px-4 py-6 mx-auto md:w-4/5">
+    <div class="flex flex-col w-full px-4 py-6 mx-auto md:w-4/5">
       <h1 class="">
         {{ routeTitle }}
       </h1>
@@ -144,6 +229,11 @@ import { redirectToMainView } from "@/utils";
 
 export default defineComponent({
   name: "MainTeacher",
+  watch: {
+    $route() {
+      this.showMobileSidebar = false;
+    },
+  },
   mounted() {
     // TODO this is called before courses have been retrieved, you should probably do this check in App.vue if the route has a meta flag
     this.hasAnyPrivileges();
@@ -155,7 +245,7 @@ export default defineComponent({
   },
   data() {
     return {
-      moved: true,
+      showMobileSidebar: false,
     };
   },
   mixins: [courseIdMixin, eventIdMixin, coursePrivilegeMixin],
