@@ -229,7 +229,7 @@ export const actions = {
 
     commit("setEditingEventTemplateRuleClause", {
       ruleId,
-      clause: newClause,
+      payload: newClause,
     });
     return newClause;
   },

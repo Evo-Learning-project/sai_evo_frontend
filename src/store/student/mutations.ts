@@ -78,7 +78,6 @@ export const mutations = {
     const targetRule = state.editingEvent?.template?.rules.find(
       (r: EventTemplateRule) => r.id == ruleId
     ) as EventTemplateRule;
-    console.log("target rule", targetRule, ruleId, payload);
     const targetClause = targetRule.clauses?.find((c) => c.id == payload.id);
     if (targetClause) {
       // updating existing clause
