@@ -5,12 +5,12 @@
     <!-- FIXME review shadow here and in the other two spots in this file -->
     <div
       style="box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3)"
-      class="flex-col justify-between ease-in-out  w-96 sm:relative md:w-60 bg-primary"
+      class="flex-col justify-between ease-in-out w-96 md:w-60 bg-primary"
       id="mobile-nav"
     >
       <div
         id="openSideBar"
-        class="absolute z-40 flex items-center justify-center w-10 h-10 mt-16 -mr-10 rounded-tr rounded-br shadow cursor-pointer  left-28 top-4 text-lightText bg-primary md:hidden"
+        class="absolute z-40 flex items-center justify-center hidden w-10 h-10 mt-16 -mr-10 rounded-tr rounded-br shadow cursor-pointer  left-28 top-4 text-lightText bg-primary md:hidden"
         @click="sidebarHandler(true)"
       >
         <span class="material-icons-outlined"> cancel </span>
@@ -54,8 +54,10 @@
                 flex
                 items-center
                 justify-between
-                w-full
-                px-2
+                w-max
+                md:w-full
+                px-3
+                md:px-2
                 py-2.5
                 rounded-md
                 cursor-pointer
@@ -73,7 +75,7 @@
                 >
                   {{ option.icon }}
                 </span>
-                <span class="ml-4">{{ option.label }}</span>
+                <span class="hidden ml-4 md:inline">{{ option.label }}</span>
               </div>
             </li>
           </router-link>
@@ -107,7 +109,7 @@
     </div>
     <!--Mobile responsive sidebar-->
     <!-- Sidebar ends -->
-    <div class="flex flex-col w-11/12 px-4 py-6 mx-auto md:w-4/5">
+    <div class="flex flex-col w-10/12 px-4 py-6 mx-auto md:w-4/5">
       <h1 class="">
         {{ routeTitle }}
       </h1>
