@@ -62,10 +62,11 @@
         ></AbstractEventParticipationSlot>
       </div>
     </div>
-    <div v-else>
-      <SkeletonCard :borderLess="true"></SkeletonCard>
-      <SkeletonCard :borderLess="true"></SkeletonCard>
-      <SkeletonCard :borderLess="true"></SkeletonCard>
+    <div class="px-6 py-6 rounded-md bg-gray-50" v-else>
+      <SlotSkeleton></SlotSkeleton>
+      <SlotSkeleton></SlotSkeleton>
+      <SlotSkeleton></SlotSkeleton>
+      <SlotSkeleton></SlotSkeleton>
     </div>
   </div>
 </template>
@@ -76,10 +77,10 @@ import { defineComponent } from "@vue/runtime-core";
 import AbstractEventParticipationSlot from "@/components/shared/AbstractEventParticipationSlot.vue";
 
 import { createNamespacedHelpers } from "vuex";
-import SkeletonCard from "../../components/ui/SkeletonCard.vue";
 import Card from "@/components/ui/Card.vue";
 import { EventParticipationState, EventState } from "@/models";
 import Timestamp from "@/components/ui/Timestamp.vue";
+import SlotSkeleton from "@/components/ui/skeletons/SlotSkeleton.vue";
 const { mapState, mapActions } = createNamespacedHelpers("student");
 
 export default defineComponent({
@@ -104,7 +105,12 @@ export default defineComponent({
       default: false,
     },
   },
-  components: { AbstractEventParticipationSlot, SkeletonCard, Card, Timestamp },
+  components: {
+    AbstractEventParticipationSlot,
+    Card,
+    Timestamp,
+    SlotSkeleton,
+  },
   async created() {
     this.firstLoading = true;
     await this.getEventParticipation({
