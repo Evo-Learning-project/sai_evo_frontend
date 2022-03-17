@@ -149,7 +149,7 @@ export default defineComponent({
       if (!this.hasAnyPrivileges() && this.courseId) {
         this.redirectToMainView();
       }
-    }, 3000);
+    }, 1500);
   },
   data() {
     return {

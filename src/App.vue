@@ -70,7 +70,7 @@ export default defineComponent({
     Notification,
   },
   async created() {
-    if (this.$route.name && this.$route.name !== "Login") {
+    if (this.$store.getters["shared/isAuthenticated"]) {
       await this.$store.dispatch("shared/getCourses");
     }
     window.addEventListener("beforeunload", this.beforeWindowUnload);
