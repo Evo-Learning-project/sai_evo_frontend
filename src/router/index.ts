@@ -37,6 +37,7 @@ const routes: Array<RouteRecordRaw> = [
     path: "/",
     name: "Main",
     component: MainStudent,
+    redirect: { name: "Login" },
     meta: {
       routeTitle: _("headings.login"),
       hideBreadcrumbs: true,
