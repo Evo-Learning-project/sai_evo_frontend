@@ -156,6 +156,7 @@ export const it = {
     teacher_comment: "Commento del docente",
     out_of: "su",
     save: "Salva",
+    solution: "Soluzione",
   },
   cloud: {
     saving: "Salvataggio in corso...",

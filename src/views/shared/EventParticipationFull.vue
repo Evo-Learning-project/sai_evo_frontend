@@ -89,7 +89,7 @@ export default defineComponent({
   props: {
     showScores: {
       type: Boolean,
-      default: false,
+      default: true,
     },
     allowEditScores: {
       type: Boolean,

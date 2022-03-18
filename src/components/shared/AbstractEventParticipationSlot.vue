@@ -108,7 +108,7 @@
 
         <!-- show assessment-->
         <div
-          class="px-6 py-3 mb-auto rounded  md:w-1/2 bg-light shadow-elevation-2 bg-opacity-70"
+          class="px-6 py-3 mb-auto rounded  md:self-start md:w-1/2 bg-light shadow-elevation-2 bg-opacity-70"
           v-if="showAssessment"
         >
           <!-- style="background-color: #e6f4ea; border: 1px solid #dadce0" -->
@@ -129,6 +129,13 @@
             {{ $t("misc.teacher_comment") }}:
           </p>
           <p v-html="modelValue.comment"></p>
+          <p
+            v-if="(modelValue.exercise.solution?.length ?? 0) > 0"
+            class="mt-2 text-muted"
+          >
+            {{ $t("misc.solution") }}:
+          </p>
+          <p v-html="modelValue.exercise.solution"></p>
         </div>
 
         <!-- controls to assess -->
@@ -292,16 +299,17 @@ export default defineComponent({
       return (this.exercise.choices as ExerciseChoice[]).map((c) => ({
         value: c.id,
         content: c.text,
-        ...(this.showScores && {
-          description:
-            c.score +
-            " " +
-            _(
-              `exercise.choice_score_word_${
-                c.score == 1 || c.score == -1 ? "singular" : "plural"
-              }`
-            ),
-        }),
+        ...(this.showScores &&
+          ((c.score ?? "") + "").length > 0 && {
+            description:
+              c.score +
+              " " +
+              _(
+                `exercise.choice_score_word_${
+                  c.score == 1 || c.score == -1 ? "singular" : "plural"
+                }`
+              ),
+          }),
       }));
     },
     selectedChoicesProxy: {
