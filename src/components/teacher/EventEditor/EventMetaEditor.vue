@@ -1,8 +1,8 @@
 <template>
   <div>
-    <div class="flex mt-6 mb-6 space-x-4">
+    <div class="flex mt-6 mb-6 md:space-x-4 md:flex-row flex-col md:space-y-0 space-y-4">
       <TextInput
-        class="w-full mr-auto"
+        class="w-full md:mr-auto"
         :modelValue="modelValue.name"
         @update:modelValue="emitUpdate('name', $event)"
         >{{ $t("event_editor.name") }}</TextInput
@@ -12,9 +12,7 @@
         :modelValue="modelValue.begin_timestamp"
         ref="beginTimestampElement"
         @open="onBeginTimestampOpen()"
-        @update:modelValue="
-          isDraft ? emitUpdate('begin_timestamp', $event) : () => null
-        "
+        @update:modelValue="isDraft ? emitUpdate('begin_timestamp', $event) : () => null"
         >{{ $t("event_editor.begin_timestamp") }}</CalendarInput
       >
       <CalendarInput
@@ -47,11 +45,7 @@
         >{{ $t("event_editor.allow_going_back_label") }}</toggle
       >
     </div>
-    <Dialog
-      @yes="showDialog = false"
-      :showDialog="showDialog"
-      :confirmOnly="true"
-    >
+    <Dialog @yes="showDialog = false" :showDialog="showDialog" :confirmOnly="true">
       <template v-slot:body>
         {{ $t("event_editor.cannot_change_timestamp") }}
       </template>

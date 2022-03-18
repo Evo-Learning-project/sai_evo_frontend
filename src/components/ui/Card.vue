@@ -1,15 +1,14 @@
 <template>
   <div
-    tabindex="0"
+    :tabindex="focusable ? 0 : false"
     class="flex border-gray-300 rounded card"
     :class="{
       'md:px-3.5 md:py-3 px-2 py-2.5': size == 'sm',
-      'px-2.5 py-5  md:px-5': size == 'default',
+      'px-2.5 py-5 md:px-5': size == 'default',
       'my-4': size == 'default' && !marginLess,
       border: !highlighted,
       'border-2': highlighted,
-      'transition-shadow duration-75 ease-linear hover-shadow-elevation':
-        hoverable,
+      'transition-shadow duration-75 ease-linear hover-shadow-elevation': hoverable,
       'bg-light bg-opacity-80': filled,
     }"
   >
@@ -32,7 +31,7 @@
     <div
       v-if="$slots.side"
       class="h-full"
-      :class="{ 'w-40': size == 'default', 'w-10': size == 'sm' }"
+      :class="{ 'w-40': size == 'default', 'md:w-10 w-8': size == 'sm' }"
     >
       <slot name="side"></slot>
     </div>
@@ -58,6 +57,10 @@ export default defineComponent({
       default: false,
     },
     borderLess: {
+      type: Boolean,
+      default: false,
+    },
+    focusable: {
       type: Boolean,
       default: false,
     },

@@ -1,10 +1,12 @@
 <template>
   <div class="relative flex flex-col flex-no-wrap flex-grow md:flex-row">
-    <div
-      @click="showMobileSidebar = false"
-      class="absolute z-50 w-full h-full opacity-50 bg-dark"
-      v-if="showMobileSidebar"
-    ></div>
+    <transition name="fade"
+      ><div
+        @click="showMobileSidebar = false"
+        class="absolute z-50 w-full h-full opacity-50 bg-dark"
+        v-show="showMobileSidebar"
+      ></div
+    ></transition>
     <!-- bg-gray-500 -->
     <nav
       class="flex items-center w-full px-4 py-2  shadow-elevation-2 md:hidden bg-primary"

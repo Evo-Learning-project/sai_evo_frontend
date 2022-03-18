@@ -13,7 +13,7 @@
         <div class="relative">
           <div class="flex flex-wrap items-center">
             <h5>{{ previewTitle }}</h5>
-            <div v-if="showTags" class="flex ml-2 space-x-1">
+            <div v-if="showTags" class="flex md:ml-2 flex-wrap space-x-1">
               <Tag
                 v-for="(tag, index) in tags"
                 :key="elementId + '-tag-' + index"

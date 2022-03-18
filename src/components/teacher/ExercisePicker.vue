@@ -6,7 +6,7 @@
       :full="false"
     ></ExerciseSearchFilters>
 
-    <div v-if="!firstLoading" class="grid grid-cols-2 gap-5">
+    <div v-if="!firstLoading" class="grid md:grid-cols-2 gap-5">
       <MinimalExercisePreview
         :selectable="true"
         :selectionDisabled="
@@ -127,9 +127,7 @@ export default defineComponent({
       return !this.allowPickingDraft && exercise.state == ExerciseState.DRAFT;
     },
     isSelectedInAnotherRule(exercise: Exercise): boolean {
-      return (
-        this.alreadySelected.includes(exercise.id) && !this.isSelected(exercise)
-      );
+      return this.alreadySelected.includes(exercise.id) && !this.isSelected(exercise);
     },
     onSelection(exercise: Exercise) {
       const index = this.modelValue.findIndex((e) => e == exercise.id);

@@ -43,7 +43,7 @@
         <div>
           <div
             v-if="!localLoading"
-            :class="[ruleExercises.length > 1 ? 'grid grid-cols-2 gap-2' : '']"
+            :class="[ruleExercises.length > 1 ? 'grid md:grid-cols-2 gap-2' : '']"
           >
             <MinimalExercisePreview
               v-for="exercise in ruleExercises"
@@ -67,7 +67,7 @@
         <p class="mb-2 text-muted">
           {{ $t("event_template_rule_editor.tag_based_description") }}
         </p>
-        <div class="flex space-x-3">
+        <div class="flex flex-wrap space-x-3">
           <div
             v-for="(clause, index) in modelValue.clauses"
             :key="'clause-preview-' + clause.id"
@@ -99,9 +99,9 @@
       @yes="onCloseDialog()"
     >
       <template v-if="modelValue.rule_type != null" v-slot:backButton>
-        <btn :variant="'light'" :size="'sm'" class="" @click="setRuleMode(null)">
+        <Btn :variant="'light'" :size="'sm'" class="" @click="setRuleMode(null)">
           <span class="material-icons-outlined"> arrow_back </span>
-        </btn>
+        </Btn>
       </template>
       <template v-slot:title>
         {{
@@ -113,11 +113,11 @@
       <template v-slot:body>
         <div v-if="modelValue.rule_type == null">
           <p>{{ $t("event_template_rule_editor.mode_selection_text") }}</p>
-          <div class="grid grid-cols-3 mt-6">
+          <div class="grid md:grid-cols-3 grid-cols-1 mt-6">
             <Btn
               @click="setRuleMode(EventTemplateRuleType.ID_BASED, true)"
               :variant="'transparent'"
-              class="py-5 pl-4 border-r"
+              class="py-5 pl-4 md:border-r border-b md:border-b-0"
             >
               <template v-slot:content>
                 <h4 class="text-dark">
@@ -131,7 +131,7 @@
             <Btn
               @click="setRuleMode(EventTemplateRuleType.ID_BASED, false)"
               :variant="'transparent'"
-              class="pl-4 pr-3 border-r"
+              class="pl-4 md:py-0 py-4 pr-3 md:border-r border-b md:border-b-0"
             >
               <template v-slot:content>
                 <h4 class="text-dark">
@@ -145,7 +145,7 @@
             <Btn
               @click="setRuleMode(EventTemplateRuleType.TAG_BASED)"
               :variant="'transparent'"
-              class="pl-8"
+              class="pl-8 md:pt-0 pt-4"
             >
               <template v-slot:content>
                 <h4 class="text-dark">

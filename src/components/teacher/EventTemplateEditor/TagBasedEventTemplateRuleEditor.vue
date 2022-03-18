@@ -3,7 +3,7 @@
     <p class="mb-6 text-muted" v-if="showTeacherIntroductionText">
       {{ $t("event_template_rule_editor.tag_based_introduction") }}
     </p>
-    <div class="flex">
+    <div class="md:flex-row flex flex-col md:space-y-0 space-y-4">
       <div class="flex flex-col w-full">
         <div
           v-for="(clause, index) in modelValue"
@@ -12,16 +12,12 @@
         >
           <p v-if="index === 0" class="mb-2">
             {{ $t("event_template_rule_editor.tag_based_select_exercises") }}
-            <strong>{{
-              $t("event_template_rule_editor.tag_based_at_least_one")
-            }}</strong>
+            <strong>{{ $t("event_template_rule_editor.tag_based_at_least_one") }}</strong>
             {{ $t("event_template_rule_editor.tag_based_among") }}
           </p>
           <p v-else>
             {{ $t("event_template_rule_editor.tag_based_and") }}
-            <strong>{{
-              $t("event_template_rule_editor.tag_based_at_least_one")
-            }}</strong>
+            <strong>{{ $t("event_template_rule_editor.tag_based_at_least_one") }}</strong>
             {{ $t("event_template_rule_editor.tag_based_among") }}
           </p>
           <TagInput
@@ -36,13 +32,11 @@
         <div
           v-if="allowCreateMoreClauses"
           @click="onAddClause"
-          class="mt-2 transition-opacity duration-75 opacity-50 cursor-pointer  hover:opacity-100"
+          class="mt-2 transition-opacity duration-75 opacity-50 cursor-pointer hover:opacity-100"
         >
           <p>
             {{ $t("event_template_rule_editor.tag_based_and") }}
-            <strong>{{
-              $t("event_template_rule_editor.tag_based_at_least_one")
-            }}</strong>
+            <strong>{{ $t("event_template_rule_editor.tag_based_at_least_one") }}</strong>
             {{ $t("event_template_rule_editor.tag_based_among") }}
           </p>
           <TagInput
@@ -55,7 +49,7 @@
       </div>
       <div
         v-if="showPreview"
-        class="relative flex w-9/12 px-5 py-5 ml-16 border border-gray-200 rounded-md  max-h-64 bg-gray-50"
+        class="relative flex md:w-9/12 px-5 py-5 md:ml-16 border border-gray-200 rounded-md md:max-h-64 bg-gray-50"
       >
         <SkeletonCard
           v-if="false && localLoading"
@@ -65,7 +59,7 @@
         <Spinner
           :size="'xl'"
           :fast="true"
-          class="absolute transform -translate-x-1/2 -translate-y-1/2  top-1/2 left-1/2"
+          class="absolute transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
           v-if="localLoading"
         ></Spinner>
         <div
@@ -86,9 +80,7 @@
           ></MinimalExercisePreview>
           <div v-else class="flex flex-col items-center my-auto opacity-60">
             <span class="material-icons-outlined">error_outline</span>
-            <p>
-              Non ci sono esercizi con i tag richiesti: modifica le condizioni
-            </p>
+            <p>Non ci sono esercizi con i tag richiesti: modifica le condizioni</p>
           </div>
         </div>
       </div>
