@@ -3,7 +3,25 @@
     <p class="mb-6 text-muted" v-if="showTeacherIntroductionText">
       {{ $t("event_template_rule_editor.tag_based_introduction") }}
     </p>
-    <div class="md:flex-row flex flex-col md:space-y-0 space-y-4">
+    <div
+      class="flex flex-col mb-12"
+      v-if="showTeacherIntroductionText && tags.length === 0"
+    >
+      <p class="mb-2 text-muted text-danger-dark">
+        {{ $t("event_template_rule_editor.no_tags") }}
+      </p>
+      <router-link class="mx-auto link" :to="{ name: 'CourseExercises' }"
+        ><Btn :variant="'primary-borderless'">{{
+          $t("exercise_picker.go_to_exercises")
+        }}</Btn></router-link
+      >
+    </div>
+    <div
+      :class="{
+        'opacity-50 cursor-not-allowed pointer-events-none': tags.length === 0,
+      }"
+      class="flex flex-col space-y-4 md:flex-row md:space-y-0"
+    >
       <div class="flex flex-col w-full">
         <div
           v-for="(clause, index) in modelValue"
@@ -12,12 +30,16 @@
         >
           <p v-if="index === 0" class="mb-2">
             {{ $t("event_template_rule_editor.tag_based_select_exercises") }}
-            <strong>{{ $t("event_template_rule_editor.tag_based_at_least_one") }}</strong>
+            <strong>{{
+              $t("event_template_rule_editor.tag_based_at_least_one")
+            }}</strong>
             {{ $t("event_template_rule_editor.tag_based_among") }}
           </p>
           <p v-else>
             {{ $t("event_template_rule_editor.tag_based_and") }}
-            <strong>{{ $t("event_template_rule_editor.tag_based_at_least_one") }}</strong>
+            <strong>{{
+              $t("event_template_rule_editor.tag_based_at_least_one")
+            }}</strong>
             {{ $t("event_template_rule_editor.tag_based_among") }}
           </p>
           <TagInput
@@ -32,11 +54,13 @@
         <div
           v-if="allowCreateMoreClauses"
           @click="onAddClause"
-          class="mt-2 transition-opacity duration-75 opacity-50 cursor-pointer hover:opacity-100"
+          class="mt-2 transition-opacity duration-75 opacity-50 cursor-pointer  hover:opacity-100"
         >
           <p>
             {{ $t("event_template_rule_editor.tag_based_and") }}
-            <strong>{{ $t("event_template_rule_editor.tag_based_at_least_one") }}</strong>
+            <strong>{{
+              $t("event_template_rule_editor.tag_based_at_least_one")
+            }}</strong>
             {{ $t("event_template_rule_editor.tag_based_among") }}
           </p>
           <TagInput
@@ -49,7 +73,7 @@
       </div>
       <div
         v-if="showPreview"
-        class="relative flex md:w-9/12 px-5 py-5 md:ml-16 border border-gray-200 rounded-md md:max-h-64 bg-gray-50"
+        class="relative flex px-5 py-5 border border-gray-200 rounded-md  md:w-9/12 md:ml-16 md:max-h-64 bg-gray-50"
       >
         <SkeletonCard
           v-if="false && localLoading"
@@ -59,7 +83,7 @@
         <Spinner
           :size="'xl'"
           :fast="true"
-          class="absolute transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
+          class="absolute transform -translate-x-1/2 -translate-y-1/2  top-1/2 left-1/2"
           v-if="localLoading"
         ></Spinner>
         <div
@@ -80,7 +104,9 @@
           ></MinimalExercisePreview>
           <div v-else class="flex flex-col items-center my-auto opacity-60">
             <span class="material-icons-outlined">error_outline</span>
-            <p>Non ci sono esercizi con i tag richiesti: modifica le condizioni</p>
+            <p>
+              Non ci sono esercizi con i tag richiesti: modifica le condizioni
+            </p>
           </div>
         </div>
       </div>
@@ -99,10 +125,11 @@ import { createNamespacedHelpers } from "vuex";
 import MinimalExercisePreview from "../ExerciseEditor/MinimalExercisePreview.vue";
 import SkeletonCard from "@/components/ui/SkeletonCard.vue";
 import Spinner from "@/components/ui/Spinner.vue";
+import Btn from "@/components/ui/Btn.vue";
 const { mapState } = createNamespacedHelpers("shared");
 
 export default defineComponent({
-  components: { TagInput, MinimalExercisePreview, SkeletonCard, Spinner },
+  components: { TagInput, MinimalExercisePreview, SkeletonCard, Spinner, Btn },
   name: "TagBasedEventTemplateRuleEditor",
   async created() {
     if (this.modelValue.length === 0) {

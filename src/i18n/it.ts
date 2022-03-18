@@ -260,6 +260,9 @@ export const it = {
       "Non puoi usare un esercizio in stato di bozza in un esame",
     already_selected:
       "Questo esercizio è già stato selezionato in un altro slot",
+    go_to_exercises: "Vai agli esercizi",
+    no_available_exercises:
+      "Non hai ancora creato esercizi per questo corso. Dalla pagina degli esercizi, creane almeno uno per poter popolare questo slot. Ricordati di rimuovere lo stato di bozza dagli esercizi che vuoi inserire in un esame!",
   },
   event_template_rule_editor: {
     exercise_number: "Slot",
@@ -290,6 +293,8 @@ export const it = {
     tag_based_and: "... e",
     tag_based_add_condition: "Aggiungi condizione",
     eligible_exercises: "Esercizi che soddisfano queste condizioni:",
+    no_tags:
+      "Non puoi utilizzare questa funzionalità in quanto non hai ancora creato tag per questo corso. Dalla pagina degli esercizi, puoi aggiungere tag agli esercizi già esistenti, o crearne di nuovi.",
   },
   event_editor: {
     name: "Nome",

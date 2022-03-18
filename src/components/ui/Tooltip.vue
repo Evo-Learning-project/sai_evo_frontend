@@ -9,7 +9,7 @@
       >
         help_outline
       </span>
-      <span class="z-50 max-w-xs tooltip-text tooltip-right">{{
+      <span class="z-50 max-w-xs md:max-w-max tooltip-text tooltip-right">{{
         helpText
       }}</span>
     </div>

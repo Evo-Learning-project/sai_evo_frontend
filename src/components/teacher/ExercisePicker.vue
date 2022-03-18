@@ -6,7 +6,7 @@
       :full="false"
     ></ExerciseSearchFilters>
 
-    <div v-if="!firstLoading" class="grid md:grid-cols-2 gap-5">
+    <div v-if="!firstLoading" class="grid gap-5 md:grid-cols-2">
       <MinimalExercisePreview
         :selectable="true"
         :selectionDisabled="
@@ -33,6 +33,19 @@
       <skeleton-card :short="true"></skeleton-card>
       <skeleton-card :short="true"></skeleton-card>
       <skeleton-card :short="true"></skeleton-card>
+    </div>
+    <div
+      v-if="!firstLoading && exercises.length === 0"
+      class="flex flex-col space-y-4"
+    >
+      <p class="text-muted">
+        {{ $t("exercise_picker.no_available_exercises") }}
+      </p>
+      <router-link class="mx-auto link" :to="{ name: 'CourseExercises' }"
+        ><Btn :variant="'primary-borderless'">{{
+          $t("exercise_picker.go_to_exercises")
+        }}</Btn></router-link
+      >
     </div>
     <VueEternalLoading :load="onLoadMore" v-model="isInitialInfiniteLoad">
       <template #loading>
@@ -92,7 +105,7 @@ export default defineComponent({
     VueEternalLoading,
     Spinner,
     ExerciseSearchFilters,
-    //Btn
+    Btn,
   },
   data() {
     return {
@@ -127,7 +140,9 @@ export default defineComponent({
       return !this.allowPickingDraft && exercise.state == ExerciseState.DRAFT;
     },
     isSelectedInAnotherRule(exercise: Exercise): boolean {
-      return this.alreadySelected.includes(exercise.id) && !this.isSelected(exercise);
+      return (
+        this.alreadySelected.includes(exercise.id) && !this.isSelected(exercise)
+      );
     },
     onSelection(exercise: Exercise) {
       const index = this.modelValue.findIndex((e) => e == exercise.id);
