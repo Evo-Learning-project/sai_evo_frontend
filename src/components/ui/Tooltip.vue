@@ -13,9 +13,16 @@
       <div v-else>
         <slot> </slot>
       </div>
-      <span class="z-50 max-w-xs md:max-w-max tooltip-text tooltip-right">{{
-        helpText
-      }}</span>
+      <span
+        class="z-50 max-w-xs md:max-w-max tooltip-text"
+        :class="{
+          'tooltip-right': placement === 'right',
+          'tooltip-bottom': placement === 'bottom',
+          'tooltip-top': placement === 'top',
+          'tooltip-left': placement === 'left',
+        }"
+        >{{ helpText }}</span
+      >
     </div>
   </div>
 </template>
@@ -34,6 +41,10 @@ export default defineComponent({
       type: String,
       default: "",
       required: false,
+    },
+    placement: {
+      type: String as PropType<"right" | "left" | "top" | "bottom">,
+      default: "right",
     },
   },
   methods: {},

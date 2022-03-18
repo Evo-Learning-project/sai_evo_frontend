@@ -252,13 +252,13 @@
     }
 
     .tooltip-right {
-      @apply -top-1 left-full ml-1.5
+      @apply md:-top-1 -top-14 left-full ml-1.5
     }
 
     .tooltip-right::before {
       content: ' ';
       border-color: transparent rgba(17, 24, 39, 0.6) transparent transparent !important;
-      @apply absolute -mt-1 border-4 border-transparent border-solid top-1/2 right-full;
+      @apply absolute -mt-1 border-4 border-transparent border-solid md:top-1/2 top-3/4 right-full;
     }
 
     .tooltip-bottom::after {

@@ -83,7 +83,11 @@
                 done
               </span></Btn
             >
-            <Tooltip v-else :textValue="selectButtonTitle">
+            <Tooltip
+              v-else
+              :textValue="selectButtonTitle"
+              :placement="'bottom'"
+            >
               <Btn
                 :size="'xs'"
                 :variant="'success-borderless'"
