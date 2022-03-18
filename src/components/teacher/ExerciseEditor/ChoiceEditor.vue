@@ -1,5 +1,7 @@
 <template>
-  <div class="flex flex-col py-3 my-3 space-y-4 md:space-y-0 md:flex-row">
+  <div
+    class="flex flex-col py-3 my-3 space-y-4  md:space-y-0 md:flex-row md:items-start"
+  >
     <span
       class="my-auto mr-2 text-lg cursor-move  material-icons-outlined opacity-70"
     >
