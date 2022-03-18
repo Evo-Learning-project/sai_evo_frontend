@@ -25,7 +25,9 @@ export const logOut = (): void => {
 };
 
 export const redirectToMainView = (): void => {
-  if ((store.state as { shared: SharedState }).shared.user.is_teacher) {
+  if (router.currentRoute.value.query.redirect) {
+    router.push(router.currentRoute.value.query.redirect as string);
+  } else if ((store.state as { shared: SharedState }).shared.user.is_teacher) {
     router.push("/teacher/courses");
   } else {
     router.push("/student/courses");

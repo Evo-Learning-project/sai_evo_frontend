@@ -237,16 +237,21 @@ const router = createRouter({
   routes,
 });
 
-router.beforeEach((to, from) => {
+router.beforeEach((to, from, next) => {
   const sharedState = (store.state as { shared: SharedState }).shared;
 
-  if (store.getters.unsavedChanges) {
+  if (store.getters["shared/unsavedChanges"]) {
     if (!confirm(_("misc.confirm_exiting_unsaved_changes"))) {
       return false;
     } else {
       sharedState.saving = false;
       sharedState.savingError = false;
     }
+  }
+  if (!store.getters["shared/isAuthenticated"] && to.name !== "Login") {
+    next({ name: "Login", query: { redirect: to.fullPath } });
+  } else {
+    next();
   }
 });
 
