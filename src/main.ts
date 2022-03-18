@@ -13,6 +13,9 @@ import VueClipboard from "vue3-clipboard";
 
 import Vue3Tour from "vue3-tour";
 
+import * as Sentry from "@sentry/vue";
+import { BrowserTracing } from "@sentry/tracing";
+
 import "vue3-tour/dist/vue3-tour.css";
 import { logOut } from "./utils";
 
@@ -48,7 +51,9 @@ axios.interceptors.response.use(
   }
 );
 
-createApp(App)
+const app = createApp(App);
+
+app
   .use(GAuth, gAuthOptions)
   .use(store)
   .use(router)
@@ -60,3 +65,21 @@ createApp(App)
   })
   .use(Vue3Tour)
   .mount("#app");
+
+if (!dev) {
+  Sentry.init({
+    app,
+    dsn: "https://a254871461ce4189bc483cc527fcebb9@o1003719.ingest.sentry.io/6265941",
+    integrations: [
+      new BrowserTracing({
+        routingInstrumentation: Sentry.vueRouterInstrumentation(router),
+        tracingOrigins: ["localhost", "my-site-url.com", /^\//],
+      }),
+    ],
+    // Set tracesSampleRate to 1.0 to capture 100%
+    // of transactions for performance monitoring.
+    // We recommend adjusting this value in production
+    tracesSampleRate: 1.0,
+    logErrors: true,
+  });
+}
