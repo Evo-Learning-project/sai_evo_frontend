@@ -222,7 +222,7 @@
     }
 
     .tooltip .tooltip-text {
-      @apply absolute opacity-0 text-sm w-max bg-dark text-light px-2 py-1.5 rounded-md transition-opacity duration-100 ease-in-out shadow-md bg-opacity-60
+      @apply absolute opacity-0 text-sm w-max bg-dark text-light px-2 py-1.5 rounded-md transition-opacity duration-100 ease-in-out shadow-md bg-opacity-75 md:bg-opacity-60
     }
 
     .tooltip-text-force {

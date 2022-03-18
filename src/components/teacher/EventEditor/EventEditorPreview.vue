@@ -61,14 +61,6 @@
               ></router-link
             >
           </div>
-          <CopyToClipboard
-            class="mr-1"
-            v-if="!isDraft && !hasEnded"
-            :value="permalink"
-            :iconOnly="true"
-            :title="$t('event_preview.copy_link')"
-            :confirmationMessage="$t('event_preview.copied_link')"
-          ></CopyToClipboard>
           <Btn
             class="mx-1"
             :variant="'danger'"
@@ -92,7 +84,7 @@
               ><span class="text-base material-icons-outlined">
                 visibility
               </span>
-              <span class="ml-1.5" v-if="!buttonIconsOnly">{{
+              <span class="ml-1.5 hidden md:inline" v-if="!buttonIconsOnly">{{
                 $t("event_preview.monitor")
               }}</span></Btn
             ></router-link
@@ -111,6 +103,14 @@
               }}</span></Btn
             ></router-link
           >
+          <CopyToClipboard
+            class="ml-1"
+            v-if="!isDraft && !hasEnded"
+            :value="permalink"
+            :iconOnly="true"
+            :title="$t('event_preview.copy_link')"
+            :confirmationMessage="$t('event_preview.copied_link')"
+          ></CopyToClipboard>
         </div>
       </div>
     </template>

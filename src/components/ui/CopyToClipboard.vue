@@ -7,24 +7,29 @@
       :outline="true"
       :variant="'icon'"
     >
-      <span class="text-xl material-icons">
-        share
-      </span>
+      <span class="text-xl material-icons"> share </span>
     </Btn>
     <span
       v-if="showFeedback"
       class="tooltip-text tooltip-bottom"
       :class="{ 'tooltip-text-force': showFeedback }"
-      >{{ confirmationMessage || $t('misc.copied') }}</span
+      >{{ confirmationMessage || $t("misc.copied") }}</span
     >
   </div>
   <div
     v-else
-    class="flex items-center px-2 py-1 border border-gray-300 rounded-md shadow-inner w-max"
+    class="flex items-center max-w-full px-2 py-1 border border-gray-300 rounded-md shadow-inner  w-max"
   >
     <div
       :title="$t('misc.copy')"
-      class="cursor-pointer hover:bg-light px-1 py-0.5 rounded-sm"
+      class="
+        cursor-pointer
+        hover:bg-light
+        px-1
+        py-0.5
+        rounded-sm
+        overflow-x-auto
+      "
       v-clipboard:copy="value"
       v-clipboard:success="onCopy"
     >
@@ -39,15 +44,13 @@
           class="h-full px-2 py-2 -mt-1 -mb-1 -mr-2 rounded-tr-md rounded-br-md"
           :variant="'transparent'"
         >
-          <span class="text-base material-icons-outlined">
-            content_copy
-          </span>
+          <span class="text-base material-icons-outlined"> content_copy </span>
         </Btn>
         <span
           v-if="showFeedback"
           class="tooltip-text tooltip-bottom"
           :class="{ 'tooltip-text-force': showFeedback }"
-          >{{ $t('misc.copied') }}</span
+          >{{ $t("misc.copied") }}</span
         >
       </div>
     </div>
@@ -55,42 +58,42 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/runtime-core'
-import Btn from './Btn.vue'
+import { defineComponent } from "@vue/runtime-core";
+import Btn from "./Btn.vue";
 
 export default defineComponent({
   components: { Btn },
-  name: 'CopyToClipboard',
+  name: "CopyToClipboard",
   props: {
     value: {
       type: String,
-      required: true
+      required: true,
     },
     iconOnly: {
       type: Boolean,
-      default: false
+      default: false,
     },
     title: {
       type: String,
-      default: ''
+      default: "",
     },
     confirmationMessage: {
       type: String,
-      default: ''
-    }
+      default: "",
+    },
   },
-  data () {
+  data() {
     return {
-      showFeedback: false
-    }
+      showFeedback: false,
+    };
   },
   methods: {
-    onCopy () {
-      this.showFeedback = true
-      setTimeout(() => (this.showFeedback = false), 2000)
-    }
-  }
-})
+    onCopy() {
+      this.showFeedback = true;
+      setTimeout(() => (this.showFeedback = false), 2000);
+    },
+  },
+});
 </script>
 
 <style></style>

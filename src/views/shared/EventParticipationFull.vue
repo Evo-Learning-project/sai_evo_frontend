@@ -17,8 +17,8 @@
         </div>
       </template></Card
     >
-    <div class="px-6 py-6 rounded-md bg-gray-50" v-if="!firstLoading">
-      <div class="flex mb-12">
+    <div class="px-2 py-6 rounded-md md:px-6 bg-gray-50" v-if="!firstLoading">
+      <div class="flex flex-col mb-12 space-y-2 md:flex-row md:space-y-0">
         <div class="" v-if="showAssessment && !firstLoading">
           <div class="px-6 py-3 rounded bg-light shadow-elevation-2">
             <h4 class="text-muted">
@@ -26,7 +26,7 @@
             </h4>
           </div>
         </div>
-        <div class="ml-auto text-sm">
+        <div class="text-sm md:ml-auto">
           <div class="flex space-x-1">
             <p class="text-muted">
               {{ $t("event_participation_page.begin_timestamp") }}:

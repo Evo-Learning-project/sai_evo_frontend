@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="w-2/5 mx-auto">
+    <div class="mx-auto md:w-2/5">
       <SegmentedControls
         v-model="currentTab"
         :options="filteredTabsOptions"
@@ -16,7 +16,11 @@
         v-else-if="currentTab === ProgrammingExerciseTabs.EDITOR"
         class="relative flex"
       >
-        <CodeEditor class="w-full" :size="'lg'" v-model="proxyModelValue"></CodeEditor>
+        <CodeEditor
+          class="w-full"
+          :size="'lg'"
+          v-model="proxyModelValue"
+        ></CodeEditor>
         <Backdrop ref="executionResultsBackdrop" v-if="!!executionResults"
           ><template v-slot:title>
             <h5>Risultato esecuzione</h5>
@@ -36,7 +40,9 @@
           v-for="(testcase, index) in exercise.testcases"
           :key="'t-' + testcase.id"
         >
-          <h4 class="mb-1">{{ $t("programming_exercise.testcase") }} {{ index + 1 }}</h4>
+          <h4 class="mb-1">
+            {{ $t("programming_exercise.testcase") }} {{ index + 1 }}
+          </h4>
           <ExerciseTestCase :test-case="testcase"></ExerciseTestCase>
         </div>
       </div>
@@ -45,7 +51,10 @@
 </template>
 
 <script lang="ts">
-import { programmingExerciseTabsOptions, ProgrammingExerciseTabs } from "@/const";
+import {
+  programmingExerciseTabsOptions,
+  ProgrammingExerciseTabs,
+} from "@/const";
 import { EventParticipationSlot, Exercise } from "@/models";
 import { defineComponent, PropType } from "@vue/runtime-core";
 import SegmentedControls from "../ui/SegmentedControls.vue";

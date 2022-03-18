@@ -1,16 +1,18 @@
 <template>
   <Card :marginLess="true">
     <template v-slot:header>
-      <div class="flex items-center ">
-        <h4>{{ previewTitle }}</h4>
-        <div class="flex ml-2 space-x-1">
+      <div class="flex flex-wrap md:items-center">
+        <h4 class="order-1 mr-2 md:mr-0">{{ previewTitle }}</h4>
+        <div
+          class="flex flex-wrap order-3 mt-1 space-x-1  md:mt-0 md:ml-2 md:order-2"
+        >
           <Tag
             v-for="(tag, index) in tags"
             :key="elementId + '-tag-' + index"
             :tag="tag"
           ></Tag>
         </div>
-        <div class="my-auto ml-4 chip ">
+        <div class="order-2 my-auto md:ml-4 md:order-3 chip">
           <div class="flex items-center">
             <MultiIcon class="w-6" :icons="exerciseStateIcons"></MultiIcon>
             <p v-html="$t('exercise_states.' + exercise.state)"></p>
@@ -28,57 +30,57 @@
 </template>
 
 <script lang="ts">
-import { getTranslatedString as _ } from '@/i18n'
-import { v4 as uuid4 } from 'uuid'
+import { getTranslatedString as _ } from "@/i18n";
+import { v4 as uuid4 } from "uuid";
 
-import Card from '@/components/ui/Card.vue'
-import { Exercise, ExerciseState } from '@/models'
-import { defineComponent, PropType } from '@vue/runtime-core'
-import Tag from '@/components/ui/Tag.vue'
-import MultiIcon from '@/components/ui/MultiIcon.vue'
-import { icons as exerciseStatesIcons } from '@/assets/exerciseStatesIcons'
+import Card from "@/components/ui/Card.vue";
+import { Exercise, ExerciseState } from "@/models";
+import { defineComponent, PropType } from "@vue/runtime-core";
+import Tag from "@/components/ui/Tag.vue";
+import MultiIcon from "@/components/ui/MultiIcon.vue";
+import { icons as exerciseStatesIcons } from "@/assets/exerciseStatesIcons";
 
 export default defineComponent({
-  name: 'ExercisePreview',
+  name: "ExercisePreview",
   props: {
     exercise: {
       type: Object as PropType<Exercise>,
-      required: true
-    }
+      required: true,
+    },
   },
   components: {
     Card,
     Tag,
-    MultiIcon
+    MultiIcon,
   },
-  created () {
-    this.elementId = uuid4()
+  created() {
+    this.elementId = uuid4();
   },
-  data () {
+  data() {
     return {
-      elementId: ''
-    }
+      elementId: "",
+    };
   },
   computed: {
-    previewTitle (): string {
-      return (this.exercise?.label ?? '').trim().length > 0
+    previewTitle(): string {
+      return (this.exercise?.label ?? "").trim().length > 0
         ? (this.exercise.label as string)
-        : _('exercise_preview.unnamed_exercise')
+        : _("exercise_preview.unnamed_exercise");
     },
-    previewText (): string {
-      return this.exercise.text
+    previewText(): string {
+      return this.exercise.text;
     },
-    exerciseStateIcons () {
-      return exerciseStatesIcons[this.exercise.state as ExerciseState]
+    exerciseStateIcons() {
+      return exerciseStatesIcons[this.exercise.state as ExerciseState];
     },
-    tags () {
+    tags() {
       return [
         ...(this.exercise.public_tags ?? []),
-        ...(this.exercise.private_tags ?? [])
-      ]
-    }
-  }
-})
+        ...(this.exercise.private_tags ?? []),
+      ];
+    },
+  },
+});
 </script>
 
 <style></style>

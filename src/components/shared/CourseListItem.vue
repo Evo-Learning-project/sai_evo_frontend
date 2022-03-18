@@ -1,9 +1,9 @@
 <template>
-  <Card :hoverable="true">
+  <Card :hoverable="true" :expandSideOnSmall="true">
     <template v-slot:header>
       <div class="flex items-center">
         <span class="mr-2 material-icons-two-tone two-tone-primary">book</span>
-        <h3>{{ course.name }}</h3>
+        <h3 class="text-base md:text-xl">{{ course.name }}</h3>
       </div>
     </template>
     <template v-if="(course.description?.length ?? 0) > 0" v-slot:body>
@@ -20,7 +20,9 @@
           }"
           ><Btn v-if="canAccessCoursePanel" class="w-full">
             <span class="mr-1 text-base material-icons-outlined"> shield </span>
-            {{ $t("courses.course_panel") }}
+            <span class="text-sm md:text-base">{{
+              $t("courses.course_panel")
+            }}</span>
           </Btn></router-link
         >
         <router-link
@@ -33,7 +35,9 @@
             <span class="mr-0.5 text-base material-icons-outlined">
               chevron_right
             </span>
-            {{ $t("courses.go_to_course") }}
+            <span class="text-sm md:text-base">{{
+              $t("courses.go_to_course")
+            }}</span>
           </Btn></router-link
         >
       </div>

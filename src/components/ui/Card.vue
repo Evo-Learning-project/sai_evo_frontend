@@ -8,7 +8,8 @@
       'my-4': size == 'default' && !marginLess,
       border: !highlighted,
       'border-2': highlighted,
-      'transition-shadow duration-75 ease-linear hover-shadow-elevation': hoverable,
+      'transition-shadow duration-75 ease-linear hover-shadow-elevation':
+        hoverable,
       'bg-light bg-opacity-80': filled,
     }"
   >
@@ -31,7 +32,11 @@
     <div
       v-if="$slots.side"
       class="h-full"
-      :class="{ 'w-40': size == 'default', 'md:w-10 w-8': size == 'sm' }"
+      :class="{
+        'w-40': size == 'default' && !expandSideOnSmall,
+        'md:w-10 w-8': size == 'sm' && !expandSideOnSmall,
+        'w-56': expandSideOnSmall,
+      }"
     >
       <slot name="side"></slot>
     </div>
@@ -47,6 +52,10 @@ export default defineComponent({
     size: {
       type: String as PropType<"sm" | "default">,
       default: "default",
+    },
+    expandSideOnSmall: {
+      type: Boolean,
+      default: false,
     },
     highlighted: {
       type: Boolean,

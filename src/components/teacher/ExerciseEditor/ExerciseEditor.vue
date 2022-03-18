@@ -3,7 +3,7 @@
     <div
       @click="onFocusNonDraft"
       style="z-index: 20"
-      class="absolute top-0 left-0 w-full h-full bg-gray-500 bg-opacity-0 cursor-pointer"
+      class="absolute top-0 left-0 w-full h-full bg-gray-500 bg-opacity-0 cursor-pointer "
       v-if="modelValue.state !== ExerciseState.DRAFT && preventEdit"
     ></div>
     <!-- FIXME review shadow -->
@@ -17,7 +17,9 @@
         <div class="flex">
           <h3>
             {{ $t("exercise_editor.exercise_editor_title") }}
-            <span v-if="modelValue.state === ExerciseState.DRAFT" class="text-muted"
+            <span
+              v-if="modelValue.state === ExerciseState.DRAFT"
+              class="text-muted"
               >({{ $t("exercise_editor.draft_notice") }})</span
             >
           </h3>
@@ -30,7 +32,9 @@
       </template>
       <template v-slot:body>
         <div class="flex flex-col space-y-6">
-          <div class="flex flex-col items-start my-4 space-x-8 md:flex-row">
+          <div
+            class="flex flex-col items-start my-4 space-y-5  md:space-x-8 md:space-y-0 md:flex-row"
+          >
             <div class="w-full mr-auto md:w-4/12">
               <TextInput
                 :modelValue="modelValue.label"
@@ -38,7 +42,7 @@
                 >{{ $t("exercise_editor.exercise_label") }}</TextInput
               >
             </div>
-            <div class="self-start w-1/2 mr-auto md:w-3/12">
+            <div class="self-start w-full mr-auto md:w-3/12">
               <Dropdown
                 :id="'exercise_state_' + elementId"
                 :options="exerciseStateOptions"
@@ -49,7 +53,7 @@
                 {{ $t("exercise_editor.exercise_state") }}
               </Dropdown>
             </div>
-            <div class="flex flex-col ml-auto md:flex-row md:w-5/12">
+            <div class="flex flex-col w-full md:ml-auto md:flex-row md:w-5/12">
               <Dropdown
                 class="w-full"
                 :id="'exercise_type_' + elementId"
@@ -81,7 +85,10 @@
             >{{ $t("exercise_editor.exercise_solution") }}</CodeEditor
           >
           <div>
-            <Tooltip class="" :text-code="'exercise_editor.public_tags'"></Tooltip>
+            <Tooltip
+              class=""
+              :text-code="'exercise_editor.public_tags'"
+            ></Tooltip>
             <TagInput
               :modelValue="modelValue.public_tags ?? []"
               :allow-edit-tags="false"
@@ -92,7 +99,10 @@
           </div>
 
           <div>
-            <Tooltip class="" :text-code="'exercise_editor.private_tags'"></Tooltip>
+            <Tooltip
+              class=""
+              :text-code="'exercise_editor.private_tags'"
+            ></Tooltip>
             <TagInput
               :modelValue="modelValue.private_tags ?? []"
               :allow-edit-tags="false"
@@ -114,7 +124,9 @@
             <template #item="{ element }">
               <ChoiceEditor
                 :modelValue="element"
-                @choiceUpdate="onUpdateChoice(element.id, $event.field, $event.value)"
+                @choiceUpdate="
+                  onUpdateChoice(element.id, $event.field, $event.value)
+                "
               ></ChoiceEditor>
             </template>
           </draggable>
@@ -142,7 +154,9 @@
             <template #item="{ element }">
               <TestCaseEditor
                 :modelValue="element"
-                @testCaseUpdate="onUpdateTestCase(element.id, $event.field, $event.value)"
+                @testCaseUpdate="
+                  onUpdateTestCase(element.id, $event.field, $event.value)
+                "
               ></TestCaseEditor>
             </template>
           </draggable>
@@ -277,14 +291,24 @@ export default defineComponent({
       () => (this.saving = false)
     );
 
-    this.modelValue.choices?.forEach((c) => this.instantiateChoiceAutoSaveManager(c));
-    this.modelValue.testcases?.forEach((t) => this.instantiateTestCaseAutoSaveManager(t));
+    this.modelValue.choices?.forEach((c) =>
+      this.instantiateChoiceAutoSaveManager(c)
+    );
+    this.modelValue.testcases?.forEach((t) =>
+      this.instantiateTestCaseAutoSaveManager(t)
+    );
   },
   data() {
     return {
       autoSaveManager: null as AutoSaveManager<Exercise> | null,
-      choiceAutoSaveManagers: {} as Record<string, AutoSaveManager<ExerciseChoice>>,
-      testCaseAutoSaveManagers: {} as Record<string, AutoSaveManager<ExerciseTestCase>>,
+      choiceAutoSaveManagers: {} as Record<
+        string,
+        AutoSaveManager<ExerciseChoice>
+      >,
+      testCaseAutoSaveManagers: {} as Record<
+        string,
+        AutoSaveManager<ExerciseTestCase>
+      >,
       elementId: uuid4(),
       showSaved: false,
       saving: false,
@@ -318,10 +342,16 @@ export default defineComponent({
     ]),
     ...mapMutations(["setExercise", "setExerciseChoice", "setExerciseChild"]),
     async onChoiceDragEnd(event: { oldIndex: number; newIndex: number }) {
-      const draggedChoice = (this.modelValue.choices as ExerciseChoice[])[event.oldIndex];
+      const draggedChoice = (this.modelValue.choices as ExerciseChoice[])[
+        event.oldIndex
+      ];
 
       if (event.oldIndex !== event.newIndex) {
-        await this.onUpdateChoice(draggedChoice.id, "_ordering", event.newIndex);
+        await this.onUpdateChoice(
+          draggedChoice.id,
+          "_ordering",
+          event.newIndex
+        );
       }
     },
     async onBaseExerciseChange(key: keyof Exercise, value: unknown) {
@@ -419,7 +449,11 @@ export default defineComponent({
         this.onBaseExerciseChange("state", newState);
       }
     },
-    async onUpdateChoice(choiceId: string, key: keyof ExerciseChoice, value: unknown) {
+    async onUpdateChoice(
+      choiceId: string,
+      key: keyof ExerciseChoice,
+      value: unknown
+    ) {
       await this.choiceAutoSaveManagers[choiceId].onChange({
         field: key,
         value,
@@ -436,64 +470,66 @@ export default defineComponent({
       });
     },
     instantiateChoiceAutoSaveManager(choice: ExerciseChoice) {
-      this.choiceAutoSaveManagers[choice.id] = new AutoSaveManager<ExerciseChoice>(
-        choice,
-        async (changes) => {
-          // if choices are re-ordered, re-fetch them from server
-          const reFetch = Object.keys(changes).includes("_ordering");
-          await this.updateExerciseChild({
-            childType: "choice",
-            courseId: this.courseId,
-            exerciseId: this.modelValue.id,
-            payload: { ...choice, ...changes },
-            reFetch,
-          });
-        },
-        (changes) => {
-          this.saving = true;
-          this.savingError = false;
-          this.setExerciseChild({
-            childType: "choice",
-            exerciseId: this.modelValue.id,
-            payload: { ...choice, ...changes },
-          });
-        },
-        EXERCISE_CHOICE_AUTO_SAVE_DEBOUNCED_FIELDS,
-        EXERCISE_CHOICE_AUTO_SAVE_DEBOUNCE_TIME_MS,
-        undefined,
-        () => (this.savingError = true),
-        () => (this.saving = false)
-      );
+      this.choiceAutoSaveManagers[choice.id] =
+        new AutoSaveManager<ExerciseChoice>(
+          choice,
+          async (changes) => {
+            // if choices are re-ordered, re-fetch them from server
+            const reFetch = Object.keys(changes).includes("_ordering");
+            await this.updateExerciseChild({
+              childType: "choice",
+              courseId: this.courseId,
+              exerciseId: this.modelValue.id,
+              payload: { ...choice, ...changes },
+              reFetch,
+            });
+          },
+          (changes) => {
+            this.saving = true;
+            this.savingError = false;
+            this.setExerciseChild({
+              childType: "choice",
+              exerciseId: this.modelValue.id,
+              payload: { ...choice, ...changes },
+            });
+          },
+          EXERCISE_CHOICE_AUTO_SAVE_DEBOUNCED_FIELDS,
+          EXERCISE_CHOICE_AUTO_SAVE_DEBOUNCE_TIME_MS,
+          undefined,
+          () => (this.savingError = true),
+          () => (this.saving = false)
+        );
     },
     instantiateTestCaseAutoSaveManager(testcase: ExerciseTestCase) {
-      this.testCaseAutoSaveManagers[testcase.id] = new AutoSaveManager<ExerciseTestCase>(
-        testcase,
-        async (changes) => {
-          // if choices are re-ordered, re-fetch them from server
-          const reFetch = Object.keys(changes).includes("_ordering");
-          await this.updateExerciseChild({
-            childType: "testcase",
-            courseId: this.courseId,
-            exerciseId: this.modelValue.id,
-            payload: { ...testcase, ...changes },
-            reFetch,
-          });
-        },
-        (changes) => {
-          this.saving = true;
-          this.savingError = false;
-          this.setExerciseChild({
-            childType: "testcase",
-            exerciseId: this.modelValue.id,
-            payload: { ...testcase, ...changes },
-          });
-        },
-        TEST_CASE_AUTO_SAVE_DEBOUNCED_FIELDS,
-        TEST_CASE_AUTO_SAVE_DEBOUNCE_TIME_MS,
-        undefined,
-        () => (this.savingError = true),
-        () => (this.saving = false)
-      );
+      this.testCaseAutoSaveManagers[testcase.id] =
+        new AutoSaveManager<ExerciseTestCase>(
+          testcase,
+          async (changes) => {
+            // if choices are re-ordered, re-fetch them from server
+            const reFetch = Object.keys(changes).includes("_ordering");
+            await this.updateExerciseChild({
+              childType: "testcase",
+              courseId: this.courseId,
+              exerciseId: this.modelValue.id,
+              payload: { ...testcase, ...changes },
+              reFetch,
+            });
+          },
+          (changes) => {
+            this.saving = true;
+            this.savingError = false;
+            this.setExerciseChild({
+              childType: "testcase",
+              exerciseId: this.modelValue.id,
+              payload: { ...testcase, ...changes },
+            });
+          },
+          TEST_CASE_AUTO_SAVE_DEBOUNCED_FIELDS,
+          TEST_CASE_AUTO_SAVE_DEBOUNCE_TIME_MS,
+          undefined,
+          () => (this.savingError = true),
+          () => (this.saving = false)
+        );
     },
   },
   computed: {

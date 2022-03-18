@@ -391,9 +391,9 @@ export const it = {
   },
   exercise_types: {
     [ExerciseType.MULTIPLE_CHOICE_SINGLE_POSSIBLE]:
-      "Scelta multipla con una sola scelta possibile",
+      "Scelta multipla con selezione singola",
     [ExerciseType.MULTIPLE_CHOICE_MULTIPLE_POSSIBLE]:
-      "Scelta multipla con più scelte possibili",
+      "Scelta multipla con selezione multipla",
     [ExerciseType.OPEN_ANSWER]: "Risposta aperta",
     [ExerciseType.JS]: "Esercizio JavaScript",
     [ExerciseType.COMPLETION]: "Esercizio a completamento",

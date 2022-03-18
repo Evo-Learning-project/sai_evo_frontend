@@ -31,7 +31,9 @@
           </li>
         </ul>
       </div>
-      <div class="flex items-center mt-2 space-x-4">
+      <div
+        class="flex flex-col mt-2 space-y-2  md:items-center md:flex-row md:space-y-0 md:space-x-4"
+      >
         <h5 class="">
           {{
             isDraft || isPlanned
@@ -42,22 +44,33 @@
           >.
         </h5>
         <Btn
+          class=""
           v-if="isDraft || isPlanned"
           :variant="'primary'"
           :disabled="isDraft && validationErrors.length > 0"
           :loading="localLoading"
           @click="isDraft ? publish() : revertToDraft()"
         >
-          {{ isDraft ? $t("event_editor.publish") : $t("event_editor.revert_to_draft") }}
+          {{
+            isDraft
+              ? $t("event_editor.publish")
+              : $t("event_editor.revert_to_draft")
+          }}
         </Btn>
       </div>
       <p v-if="isPlanned" class="mt-10 text-muted">
         {{ $t("event_editor.event_planned_help_text") }}
         <!-- <strong>{{ formattedTimestamp }}</strong> -->
-        <strong>&nbsp;<Timestamp :value="modelValue.begin_timestamp"></Timestamp></strong
+        <strong
+          >&nbsp;<Timestamp
+            :value="modelValue.begin_timestamp"
+          ></Timestamp></strong
         >.
       </p>
-      <div class="flex flex-col items-stretch mt-2 space-y-2" v-if="isPlanned || isOpen">
+      <div
+        class="flex flex-col items-stretch mt-2 space-y-2"
+        v-if="isPlanned || isOpen"
+      >
         <p class="text-muted">
           {{ $t("event_editor.this_is_the_link_to_the_event") }}
         </p>
@@ -108,7 +121,7 @@ export default defineComponent({
   },
   computed: {
     eventStateOptions() {
-      return ((Object.keys(EventState) as unknown[]) as EventState[])
+      return (Object.keys(EventState) as unknown[] as EventState[])
         .filter((key: string | number) => parseInt(key as string) == key) //(ExerciseType[key] as unknown) == 'number')
         .map((key) => ({
           icons: eventStateIcons[key],
@@ -127,7 +140,9 @@ export default defineComponent({
       return this.modelValue.state == EventState.OPEN;
     },
     currentEventStateName() {
-      return this.eventStateOptions[this.modelValue?.state]?.content?.toLowerCase();
+      return this.eventStateOptions[
+        this.modelValue?.state
+      ]?.content?.toLowerCase();
     },
     currentEventStateDescription() {
       return this.eventStateOptions[this.modelValue?.state]?.description;

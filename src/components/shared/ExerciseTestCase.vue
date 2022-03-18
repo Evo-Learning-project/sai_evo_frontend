@@ -1,14 +1,20 @@
 <template>
-  <div class="flex items-start space-x-8" :class="{ 'text-sm': small }">
+  <div
+    class="flex flex-col items-start md:space-y-0 md:space-x-8 md:flex-row"
+    :class="{ 'text-sm': small }"
+  >
     <div
       class="user-content"
-      :class="[!!testCase.code ? 'w-1/2' : 'w-full', small ? 'py-2.5' : '']"
+      :class="[
+        !!testCase.code ? 'md:w-1/2 md:mb-0 mb-2' : 'w-full',
+        small ? 'py-2.5' : '',
+      ]"
       v-if="!!testCase.text"
       v-html="testCase.text"
     ></div>
     <CodeFragment
       :small="small"
-      :class="[!!testCase.text ? 'w-1/2' : 'w-full']"
+      :class="[!!testCase.text ? 'md:w-1/2 w-full' : 'w-full']"
       v-if="!!testCase.code"
       :value="testCase.code"
     ></CodeFragment>

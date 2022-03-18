@@ -297,7 +297,7 @@
         <div id="main-student-header-right" class="ml-auto"></div>
       </div>
     </header>
-    <main class="flex-grow px-4 bg-white md:px-12">
+    <main class="flex-grow px-2 bg-white md:px-12">
       <div class="h-full py-6 mx-auto sm:px-5 lg:px-8">
         <ErrorView v-if="!!$store.state.shared.pageWideErrorData"></ErrorView>
         <router-view v-else />

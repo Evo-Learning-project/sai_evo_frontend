@@ -1,11 +1,13 @@
 <template>
-  <div class="flex py-3 mb-12 space-x-4">
+  <div
+    class="flex flex-col py-3 mb-12 space-y-2  md:flex-row md:space-x-4 md:space-y-4"
+  >
     <span
       class="row-span-2 my-auto text-lg cursor-move  material-icons-outlined opacity-70"
     >
       drag_indicator
     </span>
-    <div class="grid w-full grid-cols-12 gap-5">
+    <div class="grid w-full grid-cols-6 gap-5 md:grid-cols-12">
       <div class="col-span-6">
         <SegmentedControls
           :modelValue="modelValue.testcase_type"
@@ -15,7 +17,7 @@
         >
       </div>
       <CodeEditor
-        class="col-span-6 row-span-2"
+        class="col-span-6 md:row-span-2"
         :size="'sm'"
         :modelValue="modelValue.code"
         @update:modelValue="onUpdate('code', $event)"

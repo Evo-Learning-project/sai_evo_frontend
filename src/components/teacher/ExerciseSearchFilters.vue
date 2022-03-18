@@ -4,7 +4,9 @@
 
     <div class="mt-5">
       <!-- <chipset :options="tagsOptions" :modelValue="modelValue.tags"></chipset> -->
-      <div class="flex space-x-4">
+      <div
+        class="flex flex-col space-y-4 md:flex-row md:space-y-0 md:space-x-4"
+      >
         <TextInput
           :modelValue="modelValue.label"
           @update:modelValue="emitUpdate('label', $event)"
