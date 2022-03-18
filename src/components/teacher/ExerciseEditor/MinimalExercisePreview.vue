@@ -13,7 +13,7 @@
         <div class="relative">
           <div class="flex flex-wrap items-center">
             <h5>{{ previewTitle }}</h5>
-            <div v-if="showTags" class="flex md:ml-2 flex-wrap space-x-1">
+            <div v-if="showTags" class="flex flex-wrap space-x-1 md:ml-2">
               <Tag
                 v-for="(tag, index) in tags"
                 :key="elementId + '-tag-' + index"
@@ -34,7 +34,7 @@
       </template>
 
       <template v-slot:body>
-        <div class="relative h-14 overflow-y-hidden">
+        <div class="relative overflow-y-hidden h-14">
           <div
             style="
               display: -webkit-box;
@@ -56,25 +56,45 @@
             v-if="previewable"
             :variant="'primary-borderless'"
             @click="showPreview = true"
-            ><span class="text-base material-icons-outlined"> open_in_full </span>
+            ><span class="text-base material-icons-outlined">
+              open_in_full
+            </span>
           </Btn>
           <router-link
             class="mt-auto"
             v-if="showEdit"
             :to="{ name: 'CourseExercises', hash: '#editor-' + exercise.id }"
-            ><Btn :size="'xs'" :variant="'primary-borderless'" @click="showPreview = true"
+            ><Btn
+              :size="'xs'"
+              :variant="'primary-borderless'"
+              @click="showPreview = true"
               ><span class="text-base material-icons-outlined"> edit </span>
             </Btn></router-link
           >
-          <div class="mt-auto" :title="selectButtonTitle" v-if="selectable">
+          <div class="mt-auto" v-if="selectable">
             <Btn
+              v-if="(selectButtonTitle?.length ?? 0) === 0"
               :size="'xs'"
               :variant="'success-borderless'"
               :forceActive="highlighted"
               :disabled="selectionDisabled"
               @click="onSelection()"
-              ><span class="text-base material-icons-outlined"> done </span></Btn
+              ><span class="text-base material-icons-outlined">
+                done
+              </span></Btn
             >
+            <Tooltip v-else :textValue="selectButtonTitle">
+              <Btn
+                :size="'xs'"
+                :variant="'success-borderless'"
+                :forceActive="highlighted"
+                :disabled="selectionDisabled"
+                @click="onSelection()"
+                ><span class="text-base material-icons-outlined">
+                  done
+                </span></Btn
+              >
+            </Tooltip>
           </div>
         </div>
       </template>
@@ -108,6 +128,7 @@ import Btn from "@/components/ui/Btn.vue";
 import Dialog from "@/components/ui/Dialog.vue";
 import FullExercise from "@/components/shared/FullExercise.vue";
 import { texMixin } from "@/mixins";
+import Tooltip from "@/components/ui/Tooltip.vue";
 
 export default defineComponent({
   name: "MinimalExercisePreview",
@@ -157,6 +178,7 @@ export default defineComponent({
     Btn,
     Dialog,
     FullExercise,
+    Tooltip,
   },
   created() {
     this.elementId = uuid4();
