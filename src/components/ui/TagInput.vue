@@ -11,9 +11,7 @@
     :autocomplete-min-length="1"
   />
   <!--@tags-changed="newTags => onTagsChanged(newTags)"-->
-  <!--
-          
---></template>
+</template>
 
 <script lang="ts">
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -80,7 +78,7 @@ export default defineComponent({
       console.log("before adding", event.tag.text);
       if (
         !this.processedModelValue
-          .map((t: { text: string }) => t.text)
+          .map((t: { text: string; classes?: string }) => t.text)
           .includes(event.tag.text) &&
         (!this.existingOnly ||
           this.autoCompleteItems.map((i) => i.text).includes(event.tag.text))
@@ -127,11 +125,15 @@ export default defineComponent({
         text: t.name,
       }));
     },
-    autoCompleteItems() {
-      return this.processedChoices.filter(
+    autoCompleteItems(): { text: string; classes?: string }[] {
+      const ret = this.processedChoices.filter(
         (c: { text: string }) =>
           c.text.toLowerCase().indexOf(this.tag.toLowerCase()) !== -1
       );
+      if (this.existingOnly || ret.length > 0) {
+        return ret;
+      }
+      return [{ text: this.tag, classes: "create-tag" }];
     },
   },
 });

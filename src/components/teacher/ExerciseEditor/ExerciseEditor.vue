@@ -90,6 +90,7 @@
               :text-code="'exercise_editor.public_tags'"
             ></Tooltip>
             <TagInput
+              :choices="tags"
               :modelValue="modelValue.public_tags ?? []"
               :allow-edit-tags="false"
               :placeholder="$t('exercise_editor.exercise_public_tags')"
@@ -104,6 +105,7 @@
               :text-code="'exercise_editor.private_tags'"
             ></Tooltip>
             <TagInput
+              :choices="tags"
               :modelValue="modelValue.private_tags ?? []"
               :allow-edit-tags="false"
               :placeholder="$t('exercise_editor.exercise_private_tags')"
@@ -230,7 +232,7 @@ import CloudSaveStatus from "@/components/ui/CloudSaveStatus.vue";
 import { courseIdMixin, savingMixin } from "@/mixins";
 import { DialogData } from "@/interfaces";
 
-import { createNamespacedHelpers } from "vuex";
+import { createNamespacedHelpers, mapActions } from "vuex";
 import { AutoSaveManager } from "@/autoSave";
 import {
   exerciseStateOptions,
@@ -245,7 +247,8 @@ import {
 import CodeEditor from "@/components/ui/CodeEditor.vue";
 import TestCaseEditor from "./TestCaseEditor.vue";
 import Tooltip from "@/components/ui/Tooltip.vue";
-const { mapActions, mapMutations } = createNamespacedHelpers("teacher");
+const { mapMutations } = createNamespacedHelpers("teacher");
+const { mapState } = createNamespacedHelpers("shared");
 
 export default defineComponent({
   name: "ExerciseEditor",
@@ -331,7 +334,7 @@ export default defineComponent({
     };
   },
   methods: {
-    ...mapActions([
+    ...mapActions("teacher", [
       "updateExercise",
       "addExerciseChoice",
       "addExerciseTestCase",
@@ -340,6 +343,7 @@ export default defineComponent({
       "removeExerciseTag",
       "updateExerciseChild",
     ]),
+    ...mapActions("shared", ["getTags"]),
     ...mapMutations(["setExercise", "setExerciseChoice", "setExerciseChild"]),
     async onChoiceDragEnd(event: { oldIndex: number; newIndex: number }) {
       const draggedChoice = (this.modelValue.choices as ExerciseChoice[])[
@@ -407,6 +411,7 @@ export default defineComponent({
         tag,
         isPublic,
       });
+      await this.getTags(this.courseId);
     },
     async onRemoveTag(tag: string, isPublic: boolean) {
       await this.removeExerciseTag({
@@ -533,6 +538,7 @@ export default defineComponent({
     },
   },
   computed: {
+    ...mapState(["tags"]),
     isMultipleChoice(): boolean {
       return multipleChoiceExerciseTypes.includes(
         parseInt((this.modelValue.exercise_type?.toString() ?? "") as string)

@@ -17,12 +17,23 @@
       >
     </div>
     <div
+      class="flex flex-col"
+      v-if="!showTeacherIntroductionText && tags.length === 0"
+    >
+      <p class="mb-2 text-muted text-danger-dark">
+        {{ $t("event_template_rule_editor.no_tags_student") }}
+      </p>
+    </div>
+    <div
       :class="{
         'opacity-50 cursor-not-allowed pointer-events-none': tags.length === 0,
       }"
       class="flex flex-col space-y-4 md:flex-row md:space-y-0"
     >
-      <div class="flex flex-col w-full">
+      <div
+        v-if="showTeacherIntroductionText || tags.length > 0"
+        class="flex flex-col w-full"
+      >
         <div
           v-for="(clause, index) in modelValue"
           :key="'clause-' + clause.id"

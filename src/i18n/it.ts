@@ -293,6 +293,8 @@ export const it = {
     tag_based_and: "... e",
     tag_based_add_condition: "Aggiungi condizione",
     eligible_exercises: "Esercizi che soddisfano queste condizioni:",
+    no_tags_student:
+      "I docenti del corso non hanno ancora inserito tag, quindi la ricerca per tag non è abilitata. Verranno scelti esercizi in maniera casuale.",
     no_tags:
       "Non puoi utilizzare questa funzionalità in quanto non hai ancora creato tag per questo corso. Dalla pagina degli esercizi, puoi aggiungere tag agli esercizi già esistenti, o crearne di nuovi.",
   },

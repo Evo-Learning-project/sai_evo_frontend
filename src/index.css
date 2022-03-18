@@ -27,7 +27,9 @@
     strong {
       @apply font-bold text-primary;
     }
-    
+    svg {
+      @apply inline; /* was set to block for some reason, causing latex formulas to go in their own line */
+    }
   }
 
 @layer components {
@@ -290,6 +292,13 @@
     }
 
     /* tag input */
+    .create-tag {
+      @apply flex items-center;
+    }
+    .create-tag::before {
+      ::content: "Crea"; /* ! this doesn't go through i18n */
+      @apply italic text-muted;
+    }
     .ti-input, .ti-new-tag-input {
       @apply bg-light !important
     }

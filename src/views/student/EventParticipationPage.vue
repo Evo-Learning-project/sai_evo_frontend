@@ -14,6 +14,7 @@
       <SlotSkeleton></SlotSkeleton>
     </div>
     <div
+      v-else
       :class="{
         'flex-grow': oneExerciseAtATime,
         'mb-10 pb-10 border-b':

@@ -44,7 +44,7 @@
     <!-- built files will be auto injected -->
 
     <script>
-      MathJax = {
+      window.MathJax = {
         tex: {
           inlineMath: [
             ["$", "$"],
@@ -54,6 +54,7 @@
         svg: {
           fontCache: "global",
         },
+        "HTML-CSS": { fonts: ["TeX"] },
       };
     </script>
     <script
