@@ -27,9 +27,7 @@ export async function getEvent(
   const response = await axios.get(`/courses/${courseId}/events/${eventId}/`);
   const event = response.data as Event;
 
-  const processedRules = convertEventTemplateRules(
-    event.template?.rules as EventTemplateRule[]
-  );
+  const processedRules = convertEventTemplateRules(event.template?.rules);
 
   const convertedEvent = {
     ...event,
@@ -50,7 +48,7 @@ export async function getEventTemplate(
   );
   const template = response.data as EventTemplate;
   const processedRules = convertEventTemplateRules(template.rules);
-  return { ...template, rules: processedRules };
+  return { ...template, rules: processedRules ?? [] };
 }
 
 export async function getEventTemplateRule(
@@ -62,7 +60,9 @@ export async function getEventTemplateRule(
     `/courses/${courseId}/templates/${templateId}/rules/${ruleId}/`
   );
   const rule = response.data as EventTemplateRule;
-  const processedRule = convertEventTemplateRules([rule]);
+  const processedRule = convertEventTemplateRules([
+    rule,
+  ]) as EventTemplateRule[];
   return processedRule[0];
 }
 

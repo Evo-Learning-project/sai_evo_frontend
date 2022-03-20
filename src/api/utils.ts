@@ -1,27 +1,21 @@
-import { SearchFilter } from './interfaces';
-import store from '@/store';
-import {
-  EventTemplateRule,
-  EventTemplateRuleType,
-  Tag,
-} from '@/models';
+import { SearchFilter } from "./interfaces";
+import store from "@/store";
+import { EventTemplateRule, EventTemplateRuleType, Tag } from "@/models";
 
 export const tagNamesToTags = (names: string[]): Tag[] =>
   // converts a list of tag names to a list of their id's, as per
   // the format used by the backend
-  names.map((n) => store.getters['shared/tagByName'](n));
+  names.map((n) => store.getters["shared/tagByName"](n));
 
 export const tagIdsToTags = (ids: string[]): Tag[] => {
-  return ids.map((i) => store.getters['shared/tagById'](i) as Tag);
+  return ids.map((i) => store.getters["shared/tagById"](i) as Tag);
 };
 
-export const getUrlQueryParams = (
-  filters: SearchFilter | null
-): string => {
+export const getUrlQueryParams = (filters: SearchFilter | null): string => {
   if (!filters) {
-    return '';
+    return "";
   }
-  let ret = '';
+  let ret = "";
   if (
     (filters.label?.length ?? 0) > 0 ||
     (filters.exercise_types?.length ?? 0) > 0 ||
@@ -29,22 +23,22 @@ export const getUrlQueryParams = (
     (filters.tags?.length ?? 0) > 0 ||
     (filters.text?.length ?? 0) > 0
   ) {
-    ret += '&';
+    ret += "&";
   }
   if (filters.label || filters.text) {
-    ret += `search=${filters.label ?? ''} ${filters.text ?? ''}`;
+    ret += `search=${filters.label ?? ""} ${filters.text ?? ""}`;
   }
 
   return ret;
 };
 
 export const convertEventTemplateRules = (
-  rules: EventTemplateRule[]
-): EventTemplateRule[] => {
+  rules?: EventTemplateRule[]
+): EventTemplateRule[] | undefined => {
   // convert tag-based template rules from backend's format (which uses a list of
   //ids to represent the field `tags` on EventTemplateRuleClause) to the
   // frontend's format, which uses Tag[] for that field
-  const processedRules = rules.map((r) => {
+  const processedRules = rules?.map((r) => {
     if (r.rule_type != EventTemplateRuleType.TAG_BASED) {
       return r;
     }
