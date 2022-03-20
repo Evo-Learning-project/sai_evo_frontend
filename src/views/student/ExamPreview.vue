@@ -1,8 +1,8 @@
 <template>
   <div class="h-full">
-    <div v-if="firstLoading">
-      <SkeletonCard :borderLess="true"></SkeletonCard>
-      <SkeletonCard :borderLess="true"></SkeletonCard>
+    <div v-if="firstLoading" class="mt-4">
+      <SlotSkeleton></SlotSkeleton>
+      <SlotSkeleton></SlotSkeleton>
     </div>
     <div class="flex flex-col h-full" v-else>
       <h2>{{ previewingEvent.name }}</h2>
@@ -58,29 +58,30 @@
 
 <script lang="ts">
 import Btn from "@/components/ui/Btn.vue";
-import SkeletonCard from "@/components/ui/SkeletonCard.vue";
 import Timestamp from "@/components/ui/Timestamp.vue";
-import { courseIdMixin, eventIdMixin } from "@/mixins";
+import { courseIdMixin, eventIdMixin, loadingMixin } from "@/mixins";
 import { Event, EventState } from "@/models";
 import { defineComponent } from "@vue/runtime-core";
 
 import { createNamespacedHelpers } from "vuex";
+import SlotSkeleton from "@/components/ui/skeletons/SlotSkeleton.vue";
 const { mapState, mapActions } = createNamespacedHelpers("student");
 export default defineComponent({
   name: "ExamPreview",
-  mixins: [courseIdMixin, eventIdMixin],
+  mixins: [courseIdMixin, eventIdMixin, loadingMixin],
   components: {
-    SkeletonCard,
     Timestamp,
     Btn,
+    SlotSkeleton,
   },
   async created() {
-    this.firstLoading = true;
-    await this.getEvent({
-      courseId: this.courseId,
-      eventId: this.eventId,
-    });
-    this.firstLoading = false;
+    await this.withFirstLoading(
+      async () =>
+        await this.getEvent({
+          courseId: this.courseId,
+          eventId: this.eventId,
+        })
+    );
 
     if ((this.previewingEvent as Event).participation_exists) {
       this.$router.push({
@@ -93,7 +94,6 @@ export default defineComponent({
   },
   data() {
     return {
-      firstLoading: false,
       EventState,
     };
   },

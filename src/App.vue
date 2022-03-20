@@ -20,7 +20,7 @@
   </transition>
   <router-view class="" />
   <footer
-    class="flex items-center w-full h-12 px-6 py-3 mt-auto text-sm text-white  bg-dark"
+    class="flex items-center w-full h-12 px-6 py-3 mt-auto text-sm text-white bg-dark"
   >
     <p>
       Crafted with ❤️
@@ -71,7 +71,11 @@ export default defineComponent({
   },
   async created() {
     if (this.$store.getters["shared/isAuthenticated"]) {
-      await this.$store.dispatch("shared/getCourses");
+      try {
+        await this.$store.dispatch("shared/getCourses");
+      } catch (e) {
+        console.log("Caught", e);
+      }
     }
     window.addEventListener("beforeunload", this.beforeWindowUnload);
 
@@ -93,7 +97,8 @@ export default defineComponent({
   methods: {
     // TODO this should live in utils.ts, but importing it from here causes all sorts of problems with other components
     typesetTex() {
-      (window as any).MathJax.typeset();
+      console.log("MJ", (window as any).MathJax, (window as any).MathJax?.typeset);
+      (window as any).MathJax?.typeset?.();
     },
     beforeWindowUnload(e: { preventDefault: () => void; returnValue: string }) {
       if (

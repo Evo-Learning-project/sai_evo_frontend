@@ -50,7 +50,7 @@
             :size="'lg'"
             class="relative md:w-max"
             :disabled="!googleOauthReady || localLoading"
-            :loading="!googleOauthReady && !googleOauthHadError"
+            :loading="(!googleOauthReady && !googleOauthHadError) || localLoading"
           >
             <span class="mr-3 material-icons-outlined">login</span>
             {{ $t("login_screen.login") }}

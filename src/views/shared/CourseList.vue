@@ -18,16 +18,10 @@
       class="flex flex-col w-full text-center select-none mt-28"
       v-if="!firstLoading && courses.length === 0"
     >
-      <span
-        style="font-size: 5rem"
-        class="mr-auto material-icons-outlined opacity-10"
-      >
+      <span style="font-size: 5rem" class="mr-auto material-icons-outlined opacity-10">
         west
       </span>
-      <p
-        style="font-size: 10rem"
-        class="-mt-12 material-icons-outlined opacity-10"
-      >
+      <p style="font-size: 10rem" class="-mt-12 material-icons-outlined opacity-10">
         book
       </p>
       <h2 class="opacity-40">{{ $t("course_list.no_courses") }}</h2>
@@ -52,9 +46,7 @@ export default defineComponent({
     CourseListItemSkeleton,
   },
   async created() {
-    await this.withFirstLoading(async () =>
-      this.$store.dispatch("shared/getCourses")
-    );
+    await this.withFirstLoading(async () => this.$store.dispatch("shared/getCourses"));
   },
   computed: {
     ...mapState(["courses"]),

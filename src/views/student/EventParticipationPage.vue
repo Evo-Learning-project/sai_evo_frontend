@@ -1,16 +1,13 @@
 <template>
   <div class="flex flex-col flex-grow h-full">
     <teleport v-if="mounted" to="#main-student-header-right">
-      <CloudSaveStatus
-        :saving="saving"
-        :hadError="savingError"
-      ></CloudSaveStatus
+      <CloudSaveStatus :saving="saving" :hadError="savingError"></CloudSaveStatus
     ></teleport>
 
-    <div v-if="firstLoading">
-      <SlotSkeleton></SlotSkeleton>
-      <SlotSkeleton></SlotSkeleton>
-      <SlotSkeleton></SlotSkeleton>
+    <div class="mt-3" v-if="firstLoading">
+      <SlotSkeleton class="mb-24"></SlotSkeleton>
+      <SlotSkeleton class="mb-24"></SlotSkeleton>
+      <SlotSkeleton class="mb-24"></SlotSkeleton>
       <SlotSkeleton></SlotSkeleton>
     </div>
     <div
@@ -75,8 +72,7 @@
         v-else-if="canTurnIn"
         :variant="'success'"
       >
-        <span class="material-icons-outlined mt-0.5 text-base mr-1">
-          check </span
+        <span class="material-icons-outlined mt-0.5 text-base mr-1"> check </span
         >{{ $t("event_participation_page.turn_in") }}
       </Btn>
     </div>
@@ -102,12 +98,7 @@ import AbstractEventParticipationSlot from "@/components/shared/AbstractEventPar
 import Btn from "@/components/ui/Btn.vue";
 import CloudSaveStatus from "@/components/ui/CloudSaveStatus.vue";
 import Dialog from "@/components/ui/Dialog.vue";
-import {
-  courseIdMixin,
-  eventIdMixin,
-  loadingMixin,
-  savingMixin,
-} from "@/mixins";
+import { courseIdMixin, eventIdMixin, loadingMixin, savingMixin } from "@/mixins";
 import {
   EventParticipation,
   EventParticipationSlot,
@@ -160,8 +151,7 @@ export default defineComponent({
     if (this.proxyModelValue.state === EventParticipationState.TURNED_IN) {
       this.$router.push({
         name:
-          this.proxyModelValue.event.event_type ===
-          EventType.SELF_SERVICE_PRACTICE
+          this.proxyModelValue.event.event_type === EventType.SELF_SERVICE_PRACTICE
             ? "PracticeSummaryPage"
             : "SubmissionReviewPage",
         params: {
@@ -175,10 +165,7 @@ export default defineComponent({
   },
   data() {
     return {
-      slotAutoSaveManagers: {} as Record<
-        string,
-        AutoSaveManager<EventParticipationSlot>
-      >,
+      slotAutoSaveManagers: {} as Record<string, AutoSaveManager<EventParticipationSlot>>,
       saving: false,
       savingError: false,
       mounted: false,
@@ -275,8 +262,7 @@ export default defineComponent({
 
       this.$router.push({
         name:
-          this.proxyModelValue.event.event_type ===
-          EventType.SELF_SERVICE_PRACTICE
+          this.proxyModelValue.event.event_type === EventType.SELF_SERVICE_PRACTICE
             ? "PracticeSummaryPage"
             : "SubmissionReviewPage",
         params: {
@@ -328,35 +314,34 @@ export default defineComponent({
       await this.slotAutoSaveManagers[slot.id].onChange({ field, value });
     },
     instantiateSlotAutoSaveManager(slot: EventParticipationSlot) {
-      this.slotAutoSaveManagers[slot.id] =
-        new AutoSaveManager<EventParticipationSlot>(
-          slot,
-          async (changes) =>
-            await this.partialUpdateEventParticipationSlot({
-              courseId: this.courseId,
-              eventId: this.eventId,
-              participationId: this.proxyModelValue.id,
-              slotId: slot.id,
-              changes,
-            }),
-          (changes, reverting) => {
-            if (!reverting) {
-              this.saving = true;
-              this.savingError = false;
-              this.$store.state.shared.localLoading = true;
-            }
-            this.setCurrentEventParticipationSlot({ ...slot, ...changes });
-          },
-          EVENT_PARTICIPATION_SLOT_DEBOUNCED_FIELDS,
-          EVENT_PARTICIPATION_SLOT_DEBOUNCE_TIME_MS,
-          undefined,
-          () => (this.savingError = true),
-          () => {
-            this.$store.state.shared.localLoading = false;
-            this.saving = false;
-          },
-          true
-        );
+      this.slotAutoSaveManagers[slot.id] = new AutoSaveManager<EventParticipationSlot>(
+        slot,
+        async (changes) =>
+          await this.partialUpdateEventParticipationSlot({
+            courseId: this.courseId,
+            eventId: this.eventId,
+            participationId: this.proxyModelValue.id,
+            slotId: slot.id,
+            changes,
+          }),
+        (changes, reverting) => {
+          if (!reverting) {
+            this.saving = true;
+            this.savingError = false;
+            this.$store.state.shared.localLoading = true;
+          }
+          this.setCurrentEventParticipationSlot({ ...slot, ...changes });
+        },
+        EVENT_PARTICIPATION_SLOT_DEBOUNCED_FIELDS,
+        EVENT_PARTICIPATION_SLOT_DEBOUNCE_TIME_MS,
+        undefined,
+        () => (this.savingError = true),
+        () => {
+          this.$store.state.shared.localLoading = false;
+          this.saving = false;
+        },
+        true
+      );
     },
   },
   computed: {
@@ -398,8 +383,7 @@ export default defineComponent({
     },
     goingBackAllowed(): boolean {
       return (
-        this.oneExerciseAtATime &&
-        (this.proxyModelValue.event?.allow_going_back ?? false)
+        this.oneExerciseAtATime && (this.proxyModelValue.event?.allow_going_back ?? false)
       );
     },
   },

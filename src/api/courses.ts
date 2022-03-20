@@ -4,7 +4,7 @@ import { convertEventTemplateRules } from "./utils";
 
 export async function getCourses(): Promise<Course[]> {
   const response = await axios.get(`/courses/`);
-  return response.data;
+  return response?.data ?? [];
 }
 
 export async function getCourse(courseId: string): Promise<Course> {

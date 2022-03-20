@@ -112,13 +112,14 @@ export default defineComponent({
     SlotSkeleton,
   },
   async created() {
-    this.firstLoading = true;
-    await this.getEventParticipation({
-      courseId: this.courseId,
-      eventId: this.eventId,
-      participationId: this.participationId,
-    });
-    this.firstLoading = false;
+    await this.withFirstLoading(
+      async () =>
+        await this.getEventParticipation({
+          courseId: this.courseId,
+          eventId: this.eventId,
+          participationId: this.participationId,
+        })
+    );
 
     // participation is still in progress and exam is
     // still open, redirect to participation page
@@ -134,11 +135,11 @@ export default defineComponent({
       });
     }
   },
-  data() {
-    return {
-      firstLoading: false,
-    };
-  },
+  // data() {
+  //   return {
+  //     firstLoading: false,
+  //   };
+  // },
   methods: {
     ...mapActions(["getEventParticipation"]),
   },

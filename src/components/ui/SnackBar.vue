@@ -1,5 +1,5 @@
 <template>
-  <div style="width: 80%; z-index: 9999" class="fixed bottom-3">
+  <div style="z-index: 9999" class="fixed bottom-3 left-0">
     <div
       class="w-full px-4 py-3 rounded opacity-100 shadow-popup text-lightText bg-dark bg-opacity-95 border-danger-dark"
       role="alert"
@@ -18,21 +18,21 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/runtime-core'
+import { defineComponent } from "@vue/runtime-core";
 
 export default defineComponent({
-  name: 'SnackBar',
+  name: "SnackBar",
   props: {
     icon: {
       type: String,
-      default: ''
+      default: "",
     },
     message: {
       type: String,
-      required: true
-    }
-  }
-})
+      required: true,
+    },
+  },
+});
 </script>
 
 <style></style>
