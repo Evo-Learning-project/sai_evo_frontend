@@ -8,8 +8,7 @@
       'my-4': size == 'default' && !marginLess,
       border: !highlighted,
       'border-2': highlighted,
-      'transition-shadow duration-75 ease-linear hover-shadow-elevation':
-        hoverable,
+      'transition-shadow duration-75 ease-linear hover-shadow-elevation': hoverable,
       'bg-light bg-opacity-80': filled,
     }"
   >
@@ -35,7 +34,7 @@
       :class="{
         'w-40': size == 'default' && !expandSideOnSmall,
         'md:w-10 w-8': size == 'sm' && !expandSideOnSmall,
-        'w-56': expandSideOnSmall,
+        'flex-grow md:w-52': expandSideOnSmall,
       }"
     >
       <slot name="side"></slot>
