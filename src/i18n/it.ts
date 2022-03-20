@@ -267,7 +267,7 @@ export const it = {
   },
   event_template_rule_editor: {
     exercise_number: "Slot",
-    choose_exercise: "Scegli esercizio",
+    choose_exercise: "Scegli esercizio...",
     change_exercise: "Cambia esercizio",
     populate_slot_title: "Seleziona esercizio per lo slot",
     mode_selection_text: "Come vuoi scegliere l'esercizio per questo slot?",

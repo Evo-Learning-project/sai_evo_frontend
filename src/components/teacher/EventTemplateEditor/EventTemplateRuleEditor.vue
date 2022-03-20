@@ -1,8 +1,8 @@
 <template>
   <div>
     <div
-      class="px-4 py-4"
-      :class="[modelValue._ordering % 2 ? 'bg-light' : 'bg-gray-50']"
+      class="px-4 pt-4 pb-5 rounded my-3 shadow hover:shadow-md transition-shadow duration-75 ease-in-out"
+      :class="[modelValue._ordering % 2 ? 'bg-white' : 'bg-gray-50']"
     >
       <div class="flex items-center">
         <span
@@ -16,7 +16,11 @@
         </h4>
         <div class="flex items-center ml-auto space-x-2">
           <Btn @click="showRuleDialog()" :size="'sm'">
-            {{ $t("event_template_rule_editor.choose_exercise") }}
+            <div class="flex items-center">
+              <span class="material-icons-outlined my-auto mr-1.5 mb-0.5">
+                settings_suggest </span
+              >{{ $t("event_template_rule_editor.choose_exercise") }}
+            </div>
           </Btn>
           <!--@click="deleteRule()"-->
           <Btn :size="'sm'" :variant="'icon'" :outline="true" @click="$emit('deleteRule')"
