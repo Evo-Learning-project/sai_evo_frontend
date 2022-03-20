@@ -537,6 +537,8 @@ export const it = {
   },
   help_texts: {
     exercise_editor: {
+      solution:
+        "Se pubblichi questo esercizio, quando viene incluso in un'esercitazione creata da uno studente, la soluzione verrà mostrata al termine della stessa.",
       public_tags:
         "Se pubblichi questo esercizio, i tag pubblici potranno essere utilizzati dagli studenti per cercarlo quando compongono un'esercitazione",
       private_tags:

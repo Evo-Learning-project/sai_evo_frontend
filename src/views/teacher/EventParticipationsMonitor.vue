@@ -6,9 +6,7 @@
           <div class="flex items-center space-x-3">
             <div>
               <div class="text-yellow-900 bg-yellow-500 icon-surrounding">
-                <span class="ml-px material-icons-outlined">
-                  priority_high
-                </span>
+                <span class="ml-px material-icons-outlined"> priority_high </span>
               </div>
             </div>
             <p class="">
@@ -27,9 +25,7 @@
                 v-if="resultsMode && thereArePartialAssessments"
                 class="text-yellow-900 bg-yellow-500 icon-surrounding"
               >
-                <span class="ml-px material-icons-outlined">
-                  pending_actions
-                </span>
+                <span class="ml-px material-icons-outlined"> pending_actions </span>
               </div>
               <div
                 v-else-if="thereAreUnpublishedAssessments"
@@ -37,10 +33,7 @@
               >
                 <span class="ml-px material-icons-outlined"> task </span>
               </div>
-              <div
-                v-else
-                class="bg-success-light text-success-dark icon-surrounding"
-              >
+              <div v-else class="bg-success-light text-success-dark icon-surrounding">
                 <span class="ml-px material-icons-outlined"> done </span>
               </div>
             </div>
@@ -49,15 +42,11 @@
               class="flex flex-wrap items-center"
             >
               <p class="">
-                {{
-                  $t("event_assessment.some_exams_require_manual_assessment")
-                }}
+                {{ $t("event_assessment.some_exams_require_manual_assessment") }}
               </p>
               <div class="flex flex-wrap items-center space-x-1">
                 <p>
-                  {{
-                    $t("event_assessment.exams_awaiting_assessment_are_marked")
-                  }}
+                  {{ $t("event_assessment.exams_awaiting_assessment_are_marked") }}
                 </p>
                 <span class="text-lg text-yellow-900 material-icons-outlined"
                   >pending_actions</span
@@ -279,12 +268,7 @@ import { createNamespacedHelpers } from "vuex";
 const { mapState, mapActions } = createNamespacedHelpers("teacher");
 
 import { getTranslatedString as _ } from "@/i18n";
-import {
-  CellClickedEvent,
-  ColDef,
-  RowClassParams,
-  RowNode,
-} from "ag-grid-community";
+import { CellClickedEvent, ColDef, RowClassParams, RowNode } from "ag-grid-community";
 import { icons as assessmentStateIcons } from "@/assets/assessmentStateIcons";
 import { icons as participationStateIcons } from "@/assets/participationStateIcons";
 import Dialog from "@/components/ui/Dialog.vue";
@@ -332,7 +316,7 @@ export default defineComponent({
             courseId: this.courseId,
             eventId: this.eventId,
           }),
-        3000
+        10000
       );
     }
   },
@@ -410,8 +394,7 @@ export default defineComponent({
       return this.event.state === EventState.RESTRICTED &&
         !this.event.users_allowed_past_closure?.includes(
           this.eventParticipations.find(
-            (p: EventParticipation) =>
-              p.id === (row.data as EventParticipation).id
+            (p: EventParticipation) => p.id === (row.data as EventParticipation).id
           )?.user?.id
         )
         ? ["bg-danger-important", "hover:bg-danger-important"]
@@ -457,9 +440,10 @@ export default defineComponent({
       // closing exams only for a group of participant means putting all of the
       // participants except those ones inside the `users_allowed_past_closure`
       // list of the exam and setting the exam state to CLOSED
-      const unselectedParticipations = (
-        this.eventParticipations as EventParticipation[]
-      ).filter((p) => !this.selectedParticipations.includes(p.id)); // these are the ones the exam will stay open for
+      const unselectedParticipations = (this
+        .eventParticipations as EventParticipation[]).filter(
+        (p) => !this.selectedParticipations.includes(p.id)
+      ); // these are the ones the exam will stay open for
       const unselectedUserIds = unselectedParticipations.map((p) => p.user.id);
       await this.withLoading(
         async () =>
@@ -493,9 +477,10 @@ export default defineComponent({
       // re-opening exam for a group of participants means adding those
       // participants to the `users_allowed_past_closure` list for the exam
 
-      const selectedParticipations = (
-        this.eventParticipations as EventParticipation[]
-      ).filter((p) => this.selectedParticipations.includes(p.id)); // these are the ones the exam will stay open for
+      const selectedParticipations = (this
+        .eventParticipations as EventParticipation[]).filter((p) =>
+        this.selectedParticipations.includes(p.id)
+      ); // these are the ones the exam will stay open for
 
       const selectedUserIds = selectedParticipations.map((p) => p.user.id);
       await this.withLoading(
@@ -693,14 +678,12 @@ export default defineComponent({
     thereArePartialAssessments() {
       return this.eventParticipations.some(
         (p: EventParticipation) =>
-          p.assessment_progress ==
-          ParticipationAssessmentProgress.PARTIALLY_ASSESSED
+          p.assessment_progress == ParticipationAssessmentProgress.PARTIALLY_ASSESSED
       );
     },
     thereAreUnpublishedAssessments() {
       return this.eventParticipations.some(
-        (p: EventParticipation) =>
-          p.visibility != AssessmentVisibility.PUBLISHED
+        (p: EventParticipation) => p.visibility != AssessmentVisibility.PUBLISHED
       );
     },
     participationPreviewColumns(): ColDef[] {
@@ -718,14 +701,11 @@ export default defineComponent({
                 headerName: _("event_participation_headings.state"),
                 cellRenderer: (params: any) =>
                   `<span class="${
-                    params.value ==
-                    ParticipationAssessmentProgress.PARTIALLY_ASSESSED
+                    params.value == ParticipationAssessmentProgress.PARTIALLY_ASSESSED
                       ? "text-yellow-900"
                       : "text-success"
                   } pt-2 ml-1 text-lg material-icons-outlined">${
-                    assessmentStateIcons[
-                      params.value as ParticipationAssessmentProgress
-                    ]
+                    assessmentStateIcons[params.value as ParticipationAssessmentProgress]
                   }</span>`,
               },
             ]
@@ -735,9 +715,7 @@ export default defineComponent({
               {
                 field: "state", // participation state (in progress / turned in)
                 width: 90,
-                headerName: _(
-                  "event_participation_headings.participation_state"
-                ),
+                headerName: _("event_participation_headings.participation_state"),
                 cellRenderer: (params: any) =>
                   `<div title="${_(
                     "event_participation_states." + params.value
@@ -747,9 +725,7 @@ export default defineComponent({
                       ? "text-muted"
                       : "text-success"
                   } text-lg material-icons-outlined">${
-                    participationStateIcons[
-                      params.value as EventParticipationState
-                    ]
+                    participationStateIcons[params.value as EventParticipationState]
                   }</span></div>`,
               },
             ]
@@ -787,8 +763,7 @@ export default defineComponent({
               "transition-opacity duration-75 hover:opacity-100 opacity-70 "
             }">` +
             `<span class="mx-auto ${
-              params.value.score ??
-              "text-lg text-yellow-900 material-icons-outlined"
+              params.value.score ?? "text-lg text-yellow-900 material-icons-outlined"
             }">
                   ${params.value.score ?? "pending_actions"}
                 </span>` +

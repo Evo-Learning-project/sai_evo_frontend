@@ -4,6 +4,7 @@
       <div class="flex items-start w-full">
         <h3
           class="flex-grow"
+          :class="{ 'text-muted font-semibold': event.name.length === 0 }"
           style="
             display: -webkit-box;
             -webkit-line-clamp: 2;
@@ -18,8 +19,7 @@
             class="mr-0 chip"
             :class="{
               'chip-primary':
-                event.state === EventState.OPEN ||
-                event.state === EventState.RESTRICTED,
+                event.state === EventState.OPEN || event.state === EventState.RESTRICTED,
               'chip-light': event.state === EventState.CLOSED,
             }"
           >
@@ -51,8 +51,7 @@
         </div>
         <div class="flex items-end mt-auto">
           <div class="flex mr-auto space-x-2">
-            <router-link
-              :to="{ name: 'ExamEditor', params: { examId: event.id } }"
+            <router-link :to="{ name: 'ExamEditor', params: { examId: event.id } }"
               ><Btn v-if="hasPrivileges([CoursePrivilege.MANAGE_EVENTS])"
                 ><span class="text-base material-icons-outlined"> edit </span>
                 <span class="ml-1.5" v-if="!buttonIconsOnly">{{
@@ -78,12 +77,8 @@
           <router-link
             v-if="hasBegun"
             :to="{ name: 'ExamProgress', params: { examId: event.id } }"
-            ><Btn
-              :outline="true"
-              v-if="hasPrivileges([CoursePrivilege.MANAGE_EVENTS])"
-              ><span class="text-base material-icons-outlined">
-                visibility
-              </span>
+            ><Btn :outline="true" v-if="hasPrivileges([CoursePrivilege.MANAGE_EVENTS])"
+              ><span class="text-base material-icons-outlined"> visibility </span>
               <span class="ml-1.5 hidden md:inline" v-if="!buttonIconsOnly">{{
                 $t("event_preview.monitor")
               }}</span></Btn
@@ -91,13 +86,9 @@
           >
           <router-link
             :to="{ name: 'ExamResults', params: { examId: event.id } }"
-            v-else-if="
-              hasEnded && hasPrivileges([CoursePrivilege.ASSESS_PARTICIPATIONS])
-            "
+            v-else-if="hasEnded && hasPrivileges([CoursePrivilege.ASSESS_PARTICIPATIONS])"
             ><Btn :outline="true"
-              ><span class="text-base material-icons-outlined">
-                bar_chart
-              </span>
+              ><span class="text-base material-icons-outlined"> bar_chart </span>
               <span class="ml-1.5" v-if="!buttonIconsOnly">{{
                 $t("event_preview.results")
               }}</span></Btn
@@ -170,8 +161,7 @@ export default defineComponent({
     },
     hasBegun() {
       return (
-        this.event.state === EventState.OPEN ||
-        this.event.state === EventState.RESTRICTED
+        this.event.state === EventState.OPEN || this.event.state === EventState.RESTRICTED
       );
     },
     hasEnded() {
