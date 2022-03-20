@@ -231,7 +231,7 @@
       @apply opacity-100 !important;
     }
 
-    .tooltip:hover .tooltip-text {
+    .tooltip-handle:hover ~ .tooltip-text {
       @apply opacity-100;
     }
 

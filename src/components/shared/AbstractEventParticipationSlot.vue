@@ -1,7 +1,11 @@
 <template>
   <div class="">
     <div class="w-full">
+      <!-- exercise label (shown in teacher mode) -->
       <h3 v-if="showExerciseLabel">{{ exercise.label }}</h3>
+
+      <!-- exercise text (not shown if programming exercise and not in review mode) -->
+      <!-- TODO clarify condition (!allowEditSubmission && !showExerciseLabel) -->
       <div
         class="mb-8 user-content"
         :class="{
@@ -13,6 +17,8 @@
         "
         v-html="exercise.text"
       ></div>
+
+      <!-- if assessment edit mode, make flex so to fit submission on the left and assessment on the right -->
       <div
         :class="{
           'flex  md:flex-row flex-col md:space-y-0 space-y-4 md:space-x-8':
@@ -34,10 +40,6 @@
             <p class="mb-2 text-sm text-muted text-primary font-semibold">
               {{ description }}
             </p>
-
-            <!-- <div class="px-2 py-1.25px rounded-md mb-2 bg-gray-50">
-        <p class="text-sm text-muted">{{ description }}</p>
-      </div> -->
           </CheckboxGroup>
 
           <!-- multiple choice single possible -->
@@ -82,6 +84,7 @@
             @runCode="$emit('runCode')"
             :showEditor="allowEditSubmission"
           ></ProgrammingExercise>
+          <!-- if reviewing submission, just show submitted code and execution results-->
           <div
             v-else-if="exercise.exercise_type === ExerciseType.JS && !allowEditSubmission"
           >
@@ -105,24 +108,28 @@
           ></FileUpload>
         </div>
 
-        <!-- show assessment-->
+        <!-- assessment card-->
         <div
           class="px-6 py-3 mb-auto rounded md:self-start md:w-1/2 bg-light shadow-elevation-2 bg-opacity-70"
           v-if="showAssessment"
         >
-          <!-- style="background-color: #e6f4ea; border: 1px solid #dadce0" -->
+          <!-- score -->
           <p class="text-muted">
             {{ $t("misc.score") }}:
             <strong class="text-lg">{{ modelValue.score }}</strong>
-            <span v-if="!!modelValue.exercise.max_score"
+            <span v-if="modelValue.exercise.max_score"
               >&nbsp;{{ $t("misc.out_of") }}
               <strong class="text-lg"> {{ modelValue.exercise.max_score }}</strong></span
             >
           </p>
+
+          <!-- teacher comment -->
           <p v-if="(modelValue.comment?.length ?? 0) > 0" class="mt-2 text-muted">
             {{ $t("misc.teacher_comment") }}:
           </p>
           <p v-html="modelValue.comment"></p>
+
+          <!-- exercise solution -->
           <p
             v-if="(modelValue.exercise.solution?.length ?? 0) > 0"
             class="mt-2 text-muted"
@@ -160,6 +167,7 @@
               </div>
             </div>
           </div>
+          <!-- notice text to assess -->
           <p
             class="text-sm text-muted text-danger-dark"
             v-if="modelValue.score == null || modelValue.score.length == 0"
@@ -167,6 +175,7 @@
             {{ $t("event_assessment.this_exercise_requires_manual_assessment") }}
           </p>
           <div class="mt-4">
+            <!-- actual assessment controls -->
             <p>
               <NumberInput
                 class="mb-4"
