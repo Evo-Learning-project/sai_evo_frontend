@@ -1,16 +1,16 @@
 <template>
   <Card :hoverable="true" :expandSideOnSmall="true">
     <template v-slot:header>
-      <div class="flex items-center">
+      <div class="flex md:items-center items-start">
         <span class="mr-2 material-icons-two-tone two-tone-primary">book</span>
         <h3 class="text-base md:text-xl">{{ course.name }}</h3>
       </div>
     </template>
     <template v-if="true || (course.description?.length ?? 0) > 0" v-slot:body>
-      <div class="flex items-center">
+      <div class="flex items-center px-1">
         <p class="text-sm text-muted" v-html="course.description"></p>
       </div>
-      <div class="md:hidden mt-2 flex items-stretch">
+      <div class="md:hidden mt-2 flex items-stretch px-1">
         <router-link
           class="w-full"
           :to="{
@@ -25,7 +25,7 @@
         >
         <router-link
           v-if="canAccessCoursePanel"
-          class="w-full ml-4"
+          class="w-full ml-2.5"
           :to="{
             name: 'TeacherCourseDashboard',
             params: { courseId: course.id },
