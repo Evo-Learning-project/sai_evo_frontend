@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col flex-grow">
-    <nav class="relative z-50 md:px-12 bg-primary">
+    <nav class="relative py-0.5 z-50 md:px-12 bg-primary">
       <div class="px-4 mx-auto sm:px-6 lg:px-8">
         <div class="flex items-center justify-between h-14">
           <div class="flex items-center">
@@ -27,12 +27,14 @@
               </div>
             </div>
           </div>
-          <div class="hidden md:block">
+          <div class="">
             <div
               v-if="$store.getters['shared/isAuthenticated']"
               class="flex items-center ml-4 space-x-2 md:ml-6"
             >
-              <p class="text-lightText">{{ $store.getters["shared/email"] }}</p>
+              <p class="text-lightText text-xs md:text-base">
+                {{ $store.getters["shared/email"] }}
+              </p>
               <Btn @click="logOut()" :variant="'icon'" :outline="true"
                 ><span class="text-lg text-lightText material-icons-outlined">
                   logout

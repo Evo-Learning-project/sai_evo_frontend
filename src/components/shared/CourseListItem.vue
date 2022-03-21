@@ -7,7 +7,7 @@
         <span
           v-if="course.hidden"
           :title="$t('misc.hidden_to_students')"
-          class="ml-2 pt-1 my-auto opacity-40 text-lg material-icons-outlined"
+          class="ml-2 md:pt-1 my-auto opacity-40 text-lg material-icons-outlined"
         >
           visibility_off
         </span>
