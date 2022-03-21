@@ -126,6 +126,7 @@ export const it = {
     exercise_answered_at: "Risposto:",
   },
   misc: {
+    hidden_to_students: "Nascosto agli studenti",
     file_upload_no_files: "Nessun file presente",
     file_upload: "Trascina qui il tuo file oppure clicca qui",
     course_settings: "Impostazioni corso",

@@ -4,6 +4,13 @@
       <div class="flex md:items-center items-start">
         <span class="mr-2 material-icons-two-tone two-tone-primary">book</span>
         <h3 class="text-base md:text-xl">{{ course.name }}</h3>
+        <span
+          v-if="course.hidden"
+          :title="$t('misc.hidden_to_students')"
+          class="ml-2 pt-1 my-auto opacity-40 text-lg material-icons-outlined"
+        >
+          visibility_off
+        </span>
       </div>
     </template>
     <template v-if="true || (course.description?.length ?? 0) > 0" v-slot:body>
