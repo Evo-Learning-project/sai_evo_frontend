@@ -8,7 +8,8 @@
     @before-adding-tag="beforeAddingTag($event)"
     @before-deleting-tag="beforeDeletingTag($event)"
     :autocomplete-items="autoCompleteItems"
-    :autocomplete-min-length="1"
+    :autocomplete-min-length="alwaysShowAutocomplete ? 0 : 1"
+    :autocomplete-filter-duplicates="false"
   />
   <!--@tags-changed="newTags => onTagsChanged(newTags)"-->
 </template>
@@ -55,6 +56,10 @@ export default defineComponent({
       default: () => [],
     },
     existingOnly: {
+      type: Boolean,
+      default: false,
+    },
+    alwaysShowAutocomplete: {
       type: Boolean,
       default: false,
     },

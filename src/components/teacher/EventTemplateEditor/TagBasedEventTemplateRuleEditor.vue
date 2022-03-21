@@ -16,10 +16,7 @@
         }}</Btn></router-link
       >
     </div>
-    <div
-      class="flex flex-col"
-      v-if="!showTeacherIntroductionText && tags.length === 0"
-    >
+    <div class="flex flex-col" v-if="!showTeacherIntroductionText && tags.length === 0">
       <p class="mb-2 text-muted text-danger-dark">
         {{ $t("event_template_rule_editor.no_tags_student") }}
       </p>
@@ -41,21 +38,18 @@
         >
           <p v-if="index === 0" class="mb-2">
             {{ $t("event_template_rule_editor.tag_based_select_exercises") }}
-            <strong>{{
-              $t("event_template_rule_editor.tag_based_at_least_one")
-            }}</strong>
+            <strong>{{ $t("event_template_rule_editor.tag_based_at_least_one") }}</strong>
             {{ $t("event_template_rule_editor.tag_based_among") }}
           </p>
           <p v-else>
             {{ $t("event_template_rule_editor.tag_based_and") }}
-            <strong>{{
-              $t("event_template_rule_editor.tag_based_at_least_one")
-            }}</strong>
+            <strong>{{ $t("event_template_rule_editor.tag_based_at_least_one") }}</strong>
             {{ $t("event_template_rule_editor.tag_based_among") }}
           </p>
           <TagInput
             :placeholder="$t('misc.tags')"
             :modelValue="clause.tags"
+            :alwaysShowAutocomplete="!allowCreateMoreClauses"
             @addTag="onAddTag(clause, $event)"
             @removeTag="onRemoveTag(clause, $event)"
             :choices="tags"
@@ -65,13 +59,11 @@
         <div
           v-if="allowCreateMoreClauses"
           @click="onAddClause"
-          class="mt-2 transition-opacity duration-75 opacity-50 cursor-pointer  hover:opacity-100"
+          class="mt-2 transition-opacity duration-75 opacity-50 cursor-pointer hover:opacity-100"
         >
           <p>
             {{ $t("event_template_rule_editor.tag_based_and") }}
-            <strong>{{
-              $t("event_template_rule_editor.tag_based_at_least_one")
-            }}</strong>
+            <strong>{{ $t("event_template_rule_editor.tag_based_at_least_one") }}</strong>
             {{ $t("event_template_rule_editor.tag_based_among") }}
           </p>
           <TagInput
@@ -84,7 +76,7 @@
       </div>
       <div
         v-if="showPreview"
-        class="relative flex px-5 py-5 border border-gray-200 rounded-md  md:w-9/12 md:ml-16 md:max-h-64 bg-gray-50"
+        class="relative flex px-5 py-5 border border-gray-200 rounded-md md:w-9/12 md:ml-16 md:max-h-64 bg-gray-50"
       >
         <SkeletonCard
           v-if="false && localLoading"
@@ -94,7 +86,7 @@
         <Spinner
           :size="'xl'"
           :fast="true"
-          class="absolute transform -translate-x-1/2 -translate-y-1/2  top-1/2 left-1/2"
+          class="absolute transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
           v-if="localLoading"
         ></Spinner>
         <div
@@ -115,9 +107,7 @@
           ></MinimalExercisePreview>
           <div v-else class="flex flex-col items-center my-auto opacity-60">
             <span class="material-icons-outlined">error_outline</span>
-            <p>
-              Non ci sono esercizi con i tag richiesti: modifica le condizioni
-            </p>
+            <p>Non ci sono esercizi con i tag richiesti: modifica le condizioni</p>
           </div>
         </div>
       </div>
