@@ -97,6 +97,17 @@
                 </span>
               </Btn>
             </div>
+            <div
+              class="flex flex-col mt-4  md:items-center md:flex-row md:space-x-2"
+            >
+              <p class="text-muted">Link al corso per gli studenti</p>
+              <CopyToClipboard
+                v-if="!isDraft && !hasEnded"
+                :value="permalink"
+                :title="$t('event_preview.copy_link')"
+                :confirmationMessage="$t('event_preview.copied_link')"
+              ></CopyToClipboard>
+            </div>
           </div>
 
           <div class="flex flex-col items-end mt-4 md:mt-0 md:w-2/5">
@@ -229,6 +240,7 @@ import useVuelidate from "@vuelidate/core";
 
 import { courseValidation } from "@/validation/models";
 import { teacherTourSteps, tourOptions } from "@/const";
+import CopyToClipboard from "@/components/ui/CopyToClipboard.vue";
 
 export default defineComponent({
   name: "CourseDashboard",
@@ -242,6 +254,7 @@ export default defineComponent({
     Toggle,
     Card,
     TextEditor,
+    CopyToClipboard,
   },
   mixins: [courseIdMixin, loadingMixin, coursePrivilegeMixin],
   setup() {
@@ -345,6 +358,15 @@ export default defineComponent({
         name: this.dirtyCourseName,
         description: this.dirtyCourseDescription,
       };
+    },
+    permalink(): string {
+      return (
+        window.location.origin +
+        this.$router.resolve({
+          name: "StudentCourseDashboard",
+          params: { courseId: this.courseId },
+        }).fullPath
+      );
     },
   },
 });
