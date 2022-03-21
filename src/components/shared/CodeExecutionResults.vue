@@ -1,6 +1,11 @@
 <template>
   <div>
     <div v-if="slot.execution_results?.tests">
+      <div v-if="slot.execution_results.tests.length === 0">
+        <p class="px-4 text-muted">
+          {{ $t("programming_exercise.results_ok_but_no_testcases") }}
+        </p>
+      </div>
       <div
         v-for="(test, index) in slot.execution_results.tests"
         :key="'details-' + test.id"

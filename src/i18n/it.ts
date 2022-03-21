@@ -396,6 +396,10 @@ export const it = {
     not_passed: "Non superato",
     test_failed_with_error: "Il test ha fallito producendo il seguente errore",
     code_errored: "L'esecuzione del codice ha prodotto il seguente errore",
+    no_testcases:
+      "Questo esercizio non contiene test case. Prova a chiedere al docente di inserirne qualcuno.",
+    results_ok_but_no_testcases:
+      "L'esecuzione del tuo codice non ha prodotto errori. Purtroppo questo esercizio non ha test case, quindi questo è tutto ciò che sappiamo.",
   },
   exercise_types: {
     [ExerciseType.MULTIPLE_CHOICE_SINGLE_POSSIBLE]:

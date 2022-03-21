@@ -170,7 +170,9 @@
         {{ routeTitle }}
       </h1>
       <ErrorView v-if="!!$store.state.shared.pageWideErrorData"></ErrorView>
-      <router-view v-else class="flex-grow"></router-view>
+      <keep-alive v-else include="CourseExams,CourseExercises,asd"
+        ><router-view :key="courseId" class="flex-grow"></router-view
+      ></keep-alive>
       <transition name="quick-bounce"
         ><SnackBar
           class="w-full px-4"
