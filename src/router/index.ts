@@ -61,6 +61,7 @@ const routes: Array<RouteRecordRaw> = [
         name: "TeacherCourseList",
         component: CourseList,
         meta: {
+          teachersOnly: true,
           routeTitle: _("headings.course_list"),
           sidebarOptions: courseListSidebarOptions,
         },
@@ -70,6 +71,7 @@ const routes: Array<RouteRecordRaw> = [
         name: "CourseCreationForm",
         component: CourseCreationForm,
         meta: {
+          teachersOnly: true,
           routeTitle: _("headings.new_course"),
           sidebarOptions: courseListSidebarOptions,
         },
@@ -250,6 +252,11 @@ router.beforeEach((to, from, next) => {
   }
   if (!store.getters["shared/isAuthenticated"] && to.name !== "Login") {
     next({ name: "Login", query: { redirect: to.fullPath } });
+  } else if (
+    to.meta.teachersOnly &&
+    !(store.state as { shared: SharedState }).shared.user.is_teacher
+  ) {
+    next({ name: "StudentCourseList" });
   } else {
     next();
   }
