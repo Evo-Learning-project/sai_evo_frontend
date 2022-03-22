@@ -143,6 +143,19 @@ const routes: Array<RouteRecordRaw> = [
           routeTitle: _("headings.exam_results"),
         },
       },
+      {
+        path: "courses/:courseId/exams/:examId/participations/:participationId",
+        component: EventParticipationFull,
+        name: "ExamParticipationFull",
+        meta: {
+          routeTitle: _("headings.practice_summary"),
+          sidebarOptions: courseDashboardSidebarOptions,
+        },
+        props: {
+          showAssessment: true,
+          allowEditScores: true,
+        },
+      },
     ],
   },
   {

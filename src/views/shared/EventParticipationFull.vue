@@ -124,6 +124,7 @@ export default defineComponent({
     // participation is still in progress and exam is
     // still open, redirect to participation page
     if (
+      !this.allowEditScores && // not in teacher mode
       this.participation.state !== EventParticipationState.TURNED_IN &&
       this.participation.event.state === EventState.OPEN
     ) {

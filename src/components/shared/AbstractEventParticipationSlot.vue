@@ -111,17 +111,30 @@
         <!-- assessment card-->
         <div
           class="px-6 py-3 mb-auto rounded md:self-start md:w-1/2 bg-light shadow-elevation-2 bg-opacity-70"
-          v-if="showAssessment"
+          v-if="showAssessment && (!showAssessmentControls || !allowEditScores)"
         >
           <!-- score -->
-          <p class="text-muted">
-            {{ $t("misc.score") }}:
-            <strong class="text-lg">{{ modelValue.score }}</strong>
-            <span v-if="modelValue.exercise.max_score"
-              >&nbsp;{{ $t("misc.out_of") }}
-              <strong class="text-lg"> {{ modelValue.exercise.max_score }}</strong></span
+          <div class="flex items-center space-x-2">
+            <p class="text-muted">
+              {{ $t("misc.score") }}:
+              <strong class="text-lg">{{ modelValue.score }}</strong>
+              <span v-if="modelValue.exercise.max_score"
+                >&nbsp;{{ $t("misc.out_of") }}
+                <strong class="text-lg">
+                  {{ modelValue.exercise.max_score }}</strong
+                ></span
+              >
+            </p>
+            <Btn
+              v-if="allowEditScores"
+              :outline="true"
+              :variant="'icon'"
+              @click="showAssessmentControls = true"
+              ><span class="text-gray-600 material-icons-outlined text-lg"
+                >edit</span
+              ></Btn
             >
-          </p>
+          </div>
 
           <!-- teacher comment -->
           <p v-if="(modelValue.comment?.length ?? 0) > 0" class="mt-2 text-muted">
@@ -140,8 +153,13 @@
         </div>
 
         <!-- controls to assess -->
-        <div v-if="allowEditScores" class="flex flex-col md:w-1/2">
-          <!-- -->
+        <div
+          v-if="allowEditScores && (!showAssessment || showAssessmentControls)"
+          class="flex flex-col md:w-1/2"
+          :class="{
+            'rounded bg-light shadow-elevation-2 bg-opacity-70 px-6 py-8': showAssessmentControls,
+          }"
+        >
           <div class="flex flex-col md:flex-row md:items-center">
             <h3>{{ $t("event_assessment.your_assessment") }}</h3>
             <div
@@ -191,6 +209,29 @@
               >
             </p>
           </div>
+          <!-- controls to save or discard changes -->
+          <div v-if="showAssessmentControls" class="ml-auto mt-4">
+            <Btn
+              class="mr-2"
+              :outline="false"
+              :variant="'primary'"
+              :loading="false"
+              @click="$emit('blabla')"
+            >
+              Salva valutazione
+              <!-- <span class="text-xl text-primary material-icons-outlined"> save </span> -->
+            </Btn>
+            <Btn
+              :outline="true"
+              class=""
+              :variant="'primary'"
+              @click="showAssessmentControls = false"
+            >
+              <!-- <span class="text-xl text-danger-dark material-icons-outlined">
+                close
+              </span> -->Annulla
+            </Btn>
+          </div>
         </div>
       </div>
     </div>
@@ -213,6 +254,7 @@ import CodeExecutionResults from "./CodeExecutionResults.vue";
 import { texMixin } from "@/mixins";
 import FileUpload from "../ui/FileUpload.vue";
 import { downloadEventParticipationSlotAttachment } from "@/api/events";
+import Btn from "../ui/Btn.vue";
 
 export default defineComponent({
   components: {
@@ -225,6 +267,7 @@ export default defineComponent({
     CodeFragment,
     CodeExecutionResults,
     FileUpload,
+    Btn,
   },
   name: "AbstractEventParticipationSlot",
   props: {
@@ -276,6 +319,7 @@ export default defineComponent({
   data() {
     return {
       ExerciseType,
+      showAssessmentControls: false,
     };
   },
   computed: {

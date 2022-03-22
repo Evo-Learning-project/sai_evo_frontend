@@ -407,8 +407,16 @@ export default defineComponent({
         .map((n: any) => n.data.id);
     },
     onCellClicked(event: CellClickedEvent) {
+      // open full participation
+      if (event.colDef.field === "email") {
+        console.log(event.data.id);
+        this.$router.push({
+          name: "ExamParticipationFull",
+          params: { participationId: event.data.id },
+        });
+      }
       // edit assessment slot
-      if (event.colDef.field?.startsWith("slot") && this.resultsMode) {
+      else if (event.colDef.field?.startsWith("slot") && this.resultsMode) {
         this.editingSlot = event.value;
 
         // deep copy slot to prevent affecting the original one while editing
@@ -693,6 +701,18 @@ export default defineComponent({
       let ret = [
         { field: "id", hide: true },
         { field: "visibility", hide: true },
+        {
+          field: "email",
+          headerName: _("event_participation_headings.email"),
+          width: 300,
+          cellRenderer: (params: any) =>
+            `<div class="flex items-center space-x-1">
+            <span class="ag-selectable-cell p-2 material-icons-outlined text-sm mr-2">launch</span>
+            ${params.value}</div>`,
+          checkboxSelection: true,
+          headerCheckboxSelection: true,
+          headerCheckboxSelectionFilteredOnly: true,
+        },
         ...(this.resultsMode
           ? [
               {
@@ -730,15 +750,6 @@ export default defineComponent({
               },
             ]
           : []),
-        {
-          field: "email",
-          headerName: _("event_participation_headings.email"),
-          width: 230,
-          cellRenderer: (params: any) => params.value,
-          checkboxSelection: true,
-          headerCheckboxSelection: true,
-          headerCheckboxSelectionFilteredOnly: true,
-        },
         {
           field: "fullName",
           headerName: _("misc.full_name"),
