@@ -26,7 +26,9 @@ export const getUrlQueryParams = (filters: SearchFilter | null): string => {
     ret += "&";
   }
   if (filters.label || filters.text) {
-    ret += `search=${filters.label ?? ""} ${filters.text ?? ""}`;
+    ret += `search=${encodeURIComponent(
+      filters.label ?? ""
+    )} ${encodeURIComponent(filters.text ?? "")}`;
   }
 
   return ret;
