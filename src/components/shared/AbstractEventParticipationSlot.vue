@@ -114,6 +114,17 @@
           v-if="showAssessment && (!showAssessmentControls || !allowEditScores)"
         >
           <!-- score -->
+          <div
+            v-if="!showAssessmentControls && modelValue.score == null"
+            class="text-danger-dark text-muted text-sm flex items-center space-x-1"
+          >
+            <span class="my-auto text-base material-icons-outlined text-yellow-900"
+              >pending_actions</span
+            >
+            <p>
+              {{ $t("event_assessment.this_exercise_requires_manual_assessment") }}
+            </p>
+          </div>
           <div class="flex items-center space-x-2">
             <p class="text-muted">
               {{ $t("misc.score") }}:
@@ -217,8 +228,7 @@
               :loading="assessmentLoading"
               @click="onHideAssessmentControls()"
             >
-              Salva valutazione
-              <!-- <span class="text-xl text-primary material-icons-outlined"> save </span> -->
+              {{ $t("event_assessment.confirm_assessment") }}
             </Btn>
             <Btn
               :outline="true"
@@ -226,9 +236,7 @@
               :variant="'primary'"
               @click="onHideAssessmentControls(true)"
             >
-              <!-- <span class="text-xl text-danger-dark material-icons-outlined">
-                close
-              </span> -->Annulla
+              {{ $t("dialog.default_cancel_text") }}
             </Btn>
           </div>
         </div>

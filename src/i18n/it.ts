@@ -115,15 +115,19 @@ export const it = {
       "Questo commento sarà visibile allo studente quando pubblicherai i risultati",
     this_exercise_requires_manual_assessment:
       "Devi assegnare manualmente un punteggio a questa risposta.",
+    some_slots_pending:
+      "Il punteggio mostrato è incompleto perché alcuni esercizi non hanno ancora ricevuto una valutazione. Assegna un punteggio agli esercizi che ancora non ne hanno uno.",
     assessment_state: "Stato della correzione",
     confirm_assessment: "Salva valutazione",
     exercise: "esercizio",
     assess: "Valuta",
     assigned_score: "Punteggio assegnato",
+    overall_score: "Punteggio",
     your_assessment: "La tua valutazione",
     text_answer_label: "Risposta dello studente",
     exercise_seen_at: "Visto:",
     exercise_answered_at: "Risposto:",
+    viewing_participation_of: "Stai visualizzando l'esame di",
   },
   misc: {
     hidden_to_students: "Nascosto agli studenti",
@@ -523,6 +527,7 @@ export const it = {
   errors: {
     retry: "Riprova",
     no_connection: "Connessione assente",
+    400: "La tua richiesta contiene un errore",
     403: "Non hai i permessi necessari per effettuare quest'azione",
     404: "La pagina richiesta non sembra esistere",
     500: "Si è verificato un errore interno",
