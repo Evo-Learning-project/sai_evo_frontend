@@ -376,7 +376,7 @@ export default defineComponent({
       const newTestcase: ExerciseTestCase = await this.addExerciseTestCase({
         courseId: this.courseId,
         exerciseId: this.modelValue.id,
-        testcase: getBlankTestCase(),
+        testCase: getBlankTestCase(),
       });
       this.instantiateTestCaseAutoSaveManager(newTestcase);
     },

@@ -39,10 +39,10 @@
             :class="{ 'py-3': !showEditScore, 'py-8': showEditScore }"
           >
             <div class="items-center flex space-x-2" v-if="!showEditScore">
-              <h4 class="text-muted">
+              <p class="text-muted">
                 {{ $t("misc.score") }}:
                 <strong>{{ participation.score }}</strong>
-              </h4>
+              </p>
               <Btn
                 v-if="allowEditScores"
                 :outline="true"
@@ -95,7 +95,7 @@
         </div>
       </div>
       <div
-        class="flex space-x-2 items-start mt-2 w-3/5"
+        class="flex space-x-2 items-start mt-2 md:w-3/5"
         v-if="allowEditScores && someSlotsPending"
       >
         <span class="text-xl material-icons-outlined text-yellow-900"
