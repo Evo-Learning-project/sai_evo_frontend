@@ -17,6 +17,14 @@
         </div>
       </template></Card
     >
+    <div class="mb-4 items-center flex space-x-3" v-if="!firstLoading && allowEditScores">
+      <router-link :to="{ name: 'ExamProgress' }"
+        ><Btn :outline="true" :variant="'icon'"
+          ><span class="material-icons-outlined">arrow_back</span></Btn
+        ></router-link
+      >
+      <h3>Esame di {{ participation.user.full_name }}</h3>
+    </div>
     <div class="px-2 py-6 rounded-md md:px-6 bg-gray-50" v-if="!firstLoading">
       <div class="flex flex-col mb-12 space-y-2 md:flex-row md:space-y-0">
         <div class="" v-if="showAssessment && !firstLoading">
@@ -56,9 +64,15 @@
         </h3>
         <AbstractEventParticipationSlot
           :modelValue="slot"
+          @updateAssessment="onSlotUpdateAssessment(slot, $event)"
           :allowEditScores="allowEditScores"
           :showScores="showScores"
           :showAssessment="showAssessment"
+          :showAssessmentControls="slotsAssessmentControlsVisibility[slot.id] ?? false"
+          @setAssessmentControlsVisibility="
+            slotsAssessmentControlsVisibility[slot.id] = $event
+          "
+          :assessmentLoading="slotsAssessmentLoading[slot.id] ?? false"
         ></AbstractEventParticipationSlot>
       </div>
     </div>
@@ -76,12 +90,13 @@ import { courseIdMixin, eventIdMixin, loadingMixin } from "@/mixins";
 import { defineComponent } from "@vue/runtime-core";
 import AbstractEventParticipationSlot from "@/components/shared/AbstractEventParticipationSlot.vue";
 
-import { createNamespacedHelpers } from "vuex";
+import { createNamespacedHelpers, mapActions } from "vuex";
 import Card from "@/components/ui/Card.vue";
-import { EventParticipationState, EventState } from "@/models";
+import { EventParticipationSlot, EventParticipationState, EventState } from "@/models";
 import Timestamp from "@/components/ui/Timestamp.vue";
 import SlotSkeleton from "@/components/ui/skeletons/SlotSkeleton.vue";
-const { mapState, mapActions } = createNamespacedHelpers("student");
+import Btn from "@/components/ui/Btn.vue";
+const { mapState, mapMutations } = createNamespacedHelpers("student");
 
 export default defineComponent({
   name: "EventParticipationFull",
@@ -110,6 +125,7 @@ export default defineComponent({
     Card,
     Timestamp,
     SlotSkeleton,
+    Btn,
   },
   async created() {
     await this.withFirstLoading(
@@ -136,13 +152,38 @@ export default defineComponent({
       });
     }
   },
-  // data() {
-  //   return {
-  //     firstLoading: false,
-  //   };
-  // },
+  data() {
+    return {
+      slotsAssessmentControlsVisibility: {} as Record<string, boolean>,
+      slotsAssessmentLoading: {} as Record<string, boolean>,
+    };
+  },
   methods: {
-    ...mapActions(["getEventParticipation"]),
+    ...mapActions("student", ["getEventParticipation"]),
+    ...mapActions("teacher", ["partialUpdateEventParticipationSlot"]),
+    ...mapMutations(["setCurrentEventParticipationSlot"]),
+    async onSlotUpdateAssessment(
+      slot: EventParticipationSlot,
+      assessment: { score: number; comment: string }
+    ) {
+      this.slotsAssessmentLoading[slot.id] = true;
+      try {
+        const updatedSlot = await this.partialUpdateEventParticipationSlot({
+          courseId: this.courseId,
+          eventId: this.eventId,
+          participationId: this.participation.id,
+          slotId: slot.id,
+          changes: assessment,
+          mutate: false,
+        });
+        this.setCurrentEventParticipationSlot(updatedSlot);
+        this.slotsAssessmentControlsVisibility[slot.id] = false;
+      } catch (e) {
+        this.setErrorNotification(e);
+      } finally {
+        this.slotsAssessmentLoading[slot.id] = false;
+      }
+    },
   },
   computed: {
     ...mapState({ participation: "currentEventParticipation" }),

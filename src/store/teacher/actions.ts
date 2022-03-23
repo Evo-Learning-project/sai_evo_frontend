@@ -547,5 +547,6 @@ export const actions = {
         participationId,
       });
     }
+    return response;
   },
 };

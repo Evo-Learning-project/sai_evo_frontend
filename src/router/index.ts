@@ -148,7 +148,7 @@ const routes: Array<RouteRecordRaw> = [
         component: EventParticipationFull,
         name: "ExamParticipationFull",
         meta: {
-          routeTitle: _("headings.practice_summary"),
+          //routeTitle: _("headings.practice_summary"),
           sidebarOptions: courseDashboardSidebarOptions,
         },
         props: {

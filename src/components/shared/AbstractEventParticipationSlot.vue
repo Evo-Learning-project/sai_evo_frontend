@@ -129,7 +129,7 @@
               v-if="allowEditScores"
               :outline="true"
               :variant="'icon'"
-              @click="showAssessmentControls = true"
+              @click="onShowAssessmentControls()"
               ><span class="text-gray-600 material-icons-outlined text-lg"
                 >edit</span
               ></Btn
@@ -195,18 +195,17 @@
           <div class="mt-4">
             <!-- actual assessment controls -->
             <p>
-              <NumberInput
-                class="mb-4"
-                :modelValue="modelValue.score"
-                @update:modelValue="emitUpdate('score', $event)"
-                >{{ $t("event_assessment.assigned_score") }}
+              <NumberInput class="mb-4" v-model="scoreProxy"
+                >{{ $t("event_assessment.assigned_score")
+                }}<!--@update:modelValue="
+                  showAssessmentControls
+                    ? (dirtyScore = $event)
+                    : emitUpdate('score', $event)
+                "-->
               </NumberInput>
-              <TextEditor
-                class="w-full"
-                :modelValue="modelValue.comment"
-                @update:modelValue="emitUpdate('comment', $event)"
-                >{{ $t("event_assessment.comment_for_student") }}</TextEditor
-              >
+              <TextEditor class="w-full" v-model="commentProxy">{{
+                $t("event_assessment.comment_for_student")
+              }}</TextEditor>
             </p>
           </div>
           <!-- controls to save or discard changes -->
@@ -215,17 +214,17 @@
               class="mr-2"
               :outline="false"
               :variant="'primary'"
-              :loading="false"
-              @click="$emit('blabla')"
+              :loading="assessmentLoading"
+              @click="onHideAssessmentControls()"
             >
               Salva valutazione
               <!-- <span class="text-xl text-primary material-icons-outlined"> save </span> -->
             </Btn>
             <Btn
               :outline="true"
-              class=""
+              :disabled="assessmentLoading"
               :variant="'primary'"
-              @click="showAssessmentControls = false"
+              @click="onHideAssessmentControls(true)"
             >
               <!-- <span class="text-xl text-danger-dark material-icons-outlined">
                 close
@@ -276,22 +275,44 @@ export default defineComponent({
       required: true,
     },
     allowEditScores: {
+      // should be used when accessing as a teacher to assess the slot
       type: Boolean,
       default: false,
     },
     allowEditSubmission: {
+      // whether user should be able to edit the submission fields (answer text, selected choices etc.)
+      // to be used by students during the participation to an event
       type: Boolean,
       default: false,
     },
     showExerciseLabel: {
+      // whether the exercise label (i.e. name of the exercise) should be displayed
+      // to be used when displaying the exercise preview
       type: Boolean,
       default: false,
     },
     showScores: {
+      // whether the exercises' solutions and choices' scores should be displayed
+      // to be used when reviewing a participation to a practice event
       type: Boolean,
       default: false,
     },
     showAssessment: {
+      // whether the teacher assessment fields (scores and comments) should be displayed
+      // to be used when assessments are made available and a student displays them
+      type: Boolean,
+      default: false,
+    },
+    showAssessmentControls: {
+      // whether the card containing the input fields to assess the slot should be displayed
+      // should be used when accessing a full participation as a teacher and the user is editing
+      // the assessment fields of the slot (i.e. clicked on edit button)
+      type: Boolean,
+      default: false,
+    },
+    assessmentLoading: {
+      // used when dispatching the changes to the assessment slots, to disable the button
+      // until the action has succeeded
       type: Boolean,
       default: false,
     },
@@ -300,6 +321,7 @@ export default defineComponent({
       default: false,
     },
     running: {
+      // code for the submission if being run on the server
       type: Boolean,
     },
   },
@@ -315,11 +337,29 @@ export default defineComponent({
         [key]: value,
       });
     },
+    onShowAssessmentControls() {
+      this.$emit("setAssessmentControlsVisibility", true);
+      //this.showAssessmentControls = true;
+      this.dirtyComment = this.modelValue.comment;
+      this.dirtyScore = this.modelValue.score;
+    },
+    onHideAssessmentControls(discard = false) {
+      if (discard) {
+        this.$emit("setAssessmentControlsVisibility", false);
+        return;
+      }
+      this.$emit("updateAssessment", {
+        score: this.dirtyScore,
+        comment: this.dirtyComment,
+      });
+    },
   },
   data() {
     return {
       ExerciseType,
-      showAssessmentControls: false,
+      //showAssessmentControls: false,
+      dirtyScore: undefined as number | undefined,
+      dirtyComment: undefined as string | undefined,
     };
   },
   computed: {
@@ -374,6 +414,38 @@ export default defineComponent({
       },
       set(val: any) {
         this.$emit("updateAttachment", val);
+      },
+    },
+    // proxies used to get the correct values and emit the correct events for assessment
+    // fields depending on current usage mode of the component
+    scoreProxy: {
+      get() {
+        if (!this.showAssessmentControls) {
+          return this.modelValue.score;
+        }
+        return this.dirtyScore;
+      },
+      set(val: any) {
+        if (!this.showAssessmentControls) {
+          this.emitUpdate("score", val);
+        } else {
+          this.dirtyScore = val;
+        }
+      },
+    },
+    commentProxy: {
+      get() {
+        if (!this.showAssessmentControls) {
+          return this.modelValue.comment;
+        }
+        return this.dirtyComment;
+      },
+      set(val: any) {
+        if (!this.showAssessmentControls) {
+          this.emitUpdate("comment", val);
+        } else {
+          this.dirtyComment = val;
+        }
       },
     },
   },
