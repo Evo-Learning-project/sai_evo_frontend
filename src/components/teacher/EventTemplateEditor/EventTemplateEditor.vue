@@ -2,9 +2,28 @@
   <div class="">
     <h3 class="mb-3.5">{{ $t("event_template_editor.editor_title") }}</h3>
     <div class="mb-6">
-      <p class="mb-6 text-muted">
+      <p class="mb-6 text-muted" v-if="!showEditWarning">
         {{ $t("event_template_editor.introduction_text") }}
       </p>
+      <Card
+        v-else
+        class="bg-light shadow-elevation border-l-4 border-yellow-500 mb-8"
+        :border-less="true"
+      >
+        <template v-slot:header>
+          <div class="flex items-center space-x-2">
+            <div class="text-yellow-900 bg-yellow-500 icon-surrounding w-6 h-6">
+              <span class="ml-px material-icons-outlined text-lg"> priority_high </span>
+            </div>
+            <h4>{{ $t("misc.warning") }}</h4>
+          </div>
+        </template>
+        <template v-slot:body>
+          <p class="text-muted">
+            {{ $t("event_editor.edit_template_in_progress_warning") }}
+          </p>
+        </template>
+      </Card>
       <draggable
         ghost-class="drag-ghost"
         handle=".drag-handle"
@@ -25,25 +44,19 @@
             <template v-slot:error>
               <p
                 class="font-light text-muted text-danger-dark"
-                v-if="
-                  v$.$errors[0]?.$response?.$errors[index].rule_type.length > 0
-                "
+                v-if="v$.$errors[0]?.$response?.$errors[index].rule_type.length > 0"
               >
                 {{ $t("validation_errors.eventTemplateRule.no_rule_type") }}
               </p>
               <p
                 class="font-light text-muted text-danger-dark"
-                v-if="
-                  v$.$errors[0]?.$response?.$errors[index].exercises.length > 0
-                "
+                v-if="v$.$errors[0]?.$response?.$errors[index].exercises.length > 0"
               >
                 {{ $t("validation_errors.eventTemplateRule.no_exercises") }}
               </p>
               <p
                 class="font-light text-muted text-danger-dark"
-                v-if="
-                  v$.$errors[0]?.$response?.$errors[index].clauses.length > 0
-                "
+                v-if="v$.$errors[0]?.$response?.$errors[index].clauses.length > 0"
               >
                 {{ $t("validation_errors.eventTemplateRule.no_valid_clauses") }}
               </p>
@@ -55,8 +68,7 @@
 
     <div class="flex items-center mt-auto">
       <Btn @click="onAddRule()" :loading="localLoading"
-        ><span class="mr-1 text-base material-icons-outlined">
-          add_circle_outline </span
+        ><span class="mr-1 text-base material-icons-outlined"> add_circle_outline </span
         >{{ $t("event_template_editor.add_rule") }}</Btn
       >
     </div>
@@ -86,6 +98,7 @@ const { mapActions, mapMutations } = createNamespacedHelpers("teacher");
 
 import { eventTemplateValidation } from "@/validation/models";
 import useVuelidate from "@vuelidate/core";
+import Card from "@/components/ui/Card.vue";
 export default defineComponent({
   setup() {
     return { v$: useVuelidate() };
@@ -99,6 +112,7 @@ export default defineComponent({
     Btn,
     EventTemplateRuleEditor,
     draggable,
+    Card,
   },
   mixins: [courseIdMixin, loadingMixin],
   name: "EventTemplateEditor",
@@ -107,22 +121,21 @@ export default defineComponent({
       type: Object as PropType<EventTemplate>,
       required: true,
     },
+    showEditWarning: {
+      type: Boolean,
+      default: false,
+    },
   },
   created() {
     this.modelValue.rules.forEach((r) => {
       this.instantiateRuleAutoSaveManager(r);
-      r.clauses?.forEach((c) =>
-        this.instantiateRuleClauseAutoSaveManager(r.id, c)
-      );
+      r.clauses?.forEach((c) => this.instantiateRuleClauseAutoSaveManager(r.id, c));
     });
   },
   data() {
     return {
       elementId: uuid4(),
-      rulesAutoSaveInstances: {} as Record<
-        string,
-        AutoSaveManager<EventTemplateRule>
-      >,
+      rulesAutoSaveInstances: {} as Record<string, AutoSaveManager<EventTemplateRule>>,
       ruleClausesAutoSaveInstances: {} as Record<
         string,
         AutoSaveManager<EventTemplateRuleClause>
@@ -139,57 +152,57 @@ export default defineComponent({
     ]),
     ...mapMutations(["patchEventTemplateRule", "patchEventTemplateRuleClause"]),
     instantiateRuleAutoSaveManager(rule: EventTemplateRule) {
-      this.rulesAutoSaveInstances[rule.id] =
-        new AutoSaveManager<EventTemplateRule>(
-          rule,
-          async (changes) =>
-            await this.partialUpdateEventTemplateRule({
-              changes,
-              ruleId: rule.id,
-              templateId: this.modelValue.id,
-              courseId: this.courseId,
-              // re-fetch rules if ordering changed
-              reFetch: typeof changes._ordering !== "undefined",
-            }),
-          (changes) =>
-            this.patchEventTemplateRule({
-              payload: changes,
-              ruleId: rule.id,
-              templateId: this.modelValue.id,
-            }),
-          [],
-          0
-        );
+      this.rulesAutoSaveInstances[rule.id] = new AutoSaveManager<EventTemplateRule>(
+        rule,
+        async (changes) =>
+          await this.partialUpdateEventTemplateRule({
+            changes,
+            ruleId: rule.id,
+            templateId: this.modelValue.id,
+            courseId: this.courseId,
+            // re-fetch rules if ordering changed
+            reFetch: typeof changes._ordering !== "undefined",
+          }),
+        (changes) =>
+          this.patchEventTemplateRule({
+            payload: changes,
+            ruleId: rule.id,
+            templateId: this.modelValue.id,
+          }),
+        [],
+        0
+      );
     },
     instantiateRuleClauseAutoSaveManager(
       ruleId: string,
       clause: EventTemplateRuleClause
     ) {
-      this.ruleClausesAutoSaveInstances[clause.id] =
-        new AutoSaveManager<EventTemplateRuleClause>(
-          clause,
-          async (changes) =>
-            await this.updateEventTemplateRuleClause({
-              courseId: this.courseId,
-              templateId: this.modelValue.id,
-              ruleId,
-              clause: { ...clause, ...changes },
-            }),
-          (changes) =>
-            this.patchEventTemplateRuleClause({
-              ruleId,
-              templateId: this.modelValue.id,
-              clauseId: clause.id,
-              payload: changes,
-            }),
-          [],
-          0,
-          undefined,
-          this.setErrorNotification,
-          undefined,
-          true,
-          false
-        );
+      this.ruleClausesAutoSaveInstances[
+        clause.id
+      ] = new AutoSaveManager<EventTemplateRuleClause>(
+        clause,
+        async (changes) =>
+          await this.updateEventTemplateRuleClause({
+            courseId: this.courseId,
+            templateId: this.modelValue.id,
+            ruleId,
+            clause: { ...clause, ...changes },
+          }),
+        (changes) =>
+          this.patchEventTemplateRuleClause({
+            ruleId,
+            templateId: this.modelValue.id,
+            clauseId: clause.id,
+            payload: changes,
+          }),
+        [],
+        0,
+        undefined,
+        this.setErrorNotification,
+        undefined,
+        true,
+        false
+      );
     },
 
     async onRuleDragEnd(event: { oldIndex: number; newIndex: number }) {
@@ -241,10 +254,7 @@ export default defineComponent({
     async onRuleDelete(rule: EventTemplateRule) {
       alert("Questa funzionalità non è ancora disponibile");
     },
-    async onRuleUpdateClause(
-      rule: EventTemplateRule,
-      clause: EventTemplateRuleClause
-    ) {
+    async onRuleUpdateClause(rule: EventTemplateRule, clause: EventTemplateRuleClause) {
       await this.ruleClausesAutoSaveInstances[clause.id].onChange({
         field: "tags",
         value: clause.tags,

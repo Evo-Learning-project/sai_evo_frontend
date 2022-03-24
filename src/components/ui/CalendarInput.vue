@@ -10,13 +10,16 @@
       v-model:value="proxyModelValue"
       type="datetime"
       :ref="'calendar-' + elementId"
+      :show-second="false"
+      :formatter="momentFormat"
+      :title-time-format="'DD-MM-YYYY'"
     >
-      <!-- <template v-slot:icon-calendar
+      <template v-slot:icon-calendar
         ><span class="text-base material-icons-outlined"> calendar_today </span>
       </template>
       <template v-slot:icon-clear
         ><span class="text-base material-icons-outlined"> close </span>
-      </template> -->
+      </template>
     </date-picker>
     <!-- </div> -->
     <label
@@ -36,10 +39,13 @@
 
 <script lang="ts">
 import { defineComponent } from "@vue/runtime-core";
+import moment from "moment";
 import { v4 as uuid4 } from "uuid";
 
 import DatePicker from "vue-datepicker-next";
 import "vue-datepicker-next/index.css";
+import "vue-datepicker-next/locale/it";
+
 export default defineComponent({
   name: "CalendarInput",
   components: { DatePicker },
@@ -51,6 +57,20 @@ export default defineComponent({
     return {
       calendarOpen: false,
       elementId: "",
+      momentFormat: {
+        //[optional] Date to String
+        stringify: (date: moment.MomentInput) => {
+          return date ? moment(date).format("LLL") : "";
+        },
+        //[optional]  String to Date
+        parse: (value: moment.MomentInput) => {
+          return value ? moment(value, "LLL").toDate() : null;
+        },
+        //[optional] getWeekNumber
+        getWeek: (date: any) => {
+          return; // a number
+        },
+      },
     };
   },
   methods: {

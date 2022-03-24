@@ -6,7 +6,7 @@
       'md:px-3.5 md:py-3 px-2 py-2.5': size == 'sm',
       'px-2.5 py-5 md:px-5': size == 'default',
       'my-4': size == 'default' && !marginLess,
-      border: !highlighted,
+      border: !highlighted && !borderLess,
       'border-2': highlighted,
       'transition-shadow duration-75 ease-linear hover-shadow-elevation': hoverable,
       'bg-light bg-opacity-80': filled,

@@ -168,7 +168,7 @@
     }
 
     .chip-primary {
-      @apply border-0 text-primary bg-primary bg-opacity-25 font-semibold
+      @apply border-0 text-primary bg-primary bg-opacity-25 font-semibold !important;
     }
     
     .chip-light {
@@ -180,7 +180,7 @@
     }
 
     .icon-surrounding {
-      @apply w-8 h-8 text-xl rounded-full flex place-items-center justify-center shadow-md
+      @apply flex justify-center w-8 h-8 text-xl rounded-full shadow-md place-items-center;
     }
 
     .two-tone-primary {
@@ -303,13 +303,13 @@
       @apply bg-light !important
     }
     .ti-tag {
-      @apply rounded-full bg-primary text-lightText px-3 py-0.5 text-sm overflow-hidden overflow-ellipsis !important
+      @apply chip-primary font-normal rounded-full px-3 py-0.5 text-sm overflow-hidden overflow-ellipsis !important
     }
     .ti-tag-sm {
       @apply h-6 px-2
     }
     .ti-deletion-mark {
-      @apply bg-danger !important
+      @apply bg-danger text-danger-dark !important
     }
 
     .ti-autocomplete {

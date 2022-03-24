@@ -76,7 +76,7 @@
       </div>
       <div
         v-if="showPreview"
-        class="relative flex px-5 py-5 border border-gray-200 rounded-md md:w-9/12 md:ml-16 md:max-h-64 bg-gray-50"
+        class="relative flex px-5 py-5 shadow-elevation-2 rounded-md md:w-9/12 md:ml-16 md:max-h-64 bg-gray-50"
       >
         <SkeletonCard
           v-if="false && localLoading"
@@ -105,9 +105,11 @@
             v-if="!!satisfying.example"
             :exercise="satisfying.example"
           ></MinimalExercisePreview>
-          <div v-else class="flex flex-col items-center my-auto opacity-60">
-            <span class="material-icons-outlined">error_outline</span>
-            <p>Non ci sono esercizi con i tag richiesti: modifica le condizioni</p>
+          <div v-else class="flex flex-col items-center mt-2 mb-auto opacity-70">
+            <span class="material-icons-outlined opacity-50" style="font-size: 4rem"
+              >error_outline</span
+            >
+            <p>{{ $t("event_template_rule_editor.unsatisfiable_tag_rule") }}</p>
           </div>
         </div>
       </div>

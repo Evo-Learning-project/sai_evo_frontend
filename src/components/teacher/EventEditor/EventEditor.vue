@@ -13,6 +13,10 @@
       <EventTemplateEditor
         v-if="!loading || modelValue.id"
         :modelValue="modelValueTemplate"
+        :showEditWarning="
+          modelValue.state === EventState.OPEN ||
+          modelValue.state === EventState.RESTRICTED
+        "
       ></EventTemplateEditor>
 
       <EventStateEditor
@@ -125,6 +129,7 @@ export default defineComponent({
       stateSaving: false,
       showConfirmationDialog: false,
       autoSaveManager: null as AutoSaveManager<Event> | null,
+      EventState,
     };
   },
   methods: {

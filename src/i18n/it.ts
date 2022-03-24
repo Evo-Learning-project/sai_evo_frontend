@@ -162,6 +162,7 @@ export const it = {
     out_of: "su",
     save: "Salva",
     solution: "Soluzione",
+    warning: "Attenzione",
   },
   cloud: {
     saving: "Salvataggio in corso...",
@@ -303,6 +304,10 @@ export const it = {
       "I docenti del corso non hanno ancora inserito tag, quindi la ricerca per tag non è abilitata. Verranno scelti esercizi in maniera casuale.",
     no_tags:
       "Non puoi utilizzare questa funzionalità in quanto non hai ancora creato tag per questo corso. Dalla pagina degli esercizi, puoi aggiungere tag agli esercizi già esistenti, o crearne di nuovi.",
+    unsatisfiable_tag_rule:
+      "Non ci sono esercizi con i tag richiesti: modifica le condizioni",
+    unset_rule_type_confirmation:
+      "Sei sicuro di voler resettare le impostazioni per questo slot?",
   },
   event_editor: {
     name: "Nome",
@@ -334,6 +339,8 @@ export const it = {
       "Non puoi modificare la data e ora di inizio dell'esame una volta pianificato. Per modificare questo campo, metti l'esame in stato di bozza.",
     this_is_the_link_to_the_event:
       "Ecco il link per accedere all'esame. Comunicalo agli studenti che parteciperanno.",
+    edit_template_in_progress_warning:
+      "Modificare il modello dell'esame quando questo è già iniziato può avere conseguenze imprevedibili. Gli studenti che hanno già iniziato l'esame non saranno interessati dalle modifiche. Procedi solo se sai cosa stai facendo.",
   },
   exercise_editor: {
     exercise_editor_title: "Editor esercizio",
