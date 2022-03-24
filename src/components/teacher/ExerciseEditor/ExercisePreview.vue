@@ -1,11 +1,14 @@
 <template>
-  <Card :marginLess="true">
+  <Card :marginLess="true" :filled="exercise.state === ExerciseState.DRAFT">
     <template v-slot:header>
       <div class="flex flex-wrap md:items-center">
-        <h4 class="order-1 mr-2 md:mr-0">{{ previewTitle }}</h4>
-        <div
-          class="flex flex-wrap order-3 mt-1 space-x-1  md:mt-0 md:ml-2 md:order-2"
+        <h4
+          class="order-1 mr-2 md:mr-0"
+          :class="{ 'text-muted font-semibold': exercise.label?.length === 0 }"
         >
+          {{ previewTitle }}
+        </h4>
+        <div class="flex flex-wrap order-3 mt-1 space-x-1 md:mt-0 md:ml-2 md:order-2">
           <Tag
             v-for="(tag, index) in tags"
             :key="elementId + '-tag-' + index"
@@ -59,6 +62,7 @@ export default defineComponent({
   data() {
     return {
       elementId: "",
+      ExerciseState,
     };
   },
   computed: {

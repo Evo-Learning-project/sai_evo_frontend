@@ -12,7 +12,13 @@
       <template v-slot:header>
         <div class="relative">
           <div class="flex flex-wrap items-center">
-            <h5>{{ previewTitle }}</h5>
+            <h5
+              :class="{
+                'text-muted font-semibold': exercise.label?.length === 0,
+              }"
+            >
+              {{ previewTitle }}
+            </h5>
             <div v-if="showTags" class="flex flex-wrap space-x-1 md:ml-2">
               <Tag
                 v-for="(tag, index) in tags"
@@ -56,18 +62,13 @@
             v-if="previewable"
             :variant="'primary-borderless'"
             @click="showPreview = true"
-            ><span class="text-base material-icons-outlined">
-              open_in_full
-            </span>
+            ><span class="text-base material-icons-outlined"> open_in_full </span>
           </Btn>
           <router-link
             class="mt-auto"
             v-if="showEdit"
             :to="{ name: 'CourseExercises', hash: '#editor-' + exercise.id }"
-            ><Btn
-              :size="'xs'"
-              :variant="'primary-borderless'"
-              @click="showPreview = true"
+            ><Btn :size="'xs'" :variant="'primary-borderless'" @click="showPreview = true"
               ><span class="text-base material-icons-outlined"> edit </span>
             </Btn></router-link
           >
@@ -79,24 +80,16 @@
               :forceActive="highlighted"
               :disabled="selectionDisabled"
               @click="onSelection()"
-              ><span class="text-base material-icons-outlined">
-                done
-              </span></Btn
+              ><span class="text-base material-icons-outlined"> done </span></Btn
             >
-            <Tooltip
-              v-else
-              :textValue="selectButtonTitle"
-              :placement="'bottom'"
-            >
+            <Tooltip v-else :textValue="selectButtonTitle" :placement="'bottom'">
               <Btn
                 :size="'xs'"
                 :variant="'success-borderless'"
                 :forceActive="highlighted"
                 :disabled="selectionDisabled"
                 @click="onSelection()"
-                ><span class="text-base material-icons-outlined">
-                  done
-                </span></Btn
+                ><span class="text-base material-icons-outlined"> done </span></Btn
               >
             </Tooltip>
           </div>
