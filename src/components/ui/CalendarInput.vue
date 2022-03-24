@@ -90,10 +90,16 @@ export default defineComponent({
   computed: {
     proxyModelValue: {
       get() {
-        return this.modelValue ? new Date(this.modelValue) : null;
+        if (!this.modelValue) {
+          return null;
+        }
+        if (typeof this.modelValue === "string") {
+          return new Date(this.modelValue.replace(" ", "T"));
+        }
+
+        return this.modelValue;
       },
       set(val: unknown) {
-        console.log("SHOULD EMIT", val);
         this.$emit("update:modelValue", val);
       },
     },
