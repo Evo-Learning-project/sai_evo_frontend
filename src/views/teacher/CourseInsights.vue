@@ -39,11 +39,6 @@
         :user="user"
       ></StudentCard>
     </div>
-
-    <br />
-    esercitazioni fatte
-
-    <br />esercitazioni per studente
   </div>
 </template>
 
