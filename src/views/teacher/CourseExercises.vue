@@ -8,7 +8,9 @@
 
     <div class="flex w-full mt-12 mb-6">
       <Btn @click="onAddExercise()" :loading="localLoading" class="ml-auto"
-        ><span class="mr-1 text-base material-icons-outlined"> add_circle_outline </span>
+        ><span class="mr-1 text-base material-icons-outlined">
+          add_circle_outline
+        </span>
         {{ $t("course_exercises.new_exercise") }}</Btn
       >
     </div>
@@ -30,7 +32,9 @@
       class="flex flex-col w-full mt-12 mb-12 text-center select-none"
       v-if="!firstLoading && exercises.length === 0"
     >
-      <p style="font-size: 10rem" class="material-icons-outlined opacity-10">topic</p>
+      <p style="font-size: 10rem" class="material-icons-outlined opacity-10">
+        topic
+      </p>
       <h2 class="opacity-40">{{ $t("course_exercises.no_exercises") }}</h2>
     </div>
     <VueEternalLoading :load="onLoadMore" v-model="isInitialInfiniteLoad">
@@ -63,7 +67,7 @@ import ExerciseEditorWrapper from "@/components/teacher/ExerciseEditor/ExerciseE
 import { defineComponent } from "@vue/runtime-core";
 import Spinner from "@/components/ui/Spinner.vue";
 import ExerciseSearchFilters from "@/components/teacher/ExerciseSearchFilters.vue";
-import { SearchFilter } from "@/api/interfaces";
+import { ExerciseSearchFilter } from "@/api/interfaces";
 import { getDebouncedForFilter } from "@/utils";
 import { courseIdMixin, loadingMixin } from "@/mixins";
 import ExerciseEditorWrapperSkeleton from "@/components/ui/skeletons/ExerciseEditorWrapperSkeleton.vue";
@@ -132,7 +136,7 @@ export default defineComponent({
         tags: [] as string[],
         exercise_types: [] as ExerciseType[],
         states: [] as ExerciseState[],
-      } as SearchFilter,
+      } as ExerciseSearchFilter,
     };
   },
   methods: {
@@ -167,9 +171,13 @@ export default defineComponent({
           courseId: this.courseId,
           exercise: getBlankExercise(),
         });
-        (this.$refs["course-" + this.courseId + "-exercise-" + newExercise.id] as {
-          showEditor: boolean;
-        }).showEditor = true;
+        (
+          this.$refs[
+            "course-" + this.courseId + "-exercise-" + newExercise.id
+          ] as {
+            showEditor: boolean;
+          }
+        ).showEditor = true;
       });
     },
   },
@@ -184,7 +192,7 @@ export default defineComponent({
       }));
     },
     exerciseTypeOptions(): SelectableOption[] {
-      return ((Object.keys(ExerciseType) as unknown[]) as ExerciseType[])
+      return (Object.keys(ExerciseType) as unknown[] as ExerciseType[])
         .filter((key: string | number) => parseInt(key as string) == key) //(ExerciseType[key] as unknown) == 'number')
         .map((key) => ({
           icons: exerciseTypesIcons[key],
@@ -193,7 +201,7 @@ export default defineComponent({
         }));
     },
     exerciseStateOptions(): SelectableOption[] {
-      return ((Object.keys(ExerciseState) as unknown[]) as ExerciseState[])
+      return (Object.keys(ExerciseState) as unknown[] as ExerciseState[])
         .filter((key: string | number) => parseInt(key as string) == key) //(ExerciseType[key] as unknown) == 'number')
         .map((key) => ({
           icons: exerciseStatesIcons[key],

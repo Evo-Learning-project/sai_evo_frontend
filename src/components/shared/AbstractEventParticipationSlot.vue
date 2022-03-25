@@ -115,7 +115,7 @@
         >
           <!-- score -->
           <div
-            v-if="!showAssessmentControls && modelValue.score == null"
+            v-if="!showAssessmentControls && allowEditScores && modelValue.score == null"
             class="text-danger-dark text-muted text-sm flex items-center space-x-1"
           >
             <span class="my-auto text-base material-icons-outlined text-yellow-900"

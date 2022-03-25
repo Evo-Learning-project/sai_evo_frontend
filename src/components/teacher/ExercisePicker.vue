@@ -74,7 +74,7 @@ import MinimalExercisePreview from "@/components/teacher/ExerciseEditor/MinimalE
 import Btn from "@/components/ui/Btn.vue";
 import SkeletonCard from "../ui/SkeletonCard.vue";
 import ExerciseSearchFilters from "./ExerciseSearchFilters.vue";
-import { SearchFilter } from "@/api/interfaces";
+import { ExerciseSearchFilter } from "@/api/interfaces";
 import { getDebouncedForFilter } from "@/utils";
 import { courseIdMixin } from "@/mixins";
 export default defineComponent({
@@ -92,7 +92,7 @@ export default defineComponent({
   mixins: [courseIdMixin],
   watch: {
     searchFilter: {
-      async handler(val: SearchFilter) {
+      async handler(val: ExerciseSearchFilter) {
         await this.onFilterChange();
         this.isInitialInfiniteLoad = true;
       },
@@ -117,7 +117,7 @@ export default defineComponent({
         tags: [] as string[],
         exercise_types: [] as ExerciseType[],
         states: [] as ExerciseState[],
-      } as SearchFilter,
+      } as ExerciseSearchFilter,
     };
   },
   props: {

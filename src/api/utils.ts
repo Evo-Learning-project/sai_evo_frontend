@@ -1,4 +1,4 @@
-import { SearchFilter } from "./interfaces";
+import { EventSearchFilter, ExerciseSearchFilter } from "./interfaces";
 import store from "@/store";
 import { EventTemplateRule, EventTemplateRuleType, Tag } from "@/models";
 
@@ -11,7 +11,22 @@ export const tagIdsToTags = (ids: string[]): Tag[] => {
   return ids.map((i) => store.getters["shared/tagById"](i) as Tag);
 };
 
-export const getUrlQueryParams = (filters: SearchFilter | null): string => {
+export const getEventUrlQueryParams = (
+  filters: EventSearchFilter | null
+): string => {
+  if (!filters) {
+    return "";
+  }
+  let ret = "";
+  if (typeof filters.event_type !== "undefined") {
+    ret += `?event_type=${filters.event_type}`;
+  }
+  return ret;
+};
+
+export const getExerciseUrlQueryParams = (
+  filters: ExerciseSearchFilter | null
+): string => {
   if (!filters) {
     return "";
   }

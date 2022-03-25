@@ -1,3 +1,4 @@
+import { EventSearchFilter } from "./../../api/interfaces";
 /* eslint-disable no-unexpected-multiline */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
@@ -54,8 +55,12 @@ import {
   updateEventTemplateRule,
   updateEventTemplateRuleClause,
 } from "@/api/events";
-import { SearchFilter } from "@/api/interfaces";
-import { getUsers, updateUserCoursePrivileges } from "@/api/users";
+import { ExerciseSearchFilter } from "@/api/interfaces";
+import {
+  getActiveUsersForCourse,
+  getUsers,
+  updateUserCoursePrivileges,
+} from "@/api/users";
 
 export const actions = {
   createCourse: async ({ commit }: { commit: Commit }, course: Course) => {
@@ -384,7 +389,7 @@ export const actions = {
     }: {
       courseId: string;
       fromFirstPage: boolean;
-      filters: SearchFilter | null;
+      filters: ExerciseSearchFilter | null;
     }
   ) => {
     if (fromFirstPage) {
@@ -458,8 +463,11 @@ export const actions = {
       isPublic ? "public_tags" : "private_tags"
     ]?.filter((t) => t.name != tag);
   },
-  getEvents: async ({ commit }: { commit: Commit }, courseId: string) => {
-    const events = await getEvents(courseId);
+  getEvents: async (
+    { commit }: { commit: Commit },
+    { courseId, filters }: { courseId: string; filters?: EventSearchFilter }
+  ) => {
+    const events = await getEvents(courseId, filters);
     commit("setEvents", events);
   },
   getEvent: async (
@@ -470,10 +478,19 @@ export const actions = {
     commit("setEvents", [event, ...state.events]);
   },
   getUsersForCourse: async (
+    // returns all users in the system and their permissions relative to given course
     { commit, state }: { commit: Commit; state: any },
     { courseId }: { courseId: string }
   ) => {
     const users = await getUsers(courseId);
+    state.users = users;
+  },
+  getCourseActiveUsers: async (
+    // returns all users that are active in given course
+    { commit, state }: { commit: Commit; state: any },
+    { courseId }: { courseId: string }
+  ) => {
+    const users = await getActiveUsersForCourse(courseId);
     state.users = users;
   },
   updateUserCoursePrivileges: async (

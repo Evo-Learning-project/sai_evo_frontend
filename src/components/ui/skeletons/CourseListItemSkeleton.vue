@@ -4,12 +4,10 @@
       <div class="relative">
         <div class="absolute flex space-x-4">
           <div class="w-10 rounded-lg skeleton-unit"></div>
-          <div class="w-96 skeleton-unit"></div>
+          <div class="md:w-96 w-32 skeleton-unit"></div>
         </div>
         <div class="flex items-center opacity-0">
-          <span class="mr-2 material-icons-two-tone two-tone-primary"
-            >book</span
-          >
+          <span class="mr-2 material-icons-two-tone two-tone-primary">book</span>
           <h3>&nbsp;</h3>
         </div>
       </div>
@@ -39,9 +37,7 @@
             {{ $t("courses.course_panel") }}
           </Btn>
           <Btn class="w-full">
-            <span class="mr-0.5 text-base material-icons-outlined">
-              chevron_right
-            </span>
+            <span class="mr-0.5 text-base material-icons-outlined"> chevron_right </span>
             {{ $t("courses.go_to_course") }}
           </Btn>
         </div>

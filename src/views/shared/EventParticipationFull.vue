@@ -21,13 +21,20 @@
       class="mb-4 items-start flex space-x-0.5 md:space-x-2"
       v-if="!firstLoading && allowEditScores"
     >
-      <router-link :to="{ name: 'ExamProgress' }"
+      <!-- <router-link :to="{ name: 'ExamProgress' }"
         ><Btn :outline="true" :variant="'icon'"
           ><span class="material-icons-outlined">arrow_back</span></Btn
         ></router-link
+      > -->
+      <Btn @click="$router.back()" :outline="true" :variant="'icon'"
+        ><span class="material-icons-outlined">arrow_back</span></Btn
       >
       <h3 class="mt-1.25px">
-        {{ $t("event_assessment.viewing_participation_of") }}
+        {{
+          participation.event.event_type === EventType.EXAM
+            ? $t("event_assessment.viewing_participation_of")
+            : $t("event_assessment.viewing_practice_of")
+        }}
         {{ participation.user.full_name }}
       </h3>
     </div>
@@ -154,6 +161,7 @@ import {
   EventParticipationSlot,
   EventParticipationState,
   EventState,
+  EventType,
 } from "@/models";
 import Timestamp from "@/components/ui/Timestamp.vue";
 import SlotSkeleton from "@/components/ui/skeletons/SlotSkeleton.vue";
@@ -222,6 +230,7 @@ export default defineComponent({
       slotsAssessmentLoading: {} as Record<string, boolean>,
       showEditScore: false,
       dirtyScore: undefined as number | undefined,
+      EventType,
     };
   },
   methods: {

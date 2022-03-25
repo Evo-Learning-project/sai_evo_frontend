@@ -1,3 +1,4 @@
+import { EventSearchFilter } from "./interfaces";
 import {
   Event,
   EventParticipation,
@@ -11,12 +12,18 @@ import { forceFileDownload } from "@/utils";
 import axios from "axios";
 import {
   convertEventTemplateRules,
+  getEventUrlQueryParams,
   tagIdsToTags,
   tagNamesToTags,
 } from "./utils";
 
-export async function getEvents(courseId: string): Promise<Event[]> {
-  const response = await axios.get(`/courses/${courseId}/events/`);
+export async function getEvents(
+  courseId: string,
+  filters?: EventSearchFilter
+): Promise<Event[]> {
+  const response = await axios.get(
+    `/courses/${courseId}/events/${getEventUrlQueryParams(filters ?? null)}`
+  );
   return response.data;
 }
 

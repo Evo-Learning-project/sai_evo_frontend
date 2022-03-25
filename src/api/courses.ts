@@ -1,4 +1,10 @@
-import { Course, EventTemplateRule, Tag, Event } from "@/models";
+import {
+  Course,
+  EventTemplateRule,
+  Tag,
+  Event,
+  EventParticipation,
+} from "@/models";
 import axios from "axios";
 import { convertEventTemplateRules } from "./utils";
 
@@ -38,6 +44,16 @@ export async function getCourse(courseId: string): Promise<Course> {
 
 export async function createCourse(course: Course): Promise<Course> {
   const response = await axios.post(`/courses/`, course);
+  return response.data;
+}
+
+export async function getUserCourseParticipations(
+  courseId: string,
+  userId: string
+): Promise<EventParticipation[]> {
+  const response = await axios.get(
+    `/courses/${courseId}/participations/?user_id=${userId}`
+  );
   return response.data;
 }
 

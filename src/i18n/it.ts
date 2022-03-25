@@ -1,4 +1,4 @@
-import { ExerciseTestCaseType } from "./../models/types";
+import { EventType, ExerciseTestCaseType } from "./../models/types";
 import {
   CoursePrivilege,
   EventParticipationState,
@@ -50,6 +50,7 @@ export const it = {
     course_exercises: "Esercizi corso " + ROUTE_TITLE_COURSE_NAME_TOKEN,
     course_exams: "Esami corso " + ROUTE_TITLE_COURSE_NAME_TOKEN,
     course_permissions: "Permessi corso " + ROUTE_TITLE_COURSE_NAME_TOKEN,
+    course_insights: "Statistiche corso " + ROUTE_TITLE_COURSE_NAME_TOKEN,
     course_list: "Corsi",
     exam_progress: "Progresso esame " + ROUTE_TITLE_EVENT_NAME_TOKEN,
     exam_results: "Risultati esame " + ROUTE_TITLE_EVENT_NAME_TOKEN,
@@ -128,8 +129,21 @@ export const it = {
     exercise_seen_at: "Visto:",
     exercise_answered_at: "Risposto:",
     viewing_participation_of: "Stai visualizzando l'esame di",
+    viewing_practice_of: "Stai visualizzando un'esercitazione di",
+  },
+  course_insights: {
+    practice_sessions: "Esercitazioni",
+    exercises: "Esercizi presenti nel corso",
+    active_students: "Studenti attivi",
+    active_students_description:
+      "Gli studenti attivi sono studenti che hanno partecipato ad almeno un esame o hanno iniziato autonomamente almeno un'esercitazione nel corso.",
+    user_history_event_descriptions: {
+      [EventType.EXAM]: "Ha partecipato all'esame",
+      [EventType.SELF_SERVICE_PRACTICE]: "Ha svolto un'esercitazione",
+    },
   },
   misc: {
+    teacher: "Docente",
     hidden_to_students: "Nascosto agli studenti",
     file_upload_no_files: "Nessun file presente",
     file_upload: "Trascina qui il tuo file oppure clicca qui",
@@ -176,6 +190,7 @@ export const it = {
     course_dashboard_exams: "Esami",
     course_dashboard_practices: "Esercitazioni",
     course_dashboard_exercises: "Esercizi",
+    course_insights: "Statistiche",
     course_dashboard_back_to_courses: "Torna ai corsi",
     course_list_courses: "Corsi",
     course_list_new_course: "Nuovo corso",

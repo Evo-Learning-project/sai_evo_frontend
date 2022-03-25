@@ -7,6 +7,7 @@ import TeacherCourseDashboard from "../views/teacher/CourseDashboard.vue";
 import StudentCourseDashboard from "../views/student/CourseDashboard.vue";
 import CourseExercises from "../views/teacher/CourseExercises.vue";
 import CourseExams from "../views/teacher/CourseExams.vue";
+import CourseInsights from "../views/teacher/CourseInsights.vue";
 import CoursePermissions from "../views/teacher/CoursePermissions.vue";
 import EventEditor from "../components/teacher/EventEditor/EventEditor.vue";
 import EventParticipationPage from "../views/student/EventParticipationPage.vue";
@@ -92,6 +93,15 @@ const routes: Array<RouteRecordRaw> = [
         component: CoursePermissions,
         meta: {
           routeTitle: _("headings.course_permissions"),
+          sidebarOptions: courseDashboardSidebarOptions,
+        },
+      },
+      {
+        path: "courses/:courseId/insights",
+        name: "CourseInsights",
+        component: CourseInsights,
+        meta: {
+          routeTitle: _("headings.course_insights"),
           sidebarOptions: courseDashboardSidebarOptions,
         },
       },

@@ -1,8 +1,15 @@
-import { CoursePrivilege, User } from '@/models';
-import axios from 'axios';
+import { CoursePrivilege, User } from "@/models";
+import axios from "axios";
 
 export async function getUsers(courseId: string): Promise<User[]> {
   const response = await axios.get(`/users/?course_id=${courseId}`);
+  return response.data;
+}
+
+export async function getActiveUsersForCourse(
+  courseId: string
+): Promise<User[]> {
+  const response = await axios.get(`/courses/${courseId}/active_users/`);
   return response.data;
 }
 

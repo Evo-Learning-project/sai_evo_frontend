@@ -1,4 +1,4 @@
-import { SearchFilter } from "@/api/interfaces";
+import { ExerciseSearchFilter } from "@/api/interfaces";
 import { ErrorMessage } from "@/interfaces";
 import {
   Course,
@@ -47,7 +47,7 @@ interface StoreOperationParameters<T> {
   clauseId: string;
   slotId: string;
   templateId: string;
-  filters: SearchFilter;
+  filters: ExerciseSearchFilter;
   children: "choices" | "sub_exercises" | "testcases";
   childType: "choice" | "sub_exercise" | "testcase";
   fromFirstPage: boolean;

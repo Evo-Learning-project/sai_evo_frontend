@@ -61,6 +61,12 @@ export const courseDashboardSidebarOptions: SidebarOption[] = [
     requiredPrivileges: [CoursePrivilege.UPDATE_COURSE],
   },
   {
+    label: _("sidebar_labels.course_insights"),
+    icon: "insights",
+    routeName: "CourseInsights",
+    requiredPrivileges: [],
+  },
+  {
     label: _("sidebar_labels.course_dashboard_back_to_courses"),
     icon: "chevron_left",
     routeName: "TeacherCourseList",

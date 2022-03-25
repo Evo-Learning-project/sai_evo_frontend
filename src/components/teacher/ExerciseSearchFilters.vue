@@ -70,7 +70,7 @@ import { getTranslatedString as _ } from "@/i18n";
 //   getBlankExercise,
 //   Tag
 // } from '@/models'
-import { SearchFilter } from "@/api/interfaces";
+import { ExerciseSearchFilter } from "@/api/interfaces";
 import Btn from "@/components/ui/Btn.vue";
 import Chipset from "@/components/ui/Chipset.vue";
 import { ExerciseState, ExerciseType, Tag } from "@/models";
@@ -87,7 +87,7 @@ export default defineComponent({
   },
   props: {
     modelValue: {
-      type: Object as PropType<SearchFilter>,
+      type: Object as PropType<ExerciseSearchFilter>,
       required: true,
     },
     full: {
@@ -104,7 +104,7 @@ export default defineComponent({
     onExerciseTypeUpdate(val: unknown) {
       alert("Questa funzionalità non è ancora disponibile");
     },
-    emitUpdate(key: keyof SearchFilter, value: unknown) {
+    emitUpdate(key: keyof ExerciseSearchFilter, value: unknown) {
       this.$emit("update:modelValue", {
         ...this.modelValue,
         [key]: value,

@@ -1,23 +1,30 @@
 <template>
   <Card :hoverable="true" :expandSideOnSmall="true">
     <template v-slot:header>
-      <div class="flex md:items-center items-start">
+      <div class="flex items-start md:items-center md:px-1.25px px-0.5">
         <span class="mr-2 material-icons-two-tone two-tone-primary">book</span>
         <h3 class="text-base md:text-xl">{{ course.name }}</h3>
         <span
           v-if="course.hidden"
           :title="$t('misc.hidden_to_students')"
-          class="ml-2 md:pt-1 my-auto opacity-40 text-lg material-icons-outlined"
+          class="my-auto ml-2 text-lg md:pt-1 opacity-40 material-icons-outlined"
         >
           visibility_off
         </span>
       </div>
     </template>
     <template v-if="true || (course.description?.length ?? 0) > 0" v-slot:body>
-      <div class="flex items-center px-1">
-        <p class="text-sm text-muted" v-html="course.description"></p>
+      <div class="">
+        <div class="text-sm flex items-center space-x-1 px-1 mb-1">
+          <div class="flex items-center space-x-0.5 text-muted">
+            <span class="my-auto text-base material-icons-outlined">person</span>
+            <span class="">{{ $t("misc.teacher") }}:</span>
+          </div>
+          <p>{{ course.creator?.full_name }}</p>
+        </div>
+        <p class="text-muted px-1.5" v-html="course.description"></p>
       </div>
-      <div class="md:hidden mt-2 flex items-stretch px-1">
+      <div class="flex items-stretch px-1 mt-2 md:hidden">
         <router-link
           class="w-full"
           :to="{
@@ -45,7 +52,7 @@
       </div>
     </template>
     <template v-slot:side>
-      <div class="hidden md:flex flex-col items-stretch space-y-2">
+      <div class="flex-col items-stretch hidden space-y-2 md:flex">
         <router-link
           v-if="canAccessCoursePanel"
           :to="{

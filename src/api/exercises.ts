@@ -2,8 +2,8 @@ import { ExerciseTestCase } from "./../models/interfaces";
 /* eslint-disable no-constant-condition */
 import { Exercise, ExerciseChoice } from "@/models";
 import axios from "axios";
-import { SearchFilter } from "./interfaces";
-import { getUrlQueryParams } from "./utils";
+import { ExerciseSearchFilter } from "./interfaces";
+import { getExerciseUrlQueryParams } from "./utils";
 
 // export async function getExercises(
 //   courseId: string
@@ -15,9 +15,9 @@ import { getUrlQueryParams } from "./utils";
 export async function getExercises(
   courseId: string,
   pageNumber: number,
-  filter: SearchFilter | null
+  filter: ExerciseSearchFilter | null
 ): Promise<{ exercises: Exercise[]; moreResults: boolean }> {
-  const filterUrlQuery = getUrlQueryParams(filter);
+  const filterUrlQuery = getExerciseUrlQueryParams(filter);
   const response = await axios.get(
     `/courses/${courseId}/exercises/?page=${pageNumber}${filterUrlQuery}`
   );
