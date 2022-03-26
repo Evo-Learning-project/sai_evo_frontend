@@ -1,5 +1,5 @@
 <template>
-  <div class="">
+  <div :class="{ 'pl-6': subSlot }">
     <div class="w-full">
       <!-- exercise label (shown in teacher mode) -->
       <h3 v-if="showExerciseLabel">{{ exercise.label }}</h3>
@@ -26,7 +26,12 @@
         }"
       >
         <!-- controls to submit -->
-        <div :class="{ 'w-full md:w-1/2': allowEditScores || showAssessment }">
+        <div
+          :class="{
+            'w-full': allowEditScores || showAssessment,
+            'md:w-1/2': (allowEditScores || showAssessment) && subSlot,
+          }"
+        >
           <!-- multiple choice multiple possible -->
           <CheckboxGroup
             v-if="
@@ -70,6 +75,24 @@
             }}
           </TextEditor>
 
+          <!-- aggregated answer -->
+          <div
+            v-else-if="exercise.exercise_type === ExerciseType.AGGREGATED"
+            v-for="(subSlot, index) in modelValue.sub_slots"
+            :key="modelValue.id + '-sub-slot-' + subSlot.id"
+            :class="{ 'mb-6': index !== modelValue.sub_slots.length - 1 }"
+          >
+            <AbstractEventParticipationSlot
+              :subSlot="true"
+              :modelValue="subSlot"
+              :allowEditScores="allowEditScores"
+              :allowEditSubmission="allowEditSubmission"
+              :showAssessment="showAssessment"
+              :showScores="showScores"
+            >
+            </AbstractEventParticipationSlot>
+          </div>
+
           <!-- programming exercise -->
           <ProgrammingExercise
             v-else-if="
@@ -110,7 +133,11 @@
 
         <!-- assessment card-->
         <div
-          class="px-6 py-3 mb-auto rounded md:self-start md:w-1/2 bg-light shadow-elevation-2 bg-opacity-70"
+          :class="{
+            'md:w-1/2': true || modelValue.sub_slots.length === 0,
+            'md:w-1/3': false && modelValue.sub_slots.length > 0,
+          }"
+          class="px-6 py-3 mb-auto rounded md:self-start bg-light shadow-elevation-2 bg-opacity-70"
           v-if="showAssessment && (!showAssessmentControls || !allowEditScores)"
         >
           <!-- score -->
@@ -281,6 +308,10 @@ export default defineComponent({
     modelValue: {
       type: Object as PropType<EventParticipationSlot>,
       required: true,
+    },
+    subSlot: {
+      type: Boolean,
+      default: false,
     },
     allowEditScores: {
       // should be used when accessing as a teacher to assess the slot

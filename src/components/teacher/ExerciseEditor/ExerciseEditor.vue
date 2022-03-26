@@ -8,14 +8,19 @@
     ></div>
     <!-- FIXME review shadow -->
     <Card
-      :focusable="true"
+      :focusable="!subExercise"
+      :hoverable="!subExercise"
       :marginLess="true"
+      :borderLess="subExercise"
       class="transition-shadow duration-100 focus-within:shadow-lg"
-      :class="{ 'bg-gray-50': modelValue.state === ExerciseState.DRAFT }"
+      :class="{
+        'bg-gray-50': modelValue.state === ExerciseState.DRAFT,
+        'bg-light mb-6 -mx-5': subExercise,
+      }"
     >
       <template v-slot:header>
-        <div class="flex">
-          <h3>
+        <div class="flex" v-if="!subExercise">
+          <h3 v-if="!subExercise">
             {{ $t("exercise_editor.exercise_editor_title") }}
             <span v-if="modelValue.state === ExerciseState.DRAFT" class="text-muted"
               >({{ $t("exercise_editor.draft_notice") }})</span
@@ -33,14 +38,14 @@
           <div
             class="flex flex-col items-start my-4 space-y-5 md:space-x-8 md:space-y-0 md:flex-row"
           >
-            <div class="w-full mr-auto md:w-4/12">
+            <div v-if="!subExercise" class="w-full mr-auto md:w-4/12">
               <TextInput
                 :modelValue="modelValue.label"
                 @update:modelValue="onBaseExerciseChange('label', $event)"
                 >{{ $t("exercise_editor.exercise_label") }}</TextInput
               >
             </div>
-            <div class="self-start w-full mr-auto md:w-3/12">
+            <div v-if="!subExercise" class="self-start w-full mr-auto md:w-3/12">
               <Dropdown
                 :id="'exercise_state_' + elementId"
                 :options="exerciseStateOptions"
@@ -51,7 +56,10 @@
                 {{ $t("exercise_editor.exercise_state") }}
               </Dropdown>
             </div>
-            <div class="flex flex-col w-full md:ml-auto md:flex-row md:w-5/12">
+            <div
+              :class="{ 'md:ml-auto': !subExercise }"
+              class="flex flex-col w-full md:flex-row md:w-5/12"
+            >
               <Dropdown
                 class="w-full"
                 :id="'exercise_type_' + elementId"
@@ -86,7 +94,7 @@
             <Tooltip class="" :text-code="'exercise_editor.solution'"></Tooltip>
           </div>
 
-          <div>
+          <div v-if="!subExercise">
             <TagInput
               :choices="tags"
               :modelValue="modelValue.public_tags ?? []"
@@ -98,7 +106,7 @@
             <Tooltip class="" :text-code="'exercise_editor.public_tags'"></Tooltip>
           </div>
 
-          <div>
+          <div v-if="!subExercise">
             <TagInput
               :choices="tags"
               :modelValue="modelValue.private_tags ?? []"
@@ -136,6 +144,29 @@
         <!-- Completion exercise settings -->
 
         <!-- Aggregated exercise settings -->
+        <div class="mt-8" v-if="modelValue.exercise_type === ExerciseType.AGGREGATED">
+          <h3 class="mb-8">{{ $t("exercise_editor.sub_exercises_title") }}</h3>
+          <draggable
+            :modelValue="modelValue.sub_exercises"
+            @end="onChoiceDragEnd($event)"
+            ghost-class="drag-ghost"
+            item-key="id"
+          >
+            <template #item="{ element }">
+              <ExerciseEditor
+                :subExercise="true"
+                :modelValue="element"
+                @choiceUpdate="onUpdateChoice(element.id, $event.field, $event.value)"
+              ></ExerciseEditor>
+            </template>
+          </draggable>
+          <Btn @click="onAddSubExercise()" :size="'sm'"
+            ><span class="mr-1 text-base material-icons-outlined">
+              add_circle_outline
+            </span>
+            {{ $t("exercise_editor.new_sub_exercise") }}</Btn
+          >
+        </div>
 
         <!-- Js exercise settings -->
         <div class="mt-8" v-if="modelValue.exercise_type === ExerciseType.JS">
@@ -209,6 +240,7 @@ import {
   ExerciseType,
   ExerciseTestCase,
   getBlankTestCase,
+  getBlankExercise,
 } from "@/models";
 import { multipleChoiceExerciseTypes } from "@/models";
 import Card from "@/components/ui/Card.vue";
@@ -263,6 +295,10 @@ export default defineComponent({
     modelValue: {
       type: Object as PropType<Exercise>,
       required: true,
+    },
+    subExercise: {
+      type: Boolean,
+      default: false,
     },
   },
   mixins: [courseIdMixin, savingMixin],
@@ -319,6 +355,7 @@ export default defineComponent({
     ...mapActions("teacher", [
       "updateExercise",
       "addExerciseChoice",
+      "addExerciseSubExercise",
       "addExerciseTestCase",
       "updateExerciseChoice",
       "addExerciseTag",
@@ -354,7 +391,7 @@ export default defineComponent({
     onExerciseTypeChange(newVal: ExerciseType) {
       if (
         [
-          ExerciseType.AGGREGATED,
+          //ExerciseType.AGGREGATED,
           // ExerciseType.ATTACHMENT,
           ExerciseType.COMPLETION,
         ].includes(newVal)
@@ -369,6 +406,14 @@ export default defineComponent({
         courseId: this.courseId,
         exerciseId: this.modelValue.id,
         choice: getBlankChoice(),
+      });
+      this.instantiateChoiceAutoSaveManager(newChoice);
+    },
+    async onAddSubExercise() {
+      const newChoice: ExerciseChoice = await this.addExerciseSubExercise({
+        courseId: this.courseId,
+        exerciseId: this.modelValue.id,
+        subExercise: getBlankExercise(),
       });
       this.instantiateChoiceAutoSaveManager(newChoice);
     },

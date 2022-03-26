@@ -27,6 +27,7 @@ import {
   addTagToExercise,
   createExercise,
   createExerciseChoice,
+  createExerciseSubExercise,
   createExerciseTestCase,
   getExerciseChoices,
   getExercises,
@@ -263,6 +264,30 @@ export const actions = {
       .find((e: Exercise) => e.id === exerciseId)
       ?.choices?.push(newChoice);
     return newChoice;
+  },
+  addExerciseSubExercise: async (
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    { commit, state }: { commit: Commit; state: any },
+    {
+      courseId,
+      exerciseId,
+      subExercise,
+    }: {
+      courseId: string;
+      exerciseId: string;
+      subExercise: Exercise;
+    }
+  ) => {
+    const newSubExercise = await createExerciseSubExercise(
+      courseId,
+      exerciseId,
+      subExercise
+    );
+    // TODO refactor to use generic mutation
+    state.exercises
+      .find((e: Exercise) => e.id === exerciseId)
+      ?.sub_exercises?.push(newSubExercise);
+    return newSubExercise;
   },
   addExerciseTestCase: async (
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
