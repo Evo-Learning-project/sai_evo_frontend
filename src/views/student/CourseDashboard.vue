@@ -2,10 +2,7 @@
   <div class="mb-4">
     <div class="mb-8" v-if="examParticipations.length > 0">
       <h2>{{ $t("student_course_dashboard.exams_you_participated_in") }}</h2>
-      <div
-        class="grid gap-4 md:grid-cols-2 lg:grid-cols-3"
-        v-if="!firstLoading"
-      >
+      <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3" v-if="!firstLoading">
         <EventParticipationPreview
           v-for="participation in examParticipations"
           :key="'exam-participation-' + participation.id"
@@ -32,11 +29,9 @@
           <Card
             :hoverable="false"
             :margin-less="true"
-            class="relative overflow-hidden text-gray-600 shadow-lg cursor-pointer  h-44 bg-light"
+            class="relative overflow-hidden text-gray-600 shadow-lg cursor-pointer h-44 bg-light"
             @mousedown="onCardMouseDown"
-            @click="
-              onResumePractice(currentCourse.unstarted_practice_events[0])
-            "
+            @click="onResumePractice(currentCourse.unstarted_practice_events[0])"
           >
             <template v-slot:header>
               <h4 class="text-center opacity-70">
@@ -45,9 +40,7 @@
             </template>
             <template v-slot:body>
               <div class="flex">
-                <h1
-                  class="mx-auto mt-1 text-5xl  opacity-70 material-icons-outlined"
-                >
+                <h1 class="mx-auto mt-1 text-5xl opacity-70 material-icons-outlined">
                   redo
                 </h1>
               </div>
@@ -58,7 +51,7 @@
           v-else
           :margin-less="true"
           :hoverable="false"
-          class="relative overflow-hidden text-gray-600 shadow-lg cursor-pointer  h-44 bg-light"
+          class="relative overflow-hidden text-gray-600 shadow-lg cursor-pointer h-44 bg-light"
           @mousedown="onCardMouseDown"
           @click="onCreatePractice()"
         >
@@ -69,9 +62,7 @@
           </template>
           <template v-slot:body>
             <div class="flex">
-              <h1
-                class="mx-auto -mt-1 text-5xl  opacity-70 material-icons-outlined"
-              >
+              <h1 class="mx-auto -mt-1 text-5xl opacity-70 material-icons-outlined">
                 add_circle_outline
               </h1>
             </div>
@@ -134,6 +125,7 @@ import Card from "@/components/ui/Card.vue";
 import { Event, getBlankPractice } from "@/models";
 import Dialog from "@/components/ui/Dialog.vue";
 import PracticeTemplateEditor from "@/components/student/PracticeTemplateEditor.vue";
+import { getTranslatedString as _ } from "@/i18n";
 
 export default defineComponent({
   components: {
@@ -177,13 +169,20 @@ export default defineComponent({
       if (this.loading) {
         return;
       }
-      (this.$store.state as any).shared.loading = true;
-      const newPracticeEvent = await this.createEvent({
-        courseId: this.courseId,
-        event: getBlankPractice(),
+      if (!this.currentCourse.public_exercises_exist) {
+        this.setErrorNotification(
+          _("student_course_dashboard.no_public_exercises"),
+          true
+        );
+        return;
+      }
+      await this.withLoading(async () => {
+        const newPracticeEvent = await this.createEvent({
+          courseId: this.courseId,
+          event: getBlankPractice(),
+        });
+        this.setEditingEvent(newPracticeEvent);
       });
-      this.setEditingEvent(newPracticeEvent);
-      (this.$store.state as any).shared.loading = false;
     },
   },
   computed: {
@@ -195,8 +194,7 @@ export default defineComponent({
     // },
     isResumingUnstartedPractice(): boolean {
       return (
-        this.editingEvent?.id ===
-        this.currentCourse.unstarted_practice_events?.[0]?.id
+        this.editingEvent?.id === this.currentCourse.unstarted_practice_events?.[0]?.id
       );
     },
   },

@@ -135,6 +135,7 @@ export const it = {
     practice_sessions: "Esercitazioni",
     exercises: "Esercizi presenti nel corso",
     active_students: "Studenti attivi",
+    no_active_students: "Non ci sono ancora studenti attivi nel corso",
     active_students_description:
       "Gli studenti attivi sono studenti che hanno partecipato ad almeno un esame o hanno iniziato autonomamente almeno un'esercitazione nel corso.",
     user_history_event_descriptions: {
@@ -406,6 +407,8 @@ export const it = {
     draft_practice: "Bozza esercitazione",
     pending: "In corso",
     practice_summary: "Riepilogo",
+    no_public_exercises:
+      "Non puoi iniziare un'esercitazione perché i docenti del corso non hanno ancora aggiunto esercizi",
   },
   practice_template_editor: {
     begin_practice: "Inizia esercitazione",

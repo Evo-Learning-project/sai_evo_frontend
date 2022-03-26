@@ -35,6 +35,7 @@ export interface Course {
   // student fields
   participations?: EventParticipation[];
   unstarted_practice_events?: Event[];
+  public_exercises_exist?: boolean;
 }
 
 export interface Exercise {

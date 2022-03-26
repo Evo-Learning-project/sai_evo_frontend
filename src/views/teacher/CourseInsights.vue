@@ -31,6 +31,10 @@
     <p class="text-muted">
       {{ $t("course_insights.active_students_description") }}
     </p>
+    <div v-if="!loading && users.length === 0" class="flex flex-col items-center mt-8">
+      <p style="font-size: 6rem" class="material-icons-outlined opacity-10">person_off</p>
+      <h2 class="opacity-40">{{ $t("course_insights.no_active_students") }}</h2>
+    </div>
     <div class="mt-4 grid md:grid-cols-3 grid-cols-1 gap-3">
       <StudentCard
         class="mb-auto"

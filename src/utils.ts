@@ -122,7 +122,10 @@ const getOffset = (el: {
   return { offsetTop: _y, offsetLeft: _x };
 };
 
-export const getErrorData = (e: any): ErrorMessage => {
+export const getErrorData = (e: any, useAsIs = false): ErrorMessage => {
+  if (useAsIs) {
+    return { title: e };
+  }
   if (e.response) {
     return {
       icon: "error_outline",
@@ -148,9 +151,9 @@ export const setPageWideError = (e: any) => {
 };
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-export const setErrorNotification = (e: any) =>
+export const setErrorNotification = (e: any, useAsIs = false) =>
   store.commit("shared/setErrorNotificationData", {
-    data: getErrorData(e),
+    data: getErrorData(e, useAsIs),
   });
 
 // export const typesetTex = () => {
