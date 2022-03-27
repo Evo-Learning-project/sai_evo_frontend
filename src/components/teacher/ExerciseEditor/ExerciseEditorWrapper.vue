@@ -1,6 +1,6 @@
 <template>
   <div class="relative my-4" :id="'editor-' + modelValue.id">
-    <div class="absolute top-0 right-0 z-50 mt-2 mr-3">
+    <div class="absolute top-0 right-0 z-20 mt-2 mr-3">
       <Btn :size="'lg'" :variant="'icon'" @click="showEditor = !showEditor"
         ><span class="material-icons-outlined">
           {{ showEditor ? "expand_less" : "expand_more" }}

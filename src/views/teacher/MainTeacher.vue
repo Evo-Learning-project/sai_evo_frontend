@@ -9,7 +9,8 @@
     ></transition>
     <!-- bg-gray-500 -->
     <nav
-      class="flex items-center w-full px-3 py-2 shadow-elevation-2 md:hidden bg-primary"
+      style="z-index: 49"
+      class="flex items-center w-full px-3 py-2 shadow-elevation-2 md:hidden bg-primary sticky top-0"
     >
       <img class="w-32" src="../../../public/unipi-logo.svg" />
       <Btn

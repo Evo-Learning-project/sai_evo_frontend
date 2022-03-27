@@ -375,9 +375,11 @@
               :variant="'icon'"
               class="mb-auto"
               @click="$emit('openFull')"
-              ><span class="material-icons-outlined text-base mr-0.5">launch</span></Btn
+              ><span class="material-icons-outlined text-base mr-0.5 text-muted"
+                >launch</span
+              ></Btn
             >
-            <p>
+            <p class="text-muted">
               {{ $t("event_assessment.sub_slot_assessment_unavailable_open_full_1") }}
 
               <span>{{
