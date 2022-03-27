@@ -13,6 +13,7 @@ import {
   EventTemplate,
 } from "@/models";
 import { MutationPayload, TeacherState } from "../types";
+import { getters } from "./getters";
 
 export const mutations = {
   setExercises: (state: TeacherState, exercises: Exercise[]) =>
@@ -99,9 +100,10 @@ export const mutations = {
       payload,
     }: MutationPayload<ExerciseChoice | Exercise | ExerciseTestCase>
   ) => {
-    const targetExercise = (state.exercises as Exercise[]).find(
-      (e) => e.id === exerciseId
-    );
+    const targetExercise = getters.exercise(state)(exerciseId as string);
+    //  (state.exercises as Exercise[]).find(
+    //   (e) => e.id === exerciseId
+    // );
     let childrenName: "choices" | "sub_exercises" | "testcases";
     switch (childType) {
       case "choice":
@@ -116,9 +118,7 @@ export const mutations = {
       default:
         throw new Error("unreachable");
     }
-    const children = targetExercise?.[childrenName];
-    console.log("CHILDREN", children, childType, targetExercise);
-
+    const children = (targetExercise as Exercise | undefined)?.[childrenName];
     if (children) {
       const target = (children as any)?.find((c: any) => c.id == payload.id);
       Object.assign(target, payload);
@@ -134,9 +134,9 @@ export const mutations = {
       payload,
     }: MutationPayload<ExerciseChoice[] | Exercise[] | ExerciseTestCase[]>
   ) => {
-    const target = (state.exercises as Exercise[]).find(
-      (e) => e.id === exerciseId
-    );
+    const target = getters.exercise(state)(exerciseId as string) as
+      | Exercise
+      | undefined;
     if (target && children) {
       target[children] = payload as any;
     }

@@ -247,7 +247,7 @@ export const actions = {
   },
   addExerciseChoice: async (
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    { commit, state }: { commit: Commit; state: any },
+    { commit, state, getters }: { commit: Commit; state: any; getters: any },
     {
       courseId,
       exerciseId,
@@ -260,9 +260,7 @@ export const actions = {
   ) => {
     const newChoice = await createExerciseChoice(courseId, exerciseId, choice);
     // TODO refactor to use generic mutation
-    state.exercises
-      .find((e: Exercise) => e.id === exerciseId)
-      ?.choices?.push(newChoice);
+    getters.exercise(exerciseId).choices?.push(newChoice);
     return newChoice;
   },
   addExerciseSubExercise: async (
@@ -291,7 +289,7 @@ export const actions = {
   },
   addExerciseTestCase: async (
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    { commit, state }: { commit: Commit; state: any },
+    { commit, state, getters }: { commit: Commit; state: any; getters: any },
     {
       courseId,
       exerciseId,
@@ -308,9 +306,7 @@ export const actions = {
       testCase
     );
     // TODO refactor to use generic mutation
-    state.exercises
-      .find((e: Exercise) => e.id === exerciseId)
-      ?.testcases?.push(newTestCase);
+    getters.exercise(exerciseId).testcases?.push(newTestCase);
     return newTestCase;
   },
   getEventTemplateRule: async (

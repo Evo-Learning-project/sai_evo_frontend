@@ -7,13 +7,13 @@
       </p>
       <Card
         v-else
-        class="bg-light shadow-elevation border-l-4 border-yellow-500 mb-8"
+        class="mb-8 border-l-4 border-yellow-500 bg-light shadow-elevation"
         :border-less="true"
       >
         <template v-slot:header>
           <div class="flex items-center space-x-2">
-            <div class="text-yellow-900 bg-yellow-500 icon-surrounding w-6 h-6">
-              <span class="ml-px material-icons-outlined text-lg"> priority_high </span>
+            <div class="w-6 h-6 text-yellow-900 bg-yellow-500 icon-surrounding">
+              <span class="ml-px text-lg material-icons-outlined"> priority_high </span>
             </div>
             <h4>{{ $t("misc.warning") }}</h4>
           </div>
@@ -26,6 +26,7 @@
       </Card>
       <draggable
         ghost-class="drag-ghost"
+        drag-class="dragging-element"
         handle=".drag-handle"
         item-key="id"
         :modelValue="modelValue.rules"

@@ -80,7 +80,7 @@
             v-else-if="exercise.exercise_type === ExerciseType.AGGREGATED"
             v-for="(subSlot, index) in modelValue.sub_slots"
             :key="modelValue.id + '-sub-slot-' + subSlot.id"
-            :class="{ 'mb-6': index !== modelValue.sub_slots.length - 1 }"
+            :class="{ 'mb-12': index !== modelValue.sub_slots.length - 1 }"
           >
             <AbstractEventParticipationSlot
               :subSlot="true"

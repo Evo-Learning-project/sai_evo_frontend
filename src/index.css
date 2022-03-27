@@ -56,9 +56,17 @@
     }
 
     .drag-ghost {
-      @apply opacity-70 shadow-lg bg-primary bg-opacity-10
+      @apply opacity-0;
     }
+    
+    /* .dragging-element {
+      @apply
+    } */
 
+    .flip-list-move {
+      transition: transform 0.5s;
+    }
+    
     .fade-enter-from,
     .fade-leave-to {
       opacity: 0;
