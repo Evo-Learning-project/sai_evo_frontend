@@ -32,11 +32,11 @@
       </h4>
       <AbstractEventParticipationSlot
         :modelValue="slot"
-        @updateSelectedChoices="onChange(slot, 'selected_choices', $event)"
-        @updateAnswerText="onChange(slot, 'answer_text', $event)"
-        @updateAttachment="onUpdateAttachment(slot, $event)"
-        @download="onAttachmentDownload(slot)"
-        @runCode="onRunCode(slot)"
+        @updateSelectedChoices="onChange($event.slot, 'selected_choices', $event.payload)"
+        @updateAnswerText="onChange($event.slot, 'answer_text', $event.payload)"
+        @updateAttachment="onUpdateAttachment($event.slot, $event.payload)"
+        @download="onAttachmentDownload($event.slot)"
+        @runCode="onRunCode($event.slot)"
         :allowEditSubmission="true"
         :saving="saving"
         :running="running"
@@ -342,6 +342,7 @@ export default defineComponent({
         },
         true
       );
+      slot.sub_slots.forEach((s) => this.instantiateSlotAutoSaveManager(s));
     },
   },
   computed: {

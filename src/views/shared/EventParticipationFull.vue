@@ -19,7 +19,7 @@
     >
     <div
       class="mb-4 items-start flex space-x-0.5 md:space-x-2"
-      v-if="!firstLoading && allowEditScores"
+      v-if="!firstLoading && allowEditAssessment"
     >
       <!-- <router-link :to="{ name: 'ExamProgress' }"
         ><Btn :outline="true" :variant="'icon'"
@@ -40,7 +40,7 @@
     </div>
     <div class="px-2 py-6 rounded-md md:px-6 bg-gray-50" v-if="!firstLoading">
       <div class="flex flex-col space-y-2 md:flex-row md:space-y-0">
-        <div class="" v-if="showAssessment && !firstLoading">
+        <div class="" v-if="showAssessmentCard && !firstLoading">
           <div
             class="px-6 rounded bg-light shadow-elevation-2"
             :class="{ 'py-3': !showEditScore, 'py-8': showEditScore }"
@@ -51,7 +51,7 @@
                 <strong>{{ participation.score }}</strong>
               </p>
               <Btn
-                v-if="allowEditScores"
+                v-if="allowEditAssessment"
                 :outline="true"
                 :variant="'icon'"
                 @click="onShowEditScore()"
@@ -103,7 +103,7 @@
       </div>
       <div
         class="flex space-x-2 items-start mt-2 md:w-3/5"
-        v-if="allowEditScores && someSlotsPending"
+        v-if="allowEditAssessment && someSlotsPending"
       >
         <span class="text-xl material-icons-outlined text-yellow-900"
           >pending_actions</span
@@ -126,15 +126,18 @@
           {{ $t("event_participation_page.exercise") }}
           {{ slot.slot_number + 1 }}
         </h3>
+        <!--:showAssessmentControls="slotsAssessmentControlsVisibility[slot.id] ?? false"-->
         <AbstractEventParticipationSlot
           :modelValue="slot"
-          @updateAssessment="onSlotUpdateAssessment(slot, $event)"
-          :allowEditScores="allowEditScores"
-          :showScores="showScores"
-          :showAssessment="showAssessment"
-          :showAssessmentControls="slotsAssessmentControlsVisibility[slot.id] ?? false"
+          @updateAssessment="
+            onSlotUpdateAssessment($event.slot, $event.payload)
+          "
+          :allowEditAssessment="allowEditAssessment"
+          :showSolutionAndScores="showSolutionAndScores"
+          :showAssessmentCard="showAssessmentCard"
+          :assessmentControlsVisibility="slotsAssessmentControlsVisibility"
           @setAssessmentControlsVisibility="
-            slotsAssessmentControlsVisibility[slot.id] = $event
+            slotsAssessmentControlsVisibility[$event.slot.id] = $event.payload
           "
           :assessmentLoading="slotsAssessmentLoading[slot.id] ?? false"
         ></AbstractEventParticipationSlot>
@@ -173,15 +176,15 @@ export default defineComponent({
   name: "EventParticipationFull",
   mixins: [eventIdMixin, courseIdMixin, loadingMixin],
   props: {
-    showScores: {
+    showSolutionAndScores: {
       type: Boolean,
       default: true,
     },
-    allowEditScores: {
+    allowEditAssessment: {
       type: Boolean,
       default: false,
     },
-    showAssessment: {
+    showAssessmentCard: {
       type: Boolean,
       default: false,
     },
@@ -212,7 +215,7 @@ export default defineComponent({
     // participation is still in progress and exam is
     // still open, redirect to participation page
     if (
-      !this.allowEditScores && // not in teacher mode
+      !this.allowEditAssessment && // not in teacher mode
       this.participation.state !== EventParticipationState.TURNED_IN &&
       this.participation.event.state === EventState.OPEN
     ) {
@@ -297,7 +300,7 @@ export default defineComponent({
     someSlotsPending(): boolean {
       return (
         (this.participation as EventParticipation | undefined)?.slots.some(
-          (s) => s.score === null
+          (s) => s.score === null || s.sub_slots.some((r) => r.score === null)
         ) ?? true
       );
     },

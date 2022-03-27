@@ -91,9 +91,10 @@
               </Btn>
             </div>
             <div class="flex flex-col mt-4 md:items-center md:flex-row md:space-x-2">
-              <p class="text-muted">Link al corso per gli studenti</p>
+              <p class="text-muted">
+                {{ $t("teacher_course_dashboard.course_link_for_students") }}
+              </p>
               <CopyToClipboard
-                v-if="!isDraft && !hasEnded"
                 :value="permalink"
                 :title="$t('event_preview.copy_link')"
                 :confirmationMessage="$t('event_preview.copied_link')"

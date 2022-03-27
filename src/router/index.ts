@@ -162,8 +162,8 @@ const routes: Array<RouteRecordRaw> = [
           sidebarOptions: courseDashboardSidebarOptions,
         },
         props: {
-          showAssessment: true,
-          allowEditScores: true,
+          showAssessmentCard: true,
+          allowEditAssessment: true,
         },
       },
     ],
@@ -238,7 +238,7 @@ const routes: Array<RouteRecordRaw> = [
           breadcrumbs: examAssessmentBreadCrumbs,
         },
         props: {
-          showAssessment: true,
+          showAssessmentCard: true,
         },
       },
       {
@@ -250,7 +250,7 @@ const routes: Array<RouteRecordRaw> = [
           breadcrumbs: practiceReviewBreadCrumbs,
         },
         props: {
-          showAssessment: true,
+          showAssessmentCard: true,
         },
       },
     ],

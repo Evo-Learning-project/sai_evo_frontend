@@ -32,7 +32,13 @@ export const mutations = {
     state: StudentState,
     slot: EventParticipationSlot
   ) => {
-    const target = state.currentEventParticipation?.slots.find(
+    // look for both slots and sub-slots
+    const flattenedSlots = (
+      state.currentEventParticipation as EventParticipation
+    ).slots
+      .map((e) => [e, ...(e.sub_slots ?? [])])
+      .flat(10);
+    const target = flattenedSlots.find(
       (s: EventParticipationSlot) => s.id == slot.id
     );
     Object.assign(target, slot);

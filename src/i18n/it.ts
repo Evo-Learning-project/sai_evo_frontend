@@ -116,6 +116,8 @@ export const it = {
       "Questo commento sarà visibile allo studente quando pubblicherai i risultati",
     this_exercise_requires_manual_assessment:
       "Devi assegnare manualmente un punteggio a questa risposta.",
+    some_sub_slots_pending:
+      "Il punteggio mostrato è incompleto perché alcuni sotto-esercizi non hanno ancora ricevuto una valutazione.",
     some_slots_pending:
       "Il punteggio mostrato è incompleto perché alcuni esercizi non hanno ancora ricevuto una valutazione. Assegna un punteggio agli esercizi che ancora non ne hanno uno.",
     assessment_state: "Stato della correzione",
@@ -130,6 +132,10 @@ export const it = {
     exercise_answered_at: "Risposto:",
     viewing_participation_of: "Stai visualizzando l'esame di",
     viewing_practice_of: "Stai visualizzando un'esercitazione di",
+    sub_slot_assessment_unavailable_open_full_1: "Apri la",
+    sub_slot_assessment_unavailable_open_full_2: "partecipazione completa",
+    sub_slot_assessment_unavailable_open_full_3:
+      "all'esame per assegnare un punteggio a questo sotto-esercizio.",
   },
   course_insights: {
     practice_sessions: "Esercitazioni",
@@ -204,6 +210,7 @@ export const it = {
     course_creator: "Creatore del corso",
     course_name: "Nome del corso",
     course_description: "Descrizione del corso (opzionale)",
+    course_link_for_students: "Link al corso per gli studenti",
   },
   course_creation_form: {
     course_name: "Nome del corso",

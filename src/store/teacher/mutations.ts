@@ -75,10 +75,8 @@ export const mutations = {
     const flattenedExercises = state.exercises
       .map((e) => [e, ...(e.sub_exercises ?? [])])
       .flat(10);
-
-    console.log("FLATTENED", flattenedExercises);
     Object.assign(
-      /*state.exercises*/ flattenedExercises.find((e) => e.id == payload.id),
+      flattenedExercises.find((e) => e.id == payload.id),
       payload
     );
   },

@@ -179,8 +179,14 @@
         <!-- editing an assessment slot -->
         <div class="text-darkText" v-if="editingSlot">
           <AbstractEventParticipationSlot
-            :allowEditScores="true"
+            :allowEditAssessment="true"
             @download="onAttachmentDownload(editingSlotDirty)"
+            @openFull="
+              $router.push({
+                name: 'ExamParticipationFull',
+                params: { participationId: editingParticipationId },
+              })
+            "
             v-model="editingSlotDirty"
           ></AbstractEventParticipationSlot>
         </div>
