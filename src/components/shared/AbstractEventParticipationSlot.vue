@@ -170,7 +170,7 @@
           </div>
 
           <!-- score -->
-          <div class="flex items-center space-x-2 transition-opacity duration-100">
+          <div class="flex items-center ransition-opacity duration-100">
             <p class="text-muted">
               {{ $t("misc.score") }}:
               <strong class="text-lg">{{ modelValue.score }}</strong>
@@ -183,6 +183,7 @@
             </p>
             <Btn
               v-if="allowEditAssessment"
+              class="ml-1"
               :outline="true"
               :variant="'icon'"
               :disabled="showAssessmentControls"
@@ -191,10 +192,21 @@
                 >edit</span
               ></Btn
             >
+            <Btn
+              v-if="allowEditAssessment && modelValue.score_edited"
+              :outline="true"
+              class="ml-auto"
+              :variant="'icon'"
+              :disabled="showAssessmentControls"
+              @click="onUndoScoreEdit()"
+              ><span class="text-lg text-gray-600 material-icons-outlined"
+                >undo</span
+              ></Btn
+            >
           </div>
           <div
             class="flex items-start mt-2 space-x-2 text-sm"
-            v-if="allowEditAssessment && someSubSlotsPending"
+            v-if="false && allowEditAssessment && someSubSlotsPending"
           >
             <span class="text-lg text-yellow-900 material-icons-outlined"
               >pending_actions</span
@@ -287,6 +299,7 @@
                 :outline="false"
                 :variant="'primary'"
                 :loading="assessmentLoading"
+                :disabled="dirtyScore === null || dirtyScore?.length === 0"
                 @click="onHideAssessmentControls()"
               >
                 {{ $t("event_assessment.confirm_assessment") }}
@@ -387,7 +400,7 @@ import { defineComponent, PropType } from "@vue/runtime-core";
 import CheckboxGroup from "@/components/ui/CheckboxGroup.vue";
 import { SelectableOption } from "@/interfaces";
 import RadioGroup from "../ui/RadioGroup.vue";
-import { getTranslatedString as _ } from "@/i18n";
+import { getTranslatedString, getTranslatedString as _ } from "@/i18n";
 import TextEditor from "../ui/TextEditor.vue";
 import NumberInput from "../ui/NumberInput.vue";
 import Timestamp from "../ui/Timestamp.vue";
@@ -507,12 +520,18 @@ export default defineComponent({
         payload: { score: this.dirtyScore, comment: this.dirtyComment },
       });
     },
+    onUndoScoreEdit() {
+      if (confirm(getTranslatedString("event_assessment.undo_score_edit"))) {
+        this.dirtyScore = null;
+        this.onHideAssessmentControls();
+      }
+    },
   },
   data() {
     return {
       ExerciseType,
       //showAssessmentControls: false,
-      dirtyScore: undefined as number | undefined,
+      dirtyScore: undefined as number | undefined | null,
       dirtyComment: undefined as string | undefined,
     };
   },

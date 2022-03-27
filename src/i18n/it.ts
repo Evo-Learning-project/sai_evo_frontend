@@ -136,6 +136,8 @@ export const it = {
     sub_slot_assessment_unavailable_open_full_2: "partecipazione completa",
     sub_slot_assessment_unavailable_open_full_3:
       "all'esame per assegnare un punteggio a questo sotto-esercizio.",
+    undo_score_edit:
+      "Vuoi ripristinare il punteggio originale per questo esercizio?",
   },
   course_insights: {
     practice_sessions: "Esercitazioni",

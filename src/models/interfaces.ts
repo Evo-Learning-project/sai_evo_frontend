@@ -136,6 +136,7 @@ export interface EventParticipationSlot {
   exercise: Exercise;
   score?: number;
   comment?: string;
+  score_edited?: boolean;
   assessment_state?: AssessmentSlotState;
   sub_slots: EventParticipationSlot[];
   selected_choices: string[];

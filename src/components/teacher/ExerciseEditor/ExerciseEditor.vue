@@ -345,7 +345,6 @@ export default defineComponent({
         error: false,
         confirmOnly: false,
       } as DialogData,
-      exerciseTypeOptions,
       exerciseStateOptions,
       ExerciseState,
       ExerciseType,
@@ -562,6 +561,11 @@ export default defineComponent({
     validationErrors() {
       return getExerciseValidationErrors(this.modelValue).map((e) =>
         _("exercise_validation_errors." + e)
+      );
+    },
+    exerciseTypeOptions() {
+      return exerciseTypeOptions.filter(
+        (o) => !this.subExercise || o.value !== ExerciseType.AGGREGATED
       );
     },
   },
