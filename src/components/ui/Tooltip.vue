@@ -13,15 +13,17 @@
       <div class="tooltip-handle" v-else>
         <slot> </slot>
       </div>
-      <span
-        class="z-50 max-w-xs md:max-w-max tooltip-text"
-        :class="{
-          'tooltip-right': placement === 'right',
-          'tooltip-bottom': placement === 'bottom',
-          'tooltip-top': placement === 'top',
-          'tooltip-left': placement === 'left',
-        }"
-        >{{ helpText }}</span
+      <transition name="fade"
+        ><span
+          class="z-20 max-w-xs md:max-w-max tooltip-text"
+          :class="{
+            'tooltip-right': placement === 'right',
+            'tooltip-bottom': placement === 'bottom',
+            'tooltip-top': placement === 'top',
+            'tooltip-left': placement === 'left',
+          }"
+          >{{ helpText }}</span
+        ></transition
       >
     </div>
   </div>

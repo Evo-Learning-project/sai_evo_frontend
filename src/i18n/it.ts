@@ -382,7 +382,8 @@ export const it = {
     exercise_tags: "Tag",
     exercise_private_tags: "Tag privati",
     choice_text: "Testo",
-    choice_score: "Punteggio",
+    choice_score_checked: "Punteggio selez.",
+    choice_score_unchecked: "Punteggio non selez.",
     testcase_type: "Visibilità",
     testcase_text: "Descrizione",
     testcase_code: "Codice",
@@ -583,6 +584,8 @@ export const it = {
   },
   help_texts: {
     exercise_editor: {
+      score_if_checked: "Punteggio se la risposta viene selezionata",
+      score_if_unchecked: "Punteggio se la risposta non viene selezionata",
       solution:
         "Se pubblichi questo esercizio, quando viene incluso in un'esercitazione creata da uno studente, la soluzione verrà mostrata al termine della stessa.",
       public_tags:

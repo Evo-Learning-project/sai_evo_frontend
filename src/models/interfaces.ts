@@ -51,12 +51,14 @@ export interface Exercise {
   public_tags?: Tag[];
   private_tags?: Tag[];
   max_score?: number;
+  correct_choices?: string[];
 }
 
 export interface ExerciseChoice extends Orderable {
   id: string;
   text: string;
-  score?: number;
+  score_selected?: number;
+  score_unselected?: number;
 }
 
 export interface ExerciseTestCase {

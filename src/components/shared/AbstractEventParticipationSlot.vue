@@ -40,11 +40,33 @@
             :options="exerciseChoicesAsOptions"
             v-model="selectedChoicesProxy"
             :disabled="!allowEditSubmission || saving"
-            v-slot="{ description }"
           >
-            <p class="mb-2 text-sm font-semibold text-muted text-primary">
-              {{ description }}
-            </p>
+            <template v-slot:item="{ description }">
+              <div class="flex space-x-2 items-center mb-2">
+                <p
+                  :class="{
+                    'text-success': description?.[0] === 'done',
+                    'text-danger-dark': description?.[0] === 'close',
+                  }"
+                  class="text-sm font-semibold text-muted material-icons-outlined"
+                >
+                  {{ description?.[0] }}
+                </p>
+                <p class="text-muted text-sm" v-if="nonUniformScores">
+                  {{ description?.[1] }}
+                  {{
+                    $t(
+                      `exercise.choice_score_word_${
+                        parseFloat(description?.[1] ?? "") == 1 ||
+                        parseFloat(description?.[1] ?? "") == -1
+                          ? "singular"
+                          : "plural"
+                      }`
+                    )
+                  }}
+                </p>
+              </div></template
+            >
           </CheckboxGroup>
 
           <!-- multiple choice single possible -->
@@ -55,11 +77,37 @@
             :options="exerciseChoicesAsOptions"
             v-model="selectedChoicesProxy"
             :disabled="!allowEditSubmission || saving"
-            v-slot="{ description }"
           >
-            <p class="mb-2 text-sm font-semibold text-muted text-primary">
-              {{ description }}
-            </p>
+            <template v-slot:item="{ description }">
+              <div class="flex space-x-2 items-center mb-2">
+                <p
+                  :class="{
+                    'text-success': description?.[0] === 'done',
+                    'text-danger-dark': description?.[0] === 'close',
+                  }"
+                  class="text-sm font-semibold text-muted material-icons-outlined"
+                >
+                  {{ description?.[0] }}
+                </p>
+                <p
+                  :id="description?.[3] ?? ''"
+                  class="text-muted text-sm"
+                  v-if="nonUniformScores"
+                >
+                  {{ description?.[1] }}
+                  {{
+                    $t(
+                      `exercise.choice_score_word_${
+                        parseFloat(description?.[1] ?? "") == 1 ||
+                        parseFloat(description?.[1] ?? "") == -1
+                          ? "singular"
+                          : "plural"
+                      }`
+                    )
+                  }}
+                </p>
+              </div></template
+            >
           </RadioGroup>
 
           <!-- open answer -->
@@ -413,6 +461,7 @@ import { texMixin } from "@/mixins";
 import FileUpload from "../ui/FileUpload.vue";
 import { downloadEventParticipationSlotAttachment } from "@/api/events";
 import Btn from "../ui/Btn.vue";
+import { every, some } from "lodash";
 
 export default defineComponent({
   components: {
@@ -547,6 +596,26 @@ export default defineComponent({
     someSubSlotsPending(): boolean {
       return this.modelValue.sub_slots.some((s) => s.score === null);
     },
+    nonUniformScores(): boolean {
+      // Returns whether all choices aside from the correct ones have the same score_selected
+      if (
+        ![
+          ExerciseType.MULTIPLE_CHOICE_MULTIPLE_POSSIBLE,
+          ExerciseType.MULTIPLE_CHOICE_SINGLE_POSSIBLE,
+        ].includes(this.modelValue.exercise.exercise_type as ExerciseType)
+      ) {
+        return false;
+      }
+
+      const nonCorrectChoices = (this.modelValue.exercise
+        .choices as ExerciseChoice[]).filter(
+        (c) => !this.modelValue.exercise.correct_choices?.includes(c.id)
+      );
+
+      return nonCorrectChoices.some(
+        (c) => c.score_selected != nonCorrectChoices[0].score_selected
+      );
+    },
     exerciseChoicesAsOptions(): SelectableOption[] {
       if (
         this.exercise.exercise_type !== ExerciseType.MULTIPLE_CHOICE_SINGLE_POSSIBLE &&
@@ -559,15 +628,14 @@ export default defineComponent({
         value: c.id,
         content: c.text,
         ...(this.showSolutionAndScores &&
-          ((c.score ?? "") + "").length > 0 && {
-            description:
-              c.score +
-              " " +
-              _(
-                `exercise.choice_score_word_${
-                  c.score == 1 || c.score == -1 ? "singular" : "plural"
-                }`
-              ),
+          ((c.score_selected ?? "") + "").length > 0 &&
+          ((c.score_unselected ?? "") + "").length > 0 && {
+            description: [
+              this.modelValue.exercise.correct_choices?.includes(c.id) ? "done" : "close",
+              String(c.score_selected),
+              String(c.score_unselected),
+              c.id,
+            ],
           }),
       }));
     },

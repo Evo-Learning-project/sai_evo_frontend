@@ -27,7 +27,7 @@
           <slot v-bind:icons="option.icons"></slot>
           <p :class="labelClass" v-html="option.content"></p>
         </div>
-        <slot v-bind:description="option.description"></slot>
+        <slot name="item" v-bind:description="option.description"></slot>
       </div>
     </label>
   </div>

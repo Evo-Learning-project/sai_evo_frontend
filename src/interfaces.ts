@@ -2,7 +2,7 @@
 export interface SelectableOption {
   value: any;
   content: string;
-  description?: string;
+  description?: string | string[];
   icons?: string[];
 }
 

@@ -26,7 +26,8 @@ export const getBlankCourse = (): Course => ({
 export const getBlankChoice = (): ExerciseChoice => ({
   id: "",
   text: "",
-  score: 0,
+  score_selected: 0,
+  score_unselected: 0,
 });
 
 export const getBlankTestCase = (): ExerciseTestCase => ({
