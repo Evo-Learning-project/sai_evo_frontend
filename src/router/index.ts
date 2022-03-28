@@ -258,6 +258,10 @@ const routes: Array<RouteRecordRaw> = [
 ];
 
 const router = createRouter({
+  scrollBehavior(to, from, savedPosition) {
+    // always scroll to top
+    return { top: 0 };
+  },
   history: createWebHistory(process.env.BASE_URL),
   routes,
 });

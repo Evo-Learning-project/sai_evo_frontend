@@ -220,7 +220,11 @@
           <!-- score -->
           <div class="flex items-center ransition-opacity duration-100">
             <p class="text-muted">
-              {{ $t("misc.score") }}:
+              {{
+                modelValue.exercise.exercise_type !== ExerciseType.JS
+                  ? $t("misc.score")
+                  : $t("misc.passed_tests")
+              }}:
               <strong class="text-lg">{{ modelValue.score }}</strong>
               <span v-if="modelValue.exercise.max_score"
                 >&nbsp;{{ $t("misc.out_of") }}
@@ -283,7 +287,11 @@
           >
             {{ $t("misc.solution") }}:
           </p>
-          <p v-html="modelValue.exercise.solution"></p>
+          <p
+            v-if="modelValue.exercise.exercise_type !== ExerciseType.JS"
+            v-html="modelValue.exercise.solution"
+          ></p>
+          <CodeFragment v-else :value="modelValue.exercise.solution"></CodeFragment>
 
           <!-- in-card assessment controls -->
           <div

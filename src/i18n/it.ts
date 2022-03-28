@@ -153,6 +153,7 @@ export const it = {
   },
   misc: {
     teacher: "Docente",
+    passed_tests: "Test case superati",
     hidden_to_students: "Nascosto agli studenti",
     file_upload_no_files: "Nessun file presente",
     file_upload: "Trascina qui il tuo file oppure clicca qui",

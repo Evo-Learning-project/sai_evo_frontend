@@ -496,7 +496,14 @@
       @apply text-gray-600 font-semibold font-sans text-sm !important
     }
     .ag-row {
-      @apply border-l-0 border-r-0 border-b border-light hover:bg-light transition-colors duration-75 !important
+      @apply border-l-0 border-r-0 border-b border-light transition-colors duration-75 !important
+    }
+    .ag-row:hover {
+      @apply bg-gray-50;
+      box-shadow: inset 1px 0 0 #dadce0,
+      inset -1px 0 0 #dadce0,
+      0 1px 2px 0 rgb(60 64 67 / 30%),
+      0 1px 3px 1px rgb(60 64 67 / 15%);
     }
     .ag-theme-material .ag-checkbox-input-wrapper.ag-checked::after {
       @apply text-primary !important

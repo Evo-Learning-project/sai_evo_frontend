@@ -10,15 +10,6 @@
       <div
         class="w-full px-6 py-12 mx-auto my-auto text-center rounded-md shadow-elevation-2 md:px-20 md:mx-auto md:w-2/3 border-gray-150"
       >
-        <div
-          class="absolute z-50 w-11/12 p-4 transform -translate-x-1/2 -translate-y-1/2 rounded-md hidden shadow-all-around h-96 bg-light left-1/2 top-1/2"
-        >
-          <h2>Dispositivo non ancora supportato</h2>
-          <p>
-            Al momento gli schermi piccoli non sono supportati. Per favore, visita il sito
-            da un computer. Grazie per la pazienza!
-          </p>
-        </div>
         <h1 class="mx-auto text-center">
           {{ $t("headings.login") }}
         </h1>
