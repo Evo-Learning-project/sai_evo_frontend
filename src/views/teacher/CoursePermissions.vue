@@ -10,7 +10,7 @@
     ></DataTable>
     <Dialog :showDialog="showDialog" :confirmOnly="true" @yes="hideDialog()">
       <template v-slot:title>
-        {{ $t('course_privileges_page.edit_permissions_title') }}&nbsp;{{
+        {{ $t("course_privileges_page.edit_permissions_title") }}&nbsp;{{
           editingUser?.full_name
         }}
       </template>
@@ -38,84 +38,79 @@
 </template>
 
 <script lang="ts">
-import DataTable from '@/components/ui/DataTable.vue'
-import { courseIdMixin, loadingMixin, savingMixin } from '@/mixins'
-import { defineComponent } from '@vue/runtime-core'
-import {
-  CellClickedEvent,
-  ColDef,
-  RowClassParams,
-  RowNode
-} from 'ag-grid-community'
+import DataTable from "@/components/ui/DataTable.vue";
+import { courseIdMixin, loadingMixin, savingMixin } from "@/mixins";
+import { defineComponent } from "@vue/runtime-core";
+import { CellClickedEvent, ColDef, RowClassParams, RowNode } from "ag-grid-community";
 
-import { createNamespacedHelpers, mapState } from 'vuex'
-const { mapActions } = createNamespacedHelpers('teacher')
+import { createNamespacedHelpers, mapState } from "vuex";
+const { mapActions } = createNamespacedHelpers("teacher");
 
-import { getTranslatedString as _ } from '@/i18n'
-import { Course, CoursePrivilege, User } from '@/models'
-import { icons as coursePrivilegeIcons } from '@/assets/coursePrivilegeIcons'
-import Dialog from '@/components/ui/Dialog.vue'
-import CheckboxGroup from '@/components/ui/CheckboxGroup.vue'
-import { SelectableOption } from '@/interfaces'
+import { getTranslatedString as _ } from "@/i18n";
+import { Course, CoursePrivilege, User } from "@/models";
+import { icons as coursePrivilegeIcons } from "@/assets/coursePrivilegeIcons";
+import Dialog from "@/components/ui/Dialog.vue";
+import CheckboxGroup from "@/components/ui/CheckboxGroup.vue";
+import { SelectableOption } from "@/interfaces";
 
 export default defineComponent({
-  name: 'CoursePermissions',
+  name: "CoursePermissions",
   components: {
     DataTable,
     Dialog,
-    CheckboxGroup
+    CheckboxGroup,
   },
   mixins: [courseIdMixin, loadingMixin, savingMixin],
-  async created () {
+  async created() {
     await this.withLoading(
       async () =>
         await this.getUsersForCourse({
-          courseId: this.courseId
+          courseId: this.courseId,
         }),
       this.setPageWideError
-    )
+    );
   },
-  data () {
+  data() {
     return {
       showDialog: false,
-      editingUserId: '',
-      gridApi: null as any
-    }
+      editingUserId: "",
+      gridApi: null as any,
+    };
   },
   methods: {
-    ...mapActions(['getUsersForCourse', 'updateUserCoursePrivileges']),
-    onCellClicked (event: CellClickedEvent) {
+    ...mapActions(["getUsersForCourse", "updateUserCoursePrivileges"]),
+    onCellClicked(event: CellClickedEvent) {
       if (
         event.data.id !== this.user.id &&
         event.data.id != this.currentCourse?.creator?.id
       ) {
-        this.showDialog = true
-        this.editingUserId = event.data.id
+        this.showDialog = true;
+        this.editingUserId = event.data.id;
       }
     },
-    hideDialog () {
-      this.showDialog = false
-      this.editingUserId = ''
+    hideDialog() {
+      this.showDialog = false;
+      this.editingUserId = "";
     },
-    getRowClass (row: RowClassParams) {
-      const userId = row.data.id as string
+    getRowClass(row: RowClassParams) {
+      const userId = row.data.id as string;
       if (userId == this.user.id || userId == this.currentCourse?.creator?.id) {
-        return 'opacity-60 bg-light-important'
+        return "opacity-60 bg-light-important";
       }
-      return ''
-    }
+      return "";
+    },
   },
   computed: {
-    ...mapState('shared', ['user']),
-    ...mapState('teacher', ['users']),
-    editingUser (): User {
-      return this.users.find((u: User) => u.id === this.editingUserId)
+    ...mapState("shared", ["user"]),
+    ...mapState("teacher", ["users"]),
+    editingUser(): User {
+      return this.users.find((u: User) => u.id === this.editingUserId);
     },
     editingUserPrivileges: {
-      get () {
-        return this.editingUser?.course_privileges
+      get() {
+        return this.editingUser?.course_privileges;
       },
-      async set (val: CoursePrivilege[]) {
+      async set(val: CoursePrivilege[]) {
         // eslint-disable-next-line @typescript-eslint/no-extra-semi
         //;(this.editingUser as User).course_privileges = val
         await this.withLoading(
@@ -123,79 +118,79 @@ export default defineComponent({
             await this.updateUserCoursePrivileges({
               courseId: this.courseId,
               userId: this.editingUserId,
-              privileges: val
+              privileges: val,
             }),
           this.setErrorNotification
-        )
-        this.gridApi.refreshCells()
-      }
+        );
+        this.gridApi.refreshCells();
+      },
     },
-    columns (): ColDef[] {
+    columns(): ColDef[] {
       return [
-        { field: 'id', hide: true },
+        { field: "id", hide: true },
         {
-          field: 'email',
+          field: "email",
           filterParams: {
-            filterOptions: ['contains'],
-            suppressAndOrCondition: true
+            filterOptions: ["contains"],
+            suppressAndOrCondition: true,
           },
-          filter: 'agTextColumnFilter'
+          filter: "agTextColumnFilter",
         },
         {
-          field: 'fullName',
-          headerName: _('misc.full_name'),
+          field: "fullName",
+          headerName: _("misc.full_name"),
           filterParams: {
-            filterOptions: ['contains'],
-            suppressAndOrCondition: true
+            filterOptions: ["contains"],
+            suppressAndOrCondition: true,
           },
-          filter: 'agTextColumnFilter'
+          filter: "agTextColumnFilter",
         },
         {
-          field: 'coursePrivileges',
+          field: "coursePrivileges",
           headerName:
-            _('course_privileges_page.course_privileges') +
-            ' (' +
-            _('misc.click_to_edit') +
-            ')',
+            _("course_privileges_page.course_privileges") +
+            " (" +
+            _("misc.click_to_edit") +
+            ")",
           minWidth: 685,
           cellRenderer: (params: any) =>
             '<div class="flex mt-2 space-x-4 cursor-pointer">' +
-            (params.value as CoursePrivilege[]).reduce(
+            ((params.value ?? []) as CoursePrivilege[]).reduce(
               (acc, curr) =>
                 acc +
                 `
           <div class="flex items-center space-x-1 text-muted"><span class="text-base material-icons-outlined" title="${_(
-            'course_privileges.' + curr
+            "course_privileges." + curr
           )}">${coursePrivilegeIcons[curr]}</span> <p class="text-sm">${_(
-                  'course_privileges_short.' + curr
+                  "course_privileges_short." + curr
                 )}</p></div>`,
-              ''
+              ""
             ) +
-            '</div>'
-        }
-      ]
+            "</div>",
+        },
+      ];
     },
-    usersData () {
+    usersData() {
       return this.users.map((u: User) => ({
         id: u.id,
         email: u.email,
         fullName: u.full_name,
-        coursePrivileges: u.course_privileges
-      }))
+        coursePrivileges: u.course_privileges,
+      }));
     },
-    privilegesAsOptions (): SelectableOption[] {
-      return Object.values(CoursePrivilege).map(key => ({
+    privilegesAsOptions(): SelectableOption[] {
+      return Object.values(CoursePrivilege).map((key) => ({
         value: key,
-        content: _('course_privileges_short.' + key),
+        content: _("course_privileges_short." + key),
         icons: [coursePrivilegeIcons[key]],
-        description: _('course_privileges.' + key)
-      }))
-    }
+        description: _("course_privileges." + key),
+      }));
+    },
     // currentCourse (): Course {
     //   return this.$store.getters['shared/course'](this.courseId)
     // }
-  }
-})
+  },
+});
 </script>
 
 <style></style>
