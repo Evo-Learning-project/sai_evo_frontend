@@ -76,7 +76,7 @@
       </div>
       <div
         v-if="showPreview"
-        class="relative flex px-5 py-5 shadow-elevation-2 rounded-md md:w-9/12 md:ml-16 md:max-h-64 bg-gray-50"
+        class="relative flex px-5 py-5 shadow-elevation-2 rounded md:w-9/12 md:ml-16 md:max-h-64 bg-gray-50"
       >
         <SkeletonCard
           v-if="false && localLoading"

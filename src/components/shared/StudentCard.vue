@@ -9,8 +9,11 @@
           :outline="true"
           :variant="'icon'"
           @click="expanded = !expanded"
-          ><span class="material-icons-outlined">
-            {{ expanded ? "expand_less" : "expand_more" }}
+          ><span
+            class="material-icons-outlined transform transition-transform duration-200 ease-out"
+            :class="{ 'rotate-180': expanded }"
+          >
+            {{ false && expanded ? "expand_less" : "expand_more" }}
           </span></Btn
         >
       </div>

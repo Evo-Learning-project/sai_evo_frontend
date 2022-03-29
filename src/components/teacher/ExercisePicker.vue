@@ -1,7 +1,7 @@
 <template>
   <div class="">
     <ExerciseSearchFilters
-      class="px-8 py-4 mb-4 -mx-8 bg-light"
+      class="px-8 py-4 mb-6 -mx-8 bg-light"
       v-model="searchFilter"
       :full="false"
     ></ExerciseSearchFilters>
@@ -26,18 +26,15 @@
         :highlighted="isSelected(exercise)"
       ></MinimalExercisePreview>
     </div>
-    <div class="grid grid-cols-2 gap-5" v-else>
-      <skeleton-card :short="true"></skeleton-card>
-      <skeleton-card :short="true"></skeleton-card>
-      <skeleton-card :short="true"></skeleton-card>
-      <skeleton-card :short="true"></skeleton-card>
-      <skeleton-card :short="true"></skeleton-card>
-      <skeleton-card :short="true"></skeleton-card>
+    <div class="grid md:grid-cols-2 gap-5" v-else>
+      <MinimalExercisePreviewSkeleton></MinimalExercisePreviewSkeleton>
+      <MinimalExercisePreviewSkeleton></MinimalExercisePreviewSkeleton>
+      <MinimalExercisePreviewSkeleton></MinimalExercisePreviewSkeleton>
+      <MinimalExercisePreviewSkeleton></MinimalExercisePreviewSkeleton>
+      <MinimalExercisePreviewSkeleton></MinimalExercisePreviewSkeleton>
+      <MinimalExercisePreviewSkeleton></MinimalExercisePreviewSkeleton>
     </div>
-    <div
-      v-if="!firstLoading && exercises.length === 0"
-      class="flex flex-col space-y-4"
-    >
+    <div v-if="!firstLoading && exercises.length === 0" class="flex flex-col space-y-4">
       <p class="text-muted">
         {{ $t("exercise_picker.no_available_exercises") }}
       </p>
@@ -72,11 +69,11 @@ import { Exercise, ExerciseState, ExerciseType } from "@/models";
 import { defineComponent, PropType } from "@vue/runtime-core";
 import MinimalExercisePreview from "@/components/teacher/ExerciseEditor/MinimalExercisePreview.vue";
 import Btn from "@/components/ui/Btn.vue";
-import SkeletonCard from "../ui/SkeletonCard.vue";
 import ExerciseSearchFilters from "./ExerciseSearchFilters.vue";
 import { ExerciseSearchFilter } from "@/api/interfaces";
 import { getDebouncedForFilter } from "@/utils";
 import { courseIdMixin } from "@/mixins";
+import MinimalExercisePreviewSkeleton from "../ui/skeletons/MinimalExercisePreviewSkeleton.vue";
 export default defineComponent({
   name: "ExercisePicker",
   async created() {
@@ -101,11 +98,11 @@ export default defineComponent({
   },
   components: {
     MinimalExercisePreview,
-    SkeletonCard,
     VueEternalLoading,
     Spinner,
     ExerciseSearchFilters,
     Btn,
+    MinimalExercisePreviewSkeleton,
   },
   data() {
     return {
@@ -140,9 +137,7 @@ export default defineComponent({
       return !this.allowPickingDraft && exercise.state == ExerciseState.DRAFT;
     },
     isSelectedInAnotherRule(exercise: Exercise): boolean {
-      return (
-        this.alreadySelected.includes(exercise.id) && !this.isSelected(exercise)
-      );
+      return this.alreadySelected.includes(exercise.id) && !this.isSelected(exercise);
     },
     onSelection(exercise: Exercise) {
       const index = this.modelValue.findIndex((e) => e == exercise.id);

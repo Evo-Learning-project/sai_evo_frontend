@@ -123,6 +123,8 @@ export default defineComponent({
             return "ripple-primary";
           }
           return "ripple-white";
+        case "icon":
+          return "ripple-white";
         default:
           return "ripple-white";
       }

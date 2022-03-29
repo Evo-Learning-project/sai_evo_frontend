@@ -1,12 +1,13 @@
 <template>
   <div>
-    <h3>{{ $t("filter_results.title") }}</h3>
+    <div class="flex items-center space-x-2">
+      <span class="material-icons-outlined text-3xl opacity-60"> manage_search </span>
+      <h3>{{ $t("filter_results.title") }}</h3>
+    </div>
 
     <div class="mt-5">
       <!-- <chipset :options="tagsOptions" :modelValue="modelValue.tags"></chipset> -->
-      <div
-        class="flex flex-col space-y-4 md:flex-row md:space-y-0 md:space-x-4"
-      >
+      <div class="flex flex-col space-y-4 md:flex-row md:space-y-0 md:space-x-4">
         <TextInput
           :modelValue="modelValue.label"
           @update:modelValue="emitUpdate('label', $event)"
@@ -24,36 +25,45 @@
           {{ $t("exercise_editor.exercise_text") }}
         </TextInput>
       </div>
-      <div class="mt-8" v-show="full || expanded">
-        <chipset
+      <div
+        class="md:mt-6 mt-4 overflow-y-hidden transition-max-height duration-200 ease-in-out"
+        :class="{ 'max-h-96': full || expanded, 'max-h-0': !full & !expanded }"
+      >
+        <Chipset
           :options="exerciseTypeOptions"
           :modelValue="modelValue.exercise_types"
           @update:modelValue="onExerciseTypeUpdate($event)"
-        ></chipset>
-        <chipset
+        ></Chipset>
+        <Chipset
           :options="exerciseStateOptions"
           :modelValue="modelValue.states"
           @update:modelValue="onExerciseTypeUpdate($event)"
-        ></chipset>
+        ></Chipset>
       </div>
       <!-- <tag-input
             class="md:mt-1"
             :modelValue="modelValue.tags"
             :placeholder="$t('filter_results.filter_by_tag')"
           ></tag-input> -->
-      <div class="flex w-full">
+      <div class="flex items-center w-full">
         <!-- <btn @click="applyFilters()" class="mt-4 ml-auto">{{
           $t('filter_results.title')
         }}</btn> -->
         <Btn
           v-if="!full"
-          :variant="'light'"
+          :variant="'icon'"
+          :outline="true"
           @click="expanded = !expanded"
-          class="mt-4 ml-auto"
-          ><span class="material-icons-outlined">
-            {{ expanded ? "expand_less" : "expand_more" }} </span
-          >{{ $t("filter_results.more_filters") }}
+          class="ml-auto mr-0.5"
+          id="more-filters-btn"
+          ><span
+            class="material-icons-outlined transform transition-transform duration-200 ease-out"
+            :class="{ 'rotate-180': expanded }"
+          >
+            {{ false && expanded ? "expand_less" : "expand_more" }}
+          </span>
         </Btn>
+        <label for="more-filters-btn">{{ $t("filter_results.more_filters") }}</label>
       </div>
     </div>
   </div>
@@ -92,7 +102,7 @@ export default defineComponent({
     },
     full: {
       type: Boolean,
-      default: true,
+      default: false,
     },
   },
   data() {
@@ -122,7 +132,7 @@ export default defineComponent({
     //   }))
     // },
     exerciseTypeOptions() {
-      return (Object.keys(ExerciseType) as unknown[] as ExerciseType[])
+      return ((Object.keys(ExerciseType) as unknown[]) as ExerciseType[])
         .filter((key: string | number) => parseInt(key as string) == key) //(ExerciseType[key] as unknown) == 'number')
         .map((key) => ({
           icons: exerciseTypesIcons[key],
@@ -131,7 +141,7 @@ export default defineComponent({
         }));
     },
     exerciseStateOptions() {
-      return (Object.keys(ExerciseState) as unknown[] as ExerciseState[])
+      return ((Object.keys(ExerciseState) as unknown[]) as ExerciseState[])
         .filter((key: string | number) => parseInt(key as string) == key) //(ExerciseType[key] as unknown) == 'number')
         .map((key) => ({
           icons: exerciseStatesIcons[key],

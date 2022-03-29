@@ -21,6 +21,7 @@ module.exports = {
         "5px": "5px",
         "2.5px": "2.5px",
         4.5: "18px",
+        inf: "100000px",
       },
       transitionProperty: {
         width: "width",

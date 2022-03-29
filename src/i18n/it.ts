@@ -29,7 +29,7 @@ export const it = {
     go_to_course: "Vai al corso",
   },
   filter_results: {
-    title: "Filtra esercizi",
+    title: "Cerca esercizi",
     filter_by_tag: "Filtra per tag",
     filter_by_type: "Filtra per tipologia",
     there_are_active_filters: "Ci sono filtri attivi",

@@ -477,6 +477,28 @@
     .fade-leave-to {
       opacity: 0;
     }
+
+    .fade-delay-enter-active,
+    .fade-delay-leave-active {
+      transition: opacity 0.25s ease;
+    }
+    
+    .fade-delay-enter-from,
+    .fade-delay-leave-to {
+      opacity: 0;
+      transition: opacity 0.25s 0.5s ease;
+    }
+
+
+    .fade-delay-rev-leave-active {
+      transition: opacity 0.25s ease;
+    }
+    
+    /* .fade-delay-rev-enter-from,
+    .fade-delay-rev-leave-to { 
+      transition: opacity 10.25s 2s ease;
+      opacity: 0;
+    } */
     
 
     /* ag data table */

@@ -1,7 +1,7 @@
 <template>
   <div>
     <div
-      class="px-4 pt-4 pb-5 my-3 transition-shadow duration-75 ease-in-out rounded shadow hover:shadow-md"
+      class="px-4 pt-4 pb-5 my-3 transition-shadow duration-75 ease-in-out rounded shadow-elevation hover-shadow-elevation-2"
       :class="[modelValue._ordering % 2 ? 'bg-white' : 'bg-gray-50']"
     >
       <div class="flex items-center">
@@ -106,7 +106,13 @@
       @yes="onCloseDialog()"
     >
       <template v-if="modelValue.rule_type != null" v-slot:backButton>
-        <Btn :variant="'light'" :size="'sm'" class="" @click="setRuleMode(null)">
+        <Btn
+          :variant="'icon'"
+          :outline="true"
+          :size="'sm'"
+          class=""
+          @click="setRuleMode(null)"
+        >
           <span class="material-icons-outlined"> arrow_back </span>
         </Btn>
       </template>

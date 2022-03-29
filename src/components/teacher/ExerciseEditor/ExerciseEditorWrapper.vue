@@ -2,17 +2,33 @@
   <div class="relative my-4" :id="'editor-' + modelValue.id">
     <div class="absolute top-0 right-0 z-20 mt-2 mr-3">
       <Btn :size="'lg'" :variant="'icon'" @click="showEditor = !showEditor"
-        ><span class="material-icons-outlined">
-          {{ showEditor ? "expand_less" : "expand_more" }}
+        ><span
+          class="material-icons-outlined transform transition-transform duration-200 ease-out"
+          :class="{ 'rotate-180': showEditor }"
+        >
+          {{ false && showEditor ? "expand_less" : "expand_more" }}
         </span></Btn
       >
     </div>
-    <ExercisePreview v-show="!showEditor" :exercise="modelValue"></ExercisePreview>
-    <ExerciseEditor
-      :saving="saving"
-      v-if="showEditor"
-      :modelValue="modelValue"
-    ></ExerciseEditor>
+    <div
+      class="transform transition-transform duration-200"
+      :class="{ 'scale-0': false && showEditor }"
+    >
+      <ExercisePreview v-show="!showEditor" :exercise="modelValue"></ExercisePreview>
+    </div>
+    <div
+      class="transform transition-all duration-200 overflow-y-hidden"
+      :class="{
+        '': !showEditor,
+        '': showEditor,
+      }"
+    >
+      <ExerciseEditor
+        :saving="saving"
+        v-if="showEditor"
+        :modelValue="modelValue"
+      ></ExerciseEditor>
+    </div>
   </div>
 </template>
 
