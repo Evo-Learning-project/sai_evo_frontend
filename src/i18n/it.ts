@@ -187,6 +187,7 @@ export const it = {
     save: "Salva",
     solution: "Soluzione",
     warning: "Attenzione",
+    download_as_csv: "Scarica come CSV",
   },
   cloud: {
     saving: "Salvataggio in corso...",
@@ -609,5 +610,26 @@ export const it = {
     permissions_header: "Aggiungi docenti",
     permissions_content:
       "Dalla pagina dei permessi puoi consentire l'accesso alle funzionalità di gestione del corso ad altri docenti o figure di rilievo, come i tutor.",
+  },
+  reports: {
+    csv_headers: {
+      user: {
+        email: "Email",
+        full_name: "Nome e cognome",
+      },
+      begin_timestamp: "Data e ora di inizio",
+      end_timestamp: "Data e ora di consegna",
+      slot: "Slot",
+      slots: {
+        exercise: {
+          label: "nome esercizio",
+        },
+        score: "punteggio",
+        answer_text: "risposta",
+        selected_choices: "risposte selezionate",
+        passed_testcases: "test case superati",
+        failed_testcases: "test case falliti",
+      },
+    },
   },
 };

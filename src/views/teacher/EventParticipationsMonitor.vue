@@ -67,45 +67,6 @@
         </template>
       </Card>
     </div>
-    <!-- <div class="grid grid-cols-3 gap-12" v-if="!resultsMode && !loading"> -->
-    <!-- TODO review shadow -->
-    <!-- <Card :hoverable="false" class="shadow-sm">
-        <template v-slot:header>
-          <h4 class="text-center text-muted">Partecipanti</h4>
-        </template>
-        <template v-slot:body>
-          <div class="flex items-center justify-center w-full space-x-1">
-            <h2 class="mb-0">
-              {{ participantCount }}
-            </h2>
-            <h2 class="mt-1 mb-0 material-icons-outlined">people</h2>
-          </div>
-        </template>
-      </Card> -->
-    <!-- <Card :hoverable="false" class="shadow-sm">
-        <template v-slot:header>
-          <h4 class="text-center text-muted">Partecipanti</h4>
-        </template>
-        <template v-slot:body>
-          <div class="flex items-center justify-center w-full space-x-1">
-            <h2 class="mb-0">{{ averageProgress }} %</h2>
-          </div>
-        </template>
-      </Card>
-      <Card :hoverable="false" class="shadow-sm">
-        <template v-slot:header>
-          <h4 class="text-center text-muted">Esami consegnati</h4>
-        </template>
-        <template v-slot:body>
-          <div class="flex items-center justify-center w-full space-x-1">
-            <h2 class="mb-0">{{ turnedInCount }}</h2>
-            <h2 class="mt-1 mb-0 material-icons-outlined">
-              assignment_turned_in
-            </h2>
-          </div>
-        </template>
-      </Card> -->
-    <!-- </div> -->
     <div class="flex-grow">
       <DataTable
         :class="{ 'opacity-50': participationsData.length === 0 }"
@@ -118,17 +79,18 @@
         @selectionChanged="onSelectionChanged"
       ></DataTable>
     </div>
+    <div v-if="resultsMode" class="mt-8 flex">
+      <Btn
+        :variant="'success'"
+        @click="onPublish"
+        :disabled="selectedParticipations.length == 0"
+      >
+        <span class="mr-1 text-base material-icons-outlined"> done </span>
+        {{ $t("event_results.publish_results") }}</Btn
+      >
+      <CsvParticipationDownloader class="ml-auto"></CsvParticipationDownloader>
+    </div>
 
-    <Btn
-      v-if="resultsMode"
-      class="mt-8 mr-auto"
-      :variant="'success'"
-      @click="onPublish"
-      :disabled="selectedParticipations.length == 0"
-    >
-      <span class="mr-1 text-base material-icons-outlined"> done </span>
-      {{ $t("event_results.publish_results") }}</Btn
-    >
     <div v-else-if="!loading" class="flex mt-8 space-x-2">
       <Btn
         class=""
@@ -282,6 +244,7 @@ import AbstractEventParticipationSlot from "@/components/shared/AbstractEventPar
 import { DialogData } from "@/interfaces";
 import Btn from "@/components/ui/Btn.vue";
 import { downloadEventParticipationSlotAttachment } from "@/api/events";
+import CsvParticipationDownloader from "@/components/teacher/CsvParticipationDownloader.vue";
 
 export default defineComponent({
   components: {
@@ -290,6 +253,7 @@ export default defineComponent({
     Dialog,
     AbstractEventParticipationSlot,
     Btn,
+    CsvParticipationDownloader,
   },
   name: "EventParticipationsMonitor",
   props: {

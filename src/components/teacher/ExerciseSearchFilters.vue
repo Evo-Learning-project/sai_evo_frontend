@@ -63,7 +63,9 @@
             {{ false && expanded ? "expand_less" : "expand_more" }}
           </span>
         </Btn>
-        <label for="more-filters-btn">{{ $t("filter_results.more_filters") }}</label>
+        <label class="cursor-pointer" for="more-filters-btn">{{
+          $t("filter_results.more_filters")
+        }}</label>
       </div>
     </div>
   </div>

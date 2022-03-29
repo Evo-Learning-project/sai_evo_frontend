@@ -3,7 +3,7 @@
     <Card
       :hoverable="false"
       :border-less="true"
-      class="mb-4 -mt-2 bg-gray-50 shadow-elevation-2"
+      class="mb-4 -mt-2 bg-light shadow-elevation-2"
     >
       <template v-slot:body>
         <ExerciseSearchFilters v-model="searchFilter"></ExerciseSearchFilters>
