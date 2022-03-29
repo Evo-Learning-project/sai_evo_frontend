@@ -16,19 +16,19 @@
     >
       <ExercisePreview v-show="!showEditor" :exercise="modelValue"></ExercisePreview>
     </div>
-    <div
-      class="transform transition-all duration-200 overflow-y-hidden"
+    <!-- <div
+      class="transform transition-all duration-200"
       :class="{
         '': !showEditor,
         '': showEditor,
       }"
-    >
-      <ExerciseEditor
-        :saving="saving"
-        v-if="showEditor"
-        :modelValue="modelValue"
-      ></ExerciseEditor>
-    </div>
+    > -->
+    <ExerciseEditor
+      :saving="saving"
+      v-if="showEditor"
+      :modelValue="modelValue"
+    ></ExerciseEditor>
+    <!-- </div> -->
   </div>
 </template>
 
