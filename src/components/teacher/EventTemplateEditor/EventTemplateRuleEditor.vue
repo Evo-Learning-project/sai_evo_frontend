@@ -124,7 +124,7 @@
             <Btn
               @click="setRuleMode(EventTemplateRuleType.ID_BASED, true)"
               :variant="'transparent'"
-              class="py-5 pl-4 border-b md:border-r md:border-b-0 hoverable-with-two-tone-primary"
+              class="md:py-5 md:pl-4 border-b md:border-r pb-4 md:border-b-0 hoverable-with-two-tone-primary"
             >
               <template v-slot:content>
                 <div class="flex items-center justify-center space-x-3">
@@ -143,7 +143,7 @@
             <Btn
               @click="setRuleMode(EventTemplateRuleType.ID_BASED, false)"
               :variant="'transparent'"
-              class="py-4 pl-4 pr-3 border-b md:py-0 md:border-r md:border-b-0 hoverable-with-two-tone-primary"
+              class="py-4 md:pl-4 md:pr-3 border-b md:py-0 md:border-r md:border-b-0 hoverable-with-two-tone-primary"
             >
               <template v-slot:content>
                 <div class="flex space-x-3 items-center justify-center">
@@ -160,7 +160,7 @@
             <Btn
               @click="setRuleMode(EventTemplateRuleType.TAG_BASED)"
               :variant="'transparent'"
-              class="pt-4 pl-8 md:pt-0 hoverable-with-two-tone-primary"
+              class="pt-4 md:pl-8 md:pt-0 hoverable-with-two-tone-primary md:pr-6"
             >
               <template v-slot:content>
                 <div class="flex space-x-3 items-center justify-center">
