@@ -191,6 +191,10 @@
       @apply flex justify-center w-8 h-8 text-xl rounded-full shadow-md place-items-center;
     }
 
+    .hoverable-with-two-tone-primary:hover .material-icons-two-tone {
+      @apply two-tone-primary opacity-70 !important;
+    }
+
     .two-tone-primary {
       filter: invert(31%) sepia(65%) saturate(1500%) hue-rotate(212deg) brightness(90%) contrast(87%);
     }
@@ -236,7 +240,7 @@
     }
 
     .tooltip-text-force {
-      @apply opacity-100 !important;
+      @apply opacity-100 block !important;
     }
 
     /* .tooltip-handle {

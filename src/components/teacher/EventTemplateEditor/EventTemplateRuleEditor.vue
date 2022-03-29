@@ -124,12 +124,17 @@
             <Btn
               @click="setRuleMode(EventTemplateRuleType.ID_BASED, true)"
               :variant="'transparent'"
-              class="py-5 pl-4 border-b md:border-r md:border-b-0"
+              class="py-5 pl-4 border-b md:border-r md:border-b-0 hoverable-with-two-tone-primary"
             >
               <template v-slot:content>
-                <h4 class="text-dark">
-                  {{ $t("event_template_rule_editor.pick_single_exercise") }}
-                </h4>
+                <div class="flex items-center justify-center space-x-3">
+                  <span class="material-icons-two-tone two-tone-light opacity-50">
+                    topic
+                  </span>
+                  <h4 class="">
+                    {{ $t("event_template_rule_editor.pick_single_exercise") }}
+                  </h4>
+                </div>
                 <p>
                   {{ $t("event_template_rule_editor.pick_single_exercise_help_text") }}
                 </p></template
@@ -138,12 +143,15 @@
             <Btn
               @click="setRuleMode(EventTemplateRuleType.ID_BASED, false)"
               :variant="'transparent'"
-              class="py-4 pl-4 pr-3 border-b md:py-0 md:border-r md:border-b-0"
+              class="py-4 pl-4 pr-3 border-b md:py-0 md:border-r md:border-b-0 hoverable-with-two-tone-primary"
             >
               <template v-slot:content>
-                <h4 class="text-dark">
-                  {{ $t("event_template_rule_editor.pick_exercise_from_pool") }}
-                </h4>
+                <div class="flex space-x-3 items-center justify-center">
+                  <span class="material-icons-outlined opacity-50"> shuffle </span>
+                  <h4 class="">
+                    {{ $t("event_template_rule_editor.pick_exercise_from_pool") }}
+                  </h4>
+                </div>
                 <p>
                   {{ $t("event_template_rule_editor.pick_exercise_from_pool_help_text") }}
                 </p></template
@@ -152,12 +160,17 @@
             <Btn
               @click="setRuleMode(EventTemplateRuleType.TAG_BASED)"
               :variant="'transparent'"
-              class="pt-4 pl-8 md:pt-0"
+              class="pt-4 pl-8 md:pt-0 hoverable-with-two-tone-primary"
             >
               <template v-slot:content>
-                <h4 class="text-dark">
-                  {{ $t("event_template_rule_editor.pick_exercise_tag_based") }}
-                </h4>
+                <div class="flex space-x-3 items-center justify-center">
+                  <span class="material-icons-two-tone two-tone-light opacity-50">
+                    label
+                  </span>
+                  <h4 class="">
+                    {{ $t("event_template_rule_editor.pick_exercise_tag_based") }}
+                  </h4>
+                </div>
                 <p>
                   {{ $t("event_template_rule_editor.pick_exercise_tag_based_help_text") }}
                 </p>
