@@ -1,6 +1,7 @@
 import { EventSearchFilter, ExerciseSearchFilter } from "./interfaces";
 import store from "@/store";
 import { EventTemplateRule, EventTemplateRuleType, Tag } from "@/models";
+import { filter } from "lodash";
 
 export const tagNamesToTags = (names: string[]): Tag[] =>
   // converts a list of tag names to a list of their id's, as per
@@ -24,6 +25,20 @@ export const getEventUrlQueryParams = (
   return ret;
 };
 
+export const getBlankExerciseSearchFilters = (): ExerciseSearchFilter => ({
+  label: "",
+  text: "",
+  tags: [] as string[],
+  exercise_types: [],
+  states: [],
+});
+
+export const isEmptyFilter = (filter: ExerciseSearchFilter): boolean =>
+  filter.label.length === 0 &&
+  filter.text.length === 0 &&
+  filter.exercise_types.length === 0 &&
+  filter.states.length === 0;
+
 export const getExerciseUrlQueryParams = (
   filters: ExerciseSearchFilter | null
 ): string => {
@@ -43,7 +58,15 @@ export const getExerciseUrlQueryParams = (
   if (filters.label || filters.text) {
     ret += `search=${encodeURIComponent(
       filters.label ?? ""
-    )} ${encodeURIComponent(filters.text ?? "")}`;
+    )} ${encodeURIComponent(filters.text ?? "")}&`;
+  }
+
+  if (filters.exercise_types && filters.exercise_types.length > 0) {
+    ret += `exercise_type=${filters.exercise_types.join(",")}&`;
+  }
+
+  if (filters.states && filters.states.length > 0) {
+    ret += `state=${filters.states.join(",")}&`;
   }
 
   return ret;

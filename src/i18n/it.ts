@@ -34,6 +34,7 @@ export const it = {
     filter_by_type: "Filtra per tipologia",
     there_are_active_filters: "Ci sono filtri attivi",
     more_filters: "Filtri avanzati",
+    remove_filters: "Rimuovi filtri",
   },
   login_screen: {
     login: "Entra",
@@ -374,7 +375,7 @@ export const it = {
     draft_notice: "Bozza",
     choices_title: "Scelte",
     testcases_title: "Test case",
-    exercise_label: "Etichetta dell'esercizio",
+    exercise_label: "Nome dell'esercizio",
     exercise_text: "Testo dell'esercizio",
     exercise_solution: "Soluzione dell'esercizio (opzionale)",
     select_exercise_type: "Seleziona tipologia",

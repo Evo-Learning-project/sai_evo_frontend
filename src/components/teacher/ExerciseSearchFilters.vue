@@ -30,14 +30,16 @@
         :class="{ 'max-h-96': full || expanded, 'max-h-0': !full & !expanded }"
       >
         <Chipset
+          :allowMultiple="false"
           :options="exerciseTypeOptions"
           :modelValue="modelValue.exercise_types"
-          @update:modelValue="onExerciseTypeUpdate($event)"
+          @update:modelValue="emitUpdate('exercise_types', $event)"
         ></Chipset>
         <Chipset
+          :allowMultiple="false"
           :options="exerciseStateOptions"
           :modelValue="modelValue.states"
-          @update:modelValue="onExerciseTypeUpdate($event)"
+          @update:modelValue="emitUpdate('states', $event)"
         ></Chipset>
       </div>
       <!-- <tag-input
@@ -46,9 +48,22 @@
             :placeholder="$t('filter_results.filter_by_tag')"
           ></tag-input> -->
       <div class="flex items-center w-full">
-        <!-- <btn @click="applyFilters()" class="mt-4 ml-auto">{{
-          $t('filter_results.title')
-        }}</btn> -->
+        <Btn
+          v-if="!emptyFilters"
+          :variant="'icon'"
+          :outline="true"
+          @click="$emit('resetFilters')"
+          class="mr-0.5"
+          id="remove-filters-btn"
+          ><span class="material-icons-outlined text-xl"> filter_alt_off </span>
+        </Btn>
+        <label
+          v-if="!emptyFilters"
+          class="text-muted cursor-pointer"
+          for="remove-filters-btn"
+          >{{ $t("filter_results.remove_filters") }}</label
+        >
+
         <Btn
           v-if="!full"
           :variant="'icon'"
@@ -63,7 +78,7 @@
             {{ false && expanded ? "expand_less" : "expand_more" }}
           </span>
         </Btn>
-        <label class="cursor-pointer" for="more-filters-btn">{{
+        <label class="text-muted cursor-pointer" for="more-filters-btn">{{
           $t("filter_results.more_filters")
         }}</label>
       </div>
@@ -90,6 +105,7 @@ import { defineComponent, PropType } from "@vue/runtime-core";
 import { icons as exerciseTypesIcons } from "@/assets/exerciseTypesIcons";
 import { icons as exerciseStatesIcons } from "@/assets/exerciseStatesIcons";
 import TextInput from "../ui/TextInput.vue";
+import { isEmptyFilter } from "@/api/utils";
 export default defineComponent({
   name: "ExerciseSearchFilters",
   components: {
@@ -113,9 +129,6 @@ export default defineComponent({
     };
   },
   methods: {
-    onExerciseTypeUpdate(val: unknown) {
-      alert("Questa funzionalità non è ancora disponibile");
-    },
     emitUpdate(key: keyof ExerciseSearchFilter, value: unknown) {
       this.$emit("update:modelValue", {
         ...this.modelValue,
@@ -127,12 +140,9 @@ export default defineComponent({
     tags(): Tag[] {
       return [{ name: "tag1" }, { name: "tag2" }, { name: "tag3" }];
     },
-    // tagsOptions () {
-    //   return this.tags.map(t => ({
-    //     value: t.name,
-    //     content: t.name
-    //   }))
-    // },
+    emptyFilters() {
+      return isEmptyFilter(this.modelValue);
+    },
     exerciseTypeOptions() {
       return ((Object.keys(ExerciseType) as unknown[]) as ExerciseType[])
         .filter((key: string | number) => parseInt(key as string) == key) //(ExerciseType[key] as unknown) == 'number')

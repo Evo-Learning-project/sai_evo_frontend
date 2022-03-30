@@ -178,6 +178,11 @@
     .chip-primary {
       @apply border-0 text-primary bg-primary bg-opacity-25 font-semibold !important;
     }
+
+    .chip-primary .material-icons-outlined {
+      font-family: 'Material Icons Two Tone' !important;
+      filter: invert(31%) sepia(65%) saturate(1500%) hue-rotate(212deg) brightness(90%) contrast(87%);
+    }
     
     .chip-light {
       @apply border-0 text-gray-600 bg-gray-200
@@ -525,7 +530,7 @@
       @apply border-l-0 border-r-0 border-b border-light transition-colors duration-75 !important
     }
     .ag-row:hover {
-      @apply bg-gray-50;
+      @apply bg-gray-50 border-b-0 !important;
       box-shadow: inset 1px 0 0 #dadce0,
       inset -1px 0 0 #dadce0,
       0 1px 2px 0 rgb(60 64 67 / 30%),
@@ -557,7 +562,7 @@
     }
 
     .ag-popup-child::after {
-      content: ' sdf';
+      content: ' ';
       border-color: transparent  transparent rgba(17, 24, 39, 0.6) transparent !important;
       @apply absolute -mt-1 border-4 border-transparent border-solid bottom-full left-1/2;
     }

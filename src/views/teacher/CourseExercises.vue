@@ -6,7 +6,10 @@
       class="mb-4 -mt-2 bg-light shadow-elevation-2"
     >
       <template v-slot:body>
-        <ExerciseSearchFilters v-model="searchFilter"></ExerciseSearchFilters>
+        <ExerciseSearchFilters
+          v-model="searchFilter"
+          @resetFilters="searchFilter = getBlankExerciseSearchFilters()"
+        ></ExerciseSearchFilters>
       </template>
     </Card>
 
@@ -60,9 +63,7 @@ import { ExerciseState, ExerciseType, getBlankExercise, Tag } from "@/models";
 import { VueEternalLoading, LoadAction } from "@ts-pro/vue-eternal-loading";
 import { SelectableOption } from "@/interfaces";
 import Btn from "@/components/ui/Btn.vue";
-// import Chipset from '@/components/ui/Chipset.vue'
 import Card from "@/components/ui/Card.vue";
-//import TagInput from '@/components/ui/TagInput.vue'
 import ExerciseEditorWrapper from "@/components/teacher/ExerciseEditor/ExerciseEditorWrapper.vue";
 import { defineComponent } from "@vue/runtime-core";
 import Spinner from "@/components/ui/Spinner.vue";
@@ -71,6 +72,7 @@ import { ExerciseSearchFilter } from "@/api/interfaces";
 import { getDebouncedForFilter } from "@/utils";
 import { courseIdMixin, loadingMixin } from "@/mixins";
 import ExerciseEditorWrapperSkeleton from "@/components/ui/skeletons/ExerciseEditorWrapperSkeleton.vue";
+import { getBlankExerciseSearchFilters, isEmptyFilter } from "@/api/utils";
 export default defineComponent({
   name: "CourseExercises",
   props: {
@@ -92,7 +94,6 @@ export default defineComponent({
   },
   components: {
     ExerciseEditorWrapper,
-    //Chipset,
     VueEternalLoading,
     Card,
     Btn,
@@ -130,24 +131,22 @@ export default defineComponent({
     return {
       isInitialInfiniteLoad: false,
       expandResultFilter: true,
-      searchFilter: {
-        label: "",
-        text: "",
-        tags: [] as string[],
-        exercise_types: [] as ExerciseType[],
-        states: [] as ExerciseState[],
-      } as ExerciseSearchFilter,
+      searchFilter: getBlankExerciseSearchFilters(),
     };
   },
   methods: {
     ...mapActions("teacher", ["getExercises", "createExercise"]),
     ...mapActions("shared", ["getTags"]),
+    getBlankExerciseSearchFilters,
     async onFilterChange() {
-      await this.getExercises({
-        courseId: this.courseId,
-        fromFirstPage: true,
-        filters: this.searchFilter,
-      });
+      await this.withLoading(
+        async () =>
+          await this.getExercises({
+            courseId: this.courseId,
+            fromFirstPage: true,
+            filters: this.searchFilter,
+          })
+      );
     },
     async onLoadMore({ loaded, noMore, error }: LoadAction) {
       try {
@@ -178,9 +177,6 @@ export default defineComponent({
     },
   },
   computed: {
-    // tags (): Tag[] {
-    //   return [{ name: 'tag1' }, { name: 'tag2' }, { name: 'tag3' }]
-    // },
     tagsOptions() {
       return this.tags.map((t: Tag) => ({
         value: t.name,

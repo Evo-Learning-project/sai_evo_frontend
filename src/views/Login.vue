@@ -3,7 +3,7 @@
     <spinner v-if="loading"></spinner>
     <div class="my-auto">
       <h1 class="mx-auto mb-10 text-4xl text-center text-primary">
-        SAI Evo &mdash; ver. &beta; 1.0
+        SAI Evo &mdash; ver. &beta; 2.0
       </h1>
       <!-- <button @click="printDebug()">debug</button>
     <button @click="testGetUser()">test get user</button> -->
