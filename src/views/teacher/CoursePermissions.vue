@@ -22,14 +22,17 @@
             :labelClass="'text-xl flex-grow'"
             :optionClass="'my-4'"
             :useToggles="true"
-            v-slot="{ description, icons }"
           >
-            <span
-              v-if="icons?.length > 0"
-              class="mx-1 mt-0.5 text-base material-icons-outlined"
-              >{{ icons[0] }}</span
+            <template v-slot="{ icons }">
+              <span
+                v-if="icons?.length > 0"
+                class="mx-1 mt-0.5 text-base material-icons-outlined"
+                >{{ icons[0] }}</span
+              ></template
             >
-            <p class="ml-1 mt-0.5 text-sm text-muted">{{ description }}</p>
+            <template v-slot:item="{ description }">
+              <p class="ml-1 mt-0.5 text-sm text-muted">{{ description }}</p>
+            </template>
           </CheckboxGroup>
         </div></template
       >

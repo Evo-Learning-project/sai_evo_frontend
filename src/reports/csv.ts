@@ -12,7 +12,7 @@ const getEventParticipationHeaders = (
   "end_timestamp",
   ...participations[0].slots
     .map((__, i) => {
-      const ret: string[] = [`slots[${i}].exercise.label`];
+      const ret: string[] = [`slots[${i}].exercise.label`]; // TODO! if exercise has no label, put text instead
       // for each exercise type, check if any participation has that type in the
       // slot with current number, in which case add relevant headers
       const samePositionSlotTypes = participations.map(
@@ -39,12 +39,13 @@ const getEventParticipationHeaders = (
       }
       if (samePositionSlotTypes.some((t) => t === ExerciseType.JS)) {
         ret.push(
-          `slots[${i}].passed_testcases`, //! this property doesn't actually exist
-          `slots[${i}].failed_testcases` //! this property doesn't actually exist
+          `slots[${i}].passed_testcases`,
+          `slots[${i}].failed_testcases`
         );
       } else {
         ret.push(`slots[${i}].score`);
       }
+      // TODO! handle upload exercises and aggregated exercises
       return ret;
     })
     .flat(),
@@ -87,9 +88,10 @@ const getCellValue = (participation: EventParticipation, field: string) => {
     // take the id of the selected choices and map them to the texts of
     // the corresponding choices
     const slot = participation.slots[parseInt(matchSelectedChoices[1])];
-    return slot.selected_choices
-      .map((cId) => slot.exercise.choices?.find((c) => c.id === cId)?.text)
-      .join("\r\n");
+    return slot.selected_choices.map(
+      (cId) => slot.exercise.choices?.find((c) => c.id === cId)?.text
+    );
+    // TODO! .join("\r\n"); doesn't work because the value gets stringified, try \\r\\n
   } else if (matchFailedTestCases !== null || matchPassedTestCases !== null) {
     const slot =
       participation.slots[
