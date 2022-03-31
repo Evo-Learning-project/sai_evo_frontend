@@ -104,6 +104,7 @@ import {
   EventParticipationSlot,
   EventParticipationState,
   EventType,
+  ExerciseType,
 } from "@/models";
 import { defineComponent } from "@vue/runtime-core";
 import { getTranslatedString as _ } from "@/i18n";
@@ -246,9 +247,15 @@ export default defineComponent({
       await this.withLoading(async () => {
         // flush any pending changes to any slot(s)
         this.proxyModelValue.slots.forEach(async (s) => {
-          console.log("flushing", s.id);
-          await this.slotAutoSaveManagers[s.id].flush();
-          console.log("flushed", s.id);
+          if (s.exercise.exercise_type !== ExerciseType.JS) {
+            console.log("flushing nonjs", s.id);
+            await this.slotAutoSaveManagers[s.id].flush();
+            console.log("flushed nonjs", s.id);
+          } else {
+            console.log("flushing js");
+            await this.onRunCode(s);
+            console.log("flushed js");
+          }
         });
         console.log("turning in");
         await this.partialUpdateEventParticipation({
