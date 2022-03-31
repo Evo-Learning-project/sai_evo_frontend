@@ -207,8 +207,7 @@ export default defineComponent({
     },
   },
   mounted() {
-    // TODO this is called before courses have been retrieved, you should probably do this check in App.vue if the route has a meta flag
-    this.hasAnyPrivileges();
+    // this is called before courses have been retrieved, you should probably do this check in App.vue if the route has a meta flag
     setTimeout(() => {
       if (!this.hasAnyPrivileges() && this.courseId) {
         this.redirectToMainView();

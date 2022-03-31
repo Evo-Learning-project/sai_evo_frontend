@@ -22,5 +22,4 @@ export const getters = {
       .flat(10);
     return flattenedExercises.find((e) => e.id == exerciseId) ?? {};
   },
-  //state.exercises.find((e) => e.id == exerciseId) ?? {},
 };

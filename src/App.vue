@@ -95,9 +95,7 @@ export default defineComponent({
     };
   },
   methods: {
-    // TODO this should live in utils.ts, but importing it from here causes all sorts of problems with other components
     typesetTex() {
-      console.log("MJ", (window as any).MathJax, (window as any).MathJax?.typeset);
       (window as any).MathJax?.typeset?.();
     },
     beforeWindowUnload(e: { preventDefault: () => void; returnValue: string }) {

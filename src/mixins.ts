@@ -130,12 +130,7 @@ export const coursePrivilegeMixin = {
           (c: Course) =>
             c.id == (router.currentRoute.value.params.courseId as string)
         )?.privileges ?? [];
-      console.log(
-        "priv",
-        myPrivileges,
-        (store.state as any).shared.courses,
-        router.currentRoute.value.params.courseId
-      );
+
       return myPrivileges.length > 0;
     },
   },

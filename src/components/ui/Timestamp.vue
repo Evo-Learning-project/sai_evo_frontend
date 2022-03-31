@@ -3,31 +3,31 @@
 </template>
 
 <script lang="ts">
-import { getFormattedTimestamp } from '@/utils'
-import { defineComponent } from '@vue/runtime-core'
+import { getFormattedTimestamp } from "@/utils";
+import { defineComponent } from "@vue/runtime-core";
 
 export default defineComponent({
-  name: 'Timestamp',
+  name: "Timestamp",
   props: {
     value: {
       type: String,
-      required: true
+      required: true,
     },
     dateOnly: {
       type: Boolean,
-      default: false
+      default: false,
     },
     reduced: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   computed: {
-    formattedValue (): string {
-      return getFormattedTimestamp(this.value, this.dateOnly, this.reduced)
-    }
-  }
-})
+    formattedValue(): string {
+      return getFormattedTimestamp(this.value, this.dateOnly, this.reduced);
+    },
+  },
+});
 </script>
 
 <style></style>

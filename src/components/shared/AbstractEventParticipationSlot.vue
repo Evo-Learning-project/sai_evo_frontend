@@ -179,6 +179,8 @@
               :slot="modelValue"
               v-if="!showExerciseLabel"
             ></CodeExecutionResults>
+            <!--TODO when viewing in teacher mode, check if execution results is empty
+                      (should never happen) and if it is, add an emergency "run" button  -->
           </div>
 
           <!-- attachment exercise-->

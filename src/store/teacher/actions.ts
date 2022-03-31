@@ -259,8 +259,11 @@ export const actions = {
     }
   ) => {
     const newChoice = await createExerciseChoice(courseId, exerciseId, choice);
-    // TODO refactor to use generic mutation
-    getters.exercise(exerciseId).choices?.push(newChoice);
+    commit("setExerciseChild", {
+      childType: "choice",
+      exerciseId: exerciseId,
+      payload: newChoice,
+    });
     return newChoice;
   },
   addExerciseSubExercise: async (
@@ -281,10 +284,11 @@ export const actions = {
       exerciseId,
       subExercise
     );
-    // TODO refactor to use generic mutation
-    state.exercises
-      .find((e: Exercise) => e.id === exerciseId)
-      ?.sub_exercises?.push(newSubExercise);
+    commit("setExerciseChild", {
+      childType: "sub_exercise",
+      exerciseId: exerciseId,
+      payload: newSubExercise,
+    });
     return newSubExercise;
   },
   addExerciseTestCase: async (
@@ -305,8 +309,11 @@ export const actions = {
       exerciseId,
       testCase
     );
-    // TODO refactor to use generic mutation
-    getters.exercise(exerciseId).testcases?.push(newTestCase);
+    commit("setExerciseChild", {
+      childType: "testcase",
+      exerciseId: exerciseId,
+      payload: newTestCase,
+    });
     return newTestCase;
   },
   getEventTemplateRule: async (

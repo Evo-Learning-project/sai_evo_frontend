@@ -64,8 +64,6 @@ export class AutoSaveManager<T> {
     field: keyof T;
     value: unknown;
   }): Promise<void> {
-    console.log("calling onChange", { field, value });
-
     // record new change to field
     this.unsavedChanges[field] = value as any;
 
@@ -129,35 +127,3 @@ export class AutoSaveManager<T> {
     };
   }
 }
-
-// const instantiateChoiceAutoSaveManager = (managers: Record<string, AutoSaveManager<ExerciseChoice>>,choice: ExerciseChoice, courseId: string, exercise: Exercise) : void => {
-//   managers[choice.id] =
-//     new AutoSaveManager<ExerciseChoice>(
-//       choice,
-//       async (changes) => {
-//         // if choices are re-ordered, re-fetch them from server
-//         const reFetch = Object.keys(changes).includes("_ordering");
-//         await this.updateExerciseChild({
-//           childType: "choice",
-//           courseId: this.courseId,
-//           exerciseId: this.modelValue.id,
-//           payload: { ...choice, ...changes },
-//           reFetch,
-//         });
-//       },
-//       (changes) => {
-//         this.saving = true;
-//         this.savingError = false;
-//         this.setExerciseChild({
-//           childType: "choice",
-//           exerciseId: this.modelValue.id,
-//           payload: { ...choice, ...changes },
-//         });
-//       },
-//       EXERCISE_CHOICE_AUTO_SAVE_DEBOUNCED_FIELDS,
-//       EXERCISE_CHOICE_AUTO_SAVE_DEBOUNCE_TIME_MS,
-//       undefined,
-//       () => (this.savingError = true),
-//       () => (this.saving = false)
-//     );
-// },

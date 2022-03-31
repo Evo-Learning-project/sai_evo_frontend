@@ -162,7 +162,7 @@
         </div>
       </div>
     </div>
-    <div class="mt-8">
+    <div class="mt-8" v-if="showExercises">
       <h3>{{ $t("teacher_course_dashboard.recently_edited_exercises") }}</h3>
       <div v-if="!firstLoading" class="grid grid-cols-1 gap-4 mt-4 lg:grid-cols-2">
         <MinimalExercisePreview
@@ -248,7 +248,7 @@ export default defineComponent({
           fromFirstPage: true,
         });
       } catch {
-        // TODO don't render exercises stuff
+        this.showExercises = false;
       }
       //await this.getTags(this.courseId)
     });
@@ -273,6 +273,7 @@ export default defineComponent({
       CoursePrivilege,
       teacherTourSteps,
       tourOptions,
+      showExercises: true,
     };
   },
   validations() {

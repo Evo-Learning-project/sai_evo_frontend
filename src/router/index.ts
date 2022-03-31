@@ -55,6 +55,9 @@ const routes: Array<RouteRecordRaw> = [
     path: "/teacher",
     name: "MainTeacher",
     component: MainTeacher,
+    meta: {
+      teacherRoute: true,
+    },
     redirect: { name: "TeacherCourseList" },
     children: [
       {

@@ -368,7 +368,7 @@ export default defineComponent({
       "updateExerciseChild",
     ]),
     ...mapActions("shared", ["getTags"]),
-    ...mapMutations(["setExercise", "setExerciseChoice", "setExerciseChild"]),
+    ...mapMutations(["setExercise", "setExerciseChild"]),
     async onChoiceDragEnd(event: { oldIndex: number; newIndex: number }) {
       const draggedChoice = (this.modelValue.choices as ExerciseChoice[])[event.oldIndex];
 

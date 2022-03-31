@@ -1,11 +1,6 @@
 <template>
-  <div
-    class="relative floating-label"
-    :style="'height: ' + containerHeight + ';'"
-  >
-    <label class="absolute top-2 left-1.5 origin-0 fixed-label"
-      ><slot></slot
-    ></label>
+  <div class="relative floating-label" :style="'height: ' + containerHeight + ';'">
+    <label class="absolute top-2 left-1.5 origin-0 fixed-label"><slot></slot></label>
     <div class="overflow-hidden rounded-sm">
       <MonacoEditor
         @editorDidMount="onDidMount($event)"
@@ -61,14 +56,10 @@ export default defineComponent({
   },
   methods: {
     onChange(newVal: string) {
-      // console.log("ON CHANGE", newVal);
       this.$emit("update:modelValue", newVal);
     },
-    onWillMount() {
-      console.log("will mount");
-    },
+    onWillMount() {},
     onDidMount(event: any) {
-      console.log("did mount", event);
       this.showEditor = true;
     },
   },

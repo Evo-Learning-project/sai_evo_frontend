@@ -129,9 +129,7 @@
         <!--:showAssessmentControls="slotsAssessmentControlsVisibility[slot.id] ?? false"-->
         <AbstractEventParticipationSlot
           :modelValue="slot"
-          @updateAssessment="
-            onSlotUpdateAssessment($event.slot, $event.payload)
-          "
+          @updateAssessment="onSlotUpdateAssessment($event.slot, $event.payload)"
           :allowEditAssessment="allowEditAssessment"
           :showSolutionAndScores="showSolutionAndScores"
           :showAssessmentCard="showAssessmentCard"
@@ -234,6 +232,7 @@ export default defineComponent({
       showEditScore: false,
       dirtyScore: undefined as number | undefined,
       EventType,
+      assessmentLoading: false,
     };
   },
   methods: {
@@ -252,6 +251,7 @@ export default defineComponent({
         this.showEditScore = false;
         return;
       }
+      this.assessmentLoading = true;
       await this.withLocalLoading(
         async () =>
           await this.partialUpdateEventParticipation({
@@ -261,6 +261,7 @@ export default defineComponent({
             },
           })
       );
+      this.assessmentLoading = false;
       this.showEditScore = false;
     },
     async onSlotUpdateAssessment(
