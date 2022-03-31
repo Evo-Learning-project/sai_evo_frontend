@@ -34,9 +34,25 @@
       <MinimalExercisePreviewSkeleton></MinimalExercisePreviewSkeleton>
       <MinimalExercisePreviewSkeleton></MinimalExercisePreviewSkeleton>
     </div>
-    <div v-if="!firstLoading && exercises.length === 0" class="flex flex-col space-y-4">
+    <div
+      v-if="!firstLoading && exercises.length === 0 && emptyFilter"
+      class="flex flex-col space-y-4"
+    >
       <p class="text-muted">
         {{ $t("exercise_picker.no_available_exercises") }}
+      </p>
+      <router-link class="mx-auto link" :to="{ name: 'CourseExercises' }"
+        ><Btn :variant="'primary-borderless'">{{
+          $t("exercise_picker.go_to_exercises")
+        }}</Btn></router-link
+      >
+    </div>
+    <div
+      v-else-if="!firstLoading && exercises.length === 0"
+      class="flex flex-col space-y-4"
+    >
+      <p class="text-muted mx-auto">
+        {{ $t("course_exercises.no_matching_exercises") }}.
       </p>
       <router-link class="mx-auto link" :to="{ name: 'CourseExercises' }"
         ><Btn :variant="'primary-borderless'">{{
@@ -74,6 +90,7 @@ import { ExerciseSearchFilter } from "@/api/interfaces";
 import { getDebouncedForFilter } from "@/utils";
 import { courseIdMixin } from "@/mixins";
 import MinimalExercisePreviewSkeleton from "../ui/skeletons/MinimalExercisePreviewSkeleton.vue";
+import { isEmptyFilter } from "@/api/utils";
 export default defineComponent({
   name: "ExercisePicker",
   async created() {
@@ -177,6 +194,9 @@ export default defineComponent({
   },
   computed: {
     ...mapState(["exercises"]),
+    emptyFilter() {
+      return isEmptyFilter(this.searchFilter);
+    },
   },
 });
 </script>

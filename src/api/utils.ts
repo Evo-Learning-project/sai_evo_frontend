@@ -37,7 +37,8 @@ export const isEmptyFilter = (filter: ExerciseSearchFilter): boolean =>
   filter.label.length === 0 &&
   filter.text.length === 0 &&
   filter.exercise_types.length === 0 &&
-  filter.states.length === 0;
+  filter.states.length === 0 &&
+  filter.tags.length === 0;
 
 export const getExerciseUrlQueryParams = (
   filters: ExerciseSearchFilter | null
@@ -67,6 +68,10 @@ export const getExerciseUrlQueryParams = (
 
   if (filters.states && filters.states.length > 0) {
     ret += `state=${filters.states.join(",")}&`;
+  }
+
+  if (filters.tags && filters.tags.length > 0) {
+    ret += `tags=${filters.tags.join("&tags=")}&`;
   }
 
   return ret;

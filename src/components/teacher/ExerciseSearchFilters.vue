@@ -36,17 +36,19 @@
           @update:modelValue="emitUpdate('exercise_types', $event)"
         ></Chipset>
         <Chipset
+          class="my-2"
           :allowMultiple="false"
           :options="exerciseStateOptions"
           :modelValue="modelValue.states"
           @update:modelValue="emitUpdate('states', $event)"
         ></Chipset>
+        <Chipset
+          :options="tagsOptions"
+          :modelValue="modelValue.tags"
+          @update:modelValue="emitUpdate('tags', $event)"
+        ></Chipset>
       </div>
-      <!-- <tag-input
-            class="md:mt-1"
-            :modelValue="modelValue.tags"
-            :placeholder="$t('filter_results.filter_by_tag')"
-          ></tag-input> -->
+
       <div class="flex items-center w-full">
         <Btn
           v-if="!emptyFilters"
@@ -88,15 +90,6 @@
 
 <script lang="ts">
 import { getTranslatedString as _ } from "@/i18n";
-// import { icons as exerciseTypesIcons } from '@/assets/exerciseTypesIcons'
-// import { icons as exerciseStatesIcons } from '@/assets/exerciseStatesIcons'
-// import {
-//   Exercise,
-//   ExerciseState,
-//   ExerciseType,
-//   getBlankExercise,
-//   Tag
-// } from '@/models'
 import { ExerciseSearchFilter } from "@/api/interfaces";
 import Btn from "@/components/ui/Btn.vue";
 import Chipset from "@/components/ui/Chipset.vue";
@@ -106,6 +99,7 @@ import { icons as exerciseTypesIcons } from "@/assets/exerciseTypesIcons";
 import { icons as exerciseStatesIcons } from "@/assets/exerciseStatesIcons";
 import TextInput from "../ui/TextInput.vue";
 import { isEmptyFilter } from "@/api/utils";
+import { mapState } from "vuex";
 export default defineComponent({
   name: "ExerciseSearchFilters",
   components: {
@@ -137,11 +131,16 @@ export default defineComponent({
     },
   },
   computed: {
-    tags(): Tag[] {
-      return [{ name: "tag1" }, { name: "tag2" }, { name: "tag3" }];
-    },
+    ...mapState("shared", ["tags"]),
     emptyFilters() {
       return isEmptyFilter(this.modelValue);
+    },
+    tagsOptions() {
+      return this.tags?.map((t: Tag) => ({
+        icons: this.modelValue.tags.includes(t.id as string) ? ["done-sm"] : null,
+        value: t.id,
+        content: t.name,
+      }));
     },
     exerciseTypeOptions() {
       return ((Object.keys(ExerciseType) as unknown[]) as ExerciseType[])

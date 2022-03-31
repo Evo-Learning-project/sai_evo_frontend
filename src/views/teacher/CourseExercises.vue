@@ -35,10 +35,21 @@
     </div>
     <div
       class="flex flex-col w-full mt-12 mb-12 text-center select-none"
-      v-if="!firstLoading && exercises.length === 0"
+      v-if="!firstLoading && exercises.length === 0 && emptyFilters"
     >
       <p style="font-size: 10rem" class="material-icons-outlined opacity-10">topic</p>
       <h2 class="opacity-40">{{ $t("course_exercises.no_exercises") }}</h2>
+    </div>
+    <div
+      class="flex flex-col w-full mt-12 mb-12 text-center select-none"
+      v-else-if="!firstLoading && exercises.length === 0"
+    >
+      <p style="font-size: 10rem" class="material-icons-outlined opacity-10">
+        search_off
+      </p>
+      <h2 class="opacity-40">
+        {{ $t("course_exercises.no_matching_exercises") }}
+      </h2>
     </div>
     <VueEternalLoading :load="onLoadMore" v-model="isInitialInfiniteLoad">
       <template #loading>
@@ -177,6 +188,9 @@ export default defineComponent({
     },
   },
   computed: {
+    emptyFilters() {
+      return isEmptyFilter(this.searchFilter);
+    },
     tagsOptions() {
       return this.tags.map((t: Tag) => ({
         value: t.name,

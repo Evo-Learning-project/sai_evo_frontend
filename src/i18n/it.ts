@@ -236,6 +236,8 @@ export const it = {
   course_exercises: {
     new_exercise: "Nuovo esercizio",
     no_exercises: "Non ci sono ancora esercizi",
+    no_matching_exercises:
+      "Non ci sono risultati coi filtri di ricerca selezionati",
     selected_exercises: "esercizi selezionati",
     selected_exercise: "esercizio selezionato",
     create_exam_from_selected_exercises: "Crea esame con questi esercizi",
