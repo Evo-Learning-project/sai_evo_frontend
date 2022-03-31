@@ -245,26 +245,26 @@ export default defineComponent({
     async onTurnIn() {
       this.showConfirmDialog = false;
       await this.withLoading(async () => {
-        // flush any pending changes to any slot(s)
-        this.proxyModelValue.slots.forEach(async (s) => {
+        // flush any pending slots to make sure the most recent content is saved
+        for (const s of this.proxyModelValue.slots) {
           if (s.exercise.exercise_type !== ExerciseType.JS) {
-            console.log("flushing nonjs", s.id);
+            //console.log("flushing nonjs", s.id);
             await this.slotAutoSaveManagers[s.id].flush();
-            console.log("flushed nonjs", s.id);
+            //console.log("flushed nonjs", s.id);
           } else {
-            console.log("flushing js");
+            //console.log("flushing js");
             await this.onRunCode(s);
-            console.log("flushed js");
+            //console.log("flushed js");
           }
-        });
-        console.log("turning in");
+        }
+        //console.log("turning in");
         await this.partialUpdateEventParticipation({
           courseId: this.courseId,
           changes: {
             state: EventParticipationState.TURNED_IN,
           },
         });
-        console.log("turned in");
+        //console.log("turned in");
       });
 
       this.$router.push({
