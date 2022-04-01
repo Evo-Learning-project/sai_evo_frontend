@@ -2,8 +2,9 @@
   <div class="">
     <transition name="fade-delay">
       <div
+        style="z-index: 49"
         v-show="!loading && examLocked"
-        class="fixed top-0 left-0 z-50 flex items-center justify-center w-full h-full"
+        class="fixed top-0 left-0 flex items-center justify-center w-full h-full"
       >
         <div
           style="width: 100% !important; height: 100% !important"

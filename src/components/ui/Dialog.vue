@@ -3,26 +3,18 @@
     <!--@after-enter="showContent = true"-->
     <!--@after-leave="$emit(choice)"-->
     <div
-      class="fixed top-0 left-0 z-50 flex items-center justify-center w-full h-full "
+      style="z-index: 51"
+      class="fixed top-0 left-0 flex items-center justify-center w-full h-full"
     >
       <div
         @click="dismiss()"
         style="width: 100vw !important; height: 100vh !important"
-        class="absolute z-10 w-full h-full transition-none bg-gray-900  opacity-80"
+        class="absolute z-10 w-full h-full transition-none bg-gray-900 opacity-80"
       ></div>
       <transition name="bounce">
         <div
           v-if="showDialog"
-          class="
-            z-20
-            max-h-full
-            overflow-y-auto
-            mx-1.5
-            bg-white
-            rounded-md
-            shadow-all-around
-            md:mx-0
-          "
+          class="z-20 max-h-full overflow-y-auto mx-1.5 bg-white rounded-md shadow-all-around md:mx-0"
           :class="{
             'md:max-w-4xl md:min-w-md': !large,
             'md:w-full md:mx-4': large,
@@ -39,15 +31,11 @@
               </div>
               <div v-else-if="warning">
                 <div class="text-yellow-900 bg-yellow-500 icon-surrounding">
-                  <span class="ml-px material-icons-outlined">
-                    priority_high
-                  </span>
+                  <span class="ml-px material-icons-outlined"> priority_high </span>
                 </div>
               </div>
               <div v-else-if="success">
-                <div
-                  class="icon-surrounding bg-success-light text-success-dark"
-                >
+                <div class="icon-surrounding bg-success-light text-success-dark">
                   <span class="material-icons-outlined"> check </span>
                 </div>
               </div>

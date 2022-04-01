@@ -24,7 +24,7 @@
     <!-- Sidebar starts -->
     <!-- FIXME review shadow here and in the other two spots in this file -->
     <div
-      style="box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3); z-index: 99999"
+      style="box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3); z-index: 50"
       class="flex-col justify-between hidden ease-in-out w-96 md:block md:w-60 bg-primary"
       id="desktop-nav"
     >
