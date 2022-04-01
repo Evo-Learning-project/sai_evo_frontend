@@ -11,25 +11,26 @@
           class="absolute z-10 w-full h-full transition-none bg-gray-900 opacity-50"
         ></div>
         <div
-          class="fixed top-1/2 left-1/2 md:ml-14 transform -translate-x-1/2 -translate-y-1/2 text-center"
+          class="fixed z-50 py-4 px-6 rounded w-full md:w-max top-1/2 left-1/2 md:ml-14 transform -translate-x-1/2 -translate-y-1/2 text-center"
         >
           <p
             style="font-size: 10rem"
-            class="material-icons-outlined opacity-50 drop-shadow-2xl filter"
+            class="material-icons-outlined opacity-50 text-lightText"
           >
             {{ examLocked ? "lock" : "lock_open" }}
           </p>
           <h3
-            :class="[!examLocked ? 'opacity-0' : 'opacity-80']"
-            class=""
-            style="text-shadow: 0.5px 0.5px 4px rgb(0 0 0 / 20%)"
+            :class="[!examLocked ? 'opacity-0' : 'opacity-100']"
+            class="md:bg-transparent text-lightText mx-auto md:px-2 rounded-t pt-1"
+            style="text-shadow: 0.5px 0.5px 4px rgb(0 0 0 / 50%)"
           >
             {{ $t("event_editor.currently_locked_by") }}
             {{ modelValue?.locked_by?.full_name }}
           </h3>
           <p
-            :class="[!examLocked ? 'opacity-0' : '']"
-            style="text-shadow: 0.5px 0.5px 4px rgb(0 0 0 / 20%)"
+            :class="[!examLocked ? 'opacity-0' : 'opacity-100']"
+            class="md:bg-transparent text-lightText md:mx-2 md:px-2 rounded-b pb-1"
+            style="text-shadow: 0.5px 0.5px 4px rgb(0 0 0 / 50%)"
           >
             {{ $t("event_editor.lock_stand_by") }}
           </p>
