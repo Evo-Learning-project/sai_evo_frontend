@@ -63,6 +63,8 @@ import {
   EVENT_AUTO_SAVE_DEBOUNCED_FIELDS,
   EVENT_AUTO_SAVE_DEBOUNCE_TIME_MS,
 } from "@/const";
+
+import { subscribeToEventChanges } from "@/ws/modelSubscription";
 const { mapGetters, mapMutations } = createNamespacedHelpers("teacher");
 
 export default defineComponent({
@@ -87,6 +89,8 @@ export default defineComponent({
       //? is it necessary?
       await this.getExercises({ courseId: this.courseId });
     }, this.setPageWideError);
+
+    this.ws = subscribeToEventChanges(this.eventId);
 
     this.autoSaveManager = new AutoSaveManager<Event>(
       this.modelValue,
@@ -129,6 +133,7 @@ export default defineComponent({
       stateSaving: false,
       showConfirmationDialog: false,
       autoSaveManager: null as AutoSaveManager<Event> | null,
+      ws: null as WebSocket | null,
       EventState,
     };
   },

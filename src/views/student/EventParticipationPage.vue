@@ -333,6 +333,7 @@ export default defineComponent({
           }),
         (changes, reverting) => {
           if (!reverting) {
+            // TODO find a way not to block multiple choice questions while open answer exercises are saving
             this.saving = true;
             this.savingError = false;
             this.$store.state.shared.localLoading = true;

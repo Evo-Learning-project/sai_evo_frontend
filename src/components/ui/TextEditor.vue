@@ -3,6 +3,7 @@
     class="relative z-10 rounded-t-sm light-input bg-light"
     :class="{ 'opacity-60 pointer-events-none': disabled }"
   >
+    <!-- TODO! make this just a textarea for students-->
     <div class="z-10 ql-editor-container">
       <quill-editor
         :options="editorOptions"
@@ -29,26 +30,26 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/runtime-core'
-import { quillEditor } from 'vue3-quill'
+import { defineComponent } from "@vue/runtime-core";
+import { quillEditor } from "vue3-quill";
 export default defineComponent({
-  name: 'TextEditor',
-  props: ['modelValue', 'disabled'],
+  name: "TextEditor",
+  props: ["modelValue", "disabled"],
   components: {
-    quillEditor
+    quillEditor,
   },
-  data () {
+  data() {
     return {
-      content: '',
+      content: "",
       editorOptions: {
-        theme: 'snow',
-        placeholder: '',
+        theme: "snow",
+        placeholder: "",
         modules: {
           toolbar: [
-            ['bold', 'italic', 'underline', 'strike'],
-            ['code-block'],
+            ["bold", "italic", "underline", "strike"],
+            ["code-block"],
             //[{ header: 1 }, { header: 2 }],
-            [{ list: 'ordered' }, { list: 'bullet' }],
+            [{ list: "ordered" }, { list: "bullet" }],
             //[{ script: 'sub' }, { script: 'super' }],
             //[{ indent: '-1' }, { indent: '+1' }],
             //[{ direction: 'rtl' }],
@@ -59,22 +60,22 @@ export default defineComponent({
             // [{ align: [] }],
             // ['clean'],
             [
-              'image'
+              "image",
               //'video'
-            ]
-          ]
-        }
-      }
-    }
+            ],
+          ],
+        },
+      },
+    };
   },
   methods: {
-    onEditorChange ({ quill, html, text }: unknown) {
+    onEditorChange({ quill, html, text }: unknown) {
       //console.log('editor change!', quill, html, text)
-      this.content = html
-      this.$emit('update:modelValue', html)
-    }
-  }
-})
+      this.content = html;
+      this.$emit("update:modelValue", html);
+    },
+  },
+});
 </script>
 
 <style>
@@ -122,7 +123,7 @@ export default defineComponent({
   order: 12 !important;
   border: 0 !important; /* 1px solid #ccc !important; */
   box-sizing: border-box;
-  font-family: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
+  font-family: "Helvetica Neue", "Helvetica", "Arial", sans-serif;
   padding: 8px;
 }
 </style>
