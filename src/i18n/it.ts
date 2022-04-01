@@ -371,6 +371,9 @@ export const it = {
       "Ecco il link per accedere all'esame. Comunicalo agli studenti che parteciperanno.",
     edit_template_in_progress_warning:
       "Modificare il modello dell'esame quando questo è già iniziato può avere conseguenze imprevedibili. Gli studenti che hanno già iniziato l'esame non saranno interessati dalle modifiche. Procedi solo se sai cosa stai facendo.",
+    currently_locked_by: "È in corso una modifica a questo esame da parte di",
+    lock_stand_by:
+      "L'editor verrà sbloccato non appena la modifica sarà conclusa.",
   },
   exercise_editor: {
     exercise_editor_title: "Editor esercizio",

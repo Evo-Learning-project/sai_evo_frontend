@@ -24,9 +24,9 @@
     <!-- Sidebar starts -->
     <!-- FIXME review shadow here and in the other two spots in this file -->
     <div
-      style="box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3)"
+      style="box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3); z-index: 99999"
       class="flex-col justify-between hidden ease-in-out w-96 md:block md:w-60 bg-primary"
-      id="mobile-nav"
+      id="desktop-nav"
     >
       <div
         id="openSideBar"
@@ -121,7 +121,7 @@
         'translate-x-0 shadow-all-around': showMobileSidebar,
       }"
     >
-      <div class="fixed w-full h-full px-2">
+      <div class="w-full h-full px-2">
         <div class="flex items-center w-full mt-4">
           <img class="mx-auto w-36" src="../../../public/unipi-logo.svg" />
         </div>

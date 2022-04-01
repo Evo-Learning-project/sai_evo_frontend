@@ -1,5 +1,40 @@
 <template>
   <div class="">
+    <transition name="fade-delay">
+      <div
+        v-show="!loading && examLocked"
+        class="fixed top-0 left-0 z-50 flex items-center justify-center w-full h-full"
+      >
+        <div
+          style="width: 100% !important; height: 100% !important"
+          class="absolute z-10 w-full h-full transition-none bg-gray-900 opacity-50"
+        ></div>
+        <div
+          class="fixed top-1/2 left-1/2 md:ml-14 transform -translate-x-1/2 -translate-y-1/2 text-center"
+        >
+          <p
+            style="font-size: 10rem"
+            class="material-icons-outlined opacity-50 drop-shadow-2xl filter"
+          >
+            {{ examLocked ? "lock" : "lock_open" }}
+          </p>
+          <h3
+            :class="[!examLocked ? 'opacity-0' : 'opacity-80']"
+            class=""
+            style="text-shadow: 0.5px 0.5px 4px rgb(0 0 0 / 20%)"
+          >
+            {{ $t("event_editor.currently_locked_by") }}
+            {{ modelValue?.locked_by?.full_name }}
+          </h3>
+          <p
+            :class="[!examLocked ? 'opacity-0' : '']"
+            style="text-shadow: 0.5px 0.5px 4px rgb(0 0 0 / 20%)"
+          >
+            {{ $t("event_editor.lock_stand_by") }}
+          </p>
+        </div>
+      </div>
+    </transition>
     <div class="flex w-full">
       <h3>{{ $t("event_editor.editor_title") }}</h3>
       <CloudSaveStatus class="ml-auto" :saving="saving"></CloudSaveStatus>
@@ -57,7 +92,7 @@ import { courseIdMixin, eventIdMixin, loadingMixin, savingMixin } from "@/mixins
 import Dialog from "@/components/ui/Dialog.vue";
 import { getTranslatedString as _ } from "@/i18n";
 
-import { createNamespacedHelpers, mapActions } from "vuex";
+import { createNamespacedHelpers, mapActions, mapState } from "vuex";
 import { AutoSaveManager } from "@/autoSave";
 import {
   EVENT_AUTO_SAVE_DEBOUNCED_FIELDS,
@@ -79,6 +114,9 @@ export default defineComponent({
   },
   mixins: [courseIdMixin, eventIdMixin, loadingMixin, savingMixin],
   props: [],
+  beforeRouteLeave() {
+    this.ws?.close();
+  },
   async created() {
     await this.withLoading(async () => {
       await this.getTags(this.courseId);
@@ -152,12 +190,16 @@ export default defineComponent({
   },
   computed: {
     ...mapGetters(["event"]),
+    ...mapState("shared", ["user"]),
     modelValue(): Event {
       return this.event(this.eventId);
     },
     modelValueTemplate(): EventTemplate {
       // return a blank object until the event has been retrieved
       return this.modelValue?.template ?? { rules: [] };
+    },
+    examLocked(): boolean {
+      return !!this.modelValue.locked_by && this.modelValue.locked_by.id != this.user.id;
     },
   },
 });

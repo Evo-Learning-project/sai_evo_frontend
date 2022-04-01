@@ -16,6 +16,10 @@ interface Orderable {
   _ordering?: number;
 }
 
+interface Lockable {
+  locked_by?: User;
+}
+
 export interface User {
   id: string;
   email: string;
@@ -38,7 +42,7 @@ export interface Course {
   public_exercises_exist?: boolean;
 }
 
-export interface Exercise {
+export interface Exercise extends Orderable, Lockable {
   id: string;
   text: string;
   solution?: string;
@@ -73,7 +77,7 @@ export interface Tag {
   name: string;
 }
 
-export interface Event {
+export interface Event extends Lockable {
   id: string;
   name: string;
   instructions: string;

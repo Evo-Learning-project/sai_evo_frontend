@@ -1,12 +1,13 @@
 import store from "@/store";
 import { openAuthenticatedWsConnection } from "./utils";
 
-export const subscribeToEventChanges = (eventId: string) => {
+export const subscribeToEventChanges = (eventId: string, lock = true) => {
   const socket = openAuthenticatedWsConnection("events");
   const message = {
     action: "subscribe_instance",
     pk: eventId,
     request_id: 42,
+    lock,
   };
   socket.onopen = () => socket.send(JSON.stringify(message));
   socket.onmessage = (m) => {
