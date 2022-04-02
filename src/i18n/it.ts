@@ -409,6 +409,8 @@ export const it = {
       "Sei sicuro di voler rendere questo esercizio pubblico?",
     make_public_confirmation_body:
       "Se rendi questo esercizio pubblico, tutti gli studenti potranno visualizzarlo in qualsiasi momento. Se vuoi utilizzare questo esercizio in un esame, rendilo privato.",
+    currently_locked_by:
+      "È in corso una modifica a questo esercizio da parte di",
   },
   exercise_wrapper: {
     select: "Seleziona",

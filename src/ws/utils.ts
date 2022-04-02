@@ -1,6 +1,9 @@
 import { SharedState } from "./../store/types";
 import store from "@/store";
 import axios from "axios";
+import { random } from "lodash";
+
+export const getWsRequestId = () => random(1, 1000);
 
 export const openAuthenticatedWsConnection = (route: string): WebSocket => {
   const wsScheme = window.location.protocol === "https:" ? "wss" : "ws";
