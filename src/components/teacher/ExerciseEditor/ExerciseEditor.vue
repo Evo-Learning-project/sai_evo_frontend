@@ -198,6 +198,15 @@
           >
         </div>
         <!-- Completion exercise settings -->
+        <h3 class="mt-8 mb-8">{{ $t("exercise_editor.clozes_title") }}</h3>
+
+        <div class="grid grid-cols-2 gap-4">
+          <ClozeEditor
+            v-for="subExercise in modelValue.sub_exercises"
+            :key="'exercise-' + modelValue.id + '-cloze-' + subExercise.id"
+            :modelValue="subExercise"
+          ></ClozeEditor>
+        </div>
 
         <!-- Aggregated exercise settings -->
         <div
@@ -215,9 +224,6 @@
               <ExerciseEditor
                 :subExercise="true"
                 :modelValue="element"
-                @choiceUpdate="
-                  onUpdateChoice(element.id, $event.field, $event.value)
-                "
               ></ExerciseEditor>
             </template>
           </draggable>
@@ -335,6 +341,7 @@ import CodeEditor from "@/components/ui/CodeEditor.vue";
 import TestCaseEditor from "./TestCaseEditor.vue";
 import Tooltip from "@/components/ui/Tooltip.vue";
 import { subscribeToExerciseChanges } from "@/ws/modelSubscription";
+import ClozeEditor from "./ClozeEditor.vue";
 const { mapMutations } = createNamespacedHelpers("teacher");
 const { mapState } = createNamespacedHelpers("shared");
 
@@ -354,6 +361,7 @@ export default defineComponent({
     CodeEditor,
     TestCaseEditor,
     Tooltip,
+    ClozeEditor,
   },
   props: {
     modelValue: {
@@ -476,17 +484,17 @@ export default defineComponent({
       };
     },
     onExerciseTypeChange(newVal: ExerciseType) {
-      if (
-        [
-          //ExerciseType.AGGREGATED,
-          // ExerciseType.ATTACHMENT,
-          ExerciseType.COMPLETION,
-        ].includes(newVal)
-      ) {
-        alert("Questo tipo di esercizio non è ancora disponibile");
-      } else {
-        this.onBaseExerciseChange("exercise_type", newVal);
-      }
+      // if (
+      //   [
+      //     //ExerciseType.AGGREGATED,
+      //     // ExerciseType.ATTACHMENT,
+      //     // ExerciseType.COMPLETION,
+      //   ].includes(newVal)
+      // ) {
+      //   alert("Questo tipo di esercizio non è ancora disponibile");
+      // } else {
+      this.onBaseExerciseChange("exercise_type", newVal);
+      //}
     },
     async onAddChoice() {
       const newChoice: ExerciseChoice = await this.addExerciseChoice({
@@ -497,12 +505,12 @@ export default defineComponent({
       this.instantiateChoiceAutoSaveManager(newChoice);
     },
     async onAddSubExercise() {
-      const newChoice: ExerciseChoice = await this.addExerciseSubExercise({
+      const newSubExercise: Exercise = await this.addExerciseSubExercise({
         courseId: this.courseId,
         exerciseId: this.modelValue.id,
         subExercise: getBlankExercise(),
       });
-      this.instantiateChoiceAutoSaveManager(newChoice);
+      //this.instantiateChoiceAutoSaveManager(newSubExercise);
     },
     async onAddTestCase() {
       const newTestcase: ExerciseTestCase = await this.addExerciseTestCase({

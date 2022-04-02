@@ -202,6 +202,7 @@
             v-else-if="exercise.exercise_type === ExerciseType.COMPLETION"
             @updateSelectedChoices="$emit('updateSelectedChoices', $event)"
             :slot="modelValue"
+            :showScores="showSolutionAndScores"
           ></ClozeExercise>
         </div>
 

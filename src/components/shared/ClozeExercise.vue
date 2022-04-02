@@ -7,6 +7,7 @@
     >
       <span v-html="unit.text" class=""></span>
       <select
+        :disabled="showScores"
         class="inline material-select"
         v-if="slot.sub_slots[index]"
         :value="slot.sub_slots[index].selected_choices[0] ?? ''"
@@ -22,6 +23,25 @@
           {{ choice.text }}
         </option>
       </select>
+      <span
+        v-if="showScores && slot.sub_slots[index]"
+        class="ml-2 text-base material-icons-outlined"
+        :class="[
+          slot.exercise.correct_choices?.includes(
+            slot.sub_slots[index]?.selected_choices[0]
+          )
+            ? 'text-success'
+            : 'text-danger-dark',
+        ]"
+      >
+        {{
+          slot.exercise.correct_choices?.includes(
+            slot.sub_slots[index]?.selected_choices[0]
+          )
+            ? "done"
+            : "close"
+        }}
+      </span>
     </span>
   </div>
 </template>
@@ -37,6 +57,10 @@ export default defineComponent({
       type: Object as PropType<EventParticipationSlot>,
       required: true,
     },
+    showScores: {
+      type: Boolean,
+      default: false,
+    },
   },
   methods: {
     onSelectionUpdate(slot: EventParticipationSlot, selection: string) {
@@ -49,34 +73,21 @@ export default defineComponent({
     transformUnitText(text: string): string {
       // adjusts <p> tags and inlining to try and preserve same-line relationships
       // between pieces of exercise text and select elements
-
       if (!text.endsWith("</p>")) {
+        // token doesn't end with a close paragraph: next select element is inline with text
         const tags = text.matchAll(/<[^>]*>/g) ?? [];
         const tagsArr = [...tags];
-        console.log("::", tagsArr);
-        console.log("----", tagsArr[tagsArr.length - 1]?.[0]);
-        // if (text.startsWith("<p>")) {
-        //   return "<p style='display: inline'>" + text.slice(3) + "</p>";
-        // }
+
+        // find last html tag before actual text begins
         if (tagsArr[tagsArr.length - 1]?.[0] === "<p>") {
-          console.log(
-            "from",
-            text,
-            "to",
-            text.slice(0, tagsArr[tagsArr.length - 1].index) +
-              "<p style='display: inline'>" +
-              text.slice((tagsArr[tagsArr.length - 1].index as number) + 3) +
-              "</p>"
-          );
           return (
             text.slice(0, tagsArr[tagsArr.length - 1].index) +
-            "<p style='display: inline'>" +
+            "<p style='display: inline'>" + // replace tag with explicit inline
             text.slice((tagsArr[tagsArr.length - 1].index as number) + 3) +
             "</p>"
           );
         }
       }
-
       return text;
     },
   },

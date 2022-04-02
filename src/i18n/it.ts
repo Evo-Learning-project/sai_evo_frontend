@@ -380,6 +380,7 @@ export const it = {
     exercise_editor_title: "Editor esercizio",
     draft_notice: "Bozza",
     choices_title: "Scelte",
+    clozes_title: "Gruppi di scelte",
     testcases_title: "Test case",
     exercise_label: "Nome dell'esercizio",
     exercise_text: "Testo dell'esercizio",
