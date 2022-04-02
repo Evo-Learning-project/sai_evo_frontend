@@ -179,6 +179,10 @@
       @apply border-0 text-primary bg-primary bg-opacity-25 font-semibold !important;
     }
 
+    .chip-success {
+      @apply border-0 text-success-dark bg-success bg-opacity-25 !important;
+    }
+
     .chip-primary .material-icons-outlined {
       font-family: 'Material Icons Two Tone' !important;
       filter: invert(31%) sepia(65%) saturate(1500%) hue-rotate(212deg) brightness(90%) contrast(87%);
@@ -217,7 +221,9 @@
     }
 
     .two-tone-success {
-      filter: invert(21%) sepia(13%) saturate(4214%) hue-rotate(124deg) brightness(99%) contrast(95%);
+      filter: invert(37%) sepia(10%) saturate(4619%) hue-rotate(94deg) brightness(97%) contrast(84%);
+      /* filter: invert(49%) sepia(61%) saturate(634%) hue-rotate(89deg) brightness(89%) contrast(87%);      */
+       /* filter: invert(21%) sepia(13%) saturate(4214%) hue-rotate(124deg) brightness(99%) contrast(95%); */
     }
 
     .material-icons-two-tone {

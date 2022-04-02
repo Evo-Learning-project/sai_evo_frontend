@@ -11,7 +11,7 @@
           class="absolute z-10 flex w-full h-full transition-none bg-gray-900 rounded  opacity-40"
         ></div>
         <div
-          class="sticky z-50 mx-auto text-center transform rounded  -translate-y-3/4 top-1/4 md:w-max"
+          class="sticky z-50 mx-auto text-center transform rounded  -translate-y-3/4 top-1/2 md:top-1/4 md:w-max"
         >
           <p
             style="font-size: 10rem"
@@ -52,7 +52,7 @@
       class="transition-shadow duration-100 focus-within:shadow-lg"
       :class="{
         'bg-gray-50': modelValue.state === ExerciseState.DRAFT,
-        'bg-light mb-6 -mx-5': subExercise,
+        'bg-light mb-6 md:-mx-5 -mx-2.5': subExercise,
       }"
     >
       <template v-slot:header>
