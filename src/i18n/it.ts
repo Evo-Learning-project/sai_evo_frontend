@@ -189,6 +189,7 @@ export const it = {
     solution: "Soluzione",
     warning: "Attenzione",
     download_as_csv: "Scarica come CSV",
+    select_one: "Seleziona...",
   },
   cloud: {
     saving: "Salvataggio in corso...",

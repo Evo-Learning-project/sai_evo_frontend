@@ -30,6 +30,9 @@
     svg {
       @apply inline; /* was set to block for some reason, causing latex formulas to go in their own line */
     }
+    select {
+      @apply px-3 py-1 border rounded bg-light;
+    }
   }
 
 @layer components {

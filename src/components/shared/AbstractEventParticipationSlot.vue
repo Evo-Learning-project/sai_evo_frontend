@@ -9,11 +9,13 @@
       <div
         class="mb-8 user-content"
         :class="{
-          'bg-gray-200 p-2 border border-dark rounded-md': false && allowEditAssessment,
+          'bg-gray-200 p-2 border border-dark rounded-md':
+            false && allowEditAssessment,
         }"
         v-if="
-          exercise.exercise_type !== ExerciseType.JS ||
-          (!allowEditSubmission && !showExerciseLabel)
+          exercise.exercise_type !== ExerciseType.COMPLETION &&
+          (exercise.exercise_type !== ExerciseType.JS ||
+            (!allowEditSubmission && !showExerciseLabel))
         "
         v-html="exercise.text"
       ></div>
@@ -35,24 +37,25 @@
           <!-- multiple choice multiple possible -->
           <CheckboxGroup
             v-if="
-              exercise.exercise_type === ExerciseType.MULTIPLE_CHOICE_MULTIPLE_POSSIBLE
+              exercise.exercise_type ===
+              ExerciseType.MULTIPLE_CHOICE_MULTIPLE_POSSIBLE
             "
             :options="exerciseChoicesAsOptions"
             v-model="selectedChoicesProxy"
             :disabled="!allowEditSubmission || saving"
           >
             <template v-slot:item="{ description }">
-              <div class="flex space-x-2 items-center mb-2">
+              <div class="flex items-center mb-2 space-x-2">
                 <p
                   :class="{
                     'text-success': description?.[0] === 'done',
                     'text-danger-dark': description?.[0] === 'close',
                   }"
-                  class="text-sm font-semibold text-muted material-icons-outlined"
+                  class="text-sm font-semibold  text-muted material-icons-outlined"
                 >
                   {{ description?.[0] }}
                 </p>
-                <p class="text-muted text-sm" v-if="nonUniformScores">
+                <p class="text-sm text-muted" v-if="nonUniformScores">
                   {{ description?.[1] }}
                   {{
                     $t(
@@ -72,26 +75,27 @@
           <!-- multiple choice single possible -->
           <RadioGroup
             v-else-if="
-              exercise.exercise_type === ExerciseType.MULTIPLE_CHOICE_SINGLE_POSSIBLE
+              exercise.exercise_type ===
+              ExerciseType.MULTIPLE_CHOICE_SINGLE_POSSIBLE
             "
             :options="exerciseChoicesAsOptions"
             v-model="selectedChoicesProxy"
             :disabled="!allowEditSubmission || saving"
           >
             <template v-slot:item="{ description }">
-              <div class="flex space-x-2 items-center mb-2">
+              <div class="flex items-center mb-2 space-x-2">
                 <p
                   :class="{
                     'text-success': description?.[0] === 'done',
                     'text-danger-dark': description?.[0] === 'close',
                   }"
-                  class="text-sm font-semibold text-muted material-icons-outlined"
+                  class="text-sm font-semibold  text-muted material-icons-outlined"
                 >
                   {{ description?.[0] }}
                 </p>
                 <p
                   :id="description?.[3] ?? ''"
-                  class="text-muted text-sm"
+                  class="text-sm text-muted"
                   v-if="nonUniformScores"
                 >
                   {{ description?.[1] }}
@@ -168,7 +172,9 @@
           ></ProgrammingExercise>
           <!-- if reviewing submission, just show submitted code and execution results-->
           <div
-            v-else-if="exercise.exercise_type === ExerciseType.JS && !allowEditSubmission"
+            v-else-if="
+              exercise.exercise_type === ExerciseType.JS && !allowEditSubmission
+            "
           >
             <CodeFragment
               class="mb-4"
@@ -190,6 +196,13 @@
             :disabled="!allowEditSubmission"
             v-else-if="exercise.exercise_type === ExerciseType.ATTACHMENT"
           ></FileUpload>
+
+          <!-- completion exercise -->
+          <ClozeExercise
+            v-else-if="exercise.exercise_type === ExerciseType.COMPLETION"
+            @updateSelectedChoices="$emit('updateSelectedChoices', $event)"
+            :slot="modelValue"
+          ></ClozeExercise>
         </div>
 
         <!-- assessment card-->
@@ -198,7 +211,7 @@
             'md:w-1/2': true || modelValue.sub_slots.length === 0,
             'md:w-1/3': false && modelValue.sub_slots.length > 0,
           }"
-          class="relative px-6 py-3 mb-auto rounded md:self-start bg-light shadow-elevation-2 bg-opacity-70"
+          class="relative px-6 py-3 mb-auto rounded  md:self-start bg-light shadow-elevation-2 bg-opacity-70"
           v-if="
             showAssessmentCard &&
             (true || !showAssessmentControls || !allowEditAssessment)
@@ -207,20 +220,25 @@
           <!-- score -->
           <div
             v-if="
-              !showAssessmentControls && allowEditAssessment && modelValue.score == null
+              !showAssessmentControls &&
+              allowEditAssessment &&
+              modelValue.score == null
             "
-            class="flex items-center space-x-1 text-sm text-danger-dark text-muted"
+            class="flex items-center space-x-1 text-sm  text-danger-dark text-muted"
           >
-            <span class="my-auto text-base text-yellow-900 material-icons-outlined"
+            <span
+              class="my-auto text-base text-yellow-900 material-icons-outlined"
               >pending_actions</span
             >
             <p>
-              {{ $t("event_assessment.this_exercise_requires_manual_assessment") }}
+              {{
+                $t("event_assessment.this_exercise_requires_manual_assessment")
+              }}
             </p>
           </div>
 
           <!-- score -->
-          <div class="flex items-center ransition-opacity duration-100">
+          <div class="flex items-center duration-100 ransition-opacity">
             <p class="text-muted">
               {{
                 modelValue.exercise.exercise_type !== ExerciseType.JS
@@ -272,7 +290,10 @@
 
           <!-- teacher comment -->
           <div class="transition-opacity duration-100">
-            <p v-if="(modelValue.comment?.length ?? 0) > 0" class="mt-2 text-muted">
+            <p
+              v-if="(modelValue.comment?.length ?? 0) > 0"
+              class="mt-2 text-muted"
+            >
               {{
                 allowEditAssessment
                   ? $t("event_assessment.comment_for_student")
@@ -293,7 +314,10 @@
             v-if="modelValue.exercise.exercise_type !== ExerciseType.JS"
             v-html="modelValue.exercise.solution"
           ></p>
-          <CodeFragment v-else :value="modelValue.exercise.solution"></CodeFragment>
+          <CodeFragment
+            v-else
+            :value="modelValue.exercise.solution"
+          ></CodeFragment>
 
           <!-- in-card assessment controls -->
           <div
@@ -301,7 +325,7 @@
               'max-h-0': !showAssessmentControls,
               'max-h-96': showAssessmentControls,
             }"
-            class="flex flex-col overflow-y-hidden duration-200 ease-in-out transition-max-height"
+            class="flex flex-col overflow-y-hidden duration-200 ease-in-out  transition-max-height"
           >
             <div
               :class="{ 'md:flex-row  md:items-center': !subSlot }"
@@ -327,7 +351,9 @@
                     question_answer
                   </span>
                   <span class="text-muted"
-                    >{{ $t("event_assessment.exercise_answered_at") }}&nbsp;</span
+                    >{{
+                      $t("event_assessment.exercise_answered_at")
+                    }}&nbsp;</span
                   ><Timestamp :value="modelValue.answered_at"></Timestamp>
                 </div>
               </div>
@@ -337,7 +363,9 @@
               class="text-sm text-muted text-danger-dark"
               v-if="modelValue.score == null || modelValue.score.length == 0"
             >
-              {{ $t("event_assessment.this_exercise_requires_manual_assessment") }}
+              {{
+                $t("event_assessment.this_exercise_requires_manual_assessment")
+              }}
             </p>
             <div class="mt-4">
               <!-- actual assessment controls -->
@@ -414,7 +442,9 @@
             class="text-sm text-muted text-danger-dark"
             v-if="modelValue.score == null || modelValue.score.length == 0"
           >
-            {{ $t("event_assessment.this_exercise_requires_manual_assessment") }}
+            {{
+              $t("event_assessment.this_exercise_requires_manual_assessment")
+            }}
           </p>
           <div class="mt-4" v-if="!subSlot">
             <!-- actual assessment controls -->
@@ -438,13 +468,23 @@
               ></Btn
             >
             <p class="text-muted">
-              {{ $t("event_assessment.sub_slot_assessment_unavailable_open_full_1") }}
+              {{
+                $t(
+                  "event_assessment.sub_slot_assessment_unavailable_open_full_1"
+                )
+              }}
 
               <span>{{
-                $t("event_assessment.sub_slot_assessment_unavailable_open_full_2")
+                $t(
+                  "event_assessment.sub_slot_assessment_unavailable_open_full_2"
+                )
               }}</span>
 
-              {{ $t("event_assessment.sub_slot_assessment_unavailable_open_full_3") }}
+              {{
+                $t(
+                  "event_assessment.sub_slot_assessment_unavailable_open_full_3"
+                )
+              }}
             </p>
           </div>
         </div>
@@ -455,7 +495,12 @@
 </template>
 
 <script lang="ts">
-import { EventParticipationSlot, Exercise, ExerciseChoice, ExerciseType } from "@/models";
+import {
+  EventParticipationSlot,
+  Exercise,
+  ExerciseChoice,
+  ExerciseType,
+} from "@/models";
 import { defineComponent, PropType } from "@vue/runtime-core";
 import CheckboxGroup from "@/components/ui/CheckboxGroup.vue";
 import { SelectableOption } from "@/interfaces";
@@ -472,6 +517,7 @@ import FileUpload from "../ui/FileUpload.vue";
 import { downloadEventParticipationSlotAttachment } from "@/api/events";
 import Btn from "../ui/Btn.vue";
 import { every, some } from "lodash";
+import ClozeExercise from "./ClozeExercise.vue";
 
 export default defineComponent({
   components: {
@@ -485,6 +531,7 @@ export default defineComponent({
     CodeExecutionResults,
     FileUpload,
     Btn,
+    ClozeExercise,
   },
   name: "AbstractEventParticipationSlot",
   props: {
@@ -617,8 +664,9 @@ export default defineComponent({
         return false;
       }
 
-      const nonCorrectChoices = (this.modelValue.exercise
-        .choices as ExerciseChoice[]).filter(
+      const nonCorrectChoices = (
+        this.modelValue.exercise.choices as ExerciseChoice[]
+      ).filter(
         (c) => !this.modelValue.exercise.correct_choices?.includes(c.id)
       );
 
@@ -628,8 +676,10 @@ export default defineComponent({
     },
     exerciseChoicesAsOptions(): SelectableOption[] {
       if (
-        this.exercise.exercise_type !== ExerciseType.MULTIPLE_CHOICE_SINGLE_POSSIBLE &&
-        this.exercise.exercise_type !== ExerciseType.MULTIPLE_CHOICE_MULTIPLE_POSSIBLE
+        this.exercise.exercise_type !==
+          ExerciseType.MULTIPLE_CHOICE_SINGLE_POSSIBLE &&
+        this.exercise.exercise_type !==
+          ExerciseType.MULTIPLE_CHOICE_MULTIPLE_POSSIBLE
       ) {
         return [];
       }
@@ -641,7 +691,9 @@ export default defineComponent({
           ((c.score_selected ?? "") + "").length > 0 &&
           ((c.score_unselected ?? "") + "").length > 0 && {
             description: [
-              this.modelValue.exercise.correct_choices?.includes(c.id) ? "done" : "close",
+              this.modelValue.exercise.correct_choices?.includes(c.id)
+                ? "done"
+                : "close",
               String(c.score_selected),
               String(c.score_unselected),
               c.id,
