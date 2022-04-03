@@ -15,6 +15,7 @@
     "@sentry/vue": "^6.18.2",
     "@sipec/vue3-tags-input": "^3.0.4",
     "@ts-pro/vue-eternal-loading": "^1.2.0",
+    "@types/quill": "^2.0.9",
     "@vuelidate/core": "^2.0.0-alpha.34",
     "@vuelidate/validators": "^2.0.0-alpha.26",
     "ag-grid-community": "^26.2.1",

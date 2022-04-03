@@ -1,6 +1,6 @@
 <template>
   <div class="relative my-4" :id="'editor-' + modelValue.id">
-    <div style="z-index: 60" class="absolute top-0 right-0 mt-2 mr-3">
+    <div style="z-index: 50" class="absolute top-0 right-0 mt-2 mr-3">
       <Btn :size="'lg'" :variant="'icon'" @click="showEditor = !showEditor"
         ><span
           class="transition-transform duration-200 ease-out transform  material-icons-outlined"

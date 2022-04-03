@@ -41,7 +41,7 @@
       @click="onFocusNonDraft"
       style="z-index: 20"
       class="absolute top-0 left-0 w-full h-full bg-gray-500 bg-opacity-0 cursor-pointer "
-      v-if="modelValue.state !== ExerciseState.DRAFT && preventEdit"
+      v-if="false && modelValue.state !== ExerciseState.DRAFT && preventEdit"
     ></div>
     <!-- FIXME review shadow -->
     <Card
@@ -49,10 +49,11 @@
       :hoverable="!subExercise"
       :marginLess="true"
       :borderLess="subExercise"
-      class="transition-shadow duration-100 focus-within:shadow-lg"
+      class=""
       :class="{
         'bg-gray-50': modelValue.state === ExerciseState.DRAFT,
         'bg-light mb-6 md:-mx-5 -mx-2.5': subExercise,
+        'transition-shadow duration-100 focus-within:shadow-lg': !subExercise,
       }"
     >
       <template v-slot:header>
@@ -73,8 +74,9 @@
         </div>
       </template>
       <template v-slot:body>
-        <div class="flex flex-col space-y-6">
+        <div v-if="!subExercise || !cloze" class="flex flex-col space-y-6">
           <div
+            v-if="!subExercise || !cloze"
             class="flex flex-col items-start my-4 space-y-5  md:space-x-8 md:space-y-0 md:flex-row"
           >
             <div v-if="!subExercise" class="w-full mr-auto md:w-4/12">
@@ -99,6 +101,7 @@
               </Dropdown>
             </div>
             <div
+              v-if="!cloze"
               :class="{ 'md:ml-auto': !subExercise }"
               class="flex flex-col w-full md:flex-row md:w-5/12"
             >
@@ -116,13 +119,34 @@
             </div>
           </div>
           <TextEditor
+            v-if="!cloze"
             :modelValue="modelValue.text"
+            @ready="textEditorInstance = $event"
+            @selectionChange="onTextSelectionChange($event)"
             @update:modelValue="onBaseExerciseChange('text', $event)"
             >{{ $t("exercise_editor.exercise_text") }}</TextEditor
           >
-          <div>
+          <div
+            class="flex space-x-2"
+            v-if="modelValue.exercise_type === ExerciseType.COMPLETION"
+          >
+            <Btn @click="onAddCloze()"
+              ><span class="mr-1.5 text-base material-icons-outlined">
+                add_circle_outline </span
+              >{{ $t("exercise_editor.new_cloze") }}</Btn
+            >
+            <Btn
+              :disabled="editableClozePosition === null"
+              @click="editingClozePosition = editableClozePosition"
+              ><span class="mr-1.5 text-base material-icons-outlined">
+                edit </span
+              >{{ $t("exercise_editor.edit_cloze") }}</Btn
+            >
+            <Tooltip class="" :text-code="'exercise_editor.clozes'"></Tooltip>
+          </div>
+          <div v-if="!cloze">
             <TextEditor
-              v-if="modelValue.exercise_type !== ExerciseType.JS"
+              v-if="!cloze && modelValue.exercise_type !== ExerciseType.JS"
               :modelValue="modelValue.solution"
               @update:modelValue="onBaseExerciseChange('solution', $event)"
               >{{ $t("exercise_editor.exercise_solution") }}</TextEditor
@@ -130,10 +154,14 @@
             <CodeEditor
               :modelValue="modelValue.solution"
               @update:modelValue="onBaseExerciseChange('solution', $event)"
-              v-else
+              v-else-if="!cloze"
               >{{ $t("exercise_editor.exercise_solution") }}</CodeEditor
             >
-            <Tooltip class="" :text-code="'exercise_editor.solution'"></Tooltip>
+            <Tooltip
+              v-if="!cloze"
+              class=""
+              :text-code="'exercise_editor.solution'"
+            ></Tooltip>
           </div>
 
           <div v-if="!subExercise">
@@ -167,9 +195,10 @@
           </div>
         </div>
         <!-- Multiple-choice exercise types settings -->
-        <div class="mt-8" v-if="isMultipleChoice">
+        <div :class="[cloze ? '-mt-6' : 'mt-8']" v-if="isMultipleChoice">
           <h3 class="mb-8">{{ $t("exercise_editor.choices_title") }}</h3>
           <draggable
+            handle=".drag-handle"
             :modelValue="modelValue.choices"
             @end="onChoiceDragEnd($event)"
             ghost-class="drag-ghost"
@@ -177,6 +206,7 @@
           >
             <template #item="{ element }">
               <ChoiceEditor
+                :single-line="cloze"
                 :modelValue="element"
                 @choiceUpdate="
                   onUpdateChoice(element.id, $event.field, $event.value)
@@ -198,7 +228,7 @@
           >
         </div>
         <!-- Completion exercise settings -->
-        <h3 class="mt-8 mb-8">{{ $t("exercise_editor.clozes_title") }}</h3>
+        <!-- <h3 class="mt-8 mb-8">{{ $t("exercise_editor.clozes_title") }}</h3>
 
         <div class="grid grid-cols-2 gap-4">
           <ClozeEditor
@@ -206,7 +236,7 @@
             :key="'exercise-' + modelValue.id + '-cloze-' + subExercise.id"
             :modelValue="subExercise"
           ></ClozeEditor>
-        </div>
+        </div> -->
 
         <!-- Aggregated exercise settings -->
         <div
@@ -261,6 +291,25 @@
             {{ $t("exercise_editor.new_choice") }}</Btn
           >
         </div>
+        <Dialog
+          :large="true"
+          :confirmOnly="true"
+          @yes="editingClozePosition = null"
+          v-if="modelValue.exercise_type === ExerciseType.COMPLETION"
+          :showDialog="!!editingCloze"
+        >
+          <template v-slot:title>
+            {{ $t("exercise_editor.editing_cloze") }}
+            {{ editingClozePosition + 1 }}
+          </template>
+          <template v-slot:body>
+            <ExerciseEditor
+              :modelValue="editingCloze"
+              :sub-exercise="true"
+              :cloze="true"
+            ></ExerciseEditor
+          ></template>
+        </Dialog>
         <Dialog
           :showDialog="showDialog"
           @yes="dialogData.onYes()"
@@ -336,12 +385,13 @@ import {
   EXERCISE_CHOICE_AUTO_SAVE_DEBOUNCE_TIME_MS,
   TEST_CASE_AUTO_SAVE_DEBOUNCED_FIELDS,
   TEST_CASE_AUTO_SAVE_DEBOUNCE_TIME_MS,
+  CLOZE_SEPARATOR,
 } from "@/const";
 import CodeEditor from "@/components/ui/CodeEditor.vue";
 import TestCaseEditor from "./TestCaseEditor.vue";
 import Tooltip from "@/components/ui/Tooltip.vue";
 import { subscribeToExerciseChanges } from "@/ws/modelSubscription";
-import ClozeEditor from "./ClozeEditor.vue";
+// import ClozeEditor from "./ClozeEditor.vue";
 const { mapMutations } = createNamespacedHelpers("teacher");
 const { mapState } = createNamespacedHelpers("shared");
 
@@ -361,7 +411,7 @@ export default defineComponent({
     CodeEditor,
     TestCaseEditor,
     Tooltip,
-    ClozeEditor,
+    // ClozeEditor,
   },
   props: {
     modelValue: {
@@ -369,6 +419,13 @@ export default defineComponent({
       required: true,
     },
     subExercise: {
+      // hides certain fields depending on whether the exercise
+      // is a base- or sub-exercise
+      type: Boolean,
+      default: false,
+    },
+    cloze: {
+      // hides certain fields depending on whether the exercise is a cloze
       type: Boolean,
       default: false,
     },
@@ -438,6 +495,9 @@ export default defineComponent({
       ExerciseState,
       ExerciseType,
       ws: null as WebSocket | null,
+      textEditorInstance: null as any,
+      editingClozePosition: null as number | null,
+      editableClozePosition: null as number | null,
     };
   },
   methods: {
@@ -483,18 +543,36 @@ export default defineComponent({
         },
       };
     },
+    onTextSelectionChange(event: {
+      fullText: string;
+      text: string;
+      range: { index: number; length: number };
+    }) {
+      if (this.modelValue.exercise_type !== ExerciseType.COMPLETION) {
+        return;
+      }
+      const clozeSeparatorPositions = [
+        ...event.fullText.matchAll(/\[\[\?\]\]/g),
+      ].map((m) => m.index as number);
+      console.log(event);
+      if (event.range.length === 0 && event.text.includes(CLOZE_SEPARATOR)) {
+        let i = 0;
+        for (const p of clozeSeparatorPositions) {
+          console.log(p);
+          if (
+            event.range.index >= p &&
+            event.range.index + event.range.length <= p + CLOZE_SEPARATOR.length
+          ) {
+            this.editableClozePosition = i;
+            return;
+          }
+          i++;
+        }
+      }
+      this.editableClozePosition = null;
+    },
     onExerciseTypeChange(newVal: ExerciseType) {
-      // if (
-      //   [
-      //     //ExerciseType.AGGREGATED,
-      //     // ExerciseType.ATTACHMENT,
-      //     // ExerciseType.COMPLETION,
-      //   ].includes(newVal)
-      // ) {
-      //   alert("Questo tipo di esercizio non è ancora disponibile");
-      // } else {
       this.onBaseExerciseChange("exercise_type", newVal);
-      //}
     },
     async onAddChoice() {
       const newChoice: ExerciseChoice = await this.addExerciseChoice({
@@ -510,7 +588,17 @@ export default defineComponent({
         exerciseId: this.modelValue.id,
         subExercise: getBlankExercise(),
       });
-      //this.instantiateChoiceAutoSaveManager(newSubExercise);
+      return newSubExercise;
+    },
+    async onAddCloze() {
+      const selection = this.textEditorInstance.getSelection();
+      console.log(selection);
+      const insertionIndex = selection.index + selection.length;
+      this.textEditorInstance.insertText(insertionIndex, CLOZE_SEPARATOR);
+      await this.onAddSubExercise();
+      // focus on most recently added cloze
+      this.editingClozePosition =
+        (this.modelValue.sub_exercises as Exercise[]).length - 1;
     },
     async onAddTestCase() {
       const newTestcase: ExerciseTestCase = await this.addExerciseTestCase({
@@ -676,6 +764,14 @@ export default defineComponent({
         !!this.modelValue.locked_by &&
         this.modelValue.locked_by.id != this.user.id
       );
+    },
+    editingCloze(): Exercise | null {
+      if (this.editingClozePosition === null) {
+        return null;
+      }
+      return (this.modelValue.sub_exercises as Exercise[])[
+        this.editingClozePosition
+      ];
     },
   },
 });

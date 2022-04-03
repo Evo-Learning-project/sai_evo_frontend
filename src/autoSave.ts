@@ -64,6 +64,8 @@ export class AutoSaveManager<T> {
     field: keyof T;
     value: unknown;
   }): Promise<void> {
+    //console.log("ONCHANGE", field, value, "UNSAVED", this.unsavedChanges);
+
     // record new change to field
     this.unsavedChanges[field] = value as any;
 

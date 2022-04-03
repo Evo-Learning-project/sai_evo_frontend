@@ -142,3 +142,5 @@ export const programmingExerciseTabsOptions: SelectableOption[] = [
     icons: ["integration_instructions-sm"],
   },
 ];
+
+export const CLOZE_SEPARATOR = "[[?]]";

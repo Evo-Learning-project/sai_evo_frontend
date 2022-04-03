@@ -47,7 +47,7 @@
 </template>
 
 <script lang="ts">
-const CLOZE_SEPARATOR = "[[?]]";
+import { CLOZE_SEPARATOR } from "@/const";
 import { EventParticipationSlot, Exercise, ExerciseChoice } from "@/models";
 import { defineComponent, PropType } from "@vue/runtime-core";
 export default defineComponent({

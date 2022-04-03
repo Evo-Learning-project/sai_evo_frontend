@@ -403,6 +403,9 @@ export const it = {
       "Stai per modificare un esercizio non in stato di bozza. Potrebbe essere già presente in un esame o essere già stato visto dagli studenti. Sei sicuro di volerlo modificare?",
     new_choice: "Nuova",
     new_sub_exercise: "Nuovo",
+    new_cloze: "Aggiungi domanda",
+    edit_cloze: "Modifica domanda",
+    editing_cloze: "Stai modificando il gruppo di scelte",
     sub_exercises_title: "Sotto-esercizi",
     cannot_publish: "Non puoi ancora pubblicare questo esercizio",
     cannot_publish_body:

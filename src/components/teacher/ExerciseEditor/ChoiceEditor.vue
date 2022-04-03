@@ -3,8 +3,8 @@
     class="flex flex-col py-3 my-3 space-y-4  md:space-x-4 md:space-y-0 md:flex-row md:items-start"
   >
     <span
-      v-if="!singleLine"
-      class="my-auto mr-2 text-lg cursor-move  material-icons-outlined opacity-70"
+      class="mr-2 text-lg cursor-move  drag-handle material-icons-outlined opacity-70"
+      :class="{ 'my-auto': !singleLine, 'mt-1': singleLine }"
     >
       drag_indicator
     </span>
@@ -17,7 +17,7 @@
     >
     <TextInput
       v-else
-      class="w-1/2"
+      class="w-full md:w-9/12"
       :modelValue="modelValue.text"
       @update:modelValue="onUpdate('text', $event)"
       >{{ $t("exercise_editor.choice_text") }}</TextInput
@@ -91,6 +91,7 @@ export default defineComponent({
   },
   methods: {
     onUpdate(field: keyof ExerciseChoice, value: unknown) {
+      console.log("choice update", field, value);
       this.$emit("choiceUpdate", { field, value });
     },
   },

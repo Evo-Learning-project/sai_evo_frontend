@@ -10,6 +10,7 @@
         :value="modelValue"
         :disabled="disabled"
         @change="onEditorChange($event)"
+        @ready="onEditorReady($event)"
       />
     </div>
     <label
@@ -40,6 +41,7 @@ export default defineComponent({
   },
   data() {
     return {
+      instance: null as any,
       content: "",
       editorOptions: {
         theme: "snow",
@@ -73,6 +75,21 @@ export default defineComponent({
       //console.log('editor change!', quill, html, text)
       this.content = html;
       this.$emit("update:modelValue", html);
+    },
+    onEditorReady(quill: any) {
+      this.$emit("ready", quill);
+      quill.on("selection-change", this.onSelectionChange);
+      this.instance = quill;
+    },
+    onSelectionChange(event: any) {
+      console.log(event);
+      if (event) {
+        this.$emit("selectionChange", {
+          fullText: this.instance.getText(),
+          text: this.instance.getText(event.index - 5, event.length + 10),
+          range: event,
+        });
+      }
     },
   },
 });
