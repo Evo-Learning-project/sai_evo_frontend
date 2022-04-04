@@ -23,6 +23,24 @@ export const subscribeToExerciseChanges = (exerciseId: string, lock = true) => {
   return socket;
 };
 
+export const subscribeToSubmissionSlotChanges = (slotId: string) => {
+  const socket = openAuthenticatedWsConnection("submission_slots");
+  const subscriptionMessage = {
+    action: "subscribe_instance",
+    pk: slotId,
+    request_id: getWsRequestId(),
+  };
+  socket.onopen = () => socket.send(JSON.stringify(subscriptionMessage));
+  socket.onmessage = (m) => {
+    console.log("WS MSG", JSON.parse(m.data));
+    const payload = JSON.parse(m.data);
+
+    if (payload.action === "update") {
+      store.commit("student/setCurrentEventParticipationSlot", payload.data);
+    }
+  };
+};
+
 export const subscribeToEventChanges = (eventId: string, lock = true) => {
   const socket = openAuthenticatedWsConnection("events");
   const subscriptionMessage = {

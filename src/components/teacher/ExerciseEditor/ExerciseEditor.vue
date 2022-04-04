@@ -4,14 +4,14 @@
       <div
         style="z-index: 59"
         v-show="exerciseLocked"
-        class="absolute top-0 left-0 flex items-center justify-center w-full h-full "
+        class="absolute top-0 left-0 flex items-center justify-center w-full h-full"
       >
         <div
           style="width: 100% !important; height: 100% !important"
-          class="absolute z-10 flex w-full h-full transition-none bg-gray-900 rounded  opacity-40"
+          class="absolute z-10 flex w-full h-full transition-none bg-gray-900 rounded opacity-40"
         ></div>
         <div
-          class="sticky z-50 mx-auto text-center transform rounded  -translate-y-3/4 top-1/2 md:top-1/4 md:w-max"
+          class="sticky z-50 mx-auto text-center transform rounded -translate-y-3/4 top-1/2 md:top-1/4 md:w-max"
         >
           <p
             style="font-size: 10rem"
@@ -29,7 +29,7 @@
           </h3>
           <p
             :class="[!exerciseLocked ? 'opacity-0' : 'opacity-100']"
-            class="pb-1 rounded-b  md:bg-transparent text-lightText md:mx-2 md:px-2"
+            class="pb-1 rounded-b md:bg-transparent text-lightText md:mx-2 md:px-2"
             style="text-shadow: 0.5px 0.5px 4px rgb(0 0 0 / 50%)"
           >
             {{ $t("event_editor.lock_stand_by") }}
@@ -40,7 +40,7 @@
     <div
       @click="onFocusNonDraft"
       style="z-index: 20"
-      class="absolute top-0 left-0 w-full h-full bg-gray-500 bg-opacity-0 cursor-pointer "
+      class="absolute top-0 left-0 w-full h-full bg-gray-500 bg-opacity-0 cursor-pointer"
       v-if="false && modelValue.state !== ExerciseState.DRAFT && preventEdit"
     ></div>
     <!-- FIXME review shadow -->
@@ -60,9 +60,7 @@
         <div class="flex" v-if="!subExercise">
           <h3 v-if="!subExercise">
             {{ $t("exercise_editor.exercise_editor_title") }}
-            <span
-              v-if="modelValue.state === ExerciseState.DRAFT"
-              class="text-muted"
+            <span v-if="modelValue.state === ExerciseState.DRAFT" class="text-muted"
               >({{ $t("exercise_editor.draft_notice") }})</span
             >
           </h3>
@@ -77,7 +75,7 @@
         <div v-if="!subExercise || !cloze" class="flex flex-col space-y-6">
           <div
             v-if="!subExercise || !cloze"
-            class="flex flex-col items-start my-4 space-y-5  md:space-x-8 md:space-y-0 md:flex-row"
+            class="flex flex-col items-start my-4 space-y-5 md:space-x-8 md:space-y-0 md:flex-row"
           >
             <div v-if="!subExercise" class="w-full mr-auto md:w-4/12">
               <TextInput
@@ -86,10 +84,7 @@
                 >{{ $t("exercise_editor.exercise_label") }}</TextInput
               >
             </div>
-            <div
-              v-if="!subExercise"
-              class="self-start w-full mr-auto md:w-3/12"
-            >
+            <div v-if="!subExercise" class="self-start w-full mr-auto md:w-3/12">
               <Dropdown
                 :id="'exercise_state_' + elementId"
                 :options="exerciseStateOptions"
@@ -127,7 +122,7 @@
             >{{ $t("exercise_editor.exercise_text") }}</TextEditor
           >
           <div
-            class="flex space-x-2"
+            class="flex flex-wrap space-y-1 md:space-x-2 md:space-y-0"
             v-if="modelValue.exercise_type === ExerciseType.COMPLETION"
           >
             <Btn @click="onAddCloze()"
@@ -138,8 +133,7 @@
             <Btn
               :disabled="editableClozePosition === null"
               @click="editingClozePosition = editableClozePosition"
-              ><span class="mr-1.5 text-base material-icons-outlined">
-                edit </span
+              ><span class="mr-1.5 text-base material-icons-outlined"> edit </span
               >{{ $t("exercise_editor.edit_cloze") }}</Btn
             >
             <Tooltip class="" :text-code="'exercise_editor.clozes'"></Tooltip>
@@ -173,10 +167,7 @@
               @addTag="onAddTag($event, true)"
               @removeTag="onRemoveTag($event, true)"
             ></TagInput>
-            <Tooltip
-              class=""
-              :text-code="'exercise_editor.public_tags'"
-            ></Tooltip>
+            <Tooltip class="" :text-code="'exercise_editor.public_tags'"></Tooltip>
           </div>
 
           <div v-if="!subExercise">
@@ -188,10 +179,7 @@
               @addTag="onAddTag($event, false)"
               @removeTag="onRemoveTag($event, false)"
             ></TagInput>
-            <Tooltip
-              class=""
-              :text-code="'exercise_editor.private_tags'"
-            ></Tooltip>
+            <Tooltip class="" :text-code="'exercise_editor.private_tags'"></Tooltip>
           </div>
         </div>
         <!-- Multiple-choice exercise types settings -->
@@ -208,9 +196,7 @@
               <ChoiceEditor
                 :single-line="cloze"
                 :modelValue="element"
-                @choiceUpdate="
-                  onUpdateChoice(element.id, $event.field, $event.value)
-                "
+                @choiceUpdate="onUpdateChoice(element.id, $event.field, $event.value)"
                 :icon-type="
                   modelValue.exercise_type ===
                   ExerciseType.MULTIPLE_CHOICE_SINGLE_POSSIBLE
@@ -239,10 +225,7 @@
         </div> -->
 
         <!-- Aggregated exercise settings -->
-        <div
-          class="mt-8"
-          v-if="modelValue.exercise_type === ExerciseType.AGGREGATED"
-        >
+        <div class="mt-8" v-if="modelValue.exercise_type === ExerciseType.AGGREGATED">
           <h3 class="mb-8">{{ $t("exercise_editor.sub_exercises_title") }}</h3>
           <draggable
             :modelValue="modelValue.sub_exercises"
@@ -251,10 +234,7 @@
             item-key="id"
           >
             <template #item="{ element }">
-              <ExerciseEditor
-                :subExercise="true"
-                :modelValue="element"
-              ></ExerciseEditor>
+              <ExerciseEditor :subExercise="true" :modelValue="element"></ExerciseEditor>
             </template>
           </draggable>
           <Btn @click="onAddSubExercise()" :size="'sm'"
@@ -278,9 +258,7 @@
             <template #item="{ element }">
               <TestCaseEditor
                 :modelValue="element"
-                @testCaseUpdate="
-                  onUpdateTestCase(element.id, $event.field, $event.value)
-                "
+                @testCaseUpdate="onUpdateTestCase(element.id, $event.field, $event.value)"
               ></TestCaseEditor>
             </template>
           </draggable>
@@ -458,24 +436,14 @@ export default defineComponent({
       () => (this.saving = false)
     );
 
-    this.modelValue.choices?.forEach((c) =>
-      this.instantiateChoiceAutoSaveManager(c)
-    );
-    this.modelValue.testcases?.forEach((t) =>
-      this.instantiateTestCaseAutoSaveManager(t)
-    );
+    this.modelValue.choices?.forEach((c) => this.instantiateChoiceAutoSaveManager(c));
+    this.modelValue.testcases?.forEach((t) => this.instantiateTestCaseAutoSaveManager(t));
   },
   data() {
     return {
       autoSaveManager: null as AutoSaveManager<Exercise> | null,
-      choiceAutoSaveManagers: {} as Record<
-        string,
-        AutoSaveManager<ExerciseChoice>
-      >,
-      testCaseAutoSaveManagers: {} as Record<
-        string,
-        AutoSaveManager<ExerciseTestCase>
-      >,
+      choiceAutoSaveManagers: {} as Record<string, AutoSaveManager<ExerciseChoice>>,
+      testCaseAutoSaveManagers: {} as Record<string, AutoSaveManager<ExerciseTestCase>>,
       elementId: uuid4(),
       showSaved: false,
       saving: false,
@@ -514,16 +482,10 @@ export default defineComponent({
     ...mapActions("shared", ["getTags"]),
     ...mapMutations(["setExercise", "setExerciseChild"]),
     async onChoiceDragEnd(event: { oldIndex: number; newIndex: number }) {
-      const draggedChoice = (this.modelValue.choices as ExerciseChoice[])[
-        event.oldIndex
-      ];
+      const draggedChoice = (this.modelValue.choices as ExerciseChoice[])[event.oldIndex];
 
       if (event.oldIndex !== event.newIndex) {
-        await this.onUpdateChoice(
-          draggedChoice.id,
-          "_ordering",
-          event.newIndex
-        );
+        await this.onUpdateChoice(draggedChoice.id, "_ordering", event.newIndex);
       }
     },
     async onBaseExerciseChange(key: keyof Exercise, value: unknown) {
@@ -551,9 +513,9 @@ export default defineComponent({
       if (this.modelValue.exercise_type !== ExerciseType.COMPLETION) {
         return;
       }
-      const clozeSeparatorPositions = [
-        ...event.fullText.matchAll(/\[\[\?\]\]/g),
-      ].map((m) => m.index as number);
+      const clozeSeparatorPositions = [...event.fullText.matchAll(/\[\[\?\]\]/g)].map(
+        (m) => m.index as number
+      );
       console.log(event);
       if (event.range.length === 0 && event.text.includes(CLOZE_SEPARATOR)) {
         let i = 0;
@@ -658,11 +620,7 @@ export default defineComponent({
         this.onBaseExerciseChange("state", newState);
       }
     },
-    async onUpdateChoice(
-      choiceId: string,
-      key: keyof ExerciseChoice,
-      value: unknown
-    ) {
+    async onUpdateChoice(choiceId: string, key: keyof ExerciseChoice, value: unknown) {
       await this.choiceAutoSaveManagers[choiceId].onChange({
         field: key,
         value,
@@ -679,66 +637,64 @@ export default defineComponent({
       });
     },
     instantiateChoiceAutoSaveManager(choice: ExerciseChoice) {
-      this.choiceAutoSaveManagers[choice.id] =
-        new AutoSaveManager<ExerciseChoice>(
-          choice,
-          async (changes) => {
-            // if choices are re-ordered, re-fetch them from server
-            const reFetch = Object.keys(changes).includes("_ordering");
-            await this.updateExerciseChild({
-              childType: "choice",
-              courseId: this.courseId,
-              exerciseId: this.modelValue.id,
-              payload: { ...choice, ...changes },
-              reFetch,
-            });
-          },
-          (changes) => {
-            this.saving = true;
-            this.savingError = false;
-            this.setExerciseChild({
-              childType: "choice",
-              exerciseId: this.modelValue.id,
-              payload: { ...choice, ...changes },
-            });
-          },
-          EXERCISE_CHOICE_AUTO_SAVE_DEBOUNCED_FIELDS,
-          EXERCISE_CHOICE_AUTO_SAVE_DEBOUNCE_TIME_MS,
-          undefined,
-          () => (this.savingError = true),
-          () => (this.saving = false)
-        );
+      this.choiceAutoSaveManagers[choice.id] = new AutoSaveManager<ExerciseChoice>(
+        choice,
+        async (changes) => {
+          // if choices are re-ordered, re-fetch them from server
+          const reFetch = Object.keys(changes).includes("_ordering");
+          await this.updateExerciseChild({
+            childType: "choice",
+            courseId: this.courseId,
+            exerciseId: this.modelValue.id,
+            payload: { ...choice, ...changes },
+            reFetch,
+          });
+        },
+        (changes) => {
+          this.saving = true;
+          this.savingError = false;
+          this.setExerciseChild({
+            childType: "choice",
+            exerciseId: this.modelValue.id,
+            payload: { ...choice, ...changes },
+          });
+        },
+        EXERCISE_CHOICE_AUTO_SAVE_DEBOUNCED_FIELDS,
+        EXERCISE_CHOICE_AUTO_SAVE_DEBOUNCE_TIME_MS,
+        undefined,
+        () => (this.savingError = true),
+        () => (this.saving = false)
+      );
     },
     instantiateTestCaseAutoSaveManager(testcase: ExerciseTestCase) {
-      this.testCaseAutoSaveManagers[testcase.id] =
-        new AutoSaveManager<ExerciseTestCase>(
-          testcase,
-          async (changes) => {
-            // if choices are re-ordered, re-fetch them from server
-            const reFetch = Object.keys(changes).includes("_ordering");
-            await this.updateExerciseChild({
-              childType: "testcase",
-              courseId: this.courseId,
-              exerciseId: this.modelValue.id,
-              payload: { ...testcase, ...changes },
-              reFetch,
-            });
-          },
-          (changes) => {
-            this.saving = true;
-            this.savingError = false;
-            this.setExerciseChild({
-              childType: "testcase",
-              exerciseId: this.modelValue.id,
-              payload: { ...testcase, ...changes },
-            });
-          },
-          TEST_CASE_AUTO_SAVE_DEBOUNCED_FIELDS,
-          TEST_CASE_AUTO_SAVE_DEBOUNCE_TIME_MS,
-          undefined,
-          () => (this.savingError = true),
-          () => (this.saving = false)
-        );
+      this.testCaseAutoSaveManagers[testcase.id] = new AutoSaveManager<ExerciseTestCase>(
+        testcase,
+        async (changes) => {
+          // if choices are re-ordered, re-fetch them from server
+          const reFetch = Object.keys(changes).includes("_ordering");
+          await this.updateExerciseChild({
+            childType: "testcase",
+            courseId: this.courseId,
+            exerciseId: this.modelValue.id,
+            payload: { ...testcase, ...changes },
+            reFetch,
+          });
+        },
+        (changes) => {
+          this.saving = true;
+          this.savingError = false;
+          this.setExerciseChild({
+            childType: "testcase",
+            exerciseId: this.modelValue.id,
+            payload: { ...testcase, ...changes },
+          });
+        },
+        TEST_CASE_AUTO_SAVE_DEBOUNCED_FIELDS,
+        TEST_CASE_AUTO_SAVE_DEBOUNCE_TIME_MS,
+        undefined,
+        () => (this.savingError = true),
+        () => (this.saving = false)
+      );
     },
   },
   computed: {
@@ -760,18 +716,13 @@ export default defineComponent({
     },
     exerciseLocked(): boolean {
       console.log("locked", this.modelValue.locked_by);
-      return (
-        !!this.modelValue.locked_by &&
-        this.modelValue.locked_by.id != this.user.id
-      );
+      return !!this.modelValue.locked_by && this.modelValue.locked_by.id != this.user.id;
     },
     editingCloze(): Exercise | null {
       if (this.editingClozePosition === null) {
         return null;
       }
-      return (this.modelValue.sub_exercises as Exercise[])[
-        this.editingClozePosition
-      ];
+      return (this.modelValue.sub_exercises as Exercise[])[this.editingClozePosition];
     },
   },
 });

@@ -6,7 +6,7 @@
       type="number"
       placeholder=" "
       :value="modelValue"
-      @input="$emit('update:modelValue', $event.target.value)"
+      @input="onInput($event.target.value)"
       class="z-10 block w-full bg-transparent appearance-none floating-label focus:outline-none"
       :class="{ 'pl-5': leftIcon.length > 0 }"
     />
@@ -41,6 +41,12 @@ export default defineComponent({
     leftIcon: {
       type: String,
       default: "",
+    },
+  },
+  methods: {
+    onInput(value: string) {
+      //console.log(String(value));
+      this.$emit("update:modelValue", value);
     },
   },
 });
