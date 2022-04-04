@@ -161,7 +161,8 @@ export const actions = {
       participationId,
       slotId
     );
-    commit("setCurrentEventParticipationSlot", response);
+    //commit("setCurrentEventParticipationSlot", response);
+    return response;
   },
   addEventTemplateRule: async (
     // eslint-disable-next-line @typescript-eslint/no-unused-vars

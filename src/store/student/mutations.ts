@@ -43,6 +43,25 @@ export const mutations = {
     );
     Object.assign(target, slot);
   },
+  patchCurrentEventParticipationSlot: (
+    state: StudentState,
+    {
+      slotId,
+      changes,
+    }: { slotId: string; changes: Partial<EventParticipationSlot> }
+  ) => {
+    console.log("inside mutation", slotId, changes);
+    // look for both slots and sub-slots
+    const flattenedSlots = (
+      state.currentEventParticipation as EventParticipation
+    ).slots
+      .map((e) => [e, ...(e.sub_slots ?? [])])
+      .flat(10);
+    const target = flattenedSlots.find(
+      (s: EventParticipationSlot) => s.id == slotId
+    );
+    Object.assign(target, { ...target, ...changes });
+  },
 
   // updates the event currently being previewed
   setPreviewingEvent: (state: StudentState, event: Event | null) =>

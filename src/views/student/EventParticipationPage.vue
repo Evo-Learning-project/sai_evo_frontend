@@ -121,6 +121,7 @@ import {
   partialUpdateEventParticipationSlot,
 } from "@/api/events";
 import SlotSkeleton from "@/components/ui/skeletons/SlotSkeleton.vue";
+import { subscribeToSubmissionSlotChanges } from "@/ws/modelSubscription";
 const { mapActions, mapMutations } = createNamespacedHelpers("student");
 
 export default defineComponent({
@@ -178,6 +179,7 @@ export default defineComponent({
         yesText: "",
         onYes: () => null,
       } as DialogData,
+      ws: null as WebSocket | null,
     };
   },
   methods: {
@@ -206,6 +208,9 @@ export default defineComponent({
       // flush queued changes before moving on to next slot
       try {
         await this.slotAutoSaveManagers[slot.id].flush();
+        // subscribe to slot to get code execution results
+        this.ws ??= await subscribeToSubmissionSlotChanges(slot.id);
+        // send request to run code
         await this.runEventParticipationSlotCode({
           courseId: this.courseId,
           eventId: this.eventId,

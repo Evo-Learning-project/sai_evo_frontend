@@ -130,7 +130,7 @@ export default defineComponent({
       await this.getExercises({ courseId: this.courseId });
     }, this.setPageWideError);
 
-    this.ws = subscribeToEventChanges(this.eventId);
+    this.ws = await subscribeToEventChanges(this.eventId);
 
     this.autoSaveManager = new AutoSaveManager<Event>(
       this.modelValue,

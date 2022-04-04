@@ -412,9 +412,9 @@ export default defineComponent({
   beforeUnmount() {
     this.ws?.close();
   },
-  created() {
+  async created() {
     if (!this.subExercise) {
-      this.ws = subscribeToExerciseChanges(this.modelValue.id);
+      this.ws = await subscribeToExerciseChanges(this.modelValue.id);
     }
 
     this.autoSaveManager = new AutoSaveManager<Exercise>(
