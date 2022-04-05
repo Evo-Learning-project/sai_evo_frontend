@@ -161,7 +161,8 @@ export const actions = {
       participationId,
       slotId
     );
-    //commit("setCurrentEventParticipationSlot", response);
+    commit("setCurrentEventParticipationSlot", response);
+    //    commit("patchCurrentEventParticipationSlot", { slotId, changes: response });
     return response;
   },
   addEventTemplateRule: async (

@@ -448,6 +448,7 @@ export const it = {
     tab_testcases: "Test case",
     tab_editor: "Editor",
     run_code: "Esegui",
+    execution_results: "Risultato esecuzione",
     testcase: "Test case",
     passed: "Superato",
     not_passed: "Non superato",

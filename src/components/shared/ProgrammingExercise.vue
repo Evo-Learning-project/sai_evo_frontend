@@ -19,7 +19,7 @@
         <CodeEditor class="w-full" :size="'lg'" v-model="proxyModelValue"></CodeEditor>
         <Backdrop ref="executionResultsBackdrop" v-if="!!executionResults"
           ><template v-slot:title>
-            <h5>Risultato esecuzione</h5>
+            <h5>{{ $t("programming_exercise.execution_results") }}</h5>
           </template>
           <CodeExecutionResults :slot="slot"></CodeExecutionResults>
         </Backdrop>
@@ -29,6 +29,15 @@
             >{{ $t("programming_exercise.run_code") }}</Btn
           >
         </div>
+        <transition name="quick-bounce"
+          ><div
+            class="z-50 bg-dark text-lightText bg-opacity-90 absolute bottom-0 right-0 mr-4 mb-2 rounded bg-light shadow-popup p-4"
+            v-if="executionState === 'running'"
+          >
+            Esecuzione codice in corso
+          </div>
+          <!-- TODO div in bottom right that shows "executing..."-->
+        </transition>
       </div>
       <div v-if="currentTab === ProgrammingExerciseTabs.TEST_CASES">
         <div
@@ -65,9 +74,19 @@ export default defineComponent({
   name: "ProgrammingExercise",
   mixins: [loadingMixin],
   watch: {
-    executionResults(newVal) {
-      console.log("changed execution results");
-      if (this.$refs.executionResultsBackdrop) {
+    // executionResults(newVal) {
+    //   console.log("changed execution results", newVal);
+    //   if (this.$refs.executionResultsBackdrop) {
+    //     (this.$refs.executionResultsBackdrop as any).expanded = true;
+    //   }
+    // },
+    executionState(newVal, oldVal) {
+      //console.log(this.executionResults, "ex");
+      if (
+        oldVal !== "completed" &&
+        newVal === "completed" &&
+        this.$refs.executionResultsBackdrop
+      ) {
         (this.$refs.executionResultsBackdrop as any).expanded = true;
       }
     },
@@ -102,6 +121,7 @@ export default defineComponent({
       ProgrammingExerciseTabs,
       programmingExerciseTabsOptions,
       currentTab: ProgrammingExerciseTabs.TEXT,
+      showExecutingMessage: false,
     };
   },
   methods: {},
@@ -118,6 +138,9 @@ export default defineComponent({
       return this.programmingExerciseTabsOptions.filter(
         (o) => this.showEditor || o.value !== ProgrammingExerciseTabs.EDITOR
       );
+    },
+    executionState() {
+      return this.executionResults?.state;
     },
   },
   components: {

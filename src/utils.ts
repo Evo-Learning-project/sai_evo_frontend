@@ -151,10 +151,13 @@ export const setPageWideError = (e: any) => {
 };
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-export const setErrorNotification = (e: any, useAsIs = false) =>
+export const setErrorNotification = (e: any, useAsIs = false) => {
+  console.error("EEEE", e);
+
   store.commit("shared/setErrorNotificationData", {
     data: getErrorData(e, useAsIs),
   });
+};
 
 // export const typesetTex = () => {
 //   console.log("typesetting");
