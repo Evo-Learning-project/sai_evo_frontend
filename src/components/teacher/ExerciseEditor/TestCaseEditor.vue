@@ -1,9 +1,7 @@
 <template>
-  <div
-    class="flex flex-col py-3 mb-12 space-y-2  md:flex-row md:space-x-4 md:space-y-4"
-  >
+  <div class="flex flex-col py-3 mb-12 space-y-2 md:flex-row md:space-x-4 md:space-y-4">
     <span
-      class="row-span-2 my-auto text-lg cursor-move  material-icons-outlined opacity-70"
+      class="row-span-2 my-auto text-lg cursor-move material-icons-outlined opacity-70"
     >
       drag_indicator
     </span>
@@ -30,8 +28,7 @@
             "
             class="flex items-center ml-8 space-x-2 text-danger-dark"
           >
-            <span class="mr-2 text-sm material-icons-outlined"
-              >visibility_off</span
+            <span class="mr-2 text-sm material-icons-outlined">visibility_off</span
             >{{ $t("exercise_editor.hidden_to_students") }}
           </div>
         </div></CodeEditor
@@ -46,8 +43,7 @@
             v-if="modelValue.testcase_type === ExerciseTestCaseType.HIDDEN"
             class="flex items-center ml-8 space-x-2 text-danger-dark"
           >
-            <span class="mr-2 text-sm material-icons-outlined"
-              >visibility_off</span
+            <span class="mr-2 text-sm material-icons-outlined">visibility_off</span
             >{{ $t("exercise_editor.hidden_to_students") }}
           </div>
         </div></TextEditor
@@ -57,7 +53,7 @@
 </template>
 
 <script lang="ts">
-import { ExerciseTestCase, ExerciseTestCaseType } from "@/models";
+import { ExerciseTestCase, ExerciseTestCaseType, ExerciseType } from "@/models";
 import { defineComponent, PropType } from "@vue/runtime-core";
 import TextEditor from "@/components/ui/TextEditor.vue";
 import CodeEditor from "@/components/ui/CodeEditor.vue";
@@ -71,6 +67,10 @@ export default defineComponent({
       type: Object as PropType<ExerciseTestCase>,
       required: true,
     },
+    testCaseType: {
+      type: Number as PropType<ExerciseType.JS | ExerciseType.C>,
+      required: true,
+    },
   },
   components: {
     TextEditor,
@@ -81,6 +81,7 @@ export default defineComponent({
     return {
       testcaseTypeOptions,
       ExerciseTestCaseType,
+      ExerciseType,
     };
   },
   methods: {

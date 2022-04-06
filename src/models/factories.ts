@@ -35,6 +35,8 @@ export const getBlankTestCase = (): ExerciseTestCase => ({
   text: "",
   code: "",
   testcase_type: ExerciseTestCaseType.SHOW_CODE_SHOW_TEXT,
+  stdin: "",
+  expected_stdout: "",
 });
 
 export const getBlankExercise = (): Exercise => ({

@@ -6,6 +6,7 @@ export enum ExerciseType {
   AGGREGATED,
   JS,
   ATTACHMENT,
+  C,
   //EXTERNAL_RESOURCE,
 }
 

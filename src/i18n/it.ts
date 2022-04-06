@@ -472,6 +472,7 @@ export const it = {
       "Scelta multipla con selezione multipla",
     [ExerciseType.OPEN_ANSWER]: "Risposta aperta",
     [ExerciseType.JS]: "Esercizio JavaScript",
+    [ExerciseType.C]: "Esercizio C",
     [ExerciseType.COMPLETION]: "Esercizio a completamento",
     [ExerciseType.ATTACHMENT]: "Caricamento di file",
     [ExerciseType.AGGREGATED]: "Esercizio composto",

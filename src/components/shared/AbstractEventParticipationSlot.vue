@@ -13,8 +13,7 @@
         }"
         v-if="
           exercise.exercise_type !== ExerciseType.COMPLETION &&
-          (exercise.exercise_type !== ExerciseType.JS ||
-            (!allowEditSubmission && !showExerciseLabel))
+          (!isProgrammingExercise || (!allowEditSubmission && !showExerciseLabel))
         "
         v-html="exercise.text"
       ></div>
@@ -156,8 +155,7 @@
           <!-- programming exercise -->
           <ProgrammingExercise
             v-else-if="
-              exercise.exercise_type === ExerciseType.JS &&
-              (allowEditSubmission || showExerciseLabel)
+              isProgrammingExercise && (allowEditSubmission || showExerciseLabel)
             "
             :exercise="modelValue.exercise"
             v-model="answerTextProxy"
@@ -168,9 +166,7 @@
             :showEditor="allowEditSubmission"
           ></ProgrammingExercise>
           <!-- if reviewing submission, just show submitted code and execution results-->
-          <div
-            v-else-if="exercise.exercise_type === ExerciseType.JS && !allowEditSubmission"
-          >
+          <div v-else-if="isProgrammingExercise && !allowEditSubmission">
             <CodeFragment
               class="mb-4"
               :value="modelValue.answer_text"
@@ -231,15 +227,9 @@
           <!-- score -->
           <div class="flex items-center duration-100 ransition-opacity">
             <p class="text-muted">
-              {{
-                modelValue.exercise.exercise_type !== ExerciseType.JS
-                  ? $t("misc.score")
-                  : $t("misc.passed_tests")
-              }}:
+              {{ !isProgrammingExercise ? $t("misc.score") : $t("misc.passed_tests") }}:
               <strong class="text-lg">{{
-                modelValue.exercise.exercise_type !== ExerciseType.JS
-                  ? modelValue.score
-                  : parseInt(modelValue.score)
+                !isProgrammingExercise ? modelValue.score : parseInt(modelValue.score)
               }}</strong>
               <span v-if="modelValue.exercise.max_score"
                 >&nbsp;{{ $t("misc.out_of") }}
@@ -302,10 +292,7 @@
           >
             {{ $t("misc.solution") }}:
           </p>
-          <p
-            v-if="modelValue.exercise.exercise_type !== ExerciseType.JS"
-            v-html="modelValue.exercise.solution"
-          ></p>
+          <p v-if="!isProgrammingExercise" v-html="modelValue.exercise.solution"></p>
           <CodeFragment v-else :value="modelValue.exercise.solution"></CodeFragment>
 
           <!-- in-card assessment controls -->
@@ -468,7 +455,13 @@
 </template>
 
 <script lang="ts">
-import { EventParticipationSlot, Exercise, ExerciseChoice, ExerciseType } from "@/models";
+import {
+  EventParticipationSlot,
+  Exercise,
+  ExerciseChoice,
+  ExerciseType,
+  programmingExerciseTypes,
+} from "@/models";
 import { defineComponent, PropType } from "@vue/runtime-core";
 import CheckboxGroup from "@/components/ui/CheckboxGroup.vue";
 import { SelectableOption } from "@/interfaces";
@@ -614,6 +607,11 @@ export default defineComponent({
   computed: {
     exercise(): Exercise {
       return this.modelValue.exercise;
+    },
+    isProgrammingExercise(): boolean {
+      return programmingExerciseTypes.includes(
+        this.modelValue.exercise.exercise_type as ExerciseType
+      );
     },
     showAssessmentControls(): boolean {
       return this.assessmentControlsVisibility?.[this.modelValue.id] ?? false;

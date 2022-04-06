@@ -140,7 +140,7 @@
           </div>
           <div v-if="!cloze">
             <TextEditor
-              v-if="!cloze && modelValue.exercise_type !== ExerciseType.JS"
+              v-if="!cloze && !isProgrammingExercise"
               :modelValue="modelValue.solution"
               @update:modelValue="onBaseExerciseChange('solution', $event)"
               >{{ $t("exercise_editor.exercise_solution") }}</TextEditor
@@ -251,8 +251,8 @@
           >
         </div>
 
-        <!-- Js exercise settings -->
-        <div class="mt-8" v-if="modelValue.exercise_type === ExerciseType.JS">
+        <!-- programming exercise settings -->
+        <div class="mt-8" v-if="isProgrammingExercise">
           <CodeEditor v-if="false"></CodeEditor>
           <h3 class="mb-8">{{ $t("exercise_editor.testcases_title") }}</h3>
 
@@ -263,6 +263,7 @@
           >
             <template #item="{ element }">
               <TestCaseEditor
+                :testCaseType="modelValue.exercise_type"
                 :modelValue="element"
                 @testCaseUpdate="onUpdateTestCase(element.id, $event.field, $event.value)"
               ></TestCaseEditor>
@@ -343,6 +344,7 @@ import {
   ExerciseTestCase,
   getBlankTestCase,
   getBlankExercise,
+  programmingExerciseTypes,
 } from "@/models";
 import { multipleChoiceExerciseTypes } from "@/models";
 import Card from "@/components/ui/Card.vue";
@@ -709,6 +711,11 @@ export default defineComponent({
     isMultipleChoice(): boolean {
       return multipleChoiceExerciseTypes.includes(
         parseInt((this.modelValue.exercise_type?.toString() ?? "") as string)
+      );
+    },
+    isProgrammingExercise(): boolean {
+      return programmingExerciseTypes.includes(
+        this.modelValue.exercise_type as ExerciseType
       );
     },
     validationErrors() {

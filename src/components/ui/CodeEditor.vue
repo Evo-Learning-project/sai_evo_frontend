@@ -4,15 +4,13 @@
     <div class="overflow-hidden rounded-sm">
       <MonacoEditor
         @editorDidMount="onDidMount($event)"
-        @editorWillMount="onWillMount()"
         @change="onChange($event)"
-        v-show="true || showEditor"
         :value="modelValue"
         theme="vs-dark"
         class="rounded-md"
         :options="monacoOptions"
         :style="'height: ' + editorHeight + ';'"
-        language="typescript"
+        :language="language"
       />
     </div>
   </div>
@@ -20,6 +18,7 @@
 
 <script lang="ts">
 import MonacoEditor from "monaco-editor-vue3";
+import * as monaco from "monaco-editor";
 
 import { defineComponent } from "@vue/runtime-core";
 import { PropType } from "vue";
@@ -39,13 +38,16 @@ export default defineComponent({
       type: String as PropType<"sm" | "md" | "lg">,
       default: "md",
     },
-  },
-  mounted() {
-    //setTimeout(() => (this.showEditor = true), 3000);
+    language: {
+      type: String as PropType<"typescript" | "c">,
+      default: "typescript",
+    },
   },
   data() {
     return {
-      showEditor: false,
+      monacoModule: null as any,
+      editorInstance: null as null | monaco.editor.IStandaloneCodeEditor,
+      textModel: null as null | monaco.editor.ITextModel,
       monacoOptions: {
         fontSize: 14,
         minimap: {
@@ -57,10 +59,29 @@ export default defineComponent({
   methods: {
     onChange(newVal: string) {
       this.$emit("update:modelValue", newVal);
+      monaco.editor.setModelMarkers(
+        this.textModel as monaco.editor.ITextModel,
+        "eslint",
+        [
+          {
+            startLineNumber: 1,
+            startColumn: 5,
+            endLineNumber: 2,
+            endColumn: 7,
+            message: "Warning!",
+            severity: monaco.MarkerSeverity.Error,
+          },
+        ]
+      );
     },
-    onWillMount() {},
-    onDidMount(event: any) {
-      this.showEditor = true;
+    // onWillMount(monaco: any) {
+    //   console.log("WILL MOUNT", monaco);
+    //   this.monacoModule = monaco;
+    // },
+    onDidMount(event: monaco.editor.IStandaloneCodeEditor) {
+      console.log("DID MOUNT", event, event.getModel());
+      this.editorInstance = event;
+      this.textModel = event.getModel();
     },
   },
   computed: {

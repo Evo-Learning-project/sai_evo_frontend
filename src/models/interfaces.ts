@@ -70,6 +70,8 @@ export interface ExerciseTestCase {
   id: string;
   code: string;
   text: string;
+  stdin: string;
+  expected_stdout: string;
   testcase_type: ExerciseTestCaseType;
 }
 
