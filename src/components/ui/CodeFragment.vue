@@ -1,5 +1,5 @@
 <template>
-  <SshPre :language="'js'" :dark="true" :class="{ 'ssh-pre-small': small }">{{
+  <SshPre v-if="show" :language="'js'" :dark="true" :class="{ 'ssh-pre-small': small }">{{
     value
   }}</SshPre>
 </template>
@@ -21,6 +21,18 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
+  },
+  watch: {
+    value() {
+      // tear down and re-build component as it doesn't update on its own...
+      this.show = false;
+      this.$nextTick(() => (this.show = true));
+    },
+  },
+  data() {
+    return {
+      show: true,
+    };
   },
   methods: {},
   computed: {},

@@ -448,12 +448,15 @@ export const it = {
     tab_testcases: "Test case",
     tab_editor: "Editor",
     run_code: "Esegui",
+    running_code: "Esecuzione in corso...",
     execution_results: "Risultato esecuzione",
     testcase: "Test case",
     passed: "Superato",
     not_passed: "Non superato",
     test_failed_with_error: "Il test ha fallito producendo il seguente errore",
     code_errored: "L'esecuzione del codice ha prodotto il seguente errore",
+    compilation_errored:
+      "La fase di compilazione ha prodotto i seguenti errori",
     no_testcases:
       "Questo esercizio non contiene test case. Prova a chiedere al docente di inserirne qualcuno.",
     results_ok_but_no_testcases:

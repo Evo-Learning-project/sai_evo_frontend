@@ -24,19 +24,26 @@
           <CodeExecutionResults :slot="slot"></CodeExecutionResults>
         </Backdrop>
         <div class="absolute top-0 right-0 mt-0.5 mr-4">
-          <Btn :loading="running" :variant="'success'" @click="$emit('runCode')"
-            ><span class="mr-1 text-base material-icons"> play_arrow </span
-            >{{ $t("programming_exercise.run_code") }}</Btn
-          >
+          <Btn
+            :disabled="executionState === 'running' || running || runCoolDown > 0"
+            :variant="'success'"
+            @click="onRun"
+            ><span class="mr-1 ml-1 text-base material-icons"> play_arrow </span
+            >{{ $t("programming_exercise.run_code") }}
+            <span class="opacity-50" v-if="runCoolDown > 0"
+              >&nbsp;({{ runCoolDown }})</span
+            >
+            <span v-if="runCoolDown < 10" class="opacity-0">0</span>
+          </Btn>
         </div>
         <transition name="quick-bounce"
           ><div
-            class="z-50 bg-dark text-lightText bg-opacity-90 absolute bottom-0 right-0 mr-4 mb-2 rounded bg-light shadow-popup p-4"
+            class="absolute bottom-0 flex space-x-2 items-center right-0 z-50 py-3 px-6 mb-2 mr-4 rounded bg-dark text-lightText bg-opacity-90 bg-light shadow-popup"
             v-if="executionState === 'running'"
           >
-            Esecuzione codice in corso
+            <Spinner :fast="true"></Spinner>
+            <p>{{ $t("programming_exercise.running_code") }}</p>
           </div>
-          <!-- TODO div in bottom right that shows "executing..."-->
         </transition>
       </div>
       <div v-if="currentTab === ProgrammingExerciseTabs.TEST_CASES">
@@ -49,7 +56,7 @@
           <ExerciseTestCase :test-case="testcase"></ExerciseTestCase>
         </div>
         <div v-if="exercise.testcases?.length === 0">
-          <h4 class="text-muted text-center mt-8">
+          <h4 class="mt-8 text-center text-muted">
             {{ $t("programming_exercise.no_testcases") }}
           </h4>
         </div>
@@ -59,6 +66,8 @@
 </template>
 
 <script lang="ts">
+const RUN_COOL_DOWN = 10;
+
 import { programmingExerciseTabsOptions, ProgrammingExerciseTabs } from "@/const";
 import { EventParticipationSlot, Exercise } from "@/models";
 import { defineComponent, PropType } from "@vue/runtime-core";
@@ -70,6 +79,7 @@ import { loadingMixin } from "@/mixins";
 import Backdrop from "../ui/Backdrop.vue";
 import CodeExecutionResults from "./CodeExecutionResults.vue";
 import { SelectableOption } from "@/interfaces";
+import Spinner from "../ui/Spinner.vue";
 export default defineComponent({
   name: "ProgrammingExercise",
   mixins: [loadingMixin],
@@ -122,9 +132,21 @@ export default defineComponent({
       programmingExerciseTabsOptions,
       currentTab: ProgrammingExerciseTabs.TEXT,
       showExecutingMessage: false,
+      runCoolDown: 0,
     };
   },
-  methods: {},
+  methods: {
+    onRun() {
+      this.$emit("runCode");
+      this.runCoolDown = RUN_COOL_DOWN;
+      const coolDownHandle = setInterval(() => {
+        this.runCoolDown--;
+        if (this.runCoolDown <= 0) {
+          clearInterval(coolDownHandle);
+        }
+      }, 1000);
+    },
+  },
   computed: {
     proxyModelValue: {
       get(): string {
@@ -150,6 +172,7 @@ export default defineComponent({
     Btn,
     Backdrop,
     CodeExecutionResults,
+    Spinner,
   },
 });
 </script>

@@ -32,6 +32,8 @@ export const mutations = {
     state: StudentState,
     slot: EventParticipationSlot
   ) => {
+    console.log("inside set mutation", slot);
+
     // look for both slots and sub-slots
     const flattenedSlots = (
       state.currentEventParticipation as EventParticipation
@@ -50,7 +52,7 @@ export const mutations = {
       changes,
     }: { slotId: string; changes: Partial<EventParticipationSlot> }
   ) => {
-    console.log("inside mutation", slotId, changes);
+    console.log("inside patch mutation", slotId, changes);
     // look for both slots and sub-slots
     const flattenedSlots = (
       state.currentEventParticipation as EventParticipation

@@ -39,12 +39,19 @@
         </div>
       </div>
     </div>
-    <div class="px-4 pt-1 bg-danger bg-opacity-5" v-else-if="!!slot.execution_results">
+    <div
+      class="px-4 pt-1 bg-danger bg-opacity-5"
+      v-else-if="!!slot.execution_results && slot.execution_results.execution_error"
+    >
       <p class="mb-1 text-muted">{{ $t("programming_exercise.code_errored") }}:</p>
-      <CodeFragment
-        v-if="slot.execution_results?.error"
-        :value="slot.execution_results?.error"
-      ></CodeFragment>
+      <CodeFragment :value="slot.execution_results?.execution_error"></CodeFragment>
+    </div>
+    <div
+      class="px-4 pt-1 bg-danger bg-opacity-5"
+      v-else-if="!!slot.execution_results && slot.execution_results.compilation_errors"
+    >
+      <p class="mb-1 text-muted">{{ $t("programming_exercise.compilation_errored") }}:</p>
+      <CodeFragment :value="slot.execution_results?.compilation_errors"></CodeFragment>
     </div>
   </div>
 </template>
