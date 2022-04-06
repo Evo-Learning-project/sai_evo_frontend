@@ -416,6 +416,7 @@ export const it = {
       "Se rendi questo esercizio pubblico, tutti gli studenti potranno visualizzarlo in qualsiasi momento. Se vuoi utilizzare questo esercizio in un esame, rendilo privato.",
     currently_locked_by:
       "È in corso una modifica a questo esercizio da parte di",
+    requires_typescript: "Richiedi l'utilizzo di TypeScript",
   },
   exercise_wrapper: {
     select: "Seleziona",

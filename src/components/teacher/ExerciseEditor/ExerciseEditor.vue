@@ -157,6 +157,12 @@
               :text-code="'exercise_editor.solution'"
             ></Tooltip>
           </div>
+          <Toggle
+            :modelValue="modelValue.requires_typescript"
+            @update:modelValue="onBaseExerciseChange('requires_typescript', $event)"
+            v-if="modelValue.exercise_type === ExerciseType.JS"
+            >{{ $t("exercise_editor.requires_typescript") }}</Toggle
+          >
 
           <div v-if="!subExercise">
             <TagInput
@@ -369,6 +375,7 @@ import CodeEditor from "@/components/ui/CodeEditor.vue";
 import TestCaseEditor from "./TestCaseEditor.vue";
 import Tooltip from "@/components/ui/Tooltip.vue";
 import { subscribeToExerciseChanges } from "@/ws/modelSubscription";
+import Toggle from "@/components/ui/Toggle.vue";
 // import ClozeEditor from "./ClozeEditor.vue";
 const { mapMutations } = createNamespacedHelpers("teacher");
 const { mapState } = createNamespacedHelpers("shared");
@@ -389,7 +396,7 @@ export default defineComponent({
     CodeEditor,
     TestCaseEditor,
     Tooltip,
-    // ClozeEditor,
+    Toggle,
   },
   props: {
     modelValue: {

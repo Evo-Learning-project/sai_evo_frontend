@@ -56,6 +56,7 @@ export interface Exercise extends Orderable, Lockable {
   private_tags?: Tag[];
   max_score?: number;
   correct_choices?: string[];
+  requires_typescript?: boolean;
 }
 
 export interface ExerciseChoice extends Orderable {
