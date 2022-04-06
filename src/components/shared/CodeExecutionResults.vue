@@ -1,5 +1,11 @@
 <template>
   <div>
+    <div
+      class="px-4 pt-1 bg-danger bg-opacity-5"
+      v-if="slot.execution_results?.state === 'internal_error'"
+    >
+      {{ $t("programming_exercise.internal_error") }}
+    </div>
     <div v-if="slot.execution_results?.tests">
       <div v-if="slot.execution_results.tests.length === 0">
         <p class="px-4 text-muted">

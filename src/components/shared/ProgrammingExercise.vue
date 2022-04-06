@@ -66,7 +66,7 @@
 </template>
 
 <script lang="ts">
-const RUN_COOL_DOWN = 10;
+const RUN_COOL_DOWN = 0;
 
 import { programmingExerciseTabsOptions, ProgrammingExerciseTabs } from "@/const";
 import { EventParticipationSlot, Exercise } from "@/models";
@@ -93,9 +93,10 @@ export default defineComponent({
     executionState(newVal, oldVal) {
       //console.log(this.executionResults, "ex");
       if (
-        oldVal !== "completed" &&
-        newVal === "completed" &&
-        this.$refs.executionResultsBackdrop
+        newVal === "internal_error" ||
+        (oldVal !== "completed" &&
+          newVal === "completed" &&
+          this.$refs.executionResultsBackdrop)
       ) {
         (this.$refs.executionResultsBackdrop as any).expanded = true;
       }

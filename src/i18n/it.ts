@@ -462,6 +462,8 @@ export const it = {
       "Questo esercizio non contiene test case. Prova a chiedere al docente di inserirne qualcuno.",
     results_ok_but_no_testcases:
       "L'esecuzione del tuo codice non ha prodotto errori. Purtroppo questo esercizio non ha test case, quindi questo è tutto ciò che sappiamo.",
+    internal_error:
+      "Si è verificato un errore interno durante l'esecuzione del codice. Per favore, segnala questo errore ai docenti.",
   },
   exercise_types: {
     [ExerciseType.MULTIPLE_CHOICE_SINGLE_POSSIBLE]:
