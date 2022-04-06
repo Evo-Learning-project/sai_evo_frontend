@@ -37,11 +37,17 @@
           :small="true"
           :test-case="exerciseTestCase(test.id)"
         ></ExerciseTestCase>
-        <div v-if="!test.passed" class="mt-3">
+        <div v-if="!test.passed && test.error" class="mt-3">
           <p class="mb-1 text-muted">
             {{ $t("programming_exercise.test_failed_with_error") }}:
           </p>
           <CodeFragment :value="test.error" :small="true"></CodeFragment>
+        </div>
+        <div v-if="!test.passed && test.stdout" class="mt-3">
+          <p class="mb-1 text-muted">
+            {{ $t("programming_exercise.test_failed_stdout") }}:
+          </p>
+          <CodeFragment :value="test.stdout" :small="true"></CodeFragment>
         </div>
       </div>
     </div>

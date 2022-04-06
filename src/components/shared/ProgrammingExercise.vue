@@ -16,7 +16,12 @@
         v-else-if="currentTab === ProgrammingExerciseTabs.EDITOR"
         class="relative flex"
       >
-        <CodeEditor class="w-full" :size="'lg'" v-model="proxyModelValue"></CodeEditor>
+        <CodeEditor
+          :language="exercise.exercise_type === ExerciseType.JS ? 'typescript' : 'c'"
+          class="w-full"
+          :size="'lg'"
+          v-model="proxyModelValue"
+        ></CodeEditor>
         <Backdrop ref="executionResultsBackdrop" v-if="!!executionResults"
           ><template v-slot:title>
             <h5>{{ $t("programming_exercise.execution_results") }}</h5>
@@ -69,7 +74,7 @@
 const RUN_COOL_DOWN = 0;
 
 import { programmingExerciseTabsOptions, ProgrammingExerciseTabs } from "@/const";
-import { EventParticipationSlot, Exercise } from "@/models";
+import { EventParticipationSlot, Exercise, ExerciseType } from "@/models";
 import { defineComponent, PropType } from "@vue/runtime-core";
 import SegmentedControls from "../ui/SegmentedControls.vue";
 import CodeEditor from "../ui/CodeEditor.vue";
@@ -134,6 +139,7 @@ export default defineComponent({
       currentTab: ProgrammingExerciseTabs.TEXT,
       showExecutingMessage: false,
       runCoolDown: 0,
+      ExerciseType,
     };
   },
   methods: {

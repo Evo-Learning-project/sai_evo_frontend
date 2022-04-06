@@ -452,9 +452,12 @@ export const it = {
     running_code: "Esecuzione in corso...",
     execution_results: "Risultato esecuzione",
     testcase: "Test case",
+    testcase_stdin: "Input",
+    testcase_expected_stdout: "Output atteso",
     passed: "Superato",
     not_passed: "Non superato",
     test_failed_with_error: "Il test ha fallito producendo il seguente errore",
+    test_failed_stdout: "Il programma ha prodotto il seguente output",
     code_errored: "L'esecuzione del codice ha prodotto il seguente errore",
     compilation_errored:
       "La fase di compilazione ha prodotto i seguenti errori",
