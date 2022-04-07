@@ -21,14 +21,27 @@
           class="w-full"
           :size="'lg'"
           v-model="proxyModelValue"
-        ></CodeEditor>
+          :showRunButton="true"
+          :runCoolDown="runCoolDown"
+          :running="executionState === 'running' || running || runCoolDown > 0"
+          @run="onRun"
+        >
+          <template v-slot:runButton
+            ><span class="mr-1 ml-1 text-base material-icons"> play_arrow </span
+            >{{ $t("programming_exercise.run_code") }}
+            <span class="opacity-50" v-if="runCoolDown > 0"
+              >&nbsp;({{ runCoolDown }})</span
+            >
+            <span v-if="runCoolDown < 10" class="opacity-0">0</span></template
+          >
+        </CodeEditor>
         <Backdrop ref="executionResultsBackdrop" v-if="!!executionResults"
           ><template v-slot:title>
             <h5>{{ $t("programming_exercise.execution_results") }}</h5>
           </template>
           <CodeExecutionResults :slot="slot"></CodeExecutionResults>
         </Backdrop>
-        <div class="absolute top-0 right-0 mt-0.5 mr-4">
+        <!-- <div class="absolute top-0 right-0 mt-0.5 mr-4">
           <Btn
             :disabled="executionState === 'running' || running || runCoolDown > 0"
             :variant="'success'"
@@ -40,7 +53,7 @@
             >
             <span v-if="runCoolDown < 10" class="opacity-0">0</span>
           </Btn>
-        </div>
+        </div> -->
         <transition name="quick-bounce"
           ><div
             class="absolute bottom-0 flex space-x-2 items-center right-0 z-50 py-3 px-6 mb-2 mr-4 rounded bg-dark text-lightText bg-opacity-90 bg-light shadow-popup"
@@ -79,7 +92,7 @@ import { defineComponent, PropType } from "@vue/runtime-core";
 import SegmentedControls from "../ui/SegmentedControls.vue";
 import CodeEditor from "../ui/CodeEditor.vue";
 import ExerciseTestCase from "./ExerciseTestCase.vue";
-import Btn from "../ui/Btn.vue";
+//import Btn from "../ui/Btn.vue";
 import { loadingMixin } from "@/mixins";
 import Backdrop from "../ui/Backdrop.vue";
 import CodeExecutionResults from "./CodeExecutionResults.vue";
@@ -176,7 +189,7 @@ export default defineComponent({
     SegmentedControls,
     CodeEditor,
     ExerciseTestCase,
-    Btn,
+    //Btn,
     Backdrop,
     CodeExecutionResults,
     Spinner,

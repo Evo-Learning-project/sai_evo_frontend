@@ -17,7 +17,7 @@ import { getTranslatedString as _ } from "@/i18n";
 
 export const TEST_CASE_AUTO_SAVE_DEBOUNCE_TIME_MS = 3000;
 export const TEST_CASE_AUTO_SAVE_DEBOUNCED_FIELDS: FieldList<ExerciseTestCase> =
-  ["code", "text"];
+  ["code", "text", "stdin", "expected_stdout"];
 
 export const EVENT_AUTO_SAVE_DEBOUNCE_TIME_MS = 3000;
 export const EVENT_AUTO_SAVE_DEBOUNCED_FIELDS: FieldList<Event> = [

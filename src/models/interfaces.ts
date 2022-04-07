@@ -154,8 +154,14 @@ export interface EventParticipationSlot {
   answered_at?: string;
   is_first?: boolean;
   is_last?: boolean;
-  execution_results?: Record<string, string>;
+  execution_results?: CodeExecutionResults;
   attachment?:
     | { name: string; size: number } // download representation
     | Blob; // upload representation
+}
+
+export interface CodeExecutionResults {
+  state: "running" | "completed" | "internal_error";
+  compilation_errors?: string;
+  tests?: { id: string; passed: boolean; error?: string; stdout?: string }[];
 }

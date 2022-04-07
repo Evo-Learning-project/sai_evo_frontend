@@ -1,6 +1,6 @@
 import { ExerciseTestCase } from "./../models/interfaces";
 /* eslint-disable no-constant-condition */
-import { Exercise, ExerciseChoice } from "@/models";
+import { CodeExecutionResults, Exercise, ExerciseChoice } from "@/models";
 import axios from "axios";
 import { ExerciseSearchFilter } from "./interfaces";
 import { getExerciseUrlQueryParams } from "./utils";
@@ -76,6 +76,16 @@ export async function updateExercise(
   const response = await axios.put(
     `courses/${courseId}/exercises/${exerciseId}/`,
     exercise
+  );
+  return response.data;
+}
+
+export async function testProgrammingExerciseSolution(
+  courseId: string,
+  exerciseId: string
+): Promise<CodeExecutionResults> {
+  const response = await axios.post(
+    `courses/${courseId}/exercises/${exerciseId}/solution_execution_results/`
   );
   return response.data;
 }

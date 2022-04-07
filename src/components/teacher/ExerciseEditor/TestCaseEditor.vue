@@ -6,7 +6,12 @@
       drag_indicator
     </span>
     <div class="grid w-full grid-cols-6 gap-5 md:grid-cols-12">
-      <div class="col-span-6">
+      <div
+        :class="{
+          'col-span-6': testCaseType === ExerciseType.JS,
+          'md:col-span-5 col-span-7': testCaseType === ExerciseType.C,
+        }"
+      >
         <SegmentedControls
           :modelValue="modelValue.testcase_type"
           @update:modelValue="onUpdate('testcase_type', $event)"
@@ -16,6 +21,7 @@
       </div>
       <CodeEditor
         class="col-span-6 md:row-span-2"
+        v-if="testCaseType === ExerciseType.JS"
         :size="'sm'"
         :modelValue="modelValue.code"
         @update:modelValue="onUpdate('code', $event)"
@@ -33,8 +39,53 @@
           </div>
         </div></CodeEditor
       >
+      <div v-else class="col-span-7 md:row-span-2 flex space-x-2">
+        <CodeEditor
+          class="w-1/2"
+          :size="'sm'"
+          :modelValue="modelValue.stdin"
+          @update:modelValue="onUpdate('stdin', $event)"
+          ><div class="flex w-full">
+            <p class="">{{ $t("exercise_editor.testcase_stdin") }}</p>
+            <div
+              v-if="
+                modelValue.testcase_type === ExerciseTestCaseType.HIDDEN ||
+                modelValue.testcase_type === ExerciseTestCaseType.SHOW_TEXT_ONLY
+              "
+              class="flex ml-4 items-center ml-2 space-x-2 text-danger-dark"
+            >
+              <span class="mr-2 text-sm material-icons-outlined">visibility_off</span
+              >{{ $t("misc.hidden") }}
+            </div>
+          </div></CodeEditor
+        >
+        <CodeEditor
+          class="w-1/2"
+          :size="'sm'"
+          :modelValue="modelValue.expected_stdout"
+          @update:modelValue="onUpdate('expected_stdout', $event)"
+          ><div class="flex w-full">
+            <p class="">
+              {{ $t("exercise_editor.testcase_expected_stdout") }}
+            </p>
+            <div
+              v-if="
+                modelValue.testcase_type === ExerciseTestCaseType.HIDDEN ||
+                modelValue.testcase_type === ExerciseTestCaseType.SHOW_TEXT_ONLY
+              "
+              class="ml-3 flex items-center space-x-2 text-danger-dark"
+            >
+              <span class="mr-2 text-sm material-icons-outlined">visibility_off</span
+              >{{ $t("misc.hidden") }}
+            </div>
+          </div></CodeEditor
+        >
+      </div>
       <TextEditor
-        class="col-span-6"
+        :class="{
+          'col-span-6': testCaseType === ExerciseType.JS,
+          'md:col-span-5 col-span-7': testCaseType === ExerciseType.C,
+        }"
         :modelValue="modelValue.text"
         @update:modelValue="onUpdate('text', $event)"
         ><div class="flex w-full">

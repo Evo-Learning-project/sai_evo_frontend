@@ -145,12 +145,38 @@
               @update:modelValue="onBaseExerciseChange('solution', $event)"
               >{{ $t("exercise_editor.exercise_solution") }}</TextEditor
             >
-            <CodeEditor
-              :modelValue="modelValue.solution"
-              @update:modelValue="onBaseExerciseChange('solution', $event)"
-              v-else-if="!cloze"
-              >{{ $t("exercise_editor.exercise_solution") }}</CodeEditor
-            >
+            <div v-else-if="!cloze" class="relative">
+              <CodeEditor
+                :modelValue="modelValue.solution"
+                @update:modelValue="onBaseExerciseChange('solution', $event)"
+                :size="'lg'"
+                :showRunButton="true"
+                :language="
+                  modelValue.exercise_type === ExerciseType.JS ? 'typescript' : 'c'
+                "
+                @run="onTestSolution"
+                :running="testingSolution"
+                >{{ $t("exercise_editor.exercise_solution") }}
+                <template v-slot:runButton
+                  ><span class="mr-1 ml-1 text-base material-icons-outlined">
+                    science </span
+                  >{{
+                    testingSolution
+                      ? $t("exercise_editor.testing_solution")
+                      : $t("exercise_editor.test_solution")
+                  }}</template
+                >
+              </CodeEditor>
+              <Backdrop
+                ref="executionResultsBackdrop"
+                v-if="!!solutionTestSlot?.execution_results"
+                ><template v-slot:title>
+                  <h5>{{ $t("programming_exercise.execution_results") }}</h5>
+                </template>
+                <CodeExecutionResults :slot="solutionTestSlot"></CodeExecutionResults>
+              </Backdrop>
+            </div>
+
             <Tooltip
               v-if="!cloze"
               class=""
@@ -219,21 +245,12 @@
             {{ $t("exercise_editor.new_choice") }}</Btn
           >
         </div>
-        <!-- Completion exercise settings -->
-        <!-- <h3 class="mt-8 mb-8">{{ $t("exercise_editor.clozes_title") }}</h3>
-
-        <div class="grid grid-cols-2 gap-4">
-          <ClozeEditor
-            v-for="subExercise in modelValue.sub_exercises"
-            :key="'exercise-' + modelValue.id + '-cloze-' + subExercise.id"
-            :modelValue="subExercise"
-          ></ClozeEditor>
-        </div> -->
 
         <!-- Aggregated exercise settings -->
         <div class="mt-8" v-if="modelValue.exercise_type === ExerciseType.AGGREGATED">
           <h3 class="mb-8">{{ $t("exercise_editor.sub_exercises_title") }}</h3>
           <draggable
+            handle=".drag-handle"
             :modelValue="modelValue.sub_exercises"
             @end="onChoiceDragEnd($event)"
             ghost-class="drag-ghost"
@@ -253,12 +270,12 @@
 
         <!-- programming exercise settings -->
         <div class="mt-8" v-if="isProgrammingExercise">
-          <CodeEditor v-if="false"></CodeEditor>
           <h3 class="mb-8">{{ $t("exercise_editor.testcases_title") }}</h3>
 
           <draggable
             :modelValue="modelValue.testcases"
             ghost-class="drag-ghost"
+            handle=".drag-handle"
             item-key="id"
           >
             <template #item="{ element }">
@@ -345,6 +362,9 @@ import {
   getBlankTestCase,
   getBlankExercise,
   programmingExerciseTypes,
+  CodeExecutionResults as ICodeExecutionResults,
+  EventParticipationSlot,
+  getFakeEventParticipationSlot,
 } from "@/models";
 import { multipleChoiceExerciseTypes } from "@/models";
 import Card from "@/components/ui/Card.vue";
@@ -378,6 +398,9 @@ import TestCaseEditor from "./TestCaseEditor.vue";
 import Tooltip from "@/components/ui/Tooltip.vue";
 import { subscribeToExerciseChanges } from "@/ws/modelSubscription";
 import Toggle from "@/components/ui/Toggle.vue";
+import { testProgrammingExerciseSolution } from "@/api/exercises";
+import Backdrop from "@/components/ui/Backdrop.vue";
+import CodeExecutionResults from "@/components/shared/CodeExecutionResults.vue";
 // import ClozeEditor from "./ClozeEditor.vue";
 const { mapMutations } = createNamespacedHelpers("teacher");
 const { mapState } = createNamespacedHelpers("shared");
@@ -399,6 +422,8 @@ export default defineComponent({
     TestCaseEditor,
     Tooltip,
     Toggle,
+    Backdrop,
+    CodeExecutionResults,
   },
   props: {
     modelValue: {
@@ -425,7 +450,6 @@ export default defineComponent({
     if (!this.subExercise) {
       this.ws = await subscribeToExerciseChanges(this.modelValue.id);
     }
-
     this.autoSaveManager = new AutoSaveManager<Exercise>(
       this.modelValue,
       async (changes) =>
@@ -475,6 +499,8 @@ export default defineComponent({
       textEditorInstance: null as any,
       editingClozePosition: null as number | null,
       editableClozePosition: null as number | null,
+      solutionTestSlot: null as EventParticipationSlot | null,
+      testingSolution: false,
     };
   },
   methods: {
@@ -513,6 +539,22 @@ export default defineComponent({
           this.showDialog = false;
         },
       };
+    },
+    async onTestSolution() {
+      this.testingSolution = true;
+      await this.autoSaveManager?.flush();
+      const fakeSlot = getFakeEventParticipationSlot(this.modelValue);
+      fakeSlot.execution_results = await testProgrammingExerciseSolution(
+        this.courseId,
+        this.modelValue.id
+      );
+      this.solutionTestSlot = fakeSlot;
+      this.$nextTick(() => {
+        if (this.$refs.executionResultsBackdrop) {
+          (this.$refs.executionResultsBackdrop as any).expanded = true;
+        }
+      });
+      this.testingSolution = false;
     },
     onTextSelectionChange(event: {
       fullText: string;

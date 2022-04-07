@@ -153,6 +153,7 @@ export const it = {
     },
   },
   misc: {
+    hidden: "Nascosto",
     teacher: "Docente",
     passed_tests: "Test case superati",
     hidden_to_students: "Nascosto agli studenti",
@@ -397,6 +398,10 @@ export const it = {
     testcase_type: "Visibilità",
     testcase_text: "Descrizione",
     testcase_code: "Codice",
+    testcase_stdin: "Input (stdin)",
+    test_solution: "Testa",
+    testing_solution: "Test in corso...",
+    testcase_expected_stdout: "Output atteso (stdout)",
     hidden_to_students: "Nascosto agli studenti",
     edit_non_draft_title: "Modifica di un esercizio non bozza",
     edit_non_draft_body:
