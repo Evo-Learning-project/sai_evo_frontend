@@ -21,6 +21,10 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
+    language: {
+      type: String as PropType<"javascript" | "typescript" | "c">,
+      default: "typescript",
+    },
   },
   watch: {
     value() {

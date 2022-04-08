@@ -1,3 +1,4 @@
+import { exerciseChildrenNames } from "./../../models/constants";
 import { EventTemplateRuleClause } from "./../../models/interfaces";
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
@@ -18,6 +19,8 @@ import { getters } from "./getters";
 export const mutations = {
   setExercises: (state: TeacherState, exercises: Exercise[]) =>
     (state.exercises = exercises),
+  deleteBaseExercise: (state: TeacherState, exerciseId: string) =>
+    (state.exercises = state.exercises.filter((e) => e.id != exerciseId)),
   setCurrentExercisePage: (state: TeacherState, pageNumber: number) =>
     (state.currentExercisePage = pageNumber),
   setEvents: (state: TeacherState, events: Event[]) => (state.events = events),
@@ -89,6 +92,35 @@ export const mutations = {
       console.error("setExercise didn't find", payload);
     }
   },
+  removeExerciseChild: (
+    state: TeacherState,
+    {
+      exerciseId,
+      childType,
+      childId,
+    }: {
+      exerciseId: string;
+      childType: "choice" | "sub_exercise" | "testcase";
+      childId: string;
+    }
+  ) => {
+    const targetExercise = getters.exercise(state)(exerciseId);
+    const childrenName = exerciseChildrenNames[childType];
+    const children = (targetExercise as Exercise | undefined)?.[childrenName];
+    if (children) {
+      const targetChildIndex = (
+        children as (ExerciseChoice | Exercise | ExerciseTestCase)[]
+      ).findIndex((c) => c.id == childId);
+      children.splice(targetChildIndex, 1);
+    } else {
+      console.error(
+        "removeExerciseChild didn't find",
+        exerciseId,
+        childType,
+        childId
+      );
+    }
+  },
   // updates a child of the given exercises if it exists, otherwise pushes a new one
   setExerciseChild: (
     state: TeacherState,
@@ -99,25 +131,15 @@ export const mutations = {
     }: MutationPayload<ExerciseChoice | Exercise | ExerciseTestCase>
   ) => {
     const targetExercise = getters.exercise(state)(exerciseId as string);
-    let childrenName: "choices" | "sub_exercises" | "testcases";
-    switch (childType) {
-      case "choice":
-        childrenName = "choices";
-        break;
-      case "sub_exercise":
-        childrenName = "sub_exercises";
-        break;
-      case "testcase":
-        childrenName = "testcases";
-        break;
-      default:
-        throw new Error("unreachable");
-    }
+    const childrenName =
+      exerciseChildrenNames[
+        childType as "choice" | "sub_exercise" | "testcase"
+      ];
     const children = (targetExercise as Exercise | undefined)?.[childrenName];
     if (children) {
-      const target = (children as any).find(
-        (c: ExerciseChoice | Exercise | ExerciseTestCase) => c.id == payload.id
-      );
+      const target = (
+        children as (ExerciseChoice | Exercise | ExerciseTestCase)[]
+      ).find((c) => c.id == payload.id);
       if (target) {
         // update child
         Object.assign(target, payload);
@@ -201,6 +223,19 @@ export const mutations = {
       (target.template as EventTemplate).rules = payload;
     } else {
       console.error("setEventTemplateRules didn't find", payload);
+    }
+  },
+  removeEventTemplateRule: (
+    state: TeacherState,
+    { templateId, ruleId }: { templateId: string; ruleId: string }
+  ) => {
+    const target = state.events.find((e) => e.template?.id == templateId);
+    if (target) {
+      (target.template as EventTemplate).rules = (
+        target.template as EventTemplate
+      ).rules.filter((r) => r.id != ruleId);
+    } else {
+      console.error("removeEventTemplateRule didn't find", templateId);
     }
   },
 };

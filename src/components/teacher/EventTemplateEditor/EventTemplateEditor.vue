@@ -100,6 +100,7 @@ const { mapActions, mapMutations } = createNamespacedHelpers("teacher");
 import { eventTemplateValidation } from "@/validation/models";
 import useVuelidate from "@vuelidate/core";
 import Card from "@/components/ui/Card.vue";
+import { getTranslatedString as _ } from "@/i18n";
 export default defineComponent({
   setup() {
     return { v$: useVuelidate() };
@@ -150,6 +151,7 @@ export default defineComponent({
       "partialUpdateEventTemplateRule",
       "addEventTemplateRuleClause",
       "updateEventTemplateRuleClause",
+      "deleteEventTemplateRule",
     ]),
     ...mapMutations(["patchEventTemplateRule", "patchEventTemplateRuleClause"]),
     instantiateRuleAutoSaveManager(rule: EventTemplateRule) {
@@ -253,7 +255,15 @@ export default defineComponent({
       });
     },
     async onRuleDelete(rule: EventTemplateRule) {
-      alert("Questa funzionalità non è ancora disponibile");
+      if (confirm(_("event_template_editor.confirm_delete_rule"))) {
+        await this.withLoading(async () =>
+          this.deleteEventTemplateRule({
+            courseId: this.courseId,
+            templateId: this.modelValue.id,
+            ruleId: rule.id,
+          })
+        );
+      }
     },
     async onRuleUpdateClause(rule: EventTemplateRule, clause: EventTemplateRuleClause) {
       await this.ruleClausesAutoSaveInstances[clause.id].onChange({

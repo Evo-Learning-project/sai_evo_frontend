@@ -175,6 +175,17 @@ export async function partialUpdateEventTemplateRule(
   return response.data;
 }
 
+export async function deleteEventTemplateRule(
+  courseId: string,
+  templateId: string,
+  ruleId: string
+): Promise<EventTemplateRule> {
+  const response = await axios.delete(
+    `/courses/${courseId}/templates/${templateId}/rules/${ruleId}/`
+  );
+  return response.data;
+}
+
 export async function createEventTemplateRuleClause(
   courseId: string,
   templateId: string,
@@ -209,6 +220,18 @@ export async function updateEventTemplateRuleClause(
   );
   const data = response.data;
   return { ...data, tags: tagIdsToTags(data.tags) };
+}
+
+export async function deleteEventTemplateRuleClause(
+  courseId: string,
+  templateId: string,
+  ruleId: string,
+  clauseId: string
+): Promise<EventTemplateRuleClause> {
+  const response = await axios.delete(
+    `courses/${courseId}/templates/${templateId}/rules/${ruleId}/clauses/${clauseId}/`
+  );
+  return response.data;
 }
 
 export async function participateInEvent(

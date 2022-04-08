@@ -1,3 +1,4 @@
+import { Exercise } from "./interfaces";
 import { ExerciseType } from ".";
 
 export const multipleChoiceExerciseTypes = [
@@ -6,3 +7,9 @@ export const multipleChoiceExerciseTypes = [
 ];
 
 export const programmingExerciseTypes = [ExerciseType.JS, ExerciseType.C];
+
+export const exerciseChildrenNames = {
+  sub_exercise: "sub_exercises",
+  testcase: "testcases",
+  choice: "choices",
+} as Record<string, "sub_exercises" | "testcases" | "choices">;

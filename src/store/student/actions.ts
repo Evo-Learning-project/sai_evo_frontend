@@ -204,8 +204,6 @@ export const actions = {
       ruleId,
       changes
     );
-    //commit('setEditingEventTemplateRule', updatedRule);
-
     return updatedRule;
   },
   addEventTemplateRuleClause: async (
@@ -228,7 +226,6 @@ export const actions = {
       ruleId,
       clause
     );
-
     commit("setEditingEventTemplateRuleClause", {
       ruleId,
       payload: newClause,
@@ -249,19 +246,12 @@ export const actions = {
       clause: EventTemplateRuleClause;
     }
   ) => {
-    console.log("calling action");
     const updatedClause = await updateEventTemplateRuleClause(
       courseId,
       templateId,
       ruleId,
       clause
     );
-    console.log("UPDATED CLAUSE", updatedClause);
-
-    // commit('setEditingEventTemplateRuleClause', {
-    //   ruleId,
-    //   clause: updatedClause,
-    // });
     return updatedClause;
   },
 };

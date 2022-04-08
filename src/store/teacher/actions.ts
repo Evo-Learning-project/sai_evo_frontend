@@ -1,3 +1,4 @@
+import { exerciseChildrenNames } from "./../../models/constants";
 import { EventSearchFilter } from "./../../api/interfaces";
 /* eslint-disable no-unexpected-multiline */
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -29,6 +30,10 @@ import {
   createExerciseChoice,
   createExerciseSubExercise,
   createExerciseTestCase,
+  deleteExercise,
+  deleteExerciseChoice,
+  deleteExerciseSubExercise,
+  deleteExerciseTestCase,
   getExerciseChoices,
   getExercises,
   removeTagFromExercise,
@@ -43,6 +48,7 @@ import {
   createEvent,
   createEventTemplateRule,
   createEventTemplateRuleClause,
+  deleteEventTemplateRule,
   getEvent,
   getEventParticipation,
   getEventParticipations,
@@ -80,6 +86,13 @@ export const actions = {
     const newExercise = await createExercise(courseId, exercise);
     commit("setExercises", [newExercise, ...state.exercises]);
     return newExercise;
+  },
+  deleteExercise: async (
+    { commit, state }: { commit: Commit; state: any },
+    { courseId, exerciseId }: { courseId: string; exerciseId: string }
+  ) => {
+    await deleteExercise(courseId, exerciseId);
+    commit("deleteBaseExercise", exerciseId);
   },
   createEvent: async (
     { commit, state }: { commit: Commit; state: any },
@@ -162,25 +175,13 @@ export const actions = {
       reFetch: boolean;
     }
   ) => {
-    let apiCall;
-    let childrenName;
+    const apiCall = {
+      choice: updateExerciseChoice,
+      testcase: updateExerciseTestCase,
+      sub_exercise: updateExerciseSubExercise,
+    }[childType];
+    const childrenName = exerciseChildrenNames[childType];
 
-    switch (childType) {
-      case "choice":
-        apiCall = updateExerciseChoice;
-        childrenName = "choices";
-        break;
-      case "sub_exercise":
-        apiCall = updateExerciseSubExercise;
-        childrenName = "sub_exercises";
-        break;
-      case "testcase":
-        apiCall = updateExerciseTestCase;
-        childrenName = "testcases";
-        break;
-      default:
-        throw new Error("unreachable");
-    }
     await apiCall(courseId, exerciseId, payload.id as string, payload as any);
     if (reFetch) {
       if (childType !== "choice") return;
@@ -193,33 +194,53 @@ export const actions = {
       });
     }
   },
-  updateExerciseChoice: async (
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  deleteExerciseChild: async (
     { commit }: { commit: Commit },
     {
       courseId,
       exerciseId,
-      choice,
-      reFetch = false,
+      childType,
+      childId,
     }: {
       courseId: string;
       exerciseId: string;
-      choice: ExerciseChoice;
-      reFetch: boolean;
+      childType: "testcase" | "sub_exercise" | "choice";
+      childId: string;
     }
   ) => {
-    await updateExerciseChoice(courseId, exerciseId, choice.id, choice);
-    if (reFetch) {
-      const choices = await getExerciseChoices(courseId, exerciseId);
-      commit("setExerciseChildren", {
-        exerciseId,
-        children: "choices",
-        payload: choices,
-      });
+    const apiCall = {
+      choice: deleteExerciseChoice,
+      testcase: deleteExerciseTestCase,
+      sub_exercise: deleteExerciseSubExercise,
+    }[childType];
+    const childrenName = exerciseChildrenNames[childType];
+
+    await apiCall(courseId, exerciseId, childId);
+    commit("removeExerciseChild", {
+      exerciseId,
+      childType,
+      childId,
+    });
+  },
+  deleteEventTemplateRule: async (
+    { commit }: { commit: Commit },
+    {
+      courseId,
+      templateId,
+      ruleId,
+    }: {
+      courseId: string;
+      templateId: string;
+      ruleId: string;
     }
+  ) => {
+    await deleteEventTemplateRule(courseId, templateId, ruleId);
+    commit("removeEventTemplateRule", {
+      templateId,
+      ruleId,
+    });
   },
   partialUpdateEventTemplateRule: async (
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     { commit }: { commit: Commit },
     {
       courseId,

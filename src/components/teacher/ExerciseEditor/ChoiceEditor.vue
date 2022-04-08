@@ -1,9 +1,7 @@
 <template>
-  <div
-    class="flex flex-col py-3 my-3 space-y-4  md:space-x-4 md:space-y-0 md:flex-row md:items-start"
-  >
+  <div class="flex flex-col py-3 my-3 space-y-4 md:space-x-4 md:space-y-0 md:flex-row">
     <span
-      class="mr-2 text-lg cursor-move  drag-handle material-icons-outlined opacity-70"
+      class="mr-2 text-lg cursor-move drag-handle material-icons-outlined opacity-70"
       :class="{ 'my-auto': !singleLine, 'mt-1': singleLine }"
     >
       drag_indicator
@@ -22,30 +20,24 @@
       @update:modelValue="onUpdate('text', $event)"
       >{{ $t("exercise_editor.choice_text") }}</TextInput
     >
-    <div class="flex space-x-2">
+
+    <div class="flex flex-grow space-x-2">
       <div>
         <NumberInput
           class="mb-auto"
           :modelValue="modelValue.score_selected"
           @update:modelValue="onUpdate('score_selected', $event)"
-          :leftIcon="
-            iconType === 'radio' ? 'radio_button_checked' : 'check_box'
-          "
+          :leftIcon="iconType === 'radio' ? 'radio_button_checked' : 'check_box'"
           >{{ $t("exercise_editor.choice_score_checked") }}</NumberInput
         >
-        <Tooltip
-          class="-ml-1.5"
-          :textCode="'exercise_editor.score_if_checked'"
-        ></Tooltip>
+        <Tooltip class="-ml-1.5" :textCode="'exercise_editor.score_if_checked'"></Tooltip>
       </div>
       <div>
         <NumberInput
           class="mb-auto"
           :modelValue="modelValue.score_unselected"
           :leftIcon="
-            iconType === 'radio'
-              ? 'radio_button_unchecked'
-              : 'check_box_outline_blank'
+            iconType === 'radio' ? 'radio_button_unchecked' : 'check_box_outline_blank'
           "
           @update:modelValue="onUpdate('score_unselected', $event)"
           >{{ $t("exercise_editor.choice_score_unchecked") }}</NumberInput
@@ -55,6 +47,13 @@
           :textCode="'exercise_editor.score_if_unchecked'"
         ></Tooltip>
       </div>
+    </div>
+    <div class="my-auto">
+      <Btn :outline="true" :variant="'icon'" @click="$emit('delete')"
+        ><span class="text-base text-danger-dark material-icons-outlined">
+          close
+        </span></Btn
+      >
     </div>
   </div>
 </template>
@@ -66,6 +65,7 @@ import TextEditor from "@/components/ui/TextEditor.vue";
 import NumberInput from "@/components/ui/NumberInput.vue";
 import Tooltip from "@/components/ui/Tooltip.vue";
 import TextInput from "@/components/ui/TextInput.vue";
+import Btn from "@/components/ui/Btn.vue";
 
 export default defineComponent({
   name: "ChoiceEditor",
@@ -88,6 +88,7 @@ export default defineComponent({
     NumberInput,
     Tooltip,
     TextInput,
+    Btn,
   },
   methods: {
     onUpdate(field: keyof ExerciseChoice, value: unknown) {

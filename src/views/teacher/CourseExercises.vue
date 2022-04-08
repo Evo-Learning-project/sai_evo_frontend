@@ -25,6 +25,7 @@
         :key="'course-' + courseId + '-exercise-' + exercise.id"
         v-model="exercises[index]"
         :ref="'course-' + courseId + '-exercise-' + exercise.id"
+        @delete="onDeleteExercise(exercise)"
       ></ExerciseEditorWrapper>
     </div>
     <div v-else>
@@ -60,6 +61,17 @@
         <div class="w-full h-1 bg-gray-200 rounded-md"></div>
       </template>
     </VueEternalLoading>
+    <Dialog
+      :showDialog="showDialog"
+      :confirm-only="dialogData.confirmOnly"
+      @yes="dialogData.onYes?.()"
+      @no="dialogData.onNo?.()"
+      :yes-text="dialogData.yesText"
+      :no-text="dialogData.noText"
+    >
+      <template v-slot:title> {{ dialogData.title }}</template>
+      <template v-slot:body> {{ dialogData.text }} </template>
+    </Dialog>
   </div>
 </template>
 
@@ -69,10 +81,10 @@ const { mapState } = createNamespacedHelpers("teacher");
 import { getTranslatedString as _ } from "@/i18n";
 import { icons as exerciseTypesIcons } from "@/assets/exerciseTypesIcons";
 import { icons as exerciseStatesIcons } from "@/assets/exerciseStatesIcons";
-import { ExerciseState, ExerciseType, getBlankExercise, Tag } from "@/models";
+import { Exercise, ExerciseState, ExerciseType, getBlankExercise, Tag } from "@/models";
 
 import { VueEternalLoading, LoadAction } from "@ts-pro/vue-eternal-loading";
-import { SelectableOption } from "@/interfaces";
+import { DialogData, SelectableOption } from "@/interfaces";
 import Btn from "@/components/ui/Btn.vue";
 import Card from "@/components/ui/Card.vue";
 import ExerciseEditorWrapper from "@/components/teacher/ExerciseEditor/ExerciseEditorWrapper.vue";
@@ -84,6 +96,7 @@ import { getDebouncedForFilter } from "@/utils";
 import { courseIdMixin, loadingMixin } from "@/mixins";
 import ExerciseEditorWrapperSkeleton from "@/components/ui/skeletons/ExerciseEditorWrapperSkeleton.vue";
 import { getBlankExerciseSearchFilters, isEmptyFilter } from "@/api/utils";
+import Dialog from "@/components/ui/Dialog.vue";
 export default defineComponent({
   name: "CourseExercises",
   props: {
@@ -111,10 +124,10 @@ export default defineComponent({
     Spinner,
     ExerciseSearchFilters,
     ExerciseEditorWrapperSkeleton,
+    Dialog,
   },
   async created() {
     this.onFilterChange = getDebouncedForFilter(this.onFilterChange);
-
     this.withFirstLoading(async () => {
       await this.getExercises({
         courseId: this.courseId,
@@ -143,10 +156,12 @@ export default defineComponent({
       isInitialInfiniteLoad: false,
       expandResultFilter: true,
       searchFilter: getBlankExerciseSearchFilters(),
+      showDialog: false,
+      dialogData: {} as DialogData,
     };
   },
   methods: {
-    ...mapActions("teacher", ["getExercises", "createExercise"]),
+    ...mapActions("teacher", ["getExercises", "createExercise", "deleteExercise"]),
     ...mapActions("shared", ["getTags"]),
     getBlankExerciseSearchFilters,
     async onFilterChange() {
@@ -185,6 +200,32 @@ export default defineComponent({
           showEditor: boolean;
         }).showEditor = true;
       });
+    },
+    async onDeleteExercise(exercise: Exercise) {
+      this.showDialog = true;
+      if (exercise.state !== ExerciseState.DRAFT) {
+        this.dialogData = {
+          confirmOnly: true,
+          text: _("course_exercises.cannot_delete_nondraft"),
+          onYes: () => (this.showDialog = false),
+        };
+      } else {
+        this.dialogData = {
+          confirmOnly: false,
+          text: _("course_exercises.confirm_delete_exercise"),
+          onYes: async () => {
+            await this.deleteExercise({
+              courseId: this.courseId,
+              exerciseId: exercise.id,
+            });
+            this.showDialog = false;
+          },
+          onNo: () => (this.showDialog = false),
+          yesText: _("misc.delete"),
+          noText: _("dialog.default_cancel_text"),
+          title: _("course_exercises.confirm_delete_exercise_title"),
+        };
+      }
     },
   },
   computed: {

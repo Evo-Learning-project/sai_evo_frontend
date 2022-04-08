@@ -146,6 +146,17 @@ export async function deleteExerciseChoice(
   return response.data;
 }
 
+export async function deleteExerciseTestCase(
+  courseId: string,
+  exerciseId: string,
+  testcaseId: string
+): Promise<ExerciseChoice> {
+  const response = await axios.delete(
+    `/courses/${courseId}/exercises/${exerciseId}/testcases/${testcaseId}/`
+  );
+  return response.data;
+}
+
 export async function getExerciseSubExercises(
   courseId: string,
   exerciseId: string

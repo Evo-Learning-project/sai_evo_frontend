@@ -191,6 +191,7 @@ export const it = {
     warning: "Attenzione",
     download_as_csv: "Scarica come CSV",
     select_one: "Seleziona...",
+    delete: "Elimina",
   },
   cloud: {
     saving: "Salvataggio in corso...",
@@ -243,6 +244,11 @@ export const it = {
     selected_exercises: "esercizi selezionati",
     selected_exercise: "esercizio selezionato",
     create_exam_from_selected_exercises: "Crea esame con questi esercizi",
+    cannot_delete_nondraft:
+      "Questo esercizio non è in stato di bozza. Per eliminarlo, imposta prima il suo stato a Bozza.",
+    confirm_delete_exercise:
+      "Sei sicuro di voler eliminare questo esercizio? Quest'azione è irreversibile.",
+    confirm_delete_exercise_title: "Conferma eliminazione",
   },
   exercise: {
     choice_score_word_singular: "punto",
@@ -293,6 +299,7 @@ export const it = {
     introduction_text:
       "Crea il modello per questo esame. Per ogni slot, puoi scegliere se far vedere a ogni studente lo stesso esercizio o se utilizzare i criteri di scelta casuale.",
     add_rule: "Aggiungi slot",
+    confirm_delete_rule: "Sei sicuro di voler eliminare questo slot?",
   },
   exercise_picker: {
     cannot_pick_draft:
@@ -422,6 +429,10 @@ export const it = {
     currently_locked_by:
       "È in corso una modifica a questo esercizio da parte di",
     requires_typescript: "Richiedi l'utilizzo di TypeScript",
+    confirm_delete_choice: "Sei sicuro di voler eliminare questa scelta?",
+    confirm_delete_testcase: "Sei sicuro di voler eliminare questo test case?",
+    confirm_delete_sub_exercise:
+      "Sei sicuro di voler eliminare questo sotto-esercizio?",
   },
   exercise_wrapper: {
     select: "Seleziona",
@@ -576,7 +587,7 @@ export const it = {
   },
   testcase_types: {
     [ExerciseTestCaseType.SHOW_CODE_SHOW_TEXT]: "Pubblico",
-    [ExerciseTestCaseType.SHOW_TEXT_ONLY]: "Solo descrizione",
+    [ExerciseTestCaseType.SHOW_TEXT_ONLY]: "Solo descriz.",
     [ExerciseTestCaseType.HIDDEN]: "Nascosto",
   },
   event_template_rule_type: {

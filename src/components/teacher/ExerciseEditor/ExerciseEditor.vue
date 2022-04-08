@@ -228,6 +228,7 @@
               <ChoiceEditor
                 :single-line="cloze"
                 :modelValue="element"
+                @delete="onDeleteChoice(element.id)"
                 @choiceUpdate="onUpdateChoice(element.id, $event.field, $event.value)"
                 :icon-type="
                   modelValue.exercise_type ===
@@ -257,7 +258,11 @@
             item-key="id"
           >
             <template #item="{ element }">
-              <ExerciseEditor :subExercise="true" :modelValue="element"></ExerciseEditor>
+              <ExerciseEditor
+                @delete="onDeleteSubExercise(element.id)"
+                :subExercise="true"
+                :modelValue="element"
+              ></ExerciseEditor>
             </template>
           </draggable>
           <Btn @click="onAddSubExercise()" :size="'sm'"
@@ -281,6 +286,7 @@
             <template #item="{ element }">
               <TestCaseEditor
                 :testCaseType="modelValue.exercise_type"
+                @delete="onDeleteTestCase(element.id)"
                 :modelValue="element"
                 @testCaseUpdate="onUpdateTestCase(element.id, $event.field, $event.value)"
               ></TestCaseEditor>
@@ -377,7 +383,7 @@ import TagInput from "@/components/ui/TagInput.vue";
 
 import ChoiceEditor from "@/components/teacher/ExerciseEditor/ChoiceEditor.vue";
 import CloudSaveStatus from "@/components/ui/CloudSaveStatus.vue";
-import { courseIdMixin, savingMixin } from "@/mixins";
+import { courseIdMixin, loadingMixin, savingMixin } from "@/mixins";
 import { DialogData } from "@/interfaces";
 
 import { createNamespacedHelpers, mapActions } from "vuex";
@@ -442,7 +448,7 @@ export default defineComponent({
       default: false,
     },
   },
-  mixins: [courseIdMixin, savingMixin],
+  mixins: [courseIdMixin, savingMixin, loadingMixin],
   beforeUnmount() {
     this.ws?.close();
   },
@@ -509,10 +515,10 @@ export default defineComponent({
       "addExerciseChoice",
       "addExerciseSubExercise",
       "addExerciseTestCase",
-      "updateExerciseChoice",
       "addExerciseTag",
       "removeExerciseTag",
       "updateExerciseChild",
+      "deleteExerciseChild",
     ]),
     ...mapActions("shared", ["getTags"]),
     ...mapMutations(["setExercise", "setExerciseChild"]),
@@ -542,19 +548,24 @@ export default defineComponent({
     },
     async onTestSolution() {
       this.testingSolution = true;
-      await this.autoSaveManager?.flush();
-      const fakeSlot = getFakeEventParticipationSlot(this.modelValue);
-      fakeSlot.execution_results = await testProgrammingExerciseSolution(
-        this.courseId,
-        this.modelValue.id
-      );
-      this.solutionTestSlot = fakeSlot;
-      this.$nextTick(() => {
-        if (this.$refs.executionResultsBackdrop) {
-          (this.$refs.executionResultsBackdrop as any).expanded = true;
-        }
-      });
-      this.testingSolution = false;
+      try {
+        await this.autoSaveManager?.flush();
+        const fakeSlot = getFakeEventParticipationSlot(this.modelValue);
+        fakeSlot.execution_results = await testProgrammingExerciseSolution(
+          this.courseId,
+          this.modelValue.id
+        );
+        this.solutionTestSlot = fakeSlot;
+        this.$nextTick(() => {
+          if (this.$refs.executionResultsBackdrop) {
+            (this.$refs.executionResultsBackdrop as any).expanded = true;
+          }
+        });
+      } catch (e) {
+        this.setErrorNotification(e);
+      } finally {
+        this.testingSolution = false;
+      }
     },
     onTextSelectionChange(event: {
       fullText: string;
@@ -595,6 +606,26 @@ export default defineComponent({
       });
       this.instantiateChoiceAutoSaveManager(newChoice);
     },
+    async onUpdateChoice(choiceId: string, key: keyof ExerciseChoice, value: unknown) {
+      await this.choiceAutoSaveManagers[choiceId].onChange({
+        field: key,
+        value,
+      });
+    },
+    async onDeleteChoice(choiceId: string) {
+      if (confirm(_("exercise_editor.confirm_delete_choice"))) {
+        await this.withLoading(
+          async () =>
+            await this.deleteExerciseChild({
+              courseId: this.courseId,
+              exerciseId: this.modelValue.id,
+              childType: "choice",
+              childId: choiceId,
+            }),
+          this.setErrorNotification
+        );
+      }
+    },
     async onAddSubExercise() {
       const newSubExercise: Exercise = await this.addExerciseSubExercise({
         courseId: this.courseId,
@@ -603,15 +634,19 @@ export default defineComponent({
       });
       return newSubExercise;
     },
-    async onAddCloze() {
-      const selection = this.textEditorInstance.getSelection();
-      console.log(selection);
-      const insertionIndex = selection.index + selection.length;
-      this.textEditorInstance.insertText(insertionIndex, CLOZE_SEPARATOR);
-      await this.onAddSubExercise();
-      // focus on most recently added cloze
-      this.editingClozePosition =
-        (this.modelValue.sub_exercises as Exercise[]).length - 1;
+    async onDeleteSubExercise(exerciseId: string) {
+      if (confirm(_("exercise_editor.confirm_delete_sub_exercise"))) {
+        await this.withLoading(
+          async () =>
+            await this.deleteExerciseChild({
+              courseId: this.courseId,
+              exerciseId: this.modelValue.id,
+              childType: "sub_exercise",
+              childId: exerciseId,
+            }),
+          this.setErrorNotification
+        );
+      }
     },
     async onAddTestCase() {
       const newTestcase: ExerciseTestCase = await this.addExerciseTestCase({
@@ -620,6 +655,30 @@ export default defineComponent({
         testCase: getBlankTestCase(),
       });
       this.instantiateTestCaseAutoSaveManager(newTestcase);
+    },
+    async onUpdateTestCase(
+      testCaseId: string,
+      key: keyof ExerciseTestCase,
+      value: unknown
+    ) {
+      await this.testCaseAutoSaveManagers[testCaseId].onChange({
+        field: key,
+        value,
+      });
+    },
+    async onDeleteTestCase(testcaseId: string) {
+      if (confirm(_("exercise_editor.confirm_delete_testcase"))) {
+        await this.withLoading(
+          async () =>
+            await this.deleteExerciseChild({
+              courseId: this.courseId,
+              exerciseId: this.modelValue.id,
+              childType: "testcase",
+              childId: testcaseId,
+            }),
+          this.setErrorNotification
+        );
+      }
     },
     async onAddTag(tag: string, isPublic: boolean) {
       await this.addExerciseTag({
@@ -637,6 +696,16 @@ export default defineComponent({
         tag,
         isPublic,
       });
+    },
+    async onAddCloze() {
+      const selection = this.textEditorInstance.getSelection();
+      console.log(selection);
+      const insertionIndex = selection.index + selection.length;
+      this.textEditorInstance.insertText(insertionIndex, CLOZE_SEPARATOR);
+      await this.onAddSubExercise();
+      // focus on most recently added cloze
+      this.editingClozePosition =
+        (this.modelValue.sub_exercises as Exercise[]).length - 1;
     },
     onExerciseStateChange(newState: ExerciseState) {
       if (newState != ExerciseState.DRAFT && this.validationErrors.length > 0) {
@@ -670,22 +739,6 @@ export default defineComponent({
       } else {
         this.onBaseExerciseChange("state", newState);
       }
-    },
-    async onUpdateChoice(choiceId: string, key: keyof ExerciseChoice, value: unknown) {
-      await this.choiceAutoSaveManagers[choiceId].onChange({
-        field: key,
-        value,
-      });
-    },
-    async onUpdateTestCase(
-      testCaseId: string,
-      key: keyof ExerciseTestCase,
-      value: unknown
-    ) {
-      await this.testCaseAutoSaveManagers[testCaseId].onChange({
-        field: key,
-        value,
-      });
     },
     instantiateChoiceAutoSaveManager(choice: ExerciseChoice) {
       this.choiceAutoSaveManagers[choice.id] = new AutoSaveManager<ExerciseChoice>(
