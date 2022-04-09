@@ -1,6 +1,6 @@
 <template>
   <div
-    class="absolute z-20 w-full py-2 border-b rounded-t-lg rounded-b-sm -bottom-0 shadow-t-elevation-2 bg-light"
+    class="absolute z-20 w-full py-2 border-b rounded-t-lg rounded-b-sm  -bottom-0 shadow-t-elevation-2 bg-light"
   >
     <div class="flex items-center w-full px-4 py-1">
       <div>
@@ -9,9 +9,13 @@
         </div>
       </div>
 
-      <Btn @click="expanded = !expanded" :variant="'icon'" :outline="true" class="ml-auto"
+      <Btn
+        @click="expanded = !expanded"
+        :variant="'icon'"
+        :outline="true"
+        class="ml-auto"
         ><span
-          class="material-icons-outlined transform transition-transform duration-200 ease-out"
+          class="transition-transform duration-200 ease-out transform  material-icons-outlined"
           :class="{ 'rotate-180': expanded }"
         >
           {{ false && expanded ? "expand_more" : "expand_less" }}

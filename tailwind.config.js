@@ -27,6 +27,7 @@ module.exports = {
         width: "width",
         border: "border",
         "max-height": "max-height",
+        "max-width": "max-width",
       },
       transformOrigin: {
         0: "0%",

@@ -1,7 +1,7 @@
 <template>
   <div>
     <div
-      class="px-4 pt-1 bg-danger bg-opacity-5"
+      class="px-4 pt-1"
       v-if="slot.execution_results?.state === 'internal_error'"
     >
       {{ $t("programming_exercise.internal_error") }}
@@ -15,11 +15,12 @@
       <div
         v-for="(test, index) in slot.execution_results.tests"
         :key="'details-' + test.id"
-        :class="[test.passed ? 'bg-success' : 'bg-danger']"
-        class="px-6 py-6 -mx-2 bg-opacity-5"
+        class="px-6 py-6 -mx-2"
       >
         <div class="flex items-center mb-2 space-x-3">
-          <h5 class="">{{ $t("programming_exercise.testcase") }} {{ index + 1 }}</h5>
+          <h5 class="">
+            {{ $t("programming_exercise.testcase") }} {{ index + 1 }}
+          </h5>
           <div
             v-if="test.passed"
             class="flex items-center font-semibold text-success-dark"
@@ -37,33 +38,45 @@
           :small="true"
           :test-case="exerciseTestCase(test.id)"
         ></ExerciseTestCase>
-        <div v-if="!test.passed && test.error" class="mt-3">
-          <p class="mb-1 text-muted">
-            {{ $t("programming_exercise.test_failed_with_error") }}:
-          </p>
-          <CodeFragment :value="test.error" :small="true"></CodeFragment>
-        </div>
         <div v-if="!test.passed && test.stdout" class="mt-3">
           <p class="mb-1 text-muted">
             {{ $t("programming_exercise.test_failed_stdout") }}:
           </p>
           <CodeFragment :value="test.stdout" :small="true"></CodeFragment>
         </div>
+        <div v-if="!test.passed && test.error" class="mt-3">
+          <p class="mb-1 text-muted">
+            {{ $t("programming_exercise.test_failed_with_error") }}:
+          </p>
+          <CodeFragment :value="test.stderr" :small="true"></CodeFragment>
+        </div>
       </div>
     </div>
     <div
-      class="px-4 pt-1 bg-danger bg-opacity-5"
-      v-else-if="!!slot.execution_results && slot.execution_results.execution_error"
+      class="px-4 pt-1"
+      v-else-if="
+        !!slot.execution_results && slot.execution_results.execution_error
+      "
     >
-      <p class="mb-1 text-muted">{{ $t("programming_exercise.code_errored") }}:</p>
-      <CodeFragment :value="slot.execution_results?.execution_error"></CodeFragment>
+      <p class="mb-1 text-muted">
+        {{ $t("programming_exercise.code_errored") }}:
+      </p>
+      <CodeFragment
+        :value="slot.execution_results?.execution_error"
+      ></CodeFragment>
     </div>
     <div
-      class="px-4 pt-1 bg-danger bg-opacity-5"
-      v-else-if="!!slot.execution_results && slot.execution_results.compilation_errors"
+      class="px-4 pt-1"
+      v-else-if="
+        !!slot.execution_results && slot.execution_results.compilation_errors
+      "
     >
-      <p class="mb-1 text-muted">{{ $t("programming_exercise.compilation_errored") }}:</p>
-      <CodeFragment :value="slot.execution_results?.compilation_errors"></CodeFragment>
+      <p class="mb-1 text-muted">
+        {{ $t("programming_exercise.compilation_errored") }}:
+      </p>
+      <CodeFragment
+        :value="slot.execution_results?.compilation_errors"
+      ></CodeFragment>
     </div>
   </div>
 </template>
@@ -84,7 +97,8 @@ export default defineComponent({
   methods: {},
   computed: {
     exerciseTestCase() {
-      return (id: string) => this.slot.exercise.testcases?.find((t) => t.id == id);
+      return (id: string) =>
+        this.slot.exercise.testcases?.find((t) => t.id == id);
     },
   },
   components: { ExerciseTestCase, CodeFragment },

@@ -17,7 +17,9 @@
         class="relative flex"
       >
         <CodeEditor
-          :language="exercise.exercise_type === ExerciseType.JS ? 'typescript' : 'c'"
+          :language="
+            exercise.exercise_type === ExerciseType.JS ? 'typescript' : 'c'
+          "
           class="w-full"
           :size="'lg'"
           v-model="proxyModelValue"
@@ -27,7 +29,7 @@
           @run="onRun"
         >
           <template v-slot:runButton
-            ><span class="mr-1 ml-1 text-base material-icons"> play_arrow </span
+            ><span class="ml-1 mr-1 text-base material-icons"> play_arrow </span
             >{{ $t("programming_exercise.run_code") }}
             <span class="opacity-50" v-if="runCoolDown > 0"
               >&nbsp;({{ runCoolDown }})</span
@@ -46,7 +48,7 @@
             :disabled="executionState === 'running' || running || runCoolDown > 0"
             :variant="'success'"
             @click="onRun"
-            ><span class="mr-1 ml-1 text-base material-icons"> play_arrow </span
+            ><span class="ml-1 mr-1 text-base material-icons"> play_arrow </span
             >{{ $t("programming_exercise.run_code") }}
             <span class="opacity-50" v-if="runCoolDown > 0"
               >&nbsp;({{ runCoolDown }})</span
@@ -56,7 +58,7 @@
         </div> -->
         <transition name="quick-bounce"
           ><div
-            class="absolute bottom-0 flex space-x-2 items-center right-0 z-50 py-3 px-6 mb-2 mr-4 rounded bg-dark text-lightText bg-opacity-90 bg-light shadow-popup"
+            class="absolute bottom-0 right-0 z-50 flex items-center px-6 py-3 mb-2 mr-4 space-x-2 rounded  bg-dark text-lightText bg-opacity-90 bg-light shadow-popup"
             v-if="executionState === 'running'"
           >
             <Spinner :fast="true"></Spinner>
@@ -70,7 +72,9 @@
           v-for="(testcase, index) in exercise.testcases"
           :key="'t-' + testcase.id"
         >
-          <h4 class="mb-1">{{ $t("programming_exercise.testcase") }} {{ index + 1 }}</h4>
+          <h4 class="mb-1">
+            {{ $t("programming_exercise.testcase") }} {{ index + 1 }}
+          </h4>
           <ExerciseTestCase :test-case="testcase"></ExerciseTestCase>
         </div>
         <div v-if="exercise.testcases?.length === 0">
@@ -86,7 +90,10 @@
 <script lang="ts">
 const RUN_COOL_DOWN = 0;
 
-import { programmingExerciseTabsOptions, ProgrammingExerciseTabs } from "@/const";
+import {
+  programmingExerciseTabsOptions,
+  ProgrammingExerciseTabs,
+} from "@/const";
 import { EventParticipationSlot, Exercise, ExerciseType } from "@/models";
 import { defineComponent, PropType } from "@vue/runtime-core";
 import SegmentedControls from "../ui/SegmentedControls.vue";

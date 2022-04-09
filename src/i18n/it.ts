@@ -484,7 +484,8 @@ export const it = {
     testcase_expected_stdout: "Output atteso",
     passed: "Superato",
     not_passed: "Non superato",
-    test_failed_with_error: "Il test ha fallito producendo il seguente errore",
+    test_failed_with_error:
+      "L'esecuzione del programma si è interrotta producento il seguente errore",
     test_failed_stdout: "Il programma ha prodotto il seguente output",
     code_errored: "L'esecuzione del codice ha prodotto il seguente errore",
     compilation_errored:
