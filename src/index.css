@@ -36,6 +36,19 @@
   }
 
 @layer components {
+    .banner {
+      @apply flex items-center px-4 py-3.5 space-x-3 rounded;
+    }
+
+    .banner-light {
+      @apply bg-gray-50;
+    }
+
+    .banner-danger {
+      @apply bg-danger-dark bg-opacity-5 text-danger-dark;
+    }
+
+
     .bg-primary .hover\:bg-gray-200 {
       @apply bg-opacity-20 !important;
     }
@@ -197,6 +210,11 @@
 
     .material-icons-outlined {
       @apply select-none
+    }
+
+    .inline-icon {
+      vertical-align: sub;
+      font-size: 18px !important; 
     }
 
     .icon-surrounding {

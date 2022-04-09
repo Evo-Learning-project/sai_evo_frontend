@@ -129,7 +129,7 @@
       <h3>{{ $t("teacher_course_dashboard.recent_exams") }}</h3>
       <div>
         <div
-          v-if="!firstLoading"
+          v-if="!loadingEvents"
           class="grid grid-cols-1 gap-4 mt-4 lg:grid-cols-2 xl:grid-cols-3"
         >
           <EventEditorPreview
@@ -146,14 +146,14 @@
         </div>
         <div
           class="flex flex-col w-full mt-6 mb-16 text-center select-none"
-          v-if="!firstLoading && exams.length === 0"
+          v-if="!loadingEvents && exams.length === 0"
         >
           <p style="font-size: 6rem" class="material-icons-outlined opacity-10">
             assignment
           </p>
           <h2 class="opacity-40">{{ $t("course_events.no_exams") }}</h2>
         </div>
-        <div v-else-if="!firstLoading" class="flex w-full mt-4">
+        <div v-else-if="!loadingEvents" class="flex w-full mt-4">
           <router-link class="mx-auto link" :to="{ name: 'CourseExams' }"
             ><Btn :variant="'primary-borderless'">{{
               $t("teacher_course_dashboard.see_all")
@@ -164,7 +164,7 @@
     </div>
     <div class="mt-8" v-if="showExercises">
       <h3>{{ $t("teacher_course_dashboard.recently_edited_exercises") }}</h3>
-      <div v-if="!firstLoading" class="grid grid-cols-1 gap-4 mt-4 lg:grid-cols-2">
+      <div v-if="!loadingExercises" class="grid grid-cols-1 gap-4 mt-4 lg:grid-cols-2">
         <MinimalExercisePreview
           v-for="exercise in recentExercises"
           :key="'e-' + exercise.id"
@@ -182,12 +182,12 @@
       </div>
       <div
         class="flex flex-col w-full mt-6 text-center select-none mb-14"
-        v-if="!firstLoading && exercises.length === 0"
+        v-if="!loadingExercises && exercises.length === 0"
       >
         <p style="font-size: 6rem" class="material-icons-outlined opacity-10">topic</p>
         <h2 class="opacity-40">{{ $t("course_exercises.no_exercises") }}</h2>
       </div>
-      <div v-else-if="!firstLoading" class="flex w-full mt-4">
+      <div v-else-if="!loadingExercises" class="flex w-full mt-4">
         <router-link class="mx-auto link" :to="{ name: 'CourseExercises' }"
           ><Btn :variant="'primary-borderless'">{{
             $t("teacher_course_dashboard.see_all")
@@ -240,18 +240,26 @@ export default defineComponent({
     return { v$: useVuelidate() };
   },
   async created() {
-    await this.withFirstLoading(async () => {
+    this.loadingEvents = true;
+    this.loadingExercises = true;
+    try {
       await this.getEvents({ courseId: this.courseId });
-      try {
-        await this.getExercises({
-          courseId: this.courseId,
-          fromFirstPage: true,
-        });
-      } catch {
-        this.showExercises = false;
-      }
-      //await this.getTags(this.courseId)
-    });
+    } catch (e) {
+      this.setErrorNotification(e);
+    } finally {
+      this.loadingEvents = false;
+    }
+    try {
+      await this.getExercises({
+        courseId: this.courseId,
+        fromFirstPage: true,
+      });
+    } catch {
+      this.showExercises = false;
+    } finally {
+      this.loadingExercises = false;
+    }
+    //await this.getTags(this.courseId)
   },
   props: {
     showTour: {
@@ -273,6 +281,8 @@ export default defineComponent({
       CoursePrivilege,
       teacherTourSteps,
       tourOptions,
+      loadingEvents: false,
+      loadingExercises: false,
       showExercises: true,
     };
   },

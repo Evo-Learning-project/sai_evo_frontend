@@ -9,11 +9,13 @@
       <div
         class="mb-8 user-content"
         :class="{
-          'bg-gray-200 p-2 border border-dark rounded-md': false && allowEditAssessment,
+          'bg-gray-200 p-2 border border-dark rounded-md':
+            false && allowEditAssessment,
         }"
         v-if="
           exercise.exercise_type !== ExerciseType.COMPLETION &&
-          (!isProgrammingExercise || (!allowEditSubmission && !showExerciseLabel))
+          (!isProgrammingExercise ||
+            (!allowEditSubmission && !showExerciseLabel))
         "
         v-html="exercise.text"
       ></div>
@@ -21,21 +23,21 @@
       <!-- if assessment edit mode, make flex so to fit submission on the left and assessment on the right -->
       <div
         :class="{
-          'flex  md:flex-row flex-col md:space-y-0 space-y-4 md:space-x-8':
-            allowEditAssessment || showAssessmentCard,
+          'flex flex-col space-y-4': allowEditAssessment || showAssessmentCard,
+          'md:flex-row md:space-x-8 md:space-y-0': !subSlot,
         }"
       >
         <!-- controls to submit -->
         <div
           :class="{
             'w-full': allowEditAssessment || showAssessmentCard,
-            'md:w-1/2': (allowEditAssessment || showAssessmentCard) && subSlot,
           }"
         >
           <!-- multiple choice multiple possible -->
           <CheckboxGroup
             v-if="
-              exercise.exercise_type === ExerciseType.MULTIPLE_CHOICE_MULTIPLE_POSSIBLE
+              exercise.exercise_type ===
+              ExerciseType.MULTIPLE_CHOICE_MULTIPLE_POSSIBLE
             "
             :options="exerciseChoicesAsOptions"
             v-model="selectedChoicesProxy"
@@ -48,7 +50,7 @@
                     'text-success': description?.[0] === 'done',
                     'text-danger-dark': description?.[0] === 'close',
                   }"
-                  class="text-sm font-semibold text-muted material-icons-outlined"
+                  class="text-sm font-semibold  text-muted material-icons-outlined"
                 >
                   {{ description?.[0] }}
                 </p>
@@ -72,7 +74,8 @@
           <!-- multiple choice single possible -->
           <RadioGroup
             v-else-if="
-              exercise.exercise_type === ExerciseType.MULTIPLE_CHOICE_SINGLE_POSSIBLE
+              exercise.exercise_type ===
+              ExerciseType.MULTIPLE_CHOICE_SINGLE_POSSIBLE
             "
             :options="exerciseChoicesAsOptions"
             v-model="selectedChoicesProxy"
@@ -85,7 +88,7 @@
                     'text-success': description?.[0] === 'done',
                     'text-danger-dark': description?.[0] === 'close',
                   }"
-                  class="text-sm font-semibold text-muted material-icons-outlined"
+                  class="text-sm font-semibold  text-muted material-icons-outlined"
                 >
                   {{ description?.[0] }}
                 </p>
@@ -155,7 +158,8 @@
           <!-- programming exercise -->
           <ProgrammingExercise
             v-else-if="
-              isProgrammingExercise && (allowEditSubmission || showExerciseLabel)
+              isProgrammingExercise &&
+              (allowEditSubmission || showExerciseLabel)
             "
             :exercise="modelValue.exercise"
             v-model="answerTextProxy"
@@ -200,10 +204,10 @@
         <!-- assessment card-->
         <div
           :class="{
-            'md:w-1/2': true || modelValue.sub_slots.length === 0,
-            'md:w-1/3': false && modelValue.sub_slots.length > 0,
+            'md:w-9/12': !subSlot,
+            'md:w-full': subSlot,
           }"
-          class="relative px-6 py-3 mb-auto rounded md:self-start bg-light shadow-elevation-2 bg-opacity-70"
+          class="relative px-6 py-3 mb-auto rounded  md:self-start bg-light shadow-elevation-2 bg-opacity-70"
           v-if="
             showAssessmentCard &&
             (true || !showAssessmentControls || !allowEditAssessment)
@@ -212,24 +216,36 @@
           <!-- score -->
           <div
             v-if="
-              !showAssessmentControls && allowEditAssessment && modelValue.score == null
+              !showAssessmentControls &&
+              allowEditAssessment &&
+              modelValue.score == null
             "
-            class="flex items-center space-x-1 text-sm text-danger-dark text-muted"
+            class="flex items-center space-x-1 text-sm  text-danger-dark text-muted"
           >
-            <span class="my-auto text-base text-yellow-900 material-icons-outlined"
+            <span
+              class="my-auto text-base text-yellow-900 material-icons-outlined"
               >pending_actions</span
             >
             <p>
-              {{ $t("event_assessment.this_exercise_requires_manual_assessment") }}
+              {{
+                $t("event_assessment.this_exercise_requires_manual_assessment")
+              }}
             </p>
           </div>
 
           <!-- score -->
-          <div class="flex items-center duration-100 ransition-opacity">
+          <div class="flex items-center transition-opacity duration-100">
             <p class="text-muted">
-              {{ !isProgrammingExercise ? $t("misc.score") : $t("misc.passed_tests") }}:
+              {{
+                !isProgrammingExercise
+                  ? $t("misc.score")
+                  : $t("misc.passed_tests")
+              }}:
               <strong class="text-lg">{{
-                !isProgrammingExercise ? modelValue.score : parseInt(modelValue.score)
+                !isProgrammingExercise &&
+                !Number.isInteger(parseFloat(modelValue.score))
+                  ? modelValue.score
+                  : parseInt(modelValue.score)
               }}</strong>
               <span v-if="modelValue.exercise.max_score"
                 >&nbsp;{{ $t("misc.out_of") }}
@@ -275,7 +291,10 @@
 
           <!-- teacher comment -->
           <div class="transition-opacity duration-100">
-            <p v-if="(modelValue.comment?.length ?? 0) > 0" class="mt-2 text-muted">
+            <p
+              v-if="(modelValue.comment?.length ?? 0) > 0"
+              class="mt-2 text-muted"
+            >
               {{
                 allowEditAssessment
                   ? $t("event_assessment.comment_for_student")
@@ -292,8 +311,14 @@
           >
             {{ $t("misc.solution") }}:
           </p>
-          <p v-if="!isProgrammingExercise" v-html="modelValue.exercise.solution"></p>
-          <CodeFragment v-else :value="modelValue.exercise.solution"></CodeFragment>
+          <p
+            v-if="!isProgrammingExercise"
+            v-html="modelValue.exercise.solution"
+          ></p>
+          <CodeFragment
+            v-else-if="modelValue.exercise.solution"
+            :value="modelValue.exercise.solution"
+          ></CodeFragment>
 
           <!-- in-card assessment controls -->
           <div
@@ -301,7 +326,7 @@
               'max-h-0': !showAssessmentControls,
               'max-h-96': showAssessmentControls,
             }"
-            class="flex flex-col overflow-y-hidden duration-200 ease-in-out transition-max-height"
+            class="flex flex-col overflow-y-hidden duration-200 ease-in-out  transition-max-height"
           >
             <div
               :class="{ 'md:flex-row  md:items-center': !subSlot }"
@@ -327,7 +352,9 @@
                     question_answer
                   </span>
                   <span class="text-muted"
-                    >{{ $t("event_assessment.exercise_answered_at") }}&nbsp;</span
+                    >{{
+                      $t("event_assessment.exercise_answered_at")
+                    }}&nbsp;</span
                   ><Timestamp :value="modelValue.answered_at"></Timestamp>
                 </div>
               </div>
@@ -337,7 +364,9 @@
               class="text-sm text-muted text-danger-dark"
               v-if="modelValue.score == null || modelValue.score.length == 0"
             >
-              {{ $t("event_assessment.this_exercise_requires_manual_assessment") }}
+              {{
+                $t("event_assessment.this_exercise_requires_manual_assessment")
+              }}
             </p>
             <div class="mt-4">
               <!-- actual assessment controls -->
@@ -414,7 +443,9 @@
             class="text-sm text-muted text-danger-dark"
             v-if="modelValue.score == null || modelValue.score.length == 0"
           >
-            {{ $t("event_assessment.this_exercise_requires_manual_assessment") }}
+            {{
+              $t("event_assessment.this_exercise_requires_manual_assessment")
+            }}
           </p>
           <div class="mt-4" v-if="!subSlot">
             <!-- actual assessment controls -->
@@ -438,13 +469,23 @@
               ></Btn
             >
             <p class="text-muted">
-              {{ $t("event_assessment.sub_slot_assessment_unavailable_open_full_1") }}
+              {{
+                $t(
+                  "event_assessment.sub_slot_assessment_unavailable_open_full_1"
+                )
+              }}
 
               <span>{{
-                $t("event_assessment.sub_slot_assessment_unavailable_open_full_2")
+                $t(
+                  "event_assessment.sub_slot_assessment_unavailable_open_full_2"
+                )
               }}</span>
 
-              {{ $t("event_assessment.sub_slot_assessment_unavailable_open_full_3") }}
+              {{
+                $t(
+                  "event_assessment.sub_slot_assessment_unavailable_open_full_3"
+                )
+              }}
             </p>
           </div>
         </div>
@@ -630,8 +671,9 @@ export default defineComponent({
         return false;
       }
 
-      const nonCorrectChoices = (this.modelValue.exercise
-        .choices as ExerciseChoice[]).filter(
+      const nonCorrectChoices = (
+        this.modelValue.exercise.choices as ExerciseChoice[]
+      ).filter(
         (c) => !this.modelValue.exercise.correct_choices?.includes(c.id)
       );
 
@@ -641,8 +683,10 @@ export default defineComponent({
     },
     exerciseChoicesAsOptions(): SelectableOption[] {
       if (
-        this.exercise.exercise_type !== ExerciseType.MULTIPLE_CHOICE_SINGLE_POSSIBLE &&
-        this.exercise.exercise_type !== ExerciseType.MULTIPLE_CHOICE_MULTIPLE_POSSIBLE
+        this.exercise.exercise_type !==
+          ExerciseType.MULTIPLE_CHOICE_SINGLE_POSSIBLE &&
+        this.exercise.exercise_type !==
+          ExerciseType.MULTIPLE_CHOICE_MULTIPLE_POSSIBLE
       ) {
         return [];
       }
@@ -654,7 +698,9 @@ export default defineComponent({
           ((c.score_selected ?? "") + "").length > 0 &&
           ((c.score_unselected ?? "") + "").length > 0 && {
             description: [
-              this.modelValue.exercise.correct_choices?.includes(c.id) ? "done" : "close",
+              this.modelValue.exercise.correct_choices?.includes(c.id)
+                ? "done"
+                : "close",
               String(c.score_selected),
               String(c.score_unselected),
               c.id,

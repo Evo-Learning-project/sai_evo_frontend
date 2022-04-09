@@ -97,6 +97,11 @@ export const it = {
     exercise: "Es.",
   },
   event_assessment: {
+    overall_score: "Voto",
+    you_overrode_score:
+      "Hai assegnato manualmente un voto all'esame." +
+      " Se modifichi il punteggio di un esercizio adesso, il voto complessivo non verrà aggiornato.",
+    // " Se vuoi che il voto si aggiorni automaticamente in base ai punteggi degli esercizi, ripristina il voto di default.",
     all_participations_assesses:
       "Tutti gli esami sono stati corretti. Puoi pubblicare i risultati.",
     some_exams_require_manual_assessment:
@@ -120,14 +125,17 @@ export const it = {
     some_sub_slots_pending:
       "Il punteggio mostrato è incompleto perché alcuni sotto-esercizi non hanno ancora ricevuto una valutazione.",
     some_slots_pending:
-      "Il punteggio mostrato è incompleto perché alcuni esercizi non hanno ancora ricevuto una valutazione. Assegna un punteggio agli esercizi che ancora non ne hanno uno.",
+      "Il punteggio mostrato è incompleto perché alcuni esercizi non hanno ancora ricevuto una valutazione.",
+    default_score:
+      "Il punteggio mostrato è la somma dei punteggi dei singoli esercizi." +
+      " Se modifichi il punteggio di un esercizio, il voto verrà aggiornato automaticamente." +
+      " Puoi sovrascrivere il voto inserendo manualmente un valore.",
     assessment_state: "Stato della correzione",
-    confirm_assessment: "Salva valutazione",
+    confirm_assessment: "Salva",
     exercise: "esercizio",
     assess: "Valuta",
     assigned_score: "Punteggio assegnato",
-    overall_score: "Punteggio",
-    your_assessment: "La tua valutazione",
+    your_assessment: "Valutazione",
     text_answer_label: "Risposta dello studente",
     exercise_seen_at: "Visto:",
     exercise_answered_at: "Risposto:",
@@ -137,8 +145,12 @@ export const it = {
     sub_slot_assessment_unavailable_open_full_2: "partecipazione completa",
     sub_slot_assessment_unavailable_open_full_3:
       "all'esame per assegnare un punteggio a questo sotto-esercizio.",
+    undo_overall_score_edit: "Vuoi ripristinare il voto originale?",
     undo_score_edit:
       "Vuoi ripristinare il punteggio originale per questo esercizio?",
+    overall_score_instructions:
+      "Puoi assegnare manualmente un voto allo studente. Il voto può essere numerico" +
+      " oppure una stringa.",
   },
   course_insights: {
     practice_sessions: "Esercitazioni",

@@ -125,7 +125,7 @@ export interface EventParticipation {
   user: User;
   state: EventParticipationState;
   slots: EventParticipationSlot[];
-  score?: number;
+  score?: string;
   max_score?: number;
   last_slot_number?: number;
   begin_timestamp: string;
@@ -137,6 +137,7 @@ export interface EventParticipation {
   // teacher-only fields
   assessment_progress?: ParticipationAssessmentProgress;
   visibility?: AssessmentVisibility;
+  score_edited?: boolean;
 }
 
 export interface EventParticipationSlot {

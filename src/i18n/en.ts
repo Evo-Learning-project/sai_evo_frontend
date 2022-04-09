@@ -1,87 +1,169 @@
-import { ExerciseState, ExerciseType } from '@/models';
+import { ExerciseState, ExerciseType } from "@/models";
 
 export const en = {
   dialog: {
-    default_ok_text: 'OK',
-    default_cancel_text: 'Cancel',
+    default_ok_text: "OK",
+    default_cancel_text: "Cancel",
   },
   exercise_editor: {
-    exercise_tags: 'Tags',
-    exercise_editor_title: 'Exercise editor',
-    draft_notice: 'Draft',
-    choices_title: 'Choices',
-    exercise_label: 'Exercise label',
-    exercise_text: 'Text',
-    exercise_solution: 'Solution (optional)',
-    select_exercise_type: 'Select type',
-    exercise_type: 'Type',
-    exercise_state: 'Visibility',
-    exercise_public_tags: 'Public tags',
-    exercise_private_tags: 'Private tags',
-    choice_text: 'Text',
-    choice_score: 'Score',
-    edit_non_draft_title: 'Modifica di un esercizio non bozza',
+    exercise_tags: "Tags",
+    exercise_editor_title: "Exercise editor",
+    draft_notice: "Draft",
+    choices_title: "Choices",
+    exercise_label: "Exercise label",
+    exercise_text: "Text",
+    exercise_solution: "Solution (optional)",
+    select_exercise_type: "Select type",
+    exercise_type: "Type",
+    exercise_state: "Visibility",
+    exercise_public_tags: "Public tags",
+    exercise_private_tags: "Private tags",
+    choice_text: "Text",
+    choice_score: "Score",
+    edit_non_draft_title: "Modifica di un esercizio non bozza",
     edit_non_draft_body:
-      'Stai per modificare un esercizio non in stato di bozza. Potrebbe essere già presente in un esame o essere già stato visto dagli studenti. Sei sicuro di volerlo modificare?',
-    new_choice: 'Nuova',
-    cannot_publish: 'Non puoi ancora pubblicare questo esercizio',
+      "Stai per modificare un esercizio non in stato di bozza. Potrebbe essere già presente in un esame o essere già stato visto dagli studenti. Sei sicuro di volerlo modificare?",
+    new_choice: "Nuova",
+    cannot_publish: "Non puoi ancora pubblicare questo esercizio",
     cannot_publish_body:
-      'Per poter rimuovere lo stato di bozza, correggi i seguenti errori:',
+      "Per poter rimuovere lo stato di bozza, correggi i seguenti errori:",
     make_public_confirmation_title:
-      'Sei sicuro di voler rendere questo esercizio pubblico?',
+      "Sei sicuro di voler rendere questo esercizio pubblico?",
     make_public_confirmation_body:
-      'Se rendi questo esercizio pubblico, tutti gli studenti potranno visualizzarlo in qualsiasi momento. Se vuoi utilizzare questo esercizio in un esame, rendilo privato.',
+      "Se rendi questo esercizio pubblico, tutti gli studenti potranno visualizzarlo in qualsiasi momento. Se vuoi utilizzare questo esercizio in un esame, rendilo privato.",
   },
   exercise_types: {
     [ExerciseType.MULTIPLE_CHOICE_SINGLE_POSSIBLE]:
-      'Multiple choices, only one correct',
+      "Multiple choices, only one correct",
     [ExerciseType.MULTIPLE_CHOICE_MULTIPLE_POSSIBLE]:
-      'Multiple choices, more than one correct',
-    [ExerciseType.OPEN_ANSWER]: 'Open answer',
-    [ExerciseType.JS]: 'Esercizio JavaScript',
-    [ExerciseType.COMPLETION]: 'Esercizio a completamento',
-    [ExerciseType.ATTACHMENT]: 'Caricamento di file',
-    [ExerciseType.AGGREGATED]: 'Esercizio composto',
+      "Multiple choices, more than one correct",
+    [ExerciseType.OPEN_ANSWER]: "Open answer",
+    [ExerciseType.JS]: "Esercizio JavaScript",
+    [ExerciseType.COMPLETION]: "Esercizio a completamento",
+    [ExerciseType.ATTACHMENT]: "Caricamento di file",
+    [ExerciseType.AGGREGATED]: "Esercizio composto",
   },
   exercise_states: {
-    [ExerciseState.PUBLIC]: 'Public',
-    [ExerciseState.PRIVATE]: 'Hidden',
-    [ExerciseState.DRAFT]: 'Draft',
+    [ExerciseState.PUBLIC]: "Public",
+    [ExerciseState.PRIVATE]: "Hidden",
+    [ExerciseState.DRAFT]: "Draft",
   },
   misc: {
-    tags: 'Tags',
-    example: 'Example',
+    tags: "Tags",
+    example: "Example",
+    score: "Score",
+    out_of: "out of",
+    at: "at",
   },
   event_template_rule_editor: {
-    exercise_number: 'Slot',
-    choose_exercise: 'Scegli esercizio',
-    change_exercise: 'Cambia esercizio',
-    populate_slot_title: 'Select exercise(s) for slot',
-    mode_selection_text:
-      "Come vuoi scegliere l'esercizio per questo slot?",
-    pick_single_exercise: 'Seleziona un esercizio',
-    pick_exercise_from_pool: 'Seleziona esercizio da un insieme',
-    pick_exercise_tag_based: 'Seleziona esercizio in base ai tag',
+    exercise_number: "Slot",
+    choose_exercise: "Scegli esercizio",
+    change_exercise: "Cambia esercizio",
+    populate_slot_title: "Select exercise(s) for slot",
+    mode_selection_text: "Come vuoi scegliere l'esercizio per questo slot?",
+    pick_single_exercise: "Seleziona un esercizio",
+    pick_exercise_from_pool: "Seleziona esercizio da un insieme",
+    pick_exercise_tag_based: "Seleziona esercizio in base ai tag",
     pick_single_exercise_help_text:
-      'Tutti gli studenti vedranno lo stesso esercizio',
+      "Tutti gli studenti vedranno lo stesso esercizio",
     pick_exercise_from_pool_help_text:
       "Ogni studente vedrà un esercizio scelto a caso dall'insieme selezionato",
     pick_exercise_tag_based_help_text:
-      'Ogni studente vedrà un esercizio scelto a caso con i tag selezionati',
+      "Ogni studente vedrà un esercizio scelto a caso con i tag selezionati",
     one_exercise_from_set_description:
-      'Ogni studente vedrà un esercizio scelto a caso tra questi:',
+      "Ogni studente vedrà un esercizio scelto a caso tra questi:",
     tag_based_description:
-      'Ogni studente vedrà un esercizio a caso che tra i tag ha:',
+      "Ogni studente vedrà un esercizio a caso che tra i tag ha:",
     same_exercise_for_everyone_description:
-      'Tutti gli studenti vedranno questo esercizio:',
+      "Tutti gli studenti vedranno questo esercizio:",
     tag_based_introduction:
-      'Each student will see one exercise chosen randomly among those that meet the conditions defined here. An exercise is eligible if, for each group of tags defined, it contains at least one tag from that group.',
-    tag_based_select_exercises:
-      'Exercises will be eligible only if they have',
-    tag_based_at_least_one: 'at least one',
-    tag_based_among: 'among the following tags:',
-    tag_based_and: '... and',
-    tag_based_add_condition: 'Aggiungi condizione',
-    eligible_exercises: 'Eligible exercises:',
+      "Each student will see one exercise chosen randomly among those that meet the conditions defined here. An exercise is eligible if, for each group of tags defined, it contains at least one tag from that group.",
+    tag_based_select_exercises: "Exercises will be eligible only if they have",
+    tag_based_at_least_one: "at least one",
+    tag_based_among: "among the following tags:",
+    tag_based_and: "... and",
+    tag_based_add_condition: "Aggiungi condizione",
+    eligible_exercises: "Eligible exercises:",
+  },
+  event_participation_page: {
+    exercise: "Exercise",
+    of: "of",
+    next_exercise: "Avanti",
+    previous_exercise: "Indietro",
+    skip_exercise: "Salta esercizio",
+    turn_in: "Consegna",
+    turn_in_dialog_title: "Sei sicuro di voler consegnare?",
+    turn_in_dialog_text:
+      "Una volta consegnato, non potrai più modificare le tue risposte.",
+    turn_in_confirm_button: "Consegna",
+    turned_in_text:
+      "Fatto! Hai consegnato con successo. Qui sotto puoi rivedere le tue risposte. Quando vuoi, puoi chiudere questa pagina.",
+    review_answers: "Revisione risposte",
+    next_dialog_title: "Sei sicuro di voler passare al prossimo esercizio?",
+    next_dialog_text:
+      "Se vai avanti, non potrai più tornare indietro a questo esercizio.",
+    next_dialog_confirm_button: "Vai avanti",
+    participate: "Partecipa",
+    exam_not_yet_begun: "L'esame non è ancora iniziato.",
+    exam_is_over: "L'esame è terminato.",
+    begin_timestamp: "Began on",
+    turn_in_timestamp: "Turned in on",
+  },
+  event_assessment: {
+    overall_score: "Grade",
+    you_overrode_score:
+      "You assigned a grade manually." +
+      " If you edit the score of an exercise now, the overall grade won't be updated.",
+    // " Se vuoi che il voto si aggiorni automaticamente in base ai punteggi degli esercizi, ripristina il voto di default.",
+    all_participations_assesses:
+      "Tutti gli esami sono stati corretti. Puoi pubblicare i risultati.",
+    some_exams_require_manual_assessment:
+      "Alcuni esercizi richiedono una correzione manuale. Prima di poter pubblicare i risultati, devi assegnare un punteggio agli esercizi che ancora non lo hanno.",
+    exams_awaiting_assessment_are_marked:
+      "Per assegnare un punteggio alle risposte non ancora valutate, clicca sull'icona",
+    ready_to_publish_1:
+      "I risultati sono pronti per essere pubblicati. Seleziona le righe che vuoi pubblicare e clicca su",
+    ready_to_publish_2:
+      "Le righe evidenziate in verde corrispondono a risultati già pubblicati.",
+    all_published:
+      "Tutti i risultati sono stati pubblicati e sono ora visibili agli studenti.",
+    publish_results: "Pubblica i risultati",
+    this_comment_is_private:
+      "Questo commento verrà visualizzato dagli insegnanti ma non dallo studente",
+    comment_for_student: "Feedback",
+    student_will_see_this_comment:
+      "Questo commento sarà visibile allo studente quando pubblicherai i risultati",
+    this_exercise_requires_manual_assessment:
+      "You have to assign a score manually.",
+    some_sub_slots_pending:
+      "Il punteggio mostrato è incompleto perché alcuni sotto-esercizi non hanno ancora ricevuto una valutazione.",
+    some_slots_pending:
+      "The grade shown is incomplete because you haven't yet assigned a score to some exercises.",
+    default_score:
+      "The grade shown is computed as the sum of the scores of each individual exercise." +
+      " If you edit the score for an exercise, the overall grade will be updated automatically." +
+      " You can override this grade by setting a value manually.",
+    assessment_state: "Stato della correzione",
+    confirm_assessment: "Save assessment",
+    exercise: "esercizio",
+    assess: "Valuta",
+    assigned_score: "Score",
+    your_assessment: "Assessment",
+    text_answer_label: "Risposta dello studente",
+    exercise_seen_at: "Visto:",
+    exercise_answered_at: "Answered at:",
+    viewing_participation_of:
+      "You are viewing the participation to the exam of",
+    viewing_practice_of: "Stai visualizzando un'esercitazione di",
+    sub_slot_assessment_unavailable_open_full_1: "Apri la",
+    sub_slot_assessment_unavailable_open_full_2: "partecipazione completa",
+    sub_slot_assessment_unavailable_open_full_3:
+      "all'esame per assegnare un punteggio a questo sotto-esercizio.",
+    undo_overall_score_edit: "Vuoi ripristinare il voto originale?",
+    undo_score_edit:
+      "Vuoi ripristinare il punteggio originale per questo esercizio?",
+    overall_score_instructions:
+      "You can assign a grade manually to this student. The grade can be" +
+      " a number or a string.",
   },
 };

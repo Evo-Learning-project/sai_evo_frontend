@@ -38,80 +38,149 @@
         {{ participation.user.full_name }}
       </h3>
     </div>
-    <div class="px-2 py-6 rounded-md md:px-6 bg-gray-50" v-if="!firstLoading">
-      <div class="flex flex-col space-y-2 md:flex-row md:space-y-0">
-        <div class="" v-if="showAssessmentCard && !firstLoading">
+    <div class="px-2 py-6" v-if="!firstLoading">
+      <div class="flex flex-col space-y-8">
+        <!--md:flex-row md:space-y-0-->
+        <div class="text-sm">
+          <div class="flex space-x-1">
+            <span class="my-auto text-sm material-icons-outlined"> timer </span>
+            <p class="">
+              {{ $t("event_participation_page.begin_timestamp") }}:
+            </p>
+            <Timestamp
+              :value="participation.begin_timestamp"
+              class="text-muted"
+            ></Timestamp>
+          </div>
+          <div class="flex space-x-1" v-if="participation.end_timestamp">
+            <span class="my-auto text-sm material-icons-outlined">
+              assignment_turned_in
+            </span>
+
+            <p class="">
+              {{ $t("event_participation_page.turn_in_timestamp") }}:
+            </p>
+            <Timestamp
+              class="text-muted"
+              :value="participation.end_timestamp"
+            ></Timestamp>
+          </div>
+        </div>
+        <div class="flex flex-col space-y-2">
           <div
-            class="px-6 rounded bg-light shadow-elevation-2"
-            :class="{ 'py-3': !showEditScore, 'py-8': showEditScore }"
+            class="flex flex-col items-center mb-2 space-y-2  md:flex-row md:space-x-8 md:space-y-0"
+            v-if="showAssessmentCard && !firstLoading"
           >
-            <div class="items-center flex space-x-2" v-if="!showEditScore">
-              <p class="text-muted">
-                {{ $t("misc.score") }}:
-                <strong>{{ participation.score }}</strong>
-              </p>
-              <Btn
-                v-if="allowEditAssessment"
-                :outline="true"
-                :variant="'icon'"
-                @click="onShowEditScore()"
-                ><span class="text-gray-600 material-icons-outlined text-lg"
-                  >edit</span
-                ></Btn
-              >
-            </div>
-            <div class="flex flex-col space-y-4" v-else>
-              <NumberInput v-model="dirtyScore">{{
-                $t("event_assessment.overall_score")
-              }}</NumberInput>
-              <div>
+            <div class="px-6 py-4 rounded bg-light shadow-elevation-2 md:w-1/2">
+              <div class="flex items-center">
+                <h4 class="">
+                  {{ $t("event_assessment.overall_score") }}:
+                  <strong>{{
+                    Number.isInteger(parseFloat(participation.score))
+                      ? parseInt(participation.score)
+                      : participation.score
+                  }}</strong>
+                </h4>
                 <Btn
-                  class="mr-2"
-                  :outline="false"
-                  :variant="'primary'"
-                  :loading="assessmentLoading"
-                  @click="onHideEditScore()"
-                >
-                  {{ $t("event_assessment.confirm_assessment") }}
-                </Btn>
-                <Btn
+                  v-if="allowEditAssessment"
                   :outline="true"
-                  :disabled="assessmentLoading"
-                  :variant="'primary'"
-                  @click="onHideEditScore(true)"
+                  :variant="'icon'"
+                  :disabled="showEditScore"
+                  class="ml-1"
+                  @click="onShowEditScore()"
+                  ><span class="text-lg text-gray-600 material-icons-outlined"
+                    >edit</span
+                  ></Btn
                 >
-                  {{ $t("dialog.default_cancel_text") }}
-                </Btn>
+                <Btn
+                  v-if="participation.score_edited"
+                  :outline="true"
+                  class="ml-auto"
+                  :variant="'icon'"
+                  :disabled="showEditScore"
+                  @click="onUndoScoreEdit()"
+                  ><span class="text-lg text-gray-600 material-icons-outlined"
+                    >undo</span
+                  ></Btn
+                >
+              </div>
+              <div
+                :class="{
+                  'max-h-0': !showEditScore,
+                  'max-h-96': showEditScore,
+                }"
+                class="flex flex-col max-w-md space-y-4 overflow-y-hidden duration-200 ease-in-out  lg:max-w-lg transition-max-height"
+              >
+                <!-- <NumberInput v-model="dirtyScore">{{
+                $t("event_assessment.overall_score")
+              }}</NumberInput> -->
+                <p class="my-4 text-muted">
+                  {{ $t("event_assessment.overall_score_instructions") }}
+                </p>
+                <TextInput v-model="dirtyScore">{{
+                  $t("event_assessment.overall_score")
+                }}</TextInput>
+                <div class="flex">
+                  <Btn
+                    class="ml-auto mr-2"
+                    :outline="false"
+                    :variant="'primary'"
+                    :loading="assessmentLoading"
+                    @click="onHideEditScore()"
+                  >
+                    {{ $t("event_assessment.confirm_assessment") }}
+                  </Btn>
+                  <Btn
+                    :outline="true"
+                    :disabled="assessmentLoading"
+                    :variant="'primary'"
+                    @click="onHideEditScore(true)"
+                  >
+                    {{ $t("dialog.default_cancel_text") }}
+                  </Btn>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div class="text-sm md:ml-auto">
-          <div class="flex space-x-1">
+          <div class="banner banner-light" v-if="!participation.score_edited">
+            <span
+              class="mr-1 text-base text-2xl opacity-60 material-icons-outlined"
+              >info</span
+            >
             <p class="text-muted">
-              {{ $t("event_participation_page.begin_timestamp") }}:
+              {{ $t("event_assessment.default_score") }}
             </p>
-            <Timestamp :value="participation.begin_timestamp"></Timestamp>
           </div>
-          <div class="flex space-x-1" v-if="participation.end_timestamp">
-            <p class="text-muted">
-              {{ $t("event_participation_page.turn_in_timestamp") }}:
-            </p>
-            <Timestamp :value="participation.end_timestamp"></Timestamp>
+          <div
+            class="banner banner-light"
+            v-else-if="allowEditAssessment && participation.score_edited"
+          >
+            <span class="mr-1 text-2xl material-icons-outlined opacity-60"
+              >sync_disabled</span
+            >
+            <span class="text-muted">
+              {{ $t("event_assessment.you_overrode_score") }}
+            </span>
+          </div>
+          <div
+            class="banner banner-danger"
+            v-if="
+              allowEditAssessment &&
+              someSlotsPending &&
+              !participation.score_edited
+            "
+          >
+            <span
+              class="mr-1 text-base text-2xl text-yellow-900  material-icons-outlined"
+              >pending_actions</span
+            >
+            <span class="text-muted text-danger-dark">
+              {{ $t("event_assessment.some_slots_pending") }}
+            </span>
           </div>
         </div>
       </div>
-      <div
-        class="flex space-x-2 items-start mt-2 md:w-3/5"
-        v-if="allowEditAssessment && someSlotsPending"
-      >
-        <span class="text-xl material-icons-outlined text-yellow-900"
-          >pending_actions</span
-        >
-        <p class="text-danger-dark text-muted">
-          {{ $t("event_assessment.some_slots_pending") }}
-        </p>
-      </div>
+
       <div
         :class="{
           'mt-12': index === 0,
@@ -129,7 +198,9 @@
         <!--:showAssessmentControls="slotsAssessmentControlsVisibility[slot.id] ?? false"-->
         <AbstractEventParticipationSlot
           :modelValue="slot"
-          @updateAssessment="onSlotUpdateAssessment($event.slot, $event.payload)"
+          @updateAssessment="
+            onSlotUpdateAssessment($event.slot, $event.payload)
+          "
           :allowEditAssessment="allowEditAssessment"
           :showSolutionAndScores="showSolutionAndScores"
           :showAssessmentCard="showAssessmentCard"
@@ -141,7 +212,7 @@
         ></AbstractEventParticipationSlot>
       </div>
     </div>
-    <div class="px-6 py-6 rounded-md bg-gray-50" v-else>
+    <div class="py-6 rounded-md bg-gray-50" v-else>
       <SlotSkeleton></SlotSkeleton>
       <SlotSkeleton></SlotSkeleton>
       <SlotSkeleton></SlotSkeleton>
@@ -167,7 +238,9 @@ import {
 import Timestamp from "@/components/ui/Timestamp.vue";
 import SlotSkeleton from "@/components/ui/skeletons/SlotSkeleton.vue";
 import Btn from "@/components/ui/Btn.vue";
-import NumberInput from "../../components/ui/NumberInput.vue";
+//import NumberInput from "../../components/ui/NumberInput.vue";
+import TextInput from "@/components/ui/TextInput.vue";
+import { getTranslatedString } from "@/i18n";
 const { mapState, mapMutations } = createNamespacedHelpers("student");
 
 export default defineComponent({
@@ -198,7 +271,8 @@ export default defineComponent({
     Timestamp,
     SlotSkeleton,
     Btn,
-    NumberInput,
+    //NumberInput,
+    TextInput,
   },
   async created() {
     await this.withFirstLoading(
@@ -230,7 +304,7 @@ export default defineComponent({
       slotsAssessmentControlsVisibility: {} as Record<string, boolean>,
       slotsAssessmentLoading: {} as Record<string, boolean>,
       showEditScore: false,
-      dirtyScore: undefined as number | undefined,
+      dirtyScore: undefined as string | null | undefined,
       EventType,
       assessmentLoading: false,
     };
@@ -245,6 +319,14 @@ export default defineComponent({
     onShowEditScore() {
       this.dirtyScore = this.participation.score;
       this.showEditScore = true;
+    },
+    async onUndoScoreEdit() {
+      if (
+        confirm(getTranslatedString("event_assessment.undo_overall_score_edit"))
+      ) {
+        this.dirtyScore = null;
+        await this.onHideEditScore();
+      }
     },
     async onHideEditScore(discard = false) {
       if (discard) {
