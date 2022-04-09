@@ -48,6 +48,10 @@
       @apply bg-danger-dark bg-opacity-5 text-danger-dark;
     }
 
+    .banner-success {
+      @apply bg-success bg-opacity-10 text-success-dark;
+    }
+
 
     .bg-primary .hover\:bg-gray-200 {
       @apply bg-opacity-20 !important;

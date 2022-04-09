@@ -142,7 +142,10 @@
               </div>
             </div>
           </div>
-          <div class="banner banner-light" v-if="!participation.score_edited">
+          <div
+            class="banner banner-light"
+            v-if="allowEditAssessment && !participation.score_edited"
+          >
             <span
               class="mr-1 text-base text-2xl opacity-60 material-icons-outlined"
               >info</span
@@ -212,7 +215,7 @@
         ></AbstractEventParticipationSlot>
       </div>
     </div>
-    <div class="py-6 rounded-md bg-gray-50" v-else>
+    <div class="py-6" v-else>
       <SlotSkeleton></SlotSkeleton>
       <SlotSkeleton></SlotSkeleton>
       <SlotSkeleton></SlotSkeleton>

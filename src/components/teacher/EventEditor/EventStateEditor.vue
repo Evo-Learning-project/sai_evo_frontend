@@ -1,7 +1,7 @@
 <template>
   <div class="">
     <h3 class="mb-3">{{ $t("event_editor.state_editor_title") }}</h3>
-    <Card :hoverable="false" class="bg-light" v-if="isDraft || isPlanned">
+    <!-- <Card :hoverable="false" class="bg-light" v-if="isDraft || isPlanned">
       <template v-slot:header
         ><div class="flex items-center space-x-4">
           <div v-if="isDraft">
@@ -17,7 +17,19 @@
           <p class="">{{ currentEventStateDescription }}</p>
         </div>
       </template></Card
-    >
+    > -->
+    <div class="my-4 banner banner-light" v-if="isDraft">
+      <span class="ml-px text-yellow-900 material-icons-outlined">
+        error_outline
+      </span>
+      <p class="">{{ currentEventStateDescription }}</p>
+    </div>
+    <div class="my-4 banner banner-success" v-if="isPlanned">
+      <span class="ml-px text-success material-icons-outlined">
+        check_circle_outline
+      </span>
+      <p class="">{{ currentEventStateDescription }}</p>
+    </div>
     <div class="">
       <div v-if="validationErrors.length > 0" class="mb-12">
         <p>{{ $t("event_editor.correct_errors_to_publish") }}</p>
@@ -85,7 +97,7 @@ import { Event, EventState, getExamValidationErrors } from "@/models";
 import { defineComponent, PropType } from "@vue/runtime-core";
 import { icons as eventStateIcons } from "@/assets/eventStateIcons";
 import { getTranslatedString as _ } from "@/i18n";
-import Card from "@/components/ui/Card.vue";
+//import Card from "@/components/ui/Card.vue";
 import Btn from "@/components/ui/Btn.vue";
 import { getFormattedTimestamp } from "@/utils";
 import Timestamp from "@/components/ui/Timestamp.vue";
@@ -95,7 +107,7 @@ import { loadingMixin } from "@/mixins";
 
 export default defineComponent({
   components: {
-    Card,
+    // Card,
     Btn,
     Timestamp,
     CopyToClipboard,
