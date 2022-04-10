@@ -49,7 +49,7 @@
             {{ $t("programming_exercise.test_failed_with_error") }}:
           </p>
           <CodeFragment
-            :value="test.stderr ?? test.error"
+            :value="test.stderr || test.error"
             :small="true"
           ></CodeFragment>
         </div>

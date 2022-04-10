@@ -52,6 +52,14 @@
       @apply bg-success bg-opacity-10 text-success-dark;
     }
 
+    .banner .material-icons-outlined {
+      @apply mr-1 text-2xl;
+    }
+
+    .icon-light {
+      @apply text-gray-600;
+    }
+
 
     .bg-primary .hover\:bg-gray-200 {
       @apply bg-opacity-20 !important;
@@ -131,7 +139,7 @@
        0.5px 1.5px 3px 0px rgb(0 0 0 / 9%); */
     }
 
-    .hover-shadow-elevation-2:hover, .shadow-elevation-2 {
+    .hover-shadow-elevation-2:hover, .focus-within-shadow-elevation-2:focus-within, .shadow-elevation-2 {
       /* DARK box-shadow: rgba(0,0,0, .3) 0 1px 2px 0, rgba(0,0,0, .15) 0 2px 6px 2px; */
       box-shadow: rgba(60, 64, 67, .3) 0 1px 2px 0, rgba(60, 64, 67, .15) 0 2px 6px 2px !important;
     }
@@ -140,7 +148,15 @@
       /* DARK box-shadow: rgba(0,0,0, .3) 0 1px 2px 0, rgba(0,0,0, .15) 0 2px 6px 2px; */
       box-shadow: rgba(60, 64, 67, .3) 0 -2.5px 2px 0, rgba(60, 64, 67, .15) 0 -3px 6px 2px !important;
     }
+
     
+    .card {
+      @apply px-2.5 py-5 md:px-5 rounded;
+    }
+
+    .card-filled {
+      @apply bg-light bg-opacity-80;
+    }
     
     .card button {
       @apply shadow-none !important;

@@ -71,7 +71,7 @@
             class="flex flex-col items-center mb-2 space-y-2  md:flex-row md:space-x-8 md:space-y-0"
             v-if="showAssessmentCard && !firstLoading"
           >
-            <div class="px-6 py-4 rounded bg-light shadow-elevation-2 md:w-1/2">
+            <div class="card card-filled shadow-elevation md:w-1/2">
               <div class="flex items-center">
                 <h4 class="">
                   {{ $t("event_assessment.overall_score") }}:
@@ -146,10 +146,7 @@
             class="banner banner-light"
             v-if="allowEditAssessment && !participation.score_edited"
           >
-            <span
-              class="mr-1 text-base text-2xl opacity-60 material-icons-outlined"
-              >info</span
-            >
+            <span class="material-icons-outlined icon-light">info</span>
             <p class="text-muted">
               {{ $t("event_assessment.default_score") }}
             </p>
@@ -158,7 +155,7 @@
             class="banner banner-light"
             v-else-if="allowEditAssessment && participation.score_edited"
           >
-            <span class="mr-1 text-2xl material-icons-outlined opacity-60"
+            <span class="material-icons-outlined icon-light"
               >sync_disabled</span
             >
             <span class="text-muted">

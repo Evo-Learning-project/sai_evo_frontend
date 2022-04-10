@@ -207,7 +207,7 @@
             'md:w-9/12': !subSlot,
             'md:w-full': subSlot,
           }"
-          class="relative px-6 py-3 mb-auto rounded  md:self-start bg-light shadow-elevation-2 bg-opacity-70"
+          class="relative mb-auto  md:self-start shadow-elevation card card-filled"
           v-if="
             showAssessmentCard &&
             (true || !showAssessmentControls || !allowEditAssessment)

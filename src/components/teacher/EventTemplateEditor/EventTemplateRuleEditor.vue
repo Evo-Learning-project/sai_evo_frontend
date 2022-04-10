@@ -1,12 +1,12 @@
 <template>
   <div>
     <div
-      class="px-4 pt-4 pb-5 my-3 transition-shadow duration-75 ease-in-out rounded shadow-elevation hover-shadow-elevation-2"
-      :class="[modelValue._ordering % 2 ? 'bg-white' : 'bg-gray-50']"
+      class="my-3 transition-shadow duration-75 ease-in-out  card shadow-elevation hover-shadow-elevation-2"
+      :class="[modelValue._ordering % 2 ? 'bg-white' : 'card-filled']"
     >
       <div class="flex items-center">
         <span
-          class="my-auto mr-2 text-lg cursor-move drag-handle material-icons-outlined opacity-70"
+          class="my-auto mr-2 text-lg cursor-move  drag-handle material-icons-outlined opacity-70"
         >
           drag_indicator
         </span>
@@ -26,7 +26,11 @@
             </div>
           </Btn>
           <!--@click="deleteRule()"-->
-          <Btn :size="'sm'" :variant="'icon'" :outline="true" @click="$emit('deleteRule')"
+          <Btn
+            :size="'sm'"
+            :variant="'icon'"
+            :outline="true"
+            @click="$emit('deleteRule')"
             ><span
               style="font-size: 17px"
               class="material-icons-outlined text-danger-dark"
@@ -37,20 +41,29 @@
         </div>
       </div>
       <div
-        v-if="isSlotPopulated && modelValue.rule_type == EventTemplateRuleType.ID_BASED"
+        v-if="
+          isSlotPopulated &&
+          modelValue.rule_type == EventTemplateRuleType.ID_BASED
+        "
         class="mt-4"
       >
         <p class="mb-2 text-muted">
           {{
             ruleExercises.length == 1
-              ? $t("event_template_rule_editor.same_exercise_for_everyone_description")
-              : $t("event_template_rule_editor.one_exercise_from_set_description")
+              ? $t(
+                  "event_template_rule_editor.same_exercise_for_everyone_description"
+                )
+              : $t(
+                  "event_template_rule_editor.one_exercise_from_set_description"
+                )
           }}
         </p>
         <div>
           <div
             v-if="!localLoading"
-            :class="[ruleExercises.length > 1 ? 'grid md:grid-cols-2 gap-2' : '']"
+            :class="[
+              ruleExercises.length > 1 ? 'grid md:grid-cols-2 gap-2' : '',
+            ]"
           >
             <MinimalExercisePreview
               v-for="exercise in ruleExercises"
@@ -67,7 +80,8 @@
       </div>
       <div
         v-else-if="
-          isSlotPopulated && modelValue.rule_type == EventTemplateRuleType.TAG_BASED
+          isSlotPopulated &&
+          modelValue.rule_type == EventTemplateRuleType.TAG_BASED
         "
         class="mt-4"
       >
@@ -91,7 +105,9 @@
               :key="'clause-' + clause.id + '-tag-' + tag.id"
               :tag="tag"
             ></Tag
-            ><span v-if="clause.tags.length > 1" class="text-xl text-muted">)</span>
+            ><span v-if="clause.tags.length > 1" class="text-xl text-muted"
+              >)</span
+            >
             <p v-if="index !== modelValue.clauses.length - 1">,</p>
           </div>
         </div>
@@ -130,11 +146,13 @@
             <Btn
               @click="setRuleMode(EventTemplateRuleType.ID_BASED, true)"
               :variant="'transparent'"
-              class="md:py-5 md:pl-4 border-b md:border-r pb-4 md:border-b-0 hoverable-with-two-tone-primary"
+              class="pb-4 border-b  md:py-5 md:pl-4 md:border-r md:border-b-0 hoverable-with-two-tone-primary"
             >
               <template v-slot:content>
                 <div class="flex items-center justify-center space-x-3">
-                  <span class="material-icons-two-tone two-tone-light opacity-50">
+                  <span
+                    class="opacity-50 material-icons-two-tone two-tone-light"
+                  >
                     topic
                   </span>
                   <h4 class="">
@@ -142,43 +160,63 @@
                   </h4>
                 </div>
                 <p>
-                  {{ $t("event_template_rule_editor.pick_single_exercise_help_text") }}
+                  {{
+                    $t(
+                      "event_template_rule_editor.pick_single_exercise_help_text"
+                    )
+                  }}
                 </p></template
               >
             </Btn>
             <Btn
               @click="setRuleMode(EventTemplateRuleType.ID_BASED, false)"
               :variant="'transparent'"
-              class="py-4 md:pl-4 md:pr-3 border-b md:py-0 md:border-r md:border-b-0 hoverable-with-two-tone-primary"
+              class="py-4 border-b  md:pl-4 md:pr-3 md:py-0 md:border-r md:border-b-0 hoverable-with-two-tone-primary"
             >
               <template v-slot:content>
-                <div class="flex space-x-3 items-center justify-center">
-                  <span class="material-icons-outlined opacity-50"> shuffle </span>
+                <div class="flex items-center justify-center space-x-3">
+                  <span class="opacity-50 material-icons-outlined">
+                    shuffle
+                  </span>
                   <h4 class="">
-                    {{ $t("event_template_rule_editor.pick_exercise_from_pool") }}
+                    {{
+                      $t("event_template_rule_editor.pick_exercise_from_pool")
+                    }}
                   </h4>
                 </div>
                 <p>
-                  {{ $t("event_template_rule_editor.pick_exercise_from_pool_help_text") }}
+                  {{
+                    $t(
+                      "event_template_rule_editor.pick_exercise_from_pool_help_text"
+                    )
+                  }}
                 </p></template
               >
             </Btn>
             <Btn
               @click="setRuleMode(EventTemplateRuleType.TAG_BASED)"
               :variant="'transparent'"
-              class="pt-4 md:pl-8 md:pt-0 hoverable-with-two-tone-primary md:pr-6"
+              class="pt-4  md:pl-8 md:pt-0 hoverable-with-two-tone-primary md:pr-6"
             >
               <template v-slot:content>
-                <div class="flex space-x-3 items-center justify-center">
-                  <span class="material-icons-two-tone two-tone-light opacity-50">
+                <div class="flex items-center justify-center space-x-3">
+                  <span
+                    class="opacity-50 material-icons-two-tone two-tone-light"
+                  >
                     label
                   </span>
                   <h4 class="">
-                    {{ $t("event_template_rule_editor.pick_exercise_tag_based") }}
+                    {{
+                      $t("event_template_rule_editor.pick_exercise_tag_based")
+                    }}
                   </h4>
                 </div>
                 <p>
-                  {{ $t("event_template_rule_editor.pick_exercise_tag_based_help_text") }}
+                  {{
+                    $t(
+                      "event_template_rule_editor.pick_exercise_tag_based_help_text"
+                    )
+                  }}
                 </p>
               </template>
             </Btn>
@@ -195,8 +233,12 @@
           <p>
             {{
               pickOneExerciseOnly
-                ? $t("event_template_rule_editor.pick_single_exercise_help_text")
-                : $t("event_template_rule_editor.pick_exercise_from_pool_help_text")
+                ? $t(
+                    "event_template_rule_editor.pick_single_exercise_help_text"
+                  )
+                : $t(
+                    "event_template_rule_editor.pick_exercise_from_pool_help_text"
+                  )
             }}
           </p>
           <div class="mt-4 max-h-96">
@@ -208,7 +250,9 @@
             ></ExercisePicker>
           </div>
         </div>
-        <div v-else-if="modelValue.rule_type == EventTemplateRuleType.TAG_BASED">
+        <div
+          v-else-if="modelValue.rule_type == EventTemplateRuleType.TAG_BASED"
+        >
           <TagBasedEventTemplateRuleEditor
             :modelValue="modelValue.clauses"
             :satisfying="modelValue.satisfying"
@@ -330,7 +374,9 @@ export default defineComponent({
         this.modelValue?.exercises?.filter((e) => e != exercise.id)
       );
       // remove exercise from local array of exercises for preview
-      this.previewExercises = this.previewExercises.filter((e) => e.id != exercise.id);
+      this.previewExercises = this.previewExercises.filter(
+        (e) => e.id != exercise.id
+      );
     },
     showRuleDialog() {
       this.showDialog = true;

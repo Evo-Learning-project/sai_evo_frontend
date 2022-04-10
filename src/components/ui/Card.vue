@@ -1,15 +1,13 @@
 <template>
   <div
     :tabindex="focusable ? 0 : false"
-    class="flex border-gray-300 rounded card"
+    class="flex border-gray-300 card"
     :class="{
-      'md:px-3.5 md:py-3 px-2 py-2.5': size == 'sm',
-      'px-2.5 py-5 md:px-5': size == 'default',
-      'my-4': size == 'default' && !marginLess,
       border: !highlighted && !borderLess,
       'border-2': highlighted,
-      'transition-shadow duration-75 ease-linear hover-shadow-elevation': hoverable,
-      'bg-light bg-opacity-80': filled,
+      'duration-75 ease-linear hover:border-transparent transition-shadow-border hover-shadow-elevation':
+        hoverable,
+      'card-filled': filled,
     }"
   >
     <!-- FIXME review shadow -->
@@ -21,8 +19,8 @@
         v-if="$slots.body"
         class="flex-grow"
         :class="{
-          'mt-4': size == 'default' && $slots.header,
-          'mt-1.5': size == 'sm',
+          'mt-3': true || (size == 'default' && $slots.header),
+          'mt-1.5': false && size == 'sm',
         }"
       >
         <slot name="body"></slot>

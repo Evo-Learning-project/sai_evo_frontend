@@ -28,6 +28,7 @@ module.exports = {
         border: "border",
         "max-height": "max-height",
         "max-width": "max-width",
+        "shadow-border": "shadow border",
       },
       transformOrigin: {
         0: "0%",
@@ -94,6 +95,7 @@ module.exports = {
       borderColor: ["responsive", "hover", "focus", "focus-within"],
       backgroundColor: ["hover"],
       backgroundOpacity: ["hover"],
+      borderWidth: ["hover"],
     },
   },
   // eslint-disable-next-line @typescript-eslint/no-var-requires
