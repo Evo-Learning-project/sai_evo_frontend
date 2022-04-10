@@ -48,7 +48,10 @@
           <p class="mb-1 text-muted">
             {{ $t("programming_exercise.test_failed_with_error") }}:
           </p>
-          <CodeFragment :value="test.stderr" :small="true"></CodeFragment>
+          <CodeFragment
+            :value="test.stderr ?? test.error"
+            :small="true"
+          ></CodeFragment>
         </div>
       </div>
     </div>

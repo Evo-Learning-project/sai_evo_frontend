@@ -36,35 +36,46 @@
             >
             <span v-if="runCoolDown < 10" class="opacity-0">0</span></template
           >
-        </CodeEditor>
-        <Backdrop ref="executionResultsBackdrop" v-if="!!executionResults"
-          ><template v-slot:title>
-            <h5>{{ $t("programming_exercise.execution_results") }}</h5>
-          </template>
-          <CodeExecutionResults :slot="slot"></CodeExecutionResults>
-        </Backdrop>
-        <!-- <div class="absolute top-0 right-0 mt-0.5 mr-4">
-          <Btn
-            :disabled="executionState === 'running' || running || runCoolDown > 0"
-            :variant="'success'"
-            @click="onRun"
-            ><span class="ml-1 mr-1 text-base material-icons"> play_arrow </span
-            >{{ $t("programming_exercise.run_code") }}
-            <span class="opacity-50" v-if="runCoolDown > 0"
-              >&nbsp;({{ runCoolDown }})</span
+          <template v-slot:sidePaneTitle
+            ><div
+              class="flex items-center p-3 space-x-2 rounded-tr-sm bg-gray-50"
             >
-            <span v-if="runCoolDown < 10" class="opacity-0">0</span>
-          </Btn>
-        </div> -->
-        <transition name="quick-bounce"
-          ><div
-            class="absolute bottom-0 right-0 z-50 flex items-center px-6 py-3 mb-2 mr-4 space-x-2 rounded  bg-dark text-lightText bg-opacity-90 bg-light shadow-popup"
-            v-if="executionState === 'running'"
+              <span class="my-auto material-icons-outlined opacity-60">
+                code
+              </span>
+              <h3>
+                {{ $t("programming_exercise.execution_results") }}
+              </h3>
+            </div>
+          </template>
+          <template v-slot:sidePane>
+            <CodeExecutionResults
+              v-if="slot.execution_results"
+              :slot="slot"
+            ></CodeExecutionResults>
+            <div class="flex flex-col" v-else>
+              <span
+                class="mx-auto mt-24  opacity-30 text-8xl material-icons-outlined"
+              >
+                code
+              </span>
+              <p class="mx-auto text-muted">
+                {{ $t("programming_exercise.code_execution_will_appear_here") }}
+              </p>
+            </div>
+          </template>
+          <template v-slot:bottom>
+            <transition name="quick-bounce"
+              ><div
+                class="absolute bottom-0 right-0 z-50 flex items-center px-6 py-3 mb-2 mr-4 space-x-2 rounded  bg-dark text-lightText bg-opacity-90 bg-light shadow-popup"
+                v-if="executionState === 'running'"
+              >
+                <Spinner :fast="true"></Spinner>
+                <p>{{ $t("programming_exercise.running_code") }}</p>
+              </div>
+            </transition></template
           >
-            <Spinner :fast="true"></Spinner>
-            <p>{{ $t("programming_exercise.running_code") }}</p>
-          </div>
-        </transition>
+        </CodeEditor>
       </div>
       <div v-if="currentTab === ProgrammingExerciseTabs.TEST_CASES">
         <div
@@ -101,7 +112,7 @@ import CodeEditor from "../ui/CodeEditor.vue";
 import ExerciseTestCase from "./ExerciseTestCase.vue";
 //import Btn from "../ui/Btn.vue";
 import { loadingMixin } from "@/mixins";
-import Backdrop from "../ui/Backdrop.vue";
+//import Backdrop from "../ui/Backdrop.vue";
 import CodeExecutionResults from "./CodeExecutionResults.vue";
 import { SelectableOption } from "@/interfaces";
 import Spinner from "../ui/Spinner.vue";
@@ -197,7 +208,7 @@ export default defineComponent({
     CodeEditor,
     ExerciseTestCase,
     //Btn,
-    Backdrop,
+    // Backdrop,
     CodeExecutionResults,
     Spinner,
   },

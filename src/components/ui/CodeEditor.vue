@@ -1,32 +1,52 @@
 <template>
-  <div class="relative floating-label" :style="'height: ' + containerHeight + ';'">
+  <div
+    class="relative floating-label"
+    :style="'height: ' + containerHeight + ';'"
+  >
     <label class="absolute top-2 left-1.5 origin-0 fixed-label w-full"
       ><slot></slot
     ></label>
-    <div v-if="showRunButton" class="absolute z-40 top-0 right-0 mt-0.5 mr-4">
-      <Btn
-        :disabled="running || runCoolDown > 0"
-        :variant="'success'"
-        @click="$emit('run')"
-      >
-        <slot name="runButton"></slot>
-        <!-- <span class="mr-1 ml-1 text-base material-icons"> play_arrow </span
-        >{{ $t("programming_exercise.run_code") }}
-        <span class="opacity-50" v-if="runCoolDown > 0">&nbsp;({{ runCoolDown }})</span>
-        <span v-if="runCoolDown < 10" class="opacity-0">0</span> -->
-      </Btn>
-    </div>
-    <div class="overflow-hidden rounded-sm">
-      <MonacoEditor
-        @editorDidMount="onDidMount($event)"
-        @change="onChange($event)"
-        :value="modelValue"
-        theme="vs-dark"
-        class="rounded-md"
-        :options="monacoOptions"
-        :style="'height: ' + editorHeight + ';'"
-        :language="language"
-      />
+
+    <div class="flex w-full">
+      <div class="relative w-7/12 overflow-hidden rounded-sm">
+        <div style="height: inherit" class="absolute flex w-full">
+          <div
+            v-if="showRunButton"
+            class="top-0 ml-auto h-full z-40 right-0 mt-0.5 mr-4"
+          >
+            <Btn
+              :disabled="running || runCoolDown > 0"
+              :variant="'success'"
+              @click="$emit('run')"
+            >
+              <slot name="runButton"></slot>
+            </Btn>
+          </div>
+        </div>
+        <MonacoEditor
+          @editorDidMount="onDidMount($event)"
+          @change="onChange($event)"
+          :value="modelValue"
+          theme="vs-dark"
+          class="rounded-md"
+          :options="monacoOptions"
+          :style="'height: ' + editorHeight + ';'"
+          :language="language"
+        />
+        <slot name="bottom"></slot>
+      </div>
+      <div class="flex flex-col w-5/12 overflow-hidden">
+        <div :id="elementId + 'sidePaneTitle'">
+          <slot name="sidePaneTitle"></slot>
+        </div>
+        <div
+          class="overflow-x-hidden overflow-y-auto rounded-sm rounded-t-none rounded-l-none "
+          :style="'height:' + sidePaneContentHeight + 'px'"
+        >
+          <slot name="sidePane"></slot>
+        </div>
+      </div>
+      <!-- </div> -->
     </div>
   </div>
 </template>
@@ -39,6 +59,7 @@ import { defineComponent } from "@vue/runtime-core";
 import { PropType } from "vue";
 import { flattenDeep } from "lodash";
 import Btn from "./Btn.vue";
+import { v4 as uuid4 } from "uuid";
 
 export default defineComponent({
   name: "CodeEditor",
@@ -72,6 +93,12 @@ export default defineComponent({
       default: "typescript",
     },
   },
+  mounted() {
+    this.sidePaneContentHeight =
+      this.baseHeight -
+      (document.getElementById(this.elementId + "sidePaneTitle")
+        ?.clientHeight ?? 0);
+  },
   data() {
     return {
       monacoModule: null as any,
@@ -83,6 +110,8 @@ export default defineComponent({
           scale: 2,
         },
       },
+      elementId: uuid4(),
+      sidePaneContentHeight: 0,
     };
   },
   methods: {
@@ -121,7 +150,7 @@ export default defineComponent({
         case "md":
           return 200;
         case "lg":
-          return 480;
+          return 520;
       }
       throw new Error("unreachable");
     },

@@ -496,6 +496,8 @@ export const it = {
       "L'esecuzione del tuo codice non ha prodotto errori. Purtroppo questo esercizio non ha test case, quindi questo è tutto ciò che sappiamo.",
     internal_error:
       "Si è verificato un errore interno durante l'esecuzione del codice. Per favore, segnala questo errore ai docenti.",
+    code_execution_will_appear_here:
+      "I risultati dell'esecuzione del tuo codice appariranno qui.",
   },
   exercise_types: {
     [ExerciseType.MULTIPLE_CHOICE_SINGLE_POSSIBLE]:
