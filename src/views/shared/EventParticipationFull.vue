@@ -18,7 +18,7 @@
       </template></Card
     >
     <div
-      class="mb-4 items-start flex space-x-0.5 md:space-x-2"
+      class="mb-4 items-center flex space-x-0.5 md:space-x-2"
       v-if="!firstLoading && allowEditAssessment"
     >
       <!-- <router-link :to="{ name: 'ExamProgress' }"
@@ -29,7 +29,7 @@
       <Btn @click="$router.back()" :outline="true" :variant="'icon'"
         ><span class="material-icons-outlined">arrow_back</span></Btn
       >
-      <h3 class="mt-1.25px">
+      <h3 class="mb-0.5">
         {{
           participation.event.event_type === EventType.EXAM
             ? $t("event_assessment.viewing_participation_of")

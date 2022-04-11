@@ -1,14 +1,18 @@
 <template>
   <div class="flex flex-col">
     <div class="ml-auto">
-      <Btn :outline="true" :variant="'icon'" @click="$emit('delete')" class=""
+      <Btn
+        :outline="true"
+        :variant="'icon'"
+        @click="$emit('delete')"
+        class="-mr-3"
         ><span class="text-base text-danger-dark material-icons-outlined">
           close
         </span></Btn
       >
     </div>
     <div
-      class="flex flex-col py-3 mb-12 space-y-2 md:flex-row md:space-x-4 md:space-y-0 md:items-start"
+      class="flex flex-col py-3 mb-12 space-y-2  md:flex-row md:space-x-4 md:space-y-0 md:items-start"
     >
       <!-- <span
       class="row-span-2 my-auto text-lg cursor-move material-icons-outlined opacity-70"
@@ -44,7 +48,8 @@
               "
               class="flex items-center ml-8 space-x-2 text-danger-dark"
             >
-              <span class="mr-2 text-sm material-icons-outlined">visibility_off</span
+              <span class="mr-2 text-sm material-icons-outlined"
+                >visibility_off</span
               >{{ $t("exercise_editor.hidden_to_students") }}
             </div>
           </div></CodeEditor
@@ -60,11 +65,13 @@
               <div
                 v-if="
                   modelValue.testcase_type === ExerciseTestCaseType.HIDDEN ||
-                  modelValue.testcase_type === ExerciseTestCaseType.SHOW_TEXT_ONLY
+                  modelValue.testcase_type ===
+                    ExerciseTestCaseType.SHOW_TEXT_ONLY
                 "
                 class="flex items-center ml-2 ml-4 space-x-2 text-danger-dark"
               >
-                <span class="mr-2 text-sm material-icons-outlined">visibility_off</span
+                <span class="mr-2 text-sm material-icons-outlined"
+                  >visibility_off</span
                 >{{ $t("misc.hidden") }}
               </div>
             </div></CodeEditor
@@ -81,11 +88,13 @@
               <div
                 v-if="
                   modelValue.testcase_type === ExerciseTestCaseType.HIDDEN ||
-                  modelValue.testcase_type === ExerciseTestCaseType.SHOW_TEXT_ONLY
+                  modelValue.testcase_type ===
+                    ExerciseTestCaseType.SHOW_TEXT_ONLY
                 "
                 class="flex items-center ml-3 space-x-2 text-danger-dark"
               >
-                <span class="mr-2 text-sm material-icons-outlined">visibility_off</span
+                <span class="mr-2 text-sm material-icons-outlined"
+                  >visibility_off</span
                 >{{ $t("misc.hidden") }}
               </div>
             </div></CodeEditor
@@ -104,7 +113,8 @@
               v-if="modelValue.testcase_type === ExerciseTestCaseType.HIDDEN"
               class="flex items-center ml-8 space-x-2 text-danger-dark"
             >
-              <span class="mr-2 text-sm material-icons-outlined">visibility_off</span
+              <span class="mr-2 text-sm material-icons-outlined"
+                >visibility_off</span
               >{{ $t("exercise_editor.hidden_to_students") }}
             </div>
           </div></TextEditor

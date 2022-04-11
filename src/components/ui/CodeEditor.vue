@@ -8,7 +8,10 @@
     ></label>
 
     <div class="flex w-full">
-      <div class="relative w-7/12 overflow-hidden rounded-sm">
+      <div
+        class="relative overflow-hidden rounded-sm"
+        :class="$slots.sidePane ? 'w-7/12' : 'w-full'"
+      >
         <div style="height: inherit" class="absolute flex w-full">
           <div
             v-if="showRunButton"
@@ -35,7 +38,7 @@
         />
         <slot name="bottom"></slot>
       </div>
-      <div class="flex flex-col w-5/12 overflow-hidden">
+      <div v-if="$slots.sidePane" class="flex flex-col w-5/12 overflow-hidden">
         <div :id="elementId + 'sidePaneTitle'">
           <slot name="sidePaneTitle"></slot>
         </div>

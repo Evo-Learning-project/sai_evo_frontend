@@ -26,7 +26,7 @@
         :highlighted="isSelected(exercise)"
       ></MinimalExercisePreview>
     </div>
-    <div class="grid md:grid-cols-2 gap-5" v-else>
+    <div class="grid gap-5 md:grid-cols-2" v-else>
       <MinimalExercisePreviewSkeleton></MinimalExercisePreviewSkeleton>
       <MinimalExercisePreviewSkeleton></MinimalExercisePreviewSkeleton>
       <MinimalExercisePreviewSkeleton></MinimalExercisePreviewSkeleton>
@@ -51,7 +51,7 @@
       v-else-if="!firstLoading && exercises.length === 0"
       class="flex flex-col space-y-4"
     >
-      <p class="text-muted mx-auto">
+      <p class="mx-auto text-muted">
         {{ $t("course_exercises.no_matching_exercises") }}.
       </p>
       <router-link class="mx-auto link" :to="{ name: 'CourseExercises' }"
@@ -154,7 +154,9 @@ export default defineComponent({
       return !this.allowPickingDraft && exercise.state == ExerciseState.DRAFT;
     },
     isSelectedInAnotherRule(exercise: Exercise): boolean {
-      return this.alreadySelected.includes(exercise.id) && !this.isSelected(exercise);
+      return (
+        this.alreadySelected.includes(exercise.id) && !this.isSelected(exercise)
+      );
     },
     onSelection(exercise: Exercise) {
       const index = this.modelValue.findIndex((e) => e == exercise.id);

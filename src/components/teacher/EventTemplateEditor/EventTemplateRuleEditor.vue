@@ -117,6 +117,7 @@
     <Dialog
       :showDialog="showDialog"
       :large="true"
+      :fullHeight="modelValue.rule_type === EventTemplateRuleType.ID_BASED"
       :footerBorder="true"
       :confirmOnly="true"
       @yes="onCloseDialog()"
@@ -125,8 +126,8 @@
         <Btn
           :variant="'icon'"
           :outline="true"
-          :size="'sm'"
-          class=""
+          :size="'lg'"
+          class="-ml-3.5 mt-1.25px"
           @click="setRuleMode(null)"
         >
           <span class="material-icons-outlined"> arrow_back </span>
@@ -241,7 +242,7 @@
                   )
             }}
           </p>
-          <div class="mt-4 max-h-96">
+          <div class="mt-4 max-h-100">
             <ExercisePicker
               :modelValue="modelValue.exercises"
               :alreadySelected="globallySelectedExercises"

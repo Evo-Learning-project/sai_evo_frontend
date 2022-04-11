@@ -20,8 +20,7 @@
 
           {{ $t("event_assessment.exams_awaiting_assessment_are_marked") }}
           <span
-            style="vertical-align: sub"
-            class="text-base text-yellow-900 material-icons-outlined"
+            class="text-base text-yellow-900  inline-icon material-icons-outlined"
             >pending_actions</span
           >.
         </p>
@@ -418,8 +417,8 @@ export default defineComponent({
                       .includes(i)
                 ),
                 // unselected id's
-                ...unselectedUserIds.filter(
-                  (i) => this.event.users_allowed_past_closure?.includes(i)
+                ...unselectedUserIds.filter((i) =>
+                  this.event.users_allowed_past_closure?.includes(i)
                 ),
               ],
             },

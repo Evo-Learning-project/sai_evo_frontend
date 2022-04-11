@@ -9,12 +9,21 @@
       <div
         @click="dismiss()"
         style="width: 100vw !important; height: 100vh !important"
-        class="absolute z-10 w-full h-full transition-none bg-gray-900 opacity-80"
+        class="absolute z-10 w-full h-full transition-none bg-gray-900  opacity-80"
       ></div>
       <transition name="bounce">
         <div
           v-if="showDialog"
-          class="z-20 max-h-full overflow-y-auto mx-1.5 bg-white rounded-md shadow-all-around md:mx-0"
+          class="
+            z-20
+            max-h-full
+            overflow-y-auto
+            mx-1.5
+            bg-white
+            rounded-md
+            shadow-all-around
+            md:mx-0
+          "
           :class="{
             'md:max-w-4xl md:min-w-md': !large,
             'md:w-full md:mx-4': large,
@@ -22,8 +31,8 @@
         >
           <div class="w-full px-4 py-6 overflow-y-auto md:px-8">
             <!-- overflow-y-auto-->
-            <div v-if="$slots.title" class="flex items-center mb-2 space-x-3">
-              <slot class="my-auto" name="backButton"></slot>
+            <div v-if="$slots.title" class="flex items-center mb-2 space-x-2">
+              <slot class="" name="backButton"></slot>
               <div v-if="error">
                 <div class="icon-surrounding bg-danger-light text-danger-dark">
                   <span class="material-icons-outlined"> priority_high </span>
@@ -31,11 +40,15 @@
               </div>
               <div v-else-if="warning">
                 <div class="text-yellow-900 bg-yellow-500 icon-surrounding">
-                  <span class="ml-px material-icons-outlined"> priority_high </span>
+                  <span class="ml-px material-icons-outlined">
+                    priority_high
+                  </span>
                 </div>
               </div>
               <div v-else-if="success">
-                <div class="icon-surrounding bg-success-light text-success-dark">
+                <div
+                  class="icon-surrounding bg-success-light text-success-dark"
+                >
                   <span class="material-icons-outlined"> check </span>
                 </div>
               </div>
@@ -74,21 +87,6 @@
               >
                 {{ noText || $t("dialog.default_no_text") }}
               </Btn>
-              <!-- <btn
-                class="mr-2"
-                :disabled="disableOk > 0"
-                :variant="severity == 1 ? 'green' : 'red'"
-                @click="emitChoice('yes')"
-              >
-                {{ confirmOnly ? 'Ok' : yesText || 'Sì' }}
-              </btn>
-              <btn
-                :variant="'light'"
-                @click="emitChoice('no')"
-                v-if="!confirmOnly"
-              >
-                {{ noText || 'No' }}
-              </btn> -->
             </div>
           </div>
         </div>

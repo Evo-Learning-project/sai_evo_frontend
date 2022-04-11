@@ -2,15 +2,17 @@
   <Card :margin-less="true">
     <template v-slot:header>
       <div class="flex items-center w-full">
-        <span class="material-icons-outlined text-lg -ml-0.5">person</span>
-        <p class="text-muted ml-1.5">{{ user.full_name }}</p>
+        <span class="material-icons-outlined text-lg icon-light -ml-0.5"
+          >person</span
+        >
+        <p class="ml-1.5">{{ user.full_name }}</p>
         <Btn
           class="ml-auto"
           :outline="true"
           :variant="'icon'"
           @click="expanded = !expanded"
           ><span
-            class="material-icons-outlined transform transition-transform duration-200 ease-out"
+            class="transition-transform duration-200 ease-out transform  material-icons-outlined"
             :class="{ 'rotate-180': expanded }"
           >
             {{ false && expanded ? "expand_less" : "expand_more" }}
@@ -18,8 +20,8 @@
         >
       </div>
       <div class="flex items-center space-x-1.5">
-        <span class="text-sm material-icons-outlined">mail</span>
-        <p class="text-muted">{{ user.email }}</p>
+        <span class="text-sm icon-light material-icons-outlined">mail</span>
+        <p class="">{{ user.email }}</p>
       </div>
     </template>
     <template v-if="true || expanded" v-slot:body>
@@ -31,7 +33,11 @@
           'max-h-96 overflow-y-auto': expanded && (true || !fetching),
         }"
       >
-        <SkeletonCard :border-less="true" class="-ml-4" v-if="fetching"></SkeletonCard>
+        <SkeletonCard
+          :border-less="true"
+          class="-ml-4"
+          v-if="fetching"
+        ></SkeletonCard>
         <Timeline
           v-else
           :steps="processedHistory"
@@ -42,8 +48,14 @@
           </div>
           <div class="flex items-center space-x-1">
             <p>
-              {{ $t("course_insights.user_history_event_descriptions." + eventType) }}
-              <strong v-if="eventType === EventType.EXAM">{{ data.name }}</strong>
+              {{
+                $t(
+                  "course_insights.user_history_event_descriptions." + eventType
+                )
+              }}
+              <strong v-if="eventType === EventType.EXAM">{{
+                data.name
+              }}</strong>
             </p>
             <router-link
               :to="{
@@ -52,7 +64,9 @@
               }"
             >
               <Btn :outline="true" :variant="'icon'"
-                ><span class="material-icons-outlined text-base">launch</span></Btn
+                ><span class="text-base material-icons-outlined"
+                  >launch</span
+                ></Btn
               >
             </router-link>
           </div>
@@ -117,7 +131,9 @@ export default defineComponent({
           name: p.event.name,
           examId: p.event.id,
           class:
-            p.event.event_type === EventType.SELF_SERVICE_PRACTICE ? "opacity-50" : "",
+            p.event.event_type === EventType.SELF_SERVICE_PRACTICE
+              ? "opacity-50"
+              : "",
         },
       }));
     },

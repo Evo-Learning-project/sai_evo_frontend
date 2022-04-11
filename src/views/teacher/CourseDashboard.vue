@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Card :hoverable="false" :filled="true">
+    <Card :hoverable="false" :filled="true" :borderLess="true">
       <template v-slot:header>
         <h3>{{ $t("misc.course_settings") }}</h3>
       </template>
@@ -8,7 +8,9 @@
         <div class="flex flex-col justify-between mt-2 md:flex-row">
           <div class="flex flex-col space-y-6">
             <div class="flex items-center" v-show="!editingName">
-              <p class="mr-2 text-muted">Nome</p>
+              <p class="mr-2 text-muted">
+                {{ $t("teacher_course_dashboard.course_name") }}
+              </p>
               <p class="mr-3">{{ currentCourse.name }}</p>
               <Btn
                 v-if="hasPrivileges([CoursePrivilege.UPDATE_COURSE])"
@@ -58,19 +60,21 @@
                 </span>
               </Btn>
             </div>
-            <div class="flex items-center" v-show="!editingDescription">
-              <p class="mr-2 text-muted">
-                {{ $t("course_creation_form.course_description") }}
-              </p>
+            <div class="flex flex-col" v-show="!editingDescription">
+              <div class="flex items-center">
+                <p class="mr-2 text-muted">
+                  {{ $t("course_creation_form.course_description") }}
+                </p>
+                <Btn
+                  v-if="hasPrivileges([CoursePrivilege.UPDATE_COURSE])"
+                  :outline="true"
+                  :variant="'icon'"
+                  @click="editCourseDescription"
+                >
+                  <span class="text-xl material-icons-outlined"> edit </span>
+                </Btn>
+              </div>
               <p class="mr-3" v-html="currentCourse.description"></p>
-              <Btn
-                v-if="hasPrivileges([CoursePrivilege.UPDATE_COURSE])"
-                :outline="true"
-                :variant="'icon'"
-                @click="editCourseDescription"
-              >
-                <span class="text-xl material-icons-outlined"> edit </span>
-              </Btn>
             </div>
             <div v-show="editingDescription" class="flex items-center">
               <TextEditor class="w-full mr-2" v-model="dirtyCourseDescription">
@@ -123,7 +127,7 @@
             </Toggle>
             <p class="mr-auto text-muted" v-if="currentCourse.hidden">
               <span
-                class="mt-auto mr-1 text-lg  text-danger-dark material-icons-outlined"
+                class="mr-1 text-lg  inline-icon text-danger-dark material-icons-outlined"
                 >error_outline</span
               >
               {{ $t("course_creation_form.hidden_description") }}

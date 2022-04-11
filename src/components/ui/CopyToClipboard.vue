@@ -5,6 +5,7 @@
       v-clipboard:success="onCopy"
       :title="title || $t('misc.copy')"
       :outline="true"
+      :size="'sm'"
       :variant="'icon'"
     >
       <span class="text-xl material-icons"> share </span>

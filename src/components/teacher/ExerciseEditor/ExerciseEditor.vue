@@ -73,6 +73,17 @@
             :hadError="savingError"
           ></CloudSaveStatus>
         </div>
+        <div v-else class="flex">
+          <Btn
+            :outline="true"
+            :variant="'icon'"
+            @click="$emit('delete')"
+            class="ml-auto -mr-4"
+            ><span class="text-base text-danger-dark material-icons-outlined">
+              close
+            </span></Btn
+          >
+        </div>
       </template>
       <template v-slot:body>
         <div v-if="!subExercise || !cloze" class="flex flex-col space-y-6">

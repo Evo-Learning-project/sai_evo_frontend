@@ -1,11 +1,24 @@
 <template>
-  <div class="flex flex-col py-3 my-3 space-y-4 md:space-x-4 md:space-y-0 md:flex-row">
-    <span
-      class="mr-2 text-lg cursor-move drag-handle material-icons-outlined opacity-70"
-      :class="{ 'my-auto': !singleLine, 'mt-1': singleLine }"
-    >
-      drag_indicator
-    </span>
+  <div
+    class="flex flex-col py-3 my-3 space-y-4  md:space-x-4 md:space-y-0 md:flex-row"
+  >
+    <div class="flex items-center">
+      <span
+        class="mr-auto text-lg cursor-move  md:mr-2 drag-handle material-icons-outlined opacity-70"
+        :class="{ 'my-auto': !singleLine, 'mt-1': singleLine }"
+      >
+        drag_indicator
+      </span>
+      <Btn
+        class="ml-auto md:hidden"
+        :outline="true"
+        :variant="'icon'"
+        @click="$emit('delete')"
+        ><span class="text-base text-danger-dark material-icons-outlined">
+          close
+        </span></Btn
+      >
+    </div>
     <TextEditor
       v-if="!singleLine"
       class="w-full md:w-8/12"
@@ -27,17 +40,24 @@
           class="mb-auto"
           :modelValue="modelValue.score_selected"
           @update:modelValue="onUpdate('score_selected', $event)"
-          :leftIcon="iconType === 'radio' ? 'radio_button_checked' : 'check_box'"
+          :leftIcon="
+            iconType === 'radio' ? 'radio_button_checked' : 'check_box'
+          "
           >{{ $t("exercise_editor.choice_score_checked") }}</NumberInput
         >
-        <Tooltip class="-ml-1.5" :textCode="'exercise_editor.score_if_checked'"></Tooltip>
+        <Tooltip
+          class="-ml-1.5"
+          :textCode="'exercise_editor.score_if_checked'"
+        ></Tooltip>
       </div>
       <div>
         <NumberInput
           class="mb-auto"
           :modelValue="modelValue.score_unselected"
           :leftIcon="
-            iconType === 'radio' ? 'radio_button_unchecked' : 'check_box_outline_blank'
+            iconType === 'radio'
+              ? 'radio_button_unchecked'
+              : 'check_box_outline_blank'
           "
           @update:modelValue="onUpdate('score_unselected', $event)"
           >{{ $t("exercise_editor.choice_score_unchecked") }}</NumberInput
@@ -49,7 +69,11 @@
       </div>
     </div>
     <div class="my-auto">
-      <Btn :outline="true" :variant="'icon'" @click="$emit('delete')"
+      <Btn
+        class="md:-mr-3.5 md:ml-0 -ml-2.5 hidden md:block"
+        :outline="true"
+        :variant="'icon'"
+        @click="$emit('delete')"
         ><span class="text-base text-danger-dark material-icons-outlined">
           close
         </span></Btn

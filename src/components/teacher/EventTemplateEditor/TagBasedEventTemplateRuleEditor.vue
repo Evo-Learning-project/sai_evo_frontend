@@ -16,7 +16,10 @@
         }}</Btn></router-link
       >
     </div>
-    <div class="flex flex-col" v-if="!showTeacherIntroductionText && tags.length === 0">
+    <div
+      class="flex flex-col"
+      v-if="!showTeacherIntroductionText && tags.length === 0"
+    >
       <p class="mb-2 text-muted text-danger-dark">
         {{ $t("event_template_rule_editor.no_tags_student") }}
       </p>
@@ -38,12 +41,16 @@
         >
           <p v-if="index === 0" class="mb-2">
             {{ $t("event_template_rule_editor.tag_based_select_exercises") }}
-            <strong>{{ $t("event_template_rule_editor.tag_based_at_least_one") }}</strong>
+            <strong>{{
+              $t("event_template_rule_editor.tag_based_at_least_one")
+            }}</strong>
             {{ $t("event_template_rule_editor.tag_based_among") }}
           </p>
           <p v-else>
             {{ $t("event_template_rule_editor.tag_based_and") }}
-            <strong>{{ $t("event_template_rule_editor.tag_based_at_least_one") }}</strong>
+            <strong>{{
+              $t("event_template_rule_editor.tag_based_at_least_one")
+            }}</strong>
             {{ $t("event_template_rule_editor.tag_based_among") }}
           </p>
           <TagInput
@@ -59,11 +66,13 @@
         <div
           v-if="allowCreateMoreClauses"
           @click="onAddClause"
-          class="mt-2 transition-opacity duration-75 opacity-50 cursor-pointer hover:opacity-100"
+          class="mt-2 transition-opacity duration-75 opacity-50 cursor-pointer  hover:opacity-100"
         >
           <p>
             {{ $t("event_template_rule_editor.tag_based_and") }}
-            <strong>{{ $t("event_template_rule_editor.tag_based_at_least_one") }}</strong>
+            <strong>{{
+              $t("event_template_rule_editor.tag_based_at_least_one")
+            }}</strong>
             {{ $t("event_template_rule_editor.tag_based_among") }}
           </p>
           <TagInput
@@ -76,7 +85,7 @@
       </div>
       <div
         v-if="showPreview"
-        class="relative flex px-5 py-5 shadow-elevation-2 rounded md:w-9/12 md:ml-16 md:max-h-64 bg-gray-50"
+        class="relative flex  card shadow-elevation md:w-9/12 md:ml-16 md:max-h-64 card-filled"
       >
         <SkeletonCard
           v-if="false && localLoading"
@@ -86,7 +95,7 @@
         <Spinner
           :size="'xl'"
           :fast="true"
-          class="absolute transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
+          class="absolute transform -translate-x-1/2 -translate-y-1/2  top-1/2 left-1/2"
           v-if="localLoading"
         ></Spinner>
         <div
@@ -105,8 +114,13 @@
             v-if="!!satisfying.example"
             :exercise="satisfying.example"
           ></MinimalExercisePreview>
-          <div v-else class="flex flex-col items-center mt-2 mb-auto opacity-70">
-            <span class="material-icons-outlined opacity-50" style="font-size: 4rem"
+          <div
+            v-else
+            class="flex flex-col items-center mt-2 mb-auto opacity-70"
+          >
+            <span
+              class="opacity-50 material-icons-outlined"
+              style="font-size: 4rem"
               >error_outline</span
             >
             <p>{{ $t("event_template_rule_editor.unsatisfiable_tag_rule") }}</p>

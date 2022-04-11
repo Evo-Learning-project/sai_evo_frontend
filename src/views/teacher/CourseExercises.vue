@@ -3,7 +3,7 @@
     <Card
       :hoverable="false"
       :border-less="true"
-      class="mb-4 -mt-2 bg-light shadow-elevation-2"
+      class="mb-4 -mt-2 card-filled shadow-elevation"
     >
       <template v-slot:body>
         <ExerciseSearchFilters
@@ -15,7 +15,9 @@
 
     <div class="flex w-full mt-12 mb-6">
       <Btn @click="onAddExercise()" :loading="localLoading" class="ml-auto"
-        ><span class="mr-1 text-base material-icons-outlined"> add_circle_outline </span>
+        ><span class="mr-1 text-base material-icons-outlined">
+          add_circle_outline
+        </span>
         {{ $t("course_exercises.new_exercise") }}</Btn
       >
     </div>
@@ -38,7 +40,9 @@
       class="flex flex-col w-full mt-12 mb-12 text-center select-none"
       v-if="!firstLoading && exercises.length === 0 && emptyFilters"
     >
-      <p style="font-size: 10rem" class="material-icons-outlined opacity-10">topic</p>
+      <p style="font-size: 10rem" class="material-icons-outlined opacity-10">
+        topic
+      </p>
       <h2 class="opacity-40">{{ $t("course_exercises.no_exercises") }}</h2>
     </div>
     <div
@@ -81,7 +85,13 @@ const { mapState } = createNamespacedHelpers("teacher");
 import { getTranslatedString as _ } from "@/i18n";
 import { icons as exerciseTypesIcons } from "@/assets/exerciseTypesIcons";
 import { icons as exerciseStatesIcons } from "@/assets/exerciseStatesIcons";
-import { Exercise, ExerciseState, ExerciseType, getBlankExercise, Tag } from "@/models";
+import {
+  Exercise,
+  ExerciseState,
+  ExerciseType,
+  getBlankExercise,
+  Tag,
+} from "@/models";
 
 import { VueEternalLoading, LoadAction } from "@ts-pro/vue-eternal-loading";
 import { DialogData, SelectableOption } from "@/interfaces";
@@ -161,7 +171,11 @@ export default defineComponent({
     };
   },
   methods: {
-    ...mapActions("teacher", ["getExercises", "createExercise", "deleteExercise"]),
+    ...mapActions("teacher", [
+      "getExercises",
+      "createExercise",
+      "deleteExercise",
+    ]),
     ...mapActions("shared", ["getTags"]),
     getBlankExerciseSearchFilters,
     async onFilterChange() {
@@ -196,9 +210,13 @@ export default defineComponent({
           courseId: this.courseId,
           exercise: getBlankExercise(),
         });
-        (this.$refs["course-" + this.courseId + "-exercise-" + newExercise.id] as {
-          showEditor: boolean;
-        }).showEditor = true;
+        (
+          this.$refs[
+            "course-" + this.courseId + "-exercise-" + newExercise.id
+          ] as {
+            showEditor: boolean;
+          }
+        ).showEditor = true;
       });
     },
     async onDeleteExercise(exercise: Exercise) {
@@ -239,7 +257,7 @@ export default defineComponent({
       }));
     },
     exerciseTypeOptions(): SelectableOption[] {
-      return ((Object.keys(ExerciseType) as unknown[]) as ExerciseType[])
+      return (Object.keys(ExerciseType) as unknown[] as ExerciseType[])
         .filter((key: string | number) => parseInt(key as string) == key) //(ExerciseType[key] as unknown) == 'number')
         .map((key) => ({
           icons: exerciseTypesIcons[key],
@@ -248,7 +266,7 @@ export default defineComponent({
         }));
     },
     exerciseStateOptions(): SelectableOption[] {
-      return ((Object.keys(ExerciseState) as unknown[]) as ExerciseState[])
+      return (Object.keys(ExerciseState) as unknown[] as ExerciseState[])
         .filter((key: string | number) => parseInt(key as string) == key) //(ExerciseType[key] as unknown) == 'number')
         .map((key) => ({
           icons: exerciseStatesIcons[key],

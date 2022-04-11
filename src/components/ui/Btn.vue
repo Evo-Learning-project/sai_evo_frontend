@@ -2,12 +2,15 @@
   <button
     @mousedown="onMouseDown"
     :disabled="disabled || loading"
-    class="relative overflow-hidden disabled:cursor-not-allowed disabled:opacity-70"
+    class="relative overflow-hidden  disabled:cursor-not-allowed disabled:opacity-70"
     :class="{
       'shadow-inner bg-light': forceActive,
-      'bg-success-light bg-opacity-30': forceActive && variant === 'success-borderless',
-      'px-5 py-1 font-medium': !outline && size === 'base' && variant !== 'transparent',
-      'px-4 py-2.5px font-medium': outline && size === 'base' && variant !== 'icon',
+      'bg-success-light bg-opacity-30':
+        forceActive && variant === 'success-borderless',
+      'px-5 py-1 font-medium':
+        !outline && size === 'base' && variant !== 'transparent',
+      'px-4 py-2.5px font-medium':
+        outline && size === 'base' && variant !== 'icon',
       'px-2.5 py-0.5 text-sm': size === 'sm' && variant !== 'icon',
       'px-1.5 py-0.5 text-xs': size === 'xs' && variant !== 'icon',
       'px-14 py-2 text-lg font-medium': size === 'lg' && variant !== 'icon',
@@ -16,7 +19,8 @@
       'text-danger-dark bg-danger shadow-btn': !outline && variant === 'danger',
       'text-danger-dark border-danger-dark bg-white border':
         outline && variant === 'danger',
-      'text-success-dark bg-success-light shadow-btn': !outline && variant === 'success',
+      'text-success-dark bg-success-light shadow-btn':
+        !outline && variant === 'success',
       'transition-colors duration-100': outline,
       'focus:outline-primary': false && variant === 'primary',
       'focus:outline-danger-dark': variant === 'danger',
@@ -33,8 +37,11 @@
       'border-gray-300 bg-white hover:bg-primary hover:bg-opacity-20 hover:text-primary-light transition-colors duration-100':
         variant === 'transparent',
       'rounded-md': variant !== 'transparent',
-      'rounded-full p-0 h-8 w-8 bg-transparent hover:bg-gray-200 hover:border border-light text-gray-600':
+      'rounded-full bg-transparent hover:bg-gray-200 hover:border border-light text-gray-600':
         variant === 'icon',
+      'icon-btn-sm': variant === 'icon' && size === 'sm',
+      'icon-btn-base': variant === 'icon' && size === 'base',
+      'icon-btn-lg': variant === 'icon' && size === 'lg',
     }"
   >
     <!-- FIXME review shadow -->
@@ -45,7 +52,7 @@
     </div>
     <p
       v-if="loading"
-      class="absolute transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
+      class="absolute transform -translate-x-1/2 -translate-y-1/2  top-1/2 left-1/2"
     >
       <spinner
         :size="'md'"

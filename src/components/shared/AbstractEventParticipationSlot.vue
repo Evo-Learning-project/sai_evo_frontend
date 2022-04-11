@@ -259,9 +259,10 @@
               class="ml-1"
               :outline="true"
               :variant="'icon'"
+              :size="'sm'"
               :disabled="showAssessmentControls"
               @click="onShowAssessmentControls()"
-              ><span class="text-lg text-gray-600 material-icons-outlined"
+              ><span class="text-lg icon-light material-icons-outlined"
                 >edit</span
               ></Btn
             >
@@ -270,9 +271,10 @@
               :outline="true"
               class="ml-auto"
               :variant="'icon'"
+              :size="'sm'"
               :disabled="showAssessmentControls"
               @click="onUndoScoreEdit()"
-              ><span class="text-lg text-gray-600 material-icons-outlined"
+              ><span class="text-lg icon-light material-icons-outlined"
                 >undo</span
               ></Btn
             >

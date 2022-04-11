@@ -1,13 +1,17 @@
 <template>
   <div>
     <div class="flex items-center space-x-2">
-      <span class="material-icons-outlined text-3xl opacity-60"> manage_search </span>
+      <span class="text-3xl material-icons-outlined icon-light">
+        manage_search
+      </span>
       <h3>{{ $t("filter_results.title") }}</h3>
     </div>
 
     <div class="mt-5">
       <!-- <chipset :options="tagsOptions" :modelValue="modelValue.tags"></chipset> -->
-      <div class="flex flex-col space-y-4 md:flex-row md:space-y-0 md:space-x-4">
+      <div
+        class="flex flex-col space-y-4 md:flex-row md:space-y-0 md:space-x-4"
+      >
         <TextInput
           :modelValue="modelValue.label"
           @update:modelValue="emitUpdate('label', $event)"
@@ -26,7 +30,7 @@
         </TextInput>
       </div>
       <div
-        class="md:mt-6 mt-4 overflow-y-hidden transition-max-height duration-200 ease-in-out"
+        class="mt-4 overflow-y-hidden duration-200 ease-in-out  md:mt-6 transition-max-height"
         :class="{ 'max-h-96': full || expanded, 'max-h-0': !full & !expanded }"
       >
         <Chipset
@@ -57,11 +61,11 @@
           @click="$emit('resetFilters')"
           class="mr-0.5"
           id="remove-filters-btn"
-          ><span class="material-icons-outlined text-xl"> filter_alt_off </span>
+          ><span class="text-xl material-icons-outlined"> filter_alt_off </span>
         </Btn>
         <label
           v-if="!emptyFilters"
-          class="text-muted cursor-pointer"
+          class="cursor-pointer text-muted"
           for="remove-filters-btn"
           >{{ $t("filter_results.remove_filters") }}</label
         >
@@ -74,13 +78,13 @@
           class="ml-auto mr-0.5"
           id="more-filters-btn"
           ><span
-            class="material-icons-outlined transform transition-transform duration-200 ease-out"
+            class="transition-transform duration-200 ease-out transform  material-icons-outlined"
             :class="{ 'rotate-180': expanded }"
           >
             {{ false && expanded ? "expand_less" : "expand_more" }}
           </span>
         </Btn>
-        <label class="text-muted cursor-pointer" for="more-filters-btn">{{
+        <label class="cursor-pointer text-muted" for="more-filters-btn">{{
           $t("filter_results.more_filters")
         }}</label>
       </div>
@@ -137,13 +141,15 @@ export default defineComponent({
     },
     tagsOptions() {
       return this.tags?.map((t: Tag) => ({
-        icons: this.modelValue.tags.includes(t.id as string) ? ["done-sm"] : null,
+        icons: this.modelValue.tags.includes(t.id as string)
+          ? ["done-sm"]
+          : null,
         value: t.id,
         content: t.name,
       }));
     },
     exerciseTypeOptions() {
-      return ((Object.keys(ExerciseType) as unknown[]) as ExerciseType[])
+      return (Object.keys(ExerciseType) as unknown[] as ExerciseType[])
         .filter((key: string | number) => parseInt(key as string) == key) //(ExerciseType[key] as unknown) == 'number')
         .map((key) => ({
           icons: exerciseTypesIcons[key],
@@ -152,7 +158,7 @@ export default defineComponent({
         }));
     },
     exerciseStateOptions() {
-      return ((Object.keys(ExerciseState) as unknown[]) as ExerciseState[])
+      return (Object.keys(ExerciseState) as unknown[] as ExerciseState[])
         .filter((key: string | number) => parseInt(key as string) == key) //(ExerciseType[key] as unknown) == 'number')
         .map((key) => ({
           icons: exerciseStatesIcons[key],
