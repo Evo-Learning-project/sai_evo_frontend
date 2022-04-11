@@ -40,7 +40,7 @@
         </div>
       </div>
       <CourseListItem
-        v-for="course in courses"
+        v-for="course in coursesSorted"
         :key="'course-' + course.id"
         :course="course"
         class="my-4"
@@ -83,6 +83,7 @@ import { loadingMixin } from "@/mixins";
 import CourseListItemSkeleton from "@/components/ui/skeletons/CourseListItemSkeleton.vue";
 import NumberInput from "@/components/ui/NumberInput.vue";
 import Btn from "@/components/ui/Btn.vue";
+import { Course } from "@/models";
 const { mapState, mapActions } = createNamespacedHelpers("shared");
 
 export default defineComponent({
@@ -118,6 +119,20 @@ export default defineComponent({
   },
   computed: {
     ...mapState(["courses", "user"]),
+    coursesSorted(): Course[] {
+      return ([...this.courses] as Course[]).sort((a, b) => {
+        if (a.creator?.id == this.user.id) {
+          // courses the user is creator of go first
+          return b.creator?.id == this.user.id ? 0 : -1;
+        }
+        return b.creator?.id == this.user.id
+          ? 1
+          : // then come the courses that user has privileges over
+            (b.privileges?.length ?? 0) - (a.privileges?.length ?? 0) ||
+              // as a last resort, sort by id
+              (a.id < b.id ? -1 : 1);
+      });
+    },
   },
 });
 </script>
