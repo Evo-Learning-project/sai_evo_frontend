@@ -7,11 +7,16 @@
         :loading="localLoading"
         class="ml-auto"
         :disabled="firstLoading"
-        ><span class="mr-1 text-base material-icons-outlined"> add_circle_outline </span>
+        ><span class="mr-1 text-base material-icons-outlined">
+          add_circle_outline
+        </span>
         {{ $t("course_events.new_exam") }}</Btn
       >
     </div>
-    <div v-if="!firstLoading" class="grid grid-cols-1 gap-4 mt-4 lg:grid-cols-2">
+    <div
+      v-if="!firstLoading"
+      class="grid grid-cols-1 gap-4 mt-4 lg:grid-cols-2"
+    >
       <EventEditorPreview
         v-for="(exam, index) in exams"
         :key="exam + '-' + index"
@@ -51,10 +56,9 @@
         <p>
           {{ $t("course_events.close_exam_for_everyone_body_1") }}
           <strong>{{ closingExam.name }}</strong>
-          &nbsp;<em>{{ $t("course_events.close_exam_for_everyone_body_2") }}</em>
+          {{ $t("course_events.close_exam_for_everyone_body_2") }}
           {{ $t("course_events.close_exam_for_everyone_body_3") }}
-          <em>{{ $t("event_preview.monitor") }}</em
-          >.
+          {{ $t("event_preview.monitor") }}.
         </p>
       </template>
     </Dialog>
@@ -63,7 +67,13 @@
 
 <script lang="ts">
 import EventEditorPreview from "@/components/teacher/EventEditor/EventEditorPreview.vue";
-import { Event, EventState, CoursePrivilege, getBlankExam, EventType } from "@/models";
+import {
+  Event,
+  EventState,
+  CoursePrivilege,
+  getBlankExam,
+  EventType,
+} from "@/models";
 import Btn from "@/components/ui/Btn.vue";
 
 import { defineComponent } from "@vue/runtime-core";
