@@ -1,8 +1,22 @@
 <template>
   <div>
     <div
-      :class="{ 'border-danger focus-within:border-danger': $slots.errors }"
-      class="light-input relative z-10 px-2 py-1.5  bg-light border-b-2 rounded-t-sm focus-within:border-primary transition-border duration-300"
+      :class="{
+        'border-danger-dark focus-within:border-danger-dark': $slots.errors,
+      }"
+      class="
+        light-input
+        relative
+        z-10
+        px-2
+        py-1.5
+        bg-light
+        border-b-2
+        rounded-t-sm
+        focus-within:border-primary
+        transition-border
+        duration-300
+      "
     >
       <input
         type="text"
@@ -10,7 +24,7 @@
         @input="$emit('update:modelValue', $event.target.value)"
         placeholder=" "
         :class="{ 'floating-label-error': $slots.errors?.() }"
-        class="z-10 block w-full bg-transparent appearance-none floating-label focus:outline-none"
+        class="z-10 block w-full bg-transparent appearance-none  floating-label focus:outline-none"
       />
       <label class="absolute bottom-1.5 origin-0 -z-1">
         <slot></slot>
@@ -31,19 +45,19 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/runtime-core'
+import { defineComponent } from "@vue/runtime-core";
 
 export default defineComponent({
-  name: 'TextInput',
+  name: "TextInput",
   props: {
     modelValue: {
       type: String,
-      required: true
+      required: true,
     },
     rightIcon: {
       type: String,
-      default: ''
-    }
-  }
-})
+      default: "",
+    },
+  },
+});
 </script>

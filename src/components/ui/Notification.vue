@@ -1,7 +1,7 @@
 <template>
   <div
     style="z-index: 999"
-    class="fixed transform -translate-x-1/2 -translate-y-1/2 bg-gray-200 border rounded-md shadow-2xl bg-opacity-90 top-1/2 left-1/2 w-10/12 md:w-max -ml-4 md:ml-0"
+    class="fixed w-10/12 transform -translate-x-1/2 -translate-y-1/2 bg-gray-200 border rounded-md shadow-2xl  bg-opacity-90 top-1/2 left-1/2 md:w-max md:ml-0"
   >
     <!-- FIXME review shadow -->
     <div class="flex items-center w-full px-6 py-8 space-x-4">

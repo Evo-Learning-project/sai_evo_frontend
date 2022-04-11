@@ -21,28 +21,68 @@
           <Timestamp :value="previewingEvent.end_timestamp"></Timestamp>
         </div>
       </div>
-      <div class="mt-auto mr-auto">
+      <div class="mt-auto">
+        <div
+          class="w-full mb-4 banner banner-danger"
+          v-if="!user.is_teacher && !user.mat"
+        >
+          <div class="w-full">
+            <div class="flex items-center space-x-3">
+              <span class="material-icons-outlined text-danger-dark">
+                school
+              </span>
+              <div>
+                <p class="font-semibold text-danger-dark">
+                  {{ $t("mat.missing_mat") }}
+                </p>
+                <p class="text-danger-dark">
+                  {{ $t("mat.insert_your_mat_now") }}
+                </p>
+              </div>
+            </div>
+            <div class="flex items-center mt-8 space-x-3">
+              <span class="opacity-0 material-icons-outlined"> school </span>
+              <NumberInput class="w-96 text-darkText" v-model="dirtyMat"
+                >{{ $t("mat.your_mat") }}
+              </NumberInput>
+              <Btn
+                :variant="'icon'"
+                :loading="localLoading"
+                :disabled="String(dirtyMat).length === 0"
+                :outline="true"
+                @click="onSaveMat"
+              >
+                <span
+                  class="font-bold material-icons-outlined text-success"
+                  style="font-size: 1.25rem"
+                >
+                  done
+                </span>
+              </Btn>
+            </div>
+          </div>
+        </div>
         <p
-          class="mb-1 text-muted text-danger-dark"
+          class="mb-1 mr-auto text-muted text-danger-dark"
           v-if="previewingEvent.state === EventState.PLANNED"
         >
           {{ $t("event_participation_page.exam_not_yet_begun") }}
         </p>
         <p
-          class="mb-1 text-muted text-danger-dark"
+          class="mb-1 mr-auto text-muted text-danger-dark"
           v-else-if="previewingEvent.state === EventState.CLOSED"
         >
           {{ $t("event_participation_page.exam_is_over") }}
         </p>
         <router-link
-          v-if="canParticipate"
+          v-if="canParticipate && (user.is_teacher || user.mat)"
           :to="{
             name: 'ExamParticipationPage',
             params: {
               examId: eventId,
             },
           }"
-          ><Btn :size="'lg'"
+          ><Btn :size="'lg'" class="mr-auto"
             ><span class="mr-2 text-xl material-icons-outlined"> login </span
             >{{ $t("event_participation_page.participate") }}</Btn
           >
@@ -63,9 +103,9 @@ import { courseIdMixin, eventIdMixin, loadingMixin } from "@/mixins";
 import { Event, EventState } from "@/models";
 import { defineComponent } from "@vue/runtime-core";
 
-import { createNamespacedHelpers } from "vuex";
+import { createNamespacedHelpers, mapState, mapActions } from "vuex";
 import SlotSkeleton from "@/components/ui/skeletons/SlotSkeleton.vue";
-const { mapState, mapActions } = createNamespacedHelpers("student");
+import NumberInput from "@/components/ui/NumberInput.vue";
 export default defineComponent({
   name: "ExamPreview",
   mixins: [courseIdMixin, eventIdMixin, loadingMixin],
@@ -73,6 +113,7 @@ export default defineComponent({
     Timestamp,
     Btn,
     SlotSkeleton,
+    NumberInput,
   },
   async created() {
     await this.withFirstLoading(
@@ -95,13 +136,25 @@ export default defineComponent({
   data() {
     return {
       EventState,
+      dirtyMat: "",
     };
   },
   methods: {
-    ...mapActions(["getEvent"]),
+    ...mapActions("student", ["getEvent"]),
+    ...mapActions("shared", ["updateUser"]),
+    async onSaveMat() {
+      await this.withLocalLoading(async () =>
+        this.updateUser({
+          userId: this.user.id,
+          changes: { mat: this.dirtyMat },
+        })
+      );
+      this.$store.commit("shared/showSuccessFeedback");
+    },
   },
   computed: {
-    ...mapState(["previewingEvent"]),
+    ...mapState("student", ["previewingEvent"]),
+    ...mapState("shared", ["user"]),
     canParticipate(): boolean {
       return (
         this.previewingEvent.state !== EventState.PLANNED &&

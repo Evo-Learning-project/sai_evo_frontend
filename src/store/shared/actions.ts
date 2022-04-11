@@ -2,6 +2,8 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 
 import { getCourse, getCourses, getTags } from "@/api/courses";
+import { getMe, updateUser } from "@/api/users";
+import { User } from "@/models";
 
 import axios from "axios";
 import { Commit } from "vuex";
@@ -28,18 +30,16 @@ export const actions = {
         });
     });
   },
-  getUserData: ({ commit }: { commit: Commit }) => {
-    return new Promise((resolve, reject) => {
-      axios
-        .get("/users/me/")
-        .then((response) => {
-          commit("setUser", { user: response.data });
-          resolve(response);
-        })
-        .catch((error) => {
-          reject(error);
-        });
-    });
+  getUserData: async ({ commit }: { commit: Commit }) => {
+    const response = await getMe();
+    commit("setUser", { user: response });
+  },
+  updateUser: async (
+    { commit }: { commit: Commit },
+    { userId, changes }: { userId: string; changes: Partial<User> }
+  ) => {
+    const response = await updateUser(userId, changes);
+    commit("setUser", { user: response });
   },
   getCourse: async (
     { commit }: { commit: Commit },

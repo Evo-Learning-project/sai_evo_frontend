@@ -20,7 +20,7 @@
   </transition>
   <router-view class="" />
   <footer
-    class="flex items-center w-full h-12 px-6 py-3 mt-auto text-sm text-white bg-dark"
+    class="flex items-center w-full h-12 px-6 py-3 mt-auto text-sm text-white  bg-dark"
   >
     <p>
       Crafted with ❤️

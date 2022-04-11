@@ -7,7 +7,9 @@ const getEventParticipationHeaders = (
   participations: EventParticipation[]
 ): string[] => [
   "user.email",
-  "user.full_name",
+  "user.mat",
+  "user.last_name",
+  "user.first_name",
   "begin_timestamp",
   "end_timestamp",
   ...participations[0].slots
@@ -49,6 +51,7 @@ const getEventParticipationHeaders = (
       return ret;
     })
     .flat(),
+  "score",
 ];
 
 const getHeaderString = (header: string) => {

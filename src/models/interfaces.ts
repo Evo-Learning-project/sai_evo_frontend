@@ -24,8 +24,11 @@ export interface User {
   id: string;
   email: string;
   full_name: string;
+  first_name: string;
+  last_name: string;
   is_teacher: boolean;
   course_privileges?: CoursePrivilege[];
+  mat: string;
 }
 
 export interface Course {

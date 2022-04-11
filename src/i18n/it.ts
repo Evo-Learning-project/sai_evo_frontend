@@ -164,6 +164,13 @@ export const it = {
       [EventType.SELF_SERVICE_PRACTICE]: "Ha svolto un'esercitazione",
     },
   },
+  mat: {
+    edit_mat_title: "Modifica matricola",
+    your_mat: "Il tuo numero di matricola",
+    missing_mat: "Non hai ancora inserito il tuo numero di matricola",
+    insert_your_mat_now:
+      "L'inserimento del numero di matricola è necessario per poter partecipare agli esami. Inseriscilo ora e non pensarci più!",
+  },
   misc: {
     hidden: "Nascosto",
     teacher: "Docente",
@@ -671,9 +678,13 @@ export const it = {
       user: {
         email: "Email",
         full_name: "Nome e cognome",
+        first_name: "Nome",
+        last_name: "Cognome",
+        mat: "Matricola",
       },
       begin_timestamp: "Data e ora di inizio",
       end_timestamp: "Data e ora di consegna",
+      score: "Voto",
       slot: "Slot",
       slots: {
         exercise: {
