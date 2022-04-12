@@ -1,7 +1,7 @@
 <template>
   <div class="relative my-4" :id="'editor-' + modelValue.id">
     <div style="z-index: 50" class="absolute top-0 right-0 mt-2.5 mr-1">
-      <Btn :size="'lg'" :variant="'icon'" @click="showEditor = !showEditor"
+      <Btn :size="'lg'" :variant="'icon'" @click="toggleExpand"
         ><span
           class="transition-transform duration-200 ease-out transform  material-icons-outlined"
           :class="{ 'rotate-180': showEditor }"
@@ -58,6 +58,7 @@ import ExerciseEditor from "@/components/teacher/ExerciseEditor/ExerciseEditor.v
 import ExercisePreview from "@/components/teacher/ExerciseEditor/ExercisePreview.vue";
 import { Exercise } from "@/models";
 import { defineComponent, PropType } from "@vue/runtime-core";
+import { texMixin } from "@/mixins";
 export default defineComponent({
   name: "ExerciseEditorWrapper",
   components: {
@@ -65,6 +66,7 @@ export default defineComponent({
     ExercisePreview,
     Btn,
   },
+  mixins: [texMixin],
   props: {
     modelValue: {
       type: Object as PropType<Exercise>,
@@ -86,6 +88,9 @@ export default defineComponent({
   methods: {
     toggleExpand() {
       this.showEditor = !this.showEditor;
+      if (!this.showEditor) {
+        this.triggerTexRender();
+      }
     },
   },
   computed: {

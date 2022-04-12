@@ -35,9 +35,11 @@
     <header
       class="sticky top-0 z-50 bg-indigo-100 shadow-md  md:px-12 bg-opacity-70 backdrop-blur-sm backdrop-filter"
     >
-      <div class="flex items-center px-4 py-4 mx-auto sm:px-6 lg:px-8">
-        <div class="flex flex-col md:items-center md:space-x-6 md:flex-row">
-          <h2 class="mb-0">
+      <div
+        class="flex w-full px-4 py-4 mx-auto md:items-center sm:px-6 lg:px-8"
+      >
+        <div class="flex flex-col flex-wrap md:items-center md:flex-row">
+          <h2 class="mb-0 md:mr-6">
             {{ routeTitle }}
           </h2>
           <BreadCrumbs
@@ -46,7 +48,9 @@
             class="mt-1"
           ></BreadCrumbs>
         </div>
-        <div id="main-student-header-right" class="ml-auto"></div>
+        <div class="flex ml-auto md:w-80">
+          <div class="ml-auto" id="main-student-header-right"></div>
+        </div>
       </div>
     </header>
     <main class="flex-grow px-2 bg-white md:px-12">

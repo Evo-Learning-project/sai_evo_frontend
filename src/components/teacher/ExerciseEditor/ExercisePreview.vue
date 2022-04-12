@@ -8,7 +8,9 @@
         >
           {{ previewTitle }}
         </h4>
-        <div class="flex flex-wrap order-3 mt-1 space-x-1 md:mt-0 md:ml-2 md:order-2">
+        <div
+          class="flex flex-wrap order-3 mt-1 space-x-1  md:mt-0 md:ml-2 md:order-2"
+        >
           <Tag
             v-for="(tag, index) in tags"
             :key="elementId + '-tag-' + index"
@@ -42,6 +44,7 @@ import { defineComponent, PropType } from "@vue/runtime-core";
 import Tag from "@/components/ui/Tag.vue";
 import MultiIcon from "@/components/ui/MultiIcon.vue";
 import { icons as exerciseStatesIcons } from "@/assets/exerciseStatesIcons";
+import { formatExerciseText } from "@/utils";
 
 export default defineComponent({
   name: "ExercisePreview",
@@ -72,7 +75,7 @@ export default defineComponent({
         : _("exercise_preview.unnamed_exercise");
     },
     previewText(): string {
-      return this.exercise.text;
+      return formatExerciseText(this.exercise.text);
     },
     exerciseStateIcons() {
       return exerciseStatesIcons[this.exercise.state as ExerciseState];
