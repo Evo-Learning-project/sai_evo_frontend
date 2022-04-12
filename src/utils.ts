@@ -173,3 +173,7 @@ export function forceFileDownload(response: { data: BlobPart }, title: string) {
   document.body.appendChild(link);
   link.click();
 }
+
+export const formatExerciseText = (text: string): string => {
+  return text.replace(/```([^`]*)```/g, "<pre>$1</pre>");
+};

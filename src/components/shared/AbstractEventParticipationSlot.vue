@@ -17,7 +17,7 @@
           (!isProgrammingExercise ||
             (!allowEditSubmission && !showExerciseLabel))
         "
-        v-html="exercise.text"
+        v-html="formattedExerciseText"
       ></div>
 
       <!-- if assessment edit mode, make flex so to fit submission on the left and assessment on the right -->
@@ -522,6 +522,7 @@ import { downloadEventParticipationSlotAttachment } from "@/api/events";
 import Btn from "../ui/Btn.vue";
 import { every, some } from "lodash";
 import ClozeExercise from "./ClozeExercise.vue";
+import { formatExerciseText } from "@/utils";
 
 export default defineComponent({
   components: {
@@ -650,6 +651,9 @@ export default defineComponent({
   computed: {
     exercise(): Exercise {
       return this.modelValue.exercise;
+    },
+    formattedExerciseText() {
+      return formatExerciseText(this.exercise.text);
     },
     isProgrammingExercise(): boolean {
       return programmingExerciseTypes.includes(
