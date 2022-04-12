@@ -56,7 +56,10 @@
         {{ $t("course_exercises.no_matching_exercises") }}
       </h2>
     </div>
-    <VueEternalLoading :load="onLoadMore" v-model="isInitialInfiniteLoad">
+    <VueEternalLoading
+      :load="onLoadMore"
+      v-model:is-initial="isInitialInfiniteLoad"
+    >
       <template #loading>
         <spinner></spinner>
       </template>
@@ -120,8 +123,8 @@ export default defineComponent({
   watch: {
     searchFilter: {
       async handler() {
-        await this.onFilterChange();
         this.isInitialInfiniteLoad = true;
+        await this.onFilterChange();
       },
       deep: true,
     },

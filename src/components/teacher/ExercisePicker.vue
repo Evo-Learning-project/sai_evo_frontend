@@ -3,6 +3,7 @@
     <ExerciseSearchFilters
       class="px-8 py-4 mb-6 -mx-8 bg-light"
       v-model="searchFilter"
+      @resetFilters="searchFilter = getBlankExerciseSearchFilters()"
       :full="false"
     ></ExerciseSearchFilters>
 
@@ -60,7 +61,10 @@
         }}</Btn></router-link
       >
     </div>
-    <VueEternalLoading :load="onLoadMore" v-model="isInitialInfiniteLoad">
+    <VueEternalLoading
+      :load="onLoadMore"
+      v-model:is-initial="isInitialInfiniteLoad"
+    >
       <template #loading>
         <spinner></spinner>
         <!-- <Btn @click="onLoadMore()">Carica di più</Btn> -->
@@ -90,7 +94,7 @@ import { ExerciseSearchFilter } from "@/api/interfaces";
 import { getDebouncedForFilter } from "@/utils";
 import { courseIdMixin } from "@/mixins";
 import MinimalExercisePreviewSkeleton from "../ui/skeletons/MinimalExercisePreviewSkeleton.vue";
-import { isEmptyFilter } from "@/api/utils";
+import { getBlankExerciseSearchFilters, isEmptyFilter } from "@/api/utils";
 export default defineComponent({
   name: "ExercisePicker",
   async created() {
@@ -107,8 +111,8 @@ export default defineComponent({
   watch: {
     searchFilter: {
       async handler(val: ExerciseSearchFilter) {
-        await this.onFilterChange();
         this.isInitialInfiniteLoad = true;
+        await this.onFilterChange();
       },
       deep: true,
     },
@@ -193,6 +197,7 @@ export default defineComponent({
         filters: this.searchFilter,
       });
     },
+    getBlankExerciseSearchFilters,
   },
   computed: {
     ...mapState(["exercises"]),
