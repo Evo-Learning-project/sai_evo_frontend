@@ -1,11 +1,11 @@
 <template>
   <div
     :tabindex="focusable ? 0 : false"
-    class="flex border-gray-300 card"
+    class="flex card"
     :class="{
-      border: !highlighted && !borderLess,
+      'card-border': !highlighted && !borderLess,
       'border-2': highlighted,
-      'duration-75 ease-linear hover:border-transparent transition-shadow-border hover-shadow-elevation':
+      'card-hoverable hover:border-transparent hover-shadow-elevation':
         hoverable,
       'card-filled': filled,
     }"
