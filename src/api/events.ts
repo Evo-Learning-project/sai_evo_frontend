@@ -286,6 +286,21 @@ export async function partialUpdateEventParticipationSlot(
   return response.data;
 }
 
+export async function getEventParticipationSlot(
+  courseId: string,
+  eventId: string,
+  participationId: string,
+  slotId: string,
+  forceStudent = false
+): Promise<EventParticipationSlot> {
+  const response = await axios.get(
+    `/courses/${courseId}/events/${eventId}/participations/${participationId}/slots/${slotId}/${
+      forceStudent ? "?as_student=1" : ""
+    }`
+  );
+  return response.data;
+}
+
 export async function downloadEventParticipationSlotAttachment(
   courseId: string,
   eventId: string,

@@ -52,6 +52,7 @@ import {
   getEvent,
   getEventParticipation,
   getEventParticipations,
+  getEventParticipationSlot,
   getEvents,
   getEventTemplate,
   getEventTemplateRule,
@@ -578,6 +579,32 @@ export const actions = {
       changes
     );
     response.forEach((p) => commit("setEventParticipation", p));
+  },
+  getEventParticipationSlot: async (
+    { commit }: { commit: Commit },
+    {
+      courseId,
+      eventId,
+      participationId,
+      slotId,
+    }: {
+      courseId: string;
+      eventId: string;
+      participationId: string;
+      slotId: string;
+    }
+  ) => {
+    const response = await getEventParticipationSlot(
+      courseId,
+      eventId,
+      participationId,
+      slotId
+    );
+    commit("setEventParticipationSlot", {
+      slotId,
+      slot: response,
+      participationId,
+    });
   },
   partialUpdateEventParticipationSlot: async (
     { commit, state }: { commit: Commit; state: any },

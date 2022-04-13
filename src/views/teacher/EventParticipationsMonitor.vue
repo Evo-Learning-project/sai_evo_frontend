@@ -126,7 +126,12 @@
               })
             "
             v-model="editingSlotDirty"
+            v-if="!localLoading && editingSlotDirty"
           ></AbstractEventParticipationSlot>
+          <div v-else>
+            <SkeletonCard :borderLess="true"></SkeletonCard>
+            <SkeletonCard :borderLess="true"></SkeletonCard>
+          </div>
         </div>
         <!-- publishing selected assessments -->
         <div v-else-if="resultsMode">
@@ -223,6 +228,7 @@ import { DialogData } from "@/interfaces";
 import Btn from "@/components/ui/Btn.vue";
 import { downloadEventParticipationSlotAttachment } from "@/api/events";
 import CsvParticipationDownloader from "@/components/teacher/CsvParticipationDownloader.vue";
+import SkeletonCard from "@/components/ui/SkeletonCard.vue";
 
 export default defineComponent({
   components: {
@@ -231,6 +237,7 @@ export default defineComponent({
     AbstractEventParticipationSlot,
     Btn,
     CsvParticipationDownloader,
+    SkeletonCard,
   },
   name: "EventParticipationsMonitor",
   props: {
@@ -299,6 +306,7 @@ export default defineComponent({
       "getEventParticipations",
       "partialUpdateEventParticipation",
       "partialUpdateEventParticipationSlot",
+      "getEventParticipationSlot",
     ]),
     async onAttachmentDownload(slot: EventParticipationSlot) {
       // TODO refactor as another component is using this method as well
@@ -323,13 +331,6 @@ export default defineComponent({
         );
       }
       return true;
-
-      // return !this.event.users_allowed_past_closure?.includes(
-      //   this.eventParticipations.find(
-      //     (p: EventParticipation) =>
-      //       p.id === (row.data as EventParticipation).id
-      //   )?.user?.id
-      // )
     },
     getRowClass(row: RowClassParams) {
       if (this.resultsMode) {
@@ -354,10 +355,9 @@ export default defineComponent({
         ?.getSelectedNodes()
         .map((n: any) => n.data.id);
     },
-    onCellClicked(event: CellClickedEvent) {
+    async onCellClicked(event: CellClickedEvent) {
       // open full participation
       if (event.colDef.field === "email") {
-        console.log(event.data.id);
         this.$router.push({
           name: "ExamParticipationFull",
           params: { participationId: event.data.id },
@@ -366,11 +366,21 @@ export default defineComponent({
       // edit assessment slot
       else if (event.colDef.field?.startsWith("slot") && this.resultsMode) {
         this.editingSlot = event.value;
+        this.editingParticipationId = event.data.id;
+
+        await this.withLocalLoading(
+          async () =>
+            await this.getEventParticipationSlot({
+              courseId: this.courseId,
+              slotId: this.editingSlot?.id,
+              participationId: this.editingParticipationId,
+              eventId: this.eventId,
+            })
+        );
 
         // deep copy slot to prevent affecting the original one while editing
         this.editingSlotDirty = JSON.parse(JSON.stringify(this.editingSlot));
         this.editingFullName = event.data.fullName;
-        this.editingParticipationId = event.data.id;
         this.editingAssessmentSlotMode = true;
       }
       // change turned in status
