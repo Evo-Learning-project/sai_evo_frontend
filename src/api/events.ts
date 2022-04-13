@@ -118,10 +118,13 @@ export async function deleteEvent(
 
 export async function getEventParticipations(
   courseId: string,
-  eventId: string
+  eventId: string,
+  preview?: boolean
 ): Promise<EventParticipation[]> {
   const response = await axios.get(
-    `/courses/${courseId}/events/${eventId}/participations/`
+    `/courses/${courseId}/events/${eventId}/participations/${
+      typeof preview !== "undefined" ? "?preview=" + preview : ""
+    }`
   );
   return response.data;
 }

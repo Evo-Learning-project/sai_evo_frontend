@@ -81,6 +81,7 @@ const getHeaderString = (header: string) => {
 };
 
 const getCellValue = (participation: EventParticipation, field: string) => {
+  console.log(participation, field, get(participation, field));
   // for fields that don't actually exist on the participation,
   // or need additional processing, manually set the value
   const matchPassedTestCases = field.match(/slots\[(\d+)\].passed_testcases/);
@@ -120,6 +121,7 @@ const getCellValue = (participation: EventParticipation, field: string) => {
 export const getParticipationsAsCsv = (
   participations: EventParticipation[]
 ): string => {
+  console.log("calling");
   const headers = getEventParticipationHeaders(participations);
   const replacer = (key: string, value: string) =>
     value === null
@@ -138,6 +140,6 @@ export const getParticipationsAsCsv = (
         .join(",")
     ),
   ].join("\r\n");
-  console.log(ret);
+  console.log("returning", ret);
   return ret;
 };

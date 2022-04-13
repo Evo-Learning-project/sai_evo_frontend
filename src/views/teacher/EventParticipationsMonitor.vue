@@ -256,6 +256,7 @@ export default defineComponent({
       await this.getEventParticipations({
         courseId: this.courseId,
         eventId: this.eventId,
+        preview: true,
       });
       await this.getEvent({
         courseId: this.courseId,
@@ -269,6 +270,7 @@ export default defineComponent({
           await this.getEventParticipations({
             courseId: this.courseId,
             eventId: this.eventId,
+            preview: true,
           }),
         10000
       );

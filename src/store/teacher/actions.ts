@@ -105,9 +105,17 @@ export const actions = {
   },
   getEventParticipations: async (
     { commit }: { commit: Commit },
-    { courseId, eventId }: { courseId: string; eventId: string }
+    {
+      courseId,
+      eventId,
+      preview,
+    }: { courseId: string; eventId: string; preview?: boolean }
   ) => {
-    const participations = await getEventParticipations(courseId, eventId);
+    const participations = await getEventParticipations(
+      courseId,
+      eventId,
+      preview
+    );
     commit("setEventParticipations", participations);
   },
   getEventParticipation: async (
@@ -602,7 +610,7 @@ export const actions = {
     );
     commit("setEventParticipationSlot", {
       slotId,
-      slot: response,
+      payload: response,
       participationId,
     });
   },
@@ -636,7 +644,7 @@ export const actions = {
     if (mutate) {
       commit("setEventParticipationSlot", {
         slotId,
-        slot: response,
+        payload: response,
         participationId,
       });
     }

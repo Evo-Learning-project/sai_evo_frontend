@@ -51,10 +51,12 @@ export const mutations = {
     const target = state.eventParticipations
       .find((p: EventParticipation) => p.id == participationId)
       ?.slots?.find((s: EventParticipationSlot) => s.id == slotId);
+    console.log(target, payload);
     if (target) {
       Object.assign(target, payload);
     } else {
       console.error("setEventParticipationSlot didn't find", payload);
+      throw Error();
     }
   },
   // updates the in-memory participation that has the same id as the
