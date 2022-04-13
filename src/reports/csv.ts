@@ -125,9 +125,7 @@ export const getParticipationsAsCsv = (
     value === null
       ? ""
       : typeof value === "string"
-      ? value
-          .replace(/<img src="data:image\/png;base64,[^"]+"/g, "[img]")
-          .replace(/"/g, '""')
+      ? value.replace(/<img src="[^"]+"/g, "[img]").replace(/"/g, '""')
       : value;
 
   const ret = [
