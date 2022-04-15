@@ -1,7 +1,7 @@
 <template>
   <div
     class="relative z-10 rounded-t-sm light-input bg-light"
-    :class="{ 'opacity-60 pointer-events-none': disabled }"
+    :class="{ 'opacity-80': disabled }"
   >
     <!-- TODO! make this just a textarea for students-->
     <div class="z-10 ql-editor-container">
@@ -16,18 +16,10 @@
     <label
       class="absolute -z-1 top-2 left-3 origin-0"
       :class="{ 'fixed-label': modelValue?.length > 0 }"
-      ><slot></slot
-    ></label>
+    >
+      <slot></slot>
+    </label>
   </div>
-  <!--
-            v-model:value="state.content"
-      :options="state.editorOption"
-      :disabled="state.disabled"
-      @blur="onEditorBlur($event)"
-      @focus="onEditorFocus($event)"
-      @ready="onEditorReady($event)"
-      @change="onEditorChange($event)"
-    -->
 </template>
 
 <script lang="ts">

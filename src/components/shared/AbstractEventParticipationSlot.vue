@@ -30,7 +30,7 @@
         <!-- controls to submit -->
         <div
           :class="{
-            'w-full': allowEditAssessment || showAssessmentCard,
+            'w-8/12': allowEditAssessment || showAssessmentCard,
           }"
         >
           <!-- multiple choice multiple possible -->

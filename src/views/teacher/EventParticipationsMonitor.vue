@@ -20,7 +20,7 @@
 
           {{ $t("event_assessment.exams_awaiting_assessment_are_marked") }}
           <span
-            class="text-base text-yellow-900  inline-icon material-icons-outlined"
+            class="text-base text-yellow-900 inline-icon material-icons-outlined"
             >pending_actions</span
           >.
         </p>
@@ -369,6 +369,7 @@ export default defineComponent({
       else if (event.colDef.field?.startsWith("slot") && this.resultsMode) {
         this.editingSlot = event.value;
         this.editingParticipationId = event.data.id;
+        this.editingAssessmentSlotMode = true;
 
         await this.withLocalLoading(
           async () =>
@@ -383,7 +384,6 @@ export default defineComponent({
         // deep copy slot to prevent affecting the original one while editing
         this.editingSlotDirty = JSON.parse(JSON.stringify(this.editingSlot));
         this.editingFullName = event.data.fullName;
-        this.editingAssessmentSlotMode = true;
       }
       // change turned in status
       else if (
