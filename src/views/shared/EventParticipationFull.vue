@@ -275,14 +275,13 @@ export default defineComponent({
     TextInput,
   },
   async created() {
-    await this.withFirstLoading(
-      async () =>
-        await this.getEventParticipation({
-          courseId: this.courseId,
-          eventId: this.eventId,
-          participationId: this.participationId,
-        })
-    );
+    await this.withFirstLoading(async () => {
+      await this.getEventParticipation({
+        courseId: this.courseId,
+        eventId: this.eventId,
+        participationId: this.participationId,
+      });
+    });
 
     // participation is still in progress and exam is
     // still open, redirect to participation page

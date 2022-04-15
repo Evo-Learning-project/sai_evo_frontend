@@ -9,7 +9,10 @@
     >
       <template v-slot:header>
         <p class="text-sm font-medium text-center uppercase text-muted">
-          <Timestamp :value="participation.begin_timestamp" :date-only="true"></Timestamp>
+          <Timestamp
+            :value="participation.begin_timestamp"
+            :date-only="true"
+          ></Timestamp>
         </p>
         <h4 class="text-center" v-if="participation.event.name.length > 0">
           {{ participation.event.name }}
@@ -20,7 +23,8 @@
           <div
             class=""
             v-if="
-              participation.event.event_type === EventType.SELF_SERVICE_PRACTICE &&
+              participation.event.event_type ===
+                EventType.SELF_SERVICE_PRACTICE &&
               participation.assessment_available
             "
           >
@@ -28,25 +32,30 @@
               <span
                 class="text-4xl font-semibold"
                 :class="{
-                  'text-success': participation.score >= participation.max_score * 0.6,
+                  'text-success':
+                    participation.score >= participation.max_score * 0.6,
                   'text-yellow-700':
                     participation.score >= participation.max_score / 2 &&
                     participation.score < participation.max_score * 0.6,
-                  'text-danger-dark': participation.score < participation.max_score / 2,
+                  'text-danger-dark':
+                    participation.score < participation.max_score / 2,
                 }"
                 >{{ participation.score }}</span
-              ><span class="ml-1 text-muted">/{{ participation.max_score }}</span>
+              ><span class="ml-1 text-muted"
+                >/{{ participation.max_score }}</span
+              >
             </p>
           </div>
           <div
-            class="flex flex-col items-center w-full mt-auto xl:justify-between xl:flex-row xl:space-y-0"
+            class="flex flex-col items-center w-full mt-auto  xl:justify-between xl:flex-row xl:space-y-0"
             v-if="isParticipable"
           >
             <router-link
               class="order-12 mt-6 xl:mt-0 xl:order-1"
               :to="{
                 name:
-                  participation.event.event_type === EventType.SELF_SERVICE_PRACTICE
+                  participation.event.event_type ===
+                  EventType.SELF_SERVICE_PRACTICE
                     ? 'PracticeParticipationPage'
                     : 'ExamParticipationPage',
                 params: {
@@ -56,7 +65,9 @@
               }"
             >
               <Btn>
-                <span class="text-base material-icons-outlined mr-1"> meeting_room </span>
+                <span class="mr-1 text-base material-icons-outlined">
+                  meeting_room
+                </span>
                 {{ $t("student_course_dashboard.resume") }}
               </Btn>
             </router-link>
@@ -71,14 +82,17 @@
             <router-link
               :class="{
                 'mx-auto':
-                  participation.event.event_type === EventType.SELF_SERVICE_PRACTICE,
+                  participation.event.event_type ===
+                  EventType.SELF_SERVICE_PRACTICE,
                 'mr-auto':
-                  participation.event.event_type !== EventType.SELF_SERVICE_PRACTICE,
+                  participation.event.event_type !==
+                  EventType.SELF_SERVICE_PRACTICE,
               }"
               v-if="participation.assessment_available"
               :to="{
                 name:
-                  participation.event.event_type === EventType.SELF_SERVICE_PRACTICE
+                  participation.event.event_type ===
+                  EventType.SELF_SERVICE_PRACTICE
                     ? 'PracticeSummaryPage'
                     : 'AssessmentReviewPage',
                 params: {
@@ -92,14 +106,18 @@
                 ><span class="mr-2 text-base material-icons-outlined">
                   assignment_turned_in </span
                 >{{
-                  participation.event.event_type === EventType.SELF_SERVICE_PRACTICE
+                  participation.event.event_type ===
+                  EventType.SELF_SERVICE_PRACTICE
                     ? $t("student_course_dashboard.practice_summary")
                     : $t("student_course_dashboard.view_assessment")
                 }}</Btn
               >
             </router-link>
             <router-link
-              v-if="participation.event.event_type !== EventType.SELF_SERVICE_PRACTICE"
+              v-if="
+                participation.event.event_type !==
+                EventType.SELF_SERVICE_PRACTICE
+              "
               :to="{
                 name: 'SubmissionReviewPage',
                 params: {
