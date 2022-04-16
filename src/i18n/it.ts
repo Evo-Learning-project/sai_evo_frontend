@@ -452,6 +452,8 @@ export const it = {
     confirm_delete_testcase: "Sei sicuro di voler eliminare questo test case?",
     confirm_delete_sub_exercise:
       "Sei sicuro di voler eliminare questo sotto-esercizio?",
+    code_execution_will_appear_here:
+      "I risultati dell'esecuzione del codice della soluzione appariranno qui.",
   },
   exercise_wrapper: {
     select: "Seleziona",

@@ -17,9 +17,7 @@
         class="relative flex"
       >
         <CodeEditor
-          :language="
-            exercise.exercise_type === ExerciseType.JS ? 'typescript' : 'c'
-          "
+          :language="exercise.exercise_type === ExerciseType.JS ? 'typescript' : 'c'"
           class="w-full"
           :size="'lg'"
           v-model="proxyModelValue"
@@ -37,12 +35,8 @@
             <span v-if="runCoolDown < 10" class="opacity-0">0</span></template
           >
           <template v-slot:sidePaneTitle
-            ><div
-              class="flex items-center p-3 space-x-2 rounded-tr-sm bg-gray-50"
-            >
-              <span class="my-auto material-icons-outlined opacity-60">
-                code
-              </span>
+            ><div class="flex items-center p-3 pl-4 space-x-2 rounded-tr-sm bg-gray-50">
+              <span class="my-auto material-icons-outlined icon-light"> code </span>
               <h3>
                 {{ $t("programming_exercise.execution_results") }}
               </h3>
@@ -54,9 +48,7 @@
               :slot="slot"
             ></CodeExecutionResults>
             <div class="flex flex-col" v-else>
-              <span
-                class="mx-auto mt-24  opacity-30 text-8xl material-icons-outlined"
-              >
+              <span class="mx-auto mt-24 opacity-30 text-8xl material-icons-outlined">
                 code
               </span>
               <p class="mx-auto text-muted">
@@ -67,7 +59,7 @@
           <template v-slot:bottom>
             <transition name="quick-bounce"
               ><div
-                class="absolute bottom-0 right-0 z-50 flex items-center px-6 py-3 mb-2 mr-4 space-x-2 rounded  bg-dark text-lightText bg-opacity-90 bg-light shadow-popup"
+                class="absolute bottom-0 right-0 z-50 flex items-center px-6 py-3 mb-2 mr-4 space-x-2 rounded bg-dark text-lightText bg-opacity-90 bg-light shadow-popup"
                 v-if="executionState === 'running'"
               >
                 <Spinner :fast="true"></Spinner>
@@ -83,9 +75,7 @@
           v-for="(testcase, index) in exercise.testcases"
           :key="'t-' + testcase.id"
         >
-          <h4 class="mb-1">
-            {{ $t("programming_exercise.testcase") }} {{ index + 1 }}
-          </h4>
+          <h4 class="mb-1">{{ $t("programming_exercise.testcase") }} {{ index + 1 }}</h4>
           <ExerciseTestCase :test-case="testcase"></ExerciseTestCase>
         </div>
         <div v-if="exercise.testcases?.length === 0">
@@ -101,10 +91,7 @@
 <script lang="ts">
 const RUN_COOL_DOWN = 0;
 
-import {
-  programmingExerciseTabsOptions,
-  ProgrammingExerciseTabs,
-} from "@/const";
+import { programmingExerciseTabsOptions, ProgrammingExerciseTabs } from "@/const";
 import { EventParticipationSlot, Exercise, ExerciseType } from "@/models";
 import { defineComponent, PropType } from "@vue/runtime-core";
 import SegmentedControls from "../ui/SegmentedControls.vue";
