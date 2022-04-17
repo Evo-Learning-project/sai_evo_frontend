@@ -204,7 +204,7 @@
         <!-- assessment card-->
         <div
           :class="{
-            'md:w-9/12': !subSlot,
+            'md:w-9/12': !subSlot && !isProgrammingExercise,
             'md:w-full': subSlot,
           }"
           class="relative mb-auto  md:self-start shadow-elevation card card-filled"

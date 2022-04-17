@@ -55,6 +55,24 @@
           modelValue.state === EventState.RESTRICTED
         "
       ></EventTemplateEditor>
+      <!-- <div class="banner banner-light">
+        <span
+          class="material-icons-two-tone"
+          style="
+            filter: invert(80%) sepia(67%) saturate(1803%) hue-rotate(348deg)
+              brightness(80%) contrast(96%);
+          "
+        >
+          tips_and_updates
+        </span>
+        <div class="flex items-center w-full">
+          <p>
+            Hai utilizzato alcune delle funzionalità di randomizzazione. Verifica che gli
+            esami generati siano corretti.
+          </p>
+          <Btn class="ml-auto">Genera esempi</Btn>
+        </div>
+      </div> -->
 
       <EventStateEditor
         class="pb-10"
@@ -92,6 +110,7 @@ import { defineComponent } from "@vue/runtime-core";
 import { Event, EventState, EventTemplate } from "@/models";
 import { courseIdMixin, eventIdMixin, loadingMixin, savingMixin } from "@/mixins";
 import Dialog from "@/components/ui/Dialog.vue";
+//import Btn from "@/components/ui/Btn.vue";
 import { getTranslatedString as _ } from "@/i18n";
 
 import { createNamespacedHelpers, mapActions, mapState } from "vuex";
@@ -108,7 +127,7 @@ export default defineComponent({
   name: "EventEditor",
   components: {
     EventMetaEditor,
-    //CollapsiblePanelGroup,
+    // Btn,
     EventTemplateEditor,
     CloudSaveStatus,
     EventStateEditor,

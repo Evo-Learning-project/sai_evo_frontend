@@ -1,20 +1,14 @@
 <template>
-  <div
-    class="flex flex-col items-center md:space-y-0 md:space-x-8 md:flex-row"
-    :class="{ 'text-sm': small }"
-  >
+  <div class="flex flex-col space-y-4" :class="{ 'text-sm': small }">
     <div
-      class="user-content"
-      :class="[
-        !!testCase.code || !!testCase.stdin ? 'md:w-1/2 md:mb-0 mb-2' : 'w-full',
-        small ? 'py-2.5 mt-2' : '',
-      ]"
+      class="w-full mb-4 user-content"
+      :class="[small ? 'py-2.5 mt-2' : '']"
       v-if="!!testCase.text"
       v-html="testCase.text"
     ></div>
     <CodeFragment
       :small="small"
-      :class="[!!testCase.text ? 'md:w-1/2 w-full' : 'w-full']"
+      class="w-full"
       v-if="!!testCase.code"
       :value="testCase.code"
     ></CodeFragment>
@@ -36,7 +30,10 @@
       <div class="text-xs text-muted">
         {{ $t("programming_exercise.testcase_expected_stdout") }}
       </div>
-      <CodeFragment :small="small" :value="testCase.expected_stdout"></CodeFragment>
+      <CodeFragment
+        :small="small"
+        :value="testCase.expected_stdout"
+      ></CodeFragment>
     </div>
   </div>
 </template>
