@@ -37,7 +37,7 @@
       'border-gray-300 bg-white hover:bg-primary hover:bg-opacity-20 hover:text-primary-light transition-colors duration-100':
         variant === 'transparent',
       'rounded-md': variant !== 'transparent',
-      'rounded-full bg-transparent hover:bg-gray-200 hover:border border-light text-gray-600':
+      'rounded-full bg-transparent hover:bg-gray-200 hover:border border-light text-gray-600 icon-btn':
         variant === 'icon',
       'icon-btn-sm': variant === 'icon' && size === 'sm',
       'icon-btn-base': variant === 'icon' && size === 'base',

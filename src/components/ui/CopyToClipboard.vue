@@ -3,12 +3,14 @@
     <Btn
       v-clipboard:copy="value"
       v-clipboard:success="onCopy"
+      class="copy-btn"
       :title="title || $t('misc.copy')"
       :outline="true"
       :size="'sm'"
       :variant="'icon'"
     >
-      <span class="text-xl material-icons"> share </span>
+      <span class="text-xl material-icons" v-if="!$slots.default"> share </span>
+      <slot></slot>
     </Btn>
     <span
       v-if="showFeedback"
