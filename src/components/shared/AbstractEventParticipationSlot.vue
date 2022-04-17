@@ -30,7 +30,15 @@
         <!-- controls to submit -->
         <div
           :class="{
-            'w-8/12': allowEditAssessment || showAssessmentCard,
+            'w-8/12':
+              allowEditAssessment ||
+              (showAssessmentCard &&
+                (allowEditSubmission || !isProgrammingExercise)),
+            'md:w-8/12 w-full':
+              allowEditAssessment ||
+              (showAssessmentCard &&
+                !allowEditSubmission &&
+                isProgrammingExercise),
           }"
         >
           <!-- multiple choice multiple possible -->
@@ -207,7 +215,7 @@
             'md:w-9/12': !subSlot && !isProgrammingExercise,
             'md:w-full': subSlot,
           }"
-          class="relative mb-auto  md:self-start shadow-elevation card card-filled"
+          class="sticky mb-auto  top-4 md:self-start shadow-elevation card card-filled"
           v-if="
             showAssessmentCard &&
             (true || !showAssessmentControls || !allowEditAssessment)

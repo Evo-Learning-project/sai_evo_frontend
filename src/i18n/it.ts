@@ -438,6 +438,7 @@ export const it = {
     edit_non_draft_body:
       "Stai per modificare un esercizio non in stato di bozza. Potrebbe essere già presente in un esame o essere già stato visto dagli studenti. Sei sicuro di volerlo modificare?",
     new_choice: "Nuova",
+    new_testcase: "Nuovo",
     new_sub_exercise: "Nuovo",
     new_cloze: "Aggiungi domanda",
     edit_cloze: "Modifica domanda",
@@ -499,7 +500,7 @@ export const it = {
     passed: "Superato",
     not_passed: "Non superato",
     test_failed_with_error:
-      "L'esecuzione del programma si è interrotta producento il seguente errore",
+      "L'esecuzione del programma si è interrotta producendo il seguente errore",
     test_failed_stdout: "Il programma ha prodotto il seguente output",
     code_errored: "L'esecuzione del codice ha prodotto il seguente errore",
     compilation_errored:

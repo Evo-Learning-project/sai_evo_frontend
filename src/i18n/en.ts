@@ -24,6 +24,7 @@ export const en = {
     edit_non_draft_body:
       "Stai per modificare un esercizio non in stato di bozza. Potrebbe essere già presente in un esame o essere già stato visto dagli studenti. Sei sicuro di volerlo modificare?",
     new_choice: "Nuova",
+    new_testcase: "Nuovo",
     cannot_publish: "Non puoi ancora pubblicare questo esercizio",
     cannot_publish_body:
       "Per poter rimuovere lo stato di bozza, correggi i seguenti errori:",

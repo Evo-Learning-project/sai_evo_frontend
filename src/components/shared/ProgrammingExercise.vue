@@ -59,7 +59,7 @@
               >
                 code
               </span>
-              <p class="mx-auto text-muted">
+              <p class="px-4 mx-auto text-muted">
                 {{ $t("programming_exercise.code_execution_will_appear_here") }}
               </p>
             </div>
