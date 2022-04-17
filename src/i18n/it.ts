@@ -319,6 +319,11 @@ export const it = {
       "Crea il modello per questo esame. Per ogni slot, puoi scegliere se far vedere a ogni studente lo stesso esercizio o se utilizzare i criteri di scelta casuale.",
     add_rule: "Aggiungi slot",
     confirm_delete_rule: "Sei sicuro di voler eliminare questo slot?",
+    randomize_rule_order: "Randomizza ordine degli slot",
+    rule_order_randomization_off:
+      "Gli slot verranno assegnati agli studenti nell'ordine in cui sono disposti qui",
+    rule_order_randomization_on:
+      "Gli slot verranno assegnati agli studenti in ordine casuale",
   },
   exercise_picker: {
     cannot_pick_draft:

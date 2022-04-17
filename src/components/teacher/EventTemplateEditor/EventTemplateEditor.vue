@@ -6,7 +6,9 @@
         {{ $t("event_template_editor.introduction_text") }}
       </p>
       <div v-else class="banner banner-light">
-        <span class="text-yellow-900 material-icons-outlined"> error_outline </span>
+        <span class="text-yellow-900 material-icons-outlined">
+          error_outline
+        </span>
         <div>
           <h4 class="text-danger-dark">{{ $t("misc.warning") }}</h4>
           <p class="text-muted">
@@ -35,19 +37,25 @@
             <template v-slot:error>
               <p
                 class="font-light text-muted text-danger-dark"
-                v-if="v$.$errors[0]?.$response?.$errors[index].rule_type.length > 0"
+                v-if="
+                  v$.$errors[0]?.$response?.$errors[index].rule_type.length > 0
+                "
               >
                 {{ $t("validation_errors.eventTemplateRule.no_rule_type") }}
               </p>
               <p
                 class="font-light text-muted text-danger-dark"
-                v-if="v$.$errors[0]?.$response?.$errors[index].exercises.length > 0"
+                v-if="
+                  v$.$errors[0]?.$response?.$errors[index].exercises.length > 0
+                "
               >
                 {{ $t("validation_errors.eventTemplateRule.no_exercises") }}
               </p>
               <p
                 class="font-light text-muted text-danger-dark"
-                v-if="v$.$errors[0]?.$response?.$errors[index].clauses.length > 0"
+                v-if="
+                  v$.$errors[0]?.$response?.$errors[index].clauses.length > 0
+                "
               >
                 {{ $t("validation_errors.eventTemplateRule.no_valid_clauses") }}
               </p>
@@ -59,12 +67,20 @@
 
     <div class="flex items-center mt-auto">
       <Btn @click="onAddRule()" :loading="localLoading"
-        ><span class="mr-1 text-base material-icons-outlined"> add_circle_outline </span
+        ><span class="mr-1 text-base material-icons-outlined">
+          add_circle_outline </span
         >{{ $t("event_template_editor.add_rule") }}</Btn
       >
+      <Toggle
+        class="hidden ml-auto"
+        :label-on-left="true"
+        v-model="templateRandomizeRuleOrder"
+      >
+        {{ $t("event_template_editor.randomize_rule_order") }}
+      </Toggle>
     </div>
 
-    <div class="banner banner-light mt-4" v-if="usedRandomization">
+    <div class="mt-4 banner banner-light" v-if="usedRandomization">
       <span
         class="material-icons-two-tone"
         style="
@@ -76,8 +92,8 @@
       </span>
       <div class="flex items-center w-full">
         <p>
-          Hai utilizzato alcune delle funzionalità di randomizzazione. Verifica che gli
-          esami generati siano corretti.
+          Hai utilizzato alcune delle funzionalità di randomizzazione. Verifica
+          che gli esami generati siano corretti.
         </p>
         <Btn class="ml-auto">Genera esempi</Btn>
       </div>
@@ -110,6 +126,7 @@ import { eventTemplateValidation } from "@/validation/models";
 import useVuelidate from "@vuelidate/core";
 //import Card from "@/components/ui/Card.vue";
 import { getTranslatedString as _ } from "@/i18n";
+import Toggle from "@/components/ui/Toggle.vue";
 export default defineComponent({
   setup() {
     return { v$: useVuelidate() };
@@ -123,7 +140,7 @@ export default defineComponent({
     Btn,
     EventTemplateRuleEditor,
     draggable,
-    //Card,
+    Toggle,
   },
   mixins: [courseIdMixin, loadingMixin],
   name: "EventTemplateEditor",
@@ -140,13 +157,18 @@ export default defineComponent({
   created() {
     this.modelValue.rules.forEach((r) => {
       this.instantiateRuleAutoSaveManager(r);
-      r.clauses?.forEach((c) => this.instantiateRuleClauseAutoSaveManager(r.id, c));
+      r.clauses?.forEach((c) =>
+        this.instantiateRuleClauseAutoSaveManager(r.id, c)
+      );
     });
   },
   data() {
     return {
       elementId: uuid4(),
-      rulesAutoSaveInstances: {} as Record<string, AutoSaveManager<EventTemplateRule>>,
+      rulesAutoSaveInstances: {} as Record<
+        string,
+        AutoSaveManager<EventTemplateRule>
+      >,
       ruleClausesAutoSaveInstances: {} as Record<
         string,
         AutoSaveManager<EventTemplateRuleClause>
@@ -164,57 +186,57 @@ export default defineComponent({
     ]),
     ...mapMutations(["patchEventTemplateRule", "patchEventTemplateRuleClause"]),
     instantiateRuleAutoSaveManager(rule: EventTemplateRule) {
-      this.rulesAutoSaveInstances[rule.id] = new AutoSaveManager<EventTemplateRule>(
-        rule,
-        async (changes) =>
-          await this.partialUpdateEventTemplateRule({
-            changes,
-            ruleId: rule.id,
-            templateId: this.modelValue.id,
-            courseId: this.courseId,
-            // re-fetch rules if ordering changed
-            reFetch: typeof changes._ordering !== "undefined",
-          }),
-        (changes) =>
-          this.patchEventTemplateRule({
-            payload: changes,
-            ruleId: rule.id,
-            templateId: this.modelValue.id,
-          }),
-        [],
-        0
-      );
+      this.rulesAutoSaveInstances[rule.id] =
+        new AutoSaveManager<EventTemplateRule>(
+          rule,
+          async (changes) =>
+            await this.partialUpdateEventTemplateRule({
+              changes,
+              ruleId: rule.id,
+              templateId: this.modelValue.id,
+              courseId: this.courseId,
+              // re-fetch rules if ordering changed
+              reFetch: typeof changes._ordering !== "undefined",
+            }),
+          (changes) =>
+            this.patchEventTemplateRule({
+              payload: changes,
+              ruleId: rule.id,
+              templateId: this.modelValue.id,
+            }),
+          [],
+          0
+        );
     },
     instantiateRuleClauseAutoSaveManager(
       ruleId: string,
       clause: EventTemplateRuleClause
     ) {
-      this.ruleClausesAutoSaveInstances[
-        clause.id
-      ] = new AutoSaveManager<EventTemplateRuleClause>(
-        clause,
-        async (changes) =>
-          await this.updateEventTemplateRuleClause({
-            courseId: this.courseId,
-            templateId: this.modelValue.id,
-            ruleId,
-            clause: { ...clause, ...changes },
-          }),
-        (changes) =>
-          this.patchEventTemplateRuleClause({
-            ruleId,
-            templateId: this.modelValue.id,
-            clauseId: clause.id,
-            payload: changes,
-          }),
-        [],
-        0,
-        undefined,
-        this.setErrorNotification,
-        undefined,
-        true,
-        false
-      );
+      this.ruleClausesAutoSaveInstances[clause.id] =
+        new AutoSaveManager<EventTemplateRuleClause>(
+          clause,
+          async (changes) =>
+            await this.updateEventTemplateRuleClause({
+              courseId: this.courseId,
+              templateId: this.modelValue.id,
+              ruleId,
+              clause: { ...clause, ...changes },
+            }),
+          (changes) =>
+            this.patchEventTemplateRuleClause({
+              ruleId,
+              templateId: this.modelValue.id,
+              clauseId: clause.id,
+              payload: changes,
+            }),
+          [],
+          0,
+          undefined,
+          this.setErrorNotification,
+          undefined,
+          true,
+          false
+        );
     },
 
     async onRuleDragEnd(event: { oldIndex: number; newIndex: number }) {
@@ -274,7 +296,10 @@ export default defineComponent({
         );
       }
     },
-    async onRuleUpdateClause(rule: EventTemplateRule, clause: EventTemplateRuleClause) {
+    async onRuleUpdateClause(
+      rule: EventTemplateRule,
+      clause: EventTemplateRuleClause
+    ) {
       await this.ruleClausesAutoSaveInstances[clause.id].onChange({
         field: "tags",
         value: clause.tags,
@@ -301,6 +326,15 @@ export default defineComponent({
     usedRandomization(): boolean {
       // TODO implement
       return false;
+    },
+    templateRandomizeRuleOrder: {
+      get() {
+        return this.modelValue.randomize_rule_order;
+      },
+      set(val: boolean) {
+        // TODO implement
+        console.log(val);
+      },
     },
   },
 });

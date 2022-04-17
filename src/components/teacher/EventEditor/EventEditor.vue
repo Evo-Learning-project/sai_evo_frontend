@@ -4,24 +4,24 @@
       <div
         style="z-index: 49"
         v-show="!loading && examLocked"
-        class="fixed top-0 left-0 flex items-center justify-center w-full h-full"
+        class="fixed top-0 left-0 flex items-center justify-center w-full h-full "
       >
         <div
           style="width: 100% !important; height: 100% !important"
-          class="absolute z-10 w-full h-full transition-none bg-gray-900 opacity-50"
+          class="absolute z-10 w-full h-full transition-none bg-gray-900 opacity-50 "
         ></div>
         <div
-          class="fixed z-50 py-4 px-6 rounded w-full md:w-max top-1/2 left-1/2 md:ml-14 transform -translate-x-1/2 -translate-y-1/2 text-center"
+          class="fixed z-50 w-full px-6 py-4 text-center transform -translate-x-1/2 -translate-y-1/2 rounded  md:w-max top-1/2 left-1/2 md:ml-14"
         >
           <p
             style="font-size: 10rem"
-            class="material-icons-outlined opacity-50 text-lightText"
+            class="opacity-50 material-icons-outlined text-lightText"
           >
             {{ examLocked ? "lock" : "lock_open" }}
           </p>
           <h3
             :class="[!examLocked ? 'opacity-0' : 'opacity-100']"
-            class="md:bg-transparent text-lightText mx-auto md:px-2 rounded-t pt-1"
+            class="pt-1 mx-auto rounded-t  md:bg-transparent text-lightText md:px-2"
             style="text-shadow: 0.5px 0.5px 4px rgb(0 0 0 / 50%)"
           >
             {{ $t("event_editor.currently_locked_by") }}
@@ -29,7 +29,7 @@
           </h3>
           <p
             :class="[!examLocked ? 'opacity-0' : 'opacity-100']"
-            class="md:bg-transparent text-lightText md:mx-2 md:px-2 rounded-b pb-1"
+            class="pb-1 rounded-b  md:bg-transparent text-lightText md:mx-2 md:px-2"
             style="text-shadow: 0.5px 0.5px 4px rgb(0 0 0 / 50%)"
           >
             {{ $t("event_editor.lock_stand_by") }}
@@ -108,7 +108,12 @@ import EventTemplateEditor from "@/components/teacher/EventTemplateEditor/EventT
 import CloudSaveStatus from "@/components/ui/CloudSaveStatus.vue";
 import { defineComponent } from "@vue/runtime-core";
 import { Event, EventState, EventTemplate } from "@/models";
-import { courseIdMixin, eventIdMixin, loadingMixin, savingMixin } from "@/mixins";
+import {
+  courseIdMixin,
+  eventIdMixin,
+  loadingMixin,
+  savingMixin,
+} from "@/mixins";
 import Dialog from "@/components/ui/Dialog.vue";
 //import Btn from "@/components/ui/Btn.vue";
 import { getTranslatedString as _ } from "@/i18n";
@@ -217,10 +222,15 @@ export default defineComponent({
     },
     modelValueTemplate(): EventTemplate {
       // return a blank object until the event has been retrieved
-      return this.modelValue?.template ?? { rules: [] };
+      return (
+        this.modelValue?.template ?? { rules: [], randomize_rule_order: false }
+      );
     },
     examLocked(): boolean {
-      return !!this.modelValue.locked_by && this.modelValue.locked_by.id != this.user.id;
+      return (
+        !!this.modelValue.locked_by &&
+        this.modelValue.locked_by.id != this.user.id
+      );
     },
   },
 });

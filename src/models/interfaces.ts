@@ -104,6 +104,7 @@ export interface EventTemplate {
   name?: string;
   public?: boolean;
   creator?: string;
+  randomize_rule_order: boolean;
   rules: EventTemplateRule[];
 }
 

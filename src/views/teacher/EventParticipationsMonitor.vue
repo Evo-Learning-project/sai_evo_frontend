@@ -20,7 +20,7 @@
 
           {{ $t("event_assessment.exams_awaiting_assessment_are_marked") }}
           <span
-            class="text-base text-yellow-900 inline-icon material-icons-outlined"
+            class="text-base text-yellow-900  inline-icon material-icons-outlined"
             >pending_actions</span
           >.
         </p>
@@ -664,6 +664,12 @@ export default defineComponent({
         {
           field: "email",
           headerName: _("event_participation_headings.email"),
+          filterParams: {
+            filterOptions: ["contains"],
+            suppressAndOrCondition: true,
+          },
+          filter: "agTextColumnFilter",
+
           width: 300,
           cellRenderer: (params: any) =>
             `<div class="flex items-center space-x-1">
@@ -720,6 +726,11 @@ export default defineComponent({
         {
           field: "fullName",
           headerName: _("misc.full_name"),
+          filterParams: {
+            filterOptions: ["contains"],
+            suppressAndOrCondition: true,
+          },
+          filter: "agTextColumnFilter",
           flex: 1,
         },
       ] as ColDef[];

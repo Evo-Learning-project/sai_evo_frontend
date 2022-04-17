@@ -72,9 +72,11 @@
       @apply w-12 h-12 p-0;
     }
 
-    .bg-primary .hover\:bg-gray-200 {
+    .bg-primary .hover\:bg-gray-200,
+    .semi-transparent .hover\:bg-gray-200 {
       @apply bg-opacity-20 border-0 !important;
     }
+
 
     .animate-pulse {
         animation: my-pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite !important;

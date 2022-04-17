@@ -78,6 +78,7 @@ export const getBlankPractice = (): Event => ({
 export const getBlankEventTemplate = (): EventTemplate => ({
   rules: [],
   name: "",
+  randomize_rule_order: false,
 });
 
 export const getBlankEventTemplateRule = (

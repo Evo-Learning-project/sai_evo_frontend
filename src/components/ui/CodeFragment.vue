@@ -3,7 +3,7 @@
     <CopyToClipboard
       :icon-only="true"
       :value="value"
-      class="absolute top-0 right-0 z-20 mt-0.5 mr-0.5"
+      class="absolute top-0 right-0 z-20 mt-0.5 mr-0.5 semi-transparent"
     >
       <span class="text-base material-icons-outlined text-lightText">
         content_copy
