@@ -105,7 +105,7 @@ const getCellValue = (participation: EventParticipation, field: string) => {
           )[1]
         )
       ];
-    const results = slot.execution_results as any;
+    const results = slot.execution_results ?? { tests: [] };
     console.log(results, "results", "tests" in results);
     const passedTests =
       results.tests?.filter((t: { passed: boolean }) => t.passed).length ?? 0;
