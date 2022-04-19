@@ -20,6 +20,9 @@ const getEventParticipationHeaders = (
       const samePositionSlotTypes = participations.map(
         (p) => p.slots[i].exercise.exercise_type
       );
+      const samePositionExercises = participations.map(
+        (p) => p.slots[i].exercise
+      );
       if (
         samePositionSlotTypes.some((t) =>
           [ExerciseType.OPEN_ANSWER, ExerciseType.JS].includes(
@@ -39,7 +42,25 @@ const getEventParticipationHeaders = (
       ) {
         ret.push(`slots[${i}].selected_choices`);
       }
-      if (samePositionSlotTypes.some((t) => t === ExerciseType.JS)) {
+      if (
+        samePositionSlotTypes.some((t) =>
+          [ExerciseType.JS, ExerciseType.C].includes(t as ExerciseType)
+        )
+      ) {
+        const otherProgrammingExercises = samePositionExercises.filter((e) =>
+          [ExerciseType.JS, ExerciseType.C].includes(
+            e.exercise_type as ExerciseType
+          )
+        );
+        // add as many "testcase i passed" columns as the highest number
+        // of testcases in the exercises of the same slot
+        const maxTestcases = Math.max(
+          ...otherProgrammingExercises.map((e) => e.testcases?.length ?? 0)
+        );
+        [...Array(maxTestcases)].forEach((_, j) =>
+          ret.push(`slots[${i}].passed_testcase_${j}`)
+        );
+
         ret.push(
           `slots[${i}].passed_testcases`,
           `slots[${i}].failed_testcases`
@@ -85,6 +106,9 @@ const getCellValue = (participation: EventParticipation, field: string) => {
   // for fields that don't actually exist on the participation,
   // or need additional processing, manually set the value
   const matchPassedTestCases = field.match(/slots\[(\d+)\].passed_testcases/);
+  const matchPassedTestCase = field.match(
+    /slots\[(\d+)\].passed_testcase_(\d+)/
+  );
   const matchFailedTestCases = field.match(/slots\[(\d+)\].failed_testcases/);
   const matchSelectedChoices = field.match(/slots\[(\d+)\].selected_choices/);
 
@@ -112,6 +136,18 @@ const getCellValue = (participation: EventParticipation, field: string) => {
     return matchPassedTestCases !== null
       ? passedTests
       : (slot.exercise.testcases as ExerciseTestCase[]).length - passedTests;
+  } else if (matchPassedTestCase !== null) {
+    const slot = participation.slots[parseInt(matchPassedTestCase[1])];
+    const testcaseIndex = parseInt(matchPassedTestCase[2]);
+    const testcase = slot.exercise.testcases?.[
+      testcaseIndex
+    ] as ExerciseTestCase;
+
+    const executionResults = slot.execution_results ?? { tests: [] };
+
+    return (
+      executionResults.tests?.find((t) => t.id == testcase.id)?.passed ?? false
+    );
   }
 
   // otherwise, simply access the field on the participation or its children objects
