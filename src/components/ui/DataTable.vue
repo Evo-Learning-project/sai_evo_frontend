@@ -11,62 +11,72 @@
     :isRowSelectable="isRowSelectable"
     :getRowClass="getRowClass"
     :rowData="rowData"
+    :getRowNodeId="getRowId"
+    :immutableData="true"
+    :localeTextFunc="localeTextFunc"
     @cell-click="$emit('cellClicked', $event)"
     @selection-change="$emit('selectionChanged', $event)"
     @first-data-rendered="onGridReady"
-    :localeTextFunc="localeTextFunc"
   ></ag-grid-vue>
 </template>
 
 <script lang="ts">
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import 'ag-grid-community/dist/styles/ag-grid.css'
-import 'ag-grid-community/dist/styles/ag-theme-material.css'
-import { defineComponent, PropType } from '@vue/runtime-core'
-import { AgGridVue } from 'ag-grid-vue3'
-import { ColDef } from 'ag-grid-community'
-import { getTranslatedString as _ } from '@/i18n'
+import "ag-grid-community/dist/styles/ag-grid.css";
+import "ag-grid-community/dist/styles/ag-theme-material.css";
+import { defineComponent, PropType } from "@vue/runtime-core";
+import { AgGridVue } from "ag-grid-vue3";
+import { ColDef } from "ag-grid-community";
+import { getTranslatedString as _ } from "@/i18n";
 
 export default defineComponent({
-  name: 'DataTable',
+  name: "DataTable",
   components: {
-    AgGridVue
+    AgGridVue,
   },
   props: {
     columnDefs: {
       type: Array as PropType<ColDef[]>,
-      required: true
+      required: true,
     },
     rowData: {
       type: Array,
-      required: true
+      required: true,
     },
     isRowSelectable: {
       type: Function,
-      default: () => true
+      default: () => true,
     },
     getRowClass: {
       type: Function,
-      default: () => ''
-    }
+      default: () => "",
+    },
+    getRowId: {
+      type: Function,
+      default: () => "",
+    },
   },
-  data () {
+  data() {
     return {
       //columnDefs: [] as any,
       //rowData: [] as any,
-      style: 'width: 100%; height: 100%; min-height: 300px'
-    }
+      style: "width: 100%; height: 100%; min-height: 300px",
+    };
   },
   methods: {
-    localeTextFunc (key: string) {
-      return _('data_table.' + key)
+    localeTextFunc(key: string) {
+      return _("data_table." + key);
     },
-    onGridReady (params: any) {
+    onGridReady(params: any) {
       //console.log('READY', params)
-      this.$emit('gridReady', params)
-    }
-  }
-})
+      this.$emit("gridReady", params);
+    },
+    // getRowId(params: any) {
+    //   console.log("PARAMS", params);
+    //   return params.data.id;
+    // },
+  },
+});
 </script>
 
 <style></style>

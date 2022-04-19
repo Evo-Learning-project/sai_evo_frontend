@@ -658,7 +658,7 @@
     }
 
     .bg-danger-important {
-      @apply bg-danger-light bg-opacity-30 hover:bg-danger-light hover:bg-opacity-30 !important
+      @apply bg-danger-dark bg-opacity-5 hover:bg-danger-dark hover:bg-opacity-5 !important
     }
 
     .bg-light-important {

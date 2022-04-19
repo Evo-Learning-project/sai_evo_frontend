@@ -50,6 +50,7 @@
         :rowData="participationsData"
         :isRowSelectable="isRowSelectable"
         :getRowClass="getRowClass"
+        :getRowId="getRowId"
         @cellClicked="onCellClicked"
         @gridReady="gridApi = $event.api"
         @selectionChanged="onSelectionChanged"
@@ -80,6 +81,7 @@
 
       <Btn
         class=""
+        v-show="event.state === EventState.RESTRICTED"
         :variant="'primary'"
         :outline="true"
         @click="onOpenSelectedExams"
@@ -158,25 +160,6 @@
                 : $t("misc.participants")
             }}.
           </p>
-          <!-- <p
-            v-if="
-              selectedCloseableParticipations.length <
-                eventParticipations.length
-            "
-          >
-            {{ $t('event_monitor.close_for_selected_text_2') }}
-            <strong>{{
-              eventParticipations.length -
-                selectedCloseableParticipations.length
-            }}</strong>
-            {{
-              eventParticipations.length -
-                selectedCloseableParticipations.length ===
-              1
-                ? $t('misc.participant')
-                : $t('misc.participants')
-            }}.
-          </p> -->
         </div>
         <!-- re-opening closed exams -->
         <div v-else>
@@ -334,6 +317,9 @@ export default defineComponent({
       }
       return true;
     },
+    getRowId(data: any) {
+      return data.id;
+    },
     getRowClass(row: RowClassParams) {
       if (this.resultsMode) {
         return (row.data as EventParticipation).visibility ==
@@ -421,7 +407,6 @@ export default defineComponent({
             changes: {
               state: EventState.RESTRICTED,
               users_allowed_past_closure: [
-                // id's that were in the list and haven't been selected
                 ...(this.event.users_allowed_past_closure ?? []).filter(
                   (i) =>
                     !this.selectedCloseableParticipations
@@ -429,8 +414,10 @@ export default defineComponent({
                       .includes(i)
                 ),
                 // unselected id's
-                ...unselectedUserIds.filter((i) =>
-                  this.event.users_allowed_past_closure?.includes(i)
+                ...unselectedUserIds.filter(
+                  (i) =>
+                    this.event.state !== EventState.RESTRICTED ||
+                    this.event.users_allowed_past_closure?.includes(i)
                 ),
               ],
             },
@@ -443,7 +430,6 @@ export default defineComponent({
     async openExams() {
       // re-opening exam for a group of participants means adding those
       // participants to the `users_allowed_past_closure` list for the exam
-
       const selectedParticipations = (
         this.eventParticipations as EventParticipation[]
       ).filter((p) => this.selectedParticipations.includes(p.id)); // these are the ones the exam will stay open for
@@ -626,20 +612,10 @@ export default defineComponent({
       return this.$store.getters["teacher/event"](this.eventId);
     },
     resultsMode() {
-      return (
-        this.event.state === EventState.CLOSED
-        // &&
-        // (this.event.users_allowed_past_closure?.length ?? -1) === 0
-      );
+      return this.event.state === EventState.CLOSED;
     },
     participantCount() {
       return this.eventParticipations?.length ?? 0;
-    },
-    averageProgress() {
-      return 25.5;
-    },
-    turnedInCount() {
-      return 3;
     },
     thereArePartialAssessments() {
       return this.eventParticipations.some(
