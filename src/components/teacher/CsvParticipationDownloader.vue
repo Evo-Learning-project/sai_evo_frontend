@@ -34,7 +34,12 @@ export default defineComponent({
           preview: false,
         });
         forceFileDownload(
-          { data: getParticipationsAsCsv(this.eventParticipations) },
+          {
+            data: getParticipationsAsCsv(this.eventParticipations).replace(
+              /\\n/g,
+              "\n"
+            ),
+          },
           this.eventParticipations[0]?.event.name + ".csv"
         );
       });
