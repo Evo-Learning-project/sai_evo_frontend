@@ -1,23 +1,6 @@
 <template>
   <div class="">
     <h3 class="mb-3">{{ $t("event_editor.state_editor_title") }}</h3>
-    <!-- <Card :hoverable="false" class="bg-light" v-if="isDraft || isPlanned">
-      <template v-slot:header
-        ><div class="flex items-center space-x-4">
-          <div v-if="isDraft">
-            <div class="text-yellow-900 bg-yellow-500 icon-surrounding">
-              <span class="ml-px material-icons-outlined"> priority_high </span>
-            </div>
-          </div>
-          <div v-else-if="isPlanned">
-            <div class="icon-surrounding bg-success-light text-success-dark">
-              <span class="material-icons-outlined"> check </span>
-            </div>
-          </div>
-          <p class="">{{ currentEventStateDescription }}</p>
-        </div>
-      </template></Card
-    > -->
     <div class="my-4 banner banner-light" v-if="isDraft">
       <span class="ml-px text-yellow-900 material-icons-outlined">
         error_outline

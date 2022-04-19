@@ -1,22 +1,9 @@
 <template>
   <div>
-    <Card
-      :hoverable="false"
-      v-if="showSubmissionConfirmationMessage"
-      class="mb-8 shadow-md bg-light"
-    >
-      <!-- FIXME review shadow (make a shadow specifically for banners like this?)-->
-      <template v-slot:header
-        ><div class="flex items-center space-x-4">
-          <div>
-            <div class="icon-surrounding bg-success-light text-success-dark">
-              <span class="material-icons-outlined"> check </span>
-            </div>
-          </div>
-          <p class="">{{ $t("event_participation_page.turned_in_text") }}</p>
-        </div>
-      </template></Card
-    >
+    <div v-if="showSubmissionConfirmationMessage" class="banner banner-success">
+      <span class="material-icons-outlined"> check </span>
+      <p class="">{{ $t("event_participation_page.turned_in_text") }}</p>
+    </div>
     <div
       class="mb-4 items-center flex space-x-0.5 md:space-x-2"
       v-if="!firstLoading && allowEditAssessment"
@@ -227,7 +214,6 @@ import { defineComponent } from "@vue/runtime-core";
 import AbstractEventParticipationSlot from "@/components/shared/AbstractEventParticipationSlot.vue";
 
 import { createNamespacedHelpers, mapActions } from "vuex";
-import Card from "@/components/ui/Card.vue";
 import {
   EventParticipation,
   EventParticipationSlot,
@@ -267,7 +253,6 @@ export default defineComponent({
   },
   components: {
     AbstractEventParticipationSlot,
-    Card,
     Timestamp,
     SlotSkeleton,
     Btn,

@@ -36,7 +36,7 @@ export default defineComponent({
         forceFileDownload(
           {
             data: getParticipationsAsCsv(this.eventParticipations).replace(
-              /\\n/g,
+              /[\\r]?\\n/g,
               "\n"
             ),
           },
