@@ -131,17 +131,17 @@ export default defineComponent({
     //     (this.$refs.executionResultsBackdrop as any).expanded = true;
     //   }
     // },
-    executionState(newVal, oldVal) {
-      //console.log(this.executionResults, "ex");
-      if (
-        newVal === "internal_error" ||
-        (oldVal !== "completed" &&
-          newVal === "completed" &&
-          this.$refs.executionResultsBackdrop)
-      ) {
-        (this.$refs.executionResultsBackdrop as any).expanded = true;
-      }
-    },
+    // executionState(newVal, oldVal) {
+    //   //console.log(this.executionResults, "ex");
+    //   if (
+    //     newVal === "internal_error" ||
+    //     (oldVal !== "completed" &&
+    //       newVal === "completed" &&
+    //       this.$refs.executionResultsBackdrop)
+    //   ) {
+    //     (this.$refs.executionResultsBackdrop as any).expanded = true;
+    //   }
+    // },
   },
   props: {
     exercise: {
