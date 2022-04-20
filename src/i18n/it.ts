@@ -164,14 +164,19 @@ export const it = {
       [EventType.SELF_SERVICE_PRACTICE]: "Ha svolto un'esercitazione",
     },
   },
-  mat: {
+  student_data: {
     edit_mat_title: "Modifica matricola",
     your_mat: "Il tuo numero di matricola",
-    missing_mat: "Non hai ancora inserito il tuo numero di matricola",
-    insert_your_mat_now:
-      "L'inserimento del numero di matricola è necessario per poter partecipare agli esami. Inseriscilo ora e non pensarci più!",
+    your_course: "Il tuo corso",
+    you_havent_yet: "Non hai ancora",
+    missing_mat: "inserito il tuo numero di matricola",
+    and: "e",
+    missing_course: "selezionato il tuo corso",
+    insert_mat_and_course:
+      "L'inserimento del numero di matricola e la selezione del corso sono necessari per poter partecipare agli esami. Fallo ora e non pensarci più!",
   },
   misc: {
+    save_and_close: "Salva e chiudi",
     hidden: "Nascosto",
     teacher: "Docente",
     passed_tests: "Test case superati",
@@ -685,6 +690,7 @@ export const it = {
     csv_headers: {
       user: {
         email: "Email",
+        course: "Corso",
         full_name: "Nome e cognome",
         first_name: "Nome",
         last_name: "Cognome",

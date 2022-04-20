@@ -8,6 +8,7 @@ const getEventParticipationHeaders = (
 ): string[] => [
   "user.email",
   "user.mat",
+  "user.course",
   "user.last_name",
   "user.first_name",
   "begin_timestamp",

@@ -24,7 +24,7 @@
       <div class="mt-auto">
         <div
           class="w-full mb-4 banner banner-danger"
-          v-if="!user.is_teacher && !user.mat"
+          v-if="!user.is_teacher && (!user.mat || !user.course)"
         >
           <div class="w-full">
             <div class="flex items-center space-x-3">
@@ -33,32 +33,47 @@
               </span>
               <div>
                 <p class="font-semibold text-danger-dark">
-                  {{ $t("mat.missing_mat") }}
+                  {{ $t("student_data.you_havent_yet") }}
+
+                  <span v-if="!user.mat">{{
+                    $t("student_data.missing_mat")
+                  }}</span>
+                  <span v-if="!user.mat && !user.course"
+                    >&nbsp;{{ $t("student_data.and") }}&nbsp;</span
+                  >
+                  <span v-if="!user.course">{{
+                    $t("student_data.missing_course")
+                  }}</span>
                 </p>
                 <p class="text-danger-dark">
-                  {{ $t("mat.insert_your_mat_now") }}
+                  {{ $t("student_data.insert_mat_and_course") }}
                 </p>
               </div>
             </div>
             <div class="flex items-center mt-8 space-x-3">
               <span class="opacity-0 material-icons-outlined"> school </span>
-              <NumberInput class="w-96 text-darkText" v-model="dirtyMat"
-                >{{ $t("mat.your_mat") }}
-              </NumberInput>
-              <Btn
-                :variant="'icon'"
-                :loading="localLoading"
-                :disabled="String(dirtyMat).length === 0"
-                :outline="true"
-                @click="onSaveMat"
-              >
-                <span
-                  class="font-bold material-icons-outlined text-success"
-                  style="font-size: 1.25rem"
+              <div class="flex flex-col w-full">
+                <NumberInput class="mb-8 w-96 text-darkText" v-model="dirtyMat"
+                  >{{ $t("student_data.your_mat") }}
+                </NumberInput>
+                <RadioGroup
+                  :options="courseSelectionOptions"
+                  v-model="dirtyCourse"
+                  class="text-darkText"
+                  >{{ $t("student_data.your_course") }}</RadioGroup
                 >
-                  done
-                </span>
-              </Btn>
+                <Btn
+                  :variant="'primary'"
+                  :loading="localLoading"
+                  :disabled="
+                    String(dirtyMat).length === 0 || dirtyCourse.length === 0
+                  "
+                  @click="onSaveStudentData"
+                  class="ml-auto"
+                >
+                  {{ $t("misc.save_and_close") }}
+                </Btn>
+              </div>
             </div>
           </div>
         </div>
@@ -106,6 +121,8 @@ import { defineComponent } from "@vue/runtime-core";
 import { createNamespacedHelpers, mapState, mapActions } from "vuex";
 import SlotSkeleton from "@/components/ui/skeletons/SlotSkeleton.vue";
 import NumberInput from "@/components/ui/NumberInput.vue";
+import { courseSelectionOptions } from "@/const";
+import RadioGroup from "@/components/ui/RadioGroup.vue";
 export default defineComponent({
   name: "ExamPreview",
   mixins: [courseIdMixin, eventIdMixin, loadingMixin],
@@ -114,6 +131,7 @@ export default defineComponent({
     Btn,
     SlotSkeleton,
     NumberInput,
+    RadioGroup,
   },
   async created() {
     await this.withFirstLoading(
@@ -123,6 +141,9 @@ export default defineComponent({
           eventId: this.eventId,
         })
     );
+
+    this.dirtyCourse = this.user.course;
+    this.dirtyMat = this.user.mat;
 
     if ((this.previewingEvent as Event).participation_exists) {
       this.$router.push({
@@ -137,16 +158,18 @@ export default defineComponent({
     return {
       EventState,
       dirtyMat: "",
+      dirtyCourse: "",
+      courseSelectionOptions,
     };
   },
   methods: {
     ...mapActions("student", ["getEvent"]),
     ...mapActions("shared", ["updateUser"]),
-    async onSaveMat() {
+    async onSaveStudentData() {
       await this.withLocalLoading(async () =>
         this.updateUser({
           userId: this.user.id,
-          changes: { mat: this.dirtyMat },
+          changes: { mat: this.dirtyMat, course: this.dirtyCourse },
         })
       );
       this.$store.commit("shared/showSuccessFeedback");

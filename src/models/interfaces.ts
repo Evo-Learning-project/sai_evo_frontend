@@ -29,6 +29,7 @@ export interface User {
   is_teacher: boolean;
   course_privileges?: CoursePrivilege[];
   mat: string;
+  course: string;
 }
 
 export interface Course {

@@ -143,4 +143,10 @@ export const programmingExerciseTabsOptions: SelectableOption[] = [
   },
 ];
 
+export const courseSelectionOptions: SelectableOption[] = [
+  { value: "A", content: "Corso A" },
+  { value: "B", content: "Corso B" },
+  { value: "C", content: "Corso C" },
+];
+
 export const CLOZE_SEPARATOR = "[[?]]";
