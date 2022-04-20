@@ -224,6 +224,7 @@ export default defineComponent({
       try {
         await this.slotAutoSaveManagers[slot.id].flush();
         // subscribe to slot to get code execution results
+        this.ws?.close();
         this.ws = await subscribeToSubmissionSlotChanges(slot.id);
         // send request to run code
         await this.runEventParticipationSlotCode({
