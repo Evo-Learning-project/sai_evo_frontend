@@ -168,7 +168,7 @@
     }
 
     .card-hoverable {
-      transition: box-shadow .2s cubic-bezier(.4,0,.2,1),border-color .2s cubic-bezier(.4,0,.2,1)
+      transition: box-shadow .1s cubic-bezier(.4,0,.2,1),border-color .1s cubic-bezier(.4,0,.2,1)
     }
 
     .card-border {
@@ -261,6 +261,24 @@
     .material-icons-outlined {
       @apply select-none
     }
+
+    /** unused for now
+    .google-material-icons {
+        font-family: 'Google Material Icons';
+        font-weight: normal;
+        font-style: normal;
+        font-size: 24px;
+        line-height: 1;
+        letter-spacing: normal;
+        text-transform: none;
+        display: inline-block;
+        white-space: nowrap;
+        word-wrap: normal;
+        direction: ltr;
+        -webkit-font-feature-settings: 'liga';
+        -webkit-font-smoothing: antialiased;
+    }
+        */
 
     .inline-icon {
       vertical-align: sub;

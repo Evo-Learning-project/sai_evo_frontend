@@ -74,10 +74,11 @@
       :yes-text="$t('misc.save')"
       :no-text="$t('dialog.default_cancel_text')"
     >
-      <template v-slot:title>{{ $t("mat.edit_mat_title") }}</template>
+      <!-- TODO add course selection -->
+      <template v-slot:title>{{ $t("student_data.edit_mat_title") }}</template>
       <template v-slot:body>
         <NumberInput v-model="dirtyMat" class="mt-8">{{
-          $t("mat.your_mat")
+          $t("student_data.your_mat")
         }}</NumberInput>
       </template>
     </Dialog>
