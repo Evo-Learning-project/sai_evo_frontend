@@ -1,3 +1,4 @@
+import { Exercise } from "./models/interfaces";
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import debounce from "lodash/debounce";
 import moment from "moment";
@@ -7,6 +8,7 @@ import { ErrorMessage } from "./interfaces";
 import router from "./router";
 import store from "./store";
 import { SharedState } from "./store/types";
+import { ExerciseState } from "./models";
 
 const EDITOR_DEBOUNCE_TIME_MS = 1500;
 const EDITOR_DEBOUNCE_MAX_WAIT_MS = 4000;
@@ -177,3 +179,14 @@ export function forceFileDownload(response: { data: BlobPart }, title: string) {
 export const formatExerciseText = (text: string): string => {
   return text.replace(/```([^`]*)```/g, "<pre>$1</pre>");
 };
+
+export const getExerciseTitle = (exercise: Exercise): string =>
+  (exercise?.label ?? "").trim().length > 0
+    ? (exercise.label as string)
+    : _("exercise_preview.unnamed_exercise");
+
+export const getClonedExercise = (exercise: Exercise): Exercise => ({
+  ...exercise,
+  label: exercise.label + " " + _("exercise.clone_label"),
+  state: ExerciseState.DRAFT,
+});

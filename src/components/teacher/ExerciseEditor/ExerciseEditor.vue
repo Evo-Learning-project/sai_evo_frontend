@@ -58,7 +58,7 @@
       }"
     >
       <template v-slot:header>
-        <div class="flex" v-if="!subExercise">
+        <div class="flex mb-8" v-if="!subExercise">
           <h3 v-if="!subExercise">
             {{ $t("exercise_editor.exercise_editor_title") }}
             <span
@@ -400,6 +400,29 @@
             </div>
           </template>
         </Dialog>
+        <div class="flex w-full -mt-5">
+          <Btn
+            class="ml-auto"
+            :outline="true"
+            :size="'lg'"
+            :variant="'icon'"
+            @click="$emit('clone')"
+            :tooltip="$t('exercise_editor.clone')"
+            ><span class="text-xl icon-light material-icons-outlined">
+              copy_all
+            </span></Btn
+          >
+          <Btn
+            class="ml-5"
+            :outline="true"
+            :size="'lg'"
+            :variant="'icon'"
+            @click="$emit('delete')"
+            ><span class="text-xl text-danger-dark material-icons-outlined">
+              delete
+            </span></Btn
+          >
+        </div>
       </template>
     </Card>
   </div>

@@ -279,6 +279,7 @@ export const it = {
   exercise: {
     choice_score_word_singular: "punto",
     choice_score_word_plural: "punti",
+    clone_label: "(copia)",
   },
   course_events: {
     new_exam: "Nuovo esame",
@@ -473,6 +474,8 @@ export const it = {
       "Sei sicuro di voler eliminare questo sotto-esercizio?",
     code_execution_will_appear_here:
       "I risultati dell'esecuzione del codice della soluzione appariranno qui.",
+    clone: "Clona esercizio",
+    clone_confirm: "Sei sicuro di voler clonare",
   },
   exercise_wrapper: {
     select: "Seleziona",

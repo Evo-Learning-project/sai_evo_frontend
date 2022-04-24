@@ -12,7 +12,7 @@
     </div>
     <div
       style="z-index: 50"
-      class="absolute bottom-0 right-0 mr-1 -mb-2"
+      class="absolute bottom-0 right-0 hidden mr-1 -mb-2"
       v-show="showEditor"
     >
       <Btn
@@ -46,6 +46,8 @@
       :saving="saving"
       v-if="showEditor"
       :modelValue="modelValue"
+      @delete="$emit('delete')"
+      @clone="onClone"
     ></ExerciseEditor>
     <!-- </div> -->
   </div>
@@ -59,6 +61,8 @@ import ExercisePreview from "@/components/teacher/ExerciseEditor/ExercisePreview
 import { Exercise } from "@/models";
 import { defineComponent, PropType } from "@vue/runtime-core";
 import { texMixin } from "@/mixins";
+import { getTranslatedString } from "@/i18n";
+import { getExerciseTitle } from "@/utils";
 export default defineComponent({
   name: "ExerciseEditorWrapper",
   components: {
@@ -90,6 +94,18 @@ export default defineComponent({
       this.showEditor = !this.showEditor;
       if (!this.showEditor) {
         this.triggerTexRender();
+      }
+    },
+    onClone() {
+      if (
+        confirm(
+          getTranslatedString("exercise_editor.clone_confirm") +
+            " " +
+            getExerciseTitle(this.modelValue) +
+            "?"
+        )
+      ) {
+        this.$emit("clone");
       }
     },
   },

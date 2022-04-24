@@ -384,7 +384,7 @@
       @apply absolute -mt-1 border-4 border-transparent border-solid top-4 md:top-1/2 right-full;
     }
 
-    .tooltip-bottom::after {
+    .tooltip-bottom:not(.tooltip-no-arrow)::after {
       content: ' ';
       border-color: transparent  transparent rgba(17, 24, 39, 0.6) transparent !important;
       @apply absolute -mt-1 border-4 border-transparent border-solid bottom-full left-1/2;

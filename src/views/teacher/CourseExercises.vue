@@ -27,7 +27,9 @@
         :key="'course-' + courseId + '-exercise-' + exercise.id"
         v-model="exercises[index]"
         :ref="'course-' + courseId + '-exercise-' + exercise.id"
+        :id="'course-' + courseId + '-exercise-' + exercise.id"
         @delete="onDeleteExercise(exercise)"
+        @clone="onCloneExercise(exercise)"
       ></ExerciseEditorWrapper>
     </div>
     <div v-else>
@@ -105,7 +107,7 @@ import { defineComponent } from "@vue/runtime-core";
 import Spinner from "@/components/ui/Spinner.vue";
 import ExerciseSearchFilters from "@/components/teacher/ExerciseSearchFilters.vue";
 import { ExerciseSearchFilter } from "@/api/interfaces";
-import { getDebouncedForFilter } from "@/utils";
+import { getClonedExercise, getDebouncedForFilter } from "@/utils";
 import { courseIdMixin, loadingMixin } from "@/mixins";
 import ExerciseEditorWrapperSkeleton from "@/components/ui/skeletons/ExerciseEditorWrapperSkeleton.vue";
 import { getBlankExerciseSearchFilters, isEmptyFilter } from "@/api/utils";
@@ -207,11 +209,25 @@ export default defineComponent({
         error();
       }
     },
-    async onAddExercise() {
-      await this.withLocalLoading(async () => {
+    async onCloneExercise(exercise: Exercise) {
+      const newExercise = await this.onAddExercise(getClonedExercise(exercise));
+      // show notification
+
+      // close editor
+
+      // open new editor
+      document
+        .getElementById(
+          "course-" + this.courseId + "-exercise-" + newExercise.id
+        )
+        ?.scrollIntoView();
+    },
+    async onAddExercise(cloned?: Exercise): Promise<Exercise> {
+      const wrapperFunc = cloned ? this.withLoading : this.withLocalLoading;
+      return (await wrapperFunc(async () => {
         const newExercise = await this.createExercise({
           courseId: this.courseId,
-          exercise: getBlankExercise(),
+          exercise: cloned ?? getBlankExercise(),
         });
         (
           this.$refs[
@@ -220,7 +236,8 @@ export default defineComponent({
             showEditor: boolean;
           }
         ).showEditor = true;
-      });
+        return newExercise;
+      })) as Exercise;
     },
     async onDeleteExercise(exercise: Exercise) {
       this.showDialog = true;

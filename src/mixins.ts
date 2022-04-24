@@ -52,9 +52,10 @@ export const loadingMixin = {
 
       sharedState.loading = true;
       try {
-        await callback();
+        const ret = await callback();
         sharedState.dirtyTex = true; // trigger tex rendering
         onSuccess?.();
+        return ret;
       } catch (e) {
         onError?.(e);
       } finally {
@@ -69,8 +70,9 @@ export const loadingMixin = {
 
       sharedState.firstLoading = true;
       try {
-        await callback();
+        const ret = await callback();
         sharedState.dirtyTex = true; // trigger tex rendering
+        return ret;
       } catch (e: any) {
         onError?.(e);
       } finally {
@@ -82,8 +84,9 @@ export const loadingMixin = {
 
       sharedState.localLoading = true;
       try {
-        await callback();
+        const ret = await callback();
         sharedState.dirtyTex = true; // trigger tex rendering
+        return ret;
       } catch (e: any) {
         setErrorNotification(e);
       } finally {

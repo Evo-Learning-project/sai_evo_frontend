@@ -6,14 +6,14 @@
         :class="{
           'hover:bg-gray-200 hover:bg-opacity-80 rounded-md px-1.5 transition-colors duration-100 tooltip-handle': true,
         }"
-        class="text-base cursor-default select-none opacity-80 material-icons-outlined hover:text-primary-dark"
+        class="text-base cursor-default select-none  opacity-80 material-icons-outlined hover:text-primary-dark"
       >
         help_outline
       </span>
       <div class="tooltip-handle" v-else>
         <slot> </slot>
       </div>
-      <transition name="fade"
+      <transition name="fade" v-if="textCode || textValue"
         ><span
           class="z-20 max-w-xs md:max-w-max tooltip-text"
           :class="{
@@ -21,6 +21,7 @@
             'tooltip-bottom': placement === 'bottom',
             'tooltip-top': placement === 'top',
             'tooltip-left': placement === 'left',
+            'tooltip-no-arrow': noArrow,
           }"
           >{{ helpText }}</span
         ></transition
@@ -47,6 +48,10 @@ export default defineComponent({
     placement: {
       type: String as PropType<"right" | "left" | "top" | "bottom">,
       default: "right",
+    },
+    noArrow: {
+      type: Boolean,
+      default: false,
     },
   },
   methods: {},

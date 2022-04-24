@@ -44,7 +44,7 @@ import { defineComponent, PropType } from "@vue/runtime-core";
 import Tag from "@/components/ui/Tag.vue";
 import MultiIcon from "@/components/ui/MultiIcon.vue";
 import { icons as exerciseStatesIcons } from "@/assets/exerciseStatesIcons";
-import { formatExerciseText } from "@/utils";
+import { formatExerciseText, getExerciseTitle } from "@/utils";
 
 export default defineComponent({
   name: "ExercisePreview",
@@ -70,9 +70,7 @@ export default defineComponent({
   },
   computed: {
     previewTitle(): string {
-      return (this.exercise?.label ?? "").trim().length > 0
-        ? (this.exercise.label as string)
-        : _("exercise_preview.unnamed_exercise");
+      return getExerciseTitle(this.exercise);
     },
     previewText(): string {
       return formatExerciseText(this.exercise.text);
