@@ -3,12 +3,12 @@
     <spinner v-if="loading"></spinner>
     <div class="my-auto">
       <h1 class="mx-auto mb-10 text-4xl text-center text-primary">
-        SAI Evo &mdash; ver. &beta; 2.0
+        SAI Evo &mdash; ver. &beta; 3.0
       </h1>
       <!-- <button @click="printDebug()">debug</button>
     <button @click="testGetUser()">test get user</button> -->
       <div
-        class="w-full px-6 py-12 mx-auto my-auto text-center rounded-md shadow-elevation-2 md:px-20 md:mx-auto md:w-2/3 border-gray-150"
+        class="w-full px-6 py-12 mx-auto my-auto text-center rounded-md  shadow-elevation-2 md:px-20 md:mx-auto md:w-2/3 border-gray-150"
       >
         <h1 class="mx-auto text-center">
           {{ $t("headings.login") }}
@@ -16,7 +16,9 @@
         <p class="mb-3">
           {{ $t("login_screen.login_text") }}
           <strong
-            >@{{ $route.params.role == "teacher" ? "" : "studenti." }}unipi.it</strong
+            >@{{
+              $route.params.role == "teacher" ? "" : "studenti."
+            }}unipi.it</strong
           >.
         </p>
         <p class="mb-3">
@@ -41,7 +43,9 @@
             :size="'lg'"
             class="relative md:w-max"
             :disabled="!googleOauthReady || localLoading"
-            :loading="(!googleOauthReady && !googleOauthHadError) || localLoading"
+            :loading="
+              (!googleOauthReady && !googleOauthHadError) || localLoading
+            "
           >
             <span class="mr-3 material-icons-outlined">login</span>
             {{ $t("login_screen.login") }}

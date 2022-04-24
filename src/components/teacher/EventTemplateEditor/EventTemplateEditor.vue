@@ -27,10 +27,22 @@
             :randomOrder="randomRuleOrder"
             :globallySelectedExercises="selectedExercises"
             :modelValue="element"
-            @updateRule="onRuleUpdate(element, $event.field, $event.value)"
-            @addClause="onRuleAddClause(element)"
-            @updateClause="onRuleUpdateClause(element, $event)"
-            @deleteRule="onRuleDelete(element)"
+            @updateRule="
+              onRuleUpdate(element, $event.field, $event.value);
+              $emit('templateChanged');
+            "
+            @addClause="
+              onRuleAddClause(element);
+              $emit('templateChanged');
+            "
+            @updateClause="
+              onRuleUpdateClause(element, $event);
+              $emit('templateChanged');
+            "
+            @deleteRule="
+              onRuleDelete(element);
+              $emit('templateChanged');
+            "
             @ruleDialogClose="v$.$touch()"
           >
             <template v-slot:error>
@@ -65,7 +77,12 @@
     </div>
 
     <div class="flex items-center mt-auto">
-      <Btn @click="onAddRule()" :loading="localLoading"
+      <Btn
+        @click="
+          onAddRule();
+          $emit('templateChanged');
+        "
+        :loading="localLoading"
         ><span class="mr-1 text-base material-icons-outlined">
           add_circle_outline </span
         >{{ $t("event_template_editor.add_rule") }}</Btn

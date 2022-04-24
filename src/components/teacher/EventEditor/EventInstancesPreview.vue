@@ -28,7 +28,7 @@
             >
               <div
                 class="my-12"
-                v-for="(slot, slotIndex) in instances"
+                v-for="(__, slotIndex) in instances[instanceIndex]"
                 :key="'instance-' + instanceIndex + '-slot-' + slotIndex"
               >
                 <h4 class="mb-1">
@@ -60,6 +60,7 @@ import {
 import { SelectableOption } from "@/interfaces";
 import SegmentedControls from "@/components/ui/SegmentedControls.vue";
 import AbstractEventParticipationSlot from "@/components/shared/AbstractEventParticipationSlot.vue";
+import { getTranslatedString as _ } from "@/i18n";
 export default defineComponent({
   name: "EventInstancesPreview",
   components: { Dialog, SegmentedControls, AbstractEventParticipationSlot },
@@ -88,7 +89,7 @@ export default defineComponent({
     instancesAsSelectableOptions(): SelectableOption[] {
       return this.instances.map((i, j) => ({
         value: j,
-        content: "Esempio " + (j + 1),
+        content: _("misc.example") + " " + (j + 1),
       }));
     },
   },

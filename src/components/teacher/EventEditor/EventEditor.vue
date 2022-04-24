@@ -58,6 +58,7 @@
             modelValue.state === EventState.OPEN ||
             modelValue.state === EventState.RESTRICTED
           "
+          @templateChanged="invalidateExamples()"
         ></EventTemplateEditor>
         <Toggle
           style="margin-top: -1.85rem"
@@ -80,10 +81,19 @@
           </span>
           <div class="flex items-center w-full">
             <p>
-              Hai utilizzato alcune delle funzionalità di randomizzazione.
-              Verifica che gli esami generati siano corretti.
+              {{ $t("event_editor.tip_you_used_randomization") }}
             </p>
-            <Btn class="ml-auto" @click="getInstances">Genera esempi</Btn>
+            <Btn
+              class="ml-auto"
+              @click="getInstances"
+              :disabled="loadingExamples"
+            >
+              {{
+                loadingExamples
+                  ? $t("event_editor.generating_examples")
+                  : $t("event_editor.generate_examples")
+              }}
+            </Btn>
           </div>
           <EventInstancesPreview
             @hide="showInstancesDialog = false"
@@ -92,25 +102,6 @@
           ></EventInstancesPreview>
         </div>
       </div>
-      <!-- <div class="banner banner-light">
-        <span
-          class="material-icons-two-tone"
-          style="
-            filter: invert(80%) sepia(67%) saturate(1803%) hue-rotate(348deg)
-              brightness(80%) contrast(96%);
-          "
-        >
-          tips_and_updates
-        </span>
-        <div class="flex items-center w-full">
-          <p>
-            Hai utilizzato alcune delle funzionalità di randomizzazione. Verifica che gli
-            esami generati siano corretti.
-          </p>
-          <Btn class="ml-auto">Genera esempi</Btn>
-        </div>
-      </div> -->
-
       <EventStateEditor
         class="pb-10"
         :modelValue="modelValue"
@@ -144,7 +135,13 @@ import EventTemplateEditor from "@/components/teacher/EventTemplateEditor/EventT
 //import CollapsiblePanelGroup from '@/components/ui/CollapsiblePanelGroup.vue'
 import CloudSaveStatus from "@/components/ui/CloudSaveStatus.vue";
 import { defineComponent } from "@vue/runtime-core";
-import { Event, EventState, EventTemplate, Exercise } from "@/models";
+import {
+  Event,
+  EventState,
+  EventTemplate,
+  EventTemplateRuleType,
+  Exercise,
+} from "@/models";
 import {
   courseIdMixin,
   eventIdMixin,
@@ -245,6 +242,7 @@ export default defineComponent({
       EventState,
       instances: [] as Exercise[][],
       showInstancesDialog: false,
+      loadingExamples: false,
     };
   },
   methods: {
@@ -256,16 +254,26 @@ export default defineComponent({
       "updateEvent",
     ]),
     ...mapMutations(["setEvent"]),
+    invalidateExamples() {
+      this.instances = [];
+    },
     async onChange(field: keyof Event, value: unknown) {
+      if (field === "randomize_rule_order") {
+        this.invalidateExamples();
+      }
       await this.autoSaveManager?.onChange({ field, value });
     },
     async getInstances() {
-      const amount = 3; // TODO implement
-      this.instances = await getEventInstances(
-        this.courseId,
-        this.eventId,
-        amount
-      );
+      if (this.instances.length === 0) {
+        this.loadingExamples = true;
+        const amount = 5; // TODO implement
+        this.instances = await getEventInstances(
+          this.courseId,
+          this.eventId,
+          amount
+        );
+        this.loadingExamples = false;
+      }
       this.showInstancesDialog = true;
     },
   },
@@ -280,8 +288,16 @@ export default defineComponent({
       return this.modelValue?.template ?? { rules: [] };
     },
     usedRandomization(): boolean {
-      // TODO implement
-      return true;
+      return (
+        ((this.modelValue.randomize_rule_order ?? false) ||
+          this.modelValue.template?.rules.some(
+            (r) =>
+              r.rule_type === EventTemplateRuleType.TAG_BASED ||
+              (r.rule_type === EventTemplateRuleType.ID_BASED &&
+                (r.exercises?.length ?? 0) > 1)
+          )) ??
+        false
+      );
     },
     examLocked(): boolean {
       return (

@@ -421,6 +421,10 @@ export const it = {
     currently_locked_by: "È in corso una modifica a questo esame da parte di",
     lock_stand_by:
       "L'editor verrà sbloccato non appena la modifica sarà conclusa.",
+    tip_you_used_randomization:
+      "Hai utilizzato alcune delle funzionalità di randomizzazione. Verifica che gli esami generati siano corretti.",
+    generate_examples: "Genera esempi",
+    generating_examples: "Generazione esempi...",
   },
   exercise_editor: {
     exercise_editor_title: "Editor esercizio",
