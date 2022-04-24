@@ -192,9 +192,9 @@ export const getEventParticipationMonitorHeaders = (
         suppressAndOrCondition: true,
       },
       filter: "agTextColumnFilter",
-      width: 140,
+      minWidth: 120,
       resizable: true,
-      //flex: 1,
+      flex: 1,
     },
     {
       field: "mat",
@@ -219,7 +219,7 @@ export const getEventParticipationMonitorHeaders = (
       ? [
           {
             field: "state", // assessment progress
-            width: 80,
+            width: 90,
             headerName: _("event_participation_headings.state"),
             cellRenderer: (params: any) =>
               `<span class="${

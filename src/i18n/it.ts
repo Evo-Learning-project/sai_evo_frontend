@@ -93,7 +93,7 @@ export const it = {
   event_participation_headings: {
     mat: "Matricola",
     course: "Corso",
-    state: "Stato",
+    state: "Correzione",
     participation_state: "Consegna",
     email: "Email",
     exercise: "Es.",
