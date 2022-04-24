@@ -767,7 +767,7 @@ export default defineComponent({
           email: p.user?.email,
           mat: p.user?.mat,
           currentSlotCursor: p.current_slot_cursor,
-          course: p.user?.course || "A", // TODO remove
+          course: p.user?.course,
           fullName: p.user?.full_name,
           state: this.resultsMode ? p.assessment_progress : p.state,
           visibility: p.visibility,
