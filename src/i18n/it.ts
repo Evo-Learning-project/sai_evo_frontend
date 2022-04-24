@@ -91,6 +91,8 @@ export const it = {
     text_answer_label: "La tua risposta",
   },
   event_participation_headings: {
+    mat: "Matricola",
+    course: "Corso",
     state: "Stato",
     participation_state: "Consegna",
     email: "Email",
@@ -302,6 +304,9 @@ export const it = {
     copied_link: "Copiato link per gli studenti",
   },
   event_monitor: {
+    stats_turned_in: "Consegnati",
+    stats_participants: "Partecipanti",
+    stats_average_progress: "Completamento medio",
     close_for_selected: "Chiudi esame per i selezionati",
     open_for_selected: "Apri esame per i selezionati",
     close_for_selected_text_1: "Stai per chiudere l'esame per",
@@ -311,6 +316,9 @@ export const it = {
       "L'esame è stato chiuso per alcuni partecipanti. Ricorda di chiudere l'esame per tutti al termine. Le righe evidenziate in rosso corrispondono a esami già chiusi.",
     un_turn_in_text:
       "Questo studente ha già consegnato. Puoi annullare la sua consegna per permettergli di modificare le sue risposte. Vuoi annullare la consegna di ",
+    un_turn_in_instructions:
+      "Per riaprire l'esame di uno studente che ha già consegnato, clicca sull'icona",
+    in_column_state: "nella colonna Consegna.",
   },
   event_results: {
     publish_results: "Pubblica risultati",

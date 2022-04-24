@@ -671,6 +671,35 @@
       @apply px-4 py-2 rounded-md bg-light !important
     }
 
+    .ag-header-cell-menu-button:not(.ag-header-menu-always-show) {
+      transition: opacity 0.5s !important; 
+      opacity: 0.6;
+    }
+
+    .ag-theme-material .ag-header-icon .ag-icon {
+      font-family: "Material Icons Outlined";
+      font-size: 18px;
+      line-height: 18px;
+      padding: 2.5px;
+      font-style: normal;
+      font-weight: normal;
+      font-variant: normal;
+      text-transform: none;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    .ag-theme-material .ag-icon:hover {
+      @apply bg-gray-200 rounded-full;
+    }
+
+    .ag-theme-material .ag-icon-menu::before {
+      content: "filter_list";
+    }
+    .ag-theme-material .ag-icon-filter::before {
+      content: "filter_alt";
+    }
+
     .bg-success-important {
       @apply bg-success-light bg-opacity-10 hover:bg-success-light hover:bg-opacity-10 !important
     }

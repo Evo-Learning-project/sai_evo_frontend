@@ -7,7 +7,14 @@
         <span
           v-if="course.hidden"
           :title="$t('misc.hidden_to_students')"
-          class="my-auto ml-2 text-lg md:pt-1 opacity-40 material-icons-outlined"
+          class="
+            my-auto
+            ml-2
+            text-lg
+            md:pt-1
+            opacity-40
+            material-icons-outlined
+          "
         >
           visibility_off
         </span>
@@ -17,7 +24,9 @@
       <div class="">
         <div class="text-sm flex items-center space-x-1 px-1 mb-1">
           <div class="flex items-center space-x-0.5 text-muted">
-            <span class="my-auto text-base material-icons-outlined">person</span>
+            <span class="my-auto text-base material-icons-outlined"
+              >person</span
+            >
             <span class="">{{ $t("misc.teacher") }}:</span>
           </div>
           <p>{{ course.creator?.full_name }}</p>
@@ -33,8 +42,12 @@
           }"
         >
           <Btn class="w-full">
-            <span class="mr-0.5 text-base material-icons-outlined"> chevron_right </span>
-            <span class="text-sm md:text-base">{{ $t("courses.go_to_course") }}</span>
+            <span class="mr-0.5 text-base material-icons-outlined">
+              chevron_right
+            </span>
+            <span class="text-sm md:text-base">{{
+              $t("courses.go_to_course")
+            }}</span>
           </Btn></router-link
         >
         <router-link
@@ -46,7 +59,9 @@
           }"
           ><Btn class="w-full">
             <span class="mr-1 text-base material-icons-outlined"> shield </span>
-            <span class="text-sm md:text-base">{{ $t("courses.course_panel") }}</span>
+            <span class="text-sm md:text-base">{{
+              $t("courses.course_panel")
+            }}</span>
           </Btn></router-link
         >
       </div>
@@ -61,7 +76,9 @@
           }"
           ><Btn class="w-full">
             <span class="mr-1 text-base material-icons-outlined"> shield </span>
-            <span class="text-sm md:text-base">{{ $t("courses.course_panel") }}</span>
+            <span class="text-sm md:text-base">{{
+              $t("courses.course_panel")
+            }}</span>
           </Btn></router-link
         >
         <router-link
@@ -71,8 +88,12 @@
           }"
         >
           <Btn class="w-full">
-            <span class="mr-0.5 text-base material-icons-outlined"> chevron_right </span>
-            <span class="text-sm md:text-base">{{ $t("courses.go_to_course") }}</span>
+            <span class="mr-0.5 text-base material-icons-outlined">
+              chevron_right
+            </span>
+            <span class="text-sm md:text-base">{{
+              $t("courses.go_to_course")
+            }}</span>
           </Btn></router-link
         >
       </div>
@@ -103,7 +124,7 @@ export default defineComponent({
   computed: {
     canAccessCoursePanel(): boolean {
       return (
-        this.course.creator?.id === this.$store.state.user?.id ||
+        this.course.creator?.id === this.$store.state.shared.user?.id ||
         (this.course.privileges?.length ?? 0) > 0
       );
     },

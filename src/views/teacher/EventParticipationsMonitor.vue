@@ -43,6 +43,63 @@
         </p>
       </div>
     </div>
+    <div class="flex mt-2 mb-6 md:flex-row">
+      <div
+        class="flex flex-col items-center w-1/3 mr-4  card card-filled shadow-elevation"
+      >
+        <div class="flex space-x-0.5 text-2xl items-center">
+          <p>{{ participantCount }}</p>
+          <span class="text-3xl material-icons icon-light">people</span>
+        </div>
+        <p class="text-sm text-muted">
+          {{ $t("event_monitor.stats_participants") }}
+        </p>
+      </div>
+      <div
+        class="flex flex-col items-center w-1/3 mr-4  card card-filled shadow-elevation"
+      >
+        <div class="flex space-x-0.5 text-2xl items-center">
+          <p>{{ turnedInCount }}</p>
+          <span class="text-3xl material-icons-two-tone two-tone-success"
+            >assignment_turned_in</span
+          >
+        </div>
+        <p class="text-sm text-muted">
+          {{ $t("event_monitor.stats_turned_in") }}
+        </p>
+      </div>
+      <div
+        class="flex flex-col items-center w-1/3  card card-filled shadow-elevation"
+      >
+        <div class="flex space-x-0.5 text-2xl items-center">
+          <p>{{ averageProgress }}</p>
+          <p>%</p>
+          <!-- <span class="text-3xl material-icons-two-tone two-tone-success"
+            >assignment_turned_in</span
+          > -->
+        </div>
+        <p class="text-sm text-center text-muted">
+          {{ $t("event_monitor.stats_average_progress") }}
+        </p>
+      </div>
+      <div class="hidden md:ml-auto banner banner-light">
+        <span class="material-icons-outlined icon-light">
+          assignment_returned
+        </span>
+        <p>
+          {{ $t("event_monitor.un_turn_in_instructions") }}
+          <span
+            class="text-lg inline-icon text-success material-icons-outlined"
+            >{{
+              participationStateIcons[EventParticipationState.TURNED_IN][0]
+            }}</span
+          >
+          <span style="margin-left: -1px">{{
+            $t("event_monitor.in_column_state")
+          }}</span>
+        </p>
+      </div>
+    </div>
     <div class="flex-grow">
       <DataTable
         :class="{ 'opacity-50': participationsData.length === 0 }"
@@ -52,7 +109,11 @@
         :getRowClass="getRowClass"
         :getRowId="getRowId"
         @cellClicked="onCellClicked"
-        @gridReady="gridApi = $event.api"
+        @gridReady="
+          gridApi = $event.api;
+          columnApi = $event.columnApi;
+          columnApi.autoSizeAllColumns(false);
+        "
         @selectionChanged="onSelectionChanged"
       ></DataTable>
     </div>
@@ -212,6 +273,7 @@ import Btn from "@/components/ui/Btn.vue";
 import { downloadEventParticipationSlotAttachment } from "@/api/events";
 import CsvParticipationDownloader from "@/components/teacher/CsvParticipationDownloader.vue";
 import SkeletonCard from "@/components/ui/SkeletonCard.vue";
+import { getEventParticipationMonitorHeaders } from "@/const";
 
 export default defineComponent({
   components: {
@@ -258,6 +320,7 @@ export default defineComponent({
         10000
       );
     }
+    // setTimeout(() => this.columnApi.autoSizeAllColumns(false), 5000);
   },
   beforeRouteLeave() {
     if (this.refreshHandle != null) {
@@ -273,6 +336,7 @@ export default defineComponent({
       editingFullName: "",
       editingParticipationId: "",
       gridApi: null as any,
+      columnApi: null as any,
       selectedParticipations: [] as string[],
 
       // dialog functions
@@ -281,6 +345,9 @@ export default defineComponent({
       closingExamsMode: false,
       reOpeningTurnedInParticipationMode: false,
       reOpeningClosedExamsMode: false,
+
+      EventParticipationState,
+      participationStateIcons,
     };
   },
   methods: {
@@ -617,6 +684,30 @@ export default defineComponent({
     participantCount() {
       return this.eventParticipations?.length ?? 0;
     },
+    turnedInCount() {
+      return (
+        this.eventParticipations?.filter(
+          (p: EventParticipation) =>
+            p.state === EventParticipationState.TURNED_IN
+        ).length ?? 0
+      );
+    },
+    averageProgress() {
+      const participations = this.eventParticipations as EventParticipation[];
+      const divisor =
+        (this.event.template?.rules.length ?? 0) * participations.length;
+      const perc =
+        (100 *
+          participations
+            .map((p) =>
+              p.state === EventParticipationState.TURNED_IN
+                ? p.slots.length
+                : p.current_slot_cursor ?? 0
+            )
+            .reduce((a, b) => a + b)) /
+        divisor;
+      return Math.round(perc * 100) / 100;
+    },
     thereArePartialAssessments() {
       return this.eventParticipations.some(
         (p: EventParticipation) =>
@@ -630,113 +721,11 @@ export default defineComponent({
           p.visibility != AssessmentVisibility.PUBLISHED
       );
     },
-    participationPreviewColumns(): ColDef[] {
-      if ((this.eventParticipations?.length ?? 0) === 0) {
-        return [];
-      }
-      let ret = [
-        { field: "id", hide: true },
-        { field: "visibility", hide: true },
-        {
-          field: "email",
-          headerName: _("event_participation_headings.email"),
-          filterParams: {
-            filterOptions: ["contains"],
-            suppressAndOrCondition: true,
-          },
-          filter: "agTextColumnFilter",
-
-          width: 300,
-          cellRenderer: (params: any) =>
-            `<div class="flex items-center space-x-1">
-            <span class="p-2 mr-2 text-sm ag-selectable-cell material-icons-outlined">launch</span>
-            ${params.value}</div>`,
-          checkboxSelection: true,
-          headerCheckboxSelection: true,
-          headerCheckboxSelectionFilteredOnly: true,
-        },
-        ...(this.resultsMode
-          ? [
-              {
-                field: "state", // assessment progress
-                width: 80,
-                headerName: _("event_participation_headings.state"),
-                cellRenderer: (params: any) =>
-                  `<span class="${
-                    params.value ==
-                    ParticipationAssessmentProgress.PARTIALLY_ASSESSED
-                      ? "text-yellow-900"
-                      : "text-success"
-                  } pt-2 ml-1 text-lg material-icons-outlined">${
-                    assessmentStateIcons[
-                      params.value as ParticipationAssessmentProgress
-                    ]
-                  }</span>`,
-              },
-            ]
-          : []),
-        ...(!this.resultsMode
-          ? [
-              {
-                field: "state", // participation state (in progress / turned in)
-                width: 90,
-                headerName: _(
-                  "event_participation_headings.participation_state"
-                ),
-                cellRenderer: (params: any) =>
-                  `<div title="${_(
-                    "event_participation_states." + params.value
-                  )}" class=" ag-selectable-cell">
-                  <span  class="mx-auto ${
-                    params.value == EventParticipationState.IN_PROGRESS
-                      ? "text-muted"
-                      : "text-success"
-                  } text-lg material-icons-outlined">${
-                    participationStateIcons[
-                      params.value as EventParticipationState
-                    ]
-                  }</span></div>`,
-              },
-            ]
-          : []),
-        {
-          field: "fullName",
-          headerName: _("misc.full_name"),
-          filterParams: {
-            filterOptions: ["contains"],
-            suppressAndOrCondition: true,
-          },
-          filter: "agTextColumnFilter",
-          flex: 1,
-        },
-      ] as ColDef[];
-      (this.eventParticipations[0] as EventParticipation).slots.forEach((s) =>
-        ret.push({
-          width: 100,
-          cellClassRules: {
-            //'bg-danger bg-opacity-30': '!x'
-          },
-          type: "numericColumn",
-          field: "slot-" + ((s.slot_number as number) + 1),
-          headerName:
-            _("event_participation_headings.exercise") +
-            " " +
-            ((s.slot_number as number) + 1),
-          cellRenderer: (params: any) =>
-            `<div class="ml-10 -mr-2 ag-selectable-cell ${
-              params.value.score ??
-              "transition-opacity duration-75 hover:opacity-100 opacity-70 "
-            }">` +
-            `<span class="mx-auto ${
-              params.value.score ??
-              "text-lg text-yellow-900 material-icons-outlined"
-            }">
-                  ${params.value.score ?? "pending_actions"}
-                </span>` +
-            `</div>`,
-        })
+    participationPreviewColumns() {
+      return getEventParticipationMonitorHeaders(
+        this.resultsMode,
+        this.eventParticipations
       );
-      return ret;
     },
     participationsData() {
       if (!this.eventParticipations) {
@@ -746,6 +735,9 @@ export default defineComponent({
         const ret = {
           id: p.id,
           email: p.user?.email,
+          mat: p.user?.mat,
+          currentSlotCursor: p.current_slot_cursor,
+          course: p.user?.course || "A", // TODO remove
           fullName: p.user?.full_name,
           state: this.resultsMode ? p.assessment_progress : p.state,
           visibility: p.visibility,
