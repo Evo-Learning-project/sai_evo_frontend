@@ -43,63 +43,89 @@
         </p>
       </div>
     </div>
-    <div class="flex mt-2 mb-6 md:flex-row">
-      <div
-        class="flex flex-col items-center w-1/3 mr-4  card card-filled shadow-elevation"
+    <div class="flex flex-col mt-2 mb-6">
+      <Btn
+        @click="showStats = !showStats"
+        :outline="true"
+        :variant="'icon'"
+        class="ml-auto -mt-8 transition-transform duration-200 transform"
+        :class="{
+          'hover:text-primary hover:bg-primary hover:bg-opacity-20': !showStats,
+        }"
       >
-        <div class="flex space-x-0.5 text-2xl items-center">
-          <p>{{ participantCount }}</p>
-          <span class="text-3xl material-icons icon-light">people</span>
-        </div>
-        <p class="text-sm text-muted">
-          {{ $t("event_monitor.stats_participants") }}
-        </p>
-      </div>
-      <div
-        class="flex flex-col items-center w-1/3 mr-4  card card-filled shadow-elevation"
-      >
-        <div class="flex space-x-0.5 text-2xl items-center">
-          <p>{{ turnedInCount }}</p>
-          <span class="text-3xl material-icons-two-tone two-tone-success"
-            >assignment_turned_in</span
-          >
-        </div>
-        <p class="text-sm text-muted">
-          {{ $t("event_monitor.stats_turned_in") }}
-        </p>
-      </div>
-      <div
-        class="flex flex-col items-center w-1/3  card card-filled shadow-elevation"
-      >
-        <div class="flex space-x-0.5 text-2xl items-center">
-          <p>{{ averageProgress }}</p>
-          <p>%</p>
-          <!-- <span class="text-3xl material-icons-two-tone two-tone-success"
-            >assignment_turned_in</span
-          > -->
-        </div>
-        <p class="text-sm text-center text-muted">
-          {{ $t("event_monitor.stats_average_progress") }}
-        </p>
-      </div>
-      <div class="hidden md:ml-auto banner banner-light">
-        <span class="material-icons-outlined icon-light">
-          assignment_returned
+        <span
+          v-show="!showStats"
+          class="transition-opacity duration-75 material-icons-outlined"
+          >insights</span
+        >
+        <span
+          v-show="showStats"
+          class="text-xl transition-opacity duration-75 material-icons-outlined"
+          >close
         </span>
-        <p>
-          {{ $t("event_monitor.un_turn_in_instructions") }}
-          <span
-            class="text-lg inline-icon text-success material-icons-outlined"
-            >{{
-              participationStateIcons[EventParticipationState.TURNED_IN][0]
-            }}</span
-          >
-          <span style="margin-left: -1px">{{
-            $t("event_monitor.in_column_state")
-          }}</span>
-        </p>
+      </Btn>
+      <div
+        class="flex transition-all duration-200"
+        :class="{
+          'opacity-0 max-h-0': !showStats,
+          'opacity-100 max-h-96': showStats,
+        }"
+      >
+        <div
+          class="flex flex-col items-center w-1/3 mr-4  card card-filled shadow-elevation"
+        >
+          <div class="flex space-x-0.5 text-2xl items-center">
+            <p>{{ participantCount }}</p>
+            <span class="text-3xl material-icons icon-light">people</span>
+          </div>
+          <p class="text-sm text-muted">
+            {{ $t("event_monitor.stats_participants") }}
+          </p>
+        </div>
+        <div
+          class="flex flex-col items-center w-1/3 mr-4  card card-filled shadow-elevation"
+        >
+          <div class="flex space-x-0.5 text-2xl items-center">
+            <p>{{ turnedInCount }}</p>
+            <span class="text-3xl material-icons-two-tone two-tone-success"
+              >assignment_turned_in</span
+            >
+          </div>
+          <p class="text-sm text-muted">
+            {{ $t("event_monitor.stats_turned_in") }}
+          </p>
+        </div>
+        <div
+          class="flex flex-col items-center w-1/3  card card-filled shadow-elevation"
+        >
+          <div class="flex space-x-0.5 text-2xl items-center">
+            <p>{{ averageProgress }}</p>
+            <p>%</p>
+          </div>
+          <p class="text-sm text-center text-muted">
+            {{ $t("event_monitor.stats_average_progress") }}
+          </p>
+        </div>
+        <div class="hidden md:ml-auto banner banner-light">
+          <span class="material-icons-outlined icon-light">
+            assignment_returned
+          </span>
+          <p>
+            {{ $t("event_monitor.un_turn_in_instructions") }}
+            <span
+              class="text-lg inline-icon text-success material-icons-outlined"
+              >{{
+                participationStateIcons[EventParticipationState.TURNED_IN][0]
+              }}</span
+            >
+            <span style="margin-left: -1px">{{
+              $t("event_monitor.in_column_state")
+            }}</span>
+          </p>
+        </div>
       </div>
     </div>
+
     <div class="flex-grow">
       <DataTable
         :class="{ 'opacity-50': participationsData.length === 0 }"
@@ -338,6 +364,7 @@ export default defineComponent({
       gridApi: null as any,
       columnApi: null as any,
       selectedParticipations: [] as string[],
+      showStats: false,
 
       // dialog functions
       editingAssessmentSlotMode: false,
@@ -694,8 +721,11 @@ export default defineComponent({
     },
     averageProgress() {
       const participations = this.eventParticipations as EventParticipation[];
+      if (!participations?.length) {
+        return 0;
+      }
       const divisor =
-        (this.event.template?.rules.length ?? 0) * participations.length;
+        (this.event.template?.rules.length ?? Infinity) * participations.length;
       const perc =
         (100 *
           participations
