@@ -29,7 +29,11 @@
             'md:w-full md:mx-4': large,
           }"
         >
-          <div class="w-full px-4 py-6 overflow-y-auto md:px-8">
+          <div
+            style=""
+            class="w-full overflow-y-auto"
+            :class="{ 'px-4 py-6 md:px-8': !noPadding }"
+          >
             <!-- overflow-y-auto-->
             <div v-if="$slots.title" class="flex items-center mb-2 space-x-2">
               <slot class="" name="backButton"></slot>
@@ -139,6 +143,10 @@ export default defineComponent({
       default: false,
     },
     footerBorder: {
+      type: Boolean,
+      default: false,
+    },
+    noPadding: {
       type: Boolean,
       default: false,
     },

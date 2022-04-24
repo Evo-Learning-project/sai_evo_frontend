@@ -71,25 +71,6 @@
         >{{ $t("event_template_editor.add_rule") }}</Btn
       >
     </div>
-
-    <div class="mt-4 banner banner-light" v-if="usedRandomization">
-      <span
-        class="material-icons-two-tone"
-        style="
-          filter: invert(80%) sepia(67%) saturate(1803%) hue-rotate(348deg)
-            brightness(80%) contrast(96%);
-        "
-      >
-        tips_and_updates
-      </span>
-      <div class="flex items-center w-full">
-        <p>
-          Hai utilizzato alcune delle funzionalità di randomizzazione. Verifica
-          che gli esami generati siano corretti.
-        </p>
-        <Btn class="ml-auto">Genera esempi</Btn>
-      </div>
-    </div>
   </div>
 </template>
 
@@ -316,10 +297,6 @@ export default defineComponent({
         .filter((r) => r.rule_type == EventTemplateRuleType.ID_BASED)
         .map((r) => r.exercises as string[])
         .flat();
-    },
-    usedRandomization(): boolean {
-      // TODO implement
-      return false;
     },
   },
 });

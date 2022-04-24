@@ -243,7 +243,7 @@
                   )
             }}
           </p>
-          <div class="mt-4 max-h-100">
+          <div class="mt-4" style="max-height: 60vh">
             <ExercisePicker
               :modelValue="modelValue.exercises"
               :alreadySelected="globallySelectedExercises"

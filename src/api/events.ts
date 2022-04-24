@@ -1,3 +1,4 @@
+import { Exercise } from "./../models/interfaces";
 import { EventSearchFilter } from "./interfaces";
 import {
   Event,
@@ -89,6 +90,17 @@ export async function updateEvent(
   const response = await axios.put(
     `courses/${courseId}/events/${eventId}/`,
     event
+  );
+  return response.data;
+}
+
+export async function getEventInstances(
+  courseId: string,
+  eventId: string,
+  amount: number
+): Promise<Exercise[][]> {
+  const response = await axios.get(
+    `courses/${courseId}/events/${eventId}/instances/?amount=${amount}`
   );
   return response.data;
 }

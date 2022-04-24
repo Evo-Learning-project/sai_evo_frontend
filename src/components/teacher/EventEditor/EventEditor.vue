@@ -48,25 +48,50 @@
         @updateEvent="onChange($event.field, $event.value)"
       ></EventMetaEditor>
 
-      <EventTemplateEditor
-        class="mb-12"
-        :randomRuleOrder="modelValue.randomize_rule_order"
-        v-if="!loading || modelValue.id"
-        :modelValue="modelValueTemplate"
-        :showEditWarning="
-          modelValue.state === EventState.OPEN ||
-          modelValue.state === EventState.RESTRICTED
-        "
-      ></EventTemplateEditor>
-      <Toggle
-        style="margin-top: -4.85rem"
-        class="mb-12 ml-auto"
-        :label-on-left="true"
-        :modelValue="modelValue.randomize_rule_order"
-        @update:modelValue="onChange('randomize_rule_order', $event)"
-      >
-        {{ $t("event_template_editor.randomize_rule_order") }}
-      </Toggle>
+      <div class="flex flex-col mb-12">
+        <EventTemplateEditor
+          class=""
+          :randomRuleOrder="modelValue.randomize_rule_order"
+          v-if="!loading || modelValue.id"
+          :modelValue="modelValueTemplate"
+          :showEditWarning="
+            modelValue.state === EventState.OPEN ||
+            modelValue.state === EventState.RESTRICTED
+          "
+        ></EventTemplateEditor>
+        <Toggle
+          style="margin-top: -1.85rem"
+          class="ml-auto"
+          :label-on-left="true"
+          :modelValue="modelValue.randomize_rule_order"
+          @update:modelValue="onChange('randomize_rule_order', $event)"
+        >
+          {{ $t("event_template_editor.randomize_rule_order") }}
+        </Toggle>
+        <div class="mt-8 banner banner-light" v-if="usedRandomization">
+          <span
+            class="material-icons-two-tone"
+            style="
+              filter: invert(80%) sepia(67%) saturate(1803%) hue-rotate(348deg)
+                brightness(80%) contrast(96%);
+            "
+          >
+            tips_and_updates
+          </span>
+          <div class="flex items-center w-full">
+            <p>
+              Hai utilizzato alcune delle funzionalità di randomizzazione.
+              Verifica che gli esami generati siano corretti.
+            </p>
+            <Btn class="ml-auto" @click="getInstances">Genera esempi</Btn>
+          </div>
+          <EventInstancesPreview
+            @hide="showInstancesDialog = false"
+            :show="showInstancesDialog"
+            :instances="instances"
+          ></EventInstancesPreview>
+        </div>
+      </div>
       <!-- <div class="banner banner-light">
         <span
           class="material-icons-two-tone"
@@ -119,7 +144,7 @@ import EventTemplateEditor from "@/components/teacher/EventTemplateEditor/EventT
 //import CollapsiblePanelGroup from '@/components/ui/CollapsiblePanelGroup.vue'
 import CloudSaveStatus from "@/components/ui/CloudSaveStatus.vue";
 import { defineComponent } from "@vue/runtime-core";
-import { Event, EventState, EventTemplate } from "@/models";
+import { Event, EventState, EventTemplate, Exercise } from "@/models";
 import {
   courseIdMixin,
   eventIdMixin,
@@ -139,6 +164,9 @@ import {
 
 import { subscribeToEventChanges } from "@/ws/modelSubscription";
 import Toggle from "@/components/ui/Toggle.vue";
+import Btn from "@/components/ui/Btn.vue";
+import { getEventInstances } from "@/api/events";
+import EventInstancesPreview from "./EventInstancesPreview.vue";
 const { mapGetters, mapMutations } = createNamespacedHelpers("teacher");
 
 export default defineComponent({
@@ -151,6 +179,8 @@ export default defineComponent({
     EventStateEditor,
     Dialog,
     Toggle,
+    Btn,
+    EventInstancesPreview,
   },
   mixins: [courseIdMixin, eventIdMixin, loadingMixin, savingMixin],
   props: [],
@@ -213,6 +243,8 @@ export default defineComponent({
       autoSaveManager: null as AutoSaveManager<Event> | null,
       ws: null as WebSocket | null,
       EventState,
+      instances: [] as Exercise[][],
+      showInstancesDialog: false,
     };
   },
   methods: {
@@ -227,6 +259,15 @@ export default defineComponent({
     async onChange(field: keyof Event, value: unknown) {
       await this.autoSaveManager?.onChange({ field, value });
     },
+    async getInstances() {
+      const amount = 3; // TODO implement
+      this.instances = await getEventInstances(
+        this.courseId,
+        this.eventId,
+        amount
+      );
+      this.showInstancesDialog = true;
+    },
   },
   computed: {
     ...mapGetters(["event"]),
@@ -237,6 +278,10 @@ export default defineComponent({
     modelValueTemplate(): EventTemplate {
       // return a blank object until the event has been retrieved
       return this.modelValue?.template ?? { rules: [] };
+    },
+    usedRandomization(): boolean {
+      // TODO implement
+      return true;
     },
     examLocked(): boolean {
       return (
