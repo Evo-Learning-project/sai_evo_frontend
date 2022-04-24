@@ -98,6 +98,7 @@ export interface Event extends Lockable {
   exercises_shown_at_a_time: number | null;
   allow_going_back: boolean;
   participation_exists?: boolean;
+  randomize_rule_order?: boolean;
 }
 
 export interface EventTemplate {
@@ -105,7 +106,6 @@ export interface EventTemplate {
   name?: string;
   public?: boolean;
   creator?: string;
-  randomize_rule_order: boolean;
   rules: EventTemplateRule[];
 }
 

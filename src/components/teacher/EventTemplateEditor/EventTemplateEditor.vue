@@ -5,13 +5,11 @@
       <p class="mb-6 text-muted" v-if="!showEditWarning">
         {{ $t("event_template_editor.introduction_text") }}
       </p>
-      <div v-else class="banner banner-light">
-        <span class="text-yellow-900 material-icons-outlined">
-          error_outline
-        </span>
+      <div v-else class="banner banner-danger">
+        <span class="material-icons-outlined"> error_outline </span>
         <div>
-          <h4 class="text-danger-dark">{{ $t("misc.warning") }}</h4>
-          <p class="text-muted">
+          <h4 class="">{{ $t("misc.warning") }}</h4>
+          <p class="">
             {{ $t("event_editor.edit_template_in_progress_warning") }}
           </p>
         </div>
@@ -26,6 +24,7 @@
       >
         <template #item="{ element, index }">
           <EventTemplateRuleEditor
+            :randomOrder="randomRuleOrder"
             :globallySelectedExercises="selectedExercises"
             :modelValue="element"
             @updateRule="onRuleUpdate(element, $event.field, $event.value)"
@@ -71,13 +70,6 @@
           add_circle_outline </span
         >{{ $t("event_template_editor.add_rule") }}</Btn
       >
-      <Toggle
-        class="hidden ml-auto"
-        :label-on-left="true"
-        v-model="templateRandomizeRuleOrder"
-      >
-        {{ $t("event_template_editor.randomize_rule_order") }}
-      </Toggle>
     </div>
 
     <div class="mt-4 banner banner-light" v-if="usedRandomization">
@@ -126,7 +118,6 @@ import { eventTemplateValidation } from "@/validation/models";
 import useVuelidate from "@vuelidate/core";
 //import Card from "@/components/ui/Card.vue";
 import { getTranslatedString as _ } from "@/i18n";
-import Toggle from "@/components/ui/Toggle.vue";
 export default defineComponent({
   setup() {
     return { v$: useVuelidate() };
@@ -140,7 +131,6 @@ export default defineComponent({
     Btn,
     EventTemplateRuleEditor,
     draggable,
-    Toggle,
   },
   mixins: [courseIdMixin, loadingMixin],
   name: "EventTemplateEditor",
@@ -152,6 +142,10 @@ export default defineComponent({
     showEditWarning: {
       type: Boolean,
       default: false,
+    },
+    randomRuleOrder: {
+      type: Boolean,
+      required: true,
     },
   },
   created() {
@@ -326,15 +320,6 @@ export default defineComponent({
     usedRandomization(): boolean {
       // TODO implement
       return false;
-    },
-    templateRandomizeRuleOrder: {
-      get() {
-        return this.modelValue.randomize_rule_order;
-      },
-      set(val: boolean) {
-        // TODO implement
-        console.log(val);
-      },
     },
   },
 });

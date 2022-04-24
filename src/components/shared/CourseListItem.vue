@@ -7,14 +7,7 @@
         <span
           v-if="course.hidden"
           :title="$t('misc.hidden_to_students')"
-          class="
-            my-auto
-            ml-2
-            text-lg
-            md:pt-1
-            opacity-40
-            material-icons-outlined
-          "
+          class="my-auto ml-2 text-lg  md:pt-1 opacity-40 material-icons-outlined"
         >
           visibility_off
         </span>
@@ -22,11 +15,12 @@
     </template>
     <template v-if="true || (course.description?.length ?? 0) > 0" v-slot:body>
       <div class="">
-        <div class="text-sm flex items-center space-x-1 px-1 mb-1">
+        <div class="flex items-center px-1 mb-1 space-x-1 text-sm">
           <div class="flex items-center space-x-0.5 text-muted">
-            <span class="my-auto text-base material-icons-outlined"
+            <span class="my-auto text-base material-icons light-icon"
               >person</span
             >
+
             <span class="">{{ $t("misc.teacher") }}:</span>
           </div>
           <p>{{ course.creator?.full_name }}</p>

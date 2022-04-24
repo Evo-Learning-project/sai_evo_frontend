@@ -6,6 +6,7 @@
     >
       <div class="flex items-center">
         <span
+          v-if="!randomOrder"
           class="my-auto mr-2 text-lg cursor-move  drag-handle material-icons-outlined opacity-70"
         >
           drag_indicator
@@ -306,6 +307,10 @@ export default defineComponent({
     },
     globallySelectedExercises: {
       type: Object as PropType<string[]>,
+      required: true,
+    },
+    randomOrder: {
+      type: Boolean,
       required: true,
     },
   },

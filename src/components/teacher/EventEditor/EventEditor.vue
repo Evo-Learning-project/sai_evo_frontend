@@ -41,13 +41,16 @@
       <h3>{{ $t("event_editor.editor_title") }}</h3>
       <CloudSaveStatus class="ml-auto" :saving="saving"></CloudSaveStatus>
     </div>
-    <div class="flex flex-col space-y-12">
+    <div class="flex flex-col">
       <EventMetaEditor
         :modelValue="modelValue"
+        class="mb-12"
         @updateEvent="onChange($event.field, $event.value)"
       ></EventMetaEditor>
 
       <EventTemplateEditor
+        class="mb-12"
+        :randomRuleOrder="modelValue.randomize_rule_order"
         v-if="!loading || modelValue.id"
         :modelValue="modelValueTemplate"
         :showEditWarning="
@@ -55,6 +58,15 @@
           modelValue.state === EventState.RESTRICTED
         "
       ></EventTemplateEditor>
+      <Toggle
+        style="margin-top: -4.85rem"
+        class="mb-12 ml-auto"
+        :label-on-left="true"
+        :modelValue="modelValue.randomize_rule_order"
+        @update:modelValue="onChange('randomize_rule_order', $event)"
+      >
+        {{ $t("event_template_editor.randomize_rule_order") }}
+      </Toggle>
       <!-- <div class="banner banner-light">
         <span
           class="material-icons-two-tone"
@@ -126,6 +138,7 @@ import {
 } from "@/const";
 
 import { subscribeToEventChanges } from "@/ws/modelSubscription";
+import Toggle from "@/components/ui/Toggle.vue";
 const { mapGetters, mapMutations } = createNamespacedHelpers("teacher");
 
 export default defineComponent({
@@ -137,6 +150,7 @@ export default defineComponent({
     CloudSaveStatus,
     EventStateEditor,
     Dialog,
+    Toggle,
   },
   mixins: [courseIdMixin, eventIdMixin, loadingMixin, savingMixin],
   props: [],
@@ -222,9 +236,7 @@ export default defineComponent({
     },
     modelValueTemplate(): EventTemplate {
       // return a blank object until the event has been retrieved
-      return (
-        this.modelValue?.template ?? { rules: [], randomize_rule_order: false }
-      );
+      return this.modelValue?.template ?? { rules: [] };
     },
     examLocked(): boolean {
       return (

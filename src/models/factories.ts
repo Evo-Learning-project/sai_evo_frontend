@@ -61,6 +61,7 @@ export const getBlankExam = (): Event => ({
   state: EventState.DRAFT,
   exercises_shown_at_a_time: 1,
   allow_going_back: true,
+  randomize_rule_order: false,
 });
 
 export const getBlankPractice = (): Event => ({
@@ -73,12 +74,12 @@ export const getBlankPractice = (): Event => ({
   state: EventState.OPEN,
   exercises_shown_at_a_time: null,
   allow_going_back: true,
+  randomize_rule_order: false,
 });
 
 export const getBlankEventTemplate = (): EventTemplate => ({
   rules: [],
   name: "",
-  randomize_rule_order: false,
 });
 
 export const getBlankEventTemplateRule = (
