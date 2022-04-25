@@ -78,17 +78,44 @@ export const rippleEffect = (
 
   //console.log('parent', btn.offsetParent)
   const parentPosition = getComputedStyle(btn.offsetParent).position;
+  let ancestor = btn.offsetParent;
+  const ancestors = [];
+  while (ancestor) {
+    // console.log(
+    //   "ancestor position",
+    //   getComputedStyle(ancestor).position,
+    //   "offsetparent",
+    //   getOffset(ancestor),
+    //   "parent scroll",
+    //   ancestor.scrollHeight
+    // );
+    ancestors.push(ancestor);
+    ancestor = ancestor.offsetParent;
+  }
 
   const offsetX =
-    parentPosition === "fixed" || parentPosition === "absolute"
+    parentPosition === "fixed" ||
+    parentPosition === "absolute" ||
+    ancestors.some(
+      (a) =>
+        getComputedStyle(a).position === "fixed" ||
+        getComputedStyle(a).position === "absolute"
+    )
       ? event.clientX
       : event.pageX;
   const offsetY =
-    parentPosition === "fixed" || parentPosition === "absolute"
+    parentPosition === "fixed" ||
+    parentPosition === "absolute" ||
+    ancestors.some(
+      (a) =>
+        getComputedStyle(a).position === "fixed" ||
+        getComputedStyle(a).position === "absolute"
+    )
       ? event.clientY
       : event.pageY;
 
   const { offsetTop, offsetLeft } = getOffset(btn);
+  //console.log("top left", offsetTop, offsetLeft);
 
   //const {top, left} = this.getOffset(btn)
   circle.style.width = circle.style.height = `${diameter}px`;

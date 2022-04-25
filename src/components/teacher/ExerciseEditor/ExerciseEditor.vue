@@ -408,7 +408,7 @@
             :variant="'icon'"
             @click="$emit('clone')"
             :tooltip="$t('exercise_editor.clone')"
-            ><span class="text-xl icon-light material-icons-outlined">
+            ><span class="text-2xl icon-light material-icons-outlined">
               copy_all
             </span></Btn
           >
@@ -418,7 +418,7 @@
             :size="'lg'"
             :variant="'icon'"
             @click="$emit('delete')"
-            ><span class="text-xl text-danger-dark material-icons-outlined">
+            ><span class="text-2xl text-danger-dark material-icons-outlined">
               delete
             </span></Btn
           >
