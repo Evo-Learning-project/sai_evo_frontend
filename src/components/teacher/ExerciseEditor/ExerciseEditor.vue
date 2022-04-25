@@ -400,7 +400,7 @@
             </div>
           </template>
         </Dialog>
-        <div v-if="!subExercise" class="flex w-full -mt-5">
+        <div v-if="!subExercise" class="flex w-full">
           <Btn
             class="ml-auto"
             :outline="true"
