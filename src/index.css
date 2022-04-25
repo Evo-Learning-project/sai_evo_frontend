@@ -60,6 +60,10 @@
       @apply text-gray-600;
     }
 
+    .icon-btn:focus{
+      @apply bg-gray-800 bg-opacity-10 !important;
+    }
+
     .icon-btn-sm {
       @apply w-8 h-8 p-0;
     }
@@ -72,9 +76,13 @@
       @apply w-12 h-12 p-0;
     }
 
-    .bg-primary .hover\:bg-gray-200,
+    .bg-primary .hover\:bg-gray-200, .bg-primary .bg-gray-800,
     .semi-transparent .hover\:bg-gray-200 {
       @apply bg-opacity-20 border-0 !important;
+    }
+
+     .bg-primary .bg-gray-800 {
+       @apply bg-gray-200 bg-opacity-20 border-0 !important;
     }
 
 
@@ -730,6 +738,9 @@
     }
     .ripple-white {
       background-color: rgba(255, 255, 255, 0.2);
+    }
+    .ripple-icon {
+      @apply bg-gray-800 bg-opacity-10;
     }
     .ripple-gray {
       background-color: rgba(255, 255, 255, 0.7);

@@ -44,11 +44,11 @@
         'border-gray-300 bg-white hover:bg-primary hover:bg-opacity-20 hover:text-primary-light transition-colors duration-100':
           variant === 'transparent',
         'rounded-md': variant !== 'transparent',
-        'rounded-full bg-transparent hover:bg-gray-200 hover:border border-light text-gray-600 icon-btn':
+        'rounded-full bg-transparent hover:bg-gray-200 text-gray-600 icon-btn':
           variant === 'icon',
-        'icon-btn-sm': variant === 'icon' && size === 'sm',
-        'icon-btn-base': variant === 'icon' && size === 'base',
-        'icon-btn-lg': variant === 'icon' && size === 'lg',
+        'icon-btn icon-btn-sm': variant === 'icon' && size === 'sm',
+        'icon-btn icon-btn-base': variant === 'icon' && size === 'base',
+        'icon-btn icon-btn-lg': variant === 'icon' && size === 'lg',
       }"
     >
       <!-- FIXME review shadow -->
@@ -111,11 +111,11 @@
       'border-gray-300 bg-white hover:bg-primary hover:bg-opacity-20 hover:text-primary-light transition-colors duration-100':
         variant === 'transparent',
       'rounded-md': variant !== 'transparent',
-      'rounded-full bg-transparent hover:bg-gray-200 hover:border border-light text-gray-600 icon-btn':
+      'rounded-full bg-transparent hover:bg-gray-200 text-gray-600 icon-btn':
         variant === 'icon',
-      'icon-btn-sm': variant === 'icon' && size === 'sm',
-      'icon-btn-base': variant === 'icon' && size === 'base',
-      'icon-btn-lg': variant === 'icon' && size === 'lg',
+      'icon-btn icon-btn-sm': variant === 'icon' && size === 'sm',
+      'icon-btn icon-btn-base': variant === 'icon' && size === 'base',
+      'icon-btn icon-btn-lg': variant === 'icon' && size === 'lg',
     }"
   >
     <!-- FIXME review shadow -->
@@ -213,7 +213,7 @@ export default defineComponent({
           }
           return "ripple-white";
         case "icon":
-          return "ripple-white";
+          return "ripple-icon";
         default:
           return "ripple-white";
       }
