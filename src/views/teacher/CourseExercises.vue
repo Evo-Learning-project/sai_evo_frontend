@@ -29,7 +29,7 @@
         :ref="'course-' + courseId + '-exercise-' + exercise.id"
         :id="'course-' + courseId + '-exercise-' + exercise.id"
         @delete="onDeleteExercise(exercise)"
-        @clone="onCloneExercise(exercise)"
+        @cloneExercise="onCloneExercise(exercise)"
       ></ExerciseEditorWrapper>
     </div>
     <div v-else>

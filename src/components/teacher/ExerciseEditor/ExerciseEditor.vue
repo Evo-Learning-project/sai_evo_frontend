@@ -406,7 +406,7 @@
             :outline="true"
             :size="'lg'"
             :variant="'icon'"
-            @click="$emit('clone')"
+            @click="$emit('cloneExercise')"
             :tooltip="$t('exercise_editor.clone')"
             ><span class="text-2xl icon-light material-icons-outlined">
               copy_all

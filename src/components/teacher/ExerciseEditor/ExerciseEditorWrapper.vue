@@ -47,7 +47,7 @@
       v-if="showEditor"
       :modelValue="modelValue"
       @delete="$emit('delete')"
-      @clone="onClone"
+      @cloneExercise="onClone"
     ></ExerciseEditor>
     <!-- </div> -->
   </div>
@@ -105,7 +105,7 @@ export default defineComponent({
             "?"
         )
       ) {
-        this.$emit("clone");
+        this.$emit("cloneExercise");
       }
     },
   },
