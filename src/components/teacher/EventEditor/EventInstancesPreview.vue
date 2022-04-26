@@ -11,7 +11,9 @@
     >
       <template v-slot:body>
         <div class="relative">
-          <div class="sticky top-0 z-50 px-8 pt-4 pb-4 bg-white shadow-sm">
+          <div
+            class="sticky top-0 z-50 px-2 pt-4 pb-4 bg-white shadow-sm md:px-8"
+          >
             <SegmentedControls
               :options="instancesAsSelectableOptions"
               v-model="currentInstance"

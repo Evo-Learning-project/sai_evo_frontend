@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col">
-    <div class="mb-4" v-if="event.state === EventState.RESTRICTED">
+    <div class="mb-3" v-if="event.state === EventState.RESTRICTED">
       <div class="banner banner-danger">
         <span class="text-yellow-900 material-icons-outlined">
           error_outline
@@ -11,7 +11,7 @@
       </div>
     </div>
     <div class="mb-4" v-if="!loading && resultsMode">
-      <div v-if="thereArePartialAssessments" class="banner banner-danger">
+      <div v-if="thereArePartialAssessments" class="mb-3 banner banner-danger">
         <span class="ml-px text-yellow-900 material-icons-outlined">
           pending_actions
         </span>
@@ -27,7 +27,7 @@
       </div>
       <div
         v-else-if="thereAreUnpublishedAssessments"
-        class="banner banner-light"
+        class="mb-3 banner banner-light"
       >
         <span class="ml-px material-icons-outlined text-success"> task </span>
         <p>
@@ -36,7 +36,7 @@
           >. {{ $t("event_assessment.ready_to_publish_2") }}
         </p>
       </div>
-      <div class="banner banner-success" v-else>
+      <div class="mb-3 banner banner-success" v-else>
         <span class="text-xl material-icons-outlined"> done </span>
         <p class="">
           {{ $t("event_assessment.all_published") }}
@@ -50,7 +50,8 @@
         :variant="'icon'"
         class="ml-auto -mt-8 transition-transform duration-200 transform"
         :class="{
-          'hover:text-primary hover:bg-primary hover:bg-opacity-20': !showStats,
+          'hover:text-primary focus:bg-primary hover:bg-primary focus:bg-opacity-20 hover:bg-opacity-20':
+            !showStats,
         }"
       >
         <span

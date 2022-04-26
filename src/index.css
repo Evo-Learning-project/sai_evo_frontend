@@ -37,7 +37,7 @@
 
 @layer components {
     .banner {
-      @apply flex items-center px-4 py-3.5 space-x-3 rounded;
+      @apply flex items-center px-2.5 md:px-4 py-3.5 space-x-2 md:space-x-3 rounded;
     }
 
     .banner-light {
@@ -61,7 +61,7 @@
     }
 
     .icon-btn:focus{
-      @apply bg-gray-800 bg-opacity-10 !important;
+      @apply bg-gray-800 bg-opacity-10;
     }
 
     .icon-btn-sm {

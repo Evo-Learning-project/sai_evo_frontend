@@ -402,6 +402,7 @@
         </Dialog>
         <div v-if="!subExercise" class="flex w-full">
           <Btn
+            style="margin-top: 1px"
             class="ml-auto"
             :outline="true"
             :size="'lg'"

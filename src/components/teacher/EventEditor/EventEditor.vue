@@ -79,12 +79,14 @@
           >
             tips_and_updates
           </span>
-          <div class="flex items-center w-full">
+          <div
+            class="flex flex-col w-full space-y-2  md:items-center md:space-y-0 md:flex-row"
+          >
             <p>
               {{ $t("event_editor.tip_you_used_randomization") }}
             </p>
             <Btn
-              class="ml-auto"
+              class="md:ml-auto"
               @click="getInstances"
               :disabled="loadingExamples"
             >
