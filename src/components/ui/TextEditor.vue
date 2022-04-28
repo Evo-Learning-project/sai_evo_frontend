@@ -64,7 +64,7 @@ export default defineComponent({
   },
   methods: {
     onEditorChange({ quill, html, text }: unknown) {
-      //console.log('editor change!', quill, html, text)
+      //console.log("editor change!", quill, html, text);
       this.content = html;
       this.$emit("update:modelValue", html);
     },

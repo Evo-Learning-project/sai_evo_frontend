@@ -219,8 +219,8 @@
       @apply bg-gray-200 border-gray-300;
     }
 
-    .ql-editor {
-      white-space: pre !important;
+    .ql-editor, .ql-clipboard {
+      white-space: pre-wrap !important;
     }
 
     .bg-dark .copy-btn,
