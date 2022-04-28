@@ -138,7 +138,7 @@
             @update:modelValue="onBaseExerciseChange('text', $event)"
             >{{ $t("exercise_editor.exercise_text") }}</TextEditor
           >
-          <textarea :value="modelValue.text"></textarea>
+          <!--<textarea :value="modelValue.text"></textarea>-->
           <div
             class="flex flex-wrap space-y-1 md:space-x-2 md:space-y-0"
             v-if="modelValue.exercise_type === ExerciseType.COMPLETION"
