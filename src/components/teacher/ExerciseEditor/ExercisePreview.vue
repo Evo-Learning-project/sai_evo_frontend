@@ -3,13 +3,13 @@
     <template v-slot:header>
       <div class="flex flex-wrap md:items-center">
         <h4
-          class="order-1 mr-2 md:mr-0"
+          class="order-1 mr-2"
           :class="{ 'text-muted font-semibold': exercise.label?.length === 0 }"
         >
           {{ previewTitle }}
         </h4>
         <div
-          class="flex flex-wrap order-3 mt-1 space-x-1  md:mt-0 md:ml-2 md:order-2"
+          class="flex flex-wrap order-3 mt-1 space-x-1  md:mr-2 md:mt-0 md:order-2"
         >
           <Tag
             v-for="(tag, index) in tags"
@@ -17,10 +17,16 @@
             :tag="tag"
           ></Tag>
         </div>
-        <div class="order-2 my-auto md:ml-4 md:order-3 chip">
+        <div class="order-2 my-auto md:order-3 chip">
           <div class="flex items-center">
             <MultiIcon class="w-6" :icons="exerciseStateIcons"></MultiIcon>
             <p v-html="$t('exercise_states.' + exercise.state)"></p>
+          </div>
+        </div>
+        <div class="order-2 my-auto md:order-3 chip">
+          <div class="flex items-center">
+            <MultiIcon class="w-6" :icons="exerciseTypeIcons"></MultiIcon>
+            <p v-html="$t('exercise_types.' + exercise.exercise_type)"></p>
           </div>
         </div>
       </div>
@@ -39,11 +45,12 @@ import { getTranslatedString as _ } from "@/i18n";
 import { v4 as uuid4 } from "uuid";
 
 import Card from "@/components/ui/Card.vue";
-import { Exercise, ExerciseState } from "@/models";
+import { Exercise, ExerciseState, ExerciseType } from "@/models";
 import { defineComponent, PropType } from "@vue/runtime-core";
 import Tag from "@/components/ui/Tag.vue";
 import MultiIcon from "@/components/ui/MultiIcon.vue";
 import { icons as exerciseStatesIcons } from "@/assets/exerciseStatesIcons";
+import { icons as exerciseTypesIcons } from "@/assets/exerciseTypesIcons";
 import { formatExerciseText, getExerciseTitle } from "@/utils";
 
 export default defineComponent({
@@ -77,6 +84,9 @@ export default defineComponent({
     },
     exerciseStateIcons() {
       return exerciseStatesIcons[this.exercise.state as ExerciseState];
+    },
+    exerciseTypeIcons() {
+      return exerciseTypesIcons[this.exercise.exercise_type as ExerciseType];
     },
     tags() {
       return [

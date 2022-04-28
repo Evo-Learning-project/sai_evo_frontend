@@ -19,6 +19,7 @@
   >
     <input
       type="number"
+      :min="min"
       placeholder=" "
       :value="modelValue"
       @input="onInput($event.target.value)"
@@ -71,6 +72,10 @@ export default defineComponent({
     leftIcon: {
       type: String,
       default: "",
+    },
+    min: {
+      type: Number,
+      default: -10000000,
     },
   },
   methods: {

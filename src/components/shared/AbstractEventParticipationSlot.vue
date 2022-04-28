@@ -17,8 +17,9 @@
           (!isProgrammingExercise ||
             (!allowEditSubmission && !showExerciseLabel))
         "
-        v-html="formattedExerciseText"
-      ></div>
+      >
+        <ProcessedTextFragment :value="exercise.text"></ProcessedTextFragment>
+      </div>
 
       <!-- if assessment edit mode, make flex so to fit submission on the left and assessment on the right -->
       <div
@@ -39,6 +40,11 @@
               (showAssessmentCard &&
                 !allowEditSubmission &&
                 isProgrammingExercise),
+            'md:w-full':
+              allowEditAssessment ||
+              (showAssessmentCard &&
+                !allowEditSubmission &&
+                modelValue.exercise.exercise_type === ExerciseType.OPEN_ANSWER),
           }"
         >
           <!-- multiple choice multiple possible -->
@@ -124,7 +130,10 @@
           <!-- open answer -->
           <TextEditor
             :disabled="!allowEditSubmission"
-            v-else-if="exercise.exercise_type === ExerciseType.OPEN_ANSWER"
+            v-else-if="
+              exercise.exercise_type === ExerciseType.OPEN_ANSWER &&
+              (allowEditSubmission || showExerciseLabel)
+            "
             v-model="answerTextProxy"
           >
             {{
@@ -133,6 +142,22 @@
                 : $t("event_assessment.text_answer_label")
             }}
           </TextEditor>
+          <div
+            v-else-if="
+              exercise.exercise_type === ExerciseType.OPEN_ANSWER &&
+              !allowEditSubmission
+            "
+            class="w-full"
+            style="margin-top: -21px"
+          >
+            <p class="ml-2 text-sm text-muted">
+              {{ $t("event_assessment.text_answer_label") }}
+            </p>
+            <ProcessedTextFragment
+              class="w-full px-4 py-2 rounded bg-gray-50"
+              :value="answerTextProxy"
+            ></ProcessedTextFragment>
+          </div>
 
           <!-- aggregated answer -->
           <div
@@ -212,7 +237,21 @@
         <!-- assessment card-->
         <div
           :class="{
-            'md:w-9/12': !subSlot && !isProgrammingExercise,
+            'md:w-9/12':
+              !subSlot &&
+              !isProgrammingExercise &&
+              !(
+                allowEditAssessment ||
+                (showAssessmentCard &&
+                  !allowEditSubmission &&
+                  modelValue.exercise.exercise_type ===
+                    ExerciseType.OPEN_ANSWER)
+              ),
+            'md:w-6/12':
+              allowEditAssessment ||
+              (showAssessmentCard &&
+                !allowEditSubmission &&
+                modelValue.exercise.exercise_type === ExerciseType.OPEN_ANSWER),
             'md:w-full': subSlot,
           }"
           class="sticky mb-auto  top-4 md:self-start shadow-elevation card card-filled"
@@ -413,11 +452,12 @@
           </div>
           <!-- end in-card assessment controls  -->
         </div>
+        <!-- end assessment card -->
 
         <!-- standalone assessment controls (to use inside the modal, single-slot assessment mode) -->
         <div
           v-if="allowEditAssessment && !showAssessmentCard"
-          class="flex flex-col md:w-2/3"
+          class="sticky flex flex-col md:w-2/3 top-4"
         >
           <div
             v-if="!subSlot"
@@ -531,6 +571,7 @@ import Btn from "../ui/Btn.vue";
 import { every, some } from "lodash";
 import ClozeExercise from "./ClozeExercise.vue";
 import { formatExerciseText } from "@/utils";
+import ProcessedTextFragment from "../ui/ProcessedTextFragment.vue";
 
 export default defineComponent({
   components: {
@@ -545,6 +586,7 @@ export default defineComponent({
     FileUpload,
     Btn,
     ClozeExercise,
+    ProcessedTextFragment,
   },
   name: "AbstractEventParticipationSlot",
   props: {
@@ -660,9 +702,6 @@ export default defineComponent({
     exercise(): Exercise {
       return this.modelValue.exercise;
     },
-    formattedExerciseText() {
-      return formatExerciseText(this.exercise.text);
-    },
     isProgrammingExercise(): boolean {
       return programmingExerciseTypes.includes(
         this.modelValue.exercise.exercise_type as ExerciseType
@@ -707,7 +746,7 @@ export default defineComponent({
 
       return (this.exercise.choices as ExerciseChoice[]).map((c) => ({
         value: c.id,
-        content: c.text,
+        content: formatExerciseText(c.text),
         ...(this.showSolutionAndScores &&
           ((c.score_selected ?? "") + "").length > 0 &&
           ((c.score_unselected ?? "") + "").length > 0 && {

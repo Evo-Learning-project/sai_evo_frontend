@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-wrap p-1">
     <div
-      class="cursor-pointer chip hover:bg-gray-200 font-normal transition-colors duration-75 ease-linear"
+      class="font-normal transition-colors duration-75 ease-linear cursor-pointer  chip hover:bg-gray-200"
       v-for="(option, index) in options"
       :key="'chipset-' + id + '-option-' + index"
       :class="{
@@ -20,9 +20,16 @@
         class="flex items-center cursor-pointer"
         :for="'chipset-' + id + '-option-' + index"
       >
-        <MultiIcon v-if="option.icons" class="w-6 mr-1" :icons="option.icons"></MultiIcon>
-        <p v-html="option.content"></p
-      ></label>
+        <MultiIcon
+          v-if="option.icons"
+          class="w-6 mr-1"
+          :icons="option.icons"
+        ></MultiIcon>
+        <p v-html="option.content"></p>
+        <div class="" v-if="$slots.default">
+          <slot v-bind:optionValue="option.value"></slot>
+        </div>
+      </label>
     </div>
   </div>
 </template>

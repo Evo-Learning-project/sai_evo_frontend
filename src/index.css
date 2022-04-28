@@ -119,6 +119,15 @@
     .fade-leave-to {
       opacity: 0;
     }
+
+    .faded-overlay {
+      background: radial-gradient(
+              circle,
+              rgba(2, 0, 36, 0.8) 91%,
+              rgba(0, 0, 0, 0) 100%
+            );
+    }
+
     .user-content {
       @apply py-5 pl-4 pr-2 rounded-sm border-l-6 bg-gray-50 border-primary-light;
     }
@@ -440,7 +449,7 @@
       @apply bg-light !important
     }
     .ti-tag {
-      @apply chip-primary font-normal rounded-full px-3 py-0.5 text-sm overflow-hidden overflow-ellipsis !important
+      @apply chip-primary font-normal whitespace-nowrap rounded-full px-3 py-0.5 text-sm  !important
     }
     .ti-tag-sm {
       @apply h-6 px-2

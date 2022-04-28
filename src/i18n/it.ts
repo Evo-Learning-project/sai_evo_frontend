@@ -505,7 +505,7 @@ export const it = {
     begin_practice: "Inizia esercitazione",
     add_rule: "Aggiungi esercizi",
     choose_exercises_text:
-      "Scegli come generare gli esercizi per questa esercitazione. Puoi far scegliere gli esercizi al sistema completamente a caso oppure restringere la selezione a quelli che hanno tag da te scelti.",
+      "Seleziona i tag che ti interessano per creare l'esercitazione.",
   },
   programming_exercise: {
     tab_text: "Testo",
@@ -675,6 +675,7 @@ export const it = {
     no_courses: "Non ci sono ancora corsi",
   },
   help_texts: {
+    student_practice_rule_amount: "Quanti esercizi con questo tag vuoi vedere?",
     exercise_editor: {
       score_if_checked: "Punteggio se la risposta viene selezionata",
       score_if_unchecked: "Punteggio se la risposta non viene selezionata",

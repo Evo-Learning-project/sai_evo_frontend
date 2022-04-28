@@ -83,10 +83,11 @@ export const getBlankEventTemplate = (): EventTemplate => ({
 });
 
 export const getBlankEventTemplateRule = (
-  rule_type?: EventTemplateRuleType
+  rule_type?: EventTemplateRuleType,
+  initialAmount?: number
 ): EventTemplateRule => ({
   id: "",
-  amount: 1,
+  amount: initialAmount ?? 1,
   rule_type,
 });
 
@@ -95,11 +96,12 @@ export const getBlankTag = (): Tag => ({
   name: "",
 });
 
-export const getBlankTagBasedEventTemplateRuleClause =
-  (): EventTemplateRuleClause => ({
-    id: "",
-    tags: [],
-  });
+export const getBlankTagBasedEventTemplateRuleClause = (
+  tag?: Tag
+): EventTemplateRuleClause => ({
+  id: "",
+  tags: tag ? [tag] : [],
+});
 
 export const getFakeEventParticipationSlot = (
   exercise: Exercise

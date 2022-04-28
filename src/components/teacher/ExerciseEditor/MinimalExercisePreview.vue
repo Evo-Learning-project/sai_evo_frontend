@@ -13,14 +13,19 @@
         <div class="relative">
           <div class="flex flex-wrap items-center">
             <h5
+              class="mb-1 mr-1"
               :class="{
                 'text-muted font-semibold': exercise.label?.length === 0,
               }"
             >
               {{ previewTitle }}
             </h5>
-            <div v-if="showTags" class="flex flex-wrap space-x-1 md:ml-2">
+            <div
+              v-if="true || showTags"
+              class="flex flex-wrap mb-1 overflow-hidden"
+            >
               <Tag
+                class="mr-1"
                 v-for="(tag, index) in tags"
                 :key="elementId + '-tag-' + index"
                 :tag="tag"
@@ -29,12 +34,20 @@
             </div>
             <div
               :title="$t('exercise_states.' + exercise.state)"
-              class="my-auto ml-4 cursor-default chip chip-sm"
+              class="my-auto mb-1 cursor-default chip chip-sm"
             >
               <div class="flex items-center">
                 <MultiIcon class="w-6" :icons="exerciseStateIcons"></MultiIcon>
               </div>
             </div>
+            <!--<div
+              :title="$t('exercise_types.' + exercise.exercise_type)"
+              class="my-auto cursor-default chip chip-sm"
+            >
+              <div class="flex items-center">
+                <MultiIcon class="w-6" :icons="exerciseTypeIcons"></MultiIcon>
+              </div>
+            </div>-->
           </div>
         </div>
       </template>
@@ -58,38 +71,52 @@
         <div class="flex flex-col items-end h-full space-y-5">
           <Btn
             class="flex-grow"
-            :size="'xs'"
+            :size="'sm'"
             v-if="previewable"
-            :variant="'primary-borderless'"
+            :variant="'icon'"
             @click="showPreview = true"
-            ><span class="text-base material-icons-outlined"> open_in_full </span>
+            ><span class="text-base material-icons-outlined">
+              open_in_full
+            </span>
           </Btn>
           <router-link
             class="mt-auto"
             v-if="showEdit"
             :to="{ name: 'CourseExercises', hash: '#editor-' + exercise.id }"
-            ><Btn :size="'xs'" :variant="'primary-borderless'" @click="showPreview = true"
+            ><Btn
+              :size="'xs'"
+              :variant="'primary-borderless'"
+              @click="showPreview = true"
               ><span class="text-base material-icons-outlined"> edit </span>
             </Btn></router-link
           >
           <div class="mt-auto" v-if="selectable">
             <Btn
               v-if="(selectButtonTitle?.length ?? 0) === 0"
-              :size="'xs'"
-              :variant="'success-borderless'"
+              :size="'sm'"
+              :variant="'icon'"
               :forceActive="highlighted"
               :disabled="selectionDisabled"
               @click="onSelection()"
-              ><span class="text-base material-icons-outlined"> done </span></Btn
+              class=" text-success focus:bg-success active:bg-success hover:bg-success focus:bg-opacity-20 hover:bg-opacity-20"
+              ><span class="text-base material-icons-outlined">
+                done
+              </span></Btn
             >
-            <Tooltip v-else :textValue="selectButtonTitle" :placement="'bottom'">
+            <Tooltip
+              v-else
+              :textValue="selectButtonTitle"
+              :placement="'bottom'"
+            >
               <Btn
                 :size="'xs'"
                 :variant="'success-borderless'"
                 :forceActive="highlighted"
                 :disabled="selectionDisabled"
                 @click="onSelection()"
-                ><span class="text-base material-icons-outlined"> done </span></Btn
+                ><span class="text-base material-icons-outlined">
+                  done
+                </span></Btn
               >
             </Tooltip>
           </div>
@@ -116,11 +143,12 @@ import { getTranslatedString as _ } from "@/i18n";
 import { v4 as uuid4 } from "uuid";
 
 import Card from "@/components/ui/Card.vue";
-import { Exercise, ExerciseState } from "@/models";
+import { Exercise, ExerciseState, ExerciseType } from "@/models";
 import { defineComponent, PropType } from "@vue/runtime-core";
 import Tag from "@/components/ui/Tag.vue";
 import MultiIcon from "@/components/ui/MultiIcon.vue";
 import { icons as exerciseStatesIcons } from "@/assets/exerciseStatesIcons";
+import { icons as exerciseTypesIcons } from "@/assets/exerciseTypesIcons";
 import Btn from "@/components/ui/Btn.vue";
 import Dialog from "@/components/ui/Dialog.vue";
 import FullExercise from "@/components/shared/FullExercise.vue";
@@ -210,6 +238,9 @@ export default defineComponent({
     },
     exerciseStateIcons() {
       return exerciseStatesIcons[this.exercise.state as ExerciseState];
+    },
+    exerciseTypeIcons() {
+      return exerciseTypesIcons[this.exercise.exercise_type as ExerciseType];
     },
     tags() {
       return [

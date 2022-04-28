@@ -6,7 +6,7 @@
           class="transition-transform duration-200 ease-out transform  material-icons-outlined"
           :class="{ 'rotate-180': showEditor }"
         >
-          {{ false && showEditor ? "expand_less" : "expand_more" }}
+          expand_more
         </span></Btn
       >
     </div>

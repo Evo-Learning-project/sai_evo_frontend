@@ -78,7 +78,7 @@
     :disabled="disabled || loading"
     class="relative overflow-hidden  disabled:cursor-not-allowed disabled:opacity-70"
     :class="{
-      'shadow-inner bg-light': forceActive,
+      'shadow-elevation-2 bg-light': forceActive,
       'bg-success-light bg-opacity-30':
         forceActive && variant === 'success-borderless',
       'px-5 py-1 font-medium':
