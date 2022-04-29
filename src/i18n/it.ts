@@ -696,6 +696,7 @@ export const it = {
     stats: "Statistiche esame",
     edit_score: "Modifica punteggio",
     edit_overall_grade: "Modifica voto",
+    hidden_course: "Corso nascosto agli studenti",
   },
   tour: {
     skip: "Salta tour",

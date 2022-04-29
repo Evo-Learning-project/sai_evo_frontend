@@ -39,14 +39,17 @@
           </div>
         </div>
       </div>
-      <CourseListItem
-        v-for="course in coursesSorted"
-        :key="'course-' + course.id"
-        :course="course"
-        class="my-4"
-      ></CourseListItem>
+      <div class="grid gap-4 md:grid-cols-3">
+        <CourseListItem
+          v-for="course in coursesSorted"
+          :key="'course-' + course.id"
+          :course="course"
+          class=""
+        ></CourseListItem>
+      </div>
     </div>
-    <div class="flex flex-col space-y-4" v-else>
+    <div class="grid gap-4 md:grid-cols-3" v-else>
+      <CourseListItemSkeleton></CourseListItemSkeleton>
       <CourseListItemSkeleton></CourseListItemSkeleton>
       <CourseListItemSkeleton></CourseListItemSkeleton>
       <CourseListItemSkeleton></CourseListItemSkeleton>
