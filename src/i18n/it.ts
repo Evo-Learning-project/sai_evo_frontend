@@ -506,6 +506,8 @@ export const it = {
     add_rule: "Aggiungi esercizi",
     choose_exercises_text:
       "Seleziona i tag che ti interessano per creare l'esercitazione.",
+    rule_amount_1: "Quanti esercizi col tag",
+    rule_amount_2: "vuoi vedere?",
   },
   programming_exercise: {
     tab_text: "Testo",

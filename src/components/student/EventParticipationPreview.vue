@@ -2,9 +2,8 @@
   <div>
     <Card
       :class="{
-        'bg-primary bg-opacity-10 ': isParticipable,
+        'bg-primary bg-opacity-10 border-none': isParticipable,
       }"
-      :margin-less="true"
       class="h-44"
     >
       <template v-slot:header>
@@ -40,7 +39,11 @@
                   'text-danger-dark':
                     participation.score < participation.max_score / 2,
                 }"
-                >{{ participation.score }}</span
+                >{{
+                  Number.isInteger(parseFloat(participation.score))
+                    ? parseInt(participation.score)
+                    : participation.score
+                }}</span
               ><span class="ml-1 text-muted"
                 >/{{ participation.max_score }}</span
               >

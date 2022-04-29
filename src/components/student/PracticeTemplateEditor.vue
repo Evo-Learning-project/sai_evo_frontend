@@ -4,8 +4,7 @@
       <div class="relative">
         <div
           v-show="editingRule"
-          style="height: 120%"
-          class="absolute z-50 w-full faded-overlay opacity-20 -top-4"
+          class="absolute z-50 w-full h-full faded-overlay opacity-20 -top-1"
         ></div>
 
         <Chipset
@@ -29,23 +28,27 @@
         </Chipset>
       </div>
       <div
-        class="flex items-center mt-8"
+        class="flex flex-col flex-wrap mt-8 md:items-center md:flex-row"
         :class="[editingRule ? 'visible' : 'invisible']"
       >
-        <p>Quanti esercizi col tag</p>
-        <Tag class="mx-2" v-if="editingRuleTag" :tag="editingRuleTag"></Tag>
-        <p>vuoi vedere?</p>
-        <NumberInput
-          v-model="editingRuleDirtyAmount"
-          class="ml-4"
-          :min="0"
-        ></NumberInput>
-        <Btn class="ml-2" @click="saveRule">{{
-          $t("dialog.default_ok_text")
-        }}</Btn>
-        <Btn class="ml-2" :outline="true" @click="discardRule">{{
-          $t("dialog.default_cancel_text")
-        }}</Btn>
+        <div class="flex flex-wrap">
+          <p>{{ $t("practice_template_editor.rule_amount_1") }}</p>
+          <Tag class="mx-2" v-if="editingRuleTag" :tag="editingRuleTag"></Tag>
+          <p>{{ $t("practice_template_editor.rule_amount_2") }}</p>
+        </div>
+        <div class="flex items-center">
+          <NumberInput
+            v-model="editingRuleDirtyAmount"
+            class="mt-2 md:ml-4 md:mt-0"
+            :min="0"
+          ></NumberInput>
+          <Btn class="ml-2" @click="saveRule">{{
+            $t("dialog.default_ok_text")
+          }}</Btn>
+          <Btn class="ml-2" :outline="true" @click="discardRule">{{
+            $t("dialog.default_cancel_text")
+          }}</Btn>
+        </div>
       </div>
     </div>
   </div>

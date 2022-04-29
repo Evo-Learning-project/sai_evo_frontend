@@ -14,7 +14,7 @@
       :language="'js'"
       :dark="true"
       :class="{ 'ssh-pre-small': small }"
-      >{{ value }}</SshPre
+      >{{ processedValue }}</SshPre
     >
   </div>
 </template>
@@ -57,7 +57,13 @@ export default defineComponent({
     };
   },
   methods: {},
-  computed: {},
+  computed: {
+    processedValue(): string {
+      return (
+        this.value.substring(0, 1500) + (this.value.length > 1500 ? "..." : "")
+      );
+    },
+  },
 });
 </script>
 

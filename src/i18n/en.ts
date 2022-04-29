@@ -5,6 +5,31 @@ export const en = {
     default_ok_text: "OK",
     default_cancel_text: "Cancel",
   },
+  practice_template_editor: {
+    begin_practice: "Start practice",
+    add_rule: "Aggiungi esercizi",
+    choose_exercises_text:
+      "Select the tags you're interested in in order to create your practice session.",
+    rule_amount_1: "How many exercises with tag",
+    rule_amount_2: "do you want to see?",
+  },
+  student_course_dashboard: {
+    your_practice_events: "Le tue esercitazioni",
+    new_practice_event: "Nuova esercitazione",
+    exams_you_participated_in: "Esami a cui hai partecipato",
+    review_submission: "Rivedi risposte",
+    view_assessment: "Valutazione",
+    resume: "Riprendi",
+    assessment_available:
+      "Sono stati pubblicati i voti relativi a questo esame",
+    new_practice: "New practice session",
+    resume_practice: "Resume practice",
+    draft_practice: "Bozza esercitazione",
+    pending: "In corso",
+    practice_summary: "Riepilogo",
+    no_public_exercises:
+      "Non puoi iniziare un'esercitazione perché i docenti del corso non hanno ancora aggiunto esercizi",
+  },
   exercise_editor: {
     exercise_tags: "Tags",
     exercise_editor_title: "Exercise editor",
