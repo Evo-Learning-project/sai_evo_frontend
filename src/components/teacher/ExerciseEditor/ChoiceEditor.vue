@@ -13,6 +13,7 @@
         class="ml-auto md:hidden"
         :outline="true"
         :variant="'icon'"
+        :tooltip="$t('exercise_editor.delete_choice')"
         @click="$emit('delete')"
         ><span class="text-base text-danger-dark material-icons-outlined">
           close
@@ -73,6 +74,7 @@
         class="md:-mr-3.5 md:ml-0 -ml-2.5 hidden md:block"
         :outline="true"
         :variant="'icon'"
+        :tooltip="$t('exercise_editor.delete_choice')"
         @click="$emit('delete')"
         ><span class="text-base text-danger-dark material-icons-outlined">
           close

@@ -479,6 +479,10 @@ export const it = {
     code_execution_will_appear_here:
       "I risultati dell'esecuzione del codice della soluzione appariranno qui.",
     clone: "Clona esercizio",
+    delete: "Elimina esercizio",
+    delete_sub_exercise: "Elimina sotto-esercizio",
+    delete_choice: "Elimina scelta",
+    delete_testcase: "Elimina test case",
     clone_confirm: "Sei sicuro di voler clonare",
   },
   exercise_wrapper: {
@@ -688,6 +692,10 @@ export const it = {
       private_tags:
         "Questi tag non verranno mai mostrati agli studenti e possono essere utilizzati per organizzare gli esercizi e aggiungerli agli esami",
     },
+    copy_exam_link: "Copia link all'esame",
+    stats: "Statistiche esame",
+    edit_score: "Modifica punteggio",
+    edit_overall_grade: "Modifica voto",
   },
   tour: {
     skip: "Salta tour",

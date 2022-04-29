@@ -30,8 +30,11 @@
         </TextInput>
       </div>
       <div
-        class="mt-4 overflow-y-hidden duration-200 ease-in-out  md:mt-6 transition-max-height"
-        :class="{ 'max-h-96': full || expanded, 'max-h-0': !full & !expanded }"
+        class="mt-4 duration-200 ease-in-out md:mt-6 transition-max-height"
+        :class="{
+          'max-h-100 overflow-auto': full || expanded,
+          'max-h-0  overflow-y-hidden': !full & !expanded,
+        }"
       >
         <Chipset
           :allowMultiple="false"

@@ -74,6 +74,9 @@
                   :variant="'icon'"
                   :disabled="showEditScore"
                   class="ml-1"
+                  :tooltip="
+                    showEditScore ? '' : $t('help_texts.edit_overall_grade')
+                  "
                   @click="onShowEditScore()"
                   ><span class="text-lg text-gray-600 material-icons-outlined"
                     >edit</span

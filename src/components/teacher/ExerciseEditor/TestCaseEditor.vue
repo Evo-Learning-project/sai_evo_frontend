@@ -5,6 +5,7 @@
         :outline="true"
         :variant="'icon'"
         @click="$emit('delete')"
+        :tooltip="$t('exercise_editor.delete_testcase')"
         class="-mr-3"
         ><span class="text-base text-danger-dark material-icons-outlined">
           close

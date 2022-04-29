@@ -77,6 +77,7 @@
           <Btn
             :outline="true"
             :variant="'icon'"
+            :tooltip="$t('exercise_editor.delete_sub_exercise')"
             @click="$emit('delete')"
             class="ml-auto -mr-4"
             ><span class="text-base text-danger-dark material-icons-outlined">
@@ -419,6 +420,7 @@
             :outline="true"
             :size="'lg'"
             :variant="'icon'"
+            :tooltip="$t('exercise_editor.delete')"
             @click="$emit('delete')"
             ><span class="text-2xl text-danger-dark material-icons-outlined">
               delete

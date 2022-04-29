@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="tooltip w-max">
+    <div class="tooltip w-max" @mouseover="showText()" @mouseleave="hideText()">
       <span
         v-if="!$slots.default"
         :class="{
@@ -13,15 +13,18 @@
       <div class="tooltip-handle" v-else>
         <slot> </slot>
       </div>
-      <transition name="fade" v-if="textCode || textValue"
+      <transition
+        :name="noArrow ? 'tooltip-fade-bounce' : 'tooltip-fade'"
+        v-if="textCode || textValue"
         ><span
+          v-if="show"
           class="z-20 max-w-xs md:max-w-max tooltip-text"
           :class="{
             'tooltip-right': placement === 'right',
             'tooltip-bottom': placement === 'bottom',
             'tooltip-top': placement === 'top',
             'tooltip-left': placement === 'left',
-            'tooltip-no-arrow': noArrow,
+            'tooltip-no-arrow tooltip': noArrow,
           }"
           >{{ helpText }}</span
         ></transition
@@ -54,7 +57,32 @@ export default defineComponent({
       default: false,
     },
   },
-  methods: {},
+  data() {
+    return {
+      show: false,
+      showHandle: null as null | number,
+    };
+  },
+  methods: {
+    setShow(val: boolean) {
+      this.show = val;
+    },
+    showText() {
+      if (!this.showHandle) {
+        this.showHandle = setTimeout(
+          () => this.setShow(true),
+          this.noArrow ? 200 : 0
+        );
+      }
+    },
+    hideText() {
+      if (this.showHandle) {
+        clearTimeout(this.showHandle);
+        this.showHandle = null;
+      }
+      this.setShow(false);
+    },
+  },
   computed: {
     helpText(): string {
       return this.textValue || _("help_texts." + this.textCode);

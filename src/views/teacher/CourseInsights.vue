@@ -1,26 +1,38 @@
 <template>
   <div>
-    <Card class="shadow-elevation bg-gray-50 mb-8">
+    <Card
+      class="mb-8 border-none shadow-elevation"
+      :filled="true"
+      :hoverable="false"
+    >
       <template v-slot:body>
         <div class="flex items-center space-x-2">
-          <span class="material-icons-outlined opacity-80"> people </span>
+          <span class="material-icons-outlined icon-light"> people </span>
           <p>
-            <span class="text-muted">{{ $t("course_insights.active_students") }}:</span>
+            <span class="text-muted"
+              >{{ $t("course_insights.active_students") }}:</span
+            >
             {{ users.length }}
           </p>
         </div>
-        <div class="flex items-center space-x-2 my-4">
-          <span class="material-icons-outlined opacity-80"> fitness_center </span>
+        <div class="flex items-center my-4 space-x-2">
+          <span class="material-icons-outlined icon-light">
+            fitness_center
+          </span>
           <p>
-            <span class="text-muted">{{ $t("course_insights.practice_sessions") }}:</span>
+            <span class="text-muted"
+              >{{ $t("course_insights.practice_sessions") }}:</span
+            >
             &nbsp;<em>(coming soon)</em
             ><!--{{ practiceParticipations.length }}-->
           </p>
         </div>
         <div class="flex items-center space-x-2">
-          <span class="material-icons-outlined opacity-80"> topic </span>
+          <span class="material-icons-outlined icon-light"> topic </span>
           <p>
-            <span class="text-muted">{{ $t("course_insights.exercises") }}:</span>
+            <span class="text-muted"
+              >{{ $t("course_insights.exercises") }}:</span
+            >
             &nbsp;<em>(coming soon)</em>
             <!-- {{ users.length }} -->
           </p>
@@ -31,11 +43,16 @@
     <p class="text-muted">
       {{ $t("course_insights.active_students_description") }}
     </p>
-    <div v-if="!loading && users.length === 0" class="flex flex-col items-center mt-8">
-      <p style="font-size: 6rem" class="material-icons-outlined opacity-10">person_off</p>
+    <div
+      v-if="!loading && users.length === 0"
+      class="flex flex-col items-center mt-8"
+    >
+      <p style="font-size: 6rem" class="material-icons-outlined opacity-10">
+        person_off
+      </p>
       <h2 class="opacity-40">{{ $t("course_insights.no_active_students") }}</h2>
     </div>
-    <div class="mt-4 grid md:grid-cols-3 grid-cols-1 gap-3">
+    <div class="grid grid-cols-1 gap-3 mt-4 md:grid-cols-3">
       <StudentCard
         class="mb-auto"
         v-for="user in users"

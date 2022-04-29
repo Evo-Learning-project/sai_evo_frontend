@@ -43,15 +43,15 @@
         </p>
       </div>
     </div>
-    <div class="flex flex-col mt-2 mb-6">
+    <div class="flex flex-col mt-2 mb-9">
       <Btn
         @click="showStats = !showStats"
         :outline="true"
+        :tooltip="!showStats ? $t('help_texts.stats') : ''"
         :variant="'icon'"
         class="ml-auto -mt-8 transition-transform duration-200 transform"
         :class="{
-          'hover:text-primary focus:bg-primary hover:bg-primary focus:bg-opacity-20 hover:bg-opacity-20':
-            !showStats,
+          'icon-btn-primary': !showStats,
         }"
       >
         <span

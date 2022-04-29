@@ -307,6 +307,9 @@
               :outline="true"
               :variant="'icon'"
               :size="'sm'"
+              :tooltip="
+                showAssessmentControls ? '' : $t('help_texts.edit_score')
+              "
               :disabled="showAssessmentControls"
               @click="onShowAssessmentControls()"
               ><span class="text-lg icon-light material-icons-outlined"

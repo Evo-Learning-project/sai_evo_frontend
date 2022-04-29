@@ -64,6 +64,10 @@
       @apply bg-gray-800 bg-opacity-10;
     }
 
+    .icon-btn-primary button {
+      @apply hover:text-primary focus:bg-primary hover:bg-primary focus:bg-opacity-20 hover:bg-opacity-20;
+    }
+
     .icon-btn-sm {
       @apply w-8 h-8 p-0;
     }
@@ -198,6 +202,10 @@
 
     .card-border {
       border: 1px solid #dadce0;
+    }
+
+    .bg-gray-50 .card-filled {
+      @apply bg-opacity-100 bg-light;
     }
 
     .card-filled {
@@ -366,7 +374,7 @@
     }
 
     .tooltip .tooltip-text {
-      @apply absolute opacity-0 hidden text-sm w-max bg-dark text-light px-2 py-1.5 rounded-md transition-opacity duration-100 ease-in-out shadow-md bg-opacity-75 md:bg-opacity-60
+      @apply absolute z-50 text-sm w-max bg-dark text-lightText px-2 py-1.5 rounded-md transition-opacity duration-100 ease-in-out shadow-md bg-opacity-80 md:bg-opacity-60
     }
 
     .tooltip-text-force {
@@ -413,6 +421,10 @@
       content: ' ';
       border-color: transparent  transparent rgba(17, 24, 39, 0.6) transparent !important;
       @apply absolute -mt-1 border-4 border-transparent border-solid bottom-full left-1/2;
+    }
+
+    .tooltip-no-arrow {
+      @apply mt-0.5 !important;
     }
 
     .v-step {
@@ -572,6 +584,17 @@
         opacity: 1;
       }
     }
+    
+    @keyframes bounce-in-translated {
+      0% {
+        transform: scale(0.9) translateX(-50%);
+        opacity: 0;
+      }
+      100% {
+        transform: scale(1) translateX(-50%);
+        opacity: 1;
+      }
+    }
 
     @keyframes quick-bounce-in {
       0% {
@@ -619,10 +642,33 @@
       transition: opacity 0.25s 0.7s ease;
     }
 
-
     .fade-delay-rev-leave-active {
       transition: opacity 0.25s ease;
     }
+
+    .tooltip-fade-enter-active,
+    .tooltip-fade-leave-active,
+    .tooltip-fade-bounce-enter-active,
+    .tooltip-fade-bounce-leave-active {
+      transition: opacity 0.5s ease;
+    }
+
+    .tooltip-fade-bounce-enter-active {
+      animation: bounce-in-translated 0.2s;
+    }
+    
+    .tooltip-fade-enter-from,
+    .tooltip-fade-leave-to,
+    .tooltip-fade-bounce-enter-from,
+    .tooltip-fade-bounce-leave-to {
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
+/* 
+    .tooltip-fade-leave-to,
+    .tooltip-fade-enter-active {
+      @apply delay-1000;
+    } */
     
     /* .fade-delay-rev-enter-from,
     .fade-delay-rev-leave-to { 

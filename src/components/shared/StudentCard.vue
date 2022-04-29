@@ -123,19 +123,23 @@ export default defineComponent({
   methods: {},
   computed: {
     processedHistory() {
-      return this.participationHistory.map((p) => ({
-        eventType: p.event.event_type,
-        timestamp: p.begin_timestamp,
-        data: {
-          id: p.id,
-          name: p.event.name,
-          examId: p.event.id,
-          class:
-            p.event.event_type === EventType.SELF_SERVICE_PRACTICE
-              ? "opacity-50"
-              : "",
-        },
-      }));
+      return this.participationHistory
+        .map((p) => ({
+          eventType: p.event.event_type,
+          timestamp: p.begin_timestamp,
+          data: {
+            id: p.id,
+            name: p.event.name,
+            examId: p.event.id,
+            class:
+              p.event.event_type === EventType.SELF_SERVICE_PRACTICE
+                ? "opacity-50"
+                : "",
+          },
+        }))
+        .sort((a, b) =>
+          new Date(a.timestamp) < new Date(b.timestamp) ? -1 : 1
+        );
     },
   },
   components: { Card, Btn, Timeline, Timestamp, SkeletonCard },

@@ -1,6 +1,7 @@
 <template>
   <div v-if="iconOnly" class="tooltip">
     <Btn
+      :tooltip="showFeedback ? '' : tooltip"
       v-clipboard:copy="value"
       v-clipboard:success="onCopy"
       class="copy-btn"
@@ -81,6 +82,10 @@ export default defineComponent({
       default: "",
     },
     confirmationMessage: {
+      type: String,
+      default: "",
+    },
+    tooltip: {
       type: String,
       default: "",
     },
