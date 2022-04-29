@@ -1,6 +1,6 @@
 <template>
   <div
-    style="min-height: 20rem"
+    style="min-height: 21rem"
     class="flex flex-col overflow-x-hidden  lg:overflow-x-visible card card-border card-hoverable hover-shadow-elevation hover:border-transparent"
   >
     <div
@@ -12,8 +12,7 @@
         px-0.5
         bg-primary bg-opacity-10
         -mt-5
-        pt-5
-        pb-5
+        py-3
         rounded-t
       "
     >
@@ -22,13 +21,13 @@
           pl-4.5
           mr-2
           font-light
-          text-3xl
+          text-2xl
           material-icons-two-tone
           two-tone-primary
         "
         >book</span
       >
-      <h3 style="margin-top: 3px" class="mb-0 pr-4.5 text-primary">
+      <h3 style="margin-top: 1.5px" class="mb-0 pr-4.5 text-primary">
         {{ course.name }}
       </h3>
       <Tooltip
@@ -46,7 +45,7 @@
       </Tooltip>
     </div>
     <div class="mt-5">
-      <div class="flex items-center px-1 mb-1 space-x-1">
+      <div class="flex items-center px-1 mb-1 space-x-1 text-sm">
         <div class="flex items-center space-x-0.5 text-muted">
           <span class="my-auto text-xl material-icons-outlined">person</span>
           <span class="">{{ $t("misc.teacher") }}:</span>
@@ -69,7 +68,7 @@
           <span class="mr-0.5 mt-0.5 text-base material-icons-outlined">
             chevron_right
           </span>
-          <span class="text-lg">{{ $t("courses.go_to_course") }}</span>
+          <span class="">{{ $t("courses.go_to_course") }}</span>
         </Btn></router-link
       >
       <router-link
@@ -83,7 +82,7 @@
           <span class="mr-1 text-base material-icons-two-tone two-tone-primary">
             shield
           </span>
-          <span class="text-lg">{{ $t("courses.course_panel") }}</span>
+          <span class="">{{ $t("courses.course_panel") }}</span>
         </Btn></router-link
       >
     </div>
