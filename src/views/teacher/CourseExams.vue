@@ -7,9 +7,7 @@
         :loading="localLoading"
         class="ml-auto"
         :disabled="firstLoading"
-        ><span class="mr-1 text-base material-icons-outlined">
-          add_circle_outline
-        </span>
+        ><span class="mr-1 text-base material-icons-outlined"> add </span>
         {{ $t("course_events.new_exam") }}</Btn
       >
     </div>

@@ -62,8 +62,10 @@
           <div class="flex mr-auto space-x-2">
             <router-link
               :to="{ name: 'ExamEditor', params: { examId: event.id } }"
-              ><Btn v-if="hasPrivileges([CoursePrivilege.MANAGE_EVENTS])"
-                ><span class="text-base material-icons-outlined"> edit </span>
+              ><Btn
+                :variant="'secondary'"
+                v-if="hasPrivileges([CoursePrivilege.MANAGE_EVENTS])"
+                ><span class="text-base material-icons"> edit </span>
                 <span class="ml-1.5" v-if="!buttonIconsOnly">{{
                   $t("event_preview.editor")
                 }}</span></Btn

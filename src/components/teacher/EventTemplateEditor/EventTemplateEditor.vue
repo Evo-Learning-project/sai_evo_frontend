@@ -84,7 +84,7 @@
         "
         :loading="localLoading"
         ><span class="mr-1 text-base material-icons-outlined">
-          add_circle_outline </span
+          add </span
         >{{ $t("event_template_editor.add_rule") }}</Btn
       >
     </div>

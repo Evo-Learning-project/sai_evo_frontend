@@ -178,6 +178,8 @@ export const it = {
       "L'inserimento del numero di matricola e la selezione del corso sono necessari per poter partecipare agli esami. Fallo ora e non pensarci più!",
   },
   misc: {
+    select: "Seleziona",
+    preview: "Anteprima",
     save_and_close: "Salva e chiudi",
     hidden: "Nascosto",
     teacher: "Docente",
@@ -349,6 +351,7 @@ export const it = {
       "Non hai ancora creato esercizi per questo corso. Dalla pagina degli esercizi, creane almeno uno per poter popolare questo slot. Ricordati di rimuovere lo stato di bozza dagli esercizi che vuoi inserire in un esame!",
   },
   event_template_rule_editor: {
+    reset_slot_settings: "Resetta slot",
     exercise_number: "Slot",
     choose_exercise: "Scegli esercizio...",
     change_exercise: "Cambia esercizio",

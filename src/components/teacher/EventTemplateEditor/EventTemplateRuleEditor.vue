@@ -16,12 +16,9 @@
           {{ modelValue._ordering + 1 }}
         </h4>
         <div class="flex items-center ml-auto space-x-2">
-          <Btn @click="showRuleDialog()" :size="'sm'">
+          <Btn :variant="'secondary'" @click="showRuleDialog()" :size="'sm'">
             <div class="flex items-center">
-              <span
-                style="font-size: 1.35rem"
-                class="material-icons-outlined my-auto mr-1.5 mb-0.5"
-              >
+              <span class="material-icons-outlined my-auto mr-1.5 mb-0.5">
                 settings_suggest </span
               >{{ $t("event_template_rule_editor.choose_exercise") }}
             </div>
@@ -128,6 +125,7 @@
           :variant="'icon'"
           :outline="true"
           :size="'lg'"
+          :tooltip="$t('event_template_rule_editor.reset_slot_settings')"
           class="-ml-3.5 mt-1.25px"
           @click="setRuleMode(null)"
         >

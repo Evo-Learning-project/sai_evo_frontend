@@ -22,10 +22,11 @@
             </h5>
             <div
               v-if="true || showTags"
-              class="flex flex-wrap mb-1 overflow-hidden"
+              class="flex mb-1 overflow-x-auto faded-slideshow"
             >
               <Tag
                 class="mr-1"
+                :class="{ 'z-10': index === tags.length - 1 }"
                 v-for="(tag, index) in tags"
                 :key="elementId + '-tag-' + index"
                 :tag="tag"
@@ -65,9 +66,58 @@
             v-html="previewText"
           ></div>
         </div>
+        <div class="flex items-center">
+          <Btn
+            class="ml-auto"
+            v-if="previewable"
+            :variant="'icon'"
+            :outline="true"
+            :tooltip="$t('misc.preview')"
+            @click="showPreview = true"
+            ><span class="text-xl material-icons-outlined"> fullscreen </span>
+          </Btn>
+          <router-link
+            class=""
+            :outline="true"
+            v-if="showEdit"
+            :to="{ name: 'CourseExercises', hash: '#editor-' + exercise.id }"
+            ><Btn :outline="true" :variant="'icon'">
+              <span class="text-lg material-icons"> edit </span>
+            </Btn></router-link
+          >
+          <div class="" v-if="selectable">
+            <Btn
+              v-if="(selectButtonTitle?.length ?? 0) === 0"
+              :variant="'icon'"
+              :outline="true"
+              :tooltip="$t('misc.select')"
+              :forceActive="highlighted"
+              :disabled="selectionDisabled"
+              @click="onSelection()"
+              class="icon-btn-success"
+              ><span class="text-lg material-icons-outlined"> done </span></Btn
+            >
+            <Tooltip
+              v-else
+              :textValue="selectButtonTitle"
+              :placement="'bottom'"
+            >
+              <Btn
+                :variant="'icon'"
+                :outline="true"
+                :forceActive="highlighted"
+                :disabled="selectionDisabled"
+                @click="onSelection()"
+                ><span class="text-lg material-icons-outlined">
+                  done
+                </span></Btn
+              >
+            </Tooltip>
+          </div>
+        </div>
       </template>
 
-      <template v-slot:side>
+      <!--<template v-slot:side>
         <div class="flex flex-col items-end h-full space-y-5">
           <Btn
             class="flex-grow"
@@ -121,7 +171,7 @@
             </Tooltip>
           </div>
         </div>
-      </template>
+      </template>-->
     </Card>
     <Dialog
       :showDialog="showPreview"

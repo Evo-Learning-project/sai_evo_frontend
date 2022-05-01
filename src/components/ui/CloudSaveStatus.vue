@@ -1,15 +1,15 @@
 <template>
-  <div class="h-6">
-    <div v-if="saving" class="flex items-center ml-auto space-x-1 text-muted">
+  <div class="h-8">
+    <div v-if="saving" class="flex items-center ml-auto space-x-1.5 text-muted">
       <!-- <Spinner :size="'sm'"></Spinner> -->
-      <span class="text-base opacity-80 material-icons-outlined animate-spin">
+      <span class="text-xl opacity-80 material-icons-outlined animate-spin">
         sync
       </span>
-      <p class="text-sm">{{ $t("cloud.saving") }}</p>
+      <p class="text-base">{{ $t("cloud.saving") }}</p>
     </div>
     <div
       v-else-if="!hadError"
-      class="flex items-center ml-auto space-x-1 text-muted"
+      class="flex items-center ml-auto space-x-1.5 text-muted"
     >
       <Tooltip
         :placement="'left'"
@@ -17,10 +17,10 @@
       >
         <span
           :class="{
-            'tooltip-handle hover:bg-gray-200 hover:bg-opacity-80 rounded-md px-1.5  transition-colors duration-100':
+            'tooltip-handle hover:bg-light hover:bg-opacity-100 rounded px-1.5  transition-colors duration-100':
               !showSaved,
           }"
-          class="text-base cursor-default select-none  opacity-80 material-icons-outlined hover:text-primary-dark"
+          class="text-xl cursor-default select-none  opacity-80 material-icons-outlined hover:text-primary"
         >
           cloud_done
         </span>
@@ -39,7 +39,7 @@
           $t("cloud.changes_saved_to_server")
         }}</span>
       </div>-->
-      <p v-if="showSaved" class="mb-0.5 text-sm">
+      <p v-if="showSaved" class="mb-0.5 text-base">
         {{ $t("cloud.saved") }}
       </p>
     </div>

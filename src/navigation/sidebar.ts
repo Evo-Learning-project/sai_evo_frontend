@@ -18,7 +18,7 @@ export const courseListSidebarOptions: SidebarOption[] = [
   },
   {
     label: _("sidebar_labels.course_list_new_course"),
-    icon: "add_circle_outline",
+    icon: "add",
     routeName: "CourseCreationForm",
     requiredPrivileges: [],
   },

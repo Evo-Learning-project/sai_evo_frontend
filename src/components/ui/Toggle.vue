@@ -7,7 +7,7 @@
   >
     <div
       :class="{ 'order-12 ml-2': labelOnLeft }"
-      class="relative inline-block w-10 h-4 mt-1 mr-2 align-middle transition duration-200 ease-in bg-transparent rounded-full shadow-sm select-none "
+      class="relative inline-block w-10 h-4 mt-1 mr-2 align-middle transition duration-200 ease-in bg-transparent rounded-full select-none "
     >
       <input
         type="checkbox"
@@ -17,7 +17,7 @@
         :id="overrideId || id"
         :class="{
           'bg-white': !modelValue,
-          'bg-primary-light': modelValue,
+          'bg-primary': modelValue,
         }"
         class="
           absolute
@@ -30,7 +30,7 @@
           appearance-none
           cursor-pointer
           hover:ring-8
-          ring-blue-400
+          ring-secondary
           active:ring-opacity-40
           ring-opacity-20
           toggle-checkbox
@@ -139,7 +139,7 @@ export default defineComponent({
   border-color: rgba(72, 91, 202, 1);
 }
 .toggle-checkbox:checked ~ .toggle-rail {
-  background-color: rgba(72, 91, 202, 0.68) !important;
+  background-color: rgba(48, 63, 159, 0.4) !important;
 }
 .toggle-checkbox,
 .toggle-mark {

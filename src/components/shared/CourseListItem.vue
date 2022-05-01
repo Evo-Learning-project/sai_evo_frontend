@@ -1,7 +1,6 @@
 <template>
   <div
-    style="min-height: 21rem"
-    class="flex flex-col overflow-x-hidden  lg:overflow-x-visible card card-border card-hoverable hover-shadow-elevation hover:border-transparent"
+    class="flex flex-col overflow-x-hidden  md:min-h-21rem lg:overflow-x-visible card card-border card-hoverable hover-shadow-elevation hover:border-transparent"
   >
     <div
       style="margin-left: -21px; margin-right: -21px; margin-top: -21px"
@@ -10,7 +9,7 @@
         items-start
         md:px-1.25px
         px-0.5
-        bg-primary bg-opacity-10
+        bg-primary-light bg-opacity-20
         -mt-5
         py-3
         rounded-t

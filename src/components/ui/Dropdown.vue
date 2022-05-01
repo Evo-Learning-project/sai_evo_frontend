@@ -8,25 +8,28 @@
         'max-h-20 hover:shadow-md': !expanded,
         'max-h-screen shadow-popup': expanded,
       }"
-      class="flex overflow-y-hidden transition-all duration-300 ease-in-out border border-gray-300 rounded-md "
+      class="relative flex overflow-y-hidden transition-all duration-300 ease-in-out border border-gray-300 rounded-md "
     >
       <div class="w-full">
         <label
           :for="id + '-input-' + index"
           :class="{
+            'mt-1': index === 0 && expanded,
+            'mb-1': index === options.length - 1 && expanded,
             'transition-colors duration-200 ease-in-out': !expanded,
-            'bg-primary  text-lightText':
+            'text-primary-dark bg-primary-light bg-opacity-25':
               option.value == modelValue && (expanded || showFeedback),
-            'rounded-md px-2.5 py-1.5': option.value == modelValue,
+            'rounded-none px-2.5 py-2.5': option.value == modelValue,
             'h-0 py-0 overflow-hidden opacity-0':
               modelValue != null && option.value != modelValue && !expanded,
-            'px-2.5 py-1.5': modelValue == null || expanded,
-            'hover:bg-light':
+            'px-2.5 py-2.5': modelValue == null || expanded,
+            'hover:bg-gray-200':
               modelValue != option.value || (!expanded && !showFeedback),
           }"
-          class="flex items-center max-h-screen overflow-y-hidden cursor-pointer "
+          class="relative flex items-center max-h-screen overflow-hidden cursor-pointer "
           v-for="(option, index) in options"
           :key="id + '-option-' + index"
+          @mousedown="onMouseDown"
         >
           <input
             @click="onClick(option.value)"
@@ -37,17 +40,23 @@
             :value="option.value"
             :checked="option.value == modelValue"
           />
-          <div class="flex space-x-2 items-top">
-            <multi-icon class="w-6" :icons="option.icons"></multi-icon>
+          <div class="flex space-x-2 overflow-hidden items-top">
+            <MultiIcon class="w-6" :icons="option.icons"></MultiIcon>
             <div>
-              <p v-html="option.content"></p>
+              <p
+                v-html="option.content"
+                :class="{
+                  'font-semibold':
+                    option.value == modelValue && (expanded || showFeedback),
+                }"
+              ></p>
               <p
                 v-if="option.description && expanded"
                 v-html="option.description"
                 :class="[
                   option.value == modelValue
-                    ? 'text-light font-light'
-                    : 'text-muted',
+                    ? 'text-primary-dark'
+                    : 'text-muted text-description',
                   'text-sm my-1 -ml-6',
                 ]"
               ></p>
@@ -55,7 +64,7 @@
           </div>
           <span
             v-if="index == 0 || !expanded"
-            class="-mb-0.5 ml-auto material-icons-outlined"
+            class="mb-auto ml-auto material-icons-outlined"
             >expand_more</span
           >
         </label>
@@ -68,6 +77,7 @@
 import { defineComponent } from "@vue/runtime-core";
 import { v4 as uuid4 } from "uuid";
 import MultiIcon from "@/components/ui/MultiIcon.vue";
+import { rippleEffect } from "@/utils";
 
 export default defineComponent({
   name: "Dropdown",
@@ -125,6 +135,16 @@ export default defineComponent({
         this.expanded = true;
       } else if (this.modelValue == value && this.expanded) {
         this.expanded = false;
+      }
+    },
+    onMouseDown(event: any) {
+      if (this.expanded) {
+        rippleEffect(event, "ripple-gray");
+      }
+    },
+    onOuterMouseDown(event: any) {
+      if (!this.expanded) {
+        rippleEffect(event, "ripple-gray");
       }
     },
   },

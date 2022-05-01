@@ -39,7 +39,7 @@
           </div>
         </div>
       </div>
-      <div class="grid gap-8 md:grid-cols-3">
+      <div class="grid gap-4 md:gap-8 md:grid-cols-3">
         <CourseListItem
           v-for="course in coursesSorted"
           :key="'course-' + course.id"

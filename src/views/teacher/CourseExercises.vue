@@ -15,22 +15,22 @@
 
     <div class="flex w-full mt-12 mb-6">
       <Btn @click="onAddExercise()" :loading="localLoading" class="ml-auto"
-        ><span class="mr-1 text-base material-icons-outlined">
-          add_circle_outline
-        </span>
+        ><span class="mr-1 text-base material-icons-outlined"> add </span>
         {{ $t("course_exercises.new_exercise") }}</Btn
       >
     </div>
     <div v-if="!firstLoading">
-      <ExerciseEditorWrapper
-        v-for="(exercise, index) in exercises"
-        :key="'course-' + courseId + '-exercise-' + exercise.id"
-        v-model="exercises[index]"
-        :ref="'course-' + courseId + '-exercise-' + exercise.id"
-        :id="'course-' + courseId + '-exercise-' + exercise.id"
-        @delete="onDeleteExercise(exercise)"
-        @cloneExercise="onCloneExercise(exercise)"
-      ></ExerciseEditorWrapper>
+      <transition-group name="bounce">
+        <ExerciseEditorWrapper
+          v-for="(exercise, index) in exercises"
+          :key="'course-' + courseId + '-exercise-' + exercise.id"
+          v-model="exercises[index]"
+          :ref="'course-' + courseId + '-exercise-' + exercise.id"
+          :id="'course-' + courseId + '-exercise-' + exercise.id"
+          @delete="onDeleteExercise(exercise)"
+          @cloneExercise="onCloneExercise(exercise)"
+        ></ExerciseEditorWrapper
+      ></transition-group>
     </div>
     <div v-else>
       <ExerciseEditorWrapperSkeleton></ExerciseEditorWrapperSkeleton>
@@ -212,9 +212,7 @@ export default defineComponent({
     async onCloneExercise(exercise: Exercise) {
       const newExercise = await this.onAddExercise(getClonedExercise(exercise));
       // show notification
-
-      // close editor
-
+      this.$store.commit("shared/showSuccessFeedback");
       // open new editor
       document
         .getElementById(

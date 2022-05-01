@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,wght@0,300;0,400;0,600;0,700;0,900;1,400&display=swap');
-
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;1,300&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -36,6 +36,56 @@
   }
 
 @layer components {
+
+  /*
+  experimental styles
+  */
+
+  .muted-description { 
+    letter-spacing: .025em;
+    font-family: Roboto,Arial,sans-serif;
+    font-weight: 400;
+    color: #5f6368;
+    display: flex;
+    /*font-size: .6875rem;
+    margin-top: 8px;
+    width: 85%;
+        line-height: 1rem;*/
+  }
+
+  .sub-title {
+    letter-spacing: .01785714em;
+    font-family: "Google Sans",Roboto,Arial,sans-serif;
+    font-size: .875rem;
+    font-weight: 500;
+    line-height: 1.25rem;
+  }
+
+  .introduction-ui-text  {
+    letter-spacing: .01428571em;
+    font-family: Roboto,Arial,sans-serif;
+    font-size: .875rem;
+    font-weight: 400;
+    line-height: 1.25rem;
+    text-align: left;
+  }
+
+  .section-title {
+    font-family: "Google Sans",Roboto,Arial,sans-serif;
+    font-size: 1.125rem;
+    font-weight: 400;
+    letter-spacing: 0;
+    line-height: 1.5rem;
+    box-flex: 1;
+    flex-grow: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: rgba(0, 0, 0, 0.87)
+  }
+  
+  /*------*/
+
     .banner {
       @apply flex items-center px-2.5 md:px-4 py-3.5 space-x-2 md:space-x-3 rounded;
     }
@@ -66,6 +116,10 @@
 
     .icon-btn-primary button {
       @apply hover:text-primary focus:bg-primary hover:bg-primary focus:bg-opacity-20 hover:bg-opacity-20;
+    }
+
+    .icon-btn-success button {
+      @apply text-success focus:bg-success hover:bg-success focus:bg-opacity-20 hover:bg-opacity-20;
     }
 
     .icon-btn-sm {
@@ -132,8 +186,28 @@
             );
     }
 
+    .faded-slideshow:after {
+      background: linear-gradient(to right, 
+                    rgba(255,255,255, 0), 
+                    rgba(255,255,255, 1) 90%);
+      content: "";
+      position: absolute;
+      z-index: 1;
+      top: 0;
+      right: 0;
+      bottom: 15px;
+      pointer-events: none;
+      width: 50px;
+    }
+
+    .card-filled .faded-slideshow:after {
+      background: linear-gradient(to right, 
+                    rgba(255,255,255, 0), 
+                    rgba(243, 244, 246, 1) 90%);
+    }
+
     .user-content {
-      @apply py-5 pl-4 pr-2 rounded-sm border-l-6 bg-gray-50 border-primary-light;
+      @apply py-5 pl-4 pr-2 rounded-sm border-l-6 bg-gray-50 border-secondary;
     }
 
     .bg-gray-50 .user-content {
@@ -275,7 +349,7 @@
     }
 
     .chip-primary {
-      @apply border-0 text-primary bg-primary bg-opacity-25 font-semibold !important;
+      @apply border-0 text-primary bg-primary-light bg-opacity-25 font-semibold !important;
     }
 
     .chip-success {
@@ -327,7 +401,12 @@
     }
 
     .two-tone-primary {
-      filter: invert(31%) sepia(65%) saturate(1500%) hue-rotate(212deg) brightness(90%) contrast(87%);
+      /*filter: invert(31%) sepia(65%) saturate(1500%) hue-rotate(212deg) brightness(90%) contrast(87%);*/
+      filter: invert(20%) sepia(48%) saturate(2779%) hue-rotate(220deg) brightness(96%) contrast(93%);
+    }
+
+    .two-tone-secondary {
+      filter: invert(17%) sepia(72%) saturate(2874%) hue-rotate(250deg) brightness(91%) contrast(95%);
     }
 
     .two-tone-light {

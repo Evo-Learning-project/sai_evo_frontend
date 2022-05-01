@@ -11,6 +11,9 @@ module.exports = {
     minWidth: {
       md: "28rem",
     },
+    minHeight: {
+      "21rem": "21rem",
+    },
     outlineWidth: {
       0: "0px",
     },
@@ -18,6 +21,7 @@ module.exports = {
       spacing: {
         "0.4px": "0.4px",
         "1.25px": "1.25px",
+        "4.5px": "4.5px",
         "5px": "5px",
         "2.5px": "2.5px",
         100: "420px",
@@ -61,14 +65,14 @@ module.exports = {
         lightText: "#FFFFFF",
         darkText: "#111827",
         primary: {
-          light: "#4338CA",
-          DEFAULT: "#485BCA", // '#0F7490', '#3730A3',
-          dark: "#3B48A3", //'#312E81'
+          light: "#666ad1",
+          DEFAULT: "#303f9f", // '#0F7490', '#3730A3',
+          dark: "#001970", //'#312E81'
         },
         secondary: {
-          light: "#6D28D9",
-          DEFAULT: "#4C1D95",
-          //dark: '#4C1D95'
+          light: "#a255ff",
+          DEFAULT: "#651fff",
+          dark: "#4527a0",
         },
         light: "#F3F4F6",
         dark: "#111827",

@@ -92,7 +92,7 @@
             v-if="!subExercise || !cloze"
             class="flex flex-col items-start my-4 space-y-5  md:space-x-8 md:space-y-0 md:flex-row"
           >
-            <div v-if="!subExercise" class="w-full mr-auto md:w-4/12">
+            <div v-if="!subExercise" class="w-full mt-0.5 mr-auto md:w-4/12">
               <TextInput
                 :modelValue="modelValue.label"
                 @update:modelValue="onBaseExerciseChange('label', $event)"
@@ -144,12 +144,13 @@
             class="flex flex-wrap space-y-1 md:space-x-2 md:space-y-0"
             v-if="modelValue.exercise_type === ExerciseType.COMPLETION"
           >
-            <Btn @click="onAddCloze()"
+            <Btn @click="onAddCloze()" :variant="'secondary'"
               ><span class="mr-1.5 text-base material-icons-outlined">
-                add_circle_outline </span
+                add </span
               >{{ $t("exercise_editor.new_cloze") }}</Btn
             >
             <Btn
+              :outline="true"
               :disabled="editableClozePosition === null"
               @click="editingClozePosition = editableClozePosition"
               ><span class="mr-1.5 text-base material-icons-outlined">
@@ -293,10 +294,8 @@
               ></ChoiceEditor>
             </template>
           </draggable>
-          <Btn @click="onAddChoice()" :size="'sm'"
-            ><span class="mr-1 text-base material-icons-outlined">
-              add_circle_outline
-            </span>
+          <Btn @click="onAddChoice()" :size="'sm'" :variant="'secondary'"
+            ><span class="mr-1 text-base material-icons-outlined"> add </span>
             {{ $t("exercise_editor.new_choice") }}</Btn
           >
         </div>
@@ -322,10 +321,8 @@
               ></ExerciseEditor>
             </template>
           </draggable>
-          <Btn @click="onAddSubExercise()" :size="'sm'"
-            ><span class="mr-1 text-base material-icons-outlined">
-              add_circle_outline
-            </span>
+          <Btn @click="onAddSubExercise()" :size="'sm'" :variant="'secondary'"
+            ><span class="mr-1 text-base material-icons-outlined"> add </span>
             {{ $t("exercise_editor.new_sub_exercise") }}</Btn
           >
         </div>
@@ -351,10 +348,8 @@
               ></TestCaseEditor>
             </template>
           </draggable>
-          <Btn @click="onAddTestCase()" :size="'sm'"
-            ><span class="mr-1 text-base material-icons-outlined">
-              add_circle_outline
-            </span>
+          <Btn @click="onAddTestCase()" :size="'sm'" :variant="'secondary'"
+            ><span class="mr-1 text-base material-icons-outlined"> add </span>
             {{ $t("exercise_editor.new_testcase") }}</Btn
           >
         </div>

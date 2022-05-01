@@ -4,18 +4,21 @@
       :class="{
         'bg-primary bg-opacity-10 border-none': isParticipable,
       }"
-      class="h-44"
+      class="h-48"
     >
       <template v-slot:header>
-        <p class="text-sm font-medium text-center uppercase text-muted">
-          <Timestamp
-            :value="participation.begin_timestamp"
-            :date-only="true"
-          ></Timestamp>
-        </p>
-        <h4 class="text-center" v-if="participation.event.name.length > 0">
+        <div class="flex mx-auto font-medium text-muted">
+          <p class="mx-auto space-x-1">
+            <span class="inline-icon material-icons text-primary"> event </span>
+            <Timestamp
+              :value="participation.begin_timestamp"
+              :date-only="true"
+            ></Timestamp>
+          </p>
+        </div>
+        <h3 class="text-center" v-if="participation.event.name.length > 0">
           {{ participation.event.name }}
-        </h4>
+        </h3>
       </template>
       <template v-slot:body>
         <div class="flex flex-col h-full">
@@ -67,8 +70,8 @@
                 },
               }"
             >
-              <Btn>
-                <span class="mr-1 text-base material-icons-outlined">
+              <Btn :variant="'primary'" :outline="true">
+                <span class="mr-1 text-lg material-icons-outlined">
                   meeting_room
                 </span>
                 {{ $t("student_course_dashboard.resume") }}
@@ -105,8 +108,8 @@
                 },
               }"
             >
-              <Btn
-                ><span class="mr-2 text-base material-icons-outlined">
+              <Btn :variant="'secondary'"
+                ><span class="mr-2 text-lg material-icons-outlined">
                   assignment_turned_in </span
                 >{{
                   participation.event.event_type ===

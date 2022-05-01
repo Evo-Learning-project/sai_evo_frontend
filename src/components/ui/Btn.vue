@@ -10,18 +10,20 @@
       :disabled="disabled || loading"
       class="relative overflow-hidden  disabled:cursor-not-allowed disabled:opacity-70"
       :class="{
-        'shadow-inner bg-light': forceActive,
+        'shadow-elevation-2 bg-light': forceActive,
         'bg-success-light bg-opacity-30':
           forceActive && variant === 'success-borderless',
-        'px-5 py-1 font-medium':
+        'px-6 py-1.5 font-medium':
           !outline && size === 'base' && variant !== 'transparent',
-        'px-4 py-2.5px font-medium':
+        'px-6 py-4.5px font-medium':
           outline && size === 'base' && variant !== 'icon',
         'px-2.5 py-0.5 text-sm': size === 'sm' && variant !== 'icon',
         'px-1.5 py-0.5 text-xs': size === 'xs' && variant !== 'icon',
         'px-14 py-2 text-lg font-medium': size === 'lg' && variant !== 'icon',
         'text-lightText bg-primary hover:bg-primary-dark shadow-btn':
           !outline && variant === 'primary',
+        'text-lightText bg-secondary hover:bg-secondary-dark shadow-btn':
+          !outline && variant === 'secondary',
         'text-danger-dark bg-danger shadow-btn':
           !outline && variant === 'danger',
         'text-danger-dark border-danger-dark bg-white border':
@@ -41,9 +43,9 @@
           variant === 'success-borderless',
         'text-lg font-bold text-success hover:bg-light px-6':
           variant === 'success-borderless',
-        'border-gray-300 bg-white hover:bg-primary hover:bg-opacity-20 hover:text-primary-light transition-colors duration-100':
+        'border-gray-300 bg-white hover:bg-primary hover:bg-opacity-10 hover:text-primary transition-colors duration-100':
           variant === 'transparent',
-        'rounded-md': variant !== 'transparent',
+        rounded: variant !== 'transparent',
         'rounded-full bg-transparent hover:bg-gray-200 text-gray-600 icon-btn':
           variant === 'icon',
         'icon-btn icon-btn-sm': variant === 'icon' && size === 'sm',
@@ -81,15 +83,17 @@
       'shadow-elevation-2 bg-light': forceActive,
       'bg-success-light bg-opacity-30':
         forceActive && variant === 'success-borderless',
-      'px-5 py-1 font-medium':
+      'px-6 py-1.5 font-medium':
         !outline && size === 'base' && variant !== 'transparent',
-      'px-4 py-2.5px font-medium':
+      'px-6 py-4.5px font-medium':
         outline && size === 'base' && variant !== 'icon',
       'px-2.5 py-0.5 text-sm': size === 'sm' && variant !== 'icon',
       'px-1.5 py-0.5 text-xs': size === 'xs' && variant !== 'icon',
       'px-14 py-2 text-lg font-medium': size === 'lg' && variant !== 'icon',
       'text-lightText bg-primary hover:bg-primary-dark shadow-btn':
         !outline && variant === 'primary',
+      'text-lightText bg-secondary hover:bg-secondary-dark shadow-btn':
+        !outline && variant === 'secondary',
       'text-danger-dark bg-danger shadow-btn': !outline && variant === 'danger',
       'text-danger-dark border-danger-dark bg-white border':
         outline && variant === 'danger',
@@ -108,9 +112,9 @@
         variant === 'success-borderless',
       'text-lg font-bold text-success hover:bg-light px-6':
         variant === 'success-borderless',
-      'border-gray-300 bg-white hover:bg-primary hover:bg-opacity-20 hover:text-primary-light transition-colors duration-100':
+      'border-gray-300 bg-white hover:bg-primary hover:bg-opacity-10 hover:text-primary transition-colors duration-100':
         variant === 'transparent',
-      'rounded-md': variant !== 'transparent',
+      rounded: variant !== 'transparent',
       'rounded-full bg-transparent hover:bg-gray-200 text-gray-600 icon-btn':
         variant === 'icon',
       'icon-btn icon-btn-sm': variant === 'icon' && size === 'sm',
@@ -157,6 +161,7 @@ export default defineComponent({
     variant: {
       type: String as PropType<
         | "primary"
+        | "secondary"
         | "danger"
         | "success"
         | "dark"

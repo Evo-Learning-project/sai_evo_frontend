@@ -42,13 +42,13 @@
       >
         <span class="material-icons-outlined"> cancel </span>
       </div>
-      <div class="fixed h-full px-2" style="width: inherit">
-        <div class="flex items-center w-full px-8 mt-4">
+      <div class="fixed h-full pr-2" style="width: inherit">
+        <div class="flex items-center w-full pl-10 pr-8 mt-4">
           <img class="w-36" src="../../../public/unipi-logo.svg" />
         </div>
         <div
           v-if="$store.getters['shared/isAuthenticated']"
-          class="flex items-center justify-center w-full mx-auto mt-8 mb-4 space-x-1 text-sm  text-light"
+          class="flex items-center justify-center w-full pl-2 mx-auto mt-8 mb-4 space-x-1 text-sm  text-light"
         >
           <p>{{ $store.getters["shared/email"] }}</p>
           <Btn @click="logOut()" :variant="'icon'" :outline="true"
@@ -59,7 +59,7 @@
         </div>
         <ul class="flex flex-col w-full h-full mt-6">
           <router-link
-            class="relative my-1 overflow-hidden rounded-md"
+            class="relative my-1 overflow-hidden rounded-r-full"
             @mousedown="onRouteMouseDown"
             v-for="(option, index) in allowedSidebarOptions"
             :key="'sidebar-' + option.label"
@@ -76,10 +76,10 @@
                 justify-between
                 w-max
                 md:w-full
-                px-3
-                md:px-2
+                px-4
+                md:pr-2 md:pl-4
                 py-2.5
-                rounded-md
+                rounded-r-full
                 cursor-pointer
                 hover:transition-colors
                 text-lightText
