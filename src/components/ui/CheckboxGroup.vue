@@ -1,9 +1,11 @@
 <template>
   <div>
     <label
-      :class="'relative checkbox-container flex space-x-1.5 items-start ' +
-        optionClass
-      "
+      :class="[
+        disabled ? '' : 'checkbox-container',
+        'relative  flex space-x-1.5 items-start ',
+        optionClass,
+      ]"
       v-for="(option, index) in options"
       :key="id + '-option-' + index"
       :for="id + '-option-' + index"
@@ -12,7 +14,9 @@
       <div class="flex flex-col w-full">
         <div class="flex w-full">
           <div
-            v-wave="{ trigger: 'checkbox', color: '#666ad1' }"
+            v-wave="
+              disabled ? false : { trigger: 'checkbox', color: '#666ad1' }
+            "
             class="absolute w-12 h-12 transition-all duration-100 ease-in-out rounded-full  bg-opacity-10 bg-primary checkbox-shadow"
           ></div>
           <input
