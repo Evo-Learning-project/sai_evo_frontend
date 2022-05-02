@@ -7,7 +7,11 @@ import axios from "axios";
 import VueAxios from "vue-axios";
 import { i18n } from "./i18n";
 //import GAuth from './src/plugins/vue3-google-oauth2'; //'vue3-google-oauth2';
-import GAuth from "vue3-google-oauth2";
+//import GAuth from "vue3-google-oauth2";
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+import GAuth from "./plugins/vue-google-oauth2"; //'vue3-google-oauth2';
+
 import "./index.css";
 import VueClipboard from "vue3-clipboard";
 

@@ -6,17 +6,34 @@
         SAI Evolution
       </h1>
       <div
-        class="py-12 my-auto text-center rounded md:mx-36 shadow-elevation-2"
+        class="pb-12 mx-auto my-auto text-center rounded  bg-gray-50 pt-11 px-52 w-max login-card"
       >
-        <h1 class="mx-auto text-4xl text-center text-primary">
+        <h1 class="mx-auto mb-12 text-4xl text-center">
           {{ $t("headings.login") }}
         </h1>
-        <div class="mx-auto space-x-1.5 banner lg:w-max">
+        <div
+          style="width: 150px; height: 150px"
+          class="mx-auto bg-opacity-100 rounded-full  bg-secondary shadow-elevation-2"
+        >
+          <!-- <span class="text-gray-300 text-8xl material-symbols-outlined">
+            account_circle
+          </span> -->
+          <span
+            style="font-size: 145px"
+            class="opacity-100 material-icons text-light"
+          >
+            person
+          </span>
+        </div>
+        <div
+          v-if="googleOauthHadError"
+          class="-mx-48 space-x-1.5 banner banner-danger mt-6"
+        >
           <div
             style="width: 30px; height: 30px"
-            class="pl-1 pt-0.5 rounded-full bg-primary-light bg-opacity-20"
+            class="pl-1 pt-0.5 rounded-full bg-danger bg-opacity-50"
           >
-            <span class="mr-2 text-primary">
+            <span class="mr-2 opacity-100 text-danger-dark">
               <svg style="width: 22px; height: 22px" viewBox="0 0 24 24">
                 <path
                   fill="currentColor"
@@ -26,7 +43,7 @@
             </span>
           </div>
           <p class="">
-            <strong> {{ $t("login_screen.warning") }}:</strong>
+            <b> {{ $t("login_screen.warning") }}:</b>
             {{ $t("login_screen.cookies_warning") }}
           </p>
         </div>
@@ -41,7 +58,7 @@
               (!googleOauthReady && !googleOauthHadError) || localLoading
             "
           >
-            <span class="mr-3 material-icons-outlined">login</span>
+            <span class="mr-2 text-xl material-icons">lock</span>
             {{ $t("login_screen.login") }}
           </Btn>
         </div>
@@ -116,3 +133,10 @@ export default defineComponent({
   },
 });
 </script>
+
+<style>
+.login-card {
+  box-shadow: rgba(60, 64, 67, 0.3) 0 4px 4px 0,
+    rgba(60, 64, 67, 0.15) 0 8px 12px 6px;
+}
+</style>
