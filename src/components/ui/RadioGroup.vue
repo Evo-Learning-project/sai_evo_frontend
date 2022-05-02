@@ -1,14 +1,31 @@
 <template>
   <div class="relative">
-    <label class="absolute top-2 left-1.5 origin-0 fixed-label"><slot></slot></label>
+    <label class="absolute top-2 left-1.5 origin-0 fixed-label"
+      ><slot></slot
+    ></label>
 
     <div class="w-full">
       <label
         :for="id + '-input-' + index"
-        class="flex my-0.5 max-h-screen space-x-1.5 overflow-y-hidden cursor-pointer items-top"
+        class="
+          relative
+          flex
+          my-0.5
+          max-h-screen
+          space-x-1.5
+          cursor-pointer
+          items-top
+          radio-container
+        "
         v-for="(option, index) in options"
         :key="id + '-option-' + index"
+        v-wave-trigger:radio
       >
+        <div
+          v-wave="{ trigger: 'radio', color: '#666ad1' }"
+          class="absolute w-12 h-12 transition-all duration-100 ease-in-out rounded-full  bg-opacity-10 bg-primary radio-shadow"
+        ></div>
+
         <input
           @input="onInput(option.value, $event)"
           style="min-width: 15px; min-height: 15px"
@@ -19,15 +36,15 @@
           :checked="option.value == modelValue"
           :disabled="disabled"
         />
+
         <div class="flex space-x-2 items-top">
-          <multi-icon v-if="option.icons" class="w-6" :icons="option.icons"></multi-icon>
+          <MultiIcon
+            v-if="option.icons"
+            class="w-6"
+            :icons="option.icons"
+          ></MultiIcon>
           <div class="flex flex-col">
             <p class="" v-html="option.content"></p>
-            <!-- <p
-              class="mb-2 text-sm text-muted"
-              v-if="(option.description?.length ?? 0) > 0"
-              v-html="option.description"
-            ></p> -->
             <slot name="item" v-bind:description="option.description"></slot>
           </div>
         </div>
@@ -59,7 +76,7 @@ export default defineComponent({
   methods: {
     onInput(value: string, inputEvent: Event) {
       // eslint-disable-next-line @typescript-eslint/no-extra-semi
-      ((inputEvent.target as unknown) as { checked: boolean }).checked = false;
+      (inputEvent.target as unknown as { checked: boolean }).checked = false;
       inputEvent.preventDefault();
       this.$emit("update:modelValue", value);
     },
@@ -67,4 +84,13 @@ export default defineComponent({
 });
 </script>
 
-<style></style>
+<style scoped>
+.radio-container:hover .radio-shadow {
+  opacity: 100%;
+}
+.radio-shadow {
+  top: -11px;
+  left: -10.5px;
+  opacity: 0;
+}
+</style>

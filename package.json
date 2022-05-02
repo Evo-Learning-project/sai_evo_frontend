@@ -31,6 +31,7 @@
     "simple-syntax-highlighter": "^2.2.0",
     "tailwindcss-ripple": "^0.7.1",
     "uuid": "^8.3.2",
+    "v-wave": "^1.4.0",
     "vue": "^3.2.22",
     "vue-axios": "^3.4.0",
     "vue-class-component": "^8.0.0-rc.1",

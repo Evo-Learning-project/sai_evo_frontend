@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex flex-col overflow-x-hidden  md:min-h-21rem lg:overflow-x-visible card card-border card-hoverable hover-shadow-elevation hover:border-transparent"
+    class="flex flex-col px-8 overflow-x-hidden  md:min-h-21rem lg:overflow-x-visible card card-border card-hoverable hover-shadow-elevation hover:border-transparent"
   >
     <div
       style="margin-left: -21px; margin-right: -21px; margin-top: -21px"
@@ -9,9 +9,9 @@
         items-start
         md:px-1.25px
         px-0.5
-        bg-primary-light bg-opacity-20
+        bg-primary-light bg-opacity-0
         -mt-5
-        py-3
+        py-6
         rounded-t
       "
     >
@@ -26,7 +26,7 @@
         "
         >book</span
       >
-      <h3 style="margin-top: 1.5px" class="mb-0 pr-4.5 text-primary">
+      <h3 style="margin-top: 1.5px" class="mb-0 pr-4.5">
         {{ course.name }}
       </h3>
       <Tooltip
@@ -43,7 +43,7 @@
         </span>
       </Tooltip>
     </div>
-    <div class="mt-5">
+    <div class="mt-1 -ml-1">
       <div class="flex items-center px-1 mb-1 space-x-1 text-sm">
         <div class="flex items-center space-x-0.5 text-muted">
           <span class="my-auto text-xl material-icons-outlined">person</span>
@@ -51,13 +51,15 @@
         </div>
         <p>{{ course.creator?.full_name }}</p>
       </div>
-      <p class="text-muted px-1.5 mt-4 mb-4" v-html="course.description"></p>
+      <p
+        style="line-height: 1.2rem; font-weight: 400; opacity: 0.8"
+        class="px-1.5 mt-4 mb-8 text-sm"
+        v-html="course.description"
+      ></p>
     </div>
-    <div
-      class="flex flex-col px-2 mt-auto space-y-2  lg:flex-row lg:space-y-0 lg:space-x-2"
-    >
+    <div class="flex flex-col items-center mt-auto space-y-2">
       <router-link
-        class="w-full lg:-ml-1"
+        class="w-full"
         :to="{
           name: 'StudentCourseDashboard',
           params: { courseId: course.id },
@@ -78,7 +80,7 @@
           params: { courseId: course.id },
         }"
         ><Btn :outline="true" class="w-full">
-          <span class="mr-1 text-base material-icons-two-tone two-tone-primary">
+          <span class="mr-1 text-lg material-icons-two-tone two-tone-primary">
             shield
           </span>
           <span class="">{{ $t("courses.course_panel") }}</span>

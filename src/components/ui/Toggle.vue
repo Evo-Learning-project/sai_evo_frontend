@@ -6,10 +6,12 @@
     }"
   >
     <div
+      v-wave-trigger:toggleCheckbox
       :class="{ 'order-12 ml-2': labelOnLeft }"
-      class="relative inline-block w-10 h-4 mt-1 mr-2 align-middle transition duration-200 ease-in bg-transparent rounded-full select-none "
+      class="relative inline-block w-10 h-4 mt-1 mr-2 align-middle transition duration-200 ease-in bg-transparent rounded-full select-none  toggle-container"
     >
       <input
+        style="z-index: 3"
         type="checkbox"
         name="toggle"
         :value="value"
@@ -29,14 +31,19 @@
           toggle-handle
           appearance-none
           cursor-pointer
-          hover:ring-8
+          hover:ring-0
           ring-secondary
           active:ring-opacity-40
           ring-opacity-20
           toggle-checkbox
         "
       />
+      <div
+        v-wave="{ trigger: 'toggleCheckbox', color: '#666ad1' }"
+        class="absolute w-12 h-12 transition-all duration-100 ease-in-out rounded-full  bg-opacity-10 bg-primary toggle-shadow -top-4"
+      ></div>
       <label
+        style="z-index: 4"
         :for="overrideId || id"
         :class="[proxyModelValue ? 'text-light' : 'text-gray-600']"
         class="absolute text-lg font-semibold transform translate-y-1/2  toggle-mark opacity-70 material-icons-outlined bottom-1/2"
@@ -44,8 +51,9 @@
       >
 
       <label
+        style="z-index: 2"
         :for="overrideId || id"
-        class="block overflow-hidden bg-gray-400 rounded-full cursor-pointer  toggle-rail toggle-label"
+        class="relative block overflow-hidden bg-gray-400 rounded-full cursor-pointer  toggle-rail toggle-label"
       ></label>
     </div>
     <label :for="id" v-if="$slots.default">
@@ -98,11 +106,11 @@ export default defineComponent({
 });
 </script>
 
-<style>
+<style scoped>
 /* FIXME review shadow */
 .toggle-handle {
   box-shadow: 0px 1px 3px 0px rgb(0 0 0 / 20%), 0px 1px 1px 0px rgb(0 0 0 / 14%),
-    0px 1px 3px 0px rgb(0 0 0 / 12%);
+    0px 1px 3px 0px rgb(0 0 0 / 12%) !important;
   top: -0.25em;
   width: 22px;
   height: 22px;
@@ -126,6 +134,20 @@ export default defineComponent({
 
 .toggle-checkbox:checked ~ .toggle-mark {
   left: 50%;
+}
+
+.toggle-checkbox ~ .toggle-shadow {
+  left: -36%;
+}
+.toggle-checkbox:checked ~ .toggle-shadow {
+  left: 18%;
+}
+
+.toggle-container:hover .toggle-shadow {
+  opacity: 100%;
+}
+.toggle-shadow {
+  opacity: 0;
 }
 
 .toggle-checkbox:checked ~ .toggle-mark::after {

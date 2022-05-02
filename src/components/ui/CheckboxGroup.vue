@@ -1,13 +1,20 @@
 <template>
   <div>
     <label
-      :class="'flex space-x-1.5 items-start ' + optionClass"
+      :class="'relative checkbox-container flex space-x-1.5 items-start ' +
+        optionClass
+      "
       v-for="(option, index) in options"
       :key="id + '-option-' + index"
       :for="id + '-option-' + index"
+      v-wave-trigger:checkbox
     >
       <div class="flex flex-col w-full">
         <div class="flex w-full">
+          <div
+            v-wave="{ trigger: 'checkbox', color: '#666ad1' }"
+            class="absolute w-12 h-12 transition-all duration-100 ease-in-out rounded-full  bg-opacity-10 bg-primary checkbox-shadow"
+          ></div>
           <input
             v-if="!useToggles"
             :disabled="disabled"
@@ -85,7 +92,9 @@ export default defineComponent({
         this.proxyModelValue = [...this.proxyModelValue, option.value];
       } else {
         // deselection
-        this.proxyModelValue = this.proxyModelValue.filter((v) => v !== option.value);
+        this.proxyModelValue = this.proxyModelValue.filter(
+          (v) => v !== option.value
+        );
       }
     },
   },
@@ -102,4 +111,13 @@ export default defineComponent({
 });
 </script>
 
-<style></style>
+<style scoped>
+.checkbox-container:hover .checkbox-shadow {
+  opacity: 100%;
+}
+.checkbox-shadow {
+  top: -12.5px;
+  left: -17px;
+  opacity: 0;
+}
+</style>

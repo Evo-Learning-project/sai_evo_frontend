@@ -11,9 +11,9 @@
     >
       <template v-slot:header>
         <div class="relative">
-          <div class="flex flex-wrap items-center">
+          <div class="flex items-center">
             <h5
-              class="mb-1 mr-1"
+              class="mr-2"
               :class="{
                 'text-muted font-semibold': exercise.label?.length === 0,
               }"
@@ -21,8 +21,16 @@
               {{ previewTitle }}
             </h5>
             <div
+              :title="$t('exercise_states.' + exercise.state)"
+              class="my-auto cursor-default chip chip-sm"
+            >
+              <div class="flex items-center">
+                <MultiIcon class="w-6" :icons="exerciseStateIcons"></MultiIcon>
+              </div>
+            </div>
+            <div
               v-if="true || showTags"
-              class="flex mb-1 overflow-x-auto faded-slideshow"
+              class="flex overflow-x-auto faded-slideshow"
             >
               <Tag
                 class="mr-1"
@@ -32,14 +40,6 @@
                 :tag="tag"
                 :small="true"
               ></Tag>
-            </div>
-            <div
-              :title="$t('exercise_states.' + exercise.state)"
-              class="my-auto mb-1 cursor-default chip chip-sm"
-            >
-              <div class="flex items-center">
-                <MultiIcon class="w-6" :icons="exerciseStateIcons"></MultiIcon>
-              </div>
             </div>
             <!--<div
               :title="$t('exercise_types.' + exercise.exercise_type)"
@@ -66,7 +66,7 @@
             v-html="previewText"
           ></div>
         </div>
-        <div class="flex items-center">
+        <div class="flex items-center -my-3">
           <Btn
             class="ml-auto"
             v-if="previewable"
@@ -116,62 +116,6 @@
           </div>
         </div>
       </template>
-
-      <!--<template v-slot:side>
-        <div class="flex flex-col items-end h-full space-y-5">
-          <Btn
-            class="flex-grow"
-            :size="'sm'"
-            v-if="previewable"
-            :variant="'icon'"
-            @click="showPreview = true"
-            ><span class="text-base material-icons-outlined">
-              open_in_full
-            </span>
-          </Btn>
-          <router-link
-            class="mt-auto"
-            v-if="showEdit"
-            :to="{ name: 'CourseExercises', hash: '#editor-' + exercise.id }"
-            ><Btn
-              :size="'xs'"
-              :variant="'primary-borderless'"
-              @click="showPreview = true"
-              ><span class="text-base material-icons-outlined"> edit </span>
-            </Btn></router-link
-          >
-          <div class="mt-auto" v-if="selectable">
-            <Btn
-              v-if="(selectButtonTitle?.length ?? 0) === 0"
-              :size="'sm'"
-              :variant="'icon'"
-              :forceActive="highlighted"
-              :disabled="selectionDisabled"
-              @click="onSelection()"
-              class=" text-success focus:bg-success active:bg-success hover:bg-success focus:bg-opacity-20 hover:bg-opacity-20"
-              ><span class="text-base material-icons-outlined">
-                done
-              </span></Btn
-            >
-            <Tooltip
-              v-else
-              :textValue="selectButtonTitle"
-              :placement="'bottom'"
-            >
-              <Btn
-                :size="'xs'"
-                :variant="'success-borderless'"
-                :forceActive="highlighted"
-                :disabled="selectionDisabled"
-                @click="onSelection()"
-                ><span class="text-base material-icons-outlined">
-                  done
-                </span></Btn
-              >
-            </Tooltip>
-          </div>
-        </div>
-      </template>-->
     </Card>
     <Dialog
       :showDialog="showPreview"

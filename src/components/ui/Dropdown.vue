@@ -12,6 +12,7 @@
     >
       <div class="w-full">
         <label
+          v-wave
           :for="id + '-input-' + index"
           :class="{
             'mt-1': index === 0 && expanded,
@@ -138,14 +139,14 @@ export default defineComponent({
       }
     },
     onMouseDown(event: any) {
-      if (this.expanded) {
-        rippleEffect(event, "ripple-gray");
-      }
+      // if (this.expanded) {
+      //   rippleEffect(event, "ripple-gray");
+      // }
     },
     onOuterMouseDown(event: any) {
-      if (!this.expanded) {
-        rippleEffect(event, "ripple-gray");
-      }
+      // if (!this.expanded) {
+      //   rippleEffect(event, "ripple-gray");
+      // }
     },
   },
 });

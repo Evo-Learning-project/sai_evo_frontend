@@ -59,6 +59,9 @@
         </div>
         <ul class="flex flex-col w-full h-full mt-6">
           <router-link
+            v-wave="{
+              color: '#a255ff',
+            }"
             class="relative my-1 overflow-hidden rounded-r-full"
             @mousedown="onRouteMouseDown"
             v-for="(option, index) in allowedSidebarOptions"
@@ -256,7 +259,7 @@ export default defineComponent({
     logOut,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onRouteMouseDown(event: any) {
-      rippleEffect(event, "ripple-light");
+      //rippleEffect(event, "ripple-light");
     },
     isRouteActive(option: SidebarOption) {
       return (

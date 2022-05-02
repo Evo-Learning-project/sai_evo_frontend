@@ -32,15 +32,8 @@
           <Card
             :hoverable="false"
             :margin-less="true"
-            class="
-              relative
-              overflow-hidden
-              text-gray-600
-              shadow-lg
-              cursor-pointer
-              h-44
-              bg-light
-            "
+            class="relative overflow-hidden text-gray-600 shadow-lg cursor-pointer  h-44 bg-light"
+            v-wave
             @mousedown="onCardMouseDown"
             @click="
               onResumePractice(currentCourse.unstarted_practice_events[0])
@@ -54,13 +47,7 @@
             <template v-slot:body>
               <div class="flex">
                 <h1
-                  class="
-                    mx-auto
-                    mt-1
-                    text-5xl
-                    opacity-70
-                    material-icons-outlined
-                  "
+                  class="mx-auto mt-1 text-5xl  opacity-70 material-icons-outlined"
                 >
                   redo
                 </h1>
@@ -72,15 +59,8 @@
           v-else
           :margin-less="true"
           :hoverable="false"
-          class="
-            relative
-            overflow-hidden
-            text-gray-600
-            shadow-lg
-            cursor-pointer
-            h-44
-            bg-light
-          "
+          class="relative overflow-hidden text-gray-600 shadow-lg cursor-pointer  h-44 bg-light"
+          v-wave
           @mousedown="onCardMouseDown"
           @click="onCreatePractice()"
         >
@@ -92,13 +72,7 @@
           <template v-slot:body>
             <div class="flex">
               <h1
-                class="
-                  mx-auto
-                  -mt-1
-                  text-5xl
-                  opacity-70
-                  material-icons-outlined
-                "
+                class="mx-auto -mt-1 text-5xl  opacity-70 material-icons-outlined"
               >
                 add
               </h1>
@@ -188,7 +162,7 @@ export default defineComponent({
     ...mapActions("student", ["createEvent"]),
     ...mapMutations("student", ["setEditingEvent"]),
     onCardMouseDown(event: any) {
-      rippleEffect(event, "ripple-gray");
+      //rippleEffect(event, "ripple-gray");
     },
     onBeginPractice(event: Event) {
       this.setEditingEvent(null);

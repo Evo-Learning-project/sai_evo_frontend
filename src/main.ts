@@ -19,6 +19,8 @@ import { BrowserTracing } from "@sentry/tracing";
 import "vue3-tour/dist/vue3-tour.css";
 import { logOut } from "./utils";
 
+import VWave from "v-wave";
+
 const gAuthOptions = {
   clientId:
     "956826904172-mcsaj1bqcllv93bpad7dmd0e3oil4758.apps.googleusercontent.com",
@@ -53,6 +55,9 @@ axios.interceptors.response.use(
 const app = createApp(App);
 
 app
+  .use(VWave, {
+    duration: 0.3,
+  })
   .use(GAuth, gAuthOptions)
   .use(store)
   .use(router)

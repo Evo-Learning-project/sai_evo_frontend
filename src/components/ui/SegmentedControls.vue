@@ -6,6 +6,7 @@
 
     <div class="flex w-full">
       <label
+        v-wave
         @mousedown="onMouseDown"
         :for="id + '-input-' + index"
         class="
@@ -90,7 +91,7 @@ export default defineComponent({
   },
   methods: {
     onMouseDown(event: any) {
-      rippleEffect(event, "ripple-primary");
+      // rippleEffect(event, "ripple-primary");
     },
     onInput(value: string, inputEvent: Event) {
       // eslint-disable-next-line @typescript-eslint/no-extra-semi

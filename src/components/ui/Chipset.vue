@@ -7,6 +7,7 @@
       :class="{
         'chip-primary': modelValue.includes(option.value),
       }"
+      v-wave
     >
       <!-- ring-primary ring-2 text-primary font-semibold -->
       <input

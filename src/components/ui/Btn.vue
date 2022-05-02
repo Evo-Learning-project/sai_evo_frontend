@@ -6,6 +6,7 @@
     :textValue="tooltip"
   >
     <button
+      v-wave
       @mousedown="onMouseDown"
       :disabled="disabled || loading"
       class="relative overflow-hidden  disabled:cursor-not-allowed disabled:opacity-70"
@@ -76,6 +77,7 @@
   </Tooltip>
   <button
     v-else
+    v-wave
     @mousedown="onMouseDown"
     :disabled="disabled || loading"
     class="relative overflow-hidden  disabled:cursor-not-allowed disabled:opacity-70"
@@ -200,7 +202,7 @@ export default defineComponent({
   methods: {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onMouseDown(event: any) {
-      rippleEffect(event, this.rippleClass);
+      //rippleEffect(event, this.rippleClass);
     },
   },
   computed: {
