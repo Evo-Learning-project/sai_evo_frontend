@@ -76,6 +76,7 @@ import Spinner from "@/components/ui/Spinner.vue";
 import { defineComponent } from "@vue/runtime-core";
 import { loadingMixin } from "@/mixins";
 import { redirectToMainView } from "@/utils";
+import { getTranslatedString } from "@/i18n";
 
 export default defineComponent({
   name: "Login",
@@ -105,6 +106,10 @@ export default defineComponent({
           await this.$store.dispatch("shared/convertToken", token);
           await this.$store.dispatch("shared/getUserData");
           this.redirectToMainView();
+          this.setErrorNotification(
+            getTranslatedString("misc.logged_in"),
+            true
+          );
         });
       } catch (error) {
         throw error;

@@ -367,7 +367,9 @@
       @apply border-0 text-gray-600 bg-gray-200
     }
 
-    .material-icons-outlined {
+    .material-icons-outlined,
+    .material-icons,
+    .material-icons-two-tone {
       @apply select-none
     }
 

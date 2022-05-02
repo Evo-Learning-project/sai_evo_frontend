@@ -178,6 +178,8 @@ export const it = {
       "L'inserimento del numero di matricola e la selezione del corso sono necessari per poter partecipare agli esami. Fallo ora e non pensarci più!",
   },
   misc: {
+    logged_in: "Login effettuato con successo",
+    logged_out: "Logout effettuato con successo",
     select: "Seleziona",
     preview: "Anteprima",
     save_and_close: "Salva e chiudi",

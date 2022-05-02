@@ -1,3 +1,4 @@
+import { getTranslatedString } from "./i18n/index";
 import { Exercise } from "./models/interfaces";
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import debounce from "lodash/debounce";
@@ -24,6 +25,7 @@ export const logOut = (): void => {
   router.push({
     name: "Login",
   });
+  setErrorNotification(getTranslatedString("misc.logged_out"), true);
 };
 
 export const redirectToMainView = (): void => {
