@@ -59,7 +59,7 @@ module.exports = {
       outline: {
         primary: ["1.5px solid #4338CA", "1.75px"],
         danger: ["1.5px solid #F87171", "1.75px"],
-        success: ["1.5px solid #047857", "1.75px"],
+        success: ["1.5px solid #10B981", "0px"],
       },
       colors: {
         lightText: "#FFFFFF",

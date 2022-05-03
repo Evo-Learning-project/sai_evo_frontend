@@ -58,7 +58,7 @@
         </p>
         <div>
           <div
-            v-if="!localLoading"
+            v-if="!loadingPreview"
             :class="[
               ruleExercises.length > 1 ? 'grid md:grid-cols-2 gap-2' : '',
             ]"
@@ -68,6 +68,13 @@
               :key="'r-' + modelValue.id + '-e-' + exercise.id"
               :exercise="exercise"
               :selectable="false"
+              :showEdit="false"
+              @edit="
+                $router.push({
+                  name: 'CourseExercises',
+                  hash: '#editor-' + exercise.id,
+                })
+              "
             ></MinimalExercisePreview>
           </div>
           <div v-else class="grid grid-cols-2 gap-2">
@@ -322,18 +329,23 @@ export default defineComponent({
   // },
   mixins: [courseIdMixin, loadingMixin],
   async created() {
-    await this.withLocalLoading(async () => {
-      if (
-        this.modelValue.rule_type == EventTemplateRuleType.ID_BASED &&
-        (this.modelValue.exercises?.length ?? 0) > 0
-      ) {
+    if (
+      this.modelValue.rule_type == EventTemplateRuleType.ID_BASED &&
+      (this.modelValue.exercises?.length ?? 0) > 0
+    ) {
+      this.loadingPreview = true;
+      try {
         const previews = await getExercisesById(
           this.courseId,
           this.modelValue.exercises as string[]
         );
         this.previewExercises.push(...previews);
+      } catch (e) {
+        this.setErrorNotification(e);
+      } finally {
+        this.loadingPreview = false;
       }
-    });
+    }
   },
   data() {
     return {
@@ -341,6 +353,7 @@ export default defineComponent({
       pickOneExerciseOnly: null as boolean | null,
       previewExercises: [] as Exercise[],
       EventTemplateRuleType,
+      loadingPreview: false,
     };
   },
   methods: {

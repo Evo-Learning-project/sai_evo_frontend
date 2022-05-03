@@ -49,7 +49,6 @@
       :hoverable="false"
       :borderLess="subExercise"
       :filled="subExercise"
-      class=""
       :class="{
         'bg-gray-50': modelValue.state === ExerciseState.DRAFT,
         'mb-6': subExercise,
@@ -58,8 +57,8 @@
       }"
     >
       <template v-slot:header>
-        <div class="flex mb-8" v-if="!subExercise">
-          <h3 v-if="!subExercise">
+        <div style="padding-top: 1px" class="flex mb-8" v-if="!subExercise">
+          <h3 v-if="!subExercise" class="pt-2">
             {{ $t("exercise_editor.exercise_editor_title") }}
             <span
               v-if="modelValue.state === ExerciseState.DRAFT"
@@ -68,7 +67,7 @@
             >
           </h3>
           <CloudSaveStatus
-            class="my-auto ml-auto mr-8"
+            class="my-auto ml-auto mr-10"
             :saving="saving"
             :hadError="savingError"
           ></CloudSaveStatus>

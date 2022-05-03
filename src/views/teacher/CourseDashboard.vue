@@ -192,6 +192,12 @@
           :selectable="false"
           :hoverable="true"
           :showEdit="true"
+          @edit="
+            $router.push({
+              name: 'CourseExercises',
+              hash: '#editor-' + exercise.id,
+            })
+          "
         ></MinimalExercisePreview>
       </div>
       <div v-else class="grid grid-cols-1 gap-4 lg:grid-cols-2">

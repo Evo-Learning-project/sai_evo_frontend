@@ -42,7 +42,7 @@
     </template>
     <template v-slot:body
       ><div class="flex flex-col h-full">
-        <div class="mt-1 mb-4 space-y-1 text-sm">
+        <div class="mt-1 space-y-1 text-sm mb-7">
           <div class="flex space-x-1" v-if="event.begin_timestamp">
             <p class="text-muted">{{ $t("event_editor.begin_timestamp") }}:</p>
             <Timestamp

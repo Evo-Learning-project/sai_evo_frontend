@@ -1,12 +1,17 @@
 <template>
   <div class="relative my-4" :id="'editor-' + modelValue.id">
     <div style="z-index: 50" class="absolute top-0 right-0 mt-2.5 mr-1">
-      <Btn :size="'lg'" :variant="'icon'" @click="toggleExpand"
+      <Btn
+        :size="'lg'"
+        :variant="'icon'"
+        :tooltip="$t('misc.close')"
+        @click="toggleExpand"
+        v-show="showEditor"
         ><span
           class="transition-transform duration-200 ease-out transform  material-icons-outlined"
-          :class="{ 'rotate-180': showEditor }"
+          :class="{ 'rotate-180': false && showEditor }"
         >
-          expand_more
+          close
         </span></Btn
       >
     </div>
@@ -26,22 +31,15 @@
         </span></Btn
       >
     </div>
-    <div
-      class="transition-transform duration-200 transform"
-      :class="{ 'scale-0': false && showEditor }"
-    >
-      <ExercisePreview
-        v-show="!showEditor"
-        :exercise="modelValue"
-      ></ExercisePreview>
-    </div>
-    <!-- <div
-      class="transition-all duration-200 transform"
-      :class="{
-        '': !showEditor,
-        '': showEditor,
-      }"
-    > -->
+
+    <MinimalExercisePreview
+      :exercise="modelValue"
+      v-show="!showEditor"
+      :selectable="false"
+      @edit="toggleExpand()"
+      :showEdit="true"
+    ></MinimalExercisePreview>
+
     <ExerciseEditor
       :saving="saving"
       v-if="showEditor"
@@ -49,7 +47,6 @@
       @delete="$emit('delete')"
       @cloneExercise="onClone"
     ></ExerciseEditor>
-    <!-- </div> -->
   </div>
 </template>
 
@@ -57,18 +54,20 @@
 import Btn from "@/components/ui/Btn.vue";
 
 import ExerciseEditor from "@/components/teacher/ExerciseEditor/ExerciseEditor.vue";
-import ExercisePreview from "@/components/teacher/ExerciseEditor/ExercisePreview.vue";
+//import ExercisePreview from "@/components/teacher/ExerciseEditor/ExercisePreview.vue";
 import { Exercise } from "@/models";
 import { defineComponent, PropType } from "@vue/runtime-core";
 import { texMixin } from "@/mixins";
 import { getTranslatedString } from "@/i18n";
 import { getExerciseTitle } from "@/utils";
+import MinimalExercisePreview from "./MinimalExercisePreview.vue";
 export default defineComponent({
   name: "ExerciseEditorWrapper",
   components: {
     ExerciseEditor,
-    ExercisePreview,
+    // ExercisePreview,
     Btn,
+    MinimalExercisePreview,
   },
   mixins: [texMixin],
   props: {

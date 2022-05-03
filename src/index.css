@@ -269,7 +269,20 @@
 
     
     .card {
-      @apply px-2.5 py-5 md:px-5 rounded;
+      @apply px-4 py-4 rounded md:px-5;
+    }
+
+    .card h4 {
+      /* card title */
+     /* font-family: Roboto, sans-serif;*/
+      -moz-osx-font-smoothing: grayscale;
+      -webkit-font-smoothing: antialiased;
+      font-size: 1.2rem !important;
+      line-height: 2rem;
+      font-weight: 600;
+      letter-spacing: .011em;
+      text-decoration: inherit;
+      text-transform: inherit;
     }
 
     .card-hoverable {
@@ -465,7 +478,7 @@
     }
 
     .tooltip .tooltip-text {
-      @apply absolute z-50 text-sm w-max bg-dark text-lightText px-2 py-1.5 rounded-md transition-opacity duration-100 ease-in-out shadow-md bg-opacity-80 md:bg-opacity-60
+      @apply absolute z-50 text-sm w-max bg-dark text-lightText px-2 py-1.5 rounded-md transition-opacity duration-100 ease-in-out shadow-md bg-opacity-80 md:bg-opacity-80
     }
 
     .tooltip-text-force {

@@ -1,119 +1,134 @@
 <template>
   <div>
-    <Card
-      :size="'sm'"
-      :highlighted="highlighted"
-      :hoverable="hoverable"
+    <div
+      class="flex flex-col h-full card card-border"
       :class="{
-        'border-success': highlighted,
+        'card-hoverable hover:border-transparent hover-shadow-elevation':
+          hoverable,
+        'outline-success outline-4 border-transparent': highlighted,
         'bg-gray-50 opacity-60': selectionDisabled,
       }"
     >
-      <template v-slot:header>
-        <div class="relative">
-          <div class="flex items-center mb-2">
-            <h5
-              class="mr-2"
-              :class="{
-                'text-muted font-semibold': exercise.label?.length === 0,
-              }"
-            >
-              {{ previewTitle }}
-            </h5>
-            <Tooltip
-              :noArrow="true"
-              :placement="'bottom'"
-              :textValue="$t('exercise_states.' + exercise.state)"
-            >
-              <div class="my-auto cursor-default chip chip-sm">
-                <div class="flex items-center">
-                  <MultiIcon
-                    class="w-6"
-                    :icons="exerciseStateIcons"
-                  ></MultiIcon>
-                </div></div
-            ></Tooltip>
-          </div>
-          <div
-            v-if="true || showTags"
-            class="flex items-center overflow-x-auto faded-slideshow"
+      <div class="relative">
+        <div class="flex items-center mb-3">
+          <h4
+            class="mr-2"
+            :class="{
+              'text-muted font-semibold': exercise.label?.length === 0,
+            }"
           >
-            <Tag
-              class="mr-1"
-              :class="{ 'z-10': index === tags.length - 1 }"
-              v-for="(tag, index) in tags"
-              :key="elementId + '-tag-' + index"
-              :tag="tag"
-              :small="true"
-            ></Tag>
-          </div>
+            {{ previewTitle }}
+          </h4>
+          <Tooltip
+            :noArrow="true"
+            :placement="'bottom'"
+            :textValue="$t('exercise_states.' + exercise.state)"
+          >
+            <div class="my-auto cursor-default chip chip-sm">
+              <div class="flex items-center">
+                <MultiIcon class="w-6" :icons="exerciseStateIcons"></MultiIcon>
+              </div></div
+          ></Tooltip>
+          <Tooltip
+            :noArrow="true"
+            :placement="'bottom'"
+            :textValue="$t('exercise_types.' + exercise.exercise_type)"
+          >
+            <div class="my-auto cursor-default chip chip-sm">
+              <div class="flex items-center">
+                <MultiIcon
+                  class="w-6"
+                  :class="{
+                    'pl-0.5': [
+                      ExerciseType.MULTIPLE_CHOICE_MULTIPLE_POSSIBLE,
+                      ExerciseType.MULTIPLE_CHOICE_SINGLE_POSSIBLE,
+                      ExerciseType.AGGREGATED,
+                      ExerciseType.COMPLETION,
+                    ].includes(exercise.exercise_type),
+                    '-ml-1 mr-1': exercise.exercise_type === ExerciseType.JS,
+                  }"
+                  :icons="exerciseTypeIcons"
+                ></MultiIcon>
+              </div></div
+          ></Tooltip>
         </div>
-      </template>
-
-      <template v-slot:body>
-        <div class="relative overflow-y-hidden h-14">
-          <div
-            style="
-              display: -webkit-box;
-              -webkit-line-clamp: 2;
-              -webkit-box-orient: vertical;
-              overflow: hidden;
-            "
-            class="w-11/12 overflow-x-hidden overflow-ellipsis text-muted"
-            v-html="previewText"
-          ></div>
+        <div class="flex items-center mb-4 overflow-x-auto faded-slideshow">
+          <Tag
+            class="mr-1"
+            :class="{ 'z-10': index === tags.length - 1 }"
+            v-for="(tag, index) in tags"
+            :key="elementId + '-tag-' + index"
+            :tag="tag"
+            :small="true"
+          ></Tag>
         </div>
-        <div class="flex items-center -my-3">
+      </div>
+      <div class="relative -mb-2.5 overflow-y-hidden h-14">
+        <div
+          style="
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+          "
+          class="w-11/12 overflow-x-hidden overflow-ellipsis text-muted"
+          v-html="previewText"
+        ></div>
+      </div>
+      <div class="flex items-center mt-auto">
+        <Btn
+          class="ml-auto"
+          v-if="previewable"
+          :variant="'icon'"
+          :outline="true"
+          :tooltip="$t('misc.preview')"
+          @click="showPreview = true"
+          ><span class="text-2xl material-icons-outlined"> fullscreen </span>
+        </Btn>
+        <Btn
+          class="ml-1"
+          @click="$emit('edit')"
+          :outline="true"
+          :variant="'icon'"
+          v-if="showEdit"
+          :tooltip="$t('misc.edit')"
+        >
+          <span class="text-xl material-icons"> edit </span>
+        </Btn>
+        <!-- <router-link
+          class=""
+          :outline="true"
+          v-if="showEdit"
+          :to="{ name: 'CourseExercises', hash: '#editor-' + exercise.id }"
+          ><Btn :outline="true" :variant="'icon'" :tooltip="$t('misc.edit')">
+            <span class="text-lg material-icons"> edit </span>
+          </Btn></router-link
+        > -->
+        <div class="" v-if="selectable">
           <Btn
-            class="ml-auto"
-            v-if="previewable"
+            v-if="(selectButtonTitle?.length ?? 0) === 0"
             :variant="'icon'"
             :outline="true"
-            :tooltip="$t('misc.preview')"
-            @click="showPreview = true"
-            ><span class="text-xl material-icons-outlined"> fullscreen </span>
-          </Btn>
-          <router-link
-            class=""
-            :outline="true"
-            v-if="showEdit"
-            :to="{ name: 'CourseExercises', hash: '#editor-' + exercise.id }"
-            ><Btn :outline="true" :variant="'icon'" :tooltip="$t('misc.edit')">
-              <span class="text-lg material-icons"> edit </span>
-            </Btn></router-link
+            :tooltip="$t('misc.select')"
+            :forceActive="highlighted"
+            :disabled="selectionDisabled"
+            @click="onSelection()"
+            class="icon-btn-success"
+            ><span class="text-lg material-icons-outlined"> done </span></Btn
           >
-          <div class="" v-if="selectable">
+          <Tooltip v-else :textValue="selectButtonTitle" :placement="'bottom'">
             <Btn
-              v-if="(selectButtonTitle?.length ?? 0) === 0"
               :variant="'icon'"
               :outline="true"
-              :tooltip="$t('misc.select')"
               :forceActive="highlighted"
               :disabled="selectionDisabled"
               @click="onSelection()"
-              class="icon-btn-success"
               ><span class="text-lg material-icons-outlined"> done </span></Btn
             >
-            <Tooltip
-              v-else
-              :textValue="selectButtonTitle"
-              :placement="'bottom'"
-            >
-              <Btn
-                :variant="'icon'"
-                :outline="true"
-                :forceActive="highlighted"
-                :disabled="selectionDisabled"
-                @click="onSelection()"
-                ><span class="text-lg material-icons-outlined">
-                  done
-                </span></Btn
-              >
-            </Tooltip>
-          </div>
+          </Tooltip>
         </div>
-      </template>
-    </Card>
+      </div>
+    </div>
     <Dialog
       :showDialog="showPreview"
       @yes="showPreview = false"
@@ -133,7 +148,6 @@
 import { getTranslatedString as _ } from "@/i18n";
 import { v4 as uuid4 } from "uuid";
 
-import Card from "@/components/ui/Card.vue";
 import { Exercise, ExerciseState, ExerciseType } from "@/models";
 import { defineComponent, PropType } from "@vue/runtime-core";
 import Tag from "@/components/ui/Tag.vue";
@@ -173,6 +187,10 @@ export default defineComponent({
       type: String,
       default: "",
     },
+    expandable: {
+      type: Boolean,
+      default: false,
+    },
     showTags: {
       type: Boolean,
       default: false,
@@ -188,7 +206,6 @@ export default defineComponent({
   },
   mixins: [texMixin],
   components: {
-    Card,
     Tag,
     MultiIcon,
     Btn,
@@ -211,6 +228,7 @@ export default defineComponent({
     return {
       elementId: "",
       showPreview: false,
+      ExerciseType,
     };
   },
   methods: {

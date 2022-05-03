@@ -154,6 +154,7 @@ export default defineComponent({
   mounted() {
     setTimeout(() => {
       if (this.$route.hash) {
+        // TODO refactor and also handle possibility of editing exercises that are not in view
         const expandId = this.$route.hash.split(/#editor-(.*)/)[1];
         const editorRef = this.$refs[
           "course-" + this.courseId + "-exercise-" + expandId
