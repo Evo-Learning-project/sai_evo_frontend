@@ -11,7 +11,7 @@
     >
       <template v-slot:header>
         <div class="relative">
-          <div class="flex items-center">
+          <div class="flex items-center mb-2">
             <h5
               class="mr-2"
               :class="{
@@ -20,35 +20,32 @@
             >
               {{ previewTitle }}
             </h5>
-            <div
-              :title="$t('exercise_states.' + exercise.state)"
-              class="my-auto cursor-default chip chip-sm"
+            <Tooltip
+              :noArrow="true"
+              :placement="'bottom'"
+              :textValue="$t('exercise_states.' + exercise.state)"
             >
-              <div class="flex items-center">
-                <MultiIcon class="w-6" :icons="exerciseStateIcons"></MultiIcon>
-              </div>
-            </div>
-            <div
-              v-if="true || showTags"
-              class="flex overflow-x-auto faded-slideshow"
-            >
-              <Tag
-                class="mr-1"
-                :class="{ 'z-10': index === tags.length - 1 }"
-                v-for="(tag, index) in tags"
-                :key="elementId + '-tag-' + index"
-                :tag="tag"
-                :small="true"
-              ></Tag>
-            </div>
-            <!--<div
-              :title="$t('exercise_types.' + exercise.exercise_type)"
-              class="my-auto cursor-default chip chip-sm"
-            >
-              <div class="flex items-center">
-                <MultiIcon class="w-6" :icons="exerciseTypeIcons"></MultiIcon>
-              </div>
-            </div>-->
+              <div class="my-auto cursor-default chip chip-sm">
+                <div class="flex items-center">
+                  <MultiIcon
+                    class="w-6"
+                    :icons="exerciseStateIcons"
+                  ></MultiIcon>
+                </div></div
+            ></Tooltip>
+          </div>
+          <div
+            v-if="true || showTags"
+            class="flex items-center overflow-x-auto faded-slideshow"
+          >
+            <Tag
+              class="mr-1"
+              :class="{ 'z-10': index === tags.length - 1 }"
+              v-for="(tag, index) in tags"
+              :key="elementId + '-tag-' + index"
+              :tag="tag"
+              :small="true"
+            ></Tag>
           </div>
         </div>
       </template>
@@ -81,7 +78,7 @@
             :outline="true"
             v-if="showEdit"
             :to="{ name: 'CourseExercises', hash: '#editor-' + exercise.id }"
-            ><Btn :outline="true" :variant="'icon'">
+            ><Btn :outline="true" :variant="'icon'" :tooltip="$t('misc.edit')">
               <span class="text-lg material-icons"> edit </span>
             </Btn></router-link
           >

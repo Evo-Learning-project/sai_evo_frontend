@@ -115,7 +115,7 @@ export default defineComponent({
 });
 </script>
 
-<style scoped>
+<style>
 .checkbox-container:hover .checkbox-shadow {
   opacity: 100%;
 }

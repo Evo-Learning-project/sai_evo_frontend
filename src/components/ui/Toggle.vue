@@ -106,7 +106,7 @@ export default defineComponent({
 });
 </script>
 
-<style scoped>
+<style>
 /* FIXME review shadow */
 .toggle-handle {
   box-shadow: 0px 1px 3px 0px rgb(0 0 0 / 20%), 0px 1px 1px 0px rgb(0 0 0 / 14%),

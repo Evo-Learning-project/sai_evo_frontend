@@ -1,34 +1,36 @@
 <template>
   <Card :marginLess="true" :filled="exercise.state === ExerciseState.DRAFT">
     <template v-slot:header>
-      <div class="flex flex-wrap md:items-center">
+      <div class="flex flex-col mb-2 md:items-center md:flex-row">
         <h4
-          class="order-1 mr-2"
+          class="mr-2"
           :class="{ 'text-muted font-semibold': exercise.label?.length === 0 }"
         >
           {{ previewTitle }}
         </h4>
         <div
-          class="flex flex-wrap order-3 mt-1 space-x-1  md:mr-2 md:mt-0 md:order-2"
+          class="relative flex flex-wrap items-center pr-8 overflow-x-auto overflow-y-hidden  faded-slideshow"
         >
-          <Tag
-            v-for="(tag, index) in tags"
-            :key="elementId + '-tag-' + index"
-            :tag="tag"
-          ></Tag>
-        </div>
-        <div class="order-2 my-auto md:order-3 chip">
-          <div class="flex items-center">
-            <MultiIcon class="w-6" :icons="exerciseStateIcons"></MultiIcon>
-            <p v-html="$t('exercise_states.' + exercise.state)"></p>
+          <div class="my-auto chip">
+            <div class="flex items-center">
+              <MultiIcon class="w-6" :icons="exerciseStateIcons"></MultiIcon>
+              <p v-html="$t('exercise_states.' + exercise.state)"></p>
+            </div>
+          </div>
+          <div class="my-auto chip">
+            <div class="flex items-center">
+              <MultiIcon class="w-6" :icons="exerciseTypeIcons"></MultiIcon>
+              <p v-html="$t('exercise_types.' + exercise.exercise_type)"></p>
+            </div>
           </div>
         </div>
-        <div class="order-2 my-auto md:order-3 chip">
-          <div class="flex items-center">
-            <MultiIcon class="w-6" :icons="exerciseTypeIcons"></MultiIcon>
-            <p v-html="$t('exercise_types.' + exercise.exercise_type)"></p>
-          </div>
-        </div>
+      </div>
+      <div class="relative flex mt-1 space-x-1 overflow-x-auto faded-slideshow">
+        <Tag
+          v-for="(tag, index) in tags"
+          :key="elementId + '-tag-' + index"
+          :tag="tag"
+        ></Tag>
       </div>
     </template>
 
