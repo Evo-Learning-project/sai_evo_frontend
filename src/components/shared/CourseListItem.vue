@@ -83,7 +83,7 @@
           <span class="mr-1 text-lg material-icons-two-tone two-tone-primary">
             shield
           </span>
-          <span class="">{{ $t("courses.course_panel") }}</span>
+          <span class="text-lg">{{ $t("courses.course_panel") }}</span>
         </Btn></router-link
       >
     </div>

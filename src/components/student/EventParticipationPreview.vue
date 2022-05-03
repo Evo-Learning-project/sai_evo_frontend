@@ -108,7 +108,7 @@
                 },
               }"
             >
-              <Btn :variant="'secondary'"
+              <Btn :variant="'primary-borderless'"
                 ><span class="mr-2 text-lg material-icons-outlined">
                   assignment_turned_in </span
                 >{{
