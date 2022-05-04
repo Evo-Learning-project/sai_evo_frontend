@@ -122,8 +122,16 @@
             v-else-if="
               hasEnded && hasPrivileges([CoursePrivilege.ASSESS_PARTICIPATIONS])
             "
-            ><Btn :outline="true"
-              ><span class="text-base material-icons-outlined">
+            ><Btn
+              :tooltip="buttonIconsOnly ? $t('event_preview.results') : ''"
+              :outline="true"
+              :variant="buttonIconsOnly ? 'icon' : 'primary'"
+              ><span
+                :class="[
+                  buttonIconsOnly ? 'text-2xl' : 'text-base',
+                  'material-icons-outlined',
+                ]"
+              >
                 bar_chart
               </span>
               <span class="ml-1.5" v-if="!buttonIconsOnly">{{

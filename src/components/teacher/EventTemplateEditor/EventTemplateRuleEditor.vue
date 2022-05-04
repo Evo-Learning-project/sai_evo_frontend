@@ -15,17 +15,22 @@
           {{ $t("event_template_rule_editor.exercise_number") }}
           {{ modelValue._ordering + 1 }}
         </h4>
-        <div class="flex items-center ml-auto space-x-2">
-          <Btn :variant="'secondary'" @click="showRuleDialog()" :size="'sm'">
+        <div class="flex items-center my-auto ml-auto space-x-2">
+          <Btn
+            :variant="'primary'"
+            :outline="true"
+            @click="showRuleDialog()"
+            :size="'base'"
+          >
             <div class="flex items-center">
               <span class="material-icons-outlined my-auto mr-1.5 mb-0.5">
-                settings_suggest </span
+                settings </span
               >{{ $t("event_template_rule_editor.choose_exercise") }}
             </div>
           </Btn>
           <!--@click="deleteRule()"-->
           <Btn
-            :size="'sm'"
+            :tooltip="$t('misc.delete')"
             :variant="'icon'"
             :outline="true"
             @click="$emit('deleteRule')"
@@ -33,7 +38,7 @@
               style="font-size: 17px"
               class="material-icons-outlined text-danger-dark"
             >
-              close
+              delete
             </span>
           </Btn>
         </div>

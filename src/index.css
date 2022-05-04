@@ -110,6 +110,13 @@
       @apply text-gray-600;
     }
 
+    .icon-btn .material-icons-outlined,
+    .icon-btn .material-icons,
+    .icon-btn .material-icons-two-tone {
+      line-height: 1 !important;
+      font-size: 22px !important;
+    }
+
     .icon-btn:focus{
       @apply bg-gray-800 bg-opacity-10;
     }
@@ -358,6 +365,13 @@
     
     .chip-light {
       @apply border-0 text-gray-600 bg-gray-200
+    }
+
+    button .material-icons-outlined,
+    button .material-icons,
+    button .material-icons-two-tone {
+      line-height: 1 !important;
+      font-size: 20px !important;
     }
 
     .material-icons-outlined,

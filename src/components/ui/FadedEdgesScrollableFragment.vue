@@ -65,19 +65,6 @@ export default defineComponent({
         !isScrollable ||
         Math.abs(el.scrollLeft + el.clientWidth - el.scrollWidth) <= 1;
       this.toBeginX = el.scrollLeft === 0;
-
-      console.log(this.toEndX, this.toBeginX);
-
-      //   console.log(
-      //     (this.element?.scrollLeft ?? 0) + (this.element?.clientWidth ?? 0),
-      //     this.element?.scrollWidth
-      //   );
-
-      //   console.log(
-      //     (this.element?.scrollLeft ?? 0) +
-      //       (this.element?.clientWidth ?? 0) -
-      //       (this.element?.scrollWidth ?? 0)
-      //   );
     },
   },
   computed: {},
