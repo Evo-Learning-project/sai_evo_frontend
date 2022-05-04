@@ -52,7 +52,7 @@
               </div></div
           ></Tooltip>
         </div>
-        <div class="flex items-center mb-4 overflow-x-auto faded-slideshow">
+        <FadedEdgesScrollableFragment class="flex items-center mb-4">
           <Tag
             class="mr-1"
             :class="{ 'z-10': index === tags.length - 1 }"
@@ -61,7 +61,7 @@
             :tag="tag"
             :small="true"
           ></Tag>
-        </div>
+        </FadedEdgesScrollableFragment>
       </div>
       <div class="relative -mb-2.5 overflow-y-hidden h-14">
         <div
@@ -159,6 +159,7 @@ import Dialog from "@/components/ui/Dialog.vue";
 import FullExercise from "@/components/shared/FullExercise.vue";
 import { texMixin } from "@/mixins";
 import Tooltip from "@/components/ui/Tooltip.vue";
+import FadedEdgesScrollableFragment from "@/components/ui/FadedEdgesScrollableFragment.vue";
 
 export default defineComponent({
   name: "MinimalExercisePreview",
@@ -212,6 +213,7 @@ export default defineComponent({
     Dialog,
     FullExercise,
     Tooltip,
+    FadedEdgesScrollableFragment,
   },
   created() {
     this.elementId = uuid4();

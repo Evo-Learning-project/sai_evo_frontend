@@ -59,13 +59,22 @@
           </div>
         </div>
         <div class="flex items-end mt-auto">
-          <div class="flex mr-auto space-x-2">
+          <div class="flex mr-auto">
             <router-link
               :to="{ name: 'ExamEditor', params: { examId: event.id } }"
               ><Btn
-                :variant="'secondary'"
+                :tooltip="buttonIconsOnly ? $t('misc.edit') : ''"
+                :outline="buttonIconsOnly"
+                :variant="buttonIconsOnly ? 'icon' : 'secondary'"
                 v-if="hasPrivileges([CoursePrivilege.MANAGE_EVENTS])"
-                ><span class="text-base material-icons"> edit </span>
+                ><span
+                  :class="[
+                    buttonIconsOnly ? 'text-xl' : 'text-base',
+                    'material-icons',
+                  ]"
+                >
+                  edit
+                </span>
                 <span class="ml-1.5" v-if="!buttonIconsOnly">{{
                   $t("event_preview.editor")
                 }}</span></Btn
@@ -90,9 +99,17 @@
             v-if="hasBegun"
             :to="{ name: 'ExamProgress', params: { examId: event.id } }"
             ><Btn
+              :variant="buttonIconsOnly ? 'icon' : 'primary'"
               :outline="true"
+              :tooltip="buttonIconsOnly ? $t('event_preview.monitor') : ''"
               v-if="hasPrivileges([CoursePrivilege.MANAGE_EVENTS])"
-              ><span class="text-base material-icons-outlined">
+              ><span
+                :class="[
+                  buttonIconsOnly
+                    ? 'text-xl material-icons'
+                    : 'text-base material-icons-outlined',
+                ]"
+              >
                 visibility
               </span>
               <span class="ml-1.5 hidden md:inline" v-if="!buttonIconsOnly">{{

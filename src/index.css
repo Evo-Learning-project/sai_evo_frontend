@@ -25,7 +25,7 @@
       @apply font-semibold
     }
     strong {
-      @apply font-bold text-primary;
+      @apply font-bold;
     }
     svg {
       @apply inline; /* was set to block for some reason, causing latex formulas to go in their own line */
@@ -185,27 +185,7 @@
               rgba(0, 0, 0, 0) 100%
             );
     }
-
-    .faded-slideshow:after {
-      background: linear-gradient(to right, 
-                    rgba(255,255,255, 0), 
-                    rgba(255,255,255, 1) 90%);
-      content: "";
-      position: absolute;
-      z-index: 11;
-      top: 0;
-      right: 0;
-      bottom: 0;
-      pointer-events: none;
-      width: 50px;
-    }
-
-    .card-filled .faded-slideshow:after {
-      background: linear-gradient(to right, 
-                    rgba(255,255,255, 0), 
-                    rgba(243, 244, 246, 1) 90%);
-    }
-
+    
     .user-content {
       @apply py-5 pl-4 pr-2 rounded-sm border-l-6 bg-gray-50 border-secondary;
     }

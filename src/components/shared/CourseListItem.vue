@@ -65,8 +65,12 @@
           params: { courseId: course.id },
         }"
       >
-        <Btn :variant="'primary-borderless'" class="w-full whitespace-nowrap">
-          <span class="mr-0.5 mt-0.5 text-base material-icons-outlined">
+        <Btn
+          :variant="'primary'"
+          :outline="true"
+          class="w-full whitespace-nowrap"
+        >
+          <span class="mr-0.5 mt-0.5 text-lg material-icons-outlined">
             chevron_right
           </span>
           <span class="">{{ $t("courses.go_to_course") }}</span>
@@ -83,7 +87,7 @@
           <span class="mr-1 text-lg material-icons-two-tone two-tone-primary">
             shield
           </span>
-          <span class="text-lg">{{ $t("courses.course_panel") }}</span>
+          <span class="">{{ $t("courses.course_panel") }}</span>
         </Btn></router-link
       >
     </div>
