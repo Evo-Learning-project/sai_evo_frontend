@@ -84,13 +84,4 @@ export default defineComponent({
 });
 </script>
 
-<style>
-.radio-container:hover .radio-shadow {
-  opacity: 100%;
-}
-.radio-shadow {
-  top: -11px;
-  left: -10.5px;
-  opacity: 0;
-}
-</style>
+<style></style>

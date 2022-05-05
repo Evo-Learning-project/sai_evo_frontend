@@ -14,6 +14,7 @@
       <div class="flex flex-col w-full">
         <div class="flex w-full">
           <div
+            v-if="!useToggles"
             v-wave="
               disabled ? false : { trigger: 'checkbox', color: '#666ad1' }
             "
@@ -115,13 +116,4 @@ export default defineComponent({
 });
 </script>
 
-<style>
-.checkbox-container:hover .checkbox-shadow {
-  opacity: 100%;
-}
-.checkbox-shadow {
-  top: -12.5px;
-  left: -17px;
-  opacity: 0;
-}
-</style>
+<style></style>
