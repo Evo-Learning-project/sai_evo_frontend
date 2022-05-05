@@ -60,7 +60,8 @@ export default defineComponent({
   computed: {
     processedValue(): string {
       return (
-        this.value.substring(0, 1500) + (this.value.length > 1500 ? "..." : "")
+        this.value.substring(0, 10000) +
+        (this.value.length > 10000 ? "..." : "")
       );
     },
   },
