@@ -54,7 +54,7 @@
         </div>
         <!-- <div class="overflow-hidden" :style="tagsDivStyle"> -->
         <FadedEdgesScrollableFragment
-          class="flex"
+          class="flex mb-2"
           :id="tagsDivId"
           :style="tagsDivStyle"
         >
@@ -86,7 +86,7 @@
           @click="$emit('edit')"
           :variant="'icon'"
           :outline="true"
-          class="-ml-2.5 icon-btn-secondary"
+          class="-ml-2.5 icon-btn-primary"
           v-if="showEdit"
           :tooltip="$t('misc.edit')"
         >
@@ -229,9 +229,6 @@ export default defineComponent({
     this.triggerTexRender();
   },
   mounted() {
-    console.log(
-      document.getElementById(this.tagsDivId)?.parentElement?.clientWidth
-    );
     setTimeout(
       () =>
         (this.tagsDivWidth =
@@ -263,7 +260,6 @@ export default defineComponent({
   },
   computed: {
     tagsDivStyle() {
-      console.log("W", this.tagsDivWidth);
       return `width: ${this.tagsDivWidth ?? 508}px`;
     },
     previewTitle(): string {

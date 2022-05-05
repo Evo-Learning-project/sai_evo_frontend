@@ -65,7 +65,7 @@
               ><Btn
                 :tooltip="buttonIconsOnly ? $t('misc.edit') : ''"
                 :outline="buttonIconsOnly"
-                :class="{ 'icon-btn-secondary -ml-2': buttonIconsOnly }"
+                :class="{ 'icon-btn-primary -ml-2': buttonIconsOnly }"
                 :variant="buttonIconsOnly ? 'icon' : 'secondary'"
                 v-if="hasPrivileges([CoursePrivilege.MANAGE_EVENTS])"
               >
