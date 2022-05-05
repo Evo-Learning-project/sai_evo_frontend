@@ -1,12 +1,12 @@
 <template>
   <div
-    class="relative"
+    class="relative overflow-hidden"
     :class="{
       'faded-left': !toBeginX,
       'faded-right': !toEndX,
     }"
   >
-    <div class="flex overflow-auto" :id="elementId">
+    <div class="flex w-full overflow-auto" :id="elementId">
       <slot></slot>
     </div>
   </div>

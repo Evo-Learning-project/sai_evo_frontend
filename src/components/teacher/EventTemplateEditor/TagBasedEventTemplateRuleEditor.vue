@@ -85,13 +85,8 @@
       </div>
       <div
         v-if="showPreview"
-        class="relative flex  card shadow-elevation md:w-9/12 md:ml-16 md:max-h-64 card-filled"
+        class="relative flex  card shadow-elevation md:w-9/12 md:ml-16 md:max-h-96 card-filled"
       >
-        <SkeletonCard
-          v-if="false && localLoading"
-          :borderLess="true"
-          class="w-full"
-        ></SkeletonCard>
         <Spinner
           :size="'xl'"
           :fast="true"
@@ -140,13 +135,12 @@ import { defineComponent, PropType } from "@vue/runtime-core";
 
 import { createNamespacedHelpers } from "vuex";
 import MinimalExercisePreview from "../ExerciseEditor/MinimalExercisePreview.vue";
-import SkeletonCard from "@/components/ui/SkeletonCard.vue";
 import Spinner from "@/components/ui/Spinner.vue";
 import Btn from "@/components/ui/Btn.vue";
 const { mapState } = createNamespacedHelpers("shared");
 
 export default defineComponent({
-  components: { TagInput, MinimalExercisePreview, SkeletonCard, Spinner, Btn },
+  components: { TagInput, MinimalExercisePreview, Spinner, Btn },
   name: "TagBasedEventTemplateRuleEditor",
   async created() {
     if (this.modelValue.length === 0) {

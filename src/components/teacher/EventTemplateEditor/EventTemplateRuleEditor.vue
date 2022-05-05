@@ -60,7 +60,7 @@
             v-if="!loadingPreview"
             :class="[
               ruleExercises.length > 1 ? 'grid md:grid-cols-2 gap-2' : '',
-              'overflow-auto',
+              'overflow-x-auto md:overflow-visible',
             ]"
           >
             <MinimalExercisePreview

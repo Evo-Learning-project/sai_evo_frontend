@@ -7,7 +7,10 @@
       :full="false"
     ></ExerciseSearchFilters>
 
-    <div v-if="!firstLoading" class="grid gap-5 overflow-x-auto md:grid-cols-2">
+    <div
+      v-if="!firstLoading"
+      class="grid gap-5 overflow-x-auto md:overflow-x-visible md:grid-cols-2"
+    >
       <MinimalExercisePreview
         :selectable="true"
         :selectionDisabled="

@@ -52,7 +52,9 @@
               </div></div
           ></Tooltip>
         </div>
-        <FadedEdgesScrollableFragment class="flex items-center mb-4">
+        <FadedEdgesScrollableFragment
+          class="flex items-center w-10/12 mb-4 overflow-hidden"
+        >
           <Tag
             class="mr-1"
             :class="{ 'z-10': index === tags.length - 1 }"
