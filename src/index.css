@@ -25,7 +25,7 @@
       @apply font-semibold
     }
     strong {
-      @apply font-bold;
+      @apply font-bold text-primary;
     }
     svg {
       @apply inline; /* was set to block for some reason, causing latex formulas to go in their own line */
@@ -114,7 +114,8 @@
     .icon-btn .material-icons,
     .icon-btn .material-icons-two-tone {
       line-height: 1 !important;
-      font-size: 22px !important;
+      font-size: 24px !important;
+      /* @apply text-gray-600 */
     }
 
     .icon-btn:focus{
@@ -123,6 +124,10 @@
 
     .icon-btn-primary button {
       @apply hover:text-primary focus:bg-primary hover:bg-primary focus:bg-opacity-20 hover:bg-opacity-20;
+    }
+
+    .icon-btn-secondary button {
+      @apply text-secondary focus:bg-secondary-light hover:bg-secondary-light focus:bg-opacity-20 hover:bg-opacity-10;
     }
 
     .icon-btn-success button {

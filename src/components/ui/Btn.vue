@@ -18,7 +18,7 @@
           !outline && size === 'base' && variant !== 'transparent',
         'px-6 py-4.5px font-medium':
           outline && size === 'base' && variant !== 'icon',
-        'px-2.5 py-0.5 text-sm': size === 'sm' && variant !== 'icon',
+        'px-3.5 py-1': size === 'sm' && variant !== 'icon',
         'px-1.5 py-0.5 text-xs': size === 'xs' && variant !== 'icon',
         'px-14 py-2 text-lg font-medium': size === 'lg' && variant !== 'icon',
         'text-lightText bg-primary hover:bg-primary-dark shadow-btn':
@@ -40,9 +40,9 @@
           outline && variant === 'primary',
         'text-lg font-bold text-primary hover:bg-light px-6 focus:bg-primary-light focus:bg-opacity-30':
           variant === 'primary-borderless',
+        'text-lg text-secondary font-medium hover:bg-secondary-light hover:bg-opacity-10 px-6 focus:bg-secondary-light focus:bg-opacity-30':
+          variant === 'secondary-borderless',
         'text-lg font-bold text-success hover:bg-light px-6 focus:bg-success-light focus:bg-opacity-30':
-          variant === 'success-borderless',
-        'text-lg font-bold text-success hover:bg-light px-6':
           variant === 'success-borderless',
         'border-gray-300 bg-white hover:bg-primary hover:bg-opacity-10 hover:text-primary transition-colors duration-100':
           variant === 'transparent',
@@ -89,8 +89,8 @@
         !outline && size === 'base' && variant !== 'transparent',
       'px-6 py-4.5px font-medium':
         outline && size === 'base' && variant !== 'icon',
-      'px-2.5 py-0.5 text-sm': size === 'sm' && variant !== 'icon',
-      'px-1.5 py-0.5 text-xs': size === 'xs' && variant !== 'icon',
+      'px-3.5 py-1': size === 'sm' && variant !== 'icon',
+      'px-3': size === 'xs' && variant !== 'icon',
       'px-14 py-2 text-lg font-medium': size === 'lg' && variant !== 'icon',
       'text-lightText bg-primary hover:bg-primary-dark shadow-btn':
         !outline && variant === 'primary',
@@ -110,9 +110,9 @@
         outline && variant === 'primary',
       'text-lg font-bold text-primary hover:bg-light px-6 focus:bg-primary-light focus:bg-opacity-30':
         variant === 'primary-borderless',
+      'text-lg font-bold text-secondary hover:bg-light px-6 focus:bg-secondary-light focus:bg-opacity-30':
+        variant === 'secondary-borderless',
       'text-lg font-bold text-success hover:bg-light px-6 focus:bg-success-light focus:bg-opacity-30':
-        variant === 'success-borderless',
-      'text-lg font-bold text-success hover:bg-light px-6':
         variant === 'success-borderless',
       'border-gray-300 bg-white hover:bg-primary hover:bg-opacity-10 hover:text-primary transition-colors duration-100':
         variant === 'transparent',
@@ -169,6 +169,7 @@ export default defineComponent({
         | "dark"
         | "light"
         | "primary-borderless"
+        | "secondary-borderless"
         | "success-borderless"
         | "transparent"
         | "icon"

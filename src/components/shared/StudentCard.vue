@@ -64,7 +64,9 @@
               }"
             >
               <Btn :outline="true" :variant="'icon'"
-                ><span class="text-base material-icons-outlined"
+                ><span
+                  style="font-size: 18px !important"
+                  class="material-icons-outlined"
                   >launch</span
                 ></Btn
               >

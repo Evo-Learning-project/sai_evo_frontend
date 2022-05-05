@@ -150,6 +150,7 @@
             v-for="(exam, index) in recentExams"
             :key="exam + '-' + index"
             :event="exam"
+            :allowClose="false"
             :buttonIconsOnly="true"
           ></EventEditorPreview>
         </div>

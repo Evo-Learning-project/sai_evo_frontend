@@ -16,15 +16,9 @@
           {{ modelValue._ordering + 1 }}
         </h4>
         <div class="flex items-center my-auto ml-auto space-x-2">
-          <Btn
-            :variant="'primary'"
-            :outline="true"
-            @click="showRuleDialog()"
-            :size="'base'"
-          >
+          <Btn :variant="'secondary'" @click="showRuleDialog()" :size="'sm'">
             <div class="flex items-center">
-              <span class="material-icons-outlined my-auto mr-1.5 mb-0.5">
-                settings </span
+              <span class="material-icons mr-1.5"> settings </span
               >{{ $t("event_template_rule_editor.choose_exercise") }}
             </div>
           </Btn>
@@ -66,6 +60,7 @@
             v-if="!loadingPreview"
             :class="[
               ruleExercises.length > 1 ? 'grid md:grid-cols-2 gap-2' : '',
+              'overflow-auto',
             ]"
           >
             <MinimalExercisePreview

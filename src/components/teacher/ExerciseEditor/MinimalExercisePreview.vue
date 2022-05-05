@@ -63,7 +63,7 @@
           ></Tag>
         </FadedEdgesScrollableFragment>
       </div>
-      <div class="relative -mb-2.5 overflow-y-hidden h-14">
+      <div class="relative overflow-y-hidden h-14">
         <div
           style="
             display: -webkit-box;
@@ -77,6 +77,17 @@
       </div>
       <div class="flex items-center mt-auto">
         <Btn
+          @click="$emit('edit')"
+          :variant="'icon'"
+          :outline="true"
+          class="-ml-2.5 icon-btn-secondary"
+          v-if="showEdit"
+          :tooltip="$t('misc.edit')"
+        >
+          <span class="text-xl material-icons"> edit </span>
+          <!-- {{ $t("event_preview.editor") }} -->
+        </Btn>
+        <Btn
           class="ml-auto"
           v-if="previewable"
           :variant="'icon'"
@@ -85,16 +96,7 @@
           @click="showPreview = true"
           ><span class="text-2xl material-icons-outlined"> fullscreen </span>
         </Btn>
-        <Btn
-          class="ml-1"
-          @click="$emit('edit')"
-          :outline="true"
-          :variant="'icon'"
-          v-if="showEdit"
-          :tooltip="$t('misc.edit')"
-        >
-          <span class="text-xl material-icons"> edit </span>
-        </Btn>
+
         <!-- <router-link
           class=""
           :outline="true"
