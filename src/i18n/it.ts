@@ -99,6 +99,7 @@ export const it = {
     exercise: "Es.",
   },
   event_assessment: {
+    undo_score_edit_tooltip: "Ripristina punteggio originale",
     overall_score: "Voto",
     you_overrode_score:
       "Hai assegnato manualmente un voto all'esame." +

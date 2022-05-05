@@ -57,7 +57,11 @@
       }"
     >
       <template v-slot:header>
-        <div style="padding-top: 1px" class="flex mb-8" v-if="!subExercise">
+        <div
+          style="padding-top: 1px"
+          class="flex items-center mb-8"
+          v-if="!subExercise"
+        >
           <h3 v-if="!subExercise" class="pt-2">
             {{ $t("exercise_editor.exercise_editor_title") }}
             <span
@@ -67,10 +71,22 @@
             >
           </h3>
           <CloudSaveStatus
-            class="my-auto ml-auto mr-10"
+            class="mt-1 ml-auto mr-1"
             :saving="saving"
             :hadError="savingError"
           ></CloudSaveStatus>
+          <Btn
+            :size="'lg'"
+            :variant="'icon'"
+            :tooltip="$t('misc.close')"
+            @click="$emit('close')"
+            ><span
+              class="transition-transform duration-200 ease-out transform  material-icons-outlined"
+              :class="{ 'rotate-180': false && showEditor }"
+            >
+              close
+            </span></Btn
+          >
         </div>
         <div v-else class="flex">
           <Btn
@@ -78,10 +94,8 @@
             :variant="'icon'"
             :tooltip="$t('exercise_editor.delete_sub_exercise')"
             @click="$emit('delete')"
-            class="ml-auto -mr-4"
-            ><span class="text-base text-danger-dark material-icons-outlined">
-              close
-            </span></Btn
+            class="ml-auto -mr-4 transition-opacity duration-100 opacity-50  hover:opacity-100"
+            ><span class="text-base material-icons"> delete </span></Btn
           >
         </div>
       </template>

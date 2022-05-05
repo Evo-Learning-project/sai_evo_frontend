@@ -6,10 +6,8 @@
         :variant="'icon'"
         @click="$emit('delete')"
         :tooltip="$t('exercise_editor.delete_testcase')"
-        class="-mr-3"
-        ><span class="text-base text-danger-dark material-icons-outlined">
-          close
-        </span></Btn
+        class="transition-opacity duration-100 opacity-50 hover:opacity-100"
+        ><span class="text-base material-icons"> delete </span></Btn
       >
     </div>
     <div

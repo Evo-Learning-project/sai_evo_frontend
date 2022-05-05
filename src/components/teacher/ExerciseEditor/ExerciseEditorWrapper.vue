@@ -1,20 +1,5 @@
 <template>
   <div class="relative my-4" :id="'editor-' + modelValue.id">
-    <div style="z-index: 50" class="absolute top-0 right-0 mt-2.5 mr-1">
-      <Btn
-        :size="'lg'"
-        :variant="'icon'"
-        :tooltip="$t('misc.close')"
-        @click="toggleExpand"
-        v-show="showEditor"
-        ><span
-          class="transition-transform duration-200 ease-out transform  material-icons-outlined"
-          :class="{ 'rotate-180': false && showEditor }"
-        >
-          close
-        </span></Btn
-      >
-    </div>
     <div
       style="z-index: 50"
       class="absolute bottom-0 right-0 hidden mr-1 -mb-2"
@@ -35,6 +20,7 @@
     <MinimalExercisePreview
       :exercise="modelValue"
       v-show="!showEditor"
+      :hoverable="true"
       :selectable="false"
       @edit="toggleExpand()"
       :showEdit="true"
@@ -43,6 +29,7 @@
     <ExerciseEditor
       :saving="saving"
       v-if="showEditor"
+      @close="toggleExpand()"
       :modelValue="modelValue"
       @delete="$emit('delete')"
       @cloneExercise="onClone"

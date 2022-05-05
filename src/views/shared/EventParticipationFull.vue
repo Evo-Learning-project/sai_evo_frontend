@@ -78,7 +78,7 @@
                     showEditScore ? '' : $t('help_texts.edit_overall_grade')
                   "
                   @click="onShowEditScore()"
-                  ><span class="text-lg text-gray-600 material-icons-outlined"
+                  ><span class="text-lg icon-light material-icons"
                     >edit</span
                   ></Btn
                 >
@@ -88,6 +88,7 @@
                   class="ml-auto"
                   :variant="'icon'"
                   :disabled="showEditScore"
+                  :tooltip="$t('event_assessment.undo_score_edit_tooltip')"
                   @click="onUndoScoreEdit()"
                   ><span class="text-lg text-gray-600 material-icons-outlined"
                     >undo</span

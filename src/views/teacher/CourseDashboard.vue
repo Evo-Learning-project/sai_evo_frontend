@@ -2,7 +2,12 @@
   <div>
     <Card :hoverable="false" :filled="true" :borderLess="true">
       <template v-slot:header>
-        <h3>{{ $t("misc.course_settings") }}</h3>
+        <div class="flex items-center space-x-2">
+          <span class="my-auto mr-1 material-icons icon-light"> settings </span>
+          <h2 class="mb-0.5">
+            {{ $t("misc.course_settings") }}
+          </h2>
+        </div>
       </template>
       <template v-slot:body>
         <div class="flex flex-col justify-between mt-2 md:flex-row">

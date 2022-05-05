@@ -71,14 +71,20 @@
     </div>
     <div class="my-auto">
       <Btn
-        class="md:-mr-3.5 md:ml-0 -ml-2.5 hidden md:block"
+        class="
+          hidden
+          -ml-3.5
+          transition-opacity
+          duration-100
+          opacity-50
+          md:mr-1 md:-ml-3 md:block
+          hover:opacity-100
+        "
         :outline="true"
         :variant="'icon'"
         :tooltip="$t('exercise_editor.delete_choice')"
         @click="$emit('delete')"
-        ><span class="text-base text-danger-dark material-icons-outlined">
-          close
-        </span></Btn
+        ><span class="text-base material-icons"> delete </span></Btn
       >
     </div>
   </div>

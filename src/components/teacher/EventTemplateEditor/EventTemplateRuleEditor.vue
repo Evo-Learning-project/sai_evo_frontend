@@ -28,10 +28,8 @@
             :variant="'icon'"
             :outline="true"
             @click="$emit('deleteRule')"
-            ><span
-              style="font-size: 17px"
-              class="material-icons-outlined text-danger-dark"
-            >
+            class="transition-opacity duration-100 opacity-50 hover:opacity-100"
+            ><span style="font-size: 17px" class="material-icons">
               delete
             </span>
           </Btn>

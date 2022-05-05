@@ -37,7 +37,7 @@
         class="mt-1 ml-1"
       >
         <span
-          class="mr-4 text-lg opacity-50  inline-icon light-icon material-icons-outlined"
+          class="mr-4 text-lg opacity-50  inline-icon icon-light material-icons-outlined"
         >
           visibility_off
         </span>

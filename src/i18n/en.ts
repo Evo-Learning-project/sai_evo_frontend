@@ -1,3 +1,4 @@
+import { EventState } from "./../models/types";
 import { ExerciseState, ExerciseType } from "@/models";
 
 export const en = {
@@ -12,6 +13,53 @@ export const en = {
       "Select the tags you're interested in in order to create your practice session.",
     rule_amount_1: "How many exercises with tag",
     rule_amount_2: "do you want to see?",
+  },
+  event_states: {
+    [EventState.DRAFT]: "Draft",
+    [EventState.PLANNED]: "Planned",
+    [EventState.OPEN]: "In progress",
+    [EventState.CLOSED]: "Closed",
+    [EventState.RESTRICTED]: "Restricted access",
+  },
+  event_editor: {
+    name: "Nome",
+    state_editor_title: "Pubblica",
+    state: "Stato esame",
+    current_state_is: "L'esame è attualmente in stato",
+    state_is: "L'esame è",
+    begin_timestamp: "Beings at",
+    end_timestamp: "Ends at",
+    instructions: "Istruzioni (opzionale)",
+    editor_title: "Editor esame",
+    flow_rules: "Regole di svolgimento",
+    exercises_shown_at_a_time_label:
+      "Numero di esercizi da mostrare per pagina",
+    allow_going_back_label:
+      "Permetti agli studenti di tornare indietro a un esercizio già visto",
+    show_all_exercises_at_once: "Mostra tutti gli esercizi insieme",
+    show_one_exercise_at_once: "Mostra solo un esercizio alla volta",
+    publish: "Pubblica",
+    revert_to_draft: "Torna a stato di bozza",
+    event_planned_help_text:
+      "L'esame verrà aperto agli studenti automaticamente in data",
+    editing_open_event_title: "Modifica di un esame in corso",
+    editing_open_event_body:
+      "Stai modificando un esame già iniziato. Sei sicuro di volerlo modificare?",
+    correct_errors_to_publish:
+      "Prima di poter pubblicare l'esame, correggi i seguenti errori:",
+    cannot_change_timestamp:
+      "Non puoi modificare la data e ora di inizio dell'esame una volta pianificato. Per modificare questo campo, metti l'esame in stato di bozza.",
+    this_is_the_link_to_the_event:
+      "Ecco il link per accedere all'esame. Comunicalo agli studenti che parteciperanno.",
+    edit_template_in_progress_warning:
+      "Modificare il modello dell'esame quando questo è già iniziato può avere conseguenze imprevedibili. Gli studenti che hanno già iniziato l'esame non saranno interessati dalle modifiche. Procedi solo se sai cosa stai facendo.",
+    currently_locked_by: "È in corso una modifica a questo esame da parte di",
+    lock_stand_by:
+      "L'editor verrà sbloccato non appena la modifica sarà conclusa.",
+    tip_you_used_randomization:
+      "Hai utilizzato alcune delle funzionalità di randomizzazione. Verifica che gli esami generati siano corretti.",
+    generate_examples: "Genera esempi",
+    generating_examples: "Generazione esempi...",
   },
   student_course_dashboard: {
     your_practice_events: "Le tue esercitazioni",
@@ -80,6 +128,35 @@ export const en = {
     score: "Score",
     out_of: "out of",
     at: "at",
+    edit: "Edit",
+  },
+  help_texts: {
+    student_practice_rule_amount: "Quanti esercizi con questo tag vuoi vedere?",
+    exercise_editor: {
+      score_if_checked: "Punteggio se la risposta viene selezionata",
+      score_if_unchecked: "Punteggio se la risposta non viene selezionata",
+      solution:
+        "Se pubblichi questo esercizio, quando viene incluso in un'esercitazione creata da uno studente, la soluzione verrà mostrata al termine della stessa.",
+      public_tags:
+        "Se pubblichi questo esercizio, i tag pubblici potranno essere utilizzati dagli studenti per cercarlo quando compongono un'esercitazione",
+      private_tags:
+        "Questi tag non verranno mai mostrati agli studenti e possono essere utilizzati per organizzare gli esercizi e aggiungerli agli esami",
+    },
+    copy_exam_link: "Copy link",
+    stats: "Statistiche esame",
+    edit_score: "Modifica punteggio",
+    edit_overall_grade: "Modifica voto",
+    hidden_course: "Corso nascosto agli studenti",
+  },
+  event_preview: {
+    unnamed_event: "Unnamed exam",
+    monitor: "Monitora",
+    results: "Risultati",
+    editor: "Editor",
+    close: "Close",
+    still_open_for_some: "L'esame è ancora aperto per alcuni studenti.",
+    copy_link: "Copia link per gli studenti",
+    copied_link: "Copiato link per gli studenti",
   },
   event_template_rule_editor: {
     exercise_number: "Slot",

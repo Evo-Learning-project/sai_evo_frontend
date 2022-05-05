@@ -312,9 +312,7 @@
               "
               :disabled="showAssessmentControls"
               @click="onShowAssessmentControls()"
-              ><span class="text-lg icon-light material-icons-outlined"
-                >edit</span
-              ></Btn
+              ><span class="text-lg icon-light material-icons">edit</span></Btn
             >
             <Btn
               v-if="allowEditAssessment && modelValue.score_edited"
@@ -322,6 +320,7 @@
               class="ml-auto"
               :variant="'icon'"
               :size="'sm'"
+              :tooltip="$t('event_assessment.undo_score_edit_tooltip')"
               :disabled="showAssessmentControls"
               @click="onUndoScoreEdit()"
               ><span class="text-lg icon-light material-icons-outlined"

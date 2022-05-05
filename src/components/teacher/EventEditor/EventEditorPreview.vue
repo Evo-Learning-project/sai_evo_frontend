@@ -3,7 +3,7 @@
     <template v-slot:header>
       <div class="flex items-start w-full">
         <h3
-          class="flex-grow"
+          class="mr-2"
           :class="{ 'text-muted font-semibold': event.name.length === 0 }"
           style="
             display: -webkit-box;
@@ -14,7 +14,7 @@
         >
           {{ previewTitle }}
         </h3>
-        <div class="ml-auto">
+        <div class="ml">
           <div
             class="mr-0 chip"
             :class="{
@@ -58,23 +58,35 @@
             ></Timestamp>
           </div>
         </div>
-        <div class="flex items-end mt-auto">
-          <div class="flex mr-auto">
+        <div class="flex items-center mt-auto">
+          <Btn
+            class=""
+            :size="'sm'"
+            :variant="'danger'"
+            :outline="true"
+            v-if="
+              allowClose &&
+              hasBegun &&
+              hasPrivileges([CoursePrivilege.MANAGE_EVENTS])
+            "
+            @click="$emit('close')"
+            ><span class="text-base material-icons-outlined"> block </span>
+            <span class="ml-1" v-if="true || !buttonIconsOnly">{{
+              $t("event_preview.close")
+            }}</span></Btn
+          >
+          <div class="flex items-center ml-auto">
             <router-link
+              class="m-auto"
               :to="{ name: 'ExamEditor', params: { examId: event.id } }"
-              ><Btn
+            >
+              <Btn
                 :tooltip="buttonIconsOnly ? $t('misc.edit') : ''"
                 :outline="buttonIconsOnly"
                 :class="{ 'icon-btn-primary -ml-2': buttonIconsOnly }"
                 :variant="buttonIconsOnly ? 'icon' : 'secondary'"
                 v-if="hasPrivileges([CoursePrivilege.MANAGE_EVENTS])"
               >
-                <!-- <svg style="width: 24px; height: 24px" viewBox="0 0 24 24">
-                  <path
-                    fill="currentColor"
-                    d="M5,3C3.89,3 3,3.89 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V12H19V19H5V5H12V3H5M17.78,4C17.61,4 17.43,4.07 17.3,4.2L16.08,5.41L18.58,7.91L19.8,6.7C20.06,6.44 20.06,6 19.8,5.75L18.25,4.2C18.12,4.07 17.95,4 17.78,4M15.37,6.12L8,13.5V16H10.5L17.87,8.62L15.37,6.12Z"
-                  />
-                </svg> -->
                 <span
                   :class="[
                     buttonIconsOnly ? 'text-xl' : 'text-base',
@@ -88,77 +100,60 @@
                 }}</span></Btn
               ></router-link
             >
-            <Btn
-              class="ml-1.5"
-              :size="'xs'"
-              :variant="'danger'"
-              :outline="true"
-              v-if="
-                allowClose &&
-                hasBegun &&
-                hasPrivileges([CoursePrivilege.MANAGE_EVENTS])
-              "
-              @click="$emit('close')"
-              ><span class="text-base material-icons-outlined"> block </span>
-              <span class="ml-1" v-if="true || !buttonIconsOnly">{{
-                $t("event_preview.close")
-              }}</span></Btn
+            <router-link
+              v-if="hasBegun"
+              :to="{ name: 'ExamProgress', params: { examId: event.id } }"
+              ><Btn
+                :variant="buttonIconsOnly ? 'icon' : 'primary'"
+                :outline="true"
+                :tooltip="buttonIconsOnly ? $t('event_preview.monitor') : ''"
+                v-if="hasPrivileges([CoursePrivilege.MANAGE_EVENTS])"
+                ><span
+                  :class="[
+                    buttonIconsOnly
+                      ? 'text-xl material-icons'
+                      : 'text-base material-icons-outlined',
+                  ]"
+                >
+                  visibility
+                </span>
+                <span class="ml-1.5 hidden md:inline" v-if="!buttonIconsOnly">{{
+                  $t("event_preview.monitor")
+                }}</span></Btn
+              ></router-link
             >
+            <router-link
+              :to="{ name: 'ExamResults', params: { examId: event.id } }"
+              v-else-if="
+                hasEnded &&
+                hasPrivileges([CoursePrivilege.ASSESS_PARTICIPATIONS])
+              "
+              ><Btn
+                :tooltip="buttonIconsOnly ? $t('event_preview.results') : ''"
+                :outline="true"
+                :variant="buttonIconsOnly ? 'icon' : 'primary'"
+                ><span
+                  style="font-size: 28px !important"
+                  class="material-icons-outlined"
+                >
+                  bar_chart
+                </span>
+                <span class="ml-1.5" v-if="!buttonIconsOnly">{{
+                  $t("event_preview.results")
+                }}</span></Btn
+              ></router-link
+            >
+            <CopyToClipboard
+              class=""
+              v-if="!isDraft && !hasEnded"
+              :value="permalink"
+              :iconOnly="true"
+              :title="$t('event_preview.copy_link')"
+              :confirmationMessage="$t('event_preview.copied_link')"
+              :tooltip="$t('help_texts.copy_exam_link')"
+            ></CopyToClipboard
+            ><!--:tooltip="$t('help_texts.copy_exam_link')"-->
           </div>
-          <router-link
-            v-if="hasBegun"
-            :to="{ name: 'ExamProgress', params: { examId: event.id } }"
-            ><Btn
-              :variant="buttonIconsOnly ? 'icon' : 'primary'"
-              :outline="true"
-              :tooltip="buttonIconsOnly ? $t('event_preview.monitor') : ''"
-              v-if="hasPrivileges([CoursePrivilege.MANAGE_EVENTS])"
-              ><span
-                :class="[
-                  buttonIconsOnly
-                    ? 'text-xl material-icons'
-                    : 'text-base material-icons-outlined',
-                ]"
-              >
-                visibility
-              </span>
-              <span class="ml-1.5 hidden md:inline" v-if="!buttonIconsOnly">{{
-                $t("event_preview.monitor")
-              }}</span></Btn
-            ></router-link
-          >
-          <router-link
-            :to="{ name: 'ExamResults', params: { examId: event.id } }"
-            v-else-if="
-              hasEnded && hasPrivileges([CoursePrivilege.ASSESS_PARTICIPATIONS])
-            "
-            ><Btn
-              :tooltip="buttonIconsOnly ? $t('event_preview.results') : ''"
-              :outline="true"
-              :variant="buttonIconsOnly ? 'icon' : 'primary'"
-              ><span
-                :class="[
-                  buttonIconsOnly ? 'text-2xl' : 'text-base',
-                  'material-icons-outlined',
-                ]"
-              >
-                bar_chart
-              </span>
-              <span class="ml-1.5" v-if="!buttonIconsOnly">{{
-                $t("event_preview.results")
-              }}</span></Btn
-            ></router-link
-          >
-          <CopyToClipboard
-            class="ml-1"
-            v-if="!isDraft && !hasEnded"
-            :value="permalink"
-            :iconOnly="true"
-            :title="$t('event_preview.copy_link')"
-            :confirmationMessage="$t('event_preview.copied_link')"
-            :tooltip="$t('help_texts.copy_exam_link')"
-          ></CopyToClipboard
-          ><!--:tooltip="$t('help_texts.copy_exam_link')"-->
         </div>
       </div>
     </template>

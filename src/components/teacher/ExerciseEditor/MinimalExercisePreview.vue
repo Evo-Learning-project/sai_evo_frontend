@@ -81,12 +81,12 @@
           v-html="previewText"
         ></div>
       </div>
-      <div class="flex items-center mt-auto">
+      <div class="flex items-center mt-auto ml-auto">
         <Btn
           @click="$emit('edit')"
           :variant="'icon'"
           :outline="true"
-          class="-ml-2.5 icon-btn-primary"
+          class="icon-btn-primary"
           v-if="showEdit"
           :tooltip="$t('misc.edit')"
         >
@@ -100,7 +100,12 @@
           :outline="true"
           :tooltip="$t('misc.preview')"
           @click="showPreview = true"
-          ><span class="text-2xl material-icons-outlined"> fullscreen </span>
+          ><span
+            style="font-size: 25px !important"
+            class="material-icons-outlined -mb-0.5"
+          >
+            fullscreen
+          </span>
         </Btn>
 
         <!-- <router-link
