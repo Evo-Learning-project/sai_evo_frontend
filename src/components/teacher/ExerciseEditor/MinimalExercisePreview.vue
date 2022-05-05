@@ -52,8 +52,11 @@
               </div></div
           ></Tooltip>
         </div>
+        <!-- <div class="overflow-hidden" :style="tagsDivStyle"> -->
         <FadedEdgesScrollableFragment
-          class="flex items-center w-10/12 mb-4 overflow-hidden"
+          class="flex"
+          :id="tagsDivId"
+          :style="tagsDivStyle"
         >
           <Tag
             class="mr-1"
@@ -64,6 +67,7 @@
             :small="true"
           ></Tag>
         </FadedEdgesScrollableFragment>
+        <!-- </div> -->
       </div>
       <div class="relative overflow-y-hidden h-14">
         <div
@@ -164,7 +168,7 @@ import FullExercise from "@/components/shared/FullExercise.vue";
 import { texMixin } from "@/mixins";
 import Tooltip from "@/components/ui/Tooltip.vue";
 import FadedEdgesScrollableFragment from "@/components/ui/FadedEdgesScrollableFragment.vue";
-
+import { v4 as uuidv4 } from "uuid";
 export default defineComponent({
   name: "MinimalExercisePreview",
   props: {
@@ -221,7 +225,20 @@ export default defineComponent({
   },
   created() {
     this.elementId = uuid4();
+    this.tagsDivId = uuid4();
     this.triggerTexRender();
+  },
+  mounted() {
+    console.log(
+      document.getElementById(this.tagsDivId)?.parentElement?.clientWidth
+    );
+    setTimeout(
+      () =>
+        (this.tagsDivWidth =
+          document.getElementById(this.tagsDivId)?.parentElement?.clientWidth ??
+          0),
+      10
+    );
   },
   watch: {
     showPreview(newVal) {
@@ -235,6 +252,8 @@ export default defineComponent({
       elementId: "",
       showPreview: false,
       ExerciseType,
+      tagsDivId: "",
+      tagsDivWidth: 0,
     };
   },
   methods: {
@@ -243,6 +262,10 @@ export default defineComponent({
     },
   },
   computed: {
+    tagsDivStyle() {
+      console.log("W", this.tagsDivWidth);
+      return `width: ${this.tagsDivWidth ?? 508}px`;
+    },
     previewTitle(): string {
       return (this.exercise?.label ?? "").trim().length > 0
         ? (this.exercise.label as string)
