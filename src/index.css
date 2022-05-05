@@ -957,6 +957,7 @@
       top: -0.25em;
       width: 22px;
       height: 22px;
+      @apply cursor-pointer !important;
     }
     
     .toggle-rail {
@@ -987,7 +988,7 @@
     }
     
     .toggle-container:hover .toggle-shadow {
-      opacity: 100%;
+      opacity: 100% !important;
     }
     .toggle-shadow {
       opacity: 0;
@@ -1014,7 +1015,7 @@
     }
 
     .radio-container:hover .radio-shadow {
-      opacity: 100%;
+      opacity: 100% !important;
     }
     .radio-shadow {
       top: -11px;
@@ -1023,7 +1024,7 @@
     }
 
     .checkbox-container:hover .checkbox-shadow {
-      opacity: 100%;
+      opacity: 100% !important;
     }
     .checkbox-shadow {
       top: -12.5px;

@@ -1,16 +1,22 @@
 <template>
-  <vue-tags-input
-    :add-only-from-autocomplete="existingOnly"
-    v-model="tag"
-    :tags="processedModelValue"
-    :allow-edit-tags="true"
-    :placeholder="placeholder"
-    @before-adding-tag="beforeAddingTag($event)"
-    @before-deleting-tag="beforeDeletingTag($event)"
-    :autocomplete-items="autoCompleteItems"
-    :autocomplete-min-length="alwaysShowAutocomplete ? 0 : 1"
-    :autocomplete-filter-duplicates="false"
-  />
+  <div class="relative">
+    <label class="absolute top-2 z-10 left-1.5 origin-0 fixed-label"
+      ><slot></slot
+    ></label>
+    <vue-tags-input
+      :add-only-from-autocomplete="existingOnly"
+      v-model="tag"
+      :tags="processedModelValue"
+      :allow-edit-tags="true"
+      :placeholder="$slots.default ? '' : placeholder"
+      @before-adding-tag="beforeAddingTag($event)"
+      @before-deleting-tag="beforeDeletingTag($event)"
+      :autocomplete-items="autoCompleteItems"
+      :autocomplete-min-length="alwaysShowAutocomplete ? 0 : 1"
+      :autocomplete-filter-duplicates="false"
+    />
+  </div>
+
   <!--@tags-changed="newTags => onTagsChanged(newTags)"-->
 </template>
 
@@ -115,7 +121,8 @@ export default defineComponent({
     processedModelValue() {
       const ret = this.modelValue.map((t: Tag) => ({
         text: t.name,
-        classes: t.name === this.removingTag ? "opacity-50 pointer-events-none" : "",
+        classes:
+          t.name === this.removingTag ? "opacity-50 pointer-events-none" : "",
       }));
 
       const ghostTag = {

@@ -241,14 +241,16 @@
               :text-code="'exercise_editor.solution'"
             ></Tooltip>
           </div>
-          <Toggle
-            :modelValue="modelValue.requires_typescript"
-            @update:modelValue="
-              onBaseExerciseChange('requires_typescript', $event)
-            "
-            v-if="modelValue.exercise_type === ExerciseType.JS"
-            >{{ $t("exercise_editor.requires_typescript") }}</Toggle
-          >
+          <div v-if="modelValue.exercise_type === ExerciseType.JS" class="pb-4">
+            <Toggle
+              class=""
+              :modelValue="modelValue.requires_typescript"
+              @update:modelValue="
+                onBaseExerciseChange('requires_typescript', $event)
+              "
+              >{{ $t("exercise_editor.requires_typescript") }}</Toggle
+            >
+          </div>
 
           <div v-if="!subExercise">
             <TagInput
@@ -258,11 +260,13 @@
               :placeholder="$t('exercise_editor.exercise_public_tags')"
               @addTag="onAddTag($event, true)"
               @removeTag="onRemoveTag($event, true)"
+              ><div class="flex space-x-1">
+                <p>{{ $t("exercise_editor.exercise_public_tags") }}</p>
+                <Tooltip
+                  class="transform scale-125"
+                  :text-code="'exercise_editor.public_tags'"
+                ></Tooltip></div
             ></TagInput>
-            <Tooltip
-              class=""
-              :text-code="'exercise_editor.public_tags'"
-            ></Tooltip>
           </div>
 
           <div v-if="!subExercise">
@@ -273,11 +277,14 @@
               :placeholder="$t('exercise_editor.exercise_private_tags')"
               @addTag="onAddTag($event, false)"
               @removeTag="onRemoveTag($event, false)"
+            >
+              <div class="flex space-x-1">
+                <p>{{ $t("exercise_editor.exercise_private_tags") }}</p>
+                <Tooltip
+                  class="transform scale-125"
+                  :text-code="'exercise_editor.private_tags'"
+                ></Tooltip></div
             ></TagInput>
-            <Tooltip
-              class=""
-              :text-code="'exercise_editor.private_tags'"
-            ></Tooltip>
           </div>
         </div>
         <!-- Multiple-choice exercise types settings -->

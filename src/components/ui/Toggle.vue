@@ -46,7 +46,7 @@
         style="z-index: 4"
         :for="overrideId || id"
         :class="[proxyModelValue ? 'text-light' : 'text-gray-600']"
-        class="absolute text-lg font-semibold transform translate-y-1/2  toggle-mark opacity-70 material-icons-outlined bottom-1/2"
+        class="absolute text-lg font-semibold transform translate-y-1/2 cursor-pointer  toggle-mark opacity-70 material-icons-outlined bottom-1/2"
         >&nbsp;</label
       >
 
