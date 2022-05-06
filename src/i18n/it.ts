@@ -690,7 +690,7 @@ export const it = {
   course_list: {
     filter_courses: "Filtra corsi",
     courses_i_teach: "Mostra solo i miei corsi",
-    hidden_courses: "Mostra solo corsi nascosti agli studenti",
+    hidden_courses: "Mostra corsi nascosti agli studenti",
     no_courses: "Non ci sono ancora corsi",
     no_courses_with_filters:
       "Non ci sono corsi che corrispondono ai criteri di ricerca",

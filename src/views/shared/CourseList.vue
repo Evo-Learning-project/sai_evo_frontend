@@ -159,7 +159,7 @@ export default defineComponent({
           (filters.name.length === 0 ||
             c.name.toLowerCase().includes(filters.name.toLowerCase())) &&
           (!filters.withPrivileges || (c.privileges?.length ?? 0) > 0) &&
-          c.hidden === filters.hidden
+          (filters.hidden || !c.hidden)
       );
     },
     coursesSorted(): Course[] {
