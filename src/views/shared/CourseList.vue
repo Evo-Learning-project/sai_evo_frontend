@@ -2,7 +2,7 @@
   <div>
     <div v-if="!firstLoading">
       <CourseSearchFilters
-        class="mb-6"
+        class="mb-8"
         v-model="searchFilters"
       ></CourseSearchFilters>
       <div class="banner banner-danger" v-if="!user.is_teacher && !user.mat">
