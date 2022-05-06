@@ -22,7 +22,7 @@
     <div>
       <h2>{{ $t("student_course_dashboard.your_practice_events") }}</h2>
       <Btn
-        v-if="!firstLoading"
+        v-if="!firstLoading && practiceParticipations.length > 7"
         :variant="'icon'"
         :outline="true"
         class="mb-4 -mt-2"

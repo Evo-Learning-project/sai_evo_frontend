@@ -49,7 +49,7 @@ axios.interceptors.response.use(
       // error.response?.status == 403 ||
       error.response?.status === 401
     ) {
-      logOut();
+      logOut(false);
     } else {
       throw error;
     }
