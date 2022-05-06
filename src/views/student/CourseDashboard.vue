@@ -21,14 +21,32 @@
 
     <div>
       <h2>{{ $t("student_course_dashboard.your_practice_events") }}</h2>
+      <Btn
+        v-if="!firstLoading"
+        :variant="'icon'"
+        :outline="true"
+        class="mb-4 -mt-2"
+        style="margin-left: -9px"
+        @click="showAllParticipations = !showAllParticipations"
+        :tooltip="
+          showAllParticipations
+            ? $t('misc.show_recent')
+            : $t('student_course_dashboard.show_all_practices')
+        "
+        ><span
+          :class="[
+            showAllParticipations
+              ? 'material-icons'
+              : 'material-icons-outlined',
+          ]"
+          >visibility</span
+        ></Btn
+      >
       <div
         class="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4"
         v-if="!firstLoading"
       >
         <div v-if="(currentCourse.unstarted_practice_events?.length ?? 0) > 0">
-          <!-- FIXME review shadow - look up all usages of shadow-lg specifically and see if 
-        they can all be changed by setting a different value of shadow-box in tailwind config 
-        for shadow-lg -->
           <Card
             :hoverable="false"
             :margin-less="true"
@@ -82,7 +100,7 @@
           </template>
         </Card>
         <EventParticipationPreview
-          v-for="participation in practiceParticipations"
+          v-for="participation in filteredPracticeParticipations"
           :key="'practice-participation-' + participation.id"
           :participation="participation"
         ></EventParticipationPreview>
@@ -100,6 +118,11 @@
       :noText="$t('dialog.default_cancel_text')"
       :yesText="$t('practice_template_editor.begin_practice')"
       :large="true"
+      :disableOk="
+        totalRuleAmount < 1 ||
+        totalRuleAmount > MAX_PRACTICE_EXERCISE_COUNT ||
+        isEditingRule
+      "
       :show-dialog="!!editingEvent"
     >
       <template v-slot:title>
@@ -116,8 +139,20 @@
         <PracticeTemplateEditor
           class="mt-6"
           v-if="editingEvent"
+          @isEditingRule="isEditingRule = $event"
           :modelValue="editingEvent.template"
         ></PracticeTemplateEditor>
+        <p
+          v-if="totalRuleAmount > MAX_PRACTICE_EXERCISE_COUNT && !isEditingRule"
+          class="text-danger-dark"
+        >
+          {{
+            $t("student_course_dashboard.too_many_exercises") +
+            " " +
+            MAX_PRACTICE_EXERCISE_COUNT +
+            "."
+          }}
+        </p>
       </template>
     </Dialog>
   </div>
@@ -135,10 +170,13 @@ import { mapGetters, mapActions, mapMutations, mapState } from "vuex";
 import EventParticipationPreview from "@/components/student/EventParticipationPreview.vue";
 import SkeletonCard from "../../components/ui/SkeletonCard.vue";
 import Card from "@/components/ui/Card.vue";
-import { Event, getBlankPractice } from "@/models";
+import { Event, EventParticipation, getBlankPractice } from "@/models";
 import Dialog from "@/components/ui/Dialog.vue";
 import PracticeTemplateEditor from "@/components/student/PracticeTemplateEditor.vue";
 import { getTranslatedString as _ } from "@/i18n";
+import { sum } from "lodash";
+import { MAX_PRACTICE_EXERCISE_COUNT } from "@/const";
+import Btn from "@/components/ui/Btn.vue";
 
 export default defineComponent({
   components: {
@@ -147,6 +185,7 @@ export default defineComponent({
     Card,
     Dialog,
     PracticeTemplateEditor,
+    Btn,
   },
   name: "CourseDashboard",
   mixins: [courseIdMixin, loadingMixin],
@@ -157,7 +196,11 @@ export default defineComponent({
     });
   },
   data() {
-    return {};
+    return {
+      isEditingRule: false,
+      MAX_PRACTICE_EXERCISE_COUNT,
+      showAllParticipations: false,
+    };
   },
   methods: {
     ...mapActions("shared", ["getCourse", "getTags"]),
@@ -205,10 +248,28 @@ export default defineComponent({
     // currentCourse () {
     //   return this.course(this.courseId)
     // },
+    filteredPracticeParticipations() {
+      return (this.practiceParticipations as EventParticipation[]).filter(
+        (_, i) =>
+          this.showAllParticipations ||
+          // show two rows
+          i < 7
+      );
+    },
     isResumingUnstartedPractice(): boolean {
       return (
         this.editingEvent?.id ===
         this.currentCourse.unstarted_practice_events?.[0]?.id
+      );
+    },
+    totalRuleAmount(): number {
+      if (!this.editingEvent) {
+        return 0;
+      }
+      return sum(
+        (this.editingEvent as Event).template?.rules.map((r) =>
+          parseInt(String(r.amount))
+        )
       );
     },
   },

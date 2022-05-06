@@ -1,4 +1,8 @@
-import { EventSearchFilter, ExerciseSearchFilter } from "./interfaces";
+import {
+  CourseSearchFilter,
+  EventSearchFilter,
+  ExerciseSearchFilter,
+} from "./interfaces";
 import store from "@/store";
 import { EventTemplateRule, EventTemplateRuleType, Tag } from "@/models";
 import { filter } from "lodash";
@@ -31,6 +35,12 @@ export const getBlankExerciseSearchFilters = (): ExerciseSearchFilter => ({
   tags: [] as string[],
   exercise_types: [],
   states: [],
+});
+
+export const getBlankCourseSearchFilters = (): CourseSearchFilter => ({
+  name: "",
+  withPrivileges: false,
+  hidden: false,
 });
 
 export const isEmptyFilter = (filter: ExerciseSearchFilter): boolean =>

@@ -12,6 +12,7 @@ module.exports = {
       md: "28rem",
     },
     minHeight: {
+      "12rem": "12rem",
       "21rem": "21rem",
     },
     outlineWidth: {

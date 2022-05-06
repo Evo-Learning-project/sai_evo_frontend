@@ -42,9 +42,12 @@
             class="mt-2 md:ml-4 md:mt-0"
             :min="0"
           ></NumberInput>
-          <Btn class="ml-2" @click="saveRule">{{
-            $t("dialog.default_ok_text")
-          }}</Btn>
+          <Btn
+            class="ml-2"
+            :disabled="editingRuleDirtyAmount < 1"
+            @click="saveRule"
+            >{{ $t("dialog.default_ok_text") }}</Btn
+          >
           <Btn class="ml-2" :outline="true" @click="discardRule">{{
             $t("dialog.default_cancel_text")
           }}</Btn>
@@ -100,10 +103,15 @@ export default defineComponent({
       String(r.clauses?.[0].tags[0].id)
     );
   },
+  watch: {
+    editingRule(newVal) {
+      this.$emit("isEditingRule", newVal != null);
+    },
+  },
   data() {
     return {
       selectedTags: [] as string[],
-      pendingSelectedTags: [] as string[],
+      pendingSelectedTags: null as string[] | null,
       editingRuleDirtyAmount: 1,
       editingRule: null as string | null,
       rulesAutoSaveInstances: {} as Record<
@@ -135,10 +143,20 @@ export default defineComponent({
         value: this.editingRuleDirtyAmount,
       });
       this.editingRule = null;
-      this.selectedTags = this.pendingSelectedTags;
+      if (this.pendingSelectedTags) {
+        this.selectedTags = this.pendingSelectedTags;
+        this.pendingSelectedTags = null;
+      }
       this.$forceUpdate();
     },
     async discardRule() {
+      if (this.pendingSelectedTags != null) {
+        await this.rulesAutoSaveInstances[this.editingRule as string].onChange({
+          field: "amount",
+          value: 0,
+        });
+        this.pendingSelectedTags = null;
+      }
       this.editingRule = null;
     },
     async onRuleUpdateClause(clause: EventTemplateRuleClause) {
@@ -220,7 +238,7 @@ export default defineComponent({
             this.tagsToRules[newlyAdded] ?? (await this.onAddRule(newlyAdded));
 
           this.editingRule = tagRule.id;
-          this.editingRuleDirtyAmount = tagRule.amount;
+          this.editingRuleDirtyAmount = tagRule.amount || 1;
           // defer updating the selected tags array
           this.pendingSelectedTags = val;
         } else {

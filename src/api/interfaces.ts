@@ -8,6 +8,12 @@ export interface ExerciseSearchFilter {
   states: ExerciseState[];
 }
 
+export interface CourseSearchFilter {
+  name: string;
+  hidden: boolean;
+  withPrivileges: boolean;
+}
+
 export interface EventSearchFilter {
   event_type?: EventType;
 }

@@ -300,3 +300,5 @@ export const getEventParticipationMonitorHeaders = (
   );
   return ret;
 };
+
+export const MAX_PRACTICE_EXERCISE_COUNT = 50;

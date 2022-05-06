@@ -180,6 +180,7 @@ export const it = {
       "L'inserimento del numero di matricola e la selezione del corso sono necessari per poter partecipare agli esami. Fallo ora e non pensarci più!",
   },
   misc: {
+    show_recent: "Mostra recenti",
     logged_in: "Login effettuato con successo",
     logged_out: "Logout effettuato con successo",
     select: "Seleziona",
@@ -496,6 +497,8 @@ export const it = {
     select: "Seleziona",
   },
   student_course_dashboard: {
+    show_all_practices: "Mostra tutte",
+    too_many_exercises: "Hai aggiunto troppi esercizi. Selezionane al massimo",
     your_practice_events: "Le tue esercitazioni",
     new_practice_event: "Nuova esercitazione",
     exams_you_participated_in: "Esami a cui hai partecipato",
@@ -685,9 +688,15 @@ export const it = {
     exam_assessment: "Valutazione " + ROUTE_TITLE_EVENT_NAME_TOKEN,
   },
   course_list: {
+    filter_courses: "Filtra corsi",
+    courses_i_teach: "Mostra solo i miei corsi",
+    hidden_courses: "Mostra solo corsi nascosti agli studenti",
     no_courses: "Non ci sono ancora corsi",
+    no_courses_with_filters:
+      "Non ci sono corsi che corrispondono ai criteri di ricerca",
   },
   help_texts: {
+    practice_score: "Basato sugli esercizi correggibili automaticamente",
     student_practice_rule_amount: "Quanti esercizi con questo tag vuoi vedere?",
     exercise_editor: {
       score_if_checked: "Punteggio se la risposta viene selezionata",

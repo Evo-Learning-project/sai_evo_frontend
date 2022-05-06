@@ -20,12 +20,14 @@ const SEARCH_DEBOUNCE_MAX_WAIT_MS = 1000;
 const STUDENT_DEBOUNCE_TEXT_TIME_MS = 5000;
 const STUDENT_DEBOUNCE_TEXT_MAX_WAIT_MS = 10000;
 
-export const logOut = (): void => {
+export const logOut = (showMessage = true): void => {
   store.commit("shared/resetToken");
   router.push({
     name: "Login",
   });
-  setErrorNotification(getTranslatedString("misc.logged_out"), true);
+  if (showMessage) {
+    setErrorNotification(getTranslatedString("misc.logged_out"), true);
+  }
 };
 
 export const redirectToMainView = (): void => {

@@ -1,6 +1,10 @@
 <template>
   <div>
     <div v-if="!firstLoading">
+      <CourseSearchFilters
+        class="mb-6"
+        v-model="searchFilters"
+      ></CourseSearchFilters>
       <div class="banner banner-danger" v-if="!user.is_teacher && !user.mat">
         <!-- <span class="material-icons-two-tone two-tone-danger"> school </span> -->
         <div class="w-full">
@@ -41,7 +45,7 @@
       </div>
       <div class="grid gap-4 md:gap-8 md:grid-cols-3">
         <CourseListItem
-          v-for="course in coursesSorted"
+          v-for="course in coursesFiltered"
           :key="'course-' + course.id"
           :course="course"
           class=""
@@ -74,6 +78,20 @@
       </p>
       <h2 class="opacity-40">{{ $t("course_list.no_courses") }}</h2>
     </div>
+    <div
+      class="flex flex-col w-full text-center select-none mt-28"
+      v-if="!firstLoading && courses.length > 0 && coursesFiltered.length === 0"
+    >
+      <p
+        style="font-size: 10rem"
+        class="-mt-12 material-icons-outlined opacity-10"
+      >
+        search_off
+      </p>
+      <h2 class="opacity-40">
+        {{ $t("course_list.no_courses_with_filters") }}
+      </h2>
+    </div>
   </div>
 </template>
 
@@ -87,6 +105,9 @@ import CourseListItemSkeleton from "@/components/ui/skeletons/CourseListItemSkel
 import NumberInput from "@/components/ui/NumberInput.vue";
 import Btn from "@/components/ui/Btn.vue";
 import { Course } from "@/models";
+import { getBlankCourseSearchFilters } from "@/api/utils";
+import { CourseSearchFilter } from "@/api/interfaces";
+import CourseSearchFilters from "@/components/shared/CourseSearchFilters.vue";
 const { mapState, mapActions } = createNamespacedHelpers("shared");
 
 export default defineComponent({
@@ -97,16 +118,25 @@ export default defineComponent({
     CourseListItemSkeleton,
     NumberInput,
     Btn,
+    CourseSearchFilters,
   },
   async created() {
     await this.withFirstLoading(async () =>
       this.$store.dispatch("shared/getCourses")
     );
+    this.searchFilters.withPrivileges = this.user.is_teacher;
   },
   data() {
     return {
       dirtyMat: "",
+      searchFilters: getBlankCourseSearchFilters(),
     };
+  },
+  watch: {
+    // searchFilters: {
+    //   handler(newVal) {},
+    //   deep: true,
+    // },
   },
   methods: {
     ...mapActions(["updateUser"]),
@@ -122,6 +152,16 @@ export default defineComponent({
   },
   computed: {
     ...mapState(["courses", "user"]),
+    coursesFiltered(): Course[] {
+      const filters = this.searchFilters;
+      return this.coursesSorted.filter(
+        (c) =>
+          (filters.name.length === 0 ||
+            c.name.toLowerCase().includes(filters.name.toLowerCase())) &&
+          (!filters.withPrivileges || (c.privileges?.length ?? 0) > 0) &&
+          c.hidden === filters.hidden
+      );
+    },
     coursesSorted(): Course[] {
       return ([...this.courses] as Course[]).sort((a, b) => {
         if (a.creator?.id == this.user.id) {
