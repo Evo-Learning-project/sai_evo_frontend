@@ -6,7 +6,7 @@
       </span>
       <h3 class="">{{ $t("course_list.filter_courses") }}</h3>
     </div>
-    <div class="flex flex-col flex-wrap md:items-center md:flex-row">
+    <div class="flex flex-col flex-wrap mb-3 md:items-center md:flex-row">
       <TextInput
         class="w-full mt-2 mr-auto md:w-1/3"
         :modelValue="modelValue.name"
