@@ -57,7 +57,7 @@
         v-html="course.description"
       ></p>
     </div>
-    <div class="flex flex-col items-center mt-auto space-y-2">
+    <div class="flex flex-col items-center mt-auto mb-2.5 space-y-2">
       <router-link
         class="w-full"
         :to="{
