@@ -8,7 +8,7 @@
     </div>
     <div class="flex flex-col flex-wrap md:items-center md:flex-row">
       <TextInput
-        class="w-1/3 mt-2 mr-auto"
+        class="w-full mt-2 mr-auto md:w-1/3"
         :modelValue="modelValue.name"
         @update:modelValue="emitUpdate('name', $event)"
         :rightIcon="'search'"
