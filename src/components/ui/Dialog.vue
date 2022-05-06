@@ -3,7 +3,7 @@
     <!--@after-enter="showContent = true"-->
     <!--@after-leave="$emit(choice)"-->
     <div
-      style="z-index: 51"
+      style="z-index: 1000"
       class="fixed top-0 left-0 flex items-center justify-center w-full h-full"
     >
       <div

@@ -3,18 +3,21 @@
     <label class="absolute top-2 z-10 left-1.5 origin-0 fixed-label"
       ><slot></slot
     ></label>
-    <vue-tags-input
-      :add-only-from-autocomplete="existingOnly"
-      v-model="tag"
-      :tags="processedModelValue"
-      :allow-edit-tags="true"
-      :placeholder="$slots.default ? '' : placeholder"
-      @before-adding-tag="beforeAddingTag($event)"
-      @before-deleting-tag="beforeDeletingTag($event)"
-      :autocomplete-items="autoCompleteItems"
-      :autocomplete-min-length="alwaysShowAutocomplete ? 0 : 1"
-      :autocomplete-filter-duplicates="false"
-    />
+    <div class="tags-input-container">
+      <VueTagsInput
+        :add-only-from-autocomplete="existingOnly"
+        v-model="tag"
+        class=""
+        :tags="processedModelValue"
+        :allow-edit-tags="true"
+        :placeholder="$slots.default ? '' : placeholder"
+        @before-adding-tag="beforeAddingTag($event)"
+        @before-deleting-tag="beforeDeletingTag($event)"
+        :autocomplete-items="autoCompleteItems"
+        :autocomplete-min-length="alwaysShowAutocomplete ? 0 : 1"
+        :autocomplete-filter-duplicates="false"
+      />
+    </div>
   </div>
 
   <!--@tags-changed="newTags => onTagsChanged(newTags)"-->
@@ -157,5 +160,18 @@ export default defineComponent({
   display: flex;
   padding: 4px;
   flex-wrap: wrap;
+  border-top-left-radius: 2px;
+  border-top-right-radius: 2px;
+}
+.tags-input-container {
+  border-bottom: 2px solid rgb(229, 231, 235) !important;
+  transition-property: border;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+  transition-duration: 300ms;
+}
+
+.tags-input-container:focus-within {
+  border-bottom: 2px solid #303f9f !important;
 }
 </style>

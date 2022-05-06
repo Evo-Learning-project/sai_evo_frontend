@@ -14,7 +14,7 @@
       />
     </div>
     <label
-      class="absolute -z-1 top-2 left-3 origin-0"
+      class="absolute -z-1 top-2 left-2 origin-0"
       :class="{ 'fixed-label': modelValue?.length > 0 }"
     >
       <slot></slot>
@@ -93,7 +93,7 @@ export default defineComponent({
 }
 
 .ql-editor-container:focus-within {
-  border-bottom: 2px solid rgb(72, 91, 202) !important;
+  border-bottom: 2px solid #303f9f !important;
 }
 
 .ql-editor-container {
@@ -115,24 +115,22 @@ export default defineComponent({
   text-align: left;
   white-space: pre-wrap;
   word-wrap: break-word;
+  font-family: "Source Sans Pro", "Helvetica Neue", "Helvetica", "Arial",
+    sans-serif !important;
 }
 .ql-container.ql-snow {
   border: 0 !important; /*1px solid #ccc;*/
 }
 
-.ql-container.ql-snow,
-.ql-toolbar.ql-snow {
-  /* background-color: rgb(243, 244, 246); */
-}
-
 .ql-container.ql-snow:focus-within {
-  border: 1px solid rgb(72, 91, 202);
+  border: 1px solid #303f9f;
 }
 .ql-toolbar.ql-snow {
   order: 12 !important;
   border: 0 !important; /* 1px solid #ccc !important; */
   box-sizing: border-box;
-  font-family: "Helvetica Neue", "Helvetica", "Arial", sans-serif;
+  font-family: "Source Sans Pro", "Helvetica Neue", "Helvetica", "Arial",
+    sans-serif !important;
   padding: 8px;
 }
 </style>

@@ -9,11 +9,11 @@
     <div class="mt-4">
       <div
         class="user-content"
-        v-if="currentTab === ProgrammingExerciseTabs.TEXT"
+        v-show="currentTab === ProgrammingExerciseTabs.TEXT"
         v-html="exercise.text"
       ></div>
       <div
-        v-else-if="currentTab === ProgrammingExerciseTabs.EDITOR"
+        v-if="currentTab === ProgrammingExerciseTabs.EDITOR"
         class="relative flex"
       >
         <CodeEditor
@@ -77,7 +77,7 @@
           >
         </CodeEditor>
       </div>
-      <div v-if="currentTab === ProgrammingExerciseTabs.TEST_CASES">
+      <div v-show="currentTab === ProgrammingExerciseTabs.TEST_CASES">
         <div
           class="my-8"
           v-for="(testcase, index) in exercise.testcases"
@@ -116,7 +116,7 @@ import SegmentedControls from "../ui/SegmentedControls.vue";
 import CodeEditor from "../ui/CodeEditor.vue";
 import ExerciseTestCase from "./ExerciseTestCase.vue";
 //import Btn from "../ui/Btn.vue";
-import { loadingMixin } from "@/mixins";
+import { loadingMixin, texMixin } from "@/mixins";
 //import Backdrop from "../ui/Backdrop.vue";
 import CodeExecutionResults from "./CodeExecutionResults.vue";
 import { SelectableOption } from "@/interfaces";
@@ -124,25 +124,7 @@ import Spinner from "../ui/Spinner.vue";
 export default defineComponent({
   name: "ProgrammingExercise",
   mixins: [loadingMixin],
-  watch: {
-    // executionResults(newVal) {
-    //   console.log("changed execution results", newVal);
-    //   if (this.$refs.executionResultsBackdrop) {
-    //     (this.$refs.executionResultsBackdrop as any).expanded = true;
-    //   }
-    // },
-    // executionState(newVal, oldVal) {
-    //   //console.log(this.executionResults, "ex");
-    //   if (
-    //     newVal === "internal_error" ||
-    //     (oldVal !== "completed" &&
-    //       newVal === "completed" &&
-    //       this.$refs.executionResultsBackdrop)
-    //   ) {
-    //     (this.$refs.executionResultsBackdrop as any).expanded = true;
-    //   }
-    // },
-  },
+  watch: {},
   props: {
     exercise: {
       type: Object as PropType<Exercise>,

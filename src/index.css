@@ -988,13 +988,13 @@
       left: 18%;
     }
     
+
     .toggle-container:hover .toggle-shadow {
-      opacity: 100% !important;
+      opacity: 1;
     }
     .toggle-shadow {
       opacity: 0;
     }
-    
     .toggle-checkbox:checked ~ .toggle-mark::after {
       content: "done";
       position: absolute;
@@ -1016,7 +1016,7 @@
     }
 
     .radio-container:hover .radio-shadow {
-      opacity: 100% !important;
+      opacity: 1;
     }
     .radio-shadow {
       top: -11px;
@@ -1025,7 +1025,7 @@
     }
 
     .checkbox-container:hover .checkbox-shadow {
-      opacity: 100% !important;
+      opacity: 1;
     }
     .checkbox-shadow {
       top: -12.5px;
