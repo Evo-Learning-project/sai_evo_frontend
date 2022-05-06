@@ -356,17 +356,18 @@
     }
 
     .chip-primary {
-      @apply border-0 text-primary bg-primary-light bg-opacity-25 font-semibold !important;
+      @apply border-0 text-primary bg-primary-light bg-opacity-25  !important;
     }
 
     .chip-success {
       @apply border-0 text-success-dark bg-success bg-opacity-25 !important;
     }
 
-    .chip-primary .material-icons-outlined {
+    /* .chip-primary .material-icons-outlined {
       font-family: 'Material Icons Two Tone' !important;
       filter: invert(31%) sepia(65%) saturate(1500%) hue-rotate(212deg) brightness(90%) contrast(87%);
-    }
+    } */
+
     
     .chip-light {
       @apply border-0 text-gray-600 bg-gray-200

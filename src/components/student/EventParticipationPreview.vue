@@ -79,7 +79,7 @@
             </router-link>
             <div class="chip mx-0 order-1 xl:order-2 chip-primary mb-0 pt-0.5">
               <span class="material-icons-outlined text-base mr-1 mt-1.25px">
-                more_horiz
+                update
               </span>
               {{ $t("student_course_dashboard.pending") }}
             </div>

@@ -73,7 +73,11 @@
           <span class="mr-0.5 mt-0.5 text-lg material-icons-outlined">
             chevron_right
           </span>
-          <span class="">{{ $t("courses.go_to_course") }}</span>
+          <span class="text-base md:text-xs xl:text-base 2xl:text-lg">{{
+            user.is_teacher
+              ? $t("courses.access_as_student")
+              : $t("courses.go_to_course")
+          }}</span>
         </Btn></router-link
       >
       <router-link
@@ -87,7 +91,9 @@
           <span class="mr-1 text-lg material-icons-two-tone two-tone-primary">
             shield
           </span>
-          <span class="">{{ $t("courses.course_panel") }}</span>
+          <span class="text-base md:text-xs xl:text-base 2xl:text-lg">{{
+            $t("courses.course_panel")
+          }}</span>
         </Btn></router-link
       >
     </div>
@@ -99,6 +105,7 @@
 import Btn from "@/components/ui/Btn.vue";
 import { Course } from "@/models";
 import { defineComponent, PropType } from "@vue/runtime-core";
+import { mapState } from "vuex";
 import Tooltip from "../ui/Tooltip.vue";
 export default defineComponent({
   name: "CourseListItem",
@@ -117,6 +124,7 @@ export default defineComponent({
     Tooltip,
   },
   computed: {
+    ...mapState("shared", ["user"]),
     canAccessCoursePanel(): boolean {
       return (
         this.course.creator?.id === this.$store.state.shared.user?.id ||

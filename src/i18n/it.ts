@@ -27,6 +27,7 @@ export const it = {
     enroll_title: "Iscriviti al corso",
     course_panel: "Pannello",
     go_to_course: "Vai al corso",
+    access_as_student: "Entra come studente",
   },
   filter_results: {
     title: "Cerca esercizi",
