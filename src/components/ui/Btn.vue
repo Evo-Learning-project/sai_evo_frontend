@@ -19,7 +19,7 @@
         'px-6 py-4.5px font-medium':
           outline && size === 'base' && variant !== 'icon',
         'px-3.5 py-1': size === 'sm' && variant !== 'icon',
-        'px-1.5 py-0.5 text-xs': size === 'xs' && variant !== 'icon',
+        'px-3': size === 'xs' && variant !== 'icon',
         'px-14 py-2 text-lg font-medium': size === 'lg' && variant !== 'icon',
         'text-lightText bg-primary hover:bg-primary-dark shadow-btn':
           !outline && variant === 'primary',
@@ -27,7 +27,7 @@
           !outline && variant === 'secondary',
         'text-danger-dark bg-danger shadow-btn':
           !outline && variant === 'danger',
-        'text-danger-dark border-danger-dark bg-white border':
+        'text-danger-dark border-danger-dark bg-white border hover:bg-danger-dark hover:bg-opacity-5':
           outline && variant === 'danger',
         'text-success-dark bg-success-light shadow-btn':
           !outline && variant === 'success',
@@ -36,11 +36,11 @@
         'focus:outline-danger-dark': variant === 'danger',
         'focus:outline-success': false && variant === 'success',
         'hover:bg-light hover:shadow-inner': variant === 'light',
-        'text-primary bg-transparent border-primary border-1.5 ':
+        'text-primary bg-transparent hover:bg-primary hover:bg-opacity-5 border-primary border-1.5 ':
           outline && variant === 'primary',
         'text-lg font-semibold text-primary hover:bg-light px-6 focus:bg-primary-light focus:bg-opacity-30':
           variant === 'primary-borderless',
-        'text-lg text-secondary font-medium hover:bg-secondary-light hover:bg-opacity-10 px-6 focus:bg-secondary-light focus:bg-opacity-30':
+        'text-lg font-bold text-secondary hover:bg-light px-6 focus:bg-secondary-light focus:bg-opacity-30':
           variant === 'secondary-borderless',
         'text-lg font-bold text-success hover:bg-light px-6 focus:bg-success-light focus:bg-opacity-30':
           variant === 'success-borderless',
@@ -97,7 +97,7 @@
       'text-lightText bg-secondary hover:bg-secondary-dark shadow-btn':
         !outline && variant === 'secondary',
       'text-danger-dark bg-danger shadow-btn': !outline && variant === 'danger',
-      'text-danger-dark border-danger-dark bg-white border':
+      'text-danger-dark border-danger-dark bg-white border hover:bg-danger-dark hover:bg-opacity-5':
         outline && variant === 'danger',
       'text-success-dark bg-success-light shadow-btn':
         !outline && variant === 'success',
@@ -106,7 +106,7 @@
       'focus:outline-danger-dark': variant === 'danger',
       'focus:outline-success': false && variant === 'success',
       'hover:bg-light hover:shadow-inner': variant === 'light',
-      'text-primary bg-transparent border-primary border-1.5 ':
+      'text-primary bg-transparent hover:bg-primary hover:bg-opacity-5 border-primary border-1.5 ':
         outline && variant === 'primary',
       'text-lg font-semibold text-primary hover:bg-light px-6 focus:bg-primary-light focus:bg-opacity-30':
         variant === 'primary-borderless',
