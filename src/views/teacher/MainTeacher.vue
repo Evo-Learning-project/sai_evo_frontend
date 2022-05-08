@@ -25,13 +25,15 @@
     <!-- FIXME review shadow here and in the other two spots in this file -->
     <div
       style="box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3); z-index: 50"
-      class="flex-col justify-between hidden duration-200 ease-in-out  md:block bg-primary main-sidebar transition-width"
+      class="flex-col h-full bg-primary"
       :class="{
-        'w-18': !hoveringSidebar,
-        'w-60 hovering-sidebar': hoveringSidebar,
+        'absolute top-0': !fixSideBar,
+        'w-18': !hoveringSidebar && !fixSideBar,
+        'w-2/12 hovering-sidebar ': hoveringSidebar || fixSideBar,
+        'transition-width duration-200 ease-in-out': !unfixingSideBar,
       }"
-      @mouseover="hoveringSidebar = true"
-      @mouseleave="hoveringSidebar = false"
+      @mouseover="onSideBarHover()"
+      @mouseleave="onSideBarLeave()"
       id="desktop-nav"
     >
       <!-- <div
@@ -79,23 +81,13 @@
           >
             <li
               :id="'sidebar-option-' + index"
-              class="
-                sidebar-link-container
-                flex
-                items-center
-                justify-between
-                w-max
-                md:w-11/12
-                px-4
-                py-2.5
-                cursor-pointer
-                hover:transition-colors
-                text-lightText
-                hover:bg-primary-dark hover:duration-100
-              "
+              style="padding-top: 11px; padding-bottom: 11px"
+              class="flex items-center justify-between px-4 cursor-pointer  sidebar-link-container hover:transition-colors text-lightText hover:bg-primary-dark hover:duration-100"
               :class="{
-                'rounded-r-full pl-5': hoveringSidebar,
-                'rounded-full ml-1': !hoveringSidebar,
+                'md:w-full': !fixSideBar,
+                'md:w-11/12': fixSideBar,
+                'rounded-r-full pl-5': hoveringSidebar || fixSideBar,
+                'rounded-full ml-1': !hoveringSidebar && !fixSideBar,
                 'bg-primary-dark pointer-events-none': isRouteActive(option),
               }"
             >
@@ -107,7 +99,7 @@
                 </span>
                 <transition name="fade-quick">
                   <span
-                    v-show="hoveringSidebar"
+                    v-show="hoveringSidebar || fixSideBar"
                     class="ml-4 whitespace-pre sidebar-link-label"
                     :class="{ 'delay-0': hoveringSidebar }"
                     >{{ option.label }}</span
@@ -189,7 +181,14 @@
       </div>
     </div>
     <!-- Sidebar ends -->
-    <div class="flex flex-col w-full px-10 py-6 mx-auto md:w-11/12">
+    <div
+      class="flex flex-col py-6 mx-auto md:w-11/12"
+      :class="{ 'pl-18': !fixSideBar, 'px-10': fixSideBar }"
+    >
+      <!-- TODO move to appropriate place -->
+      <Btn :variant="'icon'" :outline="true" @click="toggleFixSideBar()">
+        <span class="material-icons-outlined">menu</span>
+      </Btn>
       <h1 class="">
         {{ routeTitle }}
       </h1>
@@ -241,6 +240,9 @@ export default defineComponent({
     return {
       showMobileSidebar: false,
       hoveringSidebar: false,
+      sideBarHoverHandle: null as null | number,
+      fixSideBar: true,
+      unfixingSideBar: false,
     };
   },
   mixins: [courseIdMixin, eventIdMixin, coursePrivilegeMixin],
@@ -256,6 +258,30 @@ export default defineComponent({
         option.routeName === this.$route.name ||
         option.children?.includes(this.$route.name as string)
       );
+    },
+    onSideBarHover() {
+      if (this.sideBarHoverHandle == null) {
+        this.sideBarHoverHandle = setTimeout(
+          () => (this.hoveringSidebar = true),
+          300
+        );
+      }
+    },
+    onSideBarLeave() {
+      if (this.sideBarHoverHandle != null) {
+        clearTimeout(this.sideBarHoverHandle);
+        this.sideBarHoverHandle = null;
+      }
+      this.hoveringSidebar = false;
+    },
+    toggleFixSideBar() {
+      if (this.fixSideBar) {
+        this.unfixingSideBar = true;
+        this.fixSideBar = false;
+        this.$nextTick(() => (this.unfixingSideBar = false));
+      } else {
+        this.fixSideBar = true;
+      }
     },
   },
   computed: {
