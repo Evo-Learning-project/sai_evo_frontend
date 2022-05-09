@@ -29,86 +29,108 @@
       :class="{
         'absolute top-0': !fixSideBar,
         'w-18': !hoveringSidebar && !fixSideBar,
-        'w-2/12 hovering-sidebar ': hoveringSidebar || fixSideBar,
+        'w-2/12 hovering-sidebar': hoveringSidebar || fixSideBar,
         'transition-width duration-200 ease-in-out': !unfixingSideBar,
       }"
-      @mouseover="onSideBarHover()"
-      @mouseleave="onSideBarLeave()"
       id="desktop-nav"
     >
-      <!-- <div
-        id="openSideBar"
-        class="absolute z-40 flex items-center justify-center hidden w-10 h-10 mt-16 -mr-10 rounded-tr rounded-br shadow cursor-pointer left-28 top-4 text-lightText bg-primary md:hidden"
-        @click="sidebarHandler(true)"
-      >
-        <span class="material-icons-outlined"> cancel </span>
-      </div>
-      <div
-        id="closeSideBar"
-        class="absolute right-0 flex items-center justify-center hidden w-10 h-10 mt-16 -mr-10 rounded-tr rounded-br shadow cursor-pointer text-lightText bg-primary"
-        @click="sidebarHandler(false)"
-      >
-        <span class="material-icons-outlined"> cancel </span>
-      </div>-->
       <div class="fixed h-full pr-2" style="width: inherit">
-        <!--<div class="flex items-center w-full pl-10 pr-8 mt-4">
-          <img class="w-36" src="../../../public/unipi-logo.svg" />
+        <div class="flex items-center w-full mt-4 ml-1 no-hover-sidebar">
+          <Btn
+            :tooltip="
+              fixSideBar ? $t('misc.unfix_sidebar') : $t('misc.fix_sidebar')
+            "
+            :variant="'icon'"
+            :outline="true"
+            @click="toggleFixSideBar()"
+            class="mx-auto no-hover-sidebar"
+          >
+            <span class="text-gray-200 material-icons-outlined">{{
+              fixSideBar ? "menu_open" : "menu"
+            }}</span>
+          </Btn>
         </div>
         <div
-          v-if="$store.getters['shared/isAuthenticated']"
-          class="flex items-center justify-center w-full pl-2 mx-auto mt-8 mb-4 space-x-1 text-sm text-light"
+          style="border-color: rgba(0, 25, 112, 0.3)"
+          class="ml-2 border-b"
+          :class="[fixSideBar || hoveringSidebar ? 'w-11/12' : 'w-10/12']"
         >
-          <p>{{ $store.getters["shared/email"] }}</p>
-          <Btn @click="logOut()" :variant="'icon'" :outline="true"
-            ><span class="text-lg text-lightText material-icons-outlined">
-              logout
-            </span></Btn
+          &nbsp;
+        </div>
+        <div @mouseover="onSideBarHover($event)" @mouseleave="onSideBarLeave()">
+          <transition name="fade-quick">
+            <div
+              :class="[
+                hoveringSidebar || fixSideBar ? 'opacity-100' : 'opacity-0',
+              ]"
+              class="flex items-center hidden w-full pl-10 pr-8 mt-4 overflow-visible whitespace-pre "
+            >
+              <img class="w-36" src="../../../public/unipi-logo.svg" /></div
+          ></transition>
+
+          <transition name="fade-quick">
+            <div
+              v-if="false && $store.getters['shared/isAuthenticated']"
+              :class="[
+                hoveringSidebar || fixSideBar ? 'opacity-100' : 'opacity-0',
+              ]"
+              class="flex items-center justify-center w-full pl-2 mx-auto mt-8 mb-4 space-x-1 text-sm whitespace-pre  text-light"
+            >
+              <p>{{ $store.getters["shared/email"] }}</p>
+              <Btn @click="logOut()" :variant="'icon'" :outline="true"
+                ><span class="text-lg text-lightText material-icons-outlined">
+                  logout
+                </span></Btn
+              >
+            </div></transition
           >
-        </div>-->
-        <ul class="flex flex-col w-full h-full mt-6">
-          <router-link
-            v-wave="{
-              color: '#a255ff',
-            }"
-            class="relative my-1 overflow-hidden rounded-r-full"
-            @mousedown="onRouteMouseDown"
-            v-for="(option, index) in allowedSidebarOptions"
-            :key="'sidebar-' + option.label"
-            :to="{ name: option.routeName }"
-            :class="{
-              'mt-auto mb-44': false && index == sidebarOptions.length - 1,
-            }"
-          >
-            <li
-              :id="'sidebar-option-' + index"
-              style="padding-top: 11px; padding-bottom: 11px"
-              class="flex items-center justify-between px-4 cursor-pointer  sidebar-link-container hover:transition-colors text-lightText hover:bg-primary-dark hover:duration-100"
+          <ul class="flex flex-col w-full h-full mt-6">
+            <router-link
+              v-wave="{
+                color: '#a255ff',
+              }"
+              class="relative my-1 overflow-hidden rounded-r-full"
+              @mousedown="onRouteMouseDown"
+              v-for="(option, index) in allowedSidebarOptions"
+              :key="'sidebar-' + option.label"
+              :to="{ name: option.routeName }"
               :class="{
-                'md:w-full': !fixSideBar,
-                'md:w-11/12': fixSideBar,
-                'rounded-r-full pl-5': hoveringSidebar || fixSideBar,
-                'rounded-full ml-1': !hoveringSidebar && !fixSideBar,
-                'bg-primary-dark pointer-events-none': isRouteActive(option),
+                'mt-auto mb-44': false && index == sidebarOptions.length - 1,
+                'pl-1.25px': true || (!hoveringSidebar && !fixSideBar),
               }"
             >
-              <div class="flex items-center space-x-2.5">
-                <span
-                  class="text-2xl text-gray-200  material-icons-outlined opacity-70"
-                >
-                  {{ option.icon }}
-                </span>
-                <transition name="fade-quick">
+              <li
+                :id="'sidebar-option-' + index"
+                style="padding-top: 11px; padding-bottom: 11px"
+                class="flex items-center justify-between px-4 cursor-pointer  sidebar-link-container hover:transition-colors text-lightText hover:bg-primary-dark hover:duration-100"
+                :class="{
+                  'md:w-full': true || !fixSideBar,
+                  'md:w-11/12': false && fixSideBar,
+                  'rounded-r-full pl-5 -ml-1.25px':
+                    hoveringSidebar || fixSideBar,
+                  'rounded-full ml-1': !hoveringSidebar && !fixSideBar,
+                  'bg-primary-dark pointer-events-none': isRouteActive(option),
+                }"
+              >
+                <div class="flex items-center space-x-2.5">
                   <span
-                    v-show="hoveringSidebar || fixSideBar"
-                    class="ml-4 whitespace-pre sidebar-link-label"
-                    :class="{ 'delay-0': hoveringSidebar }"
-                    >{{ option.label }}</span
-                  ></transition
-                >
-              </div>
-            </li>
-          </router-link>
-        </ul>
+                    class="text-2xl text-gray-200  material-icons-outlined opacity-70"
+                  >
+                    {{ option.icon }}
+                  </span>
+                  <transition name="fade-quick">
+                    <span
+                      v-show="hoveringSidebar || fixSideBar"
+                      class="ml-4 whitespace-pre sidebar-link-label"
+                      :class="{ 'delay-0': hoveringSidebar }"
+                      >{{ option.label }}</span
+                    ></transition
+                  >
+                </div>
+              </li>
+            </router-link>
+          </ul>
+        </div>
       </div>
     </div>
     <!--Mobile responsive sidebar-->
@@ -182,13 +204,20 @@
     </div>
     <!-- Sidebar ends -->
     <div
-      class="flex flex-col py-6 mx-auto md:w-11/12"
-      :class="{ 'pl-18': !fixSideBar, 'px-10': fixSideBar }"
+      class="flex flex-col py-6"
+      :style="
+        !fixSideBar
+          ? 'padding-left: ' +
+            (routerViewPaddingLeft + 30) +
+            'px; padding-right: 30px'
+          : ''
+      "
+      :class="{
+        'px-10': fixSideBar,
+        'w-full mx-auto': !fixSideBar,
+        'w-10/12 mx-auto': fixSideBar,
+      }"
     >
-      <!-- TODO move to appropriate place -->
-      <Btn :variant="'icon'" :outline="true" @click="toggleFixSideBar()">
-        <span class="material-icons-outlined">menu</span>
-      </Btn>
       <h1 class="">
         {{ routeTitle }}
       </h1>
@@ -221,6 +250,8 @@ import SnackBar from "@/components/ui/SnackBar.vue";
 import Btn from "@/components/ui/Btn.vue";
 import { redirectToMainView } from "@/utils";
 
+const LOCAL_STORAGE_FIX_SIDEBAR_KEY = "sai_evo_fix_sidebar";
+
 export default defineComponent({
   name: "MainTeacher",
   watch: {
@@ -235,14 +266,25 @@ export default defineComponent({
         this.redirectToMainView();
       }
     }, 1500);
+    setTimeout(() => {
+      this.routerViewPaddingLeft =
+        document.getElementById("desktop-nav")?.clientWidth ?? 0;
+      const fixSideBar = JSON.parse(
+        localStorage.getItem(LOCAL_STORAGE_FIX_SIDEBAR_KEY) ?? "false"
+      );
+      this.unfixingSideBar = true;
+      this.fixSideBar = fixSideBar;
+      this.$nextTick(() => (this.unfixingSideBar = false));
+    }, 1);
   },
   data() {
     return {
       showMobileSidebar: false,
       hoveringSidebar: false,
       sideBarHoverHandle: null as null | number,
-      fixSideBar: true,
+      fixSideBar: false,
       unfixingSideBar: false,
+      routerViewPaddingLeft: 0,
     };
   },
   mixins: [courseIdMixin, eventIdMixin, coursePrivilegeMixin],
@@ -259,8 +301,12 @@ export default defineComponent({
         option.children?.includes(this.$route.name as string)
       );
     },
-    onSideBarHover() {
-      if (this.sideBarHoverHandle == null) {
+    onSideBarHover(event: MouseEvent) {
+      console.log((event.target as any).className.split(" "));
+      if (
+        this.sideBarHoverHandle == null &&
+        !(event.target as any).className.split(" ").includes("no-hover-sidebar")
+      ) {
         this.sideBarHoverHandle = setTimeout(
           () => (this.hoveringSidebar = true),
           300
@@ -282,6 +328,10 @@ export default defineComponent({
       } else {
         this.fixSideBar = true;
       }
+      localStorage.setItem(
+        LOCAL_STORAGE_FIX_SIDEBAR_KEY,
+        String(this.fixSideBar)
+      );
     },
   },
   computed: {
