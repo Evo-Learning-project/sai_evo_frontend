@@ -13,11 +13,11 @@
         </p>
       </div>
       <div
-        v-for="(test, index) in slot.execution_results.tests"
+        v-for="(test, index) in filteredExecutionResultsTests"
         :key="'details-' + test.id"
         class="px-6 py-6 -mx-2"
       >
-        <div class="flex items-center mb-2 space-x-3">
+        <div v-if="!onlyErrors" class="flex items-center mb-2 space-x-3">
           <h5 class="">
             {{ $t("programming_exercise.testcase") }} {{ index + 1 }}
           </h5>
@@ -36,6 +36,7 @@
 
         <ExerciseTestCase
           :small="true"
+          v-if="!onlyErrors"
           :test-case="exerciseTestCase(test.id)"
         ></ExerciseTestCase>
         <div v-if="!test.passed && test.stdout" class="mt-3">
@@ -96,12 +97,27 @@ export default defineComponent({
       type: Object as PropType<EventParticipationSlot>,
       required: true,
     },
+    showTestIds: {
+      type: Array as PropType<string[]>,
+      default: () => [],
+    },
+    onlyErrors: {
+      type: Boolean,
+      default: false,
+    },
   },
   methods: {},
   computed: {
     exerciseTestCase() {
       return (id: string) =>
         this.slot.exercise.testcases?.find((t) => t.id == id);
+    },
+    filteredExecutionResultsTests() {
+      return this.slot.execution_results?.tests?.filter(
+        (t) =>
+          this.showTestIds.length === 0 ||
+          this.showTestIds.map((i) => String(i)).includes(String(t.id))
+      );
     },
   },
   components: { ExerciseTestCase, CodeFragment },

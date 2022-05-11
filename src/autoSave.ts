@@ -105,6 +105,10 @@ export class AutoSaveManager<T> {
     }
   }
 
+  isPending(): boolean {
+    return this.state === AutoSaveManagerState.PENDING;
+  }
+
   private wrapRemotePatchFunction(
     callback: RemotePatchFunction<T>
   ): RemotePatchFunction<T> {

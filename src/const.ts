@@ -299,6 +299,7 @@ export const getEventParticipationMonitorHeaders = (
     })
   );
   return ret;
+  // TODO handle case of all exercises shown at once for line 287...
 };
 
 export const MAX_PRACTICE_EXERCISE_COUNT = 50;

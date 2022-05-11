@@ -679,11 +679,11 @@ export const it = {
     unknown_error: "Si è verificato un errore sconosciuto",
   },
   breadcrumbs: {
-    course_list: "Lista dei corsi",
-    course_dashboard: "Dashboard corso " + ROUTE_TITLE_COURSE_NAME_TOKEN,
-    exam_participation_page: "Esame " + ROUTE_TITLE_EVENT_NAME_TOKEN,
-    practice_participation_page: "Esercitazione in corso",
-    submission_review: "Revisione risposte " + ROUTE_TITLE_EVENT_NAME_TOKEN,
+    course_list: "Corsi",
+    course_dashboard: ROUTE_TITLE_COURSE_NAME_TOKEN,
+    exam_participation_page: ROUTE_TITLE_EVENT_NAME_TOKEN,
+    practice_participation_page: "Esercitazione",
+    submission_review: "Revisione " + ROUTE_TITLE_EVENT_NAME_TOKEN,
     practice_review: "Riepilogo esercitazione",
     exam_assessment: "Valutazione " + ROUTE_TITLE_EVENT_NAME_TOKEN,
   },
@@ -696,6 +696,8 @@ export const it = {
       "Non ci sono corsi che corrispondono ai criteri di ricerca",
   },
   help_texts: {
+    testcase_passes: "Test case superato dalla soluzione",
+    testcase_fails: "Test case non superato dalla soluzione",
     practice_score: "Basato sugli esercizi correggibili automaticamente",
     student_practice_rule_amount: "Quanti esercizi con questo tag vuoi vedere?",
     exercise_editor: {

@@ -1,7 +1,44 @@
 <template>
   <div class="flex flex-col">
-    <div class="flex">
-      <div>abc</div>
+    <div class="flex items-center mb-2">
+      <div class="mt-auto">
+        <Spinner class="mb-2 ml-0.5" v-if="executingSolution"></Spinner>
+        <Tooltip
+          :textCode="'testcase_passes'"
+          v-else-if="
+            executionResults &&
+            testCaseExecutionResults &&
+            testCaseExecutionResults?.passed
+          "
+        >
+          <span class="material-icons-outlined text-success-dark"
+            >check_circle</span
+          >
+        </Tooltip>
+        <Tooltip
+          :placement="'bottom'"
+          :textCode="'testcase_fails'"
+          v-else-if="
+            executionResults &&
+            (testCaseExecutionResults ||
+              executionResults.compilation_errors ||
+              executionResults.execution_error)
+          "
+        >
+          <span class="material-icons-outlined text-danger-dark">warning</span>
+          <template v-slot:body>
+            <div
+              class="max-w-lg m-2 overflow-y-scroll rounded-sm  max-h-64 bg-light"
+            >
+              <CodeExecutionResults
+                :slot="executionResultsSlot"
+                :showTestIds="[modelValue.id]"
+                :onlyErrors="true"
+              ></CodeExecutionResults>
+            </div>
+          </template>
+        </Tooltip>
+      </div>
       <div class="ml-auto">
         <Btn
           :outline="true"
@@ -129,7 +166,8 @@
 
 <script lang="ts">
 import {
-  CodeExecutionResults,
+  CodeExecutionResults as ICodeExecutionResults,
+  EventParticipationSlot,
   ExerciseTestCase,
   ExerciseTestCaseType,
   ExerciseType,
@@ -141,6 +179,9 @@ import CodeEditor from "@/components/ui/CodeEditor.vue";
 import SegmentedControls from "@/components/ui/SegmentedControls.vue";
 import { testcaseTypeOptions } from "@/const";
 import Btn from "@/components/ui/Btn.vue";
+import Tooltip from "@/components/ui/Tooltip.vue";
+import Spinner from "@/components/ui/Spinner.vue";
+import CodeExecutionResults from "@/components/shared/CodeExecutionResults.vue";
 
 export default defineComponent({
   name: "TestCaseEditor",
@@ -153,9 +194,12 @@ export default defineComponent({
       type: Number as PropType<ExerciseType.JS | ExerciseType.C>,
       required: true,
     },
-    executionResults: {
-      type: Object as PropType<CodeExecutionResults>,
-      required: true,
+    executionResultsSlot: {
+      type: Object as PropType<EventParticipationSlot>,
+    },
+    executingSolution: {
+      type: Boolean,
+      default: false,
     },
   },
   components: {
@@ -163,6 +207,9 @@ export default defineComponent({
     CodeEditor,
     SegmentedControls,
     Btn,
+    Tooltip,
+    Spinner,
+    CodeExecutionResults,
   },
   data() {
     return {
@@ -177,8 +224,11 @@ export default defineComponent({
     },
   },
   computed: {
+    executionResults(): ICodeExecutionResults | undefined {
+      return this.executionResultsSlot?.execution_results;
+    },
     testCaseExecutionResults(): TestCaseExecutionResults | undefined {
-      return this.executionResults.tests?.find(
+      return this.executionResults?.tests?.find(
         (t) => t.id == this.modelValue.id
       );
     },

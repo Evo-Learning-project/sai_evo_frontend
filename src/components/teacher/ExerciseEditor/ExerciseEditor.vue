@@ -359,9 +359,14 @@
           >
             <template #item="{ element }">
               <TestCaseEditor
+                :executingSolution="
+                  testCaseAutoSaveManagers[element.id].isPending()
+                "
                 :testCaseType="modelValue.exercise_type"
                 @delete="onDeleteTestCase(element.id)"
                 :modelValue="element"
+                :executionResultsSlot="solutionTestSlot"
+                :executionResults="solutionTestSlot?.execution_results"
                 @testCaseUpdate="
                   onUpdateTestCase(element.id, $event.field, $event.value)
                 "
@@ -896,6 +901,7 @@ export default defineComponent({
               payload: { ...testcase, ...changes },
               reFetch,
             });
+            await this.onTestSolution();
           },
           (changes) => {
             this.saving = true;

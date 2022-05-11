@@ -16,7 +16,7 @@
       <transition
         :name="noArrow ? 'tooltip-fade-bounce' : 'tooltip-fade'"
         v-if="textCode || textValue"
-        ><span
+        ><div
           v-if="show"
           class="z-20 max-w-xs md:max-w-max tooltip-text"
           :class="{
@@ -26,9 +26,10 @@
             'tooltip-left': placement === 'left',
             'tooltip-no-arrow tooltip': noArrow,
           }"
-          >{{ helpText }}</span
-        ></transition
-      >
+        >
+          <p>{{ helpText }}</p>
+          <slot name="body"></slot></div
+      ></transition>
     </div>
   </div>
 </template>

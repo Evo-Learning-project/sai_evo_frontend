@@ -170,6 +170,7 @@ export interface EventParticipationSlot {
 export interface CodeExecutionResults {
   state: "running" | "completed" | "internal_error";
   compilation_errors?: string;
+  execution_error?: string;
   tests?: TestCaseExecutionResults[];
 }
 
