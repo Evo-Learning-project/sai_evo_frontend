@@ -1,10 +1,6 @@
 <template>
   <div>
-    <Card
-      :hoverable="false"
-      :border-less="true"
-      class="mb-4 -mt-2 card-filled shadow-elevation"
-    >
+    <Card :hoverable="false" :border-less="true" class="mb-4 -mt-2 card-filled">
       <template v-slot:body>
         <ExerciseSearchFilters
           v-model="searchFilter"

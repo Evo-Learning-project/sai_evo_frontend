@@ -79,7 +79,7 @@
         {{ $t("programming_exercise.compilation_errored") }}:
       </p>
       <CodeFragment
-        :value="slot.execution_results?.compilation_errors"
+        :value="String(slot.execution_results?.compilation_errors)"
       ></CodeFragment>
     </div>
   </div>

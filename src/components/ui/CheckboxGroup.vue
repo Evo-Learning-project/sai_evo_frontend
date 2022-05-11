@@ -26,6 +26,7 @@
             :id="id + '-option-' + index"
             type="checkbox"
             v-model="proxyModelValue"
+            style="min-width: 15px; min-height: 15px"
             :value="option.value"
             class="mr-2 mt-5px"
           />

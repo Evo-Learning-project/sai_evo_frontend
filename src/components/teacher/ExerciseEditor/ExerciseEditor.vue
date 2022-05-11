@@ -4,14 +4,14 @@
       <div
         style="z-index: 59"
         v-show="exerciseLocked"
-        class="absolute top-0 left-0 flex items-center justify-center w-full h-full "
+        class="absolute top-0 left-0 items-center w-full h-full"
       >
         <div
           style="width: 100% !important; height: 100% !important"
           class="absolute z-10 flex w-full h-full transition-none bg-gray-900 rounded  opacity-40"
         ></div>
         <div
-          class="sticky z-50 mx-auto text-center transform rounded  -translate-y-3/4 top-1/2 md:top-1/4 md:w-max"
+          class="sticky z-50 mx-auto mt-40 mb-40 text-center rounded  -translate-y-3/4 md:top-1/4 md:w-max"
         >
           <p
             style="font-size: 10rem"
