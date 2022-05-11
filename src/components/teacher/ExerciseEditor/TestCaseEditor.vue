@@ -1,15 +1,19 @@
 <template>
   <div class="flex flex-col">
-    <div class="ml-auto">
-      <Btn
-        :outline="true"
-        :variant="'icon'"
-        @click="$emit('delete')"
-        :tooltip="$t('exercise_editor.delete_testcase')"
-        class="transition-opacity duration-100 opacity-50 hover:opacity-100"
-        ><span class="text-base material-icons"> delete </span></Btn
-      >
+    <div class="flex">
+      <div>abc</div>
+      <div class="ml-auto">
+        <Btn
+          :outline="true"
+          :variant="'icon'"
+          @click="$emit('delete')"
+          :tooltip="$t('exercise_editor.delete_testcase')"
+          class="transition-opacity duration-100 opacity-50 hover:opacity-100"
+          ><span class="text-base material-icons"> delete </span></Btn
+        >
+      </div>
     </div>
+
     <div
       class="flex flex-col py-3 mb-12 space-y-2  md:flex-row md:space-x-4 md:space-y-0 md:items-start"
     >
@@ -124,7 +128,13 @@
 </template>
 
 <script lang="ts">
-import { ExerciseTestCase, ExerciseTestCaseType, ExerciseType } from "@/models";
+import {
+  CodeExecutionResults,
+  ExerciseTestCase,
+  ExerciseTestCaseType,
+  ExerciseType,
+  TestCaseExecutionResults,
+} from "@/models";
 import { defineComponent, PropType } from "@vue/runtime-core";
 import TextEditor from "@/components/ui/TextEditor.vue";
 import CodeEditor from "@/components/ui/CodeEditor.vue";
@@ -141,6 +151,10 @@ export default defineComponent({
     },
     testCaseType: {
       type: Number as PropType<ExerciseType.JS | ExerciseType.C>,
+      required: true,
+    },
+    executionResults: {
+      type: Object as PropType<CodeExecutionResults>,
       required: true,
     },
   },
@@ -160,6 +174,13 @@ export default defineComponent({
   methods: {
     onUpdate(field: keyof ExerciseTestCase, value: unknown) {
       this.$emit("testCaseUpdate", { field, value });
+    },
+  },
+  computed: {
+    testCaseExecutionResults(): TestCaseExecutionResults | undefined {
+      return this.executionResults.tests?.find(
+        (t) => t.id == this.modelValue.id
+      );
     },
   },
 });

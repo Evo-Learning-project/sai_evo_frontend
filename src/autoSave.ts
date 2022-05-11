@@ -16,6 +16,11 @@ type PatchFunction<T> = (
 export type FieldList<T> = (keyof T)[];
 type FieldValuesObject<T> = Partial<T>;
 
+enum AutoSaveManagerState {
+  UP_TO_DATE,
+  PENDING,
+  ERROR,
+}
 export class AutoSaveManager<T> {
   instance: T;
   unsavedChanges: FieldValuesObject<T>;
@@ -28,6 +33,7 @@ export class AutoSaveManager<T> {
   debouncedFields: FieldList<T>;
   revertOnFailure: boolean;
   alwaysPatchLocal: boolean;
+  state: AutoSaveManagerState;
 
   constructor(
     instance: T,
@@ -55,6 +61,7 @@ export class AutoSaveManager<T> {
     this.cleanupFunction = cleanupFunction;
     this.revertOnFailure = revertOnFailure;
     this.alwaysPatchLocal = alwaysPatchLocal;
+    this.state = AutoSaveManagerState.UP_TO_DATE;
   }
 
   async onChange({
@@ -64,7 +71,7 @@ export class AutoSaveManager<T> {
     field: keyof T;
     value: unknown;
   }): Promise<void> {
-    //console.log("ONCHANGE", field, value, "UNSAVED", this.unsavedChanges);
+    this.state = AutoSaveManagerState.PENDING;
 
     // record new change to field
     this.unsavedChanges[field] = value as any;
@@ -92,7 +99,10 @@ export class AutoSaveManager<T> {
   }
 
   async flush(): Promise<void> {
-    await this.remotePatchFunction.flush();
+    console.log("flushing", this.instance);
+    if (this.state !== AutoSaveManagerState.UP_TO_DATE) {
+      await this.remotePatchFunction.flush();
+    }
   }
 
   private wrapRemotePatchFunction(
@@ -112,6 +122,7 @@ export class AutoSaveManager<T> {
         // reset bookkeeping about recent changes
         this.unsavedChanges = {};
         this.beforeChanges = {};
+        this.state = AutoSaveManagerState.UP_TO_DATE;
 
         // call user-supplied success callback
         this.successFunction?.();
@@ -123,6 +134,7 @@ export class AutoSaveManager<T> {
           // roll back unsaved changes
           this.localPatchFunction(this.beforeChanges, true);
         }
+        this.state = AutoSaveManagerState.ERROR;
       } finally {
         this.cleanupFunction?.();
       }

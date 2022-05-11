@@ -183,6 +183,7 @@ export default defineComponent({
         string,
         AutoSaveManager<EventParticipationSlot>
       >,
+      lastSlotChanged: null as EventParticipationSlot | null,
       saving: false,
       savingError: false,
       mounted: false,
@@ -267,25 +268,20 @@ export default defineComponent({
       this.showConfirmDialog = false;
       await this.withLoading(async () => {
         // flush any pending slots to make sure the most recent content is saved
-        for (const s of this.proxyModelValue.slots) {
-          if (s.exercise.exercise_type !== ExerciseType.JS) {
-            //console.log("flushing nonjs", s.id);
-            await this.slotAutoSaveManagers[s.id].flush();
-            //console.log("flushed nonjs", s.id);
+        //const s of this.proxyModelValue.slots
+        for (const s of Object.values(this.slotAutoSaveManagers)) {
+          if (s.instance.exercise.exercise_type !== ExerciseType.JS) {
+            await s.flush();
           } else {
-            //console.log("flushing js");
-            await this.onRunCode(s);
-            //console.log("flushed js");
+            await this.onRunCode(s.instance);
           }
         }
-        //console.log("turning in");
         await this.partialUpdateEventParticipation({
           courseId: this.courseId,
           changes: {
             state: EventParticipationState.TURNED_IN,
           },
         });
-        //console.log("turned in");
       });
 
       this.$router.push({
@@ -339,7 +335,13 @@ export default defineComponent({
       field: keyof EventParticipationSlot,
       value: unknown
     ) {
-      console.log("ONCHANGE", field, value);
+      // if a new slot has been changed, flush any pending slots
+      if (this.lastSlotChanged != null && this.lastSlotChanged.id != slot.id) {
+        for (const s of Object.values(this.slotAutoSaveManagers)) {
+          await s.flush();
+        }
+      }
+      this.lastSlotChanged = slot;
       await this.slotAutoSaveManagers[slot.id].onChange({ field, value });
     },
     instantiateSlotAutoSaveManager(slot: EventParticipationSlot) {

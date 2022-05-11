@@ -170,11 +170,13 @@ export interface EventParticipationSlot {
 export interface CodeExecutionResults {
   state: "running" | "completed" | "internal_error";
   compilation_errors?: string;
-  tests?: {
-    id: string;
-    passed: boolean;
-    error?: string;
-    stdout?: string;
-    stderr?: string;
-  }[];
+  tests?: TestCaseExecutionResults[];
+}
+
+export interface TestCaseExecutionResults {
+  id: string;
+  passed: boolean;
+  error?: string;
+  stdout?: string;
+  stderr?: string;
 }

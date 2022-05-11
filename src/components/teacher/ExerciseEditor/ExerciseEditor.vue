@@ -668,11 +668,6 @@ export default defineComponent({
           this.modelValue.id
         );
         this.solutionTestSlot = fakeSlot;
-        this.$nextTick(() => {
-          if (this.$refs.executionResultsBackdrop) {
-            (this.$refs.executionResultsBackdrop as any).expanded = true;
-          }
-        });
       } catch (e) {
         this.setErrorNotification(e);
       } finally {
