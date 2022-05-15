@@ -17,6 +17,7 @@
         </Tooltip>
         <Tooltip
           :placement="'bottom'"
+          :allowHoverOnText="true"
           :textCode="'testcase_fails'"
           v-else-if="
             executionResults &&

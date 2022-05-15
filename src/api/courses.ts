@@ -70,7 +70,14 @@ export async function deleteCourse(courseId: string): Promise<void> {
   return response.data;
 }
 
-export async function getTags(courseId: string): Promise<Tag[]> {
-  const response = await axios.get(`/courses/${courseId}/tags/`);
+export async function getTags(
+  courseId: string,
+  includeExerciseCount: boolean
+): Promise<Tag[]> {
+  const response = await axios.get(
+    `/courses/${courseId}/tags/${
+      includeExerciseCount ? "?include_exercise_count=1" : ""
+    }`
+  );
   return response.data;
 }

@@ -188,7 +188,7 @@ export default defineComponent({
   },
   async created() {
     await this.withLoading(async () => {
-      await this.getTags(this.courseId);
+      await this.getTags({ courseId: this.courseId });
       await this.getEvent({
         courseId: this.courseId,
         eventId: this.eventId,

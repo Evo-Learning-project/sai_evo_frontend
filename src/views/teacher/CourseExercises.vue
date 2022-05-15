@@ -144,7 +144,7 @@ export default defineComponent({
         courseId: this.courseId,
         fromFirstPage: true,
       });
-      await this.getTags(this.courseId);
+      await this.getTags({ courseId: this.courseId });
     });
   },
   mounted() {

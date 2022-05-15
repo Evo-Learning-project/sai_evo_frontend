@@ -82,6 +82,7 @@ export interface ExerciseTestCase {
 export interface Tag {
   id?: string;
   name: string;
+  public_exercises?: number;
 }
 
 export interface Event extends Lockable {

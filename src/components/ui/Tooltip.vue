@@ -1,7 +1,13 @@
 <template>
   <div>
-    <div class="tooltip w-max" @mouseover="showText()" @mouseleave="hideText()">
+    <div
+      class="tooltip w-max"
+      @mouseover="allowHoverOnText ? showText() : null"
+      @mouseleave="allowHoverOnText ? hideText() : null"
+    >
       <span
+        @mouseover="!allowHoverOnText ? showText() : null"
+        @mouseleave="!allowHoverOnText ? hideText() : null"
         v-if="!$slots.default"
         :class="{
           'hover:bg-gray-200 hover:bg-opacity-80 rounded-md px-1.5 transition-colors duration-100 tooltip-handle': true,
@@ -10,7 +16,12 @@
       >
         help_outline
       </span>
-      <div class="tooltip-handle" v-else>
+      <div
+        @mouseover="!allowHoverOnText ? showText() : null"
+        @mouseleave="!allowHoverOnText ? hideText() : null"
+        class="tooltip-handle"
+        v-else
+      >
         <slot> </slot>
       </div>
       <transition
@@ -54,6 +65,10 @@ export default defineComponent({
       default: "right",
     },
     noArrow: {
+      type: Boolean,
+      default: false,
+    },
+    allowHoverOnText: {
       type: Boolean,
       default: false,
     },

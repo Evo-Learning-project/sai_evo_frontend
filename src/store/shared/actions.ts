@@ -59,8 +59,14 @@ export const actions = {
     const courses = await getCourses();
     commit("setCourses", courses);
   },
-  getTags: async ({ commit }: { commit: Commit }, courseId: string) => {
-    const tags = await getTags(courseId);
+  getTags: async (
+    { commit }: { commit: Commit },
+    {
+      courseId,
+      includeExerciseCount = false,
+    }: { courseId: string; includeExerciseCount: boolean }
+  ) => {
+    const tags = await getTags(courseId, includeExerciseCount);
     commit("setTags", tags);
   },
 };

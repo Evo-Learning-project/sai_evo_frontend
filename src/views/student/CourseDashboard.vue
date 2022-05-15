@@ -191,7 +191,10 @@ export default defineComponent({
   mixins: [courseIdMixin, loadingMixin],
   async created() {
     await this.withFirstLoading(async () => {
-      await this.getTags(this.courseId);
+      await this.getTags({
+        courseId: this.courseId,
+        includeExerciseCount: true,
+      });
       await this.getCourse({ courseId: this.courseId });
     });
   },

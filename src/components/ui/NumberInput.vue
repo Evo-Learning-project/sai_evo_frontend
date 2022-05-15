@@ -20,6 +20,7 @@
     <input
       type="number"
       :min="min"
+      :max="max"
       placeholder=" "
       :value="modelValue"
       @input="onInput($event.target.value)"
@@ -36,6 +37,12 @@
       <span class="text-base text-muted material-icons-outlined">
         {{ rightIcon }}
       </span>
+    </div>
+    <div
+      v-if="$slots.rightHint"
+      class="absolute z-10 -mb-1.25px opacity-70 bottom-2 text-muted right-7"
+    >
+      <slot name="rightHint"></slot>
     </div>
     <div
       v-if="leftIcon.length > 0"
@@ -75,7 +82,11 @@ export default defineComponent({
     },
     min: {
       type: Number,
-      default: -10000000,
+      default: -1000000000,
+    },
+    max: {
+      type: Number,
+      default: 1000000000,
     },
   },
   methods: {

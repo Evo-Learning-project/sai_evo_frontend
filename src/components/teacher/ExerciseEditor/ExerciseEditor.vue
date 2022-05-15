@@ -803,7 +803,7 @@ export default defineComponent({
         tag,
         isPublic,
       });
-      await this.getTags(this.courseId);
+      await this.getTags({ courseId: this.courseId });
     },
     async onRemoveTag(tag: string, isPublic: boolean) {
       await this.removeExerciseTag({

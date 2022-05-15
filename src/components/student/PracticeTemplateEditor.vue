@@ -39,9 +39,14 @@
         <div class="flex items-center">
           <NumberInput
             v-model="editingRuleDirtyAmount"
-            class="mt-2 md:ml-4 md:mt-0"
+            class="mt-2 w-28 md:ml-4 md:mt-0"
             :min="0"
-          ></NumberInput>
+            :max="editingRuleTag?.public_exercises ?? 100000000"
+          >
+            <template v-slot:rightHint>
+              /{{ editingRuleTag?.public_exercises ?? "" }}</template
+            ></NumberInput
+          >
           <Btn
             class="ml-2"
             :disabled="editingRuleDirtyAmount < 1"
@@ -78,6 +83,7 @@ import Chipset from "../ui/Chipset.vue";
 import { SelectableOption } from "@/interfaces";
 import NumberInput from "../ui/NumberInput.vue";
 import Tag from "../ui/Tag.vue";
+import { getTranslatedString as _ } from "@/i18n";
 const { mapActions, mapMutations } = createNamespacedHelpers("student");
 
 export default defineComponent({
@@ -220,10 +226,16 @@ export default defineComponent({
       if (!this.tags?.length) {
         return [];
       }
-      return (this.tags as ITag[]).map((t) => ({
-        value: String(t.id),
-        content: t.name,
-      }));
+      return [...(this.tags as ITag[])]
+        .sort((a, b) => (b.public_exercises ?? 0) - (a.public_exercises ?? 0))
+        .map((t) => ({
+          value: String(t.id),
+          content: t.name,
+          description:
+            String(t.public_exercises ?? 0) +
+            " " +
+            _("student_course_dashboard.available_exercises_tooltip"),
+        }));
     },
     proxyModelValue: {
       get() {

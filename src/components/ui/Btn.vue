@@ -6,7 +6,7 @@
     :textValue="tooltip"
   >
     <button
-      v-wave
+      v-wave="disabled ? false : {}"
       @mousedown="onMouseDown"
       :disabled="disabled || loading"
       class="relative overflow-hidden  disabled:cursor-not-allowed disabled:opacity-70"
@@ -77,7 +77,7 @@
   </Tooltip>
   <button
     v-else
-    v-wave
+    v-wave="disabled ? false : {}"
     @mousedown="onMouseDown"
     :disabled="disabled || loading"
     class="relative overflow-hidden  disabled:cursor-not-allowed disabled:opacity-70"

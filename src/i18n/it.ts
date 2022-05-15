@@ -512,6 +512,7 @@ export const it = {
     draft_practice: "Bozza esercitazione",
     pending: "In corso",
     practice_summary: "Riepilogo",
+    available_exercises_tooltip: "esercizi disponibili",
     no_public_exercises:
       "Non puoi iniziare un'esercitazione perché i docenti del corso non hanno ancora aggiunto esercizi",
   },

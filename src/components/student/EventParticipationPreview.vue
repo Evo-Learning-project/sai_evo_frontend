@@ -33,6 +33,8 @@
             </span>
             {{ $t("student_course_dashboard.pending") }}
           </div>
+          <img class="hidden my-4" src="../../../public/thumb.png" />
+
           <div
             class="flex mx-auto"
             v-if="

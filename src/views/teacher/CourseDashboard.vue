@@ -300,7 +300,6 @@ export default defineComponent({
     } finally {
       this.loadingExercises = false;
     }
-    //await this.getTags(this.courseId)
   },
   props: {
     showTour: {
@@ -333,7 +332,7 @@ export default defineComponent({
     };
   },
   methods: {
-    ...mapActions(["getExercises", "getEvents", "getTags", "updateCourse"]),
+    ...mapActions(["getExercises", "getEvents", "updateCourse"]),
     editCourseName() {
       this.dirtyCourseName = this.currentCourse.name;
       this.editingName = true;
