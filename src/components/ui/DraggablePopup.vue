@@ -58,8 +58,8 @@ export default defineComponent({
       overlayHeight: 0,
       overlayWidth: 0,
       positions: {
-        clientX: undefined,
-        clientY: undefined,
+        clientX: 0,
+        clientY: 0,
         movementX: 0,
         movementY: 0,
       },
@@ -67,7 +67,7 @@ export default defineComponent({
     };
   },
   methods: {
-    dragMouseDown: function (event) {
+    dragMouseDown: function (event: any) {
       event.preventDefault();
       // get the mouse cursor position at startup:
       this.positions.clientX = event.clientX;
@@ -75,34 +75,36 @@ export default defineComponent({
       document.onmousemove = this.elementDrag;
       document.onmouseup = this.closeDragElement;
     },
-    elementDrag: function (event) {
+    elementDrag: function (event: any) {
       event.preventDefault();
-      this.positions.movementX = this.positions.clientX - event.clientX;
-      this.positions.movementY = this.positions.clientY - event.clientY;
+      this.positions.movementX = (this.positions?.clientX ?? 0) - event.clientX;
+      this.positions.movementY = (this.positions?.clientY ?? 0) - event.clientY;
       this.positions.clientX = event.clientX;
       this.positions.clientY = event.clientY;
       const maxX = window.innerWidth;
       const maxY = window.innerHeight;
       // prevent scrolling past the top or left of the parent element
       const resX = Math.max(
-        this.$refs.draggableContainer.offsetLeft - this.positions.movementX,
+        (this.$refs.draggableContainer as any).offsetLeft -
+          this.positions.movementX,
         -100
       );
       const resY = Math.max(
-        this.$refs.draggableContainer.offsetTop - this.positions.movementY,
+        (this.$refs.draggableContainer as any).offsetTop -
+          this.positions.movementY,
         -200
       );
       const popup = document.getElementById(
         this.containerId + "-draggable-container"
       );
-      const popupW = popup.offsetWidth;
-      const popupH = popup.offsetHeight;
+      const popupW = popup?.offsetWidth ?? 0;
+      const popupH = popup?.offsetHeight ?? 0;
       // set the element's new position:
       // prevent scrolling out of page from the right or bottom
-      this.$refs.draggableContainer.style.top =
+      (this.$refs.draggableContainer as any).style.top =
         // (true || resY < maxY - popupH ? resY : maxY - popupH)
         resY + "px";
-      this.$refs.draggableContainer.style.left =
+      (this.$refs.draggableContainer as any).style.left =
         //(true || resX < maxX - popupW ? resX : maxX - popupW)
         resX + "px";
     },
