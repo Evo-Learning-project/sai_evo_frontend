@@ -525,6 +525,7 @@ export const it = {
     rule_amount_2: "vuoi vedere?",
   },
   programming_exercise: {
+    open_text_popup: "Apri popup",
     tab_text: "Testo",
     tab_testcases: "Test case",
     tab_editor: "Editor",

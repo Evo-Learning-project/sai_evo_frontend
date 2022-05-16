@@ -1,17 +1,48 @@
 <template>
-  <div>
+  <div class="relative">
     <div class="mx-auto md:w-2/5">
       <SegmentedControls
         v-model="currentTab"
         :options="filteredTabsOptions"
       ></SegmentedControls>
     </div>
+    <!-- <transition name="bounce"> -->
+    <DraggablePopup
+      @close="showPopup = false"
+      v-show="showPopup"
+      :title="$t('programming_exercise.tab_text')"
+    >
+      <div class="user-content" v-html="exercise.text"></div>
+    </DraggablePopup>
+    <!-- </transition> -->
+
     <div class="mt-4">
       <div
         class="user-content"
         v-show="currentTab === ProgrammingExerciseTabs.TEXT"
-        v-html="exercise.text"
-      ></div>
+      >
+        <div class="flex w-full -mt-5">
+          <Btn
+            @click="onOpenPopup()"
+            :disabled="showPopup"
+            class="ml-auto -mr-2"
+            :variant="'icon'"
+            :outline="'true'"
+            :tooltip="$t('programming_exercise.open_text_popup')"
+          >
+            <!-- <span style="font-size: 1.1rem !important" class="material-icons"
+              >open_in_full</span
+            > -->
+            <svg style="width: 26px; height: 26px" viewBox="0 0 24 24">
+              <path
+                fill="currentColor"
+                d="M4,8H8V4H20V16H16V20H4V8M16,8V14H18V6H10V8H16M6,12V18H14V12H6Z"
+              />
+            </svg>
+          </Btn>
+        </div>
+        <div v-html="exercise.text"></div>
+      </div>
       <div
         v-if="currentTab === ProgrammingExerciseTabs.EDITOR"
         class="relative flex"
@@ -121,9 +152,11 @@ import { loadingMixin, texMixin } from "@/mixins";
 import CodeExecutionResults from "./CodeExecutionResults.vue";
 import { SelectableOption } from "@/interfaces";
 import Spinner from "../ui/Spinner.vue";
+import Btn from "../ui/Btn.vue";
+import DraggablePopup from "../ui/DraggablePopup.vue";
 export default defineComponent({
   name: "ProgrammingExercise",
-  mixins: [loadingMixin],
+  mixins: [loadingMixin, texMixin],
   watch: {},
   props: {
     exercise: {
@@ -158,6 +191,7 @@ export default defineComponent({
       showExecutingMessage: false,
       runCoolDown: 0,
       ExerciseType,
+      showPopup: false,
     };
   },
   methods: {
@@ -170,6 +204,10 @@ export default defineComponent({
           clearInterval(coolDownHandle);
         }
       }, 1000);
+    },
+    onOpenPopup() {
+      this.showPopup = true;
+      this.triggerTexRender();
     },
   },
   computed: {
@@ -198,6 +236,8 @@ export default defineComponent({
     // Backdrop,
     CodeExecutionResults,
     Spinner,
+    Btn,
+    DraggablePopup,
   },
 });
 </script>
