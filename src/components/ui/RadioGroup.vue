@@ -15,6 +15,7 @@
           space-x-1.5
           cursor-pointer
           items-top
+          radio-item
         "
         :class="{ 'radio-container': !disabled }"
         v-for="(option, index) in options"

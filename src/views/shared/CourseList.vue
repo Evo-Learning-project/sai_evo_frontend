@@ -33,20 +33,6 @@
             <NumberInput class="w-96 text-darkText" v-model="dirtyMat"
               >{{ $t("student_data.your_mat") }}
             </NumberInput>
-            <!-- <Btn
-              :variant="'icon'"
-              :loading="localLoading"
-              :disabled="String(dirtyMat).length === 0"
-              :outline="true"
-              @click="onSaveMat"
-            >
-              <span
-                class="font-bold material-icons-outlined text-success"
-                style="font-size: 1.25rem"
-              >
-                done
-              </span>
-            </Btn> -->
             <Btn
               :variant="'primary'"
               :loading="localLoading"

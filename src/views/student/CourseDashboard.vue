@@ -22,7 +22,7 @@
     <div>
       <h2>{{ $t("student_course_dashboard.your_practice_events") }}</h2>
       <Btn
-        v-if="!firstLoading && practiceParticipations.length > 7"
+        v-if="!firstLoading && practiceParticipations.length > 3"
         :variant="'icon'"
         :outline="true"
         class="mb-4 -mt-2"
@@ -43,14 +43,14 @@
         ></Btn
       >
       <div
-        class="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4"
+        class="grid grid-cols-1 gap-4 md:grid-cols-3 lg:grid-cols-4"
         v-if="!firstLoading"
       >
         <div v-if="(currentCourse.unstarted_practice_events?.length ?? 0) > 0">
           <Card
             :hoverable="false"
             :margin-less="true"
-            class="relative h-48 overflow-hidden text-gray-600 cursor-pointer  elevate-when-pressed bg-light"
+            class="relative h-40 overflow-hidden text-gray-600 cursor-pointer  md:h-full elevate-when-pressed bg-light"
             v-wave
             @mousedown="onCardMouseDown"
             @click="
@@ -58,14 +58,16 @@
             "
           >
             <template v-slot:header>
-              <h4 class="text-center opacity-70">
-                {{ $t("student_course_dashboard.draft_practice") }}
-              </h4>
+              <div class="absolute w-full transform -translate-x-1/2 left-1/2">
+                <h2 class="text-center opacity-70">
+                  {{ $t("student_course_dashboard.draft_practice") }}
+                </h2>
+              </div>
             </template>
             <template v-slot:body>
-              <div class="flex">
+              <div class="flex flex-col h-full">
                 <h1
-                  class="mx-auto mt-1 text-5xl  opacity-70 material-icons-outlined"
+                  class="mx-auto my-auto  text-7xl opacity-70 material-icons-outlined"
                 >
                   redo
                 </h1>
@@ -79,20 +81,22 @@
           :hoverable="false"
           :filled="true"
           :border-less="true"
-          class="relative h-48 overflow-hidden text-gray-600 cursor-pointer  elevate-when-pressed bg-light"
+          class="relative h-40 overflow-hidden text-gray-600 cursor-pointer  md:h-full elevate-when-pressed bg-light"
           v-wave
           @mousedown="onCardMouseDown"
           @click="onCreatePractice()"
         >
           <template v-slot:header>
-            <h2 class="text-center opacity-70">
-              {{ $t("student_course_dashboard.new_practice") }}
-            </h2>
+            <div class="absolute w-full transform -translate-x-1/2 left-1/2">
+              <h2 class="text-center opacity-70">
+                {{ $t("student_course_dashboard.new_practice") }}
+              </h2>
+            </div>
           </template>
           <template v-slot:body>
-            <div class="flex">
+            <div class="flex flex-col h-full">
               <h1
-                class="mx-auto -mt-1 text-5xl  opacity-70 material-icons-outlined"
+                class="mx-auto my-auto  text-7xl opacity-70 material-icons-outlined"
               >
                 add
               </h1>
@@ -106,10 +110,10 @@
         ></EventParticipationPreview>
       </div>
       <div class="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4" v-else>
-        <SkeletonCard class="h-44"></SkeletonCard>
-        <SkeletonCard class="h-44"></SkeletonCard>
-        <SkeletonCard class="h-44"></SkeletonCard>
-        <SkeletonCard class="h-44"></SkeletonCard>
+        <SkeletonCard :full="true"></SkeletonCard>
+        <SkeletonCard :full="true"></SkeletonCard>
+        <SkeletonCard :full="true"></SkeletonCard>
+        <SkeletonCard :full="true"></SkeletonCard>
       </div>
     </div>
     <Dialog
@@ -256,7 +260,7 @@ export default defineComponent({
         (_, i) =>
           this.showAllParticipations ||
           // show two rows
-          i < 7
+          i < 3
       );
     },
     isResumingUnstartedPractice(): boolean {

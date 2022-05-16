@@ -623,6 +623,60 @@
       @apply top-0 text-gray-500 duration-300 transform scale-75 -translate-y-7;
      }
 
+
+
+
+     /* quill editor */
+     .ql-container {
+      font-size: inherit !important;
+    }
+    
+    .ql-editor-container:focus-within {
+      border-bottom: 2px solid #303f9f !important;
+    }
+    
+    .ql-editor-container {
+      display: flex;
+      flex-direction: column;
+      border-bottom: 2px solid rgb(229, 231, 235) !important;
+    }
+    .ql-editor {
+      z-index: 10 !important;
+      box-sizing: border-box;
+      line-height: 1.42;
+      height: 100%;
+      outline: none;
+      overflow-y: auto;
+      padding: 12px 15px;
+      -o-tab-size: 4;
+      tab-size: 4;
+      -moz-tab-size: 4;
+      text-align: left;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      font-family: "Source Sans Pro", "Helvetica Neue", "Helvetica", "Arial",
+        sans-serif !important;
+    }
+    .ql-container.ql-snow {
+      border: 0 !important; /*1px solid #ccc;*/
+    }
+    
+    .ql-container.ql-snow:focus-within {
+      border: 1px solid #303f9f;
+    }
+    .ql-toolbar.ql-snow {
+      order: 12 !important;
+      border: 0 !important; /* 1px solid #ccc !important; */
+      box-sizing: border-box;
+      font-family: "Source Sans Pro", "Helvetica Neue", "Helvetica", "Arial",
+        sans-serif !important;
+      padding: 8px;
+    }
+
+
+
+
+
      /* calendar input */
     .mx-input {
       @apply transition-all duration-300 border-0 rounded-none shadow-none !important;
@@ -1031,5 +1085,107 @@
       top: -12.5px;
       left: -17px;
       opacity: 0;
+    }
+
+    /* event participation thumbnail */
+    .thumbnail-slot {
+      font-size: 10px !important;
+      @apply mb-1;
+    }
+
+    .thumbnail-slot .ql-editor-container:focus-within ~ label {
+      @apply duration-300 transform scale-75 -translate-y-3.5 text-primary !important;
+     }
+     .thumbnail-slot .fixed-label {
+      @apply top-0 text-gray-500 duration-300 transform scale-75 -translate-y-3.5 !important;
+     }
+
+    .thumbnail-slot input {
+      min-width: 5.5px !important;
+      max-width: 5.5px !important;
+      min-height: 5.5px !important;
+      max-height: 5.5px !important;
+      margin-top: 4.85px !important;
+      @apply -mr-0.5 !important;
+    }
+
+    .thumbnail-slot .user-content {
+      @apply py-1.5 pl-2 pr-0.5 border-l-2 bg-gray-50 border-secondary mb-2.5 !important;
+      border-radius: 1px !important;
+    }
+    .thumbnail-slot h5 {
+      font-size: 12 !important;
+      @apply -mb-4 !important;
+    }
+
+    .thumbnail-slot .checkbox-item, .thumbnail-slot .radio-item {
+      @apply -my-1 !important;
+    }
+
+    .thumbnail-slot .checkbox-item, 
+    .thumbnail-slot .radio-item,
+    .thumbnail-slot .user-content {
+      font-size: 8.05px !important;
+    }
+
+
+  
+    .thumbnail-slot .ql-container {
+      font-size: 8.05 !important;
+    }
+    
+    .ql-editor-container:focus-within {
+      border-bottom: 2px solid #303f9f !important;
+    }
+    
+    .ql-editor-container {
+      display: flex;
+      flex-direction: column;
+      border-bottom: 2px solid rgb(229, 231, 235) !important;
+    }
+    .thumbnail-slot .ql-editor {
+      z-index: 10 !important;
+      box-sizing: border-box;
+      font-size: 8.05px !important;
+      line-height: 1.1 !important;
+      height: 100%;
+      outline: none;
+      overflow-y: auto;
+      padding: 7px 6px !important;
+      -o-tab-size: 4;
+      tab-size: 4;
+      -moz-tab-size: 4;
+      text-align: left;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      font-family: "Source Sans Pro", "Helvetica Neue", "Helvetica", "Arial",
+        sans-serif !important;
+    }
+    .thumbnail-slot .ql-toolbar.ql-snow {
+      order: 12 !important;
+      border: 0 !important; /* 1px solid #ccc !important; */
+      box-sizing: border-box;
+      font-family: "Source Sans Pro", "Helvetica Neue", "Helvetica", "Arial",
+        sans-serif !important;
+      padding: 2px;
+      font-size: 5px !important;
+    }
+
+    .thumbnail-slot .ql-editor-container button {
+      transform: scale(0.5);
+    }
+
+    .thumbnail-slot .ql-toolbar.ql-snow .ql-formats {
+      margin-right: 3px !important;
+    }
+
+    .thumbnail-slot .segmented-controls {
+      @apply hidden !important;
+    }
+
+    .thumbnail-slot .icon-btn {
+      width: 0px !important;
+      font-size: 10px !important;
+      @apply -mb-4 !important;
     }
   }

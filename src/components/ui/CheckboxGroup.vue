@@ -9,6 +9,7 @@
       v-for="(option, index) in options"
       :key="id + '-option-' + index"
       :for="id + '-option-' + index"
+      class="checkbox-item"
     >
       <div class="flex flex-col w-full">
         <div class="flex w-full">

@@ -2,7 +2,7 @@
   <div :class="{ 'pl-6': subSlot }">
     <div class="w-full">
       <div v-if="$slots.default" class="flex flex-wrap items-center">
-        <div class="mb-2 mr-4">
+        <div class="mb-0.5 mr-4">
           <slot></slot>
         </div>
         <div v-if="showTags" class="flex flex-wrap items-center">
@@ -10,7 +10,7 @@
             v-for="tag in modelValue.exercise.public_tags"
             :key="'tag-' + tag.id + '-slot-' + modelValue.id"
             :tag="tag"
-            class="mb-2 mr-2"
+            class="mb-0.5 mr-2"
           ></Tag>
         </div>
       </div>

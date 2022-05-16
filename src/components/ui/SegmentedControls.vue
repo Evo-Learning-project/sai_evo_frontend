@@ -1,5 +1,5 @@
 <template>
-  <div class="relative">
+  <div class="relative segmented-controls">
     <label class="absolute top-2 left-3 origin-0 fixed-label"
       ><slot></slot
     ></label>

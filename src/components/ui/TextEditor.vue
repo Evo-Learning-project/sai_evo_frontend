@@ -8,7 +8,7 @@
       <quill-editor
         :options="editorOptions"
         :value="modelValue"
-        :disabled="disabled"
+        :disabled="disabled || internalDisabled"
         @change="onEditorChange($event)"
         @ready="onEditorReady($event)"
       />
@@ -31,10 +31,15 @@ export default defineComponent({
   components: {
     quillEditor,
   },
+  mounted() {
+    // prevent auto-focusing of quill editor
+    this.$nextTick(() => (this.internalDisabled = false));
+  },
   data() {
     return {
       instance: null as any,
       content: "",
+      internalDisabled: true,
       editorOptions: {
         theme: "snow",
         placeholder: "",
@@ -88,7 +93,7 @@ export default defineComponent({
 </script>
 
 <style>
-.ql-container {
+/* .ql-container {
   font-size: inherit !important;
 }
 
@@ -119,7 +124,7 @@ export default defineComponent({
     sans-serif !important;
 }
 .ql-container.ql-snow {
-  border: 0 !important; /*1px solid #ccc;*/
+  border: 0 !important; /*1px solid #ccc;
 }
 
 .ql-container.ql-snow:focus-within {
@@ -127,10 +132,10 @@ export default defineComponent({
 }
 .ql-toolbar.ql-snow {
   order: 12 !important;
-  border: 0 !important; /* 1px solid #ccc !important; */
+  border: 0 !important; /* 1px solid #ccc !important;
   box-sizing: border-box;
   font-family: "Source Sans Pro", "Helvetica Neue", "Helvetica", "Arial",
     sans-serif !important;
   padding: 8px;
-}
+} */
 </style>

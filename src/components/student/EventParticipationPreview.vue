@@ -25,7 +25,7 @@
       <template v-slot:body>
         <div class="flex flex-col h-full">
           <div
-            v-if="isParticipable"
+            v-if="false && isParticipable"
             class="chip mx-auto chip-primary mb-0 pt-0.5"
           >
             <span class="material-icons-outlined text-base mr-1 mt-1.25px">
@@ -36,7 +36,7 @@
           <img class="hidden my-4" src="../../../public/thumb.png" />
 
           <div
-            class="flex mx-auto"
+            class="flex hidden mx-auto"
             v-if="
               participation.event.event_type ===
                 EventType.SELF_SERVICE_PRACTICE &&
@@ -68,6 +68,16 @@
               class="mt-auto mb-2.5 -mr-6 opacity-40 hover:opacity-100"
               :textCode="'practice_score'"
             ></Tooltip>
+          </div>
+          <div
+            class="w-full md:mb-4"
+            v-if="
+              participation.event.event_type === EventType.SELF_SERVICE_PRACTICE
+            "
+          >
+            <ParticipationThumbnail
+              :participation="participation"
+            ></ParticipationThumbnail>
           </div>
           <div
             class="flex flex-col items-center w-full mt-auto  xl:justify-between xl:flex-row xl:space-y-0"
@@ -176,6 +186,7 @@ import Timestamp from "../ui/Timestamp.vue";
 import Btn from "../ui/Btn.vue";
 import { courseIdMixin } from "@/mixins";
 import Tooltip from "../ui/Tooltip.vue";
+import ParticipationThumbnail from "./ParticipationThumbnail.vue";
 
 export default defineComponent({
   name: "EventParticipationPreview",
@@ -204,6 +215,7 @@ export default defineComponent({
     Timestamp,
     Btn,
     Tooltip,
+    ParticipationThumbnail,
   },
 });
 </script>
