@@ -3,7 +3,7 @@
     <div class="mb-8" v-if="examParticipations.length > 0">
       <h2>{{ $t("student_course_dashboard.exams_you_participated_in") }}</h2>
       <div
-        class="grid gap-4 md:grid-cols-2 lg:grid-cols-3"
+        class="grid gap-8 md:grid-cols-2 lg:grid-cols-3"
         v-if="!firstLoading"
       >
         <EventParticipationPreview
@@ -12,7 +12,7 @@
           :participation="participation"
         ></EventParticipationPreview>
       </div>
-      <div class="grid grid-cols-2 gap-4 lg:grid-cols-3" v-else>
+      <div class="grid grid-cols-2 gap-8 lg:grid-cols-3" v-else>
         <SkeletonCard class="h-44"></SkeletonCard>
         <SkeletonCard class="h-44"></SkeletonCard>
         <SkeletonCard class="h-44"></SkeletonCard>
@@ -43,7 +43,7 @@
         ></Btn
       >
       <div
-        class="grid grid-cols-1 gap-4 md:grid-cols-3 lg:grid-cols-4"
+        class="grid grid-cols-1 gap-8 md:grid-cols-3 lg:grid-cols-4"
         v-if="!firstLoading"
       >
         <div v-if="(currentCourse.unstarted_practice_events?.length ?? 0) > 0">
@@ -109,7 +109,7 @@
           :participation="participation"
         ></EventParticipationPreview>
       </div>
-      <div class="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4" v-else>
+      <div class="grid grid-cols-2 gap-8 md:grid-cols-3 lg:grid-cols-4" v-else>
         <SkeletonCard :full="true"></SkeletonCard>
         <SkeletonCard :full="true"></SkeletonCard>
         <SkeletonCard :full="true"></SkeletonCard>
