@@ -55,7 +55,7 @@
             "
             :options="exerciseChoicesAsOptions"
             v-model="selectedChoicesProxy"
-            :disabled="!allowEditSubmission || saving"
+            :disabled="!allowEditSubmission || (false && saving)"
           >
             <template v-slot:item="{ description }">
               <div class="flex items-center mb-2 space-x-2">
@@ -93,7 +93,7 @@
             "
             :options="exerciseChoicesAsOptions"
             v-model="selectedChoicesProxy"
-            :disabled="!allowEditSubmission || saving"
+            :disabled="!allowEditSubmission || (false && saving)"
           >
             <template v-slot:item="{ description }">
               <div class="flex items-center mb-2 space-x-2">
@@ -147,7 +147,7 @@
               exercise.exercise_type === ExerciseType.OPEN_ANSWER &&
               !allowEditSubmission
             "
-            class="w-full"
+            class="w-full whitespace-pre"
             style="margin-top: -21px"
           >
             <p class="ml-2 text-sm text-muted">

@@ -9,12 +9,12 @@
       v-for="(option, index) in options"
       :key="id + '-option-' + index"
       :for="id + '-option-' + index"
-      v-wave-trigger:checkbox
     >
       <div class="flex flex-col w-full">
         <div class="flex w-full">
           <div
             v-if="!useToggles"
+            v-wave-trigger:checkbox
             v-wave="
               disabled ? false : { trigger: 'checkbox', color: '#666ad1' }
             "

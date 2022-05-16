@@ -19,9 +19,9 @@
         :class="{ 'radio-container': !disabled }"
         v-for="(option, index) in options"
         :key="id + '-option-' + index"
-        v-wave-trigger:radio
       >
         <div
+          v-wave-trigger:radio
           v-wave="disabled ? false : { trigger: 'radio', color: '#666ad1' }"
           class="absolute w-12 h-12 transition-all duration-100 ease-in-out rounded-full  bg-opacity-10 bg-primary radio-shadow"
         ></div>
