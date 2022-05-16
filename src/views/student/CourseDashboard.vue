@@ -50,7 +50,7 @@
           <Card
             :hoverable="false"
             :margin-less="true"
-            class="relative h-40 overflow-hidden text-gray-600 cursor-pointer  md:h-full elevate-when-pressed bg-light"
+            class="relative h-40 overflow-hidden text-gray-600 cursor-pointer  md:min-h-21rem md:h-full elevate-when-pressed bg-light"
             v-wave
             @mousedown="onCardMouseDown"
             @click="
@@ -81,7 +81,7 @@
           :hoverable="false"
           :filled="true"
           :border-less="true"
-          class="relative h-40 overflow-hidden text-gray-600 cursor-pointer  md:h-full elevate-when-pressed bg-light"
+          class="relative h-40 overflow-hidden text-gray-600 cursor-pointer  md:min-h-21rem md:h-full elevate-when-pressed bg-light"
           v-wave
           @mousedown="onCardMouseDown"
           @click="onCreatePractice()"
