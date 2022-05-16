@@ -54,7 +54,7 @@
       </div>
     </header>
     <main class="flex-grow px-2 bg-white md:px-12">
-      <div class="h-full py-6 mx-auto sm:px-5 lg:px-8">
+      <div class="h-full px-2 py-6 mx-auto sm:px-1 lg:px-8">
         <ErrorView v-if="!!$store.state.shared.pageWideErrorData"></ErrorView>
         <router-view v-else />
         <transition name="quick-bounce"

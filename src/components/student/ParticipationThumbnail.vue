@@ -1,8 +1,8 @@
 <template>
-  <div style="">
+  <div style="h-72 bg-black overflow-hidden">
     <div
-      style="filter: blur(0.5px)"
-      class="relative w-full h-40 overflow-hidden md:h-72"
+      style="filter: blur(0px)"
+      class="relative w-full h-32 overflow-hidden md:h-15rem"
     >
       <div
         class="absolute top-0 bottom-0 z-50 w-full bg-transparent"

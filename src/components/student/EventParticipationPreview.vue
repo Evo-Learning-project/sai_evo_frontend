@@ -3,8 +3,11 @@
     <Card
       :class="{
         'bg-primary-light bg-opacity-0': isParticipable,
+        'md:h-23rem h-64':
+          participation.event.event_type === EventType.SELF_SERVICE_PRACTICE,
+        'h-44':
+          participation.event.event_type !== EventType.SELF_SERVICE_PRACTICE,
       }"
-      class="min-h-12rem"
     >
       <template v-slot:header>
         <h3 class="text-center" v-if="participation.event.name.length > 0">
@@ -80,92 +83,103 @@
             ></ParticipationThumbnail>
           </div>
           <div
-            class="flex flex-col items-center w-full mt-auto  xl:justify-between xl:flex-row xl:space-y-0"
-            v-if="isParticipable"
-          >
-            <router-link
-              class="order-12 mt-6 xl:mt-0 xl:order-1"
-              :to="{
-                name:
-                  participation.event.event_type ===
-                  EventType.SELF_SERVICE_PRACTICE
-                    ? 'PracticeParticipationPage'
-                    : 'ExamParticipationPage',
-                params: {
-                  examId: participation.event.id,
-                  courseId: courseId,
-                },
-              }"
+            v-if="
+              participation.event.event_type === EventType.SELF_SERVICE_PRACTICE
+            "
+            class="h-0 -mx-5 border-b"
+          ></div>
+          <div class="flex items-center pt-3 mt-auto">
+            <div
+              class="flex flex-col items-center w-full  xl:justify-between xl:flex-row xl:space-y-0"
+              v-if="isParticipable"
             >
-              <Btn :variant="'primary'" :outline="false" :size="'sm'">
-                <span class="mr-2 text-lg material-icons-outlined">
-                  update
-                </span>
-                {{ $t("student_course_dashboard.resume") }}
-              </Btn>
-            </router-link>
-          </div>
-          <div class="flex w-full mt-auto" v-else>
-            <router-link
-              :class="{
-                'mx-auto':
-                  false &&
-                  participation.event.event_type ===
-                    EventType.SELF_SERVICE_PRACTICE,
-                'mr-auto':
-                  false &&
-                  participation.event.event_type !==
-                    EventType.SELF_SERVICE_PRACTICE,
-              }"
-              v-if="participation.assessment_available"
-              :to="{
-                name:
-                  participation.event.event_type ===
-                  EventType.SELF_SERVICE_PRACTICE
-                    ? 'PracticeSummaryPage'
-                    : 'AssessmentReviewPage',
-                params: {
-                  participationId: participation.id,
-                  examId: participation.event.id,
-                  courseId: courseId,
-                },
-              }"
-            >
-              <Btn :size="'sm'" :variant="'primary-borderless'">
-                <!-- <span
+              <router-link
+                class="order-12 md:mt-6 xl:mt-0 xl:order-1"
+                :to="{
+                  name:
+                    participation.event.event_type ===
+                    EventType.SELF_SERVICE_PRACTICE
+                      ? 'PracticeParticipationPage'
+                      : 'ExamParticipationPage',
+                  params: {
+                    examId: participation.event.id,
+                    courseId: courseId,
+                  },
+                }"
+              >
+                <Btn :variant="'primary'" :outline="false" :size="'sm'">
+                  <span class="mr-2 text-lg material-icons-outlined">
+                    update
+                  </span>
+                  {{ $t("student_course_dashboard.resume") }}
+                </Btn>
+              </router-link>
+            </div>
+            <div class="flex w-full -mt-0.5" v-else>
+              <router-link
+                :class="{
+                  'mx-auto':
+                    false &&
+                    participation.event.event_type ===
+                      EventType.SELF_SERVICE_PRACTICE,
+                  'mr-auto':
+                    false &&
+                    participation.event.event_type !==
+                      EventType.SELF_SERVICE_PRACTICE,
+                }"
+                v-if="participation.assessment_available"
+                :to="{
+                  name:
+                    participation.event.event_type ===
+                    EventType.SELF_SERVICE_PRACTICE
+                      ? 'PracticeSummaryPage'
+                      : 'AssessmentReviewPage',
+                  params: {
+                    participationId: participation.id,
+                    examId: participation.event.id,
+                    courseId: courseId,
+                  },
+                }"
+              >
+                <Btn :size="'sm'" :variant="'primary-borderless'">
+                  <!-- <span
                   class="mr-2 text-lg material-icons-two-tone two-tone-primary"
                 >
                   assignment_turned_in </span
                 > -->
-                {{
-                  participation.event.event_type ===
+                  {{
+                    participation.event.event_type ===
+                    EventType.SELF_SERVICE_PRACTICE
+                      ? $t("student_course_dashboard.practice_summary")
+                      : $t("student_course_dashboard.view_assessment")
+                  }}</Btn
+                >
+              </router-link>
+              <router-link
+                v-if="
+                  participation.event.event_type !==
                   EventType.SELF_SERVICE_PRACTICE
-                    ? $t("student_course_dashboard.practice_summary")
-                    : $t("student_course_dashboard.view_assessment")
-                }}</Btn
+                "
+                :to="{
+                  name: 'SubmissionReviewPage',
+                  params: {
+                    participationId: participation.id,
+                    examId: participation.event.id,
+                    courseId: courseId,
+                  },
+                }"
+                :class="{
+                  'mx-auto': false && !participation.assessment_available,
+                }"
               >
-            </router-link>
-            <router-link
-              v-if="
-                participation.event.event_type !==
-                EventType.SELF_SERVICE_PRACTICE
-              "
-              :to="{
-                name: 'SubmissionReviewPage',
-                params: {
-                  participationId: participation.id,
-                  examId: participation.event.id,
-                  courseId: courseId,
-                },
-              }"
-              :class="{
-                'mx-auto': false && !participation.assessment_available,
-              }"
+                <Btn :size="'sm'" :variant="'primary-borderless'">{{
+                  $t("student_course_dashboard.review_submission")
+                }}</Btn>
+              </router-link>
+            </div>
+            <Btn v-if="false" :variant="'icon'" :outline="true" class="ml-auto"
+              ><span class="material-icons">bookmark</span></Btn
             >
-              <Btn :size="'sm'" :variant="'primary-borderless'">{{
-                $t("student_course_dashboard.review_submission")
-              }}</Btn>
-            </router-link>
           </div>
         </div>
       </template>

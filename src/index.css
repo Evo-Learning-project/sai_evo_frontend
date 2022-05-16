@@ -1094,10 +1094,14 @@
     }
 
     .thumbnail-slot .ql-editor-container:focus-within ~ label {
-      @apply duration-300 transform scale-75 -translate-y-3.5 text-primary !important;
+      @apply duration-300 transform scale-100 -translate-y-2.5 text-primary !important;
      }
      .thumbnail-slot .fixed-label {
-      @apply top-0 text-gray-500 duration-300 transform scale-75 -translate-y-3.5 !important;
+      @apply top-0 text-gray-500 duration-300 transform scale-100 -translate-y-2.5 !important;
+     }
+
+     .thumbnail-slot .ql-floating-label {
+       font-size: 6.05px !important;
      }
 
     .thumbnail-slot input {
@@ -1111,10 +1115,10 @@
 
     .thumbnail-slot .user-content {
       @apply py-1.5 pl-2 pr-0.5 border-l-2 bg-gray-50 border-secondary mb-2.5 !important;
-      border-radius: 1px !important;
+      border-radius: 0.4px !important;
     }
     .thumbnail-slot h5 {
-      font-size: 12 !important;
+      font-size: 8px !important;
       @apply -mb-4 !important;
     }
 
@@ -1125,7 +1129,7 @@
     .thumbnail-slot .checkbox-item, 
     .thumbnail-slot .radio-item,
     .thumbnail-slot .user-content {
-      font-size: 8.05px !important;
+      font-size: 5.5px !important;
     }
 
 
@@ -1133,20 +1137,11 @@
     .thumbnail-slot .ql-container {
       font-size: 8.05 !important;
     }
-    
-    .ql-editor-container:focus-within {
-      border-bottom: 2px solid #303f9f !important;
-    }
-    
-    .ql-editor-container {
-      display: flex;
-      flex-direction: column;
-      border-bottom: 2px solid rgb(229, 231, 235) !important;
-    }
+  
     .thumbnail-slot .ql-editor {
       z-index: 10 !important;
       box-sizing: border-box;
-      font-size: 8.05px !important;
+      font-size: 5.5px !important;
       line-height: 1.1 !important;
       height: 100%;
       outline: none;

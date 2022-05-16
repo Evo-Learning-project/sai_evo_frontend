@@ -14,7 +14,7 @@
       />
     </div>
     <label
-      class="absolute -z-1 top-2 left-2 origin-0"
+      class="absolute -z-1 top-2 left-2 origin-0 ql-floating-label"
       :class="{ 'fixed-label': modelValue?.length > 0 }"
     >
       <slot></slot>
