@@ -1,9 +1,23 @@
 <template>
   <div :class="{ 'pl-6': subSlot }">
     <div class="w-full">
+      <div v-if="$slots.default" class="flex flex-wrap items-center">
+        <div class="mb-2 mr-4">
+          <slot></slot>
+        </div>
+        <div v-if="showTags" class="flex flex-wrap items-center">
+          <Tag
+            v-for="tag in modelValue.exercise.public_tags"
+            :key="'tag-' + tag.id + '-slot-' + modelValue.id"
+            :tag="tag"
+            class="mb-2 mr-2"
+          ></Tag>
+        </div>
+      </div>
       <!-- exercise label (shown in teacher mode) -->
-      <h3 v-if="showExerciseLabel">{{ exercise.label }}</h3>
-
+      <div class="flex my-2">
+        <h3 v-if="showExerciseLabel">{{ exercise.label }}</h3>
+      </div>
       <!-- exercise text (not shown if programming exercise and not in review mode) -->
       <!-- TODO clarify condition (!allowEditSubmission && !showExerciseLabel) -->
       <div
@@ -574,6 +588,7 @@ import { every, some } from "lodash";
 import ClozeExercise from "./ClozeExercise.vue";
 import { formatExerciseText } from "@/utils";
 import ProcessedTextFragment from "../ui/ProcessedTextFragment.vue";
+import Tag from "../ui/Tag.vue";
 
 export default defineComponent({
   components: {
@@ -589,6 +604,7 @@ export default defineComponent({
     Btn,
     ClozeExercise,
     ProcessedTextFragment,
+    Tag,
   },
   name: "AbstractEventParticipationSlot",
   props: {
@@ -649,6 +665,10 @@ export default defineComponent({
     running: {
       // code for the submission if being run on the server
       type: Boolean,
+    },
+    showTags: {
+      type: Boolean,
+      default: false,
     },
   },
   mixins: [texMixin],

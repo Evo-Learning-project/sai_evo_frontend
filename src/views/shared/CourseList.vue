@@ -5,7 +5,10 @@
         class="mb-8"
         v-model="searchFilters"
       ></CourseSearchFilters>
-      <div class="banner banner-danger" v-if="!user.is_teacher && !user.mat">
+      <div
+        class="mb-4 banner banner-danger"
+        v-if="!user.is_teacher && !user.mat"
+      >
         <!-- <span class="material-icons-two-tone two-tone-danger"> school </span> -->
         <div class="w-full">
           <div class="flex items-center space-x-3">
@@ -14,19 +17,23 @@
             </span>
             <div>
               <p class="font-semibold text-danger-dark">
-                {{ $t("mat.missing_mat") }}
+                {{ $t("student_data.you_havent_yet") }}
+
+                <span v-if="!user.mat">{{
+                  $t("student_data.missing_mat")
+                }}</span>
               </p>
               <p class="text-danger-dark">
-                {{ $t("mat.insert_your_mat_now") }}
+                {{ $t("student_data.insert_mat_and_course") }}
               </p>
             </div>
           </div>
           <div class="flex items-center mt-8 space-x-3">
             <span class="opacity-0 material-icons-outlined"> school </span>
             <NumberInput class="w-96 text-darkText" v-model="dirtyMat"
-              >{{ $t("mat.your_mat") }}
+              >{{ $t("student_data.your_mat") }}
             </NumberInput>
-            <Btn
+            <!-- <Btn
               :variant="'icon'"
               :loading="localLoading"
               :disabled="String(dirtyMat).length === 0"
@@ -39,6 +46,15 @@
               >
                 done
               </span>
+            </Btn> -->
+            <Btn
+              :variant="'primary'"
+              :loading="localLoading"
+              :disabled="String(dirtyMat).length === 0"
+              @click="onSaveMat"
+              class="ml-auto"
+            >
+              {{ $t("misc.save_and_close") }}
             </Btn>
           </div>
         </div>

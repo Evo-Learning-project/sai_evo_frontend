@@ -25,14 +25,6 @@
       v-for="(slot, index) in proxyModelValue.slots"
       :key="'p-' + proxyModelValue.id + '-s-' + slot.id"
     >
-      <h4 class="mb-1">
-        {{ $t("event_participation_page.exercise") }}
-        {{ slot.slot_number + 1 }}
-        <span v-if="oneExerciseAtATime"
-          >{{ $t("event_participation_page.of") }}
-          {{ proxyModelValue.last_slot_number + 1 }}
-        </span>
-      </h4>
       <AbstractEventParticipationSlot
         :modelValue="slot"
         @updateSelectedChoices="
@@ -45,7 +37,19 @@
         :allowEditSubmission="true"
         :saving="saving"
         :running="running"
-      ></AbstractEventParticipationSlot
+        :showTags="
+          currentEventParticipation.event.event_type ===
+          EventType.SELF_SERVICE_PRACTICE
+        "
+      >
+        <h4 class="mb-0">
+          {{ $t("event_participation_page.exercise") }}
+          {{ slot.slot_number + 1 }}
+          <span v-if="oneExerciseAtATime"
+            >{{ $t("event_participation_page.of") }}
+            {{ proxyModelValue.last_slot_number + 1 }}
+          </span>
+        </h4> </AbstractEventParticipationSlot
       ><!---@updateAttachment="onChange(slot, 'attachment', $event)"-->
     </div>
     <div class="flex items-center w-full mt-8">
@@ -196,6 +200,7 @@ export default defineComponent({
         onYes: () => null,
       } as DialogData,
       ws: null as WebSocket | null,
+      EventType,
     };
   },
   methods: {
