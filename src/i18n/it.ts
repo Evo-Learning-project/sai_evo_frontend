@@ -46,7 +46,7 @@ export const it = {
   },
   headings: {
     login: "Login",
-    course_title: "Corso " + ROUTE_TITLE_COURSE_NAME_TOKEN,
+    course_title: ROUTE_TITLE_COURSE_NAME_TOKEN,
     new_course: "Nuovo corso",
     course_dashboard: "Dashboard",
     course_exercises: "Esercizi corso " + ROUTE_TITLE_COURSE_NAME_TOKEN,

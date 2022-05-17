@@ -1,18 +1,18 @@
 <template>
-  <div style="h-72 bg-black overflow-hidden">
+  <div class="overflow-hidden pointer-events-none select-none">
     <div
       style="filter: blur(0px)"
-      class="relative w-full h-32 overflow-hidden md:h-15rem"
+      class="relative w-full overflow-hidden h-8.5rem md:h-15rem"
     >
       <div
-        class="absolute top-0 bottom-0 z-50 w-full bg-transparent"
-        style="height: 300%"
+        class="absolute top-0 bottom-0 w-full bg-transparent"
+        style="height: 100%; z-index: 999999"
       ></div>
       <AbstractEventParticipationSlot
         v-if="participation.slots[0]"
         :model-value="participation.slots[0]"
         :allow-edit-submission="true"
-        class="thumbnail-slot"
+        class="thumbnail-slot -z-1"
       >
         <h5 class="mb-0">Esercizio 1</h5></AbstractEventParticipationSlot
       >

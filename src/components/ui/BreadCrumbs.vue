@@ -1,5 +1,7 @@
 <template>
-  <div class="flex flex-wrap items-center text-xs text-muted">
+  <div
+    class="flex items-center max-w-xs overflow-x-auto text-xs  md:max-w-max text-muted"
+  >
     <span class="text-base material-icons-outlined"> home </span>
     <span class="text-base material-icons-outlined opacity-60"
       >navigate_next</span
@@ -7,10 +9,10 @@
     <div
       v-for="(breadcrumb, index) in breadcrumbs"
       :key="'breadcrumb-' + index"
-      class="flex items-center"
+      class="flex items-center bg-black bg-opacity-0"
     >
       <span
-        class="font-semibold opacity-80"
+        class="font-semibold opacity-80 breadcrumb-item"
         v-if="breadcrumb.routeName === $route.name"
         >{{ breadcrumb.title }}</span
       >
@@ -19,9 +21,10 @@
         :to="{
           name: breadcrumb.routeName,
         }"
-        class="link"
-        >{{ breadcrumb.title }}</router-link
+        class="link breadcrumb-item"
       >
+        <span class="">{{ breadcrumb.title }} </span>
+      </router-link>
       <span
         v-if="index !== breadcrumbs.length - 1"
         class="text-base material-icons-outlined opacity-60"
@@ -68,4 +71,16 @@ export default defineComponent({
 });
 </script>
 
-<style></style>
+<style>
+.breadcrumb-item {
+  max-width: 10rem;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+@media (min-width: 1024px) {
+  .breadcrumb-item {
+    max-width: max-content;
+  }
+}
+</style>

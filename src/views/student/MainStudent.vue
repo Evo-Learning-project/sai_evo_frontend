@@ -33,19 +33,19 @@
       </div>
     </nav>
     <header
-      class="sticky top-0 z-50 shadow  bg-primary bg-opacity-10 md:px-12 backdrop-blur-sm backdrop-filter"
+      class="sticky top-0 z-50 shadow  bg-primary-light bg-opacity-20 md:px-12 backdrop-blur-sm backdrop-filter"
     >
       <div
         class="flex w-full px-4 py-4 mx-auto md:items-center sm:px-6 lg:px-8"
       >
         <div class="flex flex-wrap md:items-center md:flex-row">
-          <h2 class="mb-0 md:mr-6">
+          <h2 class="mb-0 text-lg md:mr-6 md:text-2xl">
             {{ routeTitle }}
           </h2>
           <BreadCrumbs
             v-if="!$route.meta.hideBreadcrumbs"
             :route="$route"
-            class="mt-1"
+            class="mt-1 ml-2 md:ml-0"
           ></BreadCrumbs>
         </div>
         <div class="flex ml-auto md:w-80">

@@ -9,6 +9,7 @@
           participation.event.event_type !== EventType.SELF_SERVICE_PRACTICE,
       }"
     >
+      <!-- 334 x 371 -->
       <template v-slot:header>
         <h3 class="text-center" v-if="participation.event.name.length > 0">
           {{ participation.event.name }}
@@ -73,7 +74,7 @@
             ></Tooltip>
           </div>
           <div
-            class="w-full md:mb-4"
+            class=""
             v-if="
               participation.event.event_type === EventType.SELF_SERVICE_PRACTICE
             "
@@ -86,13 +87,10 @@
             v-if="
               participation.event.event_type === EventType.SELF_SERVICE_PRACTICE
             "
-            class="h-0 -mx-5 border-b"
+            class="h-0 -mx-4 border-b md:-mx-5"
           ></div>
-          <div class="flex items-center pt-3 mt-auto">
-            <div
-              class="flex flex-col items-center w-full  xl:justify-between xl:flex-row xl:space-y-0"
-              v-if="isParticipable"
-            >
+          <div class="flex items-center mt-auto">
+            <div class="" v-if="isParticipable">
               <router-link
                 class="order-12 md:mt-6 xl:mt-0 xl:order-1"
                 :to="{
@@ -142,11 +140,6 @@
                 }"
               >
                 <Btn :size="'sm'" :variant="'primary-borderless'">
-                  <!-- <span
-                  class="mr-2 text-lg material-icons-two-tone two-tone-primary"
-                >
-                  assignment_turned_in </span
-                > -->
                   {{
                     participation.event.event_type ===
                     EventType.SELF_SERVICE_PRACTICE
