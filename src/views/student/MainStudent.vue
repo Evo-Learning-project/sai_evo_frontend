@@ -33,7 +33,7 @@
       </div>
     </nav>
     <header
-      class="sticky top-0 z-50 shadow  bg-primary-light bg-opacity-20 md:px-12 backdrop-blur-sm backdrop-filter"
+      class="sticky top-0 z-50 shadow  bg-primary-light bg-opacity-20 bg-fallback-firefox md:px-12 backdrop-blur-sm backdrop-filter"
     >
       <div
         class="flex w-full px-4 py-4 mx-auto md:items-center sm:px-6 lg:px-8"
@@ -147,3 +147,11 @@ export default defineComponent({
   components: { ErrorView, SnackBar, BreadCrumbs, Btn, Dialog, NumberInput },
 });
 </script>
+
+<style>
+@-moz-document url-prefix() {
+  .bg-fallback-firefox {
+    background: rgba(224, 225, 244, 0.9) !important;
+  }
+}
+</style>
