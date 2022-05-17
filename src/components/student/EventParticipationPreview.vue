@@ -24,55 +24,22 @@
               :date-only="true"
             ></Timestamp>
           </p>
-        </div>
-      </template>
-      <template v-slot:body>
-        <div class="flex flex-col h-full">
           <div
-            v-if="false && isParticipable"
-            class="chip mx-auto chip-primary mb-0 pt-0.5"
+            v-if="isParticipable"
+            class="hidden chip mx-auto chip-primary mb-0 pt-0.5"
           >
             <span class="material-icons-outlined text-base mr-1 mt-1.25px">
               update
             </span>
             {{ $t("student_course_dashboard.pending") }}
           </div>
+        </div>
+      </template>
+      <template v-slot:body>
+        <div class="flex flex-col h-full">
           <img class="hidden my-4" src="../../../public/thumb.png" />
 
-          <div
-            class="flex hidden mx-auto"
-            v-if="
-              participation.event.event_type ===
-                EventType.SELF_SERVICE_PRACTICE &&
-              participation.assessment_available
-            "
-          >
-            <p class="mt-4 text-lg text-center">
-              <span
-                class="text-4xl font-semibold"
-                :class="{
-                  'text-success':
-                    participation.score >= participation.max_score * 0.6,
-                  'text-yellow-700':
-                    participation.score >= participation.max_score / 2 &&
-                    participation.score < participation.max_score * 0.6,
-                  'text-danger-dark':
-                    participation.score < participation.max_score / 2,
-                }"
-                >{{
-                  Number.isInteger(parseFloat(participation.score))
-                    ? parseInt(participation.score)
-                    : participation.score
-                }}</span
-              ><span class="ml-1 text-muted"
-                >/{{ participation.max_score }}
-              </span>
-            </p>
-            <Tooltip
-              class="mt-auto mb-2.5 -mr-6 opacity-40 hover:opacity-100"
-              :textCode="'practice_score'"
-            ></Tooltip>
-          </div>
+          <!-- thumbail -->
           <div
             class=""
             v-if="
@@ -83,14 +50,17 @@
               :participation="participation"
             ></ParticipationThumbnail>
           </div>
+          <!-- separator border -->
           <div
             v-if="
               participation.event.event_type === EventType.SELF_SERVICE_PRACTICE
             "
             class="h-0 -mx-4 border-b md:-mx-5"
           ></div>
-          <div class="flex items-center mt-auto">
+          <!-- bottom section with buttons -->
+          <div class="flex items-center mt-auto -mb-1 bg-black bg-opacity-0">
             <div class="" v-if="isParticipable">
+              <!-- resume button -->
               <router-link
                 class="order-12 md:mt-6 xl:mt-0 xl:order-1"
                 :to="{
@@ -113,18 +83,9 @@
                 </Btn>
               </router-link>
             </div>
-            <div class="flex w-full -mt-0.5" v-else>
+            <div class="flex -mt-0.5" v-else>
+              <!-- summary/assessment button -->
               <router-link
-                :class="{
-                  'mx-auto':
-                    false &&
-                    participation.event.event_type ===
-                      EventType.SELF_SERVICE_PRACTICE,
-                  'mr-auto':
-                    false &&
-                    participation.event.event_type !==
-                      EventType.SELF_SERVICE_PRACTICE,
-                }"
                 v-if="participation.assessment_available"
                 :to="{
                   name:
@@ -148,6 +109,7 @@
                   }}</Btn
                 >
               </router-link>
+              <!-- review button -->
               <router-link
                 v-if="
                   participation.event.event_type !==
@@ -161,17 +123,30 @@
                     courseId: courseId,
                   },
                 }"
-                :class="{
-                  'mx-auto': false && !participation.assessment_available,
-                }"
               >
                 <Btn :size="'sm'" :variant="'primary-borderless'">{{
                   $t("student_course_dashboard.review_submission")
                 }}</Btn>
               </router-link>
             </div>
-            <Btn v-if="false" :variant="'icon'" :outline="true" class="ml-auto"
-              ><span class="material-icons">bookmark</span></Btn
+            <Btn
+              :tooltip="
+                participation.bookmarked
+                  ? $t('student_course_dashboard.remove_bookmark')
+                  : $t('student_course_dashboard.add_bookmark')
+              "
+              v-if="
+                participation.event.event_type ===
+                EventType.SELF_SERVICE_PRACTICE
+              "
+              @click="$emit('bookmark')"
+              :loading="loading"
+              :variant="'icon'"
+              :outline="true"
+              class="my-0 ml-auto"
+              ><span class="material-icons">{{
+                participation.bookmarked ? "bookmark" : "bookmark_outline"
+              }}</span></Btn
             >
           </div>
         </div>
@@ -192,7 +167,6 @@ import Card from "../ui/Card.vue";
 import Timestamp from "../ui/Timestamp.vue";
 import Btn from "../ui/Btn.vue";
 import { courseIdMixin } from "@/mixins";
-import Tooltip from "../ui/Tooltip.vue";
 import ParticipationThumbnail from "./ParticipationThumbnail.vue";
 
 export default defineComponent({
@@ -201,6 +175,10 @@ export default defineComponent({
     participation: {
       type: Object as PropType<EventParticipation>,
       required: true,
+    },
+    loading: {
+      type: Boolean,
+      default: false,
     },
   },
   mixins: [courseIdMixin],
@@ -221,7 +199,6 @@ export default defineComponent({
     Card,
     Timestamp,
     Btn,
-    Tooltip,
     ParticipationThumbnail,
   },
 });

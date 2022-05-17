@@ -80,19 +80,30 @@ export const actions = {
     { commit, state }: { commit: Commit; state: StudentState },
     {
       courseId,
+      eventId = undefined,
+      participationId = undefined,
       changes,
     }: {
       courseId: string;
+      eventId?: string;
+      participationId?: string;
       changes: Record<keyof EventParticipation, unknown>;
     }
   ) => {
     const response = await partialUpdateEventParticipation(
       courseId,
-      (state.currentEventParticipation as EventParticipation).event.id,
-      (state.currentEventParticipation as EventParticipation).id,
+      eventId ??
+        (state.currentEventParticipation as EventParticipation).event.id,
+      participationId ??
+        (state.currentEventParticipation as EventParticipation).id,
       changes
     );
-    commit("setCurrentEventParticipation", response);
+    if (!eventId && !participationId) {
+      // no id supplied, update default participation
+      commit("setCurrentEventParticipation", response);
+    } else {
+      commit("setEventParticipation", response);
+    }
   },
   getEventParticipation: async (
     { commit }: { commit: Commit },

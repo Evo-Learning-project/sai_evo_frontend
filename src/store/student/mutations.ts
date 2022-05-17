@@ -24,6 +24,22 @@ export const mutations = {
     state: StudentState,
     participations: EventParticipation[]
   ) => (state.eventParticipations = participations),
+  setEventParticipation: (
+    state: StudentState,
+    participation: EventParticipation
+  ) => {
+    const target = state.eventParticipations.find(
+      (p) => p.id == participation.id
+    );
+    if (!target) {
+      console.log(
+        "setEventParticipation in student didn't find",
+        participation.id
+      );
+    } else {
+      Object.assign(target, participation);
+    }
+  },
   setCurrentEventParticipation: (
     state: StudentState,
     participation: EventParticipation

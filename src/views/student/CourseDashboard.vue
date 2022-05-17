@@ -20,28 +20,48 @@
     </div>
 
     <div>
-      <h2>{{ $t("student_course_dashboard.your_practice_events") }}</h2>
-      <Btn
-        v-if="!firstLoading && practiceParticipations.length > 3"
-        :variant="'icon'"
-        :outline="true"
-        class="mb-4 -mt-2"
-        style="margin-left: -9px"
-        @click="showAllParticipations = !showAllParticipations"
-        :tooltip="
-          showAllParticipations
-            ? $t('misc.show_recent')
-            : $t('student_course_dashboard.show_all_practices')
-        "
-        ><span
-          :class="[
-            showAllParticipations
-              ? 'material-icons'
-              : 'material-icons-outlined',
-          ]"
-          >visibility</span
-        ></Btn
-      >
+      <div class="flex items-center mb-4">
+        <h2 class="mb-0">
+          {{ $t("student_course_dashboard.your_practice_events") }}
+        </h2>
+        <Btn
+          v-if="!firstLoading && practiceParticipations.length > 3"
+          :variant="'icon'"
+          :outline="true"
+          class="ml-auto"
+          @click="showBookmarkedOnly = !showBookmarkedOnly"
+          :tooltip="
+            showBookmarkedOnly
+              ? $t('student_course_dashboard.show_all_practices')
+              : $t('student_course_dashboard.show_bookmarked')
+          "
+          ><span
+            :class="[
+              showBookmarkedOnly ? 'material-icons' : 'material-icons-outlined',
+            ]"
+            >bookmarks</span
+          ></Btn
+        >
+        <Btn
+          v-if="!firstLoading && practiceParticipations.length > 3"
+          :variant="'icon'"
+          :outline="true"
+          class=""
+          @click="showNotRecent = !showNotRecent"
+          :tooltip="
+            showNotRecent
+              ? $t('misc.show_recent')
+              : $t('student_course_dashboard.show_all_practices')
+          "
+          ><span
+            :class="[
+              showNotRecent ? 'material-icons' : 'material-icons-outlined',
+            ]"
+            >visibility</span
+          ></Btn
+        >
+      </div>
+
       <div
         class="grid grid-cols-1 gap-4 xl:gap-8 md:grid-cols-3 lg:grid-cols-4"
         v-if="!firstLoading"
@@ -107,6 +127,8 @@
           v-for="participation in filteredPracticeParticipations"
           :key="'practice-participation-' + participation.id"
           :participation="participation"
+          @bookmark="onBookmark(participation)"
+          :loading="loadingParticipations.has(participation.id)"
         ></EventParticipationPreview>
       </div>
       <div
@@ -209,12 +231,18 @@ export default defineComponent({
     return {
       isEditingRule: false,
       MAX_PRACTICE_EXERCISE_COUNT,
-      showAllParticipations: false,
+      showNotRecent: false,
+      showBookmarkedOnly: false,
+      loadingParticipations: new Set<string>(),
     };
   },
   methods: {
     ...mapActions("shared", ["getCourse", "getTags"]),
-    ...mapActions("student", ["createEvent"]),
+    ...mapActions("student", [
+      "createEvent",
+      "partialUpdateEventParticipation",
+    ]),
+    //...mapActions("teacher", ["partialUpdateEventParticipation"]),
     ...mapMutations("student", ["setEditingEvent"]),
     onCardMouseDown(event: any) {
       //rippleEffect(event, "ripple-gray");
@@ -230,6 +258,23 @@ export default defineComponent({
     },
     onResumePractice(event: Event) {
       this.setEditingEvent(event);
+    },
+    async onBookmark(participation: EventParticipation) {
+      try {
+        this.loadingParticipations.add(participation.id);
+        await this.partialUpdateEventParticipation({
+          courseId: this.courseId,
+          eventId: participation.event.id,
+          participationId: participation.id,
+          changes: {
+            bookmarked: !(participation.bookmarked ?? false),
+          },
+        });
+      } catch (e) {
+        this.setErrorNotification(e);
+      } finally {
+        this.loadingParticipations.delete(participation.id);
+      }
     },
     async onCreatePractice() {
       if (this.loading) {
@@ -255,15 +300,13 @@ export default defineComponent({
     ...mapGetters("student", ["examParticipations", "practiceParticipations"]),
     ...mapGetters("shared", ["course"]),
     ...mapState("student", ["editingEvent"]),
-    // currentCourse () {
-    //   return this.course(this.courseId)
-    // },
     filteredPracticeParticipations() {
       return (this.practiceParticipations as EventParticipation[]).filter(
-        (_, i) =>
-          this.showAllParticipations ||
-          // show two rows
-          i < 3
+        (p, i) =>
+          (this.showNotRecent ||
+            // show two rows
+            i < 3) &&
+          (!this.showBookmarkedOnly || p.bookmarked)
       );
     },
     isResumingUnstartedPractice(): boolean {

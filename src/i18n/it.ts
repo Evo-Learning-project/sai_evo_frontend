@@ -497,6 +497,9 @@ export const it = {
     select: "Seleziona",
   },
   student_course_dashboard: {
+    show_bookmarked: "Mostra solo preferite",
+    add_bookmark: "Aggiungi ai preferiti",
+    remove_bookmark: "Rimuovi dai preferiti",
     show_all_practices: "Mostra tutte",
     too_many_exercises: "Hai aggiunto troppi esercizi. Selezionane al massimo",
     your_practice_events: "Le tue esercitazioni",
