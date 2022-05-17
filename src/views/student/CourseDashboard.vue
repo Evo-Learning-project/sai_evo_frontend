@@ -303,9 +303,7 @@ export default defineComponent({
     filteredPracticeParticipations() {
       return (this.practiceParticipations as EventParticipation[]).filter(
         (p, i) =>
-          (this.showNotRecent ||
-            // show two rows
-            i < 3) &&
+          (this.showNotRecent || i < 3 || p.bookmarked) &&
           (!this.showBookmarkedOnly || p.bookmarked)
       );
     },
