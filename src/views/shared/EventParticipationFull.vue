@@ -186,7 +186,6 @@
           {{ $t("event_participation_page.exercise") }}
           {{ slot.slot_number + 1 }}
         </h3>
-        <!--:showAssessmentControls="slotsAssessmentControlsVisibility[slot.id] ?? false"-->
         <AbstractEventParticipationSlot
           :modelValue="slot"
           @updateAssessment="

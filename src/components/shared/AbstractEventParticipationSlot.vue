@@ -1,8 +1,10 @@
 <template>
   <div :class="{ 'pl-6': subSlot }">
     <div class="w-full">
+      <!-- heading, above the exercise text -->
       <div v-if="$slots.default" class="flex flex-wrap items-center">
         <div class="mb-0.5 mr-4">
+          <!-- used to indicate the slot number, e.g. "Exercise 1" -->
           <slot></slot>
         </div>
         <div v-if="showTags" class="flex flex-wrap items-center">
@@ -22,10 +24,6 @@
       <!-- TODO clarify condition (!allowEditSubmission && !showExerciseLabel) -->
       <div
         class="mb-8 user-content"
-        :class="{
-          'bg-gray-200 p-2 border border-dark rounded-md':
-            false && allowEditAssessment,
-        }"
         v-if="
           exercise.exercise_type !== ExerciseType.COMPLETION &&
           (!isProgrammingExercise ||
@@ -34,7 +32,6 @@
       >
         <ProcessedTextFragment :value="exercise.text"></ProcessedTextFragment>
       </div>
-
       <!-- if assessment edit mode, make flex so to fit submission on the left and assessment on the right -->
       <div
         :class="{
@@ -44,21 +41,24 @@
       >
         <!-- controls to submit -->
         <div
+          class=""
           :class="{
+            // take up 8/12 of width if exercise isn't open answer or programming
+            // or it is but the answer is empty
             'w-8/12':
-              allowEditAssessment ||
-              (showAssessmentCard &&
-                (allowEditSubmission || !isProgrammingExercise)),
+              (showAssessmentCard || allowEditAssessment) &&
+              ((!isProgrammingExercise && !isOpenAnswerExercise) ||
+                isAnswerEmpty),
+            // take up full width on mobile if exercise is programming and answer isn't empty
             'md:w-8/12 w-full':
-              allowEditAssessment ||
-              (showAssessmentCard &&
-                !allowEditSubmission &&
-                isProgrammingExercise),
+              (showAssessmentCard || allowEditAssessment) &&
+              isProgrammingExercise &&
+              !isAnswerEmpty,
+            // take up full width if exercise is open answer and answer isn't empty
             'md:w-full':
-              allowEditAssessment ||
-              (showAssessmentCard &&
-                !allowEditSubmission &&
-                modelValue.exercise.exercise_type === ExerciseType.OPEN_ANSWER),
+              (showAssessmentCard || allowEditAssessment) &&
+              isOpenAnswerExercise &&
+              !isAnswerEmpty,
           }"
         >
           <!-- multiple choice multiple possible -->
@@ -69,7 +69,7 @@
             "
             :options="exerciseChoicesAsOptions"
             v-model="selectedChoicesProxy"
-            :disabled="!allowEditSubmission || (false && saving)"
+            :disabled="!allowEditSubmission"
           >
             <template v-slot:item="{ description }">
               <div class="flex items-center mb-2 space-x-2">
@@ -107,7 +107,7 @@
             "
             :options="exerciseChoicesAsOptions"
             v-model="selectedChoicesProxy"
-            :disabled="!allowEditSubmission || (false && saving)"
+            :disabled="!allowEditSubmission"
           >
             <template v-slot:item="{ description }">
               <div class="flex items-center mb-2 space-x-2">
@@ -226,12 +226,12 @@
               v-if="!showExerciseLabel"
               :defaultValue="$t('misc.no_answer')"
             ></CodeFragment>
-            <CodeExecutionResults
-              :slot="modelValue"
-              v-if="
-                !showExerciseLabel && modelValue.answer_text.trim().length > 0
-              "
-            ></CodeExecutionResults>
+            <div
+              v-if="!showExerciseLabel && !isAnswerEmpty"
+              class="card card-filled"
+            >
+              <CodeExecutionResults :slot="modelValue"></CodeExecutionResults>
+            </div>
             <!--TODO when viewing in teacher mode, check if execution results is empty
                       (should never happen) and if it is, add an emergency "run" button  -->
           </div>
@@ -256,29 +256,36 @@
         <!-- assessment card-->
         <div
           :class="{
-            'md:w-9/12':
+            // for non-open, non-programming exercises (e.g. multiple choice)
+            // that aren't a sub-slot and which have a comment or solution shown,
+            // take up half the space
+            'md:w-1/2':
               !subSlot &&
               !isProgrammingExercise &&
-              !assessingOrNearOpenAnswerExercise &&
-              isProgrammingExercise &&
-              exercise.solution?.length > 0,
-            'md:w-1/2':
-              (isProgrammingExercise && exercise.solution?.length > 0) ||
-              (assessingOrNearOpenAnswerExercise &&
-                answerTextProxy.trim().length > 0),
-            'md:w-1/3':
-              isProgrammingExercise || exercise.solution?.length === 0,
+              !isOpenAnswerExercise &&
+              isSolutionOrCommentShown,
+            // for programming or open exercises with non-empty answer and solution shown,
+            // take up 9/12 of the space
+            'md:w-9/12':
+              (isProgrammingExercise || isOpenAnswerExercise) &&
+              !isAnswerEmpty &&
+              isSolutionOrCommentShown,
+            // if no comment or solution needs to be shown, take up 1/3 of space
+            'md:w-1/3': !isSolutionOrCommentShown,
+            // for sub-slots, open, programming exercises with empty answer and a solution or,
+            // comment take up full space
             'md:w-full':
               subSlot ||
-              (assessingOrNearOpenAnswerExercise &&
-                answerTextProxy.trim().length === 0) ||
+              ((isOpenAnswerExercise || isProgrammingExercise) &&
+                isAnswerEmpty &&
+                isSolutionOrCommentShown) ||
               expandAssessmentCard,
           }"
           class="sticky mb-auto  top-4 md:self-start shadow-elevation card card-filled"
           v-if="showAssessmentCard"
         >
           <div
-            v-if="showExpandButton"
+            v-if="false && showExpandButton"
             class="absolute top-0 right-0 flex w-full"
           >
             <Btn
@@ -427,7 +434,8 @@
               class="flex flex-col mt-4 ease-in-out"
             >
               <h3>{{ $t("event_assessment.your_assessment") }}</h3>
-              <div
+              <!-- FIXME move this somewhere else SEEN AT ANSWERED AT -->
+              <!-- <div
                 :class="{ 'md:ml-auto': !subSlot }"
                 class="flex flex-col text-sm"
                 v-if="modelValue.seen_at || modelValue.answered_at"
@@ -451,7 +459,8 @@
                     }}&nbsp;</span
                   ><Timestamp :value="modelValue.answered_at"></Timestamp>
                 </div>
-              </div>
+              </div> -->
+              <!-- END SEEN AT ANSWERED AT -->
             </div>
             <!-- notice text to assess -->
             <p
@@ -509,7 +518,9 @@
             class="flex flex-col mt-4 ease-in-out md:flex-row md:items-center"
           >
             <h3>{{ $t("event_assessment.your_assessment") }}</h3>
-            <div
+
+            <!-- FIXME move this somewhere else SEEN AT ANSWERED AT -->
+            <!-- <div
               :class="{ 'md:ml-auto': !subSlot }"
               class="flex flex-col text-sm"
               v-if="modelValue.seen_at || modelValue.answered_at"
@@ -531,7 +542,8 @@
                   >{{ $t("event_assessment.exercise_answered_at") }}&nbsp;</span
                 ><Timestamp :value="modelValue.answered_at"></Timestamp>
               </div>
-            </div>
+            </div> -->
+            <!-- END SEEN AT - ANSWERED AT -->
           </div>
           <!-- notice text to assess -->
           <p
@@ -585,6 +597,32 @@
           </div>
         </div>
         <!-- end standalone assessment controls -->
+      </div>
+
+      <!-- seen at - answered at info -->
+      <div
+        class="flex mt-4 space-x-2 text-sm"
+        v-if="
+          allowEditAssessment && (modelValue.seen_at || modelValue.answered_at)
+        "
+      >
+        <div class="flex items-center" v-if="modelValue.seen_at">
+          <span class="mr-1 text-sm material-icons-outlined text-muted">
+            visibility
+          </span>
+          <span class="text-muted"
+            >{{ $t("event_assessment.exercise_seen_at") }}&nbsp;</span
+          >
+          <Timestamp :value="modelValue.seen_at"></Timestamp>
+        </div>
+        <div class="flex items-center" v-if="modelValue.answered_at">
+          <span class="mr-1 text-sm material-icons-outlined text-muted">
+            question_answer
+          </span>
+          <span class="text-muted"
+            >{{ $t("event_assessment.exercise_answered_at") }}&nbsp;</span
+          ><Timestamp :value="modelValue.answered_at"></Timestamp>
+        </div>
       </div>
     </div>
   </div>
@@ -755,10 +793,8 @@ export default defineComponent({
       return (
         // assessment card is shown
         this.allowEditAssessment ||
-        (this.showAssessmentCard &&
-          // submission is closed
-          !this.allowEditSubmission &&
-          this.isOpenAnswerExercise)
+        // submission is closed
+        (!this.allowEditSubmission && this.isOpenAnswerExercise)
       );
     },
     showExpandButton(): boolean {
@@ -767,6 +803,16 @@ export default defineComponent({
         (this.assessingOrNearOpenAnswerExercise &&
           this.answerTextProxy.trim().length === 0)
       );
+    },
+    isSolutionOrCommentShown(): boolean {
+      return (
+        (this.showSolutionAndScores &&
+          (this.exercise.solution?.trim().length ?? 0) > 0) ||
+        (this.modelValue.comment?.trim().length ?? 0) > 0
+      );
+    },
+    isAnswerEmpty(): boolean {
+      return this.modelValue.answer_text.trim().length === 0;
     },
 
     exercise(): Exercise {
