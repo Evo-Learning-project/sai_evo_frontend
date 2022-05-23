@@ -168,6 +168,7 @@
               {{ $t("event_assessment.text_answer_label") }}
             </p>
             <ProcessedTextFragment
+              style="white-space: break-spaces"
               class="w-full px-4 py-2 rounded bg-gray-50"
               :value="answerTextProxy"
             ></ProcessedTextFragment>
