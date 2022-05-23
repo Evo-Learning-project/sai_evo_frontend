@@ -1,5 +1,10 @@
 <template>
-  <div v-html="formattedValue"></div>
+  <div
+    v-html="formattedValue"
+    :class="{
+      'text-muted font-light': useDefault && defaultValue.length > 0,
+    }"
+  ></div>
 </template>
 
 <script lang="ts">
@@ -13,10 +18,20 @@ export default defineComponent({
       type: String,
       required: true,
     },
+    defaultValue: {
+      type: String,
+      default: "",
+    },
   },
   methods: {},
   computed: {
+    useDefault(): boolean {
+      return this.value.trim().length === 0;
+    },
     formattedValue(): string {
+      if (this.useDefault) {
+        return this.defaultValue;
+      }
       return formatExerciseText(this.value);
     },
   },

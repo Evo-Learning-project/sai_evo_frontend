@@ -29,7 +29,7 @@
         <slot></slot>
       </label>
     </div>
-    <div class="flex w-full">
+    <div class="flex w-full hide-in-thumbnail">
       <p
         v-if="showBaseEditor"
         style="font-size: 12px"

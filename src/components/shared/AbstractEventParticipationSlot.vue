@@ -171,6 +171,7 @@
               style="white-space: break-spaces"
               class="w-full px-4 py-2 rounded bg-gray-50"
               :value="answerTextProxy"
+              :defaultValue="$t('misc.no_answer')"
             ></ProcessedTextFragment>
           </div>
 
@@ -223,10 +224,13 @@
               class="mb-4"
               :value="modelValue.answer_text"
               v-if="!showExerciseLabel"
+              :defaultValue="$t('misc.no_answer')"
             ></CodeFragment>
             <CodeExecutionResults
               :slot="modelValue"
-              v-if="!showExerciseLabel"
+              v-if="
+                !showExerciseLabel && modelValue.answer_text.trim().length > 0
+              "
             ></CodeExecutionResults>
             <!--TODO when viewing in teacher mode, check if execution results is empty
                       (should never happen) and if it is, add an emergency "run" button  -->
@@ -255,26 +259,50 @@
             'md:w-9/12':
               !subSlot &&
               !isProgrammingExercise &&
-              !(
-                allowEditAssessment ||
-                (showAssessmentCard &&
-                  !allowEditSubmission &&
-                  modelValue.exercise.exercise_type ===
-                    ExerciseType.OPEN_ANSWER)
-              ),
-            'md:w-6/12':
-              allowEditAssessment ||
-              (showAssessmentCard &&
-                !allowEditSubmission &&
-                modelValue.exercise.exercise_type === ExerciseType.OPEN_ANSWER),
-            'md:w-full': subSlot,
+              !assessingOrNearOpenAnswerExercise &&
+              isProgrammingExercise &&
+              exercise.solution?.length > 0,
+            'md:w-1/2':
+              (isProgrammingExercise && exercise.solution?.length > 0) ||
+              (assessingOrNearOpenAnswerExercise &&
+                answerTextProxy.trim().length > 0),
+            'md:w-1/3':
+              isProgrammingExercise || exercise.solution?.length === 0,
+            'md:w-full':
+              subSlot ||
+              (assessingOrNearOpenAnswerExercise &&
+                answerTextProxy.trim().length === 0) ||
+              expandAssessmentCard,
           }"
           class="sticky mb-auto  top-4 md:self-start shadow-elevation card card-filled"
-          v-if="
-            showAssessmentCard &&
-            (true || !showAssessmentControls || !allowEditAssessment)
-          "
+          v-if="showAssessmentCard"
         >
+          <div
+            v-if="showExpandButton"
+            class="absolute top-0 right-0 flex w-full"
+          >
+            <Btn
+              :tooltip="
+                expandAssessmentCard ? $t('misc.collapse') : $t('misc.expand')
+              "
+              :variant="'icon'"
+              :outline="true"
+              class="ml-auto"
+              :size="'sm'"
+              @click="expandAssessmentCard = !expandAssessmentCard"
+            >
+              <span
+                style="font-size: 16px !important"
+                :class="[
+                  expandAssessmentCard ? 'rotate-45' : 'rotate-90',
+                  'transform material-icons-outlined',
+                ]"
+              >
+                {{ expandAssessmentCard ? "close_fullscreen" : "expand" }}
+              </span></Btn
+            >
+          </div>
+
           <!-- score -->
           <div
             v-if="
@@ -716,18 +744,42 @@ export default defineComponent({
   data() {
     return {
       ExerciseType,
-      //showAssessmentControls: false,
+      expandAssessmentCard: false,
       dirtyScore: undefined as number | undefined | null,
       dirtyComment: undefined as string | undefined,
     };
   },
   computed: {
+    // presentation-related
+    assessingOrNearOpenAnswerExercise(): boolean {
+      return (
+        // assessment card is shown
+        this.allowEditAssessment ||
+        (this.showAssessmentCard &&
+          // submission is closed
+          !this.allowEditSubmission &&
+          this.isOpenAnswerExercise)
+      );
+    },
+    showExpandButton(): boolean {
+      return !(
+        this.subSlot ||
+        (this.assessingOrNearOpenAnswerExercise &&
+          this.answerTextProxy.trim().length === 0)
+      );
+    },
+
     exercise(): Exercise {
       return this.modelValue.exercise;
     },
     isProgrammingExercise(): boolean {
       return programmingExerciseTypes.includes(
         this.modelValue.exercise.exercise_type as ExerciseType
+      );
+    },
+    isOpenAnswerExercise(): boolean {
+      return (
+        this.modelValue.exercise.exercise_type === ExerciseType.OPEN_ANSWER
       );
     },
     showAssessmentControls(): boolean {

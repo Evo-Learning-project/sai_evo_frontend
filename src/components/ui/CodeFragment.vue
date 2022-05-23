@@ -1,6 +1,7 @@
 <template>
   <div class="relative">
     <CopyToClipboard
+      v-if="!useDefault"
       :icon-only="true"
       :value="value"
       :tooltip="$t('misc.copy')"
@@ -18,7 +19,7 @@
       :language="'js'"
       :dark="true"
       :class="{ 'ssh-pre-small': small }"
-      >{{ processedValue }}</SshPre
+      >{{ useDefault ? defaultValue : processedValue }}</SshPre
     >
   </div>
 </template>
@@ -47,6 +48,10 @@ export default defineComponent({
       type: String as PropType<"javascript" | "typescript" | "c">,
       default: "typescript",
     },
+    defaultValue: {
+      type: String,
+      default: "",
+    },
   },
   watch: {
     value() {
@@ -62,10 +67,16 @@ export default defineComponent({
   },
   methods: {},
   computed: {
+    useDefault() {
+      return this.value.trim().length === 0;
+    },
     processedValue(): string {
+      if (this.useDefault) {
+        return this.defaultValue;
+      }
       return (
-        this.value.substring(0, 10000) +
-        (this.value.length > 10000 ? "..." : "")
+        this.value.substring(0, 20000) +
+        (this.value.length > 20000 ? "..." : "")
       );
     },
   },

@@ -1093,6 +1093,10 @@
       @apply mb-1;
     }
 
+    .thumbnail-slot .hide-in-thumbnail {
+      @apply hidden !important;
+    }
+
     .thumbnail-slot .ql-editor-container:focus-within ~ label {
       @apply duration-300 transform scale-100 -translate-y-2.5 text-primary !important;
      }
