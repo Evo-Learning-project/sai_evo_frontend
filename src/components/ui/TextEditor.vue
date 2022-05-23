@@ -1,35 +1,70 @@
 <template>
-  <div
-    class="relative z-10 rounded-t-sm light-input bg-light"
-    :class="{ 'opacity-80': disabled }"
-  >
-    <!-- TODO! make this just a textarea for students-->
-    <div class="z-10 ql-editor-container tex2jax_ignore">
-      <quill-editor
-        :options="editorOptions"
-        :value="modelValue"
-        :disabled="disabled || internalDisabled"
-        @change="onEditorChange($event)"
-        @ready="onEditorReady($event)"
-      />
-    </div>
-    <label
-      class="absolute -z-1 top-2 left-2 origin-0 ql-floating-label"
-      :class="{ 'fixed-label': modelValue?.length > 0 }"
+  <div>
+    <div
+      class="relative z-10 rounded-t-sm light-input bg-light"
+      :class="{ 'opacity-80': disabled }"
     >
-      <slot></slot>
-    </label>
+      <!-- TODO! make this just a textarea for students-->
+      <div class="z-10 ql-editor-container tex2jax_ignore">
+        <quill-editor
+          :options="editorOptions"
+          :value="modelValue"
+          :disabled="disabled || internalDisabled"
+          @change="onEditorChange($event)"
+          @ready="onEditorReady($event)"
+          v-if="!showBaseEditor"
+        />
+        <textarea
+          class="py-3.5 px-3.5 bg-transparent rounded-t-sm outline-none"
+          v-else
+          rows="8"
+          @input="$emit('update:modelValue', $event.target.value)"
+          :value="modelValue"
+        ></textarea>
+      </div>
+      <label
+        class="absolute -z-1 top-2 left-2 origin-0 ql-floating-label"
+        :class="{ 'fixed-label': modelValue?.length > 0 }"
+      >
+        <slot></slot>
+      </label>
+    </div>
+    <div class="flex w-full">
+      <p
+        v-if="showBaseEditor"
+        style="font-size: 12px"
+        class="ml-auto text-sm text-muted"
+      >
+        {{ $t("misc.using_base_editor") }}
+      </p>
+      <Btn
+        @click="toggleBaseEditor()"
+        :size="'xs'"
+        :class="[showBaseEditor ? 'ml-2' : 'ml-auto']"
+        :variant="'primary-borderless'"
+      >
+        <p class="text-sm" style="font-weight: 400; font-size: 11px">
+          {{
+            showBaseEditor
+              ? $t("misc.show_full_editor")
+              : $t("misc.having_troubles_with_editor")
+          }}
+        </p></Btn
+      >
+    </div>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "@vue/runtime-core";
 import { quillEditor } from "vue3-quill";
+import Btn from "./Btn.vue";
 export default defineComponent({
   name: "TextEditor",
   props: ["modelValue", "disabled"],
   components: {
     quillEditor,
+    Btn,
   },
   mounted() {
     // prevent auto-focusing of quill editor
@@ -37,6 +72,7 @@ export default defineComponent({
   },
   data() {
     return {
+      showBaseEditor: false,
       instance: null as any,
       content: "",
       internalDisabled: true,
@@ -68,6 +104,9 @@ export default defineComponent({
     };
   },
   methods: {
+    toggleBaseEditor() {
+      this.showBaseEditor = !this.showBaseEditor;
+    },
     onEditorChange({ quill, html, text }: unknown) {
       //console.log("editor change!", quill, html, text);
       this.content = html;
