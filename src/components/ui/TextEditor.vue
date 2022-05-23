@@ -4,7 +4,7 @@
     :class="{ 'opacity-80': disabled }"
   >
     <!-- TODO! make this just a textarea for students-->
-    <div class="z-10 ql-editor-container">
+    <div class="z-10 ql-editor-container tex2jax_ignore">
       <quill-editor
         :options="editorOptions"
         :value="modelValue"
