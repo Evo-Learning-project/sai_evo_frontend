@@ -604,7 +604,7 @@
 
       <!-- seen at - answered at info -->
       <div
-        class="flex mt-4 space-x-2 text-sm"
+        class="flex flex-col mt-4 space-y-1 text-sm  md:space-y-0 md:flex-row md:space-x-4"
         v-if="
           allowEditAssessment && (modelValue.seen_at || modelValue.answered_at)
         "
