@@ -286,6 +286,11 @@ export default defineComponent({
           "access_rule",
           value ? EventAccessRule.ALLOW_ACCESS : EventAccessRule.DENY_ACCESS
         );
+
+        if (value) {
+          // reset access list if rule is ALLOW_ACCESS
+          this.emitUpdate("access_rule_exceptions", []);
+        }
       },
     },
     allowedAccessAsTags(): Tag[] {
