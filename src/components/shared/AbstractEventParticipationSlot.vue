@@ -270,8 +270,11 @@
               (isProgrammingExercise || isOpenAnswerExercise) &&
               !isAnswerEmpty &&
               isSolutionOrCommentShown,
-            // if no comment or solution needs to be shown, take up 1/3 of space
-            'md:w-1/3': !isSolutionOrCommentShown,
+            // if no comment or solution needs to be shown, and the
+            // assessment card is read-only, take up 1/3 of space
+            'md:w-1/3': !isSolutionOrCommentShown && !allowEditAssessment,
+            // if the assessment card isn't read-only, take up more space
+            'md:w-2/3': !isSolutionOrCommentShown && allowEditAssessment,
             // for sub-slots, open, programming exercises with empty answer and a solution or,
             // comment take up full space
             'md:w-full':
