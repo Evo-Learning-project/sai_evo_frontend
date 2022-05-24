@@ -38,6 +38,11 @@ export enum EventState {
   RESTRICTED,
 }
 
+export enum EventAccessRule {
+  ALLOW_ACCESS,
+  DENY_ACCESS,
+}
+
 export enum EventTemplateRuleType {
   TAG_BASED,
   ID_BASED,

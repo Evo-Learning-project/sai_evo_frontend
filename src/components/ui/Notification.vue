@@ -1,6 +1,6 @@
 <template>
   <div
-    style="z-index: 999"
+    style="z-index: 999999"
     class="fixed w-10/12 transform -translate-x-1/2 -translate-y-1/2 bg-gray-200 border rounded-md shadow-2xl  bg-opacity-90 top-1/2 left-1/2 md:w-max md:ml-0"
   >
     <!-- FIXME review shadow -->

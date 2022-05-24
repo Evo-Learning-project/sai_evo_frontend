@@ -14,7 +14,9 @@
         @before-adding-tag="beforeAddingTag($event)"
         @before-deleting-tag="beforeDeletingTag($event)"
         :autocomplete-items="autoCompleteItems"
-        :autocomplete-min-length="alwaysShowAutocomplete ? 0 : 1"
+        :autocomplete-min-length="
+          alwaysShowAutocomplete ? 0 : allowAutocomplete ? 1 : 10000000000000
+        "
         :autocomplete-filter-duplicates="false"
       />
     </div>
@@ -71,6 +73,10 @@ export default defineComponent({
     alwaysShowAutocomplete: {
       type: Boolean,
       default: false,
+    },
+    allowAutocomplete: {
+      type: Boolean,
+      default: true,
     },
   },
   data() {

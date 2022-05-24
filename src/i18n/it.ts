@@ -180,6 +180,7 @@ export const it = {
       "L'inserimento del numero di matricola e la selezione del corso sono necessari per poter partecipare agli esami. Fallo ora e non pensarci più!",
   },
   misc: {
+    wrong_file_format: "Il formato del file che hai selezionato non è corretto",
     expand: "Espandi",
     collapse: "Riduci",
     no_answer: "Nessuna risposta",
@@ -411,8 +412,10 @@ export const it = {
     instructions: "Istruzioni (opzionale)",
     editor_title: "Editor esame",
     flow_rules: "Regole di svolgimento",
+    access_rules: "Regole di accesso",
     exercises_shown_at_a_time_label:
       "Numero di esercizi da mostrare per pagina",
+    allow_everyone_access_label: "Accesso libero all'esame",
     allow_going_back_label:
       "Permetti agli studenti di tornare indietro a un esercizio già visto",
     show_all_exercises_at_once: "Mostra tutti gli esercizi insieme",
@@ -439,6 +442,21 @@ export const it = {
       "Hai utilizzato alcune delle funzionalità di randomizzazione. Verifica che gli esami generati siano corretti.",
     generate_examples: "Genera esempi",
     generating_examples: "Generazione esempi...",
+    allow_access_description:
+      "Tutti coloro che hanno il link potranno partecipare all'esame una volta aperto.",
+    deny_access_description:
+      "Solo gli studenti da te indicati potranno partecipare all'esame una volta aperto.",
+    choose_allowed: "Gestisci ammessi",
+    import_from_valutami: "Importa da Valutami",
+    manage_allowed_description:
+      "Inserisci gli indirizzi email degli studenti che possono partecipare all'esame. Solo gli studenti il cui indirizzo email è in questa lista potranno accedere all'esame quando viene aperto.",
+    manage_allowed_import_from_valutami_1:
+      "Puoi importare la lista degli iscritti all'esame dal portale",
+    manage_allowed_import_from_valutami_2: "Valutami",
+    manage_allowed_import_from_valutami_3:
+      "Questo permetterà solo agli studenti che si sono iscritti all'appello sul portale di accedere a questo esame.",
+    student_email: "Email dello studente",
+    import_enrolled: "Importa iscritti",
   },
   exercise_editor: {
     exercise_editor_title: "Editor esercizio",
