@@ -79,7 +79,11 @@
             class=""
             :size="'sm'"
             :outline="true"
-            v-if="canReopen && hasPrivileges([CoursePrivilege.MANAGE_EVENTS])"
+            v-if="
+              canReopen &&
+              allowClose &&
+              hasPrivileges([CoursePrivilege.MANAGE_EVENTS])
+            "
             @click="$emit('reopen')"
             ><span class="text-base material-icons-outlined"> undo </span>
             <span class="ml-1" v-if="true || !buttonIconsOnly">{{
@@ -233,13 +237,6 @@ export default defineComponent({
       );
     },
     canReopen() {
-      console.log(
-        "--",
-        Math.abs(
-          new Date().getTime() -
-            new Date(this.event.begin_timestamp ?? "").getTime()
-        ) / 3600000
-      );
       return (
         this.hasEnded &&
         Math.abs(

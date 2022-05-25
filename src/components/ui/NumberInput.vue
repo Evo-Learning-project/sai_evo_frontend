@@ -30,7 +30,7 @@
         'floating-label-error': $slots.errors?.(),
       }"
     />
-    <label class="absolute bottom-1.5 origin-0 -z-1">
+    <label class="absolute bottom-1.5 origin-0 -z-1 w-full">
       <slot></slot>
     </label>
     <div v-if="rightIcon.length > 0" class="absolute bottom-0.5 right-1.5 -z-1">

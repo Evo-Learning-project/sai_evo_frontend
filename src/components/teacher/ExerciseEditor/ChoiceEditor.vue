@@ -22,7 +22,7 @@
     </div>
     <TextEditor
       v-if="!singleLine"
-      class="w-full md:w-8/12"
+      class="w-full md:w-7/12"
       :modelValue="modelValue.text"
       @update:modelValue="onUpdate('text', $event)"
       >{{ $t("exercise_editor.choice_text") }}</TextEditor
@@ -36,7 +36,7 @@
     >
 
     <div class="flex flex-grow space-x-2">
-      <div>
+      <div class="w-full">
         <NumberInput
           class="mb-auto"
           :modelValue="modelValue.score_selected"
@@ -44,14 +44,18 @@
           :leftIcon="
             iconType === 'radio' ? 'radio_button_checked' : 'check_box'
           "
-          >{{ $t("exercise_editor.choice_score_checked") }}</NumberInput
         >
-        <Tooltip
-          class="-ml-1.5"
-          :textCode="'exercise_editor.score_if_checked'"
-        ></Tooltip>
+          <div class="flex w-full items-center space-x-0.5">
+            <p>{{ $t("exercise_editor.choice_score_checked") }}</p>
+            <Tooltip
+              :placement="'top'"
+              class="-ml-1.5 -mb-1.25px transform scale-125"
+              :textCode="'exercise_editor.score_if_checked'"
+            ></Tooltip>
+          </div>
+        </NumberInput>
       </div>
-      <div>
+      <div class="w-full">
         <NumberInput
           class="mb-auto"
           :modelValue="modelValue.score_unselected"
@@ -61,12 +65,16 @@
               : 'check_box_outline_blank'
           "
           @update:modelValue="onUpdate('score_unselected', $event)"
-          >{{ $t("exercise_editor.choice_score_unchecked") }}</NumberInput
         >
-        <Tooltip
-          class="-ml-1.5"
-          :textCode="'exercise_editor.score_if_unchecked'"
-        ></Tooltip>
+          <div class="flex items-center space-x-0.5">
+            <p>{{ $t("exercise_editor.choice_score_unchecked") }}</p>
+            <Tooltip
+              :placement="'top'"
+              class="-ml-1.5 -mb-1.25px transform scale-125"
+              :textCode="'exercise_editor.score_if_unchecked'"
+            ></Tooltip>
+          </div>
+        </NumberInput>
       </div>
     </div>
     <div class="my-auto">

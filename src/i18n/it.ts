@@ -369,7 +369,7 @@ export const it = {
   event_template_rule_editor: {
     reset_slot_settings: "Resetta slot",
     exercise_number: "Slot",
-    choose_exercise: "Scegli esercizio...",
+    choose_exercise: "Scegli esercizio",
     change_exercise: "Cambia esercizio",
     populate_slot_title: "Seleziona esercizio per lo slot",
     mode_selection_text: "Come vuoi scegliere l'esercizio per questo slot?",
@@ -483,7 +483,7 @@ export const it = {
     exercise_private_tags: "Tag privati",
     choice_text: "Testo",
     choice_score_checked: "Punteggio selez.",
-    choice_score_unchecked: "Punteggio non selez.",
+    choice_score_unchecked: "Punteg. non selez.",
     testcase_type: "Visibilità",
     testcase_text: "Descrizione",
     testcase_code: "Codice",

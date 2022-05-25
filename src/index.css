@@ -497,6 +497,13 @@
       @apply bottom-full left-1/2 transform -translate-x-1/2
     }
 
+    .tooltip-top::after {
+      content: ' ';
+      border-color: rgba(17, 24, 39, 0.6) transparent transparent transparent !important;
+      @apply absolute -mb-1 border-4 border-transparent border-solid top-full left-1/2;
+    }
+
+
     .tooltip-bottom {
       @apply top-full left-1/2 transform -translate-x-1/2
     }
