@@ -233,13 +233,20 @@ export default defineComponent({
       );
     },
     canReopen() {
+      console.log(
+        "--",
+        Math.abs(
+          new Date().getTime() -
+            new Date(this.event.begin_timestamp ?? "").getTime()
+        ) / 3600000
+      );
       return (
         this.hasEnded &&
         Math.abs(
           new Date().getTime() -
             new Date(this.event.begin_timestamp ?? "").getTime()
         ) /
-          360_000 <
+          3600000 <
           24
       );
     },

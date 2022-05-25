@@ -298,6 +298,9 @@ export const it = {
   course_events: {
     new_exam: "Nuovo esame",
     no_exams: "Non ci sono ancora esami",
+    reopen: "Riapri",
+    reopen_exam_body: "Vuoi riaprire l'esame",
+    reopen_exam_title: "Riapri esame",
     close_exam_for_everyone_title: "Chiudi l'esame per tutti",
     close_for_everyone: "Chiudi per tutti",
     close_exam_for_everyone_body_1: "Stai per chiudere l'esame",
@@ -314,6 +317,7 @@ export const it = {
     results: "Risultati",
     editor: "Editor",
     close: "Chiudi",
+    reopen: "Riapri",
     still_open_for_some: "L'esame è ancora aperto per alcuni studenti.",
     copy_link: "Copia link per gli studenti",
     copied_link: "Copiato link per gli studenti",

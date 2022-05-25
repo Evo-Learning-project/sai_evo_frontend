@@ -61,6 +61,24 @@
         </p>
       </template>
     </Dialog>
+    <Dialog
+      :showDialog="showReopenDialog"
+      @no="showReopenDialog = false"
+      @yes="reopenExam()"
+      :yesText="$t('course_events.reopen')"
+      :noText="$t('dialog.default_cancel_text')"
+    >
+      <template v-slot:title>
+        {{ $t("course_events.reopen_exam_title") }}
+      </template>
+      <template v-slot:body>
+        <p>
+          {{ $t("course_events.reopen_exam_body") }}
+          <strong>{{ reopeningExam.name }}</strong
+          >?
+        </p>
+      </template>
+    </Dialog>
   </div>
 </template>
 
@@ -110,6 +128,8 @@ export default defineComponent({
       CoursePrivilege,
       buttonLoading: false,
       showCloseDialog: false,
+      showReopenDialog: false,
+      reopeningExam: null as Event | null,
       closingExam: null as Event | null,
     };
   },
@@ -118,6 +138,10 @@ export default defineComponent({
     onClose(event: Event) {
       this.showCloseDialog = true;
       this.closingExam = event;
+    },
+    onReopen(event: Event) {
+      this.showReopenDialog = true;
+      this.reopeningExam = event;
     },
     async closeExam() {
       await this.withLoading(
@@ -136,6 +160,24 @@ export default defineComponent({
       );
       this.closingExam = null;
       this.showCloseDialog = false;
+    },
+    async reopenExam() {
+      await this.withLoading(
+        async () =>
+          await this.partialUpdateEvent({
+            courseId: this.courseId,
+            eventId: this.reopeningExam?.id,
+            mutate: true,
+            changes: {
+              state: EventState.OPEN,
+              users_allowed_past_closure: [],
+            },
+          }),
+        this.setErrorNotification,
+        () => this.$store.commit("shared/showSuccessFeedback")
+      );
+      this.reopeningExam = null;
+      this.showReopenDialog = false;
     },
     async onAddExam() {
       await this.withLocalLoading(async () => {
