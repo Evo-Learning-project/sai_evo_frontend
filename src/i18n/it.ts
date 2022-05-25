@@ -415,7 +415,10 @@ export const it = {
     access_rules: "Regole di accesso",
     exercises_shown_at_a_time_label:
       "Numero di esercizi da mostrare per pagina",
-    allow_everyone_access_label: "Accesso libero all'esame",
+    allow_everyone_access_label:
+      "Permetti di partecipare a tutti quelli che hanno il link all'esame",
+    deny_access_by_default_label:
+      "Permetti di partecipare solo agli studenti da te indicati",
     allow_going_back_label:
       "Permetti agli studenti di tornare indietro a un esercizio già visto",
     show_all_exercises_at_once: "Mostra tutti gli esercizi insieme",
@@ -457,6 +460,7 @@ export const it = {
       "Questo permetterà solo agli studenti che si sono iscritti all'appello sul portale di accedere a questo esame.",
     student_email: "Email dello studente",
     import_enrolled: "Importa iscritti",
+    allowed_students: "studenti ammessi",
   },
   exercise_editor: {
     exercise_editor_title: "Editor esercizio",

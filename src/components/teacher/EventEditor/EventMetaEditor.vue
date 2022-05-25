@@ -36,6 +36,7 @@
       <h3>{{ $t("event_editor.flow_rules") }}</h3>
       <div class="flex items-center space-x-4">
         <RadioGroup
+          class="-ml-1.5"
           :modelValue="modelValue.exercises_shown_at_a_time"
           :options="exercisesShownAtOnceOptions"
           @update:modelValue="emitUpdate('exercises_shown_at_a_time', $event)"
@@ -52,17 +53,23 @@
 
     <div class="flex flex-col mt-12 space-y-4">
       <h3>{{ $t("event_editor.access_rules") }}</h3>
-      <Toggle
+      <!-- <Toggle
         :labelOnLeft="true"
         v-show="modelValue.exercises_shown_at_a_time == 1"
         v-model="proxyAccessRule"
         >{{ $t("event_editor.allow_everyone_access_label") }}</Toggle
-      >
-      <div class="flex items-center">
-        <span class="mr-2 text-xl material-icons-outlined icon-light">
+      > -->
+      <RadioGroup
+        class="-ml-1.5"
+        :modelValue="modelValue.access_rule"
+        :options="accessRulesOptions"
+        @update:modelValue="onAccessRuleChange($event)"
+      ></RadioGroup>
+      <div class="flex items-center -ml-0.5">
+        <span class="mr-2 text-xl material-icons text-primary">
           {{
             modelValue.access_rule === EventAccessRule.ALLOW_ACCESS
-              ? "lock_open"
+              ? "public"
               : "lock"
           }}</span
         >
@@ -75,12 +82,27 @@
         </p>
         <Btn
           @click="showAccessRuleDialog = true"
-          class="ml-8 -mt-2"
+          :class="[
+            modelValue.access_rule === EventAccessRule.DENY_ACCESS
+              ? 'visible'
+              : 'invisible',
+            'ml-8',
+          ]"
           :variant="'primary'"
-          v-if="modelValue.access_rule === EventAccessRule.DENY_ACCESS"
           ><span class="mr-2 material-icons"> people </span>
           {{ $t("event_editor.choose_allowed") }}</Btn
         >
+        <p
+          :class="[
+            modelValue.access_rule === EventAccessRule.DENY_ACCESS
+              ? 'visible'
+              : 'invisible',
+            'ml-4',
+          ]"
+        >
+          <strong>{{ modelValue.access_rule_exceptions?.length ?? 0 }}</strong>
+          {{ $t("event_editor.allowed_students") }}
+        </p>
       </div>
     </div>
 
@@ -219,6 +241,12 @@ export default defineComponent({
         this.showDialog = true;
       }
     },
+    onAccessRuleChange(newVal: EventAccessRule) {
+      this.emitUpdate("access_rule", newVal);
+      if (newVal === EventAccessRule.ALLOW_ACCESS) {
+        this.emitUpdate("access_rule_exceptions", []);
+      }
+    },
     onAddAllowedAccess(value: string) {
       // TODO investigate
       setTimeout(
@@ -261,37 +289,29 @@ export default defineComponent({
         console.log("contents", csvToArray(fileContents, FIRST_HEADER_NAME));
 
         const csvElements = csvToArray(fileContents, FIRST_HEADER_NAME);
+
+        const validCsvRecords = csvElements.filter((e) => e[EMAIL_HEADER_NAME]);
+        if (validCsvRecords.length === 0) {
+          throw new Error();
+        }
         this.emitUpdate(
           "access_rule_exceptions",
-          csvElements.map(
-            (e) => e[EMAIL_HEADER_NAME].slice(1, -1) // remove quotes
+          validCsvRecords.map(
+            (e) => e[EMAIL_HEADER_NAME]?.slice(1, -1) ?? "" // remove quotes
           )
         );
         this.$store.commit("shared/showSuccessFeedback");
       } catch (e) {
         setErrorNotification(_("misc.wrong_file_format"), true);
+        throw e;
+      } finally {
+        event.target.value = "";
       }
     },
   },
   computed: {
     isDraft() {
       return this.modelValue.state == EventState.DRAFT;
-    },
-    proxyAccessRule: {
-      get() {
-        return this.modelValue.access_rule === EventAccessRule.ALLOW_ACCESS;
-      },
-      set(value: boolean) {
-        this.emitUpdate(
-          "access_rule",
-          value ? EventAccessRule.ALLOW_ACCESS : EventAccessRule.DENY_ACCESS
-        );
-
-        if (value) {
-          // reset access list if rule is ALLOW_ACCESS
-          this.emitUpdate("access_rule_exceptions", []);
-        }
-      },
     },
     allowedAccessAsTags(): Tag[] {
       return (
@@ -300,6 +320,18 @@ export default defineComponent({
           name: e,
         })) ?? []
       );
+    },
+    accessRulesOptions(): SelectableOption[] {
+      return [
+        {
+          value: EventAccessRule.ALLOW_ACCESS,
+          content: _("event_editor.allow_everyone_access_label"),
+        },
+        {
+          value: EventAccessRule.DENY_ACCESS,
+          content: _("event_editor.deny_access_by_default_label"),
+        },
+      ];
     },
     exercisesShownAtOnceOptions(): SelectableOption[] {
       return [
