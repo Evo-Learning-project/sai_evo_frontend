@@ -20,6 +20,7 @@
         :key="exam + '-' + index"
         :event="exam"
         @close="onClose(exam)"
+        @reopen="onReopen(exam)"
       ></EventEditorPreview>
     </div>
     <div class="grid grid-cols-1 gap-4 mt-4 lg:grid-cols-2" v-else>

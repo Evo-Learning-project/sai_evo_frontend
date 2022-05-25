@@ -16,6 +16,7 @@ import {
   ExerciseType,
   Tag,
 } from ".";
+import { EventAccessRule } from "./types";
 
 export const getBlankCourse = (): Course => ({
   id: "",
@@ -62,6 +63,8 @@ export const getBlankExam = (): Event => ({
   exercises_shown_at_a_time: 1,
   allow_going_back: true,
   randomize_rule_order: false,
+  access_rule: EventAccessRule.ALLOW_ACCESS,
+  access_rule_exceptions: [],
 });
 
 export const getBlankPractice = (): Event => ({

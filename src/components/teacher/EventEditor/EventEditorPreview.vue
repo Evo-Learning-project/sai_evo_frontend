@@ -75,6 +75,17 @@
               $t("event_preview.close")
             }}</span></Btn
           >
+          <Btn
+            class=""
+            :size="'sm'"
+            :outline="true"
+            v-if="canReopen && hasPrivileges([CoursePrivilege.MANAGE_EVENTS])"
+            @click="$emit('reopen')"
+            ><span class="text-base material-icons-outlined"> undo </span>
+            <span class="ml-1" v-if="true || !buttonIconsOnly">{{
+              $t("event_preview.reopen")
+            }}</span></Btn
+          >
           <div class="flex items-center ml-auto">
             <router-link
               class="m-auto"
@@ -219,6 +230,17 @@ export default defineComponent({
       return (
         this.event.state === EventState.OPEN ||
         this.event.state === EventState.RESTRICTED
+      );
+    },
+    canReopen() {
+      return (
+        this.hasEnded &&
+        Math.abs(
+          new Date().getTime() -
+            new Date(this.event.begin_timestamp ?? "").getTime()
+        ) /
+          360_000 <
+          24
       );
     },
     hasEnded() {
