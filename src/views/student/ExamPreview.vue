@@ -90,7 +90,9 @@
           {{ $t("event_participation_page.exam_is_over") }}
         </p>
         <router-link
-          v-if="canParticipate && (user.is_teacher || user.mat)"
+          v-if="
+            canParticipate && (user.is_teacher || (user.mat && user.course))
+          "
           :to="{
             name: 'ExamParticipationPage',
             params: {
