@@ -11,7 +11,7 @@ export const icons = {
   ],
   [ExerciseType.OPEN_ANSWER]: ["text_snippet-sm"],
   [ExerciseType.JS]: ["javascript-lg"],
-  [ExerciseType.C]: ["code-sm"],
+  [ExerciseType.C]: ["code-sm"], // raw-c.svg
   [ExerciseType.COMPLETION]: [
     "expand_more",
     "horizontal_rule",

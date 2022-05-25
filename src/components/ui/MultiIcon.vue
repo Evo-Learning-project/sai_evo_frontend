@@ -6,7 +6,13 @@
       icons?.length > 2 ? 'flex flex-col -space-y-2' : '',
     ]"
   >
+    <img
+      class="transform scale-125 ml-1.5 my-0"
+      v-if="isRawIcon"
+      src="../../../public/c.svg"
+    />
     <span
+      v-else
       :class="[
         icons?.length > 1
           ? 'text-2xs'
@@ -50,9 +56,16 @@ export default defineComponent({
     };
   },
   computed: {
+    isRawIcon(): boolean {
+      return this.icons?.[0].startsWith("raw-") ?? false;
+    },
     parsedIcons() {
       return this.icons?.map((i) =>
-        i.slice(-3) === "-lg" || i.slice(-3) === "-sm" ? i.slice(0, -3) : i
+        i.slice(-3) === "-lg" || i.slice(-3) === "-sm"
+          ? i.slice(0, -3)
+          : i.slice(0, 4) === "raw-"
+          ? i.slice(4)
+          : i
       );
     },
   },

@@ -65,28 +65,40 @@
         :options="accessRulesOptions"
         @update:modelValue="onAccessRuleChange($event)"
       ></RadioGroup>
-      <div class="flex items-center -ml-0.5">
-        <span class="mr-2 text-xl material-icons text-primary">
-          {{
-            modelValue.access_rule === EventAccessRule.ALLOW_ACCESS
-              ? "public"
-              : "lock"
-          }}</span
-        >
-        <p class="text-muted">
-          {{
-            modelValue.access_rule === EventAccessRule.ALLOW_ACCESS
-              ? $t("event_editor.allow_access_description")
-              : $t("event_editor.deny_access_description")
-          }}
-        </p>
+      <div
+        class="
+          flex
+          md:flex-row
+          flex-col
+          md:space-y-0
+          space-y-2
+          md:items-center
+          -ml-0.5
+        "
+      >
+        <div class="flex items-center">
+          <span class="mr-2 text-xl material-icons text-primary">
+            {{
+              modelValue.access_rule === EventAccessRule.ALLOW_ACCESS
+                ? "public"
+                : "lock"
+            }}</span
+          >
+          <p class="text-muted">
+            {{
+              modelValue.access_rule === EventAccessRule.ALLOW_ACCESS
+                ? $t("event_editor.allow_access_description")
+                : $t("event_editor.deny_access_description")
+            }}
+          </p>
+        </div>
         <Btn
           @click="showAccessRuleDialog = true"
           :class="[
             modelValue.access_rule === EventAccessRule.DENY_ACCESS
               ? 'visible'
               : 'invisible',
-            'ml-8',
+            'md:ml-8',
           ]"
           :variant="'primary'"
           ><span class="mr-2 material-icons"> people </span>
@@ -97,7 +109,7 @@
             modelValue.access_rule === EventAccessRule.DENY_ACCESS
               ? 'visible'
               : 'invisible',
-            'ml-4',
+            'md:ml-4',
           ]"
         >
           <strong>{{ modelValue.access_rule_exceptions?.length ?? 0 }}</strong>
@@ -130,9 +142,11 @@
           <h3 class="text-darkText">
             {{ $t("event_editor.import_from_valutami") }}
           </h3>
-          <div class="flex items-start space-x-6">
+          <div
+            class="flex flex-col items-start space-y-2  md:space-y-0 md:space-x-2 md:flex-row md:space-x-6"
+          >
             <div
-              class="w-32 mt-1.5 overflow-hidden rounded-sm shadow-elevation"
+              class="mlw-32 mt-1.5 overflow-hidden rounded-sm shadow-elevation"
             >
               <img class="w-32" src="../../../../public/valutami.png" />
             </div>
