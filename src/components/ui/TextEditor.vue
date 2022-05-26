@@ -29,7 +29,7 @@
         <slot></slot>
       </label>
     </div>
-    <div class="flex w-full hide-in-thumbnail">
+    <div class="relative z-10 flex w-full hide-in-thumbnail">
       <p
         v-if="showBaseEditor"
         style="font-size: 12px"
@@ -40,7 +40,7 @@
       <Btn
         @click="toggleBaseEditor()"
         :size="'xs'"
-        :class="[showBaseEditor ? 'ml-2' : 'ml-auto']"
+        :class="[showBaseEditor ? 'ml-2' : 'ml-auto my-auto -mt-6']"
         :variant="'primary-borderless'"
       >
         <p class="text-sm" style="font-weight: 400; font-size: 11px">

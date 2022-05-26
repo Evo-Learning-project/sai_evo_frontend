@@ -237,7 +237,7 @@
 
             <Tooltip
               v-if="!cloze"
-              class="-mt-5"
+              class=""
               :text-code="'exercise_editor.solution'"
             ></Tooltip>
           </div>
