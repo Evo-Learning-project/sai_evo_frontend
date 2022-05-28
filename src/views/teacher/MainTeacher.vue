@@ -18,6 +18,11 @@
         w-full
       "
     >
+      <HelpCenter
+        @startTour="startTour()"
+        @close="showHelpCenter = false"
+        v-if="showHelpCenter"
+      ></HelpCenter>
       <div class="flex items-center h-14">
         <div class="flex items-center mt-4 mb-4 -ml-4.5">
           <Btn
@@ -307,11 +312,6 @@
         ></transition>
       </div>
     </div>
-    <HelpCenter
-      @startTour="startTour()"
-      @close="showHelpCenter = false"
-      v-if="showHelpCenter"
-    ></HelpCenter>
     <v-tour
       name="helpCenterTour"
       :steps="teacherTourSteps"
