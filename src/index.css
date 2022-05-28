@@ -169,8 +169,13 @@
     }
 
     .fade-enter-active,
+    .fade-quick-active,
     .fade-leave-active {
       transition: opacity 0.2s linear;
+    }
+
+    .fade-quick-leave-active {
+      transition: opacity 0.05s linear;
     }
 
     .drag-ghost {
