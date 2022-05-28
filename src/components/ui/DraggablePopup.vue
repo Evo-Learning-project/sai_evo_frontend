@@ -2,13 +2,26 @@
   <div
     ref="draggableContainer"
     :id="containerId + '-draggable-container'"
-    style="top: -30px; left: 63%"
-    class="absolute z-50 w-2/6 p-2 overflow-y-auto shadow-xl cursor-move resize  card-filled card"
-    draggable="true"
+    :style="
+      'box-shadow: 0 1px 3px 0 rgb(60 64 67 / 30%), 0 4px 8px 3px rgb(60 64 67 / 15%);top: ' +
+      initialTop +
+      'px;left: ' +
+      initialLeft +
+      '%;z-index: 101;'
+    "
+    class="absolute z-50 w-2/5 p-2 overflow-y-auto transition-opacity duration-75 resize  opacity-80 card hover:opacity-100"
+    :class="{
+      'bg-light': !whiteBg,
+      'bg-white': whiteBg,
+    }"
   >
-    <div class="absolute w-full h-full" @mousedown="dragMouseDown"></div>
-    <div class="flex w-full px-4 pt-3">
-      <h1 class="">{{ title }}</h1>
+    <div
+      class="absolute w-full cursor-move"
+      :class="[dragOnTitleOnly ? 'h-18' : 'h-full']"
+      @mousedown="dragMouseDown"
+    ></div>
+    <div class="flex items-center w-full px-4 pt-3">
+      <h2 class="mb-0">{{ title }}</h2>
 
       <Btn
         :tooltip="$t('misc.close')"
@@ -39,6 +52,22 @@ export default defineComponent({
       type: String,
       default: "",
     },
+    whiteBg: {
+      type: Boolean,
+      default: false,
+    },
+    dragOnTitleOnly: {
+      type: Boolean,
+      default: false,
+    },
+    initialTop: {
+      type: Number,
+      default: -30,
+    },
+    initialLeft: {
+      type: Number,
+      default: 63,
+    },
   },
   mounted() {
     // keep draggable area in sync with actual scroll width and height of the popup
@@ -68,6 +97,7 @@ export default defineComponent({
   },
   methods: {
     dragMouseDown: function (event: any) {
+      console.log("drag");
       event.preventDefault();
       // get the mouse cursor position at startup:
       this.positions.clientX = event.clientX;

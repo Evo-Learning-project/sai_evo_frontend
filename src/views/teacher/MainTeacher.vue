@@ -44,7 +44,7 @@
           >
             <Btn
               :tooltip="$t('help.help_guide_label')"
-              @click="onHelpGuideOpen()"
+              @click="onHelpCenterOpen()"
               :variant="'icon'"
               :outline="true"
               ><span class="text-lg text-lightText material-icons-outlined">
@@ -56,14 +56,7 @@
             </p>
             <p
               @click="onShowMatEdit"
-              class="
-                hidden
-                text-xs
-                cursor-pointer
-                md:block
-                text-lightText
-                md:text-sm
-              "
+              class="hidden text-xs cursor-pointer  md:block text-lightText md:text-sm"
             >
               {{ $store.state.shared.user?.mat }}
             </p>
@@ -91,18 +84,7 @@
       <!-- bg-gray-500 -->
       <nav
         style="z-index: 999"
-        class="
-          sticky
-          top-0
-          flex
-          items-center
-          w-full
-          px-3
-          py-2
-          shadow-elevation-2
-          md:hidden
-          bg-primary
-        "
+        class="sticky top-0 flex items-center w-full px-3 py-2  shadow-elevation-2 md:hidden bg-primary"
       >
         <img class="w-32" src="../../../public/unipi-logo.svg" />
         <Btn
@@ -144,17 +126,7 @@
                 :class="[
                   hoveringSidebar || fixSideBar ? 'opacity-100' : 'opacity-0',
                 ]"
-                class="
-                  flex
-                  items-center
-                  hidden
-                  w-full
-                  pl-10
-                  pr-8
-                  mt-4
-                  overflow-visible
-                  whitespace-pre
-                "
+                class="flex items-center hidden w-full pl-10 pr-8 mt-4 overflow-visible whitespace-pre "
               >
                 <img class="w-36" src="../../../public/unipi-logo.svg" /></div
             ></transition>
@@ -165,20 +137,7 @@
                 :class="[
                   hoveringSidebar || fixSideBar ? 'opacity-100' : 'opacity-0',
                 ]"
-                class="
-                  flex
-                  items-center
-                  justify-center
-                  w-full
-                  pl-2
-                  mx-auto
-                  mt-8
-                  mb-4
-                  space-x-1
-                  text-sm
-                  whitespace-pre
-                  text-light
-                "
+                class="flex items-center justify-center w-full pl-2 mx-auto mt-8 mb-4 space-x-1 text-sm whitespace-pre  text-light"
               >
                 <p>{{ $store.getters["shared/email"] }}</p>
                 <Btn @click="logOut()" :variant="'icon'" :outline="true"
@@ -206,19 +165,7 @@
                 <li
                   :id="'sidebar-option-' + index"
                   style="padding-top: 11px; padding-bottom: 11px"
-                  class="
-                    flex
-                    items-center
-                    justify-between
-                    px-4
-                    cursor-pointer
-                    sidebar-link-container
-                    hover:transition-colors
-                    text-darkText
-                    hover:bg-primary-light
-                    hover:bg-opacity-10
-                    hover:duration-100
-                  "
+                  class="flex items-center justify-between px-4 cursor-pointer  sidebar-link-container hover:transition-colors text-darkText hover:bg-primary-light hover:bg-opacity-10 hover:duration-100"
                   :class="{
                     'md:w-full': true || !fixSideBar,
                     'md:w-11/12': false && fixSideBar,
@@ -262,21 +209,7 @@
       <!--Mobile responsive sidebar-->
       <div
         style="z-index: 99999"
-        class="
-          fixed
-          flex-col
-          justify-between
-          block
-          w-9/12
-          h-full
-          overflow-y-auto
-          transition-transform
-          duration-300
-          ease-in-out
-          transform
-          md:hidden
-          bg-primary
-        "
+        class="fixed flex-col justify-between block w-9/12 h-full overflow-y-auto transition-transform duration-300 ease-in-out transform  md:hidden bg-primary"
         id="mobile-nav"
         :class="{
           '-translate-x-full': !showMobileSidebar,
@@ -289,17 +222,7 @@
           </div>
           <div
             v-if="$store.getters['shared/isAuthenticated']"
-            class="
-              flex
-              items-center
-              justify-center
-              w-full
-              mx-auto
-              mt-8
-              mb-4
-              space-x-1
-              text-sm text-light
-            "
+            class="flex items-center justify-center w-full mx-auto mt-8 mb-4 space-x-1 text-sm  text-light"
           >
             <p>{{ $store.getters["shared/email"] }}</p>
             <Btn @click="logOut()" :variant="'icon'" :outline="true"
@@ -341,11 +264,7 @@
               >
                 <div class="flex items-center space-x-2.5">
                   <span
-                    class="
-                      text-2xl text-gray-200
-                      material-icons-outlined
-                      opacity-80
-                    "
+                    class="text-2xl text-gray-200  material-icons-outlined opacity-80"
                   >
                     {{ option.icon }}
                   </span>
@@ -386,6 +305,10 @@
         ></transition>
       </div>
     </div>
+    <HelpCenter
+      @close="showHelpCenter = false"
+      v-if="showHelpCenter"
+    ></HelpCenter>
   </div>
 </template>
 
@@ -403,6 +326,7 @@ import ErrorView from "../shared/ErrorView.vue";
 import SnackBar from "@/components/ui/SnackBar.vue";
 import Btn from "@/components/ui/Btn.vue";
 import { redirectToMainView } from "@/utils";
+import HelpCenter from "@/components/shared/HelpCenter/HelpCenter.vue";
 
 const LOCAL_STORAGE_FIX_SIDEBAR_KEY = "sai_evo_fix_sidebar";
 
@@ -439,6 +363,7 @@ export default defineComponent({
       fixSideBar: false,
       unfixingSideBar: false,
       routerViewPaddingLeft: 0,
+      showHelpCenter: false,
     };
   },
   mixins: [courseIdMixin, eventIdMixin, coursePrivilegeMixin],
@@ -483,8 +408,8 @@ export default defineComponent({
         String(this.fixSideBar)
       );
     },
-    onHelpGuideOpen() {
-      console.log("help");
+    onHelpCenterOpen() {
+      this.showHelpCenter = true;
     },
   },
   computed: {
@@ -502,7 +427,7 @@ export default defineComponent({
       return this.$store.getters["teacher/event"](this.eventId);
     },
   },
-  components: { ErrorView, SnackBar, Btn },
+  components: { ErrorView, SnackBar, Btn, HelpCenter },
 });
 </script>
 

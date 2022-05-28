@@ -183,6 +183,7 @@ export const it = {
     wrong_file_format: "Il formato del file che hai selezionato non è corretto",
     expand: "Espandi",
     collapse: "Riduci",
+    back: "Indietro",
     no_answer: "Nessuna risposta",
     using_base_editor: "Stai usando la versione base dell'editor",
     having_troubles_with_editor: "Problemi con l'editor?",
@@ -367,6 +368,11 @@ export const it = {
     go_to_exercises: "Vai agli esercizi",
     no_available_exercises:
       "Non hai ancora creato esercizi per questo corso. Dalla pagina degli esercizi, creane almeno uno per poter popolare questo slot. Ricordati di rimuovere lo stato di bozza dagli esercizi che vuoi inserire in un esame!",
+  },
+  help: {
+    help_guide_label: "Guida all'utilizzo",
+    help_center_title: "Guida all'utilizzo",
+    based_on_your_activity: "Pertinenti a ciò che stai facendo",
   },
   event_template_rule_editor: {
     reset_slot_settings: "Resetta slot",
