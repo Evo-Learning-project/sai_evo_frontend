@@ -48,7 +48,7 @@ export const it = {
     login: "Login",
     course_title: "Corso " + ROUTE_TITLE_COURSE_NAME_TOKEN,
     new_course: "Nuovo corso",
-    course_dashboard: "Dashboard",
+    course_dashboard: "Dashboard " + ROUTE_TITLE_COURSE_NAME_TOKEN,
     course_exercises: "Esercizi corso " + ROUTE_TITLE_COURSE_NAME_TOKEN,
     course_exams: "Esami corso " + ROUTE_TITLE_COURSE_NAME_TOKEN,
     course_permissions: "Permessi corso " + ROUTE_TITLE_COURSE_NAME_TOKEN,
