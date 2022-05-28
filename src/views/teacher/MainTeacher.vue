@@ -414,7 +414,6 @@ export default defineComponent({
       );
     },
     onSideBarHover(event: MouseEvent) {
-      console.log((event.target as any).className.split(" "));
       if (
         this.sideBarHoverHandle == null &&
         !(event.target as any).className.split(" ").includes("no-hover-sidebar")
