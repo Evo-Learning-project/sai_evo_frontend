@@ -405,7 +405,7 @@ export default defineComponent({
     redirectToMainView,
     logOut,
     startTour() {
-      (this.$tours["teacherTour"] as any).start();
+      (this.$tours["helpCenterTour"] as any).start();
     },
     isRouteActive(option: SidebarOption) {
       return (
