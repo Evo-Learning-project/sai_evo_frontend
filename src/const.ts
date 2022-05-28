@@ -82,6 +82,23 @@ export enum ProgrammingExerciseTabs {
   TEST_CASES,
 }
 
+export const newSidebarHelpCenterTourSteps = [
+  {
+    target: "#toggle-sidebar",
+    header: {
+      title: _("tour.new_sidebar_header"),
+    },
+    content: _("tour.new_sidebar_content"),
+  },
+  {
+    target: "#help-center",
+    header: {
+      title: _("tour.help_center_header"),
+    },
+    content: _("tour.help_center_content"),
+  },
+];
+
 export const teacherTourSteps = [
   {
     // exercises
@@ -120,7 +137,6 @@ export const teacherTourSteps = [
 
 export const tourOptions = {
   highlight: true,
-
   labels: {
     buttonSkip: _("tour.skip"),
     buttonPrevious: _("tour.previous"),

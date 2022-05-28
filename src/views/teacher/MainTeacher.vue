@@ -21,6 +21,7 @@
       <div class="flex items-center h-14">
         <div class="flex items-center mt-4 mb-4 -ml-4.5">
           <Btn
+            id="toggle-sidebar"
             :tooltip="
               fixSideBar ? $t('misc.unfix_sidebar') : $t('misc.fix_sidebar')
             "
@@ -45,6 +46,7 @@
             <Btn
               :tooltip="$t('help.help_guide_label')"
               @click="onHelpCenterOpen()"
+              id="help-center"
               :variant="'icon'"
               :outline="true"
               ><span class="text-lg text-lightText material-icons-outlined">
@@ -306,9 +308,20 @@
       </div>
     </div>
     <HelpCenter
+      @startTour="startTour()"
       @close="showHelpCenter = false"
       v-if="showHelpCenter"
     ></HelpCenter>
+    <v-tour
+      name="helpCenterTour"
+      :steps="teacherTourSteps"
+      :options="tourOptions"
+    ></v-tour>
+    <v-tour
+      name="newSideBarTour"
+      :steps="newSidebarHelpCenterTourSteps"
+      :options="tourOptions"
+    ></v-tour>
   </div>
 </template>
 
@@ -327,8 +340,14 @@ import SnackBar from "@/components/ui/SnackBar.vue";
 import Btn from "@/components/ui/Btn.vue";
 import { redirectToMainView } from "@/utils";
 import HelpCenter from "@/components/shared/HelpCenter/HelpCenter.vue";
+import {
+  newSidebarHelpCenterTourSteps,
+  teacherTourSteps,
+  tourOptions,
+} from "@/const";
 
 const LOCAL_STORAGE_FIX_SIDEBAR_KEY = "sai_evo_fix_sidebar";
+const LOCAL_STORAGE_HAS_TAKEN_SIDEBAR_TOUR_KEY = "has_taken_sidebar_tour";
 
 export default defineComponent({
   name: "MainTeacher",
@@ -354,6 +373,18 @@ export default defineComponent({
       this.fixSideBar = fixSideBar;
       this.$nextTick(() => (this.unfixingSideBar = false));
     }, 1);
+
+    if (
+      !JSON.parse(
+        localStorage.getItem(LOCAL_STORAGE_HAS_TAKEN_SIDEBAR_TOUR_KEY) ??
+          "false"
+      )
+    ) {
+      setTimeout(() => {
+        (this.$tours["newSideBarTour"] as any).start();
+        localStorage.setItem(LOCAL_STORAGE_HAS_TAKEN_SIDEBAR_TOUR_KEY, "true");
+      }, 500);
+    }
   },
   data() {
     return {
@@ -364,12 +395,18 @@ export default defineComponent({
       unfixingSideBar: false,
       routerViewPaddingLeft: 0,
       showHelpCenter: false,
+      teacherTourSteps,
+      newSidebarHelpCenterTourSteps,
+      tourOptions,
     };
   },
   mixins: [courseIdMixin, eventIdMixin, coursePrivilegeMixin],
   methods: {
     redirectToMainView,
     logOut,
+    startTour() {
+      (this.$tours["teacherTour"] as any).start();
+    },
     isRouteActive(option: SidebarOption) {
       return (
         option.routeName === this.$route.name ||

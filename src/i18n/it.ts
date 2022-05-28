@@ -372,7 +372,10 @@ export const it = {
   help: {
     help_guide_label: "Guida all'utilizzo",
     help_center_title: "Guida all'utilizzo",
-    based_on_your_activity: "Pertinenti a ciò che stai facendo",
+    based_on_your_activity: "In base alla tua attività",
+    take_the_tour: "Scopri le funzionalità della piattaforma col feature tour.",
+    start_tour: "Inizia",
+    articles: "Articoli",
   },
   event_template_rule_editor: {
     reset_slot_settings: "Resetta slot",
@@ -762,16 +765,22 @@ export const it = {
     hidden_course: "Corso nascosto agli studenti",
   },
   tour: {
+    new_sidebar_header: "Nuova sidebar",
+    new_sidebar_content:
+      "La nuova sidebar collassabile ti permette di concentrarti sul tuo lavoro senza distrazioni. Per mantenerla aperta sempre, clicca sul bottone qui in alto.",
+    help_center_header: "Nuova guida all'utilizzo",
+    help_center_content:
+      "Nella nuova guida all'utilizzo della piattaforma, troverai articoli e risposte alle domande più frequenti. Consultala se trovi difficoltà nell'utilizzo o se hai domande sulla piattaforma.",
     skip: "Salta tour",
     next: "Avanti",
     previous: "Indietro",
     finish: "Termina",
     add_exercises_header: "Creazione esercizi",
     add_exercises_content:
-      "Per prima cosa, aggiungi esercizi al corso. Dalla pagina degli esercizi, puoi crearne e modificare quelli esistenti. Gli esercizi che crei potranno essere usati per comporre esami oppure resi disponibili agli studenti per esercitarsi.",
+      "Per prima cosa, aggiungi esercizi al corso. Gli esercizi che crei potranno essere usati per comporre esami oppure resi disponibili agli studenti per esercitarsi.",
     add_exams_header: "Creazione esami",
     add_exams_content:
-      "Dopo aver creato gli esercizi, puoi utilizzarli per comporre esami. ",
+      "Dopo aver creato gli esercizi, puoi utilizzarli per comporre esami.",
     permissions_header: "Aggiungi docenti",
     permissions_content:
       "Dalla pagina dei permessi puoi consentire l'accesso alle funzionalità di gestione del corso ad altri docenti o figure di rilievo, come i tutor.",

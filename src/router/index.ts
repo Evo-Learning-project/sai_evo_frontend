@@ -68,6 +68,7 @@ const routes: Array<RouteRecordRaw> = [
           teachersOnly: true,
           routeTitle: _("headings.course_list"),
           sidebarOptions: courseListSidebarOptions,
+          tags: ["general"],
         },
       },
       {
@@ -78,6 +79,7 @@ const routes: Array<RouteRecordRaw> = [
           teachersOnly: true,
           routeTitle: _("headings.new_course"),
           sidebarOptions: courseListSidebarOptions,
+          tags: ["general"],
         },
       },
       {
@@ -87,6 +89,7 @@ const routes: Array<RouteRecordRaw> = [
         meta: {
           routeTitle: _("headings.course_dashboard"),
           sidebarOptions: courseDashboardSidebarOptions,
+          tags: ["general"],
         },
         props: true,
       },
@@ -97,6 +100,7 @@ const routes: Array<RouteRecordRaw> = [
         meta: {
           routeTitle: _("headings.course_permissions"),
           sidebarOptions: courseDashboardSidebarOptions,
+          tags: ["permissions"],
         },
       },
       {
@@ -106,6 +110,7 @@ const routes: Array<RouteRecordRaw> = [
         meta: {
           routeTitle: _("headings.course_insights"),
           sidebarOptions: courseDashboardSidebarOptions,
+          tags: ["general"],
         },
       },
       {
@@ -115,6 +120,7 @@ const routes: Array<RouteRecordRaw> = [
         meta: {
           routeTitle: _("headings.course_exercises"),
           sidebarOptions: courseDashboardSidebarOptions,
+          tags: ["exercises"],
         },
       },
       {
@@ -124,6 +130,7 @@ const routes: Array<RouteRecordRaw> = [
         meta: {
           routeTitle: _("headings.course_exams"),
           sidebarOptions: courseDashboardSidebarOptions,
+          tags: ["exams"],
         },
       },
       {
@@ -132,6 +139,7 @@ const routes: Array<RouteRecordRaw> = [
         name: "ExamEditor",
         meta: {
           sidebarOptions: courseDashboardSidebarOptions,
+          tags: ["exams", "exercises"],
         },
       },
       {
@@ -141,6 +149,7 @@ const routes: Array<RouteRecordRaw> = [
         meta: {
           sidebarOptions: courseDashboardSidebarOptions,
           routeTitle: _("headings.exam_progress"),
+          tags: ["exams"],
         },
       },
       {
@@ -154,6 +163,7 @@ const routes: Array<RouteRecordRaw> = [
         meta: {
           sidebarOptions: courseDashboardSidebarOptions,
           routeTitle: _("headings.exam_results"),
+          tags: ["exams"],
         },
       },
       {
@@ -163,6 +173,7 @@ const routes: Array<RouteRecordRaw> = [
         meta: {
           //routeTitle: _("headings.practice_summary"),
           sidebarOptions: courseDashboardSidebarOptions,
+          tags: ["exams", "exercises"],
         },
         props: {
           showAssessmentCard: true,
