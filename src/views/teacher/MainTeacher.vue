@@ -283,10 +283,12 @@
         </div>
       </div>
       <!-- Sidebar ends -->
+
+      <!-- Desktop -->
       <div
         class="flex flex-col py-6"
         :style="
-          !fixSideBar
+          !fixSideBar && mediaQueryMd
             ? 'width: 97%; padding-left: ' +
               (routerViewPaddingLeft + 30) +
               'px; padding-right: 30px'
@@ -294,7 +296,7 @@
         "
         :class="{
           'mx-auto px-2': !fixSideBar,
-          'w-10/12 mx-auto px-10': fixSideBar,
+          'md:w-10/12 mx-auto md:px-10': fixSideBar,
         }"
       >
         <h1 class="">
@@ -461,6 +463,9 @@ export default defineComponent({
     },
     currentEvent(): Event {
       return this.$store.getters["teacher/event"](this.eventId);
+    },
+    mediaQueryMd(): boolean {
+      return window.matchMedia("(min-width: 768px)").matches;
     },
   },
   components: { ErrorView, SnackBar, Btn, HelpCenter },
