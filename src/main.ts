@@ -23,7 +23,10 @@ import { BrowserTracing } from "@sentry/tracing";
 import "vue3-tour/dist/vue3-tour.css";
 import { logOut } from "./utils";
 
+import Vue3Sanitize from "vue-3-sanitize";
+
 import VWave from "v-wave";
+import { sanitizeOptions } from "./const";
 
 const gAuthOptions = {
   clientId:
@@ -72,6 +75,7 @@ app
     appendToBody: true,
   })
   .use(Vue3Tour)
+  .use(Vue3Sanitize, sanitizeOptions)
   .mount("#app");
 
 if (!dev) {

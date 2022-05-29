@@ -319,3 +319,73 @@ export const getEventParticipationMonitorHeaders = (
 };
 
 export const MAX_PRACTICE_EXERCISE_COUNT = 500;
+
+export const sanitizeOptions = {
+  allowedTags: [
+    "h1",
+    "h2",
+    "h3",
+    "h4",
+    "h5",
+    "h6",
+    "div",
+    "hr",
+    "li",
+    "ol",
+    "p",
+    "pre",
+    "ul",
+    "a",
+    "b",
+    "img",
+    "br",
+    "cite",
+    "code",
+    "em",
+    "i",
+    "s",
+    "samp",
+    "small",
+    "span",
+    "strong",
+    "sub",
+    "sup",
+    "time",
+    "u",
+    "caption",
+    "col",
+    "colgroup",
+    "table",
+    "tbody",
+    "td",
+    "tfoot",
+    "th",
+    "thead",
+    "tr",
+  ],
+  disallowedTagsMode: "discard",
+  allowedAttributes: {
+    a: ["href", "name", "target"],
+    // We don't currently allow img itself by default, but
+    // these attributes would make sense if we did.
+    img: ["src", "alt", "title", "width", "height"],
+  },
+  // Lots of these won't come up by default because we don't allow them
+  selfClosing: [
+    "img",
+    "br",
+    "hr",
+    "area",
+    "base",
+    "basefont",
+    "input",
+    "link",
+    "meta",
+  ],
+  // URL schemes we permit
+  allowedSchemes: ["http", "https", "ftp", "mailto", "tel"],
+  allowedSchemesByTag: {},
+  allowedSchemesAppliedToAttributes: ["href", "src", "cite"],
+  allowProtocolRelative: true,
+  enforceHtmlBoundary: false,
+};

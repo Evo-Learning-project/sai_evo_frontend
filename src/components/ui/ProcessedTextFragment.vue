@@ -1,6 +1,6 @@
 <template>
   <div
-    v-html="formattedValue"
+    v-html="$sanitize(formattedValue)"
     :class="{
       'text-muted font-light': useDefault && defaultValue.length > 0,
     }"
