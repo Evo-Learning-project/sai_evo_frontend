@@ -1,3 +1,7 @@
+import {
+  courseDashboardSidebarOptions,
+  courseListSidebarOptions,
+} from "@/navigation/sidebar";
 import { articles as articlesIt } from "./articlesIt";
 export interface HelpCenterArticle {
   id: string;

@@ -1,5 +1,28 @@
+import {
+  courseListSidebarOptions,
+  courseDashboardSidebarOptions,
+} from "./../navigation/sidebar";
 import { getTranslatedString } from "./../i18n/index";
 import { ArticleTag, HelpCenterArticle } from "./index";
+
+const getSidebarOptionHtml = (routeName: string): string => {
+  const sideBarOptions = [
+    ...courseListSidebarOptions,
+    ...courseDashboardSidebarOptions,
+  ];
+
+  const option = sideBarOptions.find((o) => o.routeName === routeName);
+
+  if (!option) {
+    throw new Error(routeName);
+  }
+
+  return `
+  <span class="material-icons-outlined inline-icon text-primary">${option.icon}</span> 
+  <span class="font-semibold text-primary">${option.label}</span>
+  `;
+};
+
 export const articles: HelpCenterArticle[] = [
   {
     id: "what_are_tags_for",
@@ -8,12 +31,12 @@ export const articles: HelpCenterArticle[] = [
     <p>I tag servono per classificare gli esercizi in base a criteri stabiliti dal docente, come per esempio l'argomento o la difficoltà.</p>
     <p>Gli esercizi hanno due tipi di tag: i <strong>tab pubblici</strong> e i <strong>tag privati</strong>.</p>
 
-    <p class="mt-2">Se pubblichi un esercizio, i suoi <strong>tag pubblici</strong> verranno mostrati agli studenti e compariranno 
+    <p class="mt-4">Se pubblichi un esercizio, i suoi <strong>tag pubblici</strong> verranno mostrati agli studenti e compariranno 
     nella lista di tag che possono essere usati per creare esercitazioni. Se intendi pubblicare un esercizio, utilizza tag pubblici
     che possano essere utili agli studenti per trovare l'esercizio. &Egrave; consigliato utilizzare i tag pubblici per elencare gli
     argomenti di un esercizio.</p>
 
-    <p class="mt-2">I <strong>tag privati</strong> non verranno mai mostrati agli studenti, nemmeno se pubblichi un esercizio. Puoi utilizzarli
+    <p class="mt-4">I <strong>tag privati</strong> non verranno mai mostrati agli studenti, nemmeno se pubblichi un esercizio. Puoi utilizzarli
     per qualsiasi criterio di classificazione, per esempio per tenere traccia degli esami nei quali hai inserito un esericizio, 
     oppure della sua difficoltà.</p>
     </div>`,
@@ -24,11 +47,13 @@ export const articles: HelpCenterArticle[] = [
     id: "close_exams_for_certain_students",
     title: "Come si chiude un esame solo per alcuni studenti?",
     content: `
-        <p>Dalla lista degli esami del tuo corso, clicca sul bottone con l'icona&nbsp; <span class="material-icons inline-icon">visibility</span>
+        <p>Dalla pagina ${getSidebarOptionHtml(
+          "CourseExams"
+        )} del tuo corso, clicca sul bottone con l'icona&nbsp; <span class="material-icons inline-icon">visibility</span>
         dell'esame in questione per entrare nella pagina di monitoraggio.</p>
-        <p class="mt-2">Dalla pagina di monitoraggio, seleziona gli studenti per i quali vuoi chiudere l'esame cliccando sulla checkbox vicino all'indirizzo
+        <p class="mt-4">Dalla pagina di monitoraggio, seleziona gli studenti per i quali vuoi chiudere l'esame cliccando sulla checkbox vicino all'indirizzo
         <strong>email</strong> dello studente.</p>
-        <p class="mt-2">Clicca su <span class="material-icons-outlined text-danger-dark inline-icon">block</span>
+        <p class="mt-4">Clicca su <span class="material-icons-outlined text-danger-dark inline-icon">block</span>
         <span class="text-danger-dark">${getTranslatedString(
           "event_monitor.close_for_selected"
         )}</span> e conferma.</p>
@@ -39,7 +64,7 @@ export const articles: HelpCenterArticle[] = [
           "event_monitor.open_for_selected"
         )}</span> e conferma.</p>
       `,
-    tags: ["exams"],
+    tags: ["exams", "participations"],
     related: [],
   },
   {
@@ -47,17 +72,18 @@ export const articles: HelpCenterArticle[] = [
     title: "A cosa serve pubblicare un esercizio?",
     content: `
     <p>Gli esercizi hanno tre possibili valori di visibilità: <strong>bozza</strong>, <strong>solo esami</strong> e <strong>pubblico</strong>.</p>
-    <p class="mt-2">Gli esercizi che sono in modalità <strong>pubblico</strong> possono comparire nelle esercitazioni degli studenti.</p>
+    <p class="mt-4">Gli esercizi che sono in modalità <strong>pubblico</strong> possono comparire nelle esercitazioni degli studenti.</p>
     <p>Pubblicare un esercizio dà quindi agli studenti la possibilità di visualizzarlo nelle esercitazioni.</p>
 
-    <div class="article-separator"></div>
-    <p class="mt-4"><span class="material-icons-two-tone inline-icon mr-2" style="
+    <div class="banner banner-light mt-4">
+    <span class="material-icons-two-tone inline-icon" style="
     filter: invert(80%) sepia(67%) saturate(1803%) hue-rotate(348deg)
       brightness(80%) contrast(96%);
   ">
     tips_and_updates
-    </span>Un buon momento per pubblicare un esercizio è subito dopo aver chiuso un esame nel quale lo hai inserito: questo darà la possibilità agli studenti che
-    non hanno sostenuto quell'esame di esercitarsi in futuro con quell'esercizio.</p>
+    </span>
+    <p class="">Un buon momento per pubblicare un esercizio è subito dopo aver chiuso un esame nel quale lo hai inserito: questo darà la possibilità agli studenti che
+    non hanno sostenuto quell'esame di esercitarsi in futuro con quell'esercizio.</p></div>
     `,
     tags: ["exercises"],
     related: [],
@@ -68,10 +94,14 @@ export const articles: HelpCenterArticle[] = [
     tags: ["exercises", "exams"],
     related: [],
     content: `
-      <p>Dalla pagina <strong>Esercizi</strong> del tuo corso, crea per prima cosa gli esercizi che vuoi inserire.</p>
+      <p>Dalla pagina ${getSidebarOptionHtml(
+        "CourseExercises"
+      )} del tuo corso, crea per prima cosa gli esercizi che vuoi inserire.</p>
       <p><strong>Attenzione:</strong> dopo aver terminato le modifiche, cambia la visibilità degli esercizi in <strong>solo esami</strong>.</p>
 
-      <p class="mt-4">Dalla pagina <strong>Esami</strong> del tuo corso, crea l'esame se non esiste già oppure apri il suo editor.</p>
+      <p class="mt-4">Dalla pagina ${getSidebarOptionHtml(
+        "CourseExams"
+      )} del tuo corso, crea l'esame se non esiste già oppure apri il suo editor.</p>
       <p>Nella sezione <strong>${getTranslatedString(
         "event_template_editor.editor_title"
       )}</strong>, crea uno slot cliccando su 
@@ -105,17 +135,21 @@ export const articles: HelpCenterArticle[] = [
     title: "Come si crea un esame?",
     tags: ["exams", "general"],
     related: [],
-    content: `<p class="">
-    <span class="material-icons-two-tone inline-icon mr-2" style="
+    content: `<div class="banner banner-light">
+    <span class="material-icons-two-tone inline-icon" style="
       filter: invert(80%) sepia(67%) saturate(1803%) hue-rotate(348deg)
         brightness(80%) contrast(96%);">tips_and_updates</span>
-         Prima di creare un esame, assicurati di aver creato gli esercizi che vuoi inserirvi e di aver impostato la loro visibilità a <strong>solo esami</strong>.</p>
-         <div class="article-separator"></div>
+         <p>
+         Prima di creare un esame, assicurati di aver creato gli esercizi che vuoi inserirvi e 
+         di aver impostato la loro visibilità a <strong>solo esami</strong>.</p>
+         </div>
 
-         <p>Dalla pagina <strong>Esami</strong> del tuo corso, clicca su <span class="material-icons-outlined inline-icon text-primary">add</span> <span class="text-primary">${getTranslatedString(
-           "course_events.new_exam"
-         )}</span>.</p>
-         <p>Seleziona il nome, la data e orario di inizio e fine dell'esame.</p>
+         <p class="mt-4">Dalla pagina ${getSidebarOptionHtml(
+           "CourseExams"
+         )} del tuo corso, clicca su <span class="material-icons-outlined inline-icon text-primary">add</span> <span class="text-primary">${getTranslatedString(
+      "course_events.new_exam"
+    )}</span>.</p>
+         <p class="mt-4">Seleziona il nome, la data e orario di inizio e fine dell'esame.</p>
          <p>Seleziona le regole di svolgimento e quelle di accesso.</p>
          <p>Crea il modello dell'esame aggiungendo gli esercizi precedentemente creati.</p>
          <p class="mt-4">Al termine delle modifiche, clicca su <span class="text-primary">${getTranslatedString(
@@ -130,12 +164,14 @@ export const articles: HelpCenterArticle[] = [
     tags: ["permissions", "general"],
     related: [],
     content: `
-      <p>Accedi alla pagina <strong>Permessi</strong> del tuo corso.</p>
-      <p class="mt-2">Dalla tabella degli utenti, trova l'utente al quale vuoi aggiungere i permessi. Puoi aiutarti cliccando sull'icona <span class="icon-light material-icons-outlined inline-icon">filter_list</span> 
+      <p>Accedi alla pagina ${getSidebarOptionHtml(
+        "CoursePermissions"
+      )} del tuo corso.</p>
+      <p class="mt-4">Dalla tabella degli utenti, trova l'utente al quale vuoi aggiungere i permessi. Puoi aiutarti cliccando sull'icona <span class="icon-light material-icons-outlined inline-icon">filter_list</span> 
       (accanto alle intestazioni nella tabella) per cercare
       gli utenti per email o nome e cognome.</p>
 
-      <p class="mt-2">Clicca sulla riga corrispondente all'utente al quale vuoi aggiungere i permessi.</p>
+      <p class="mt-4">Clicca sulla riga corrispondente all'utente al quale vuoi aggiungere i permessi.</p>
       <p>Clicca sugli switch <span class="mr-1.5 transform scale-150 ml-1 text-4xl inline-icon material-icons text-primary">toggle_on</span> relativi
       ai permessi che vuoi abilitare.</p>
       `,
@@ -147,13 +183,13 @@ export const articles: HelpCenterArticle[] = [
     related: [],
     content: `
       <p>Di default, tutti gli studenti che hanno il link per un esame possono parteciparvi. Potresti voler restringere l'accesso solo ad alcuni studenti, come quelli iscritti all'appello o che hanno superato un altro compito.</p>
-      <p class="mt-2">Dall'<strong>editor</strong> dell'esame, nella sezione <strong>${getTranslatedString(
+      <p class="mt-4">Dall'<strong>editor</strong> dell'esame, nella sezione <strong>${getTranslatedString(
         "event_editor.access_rules"
       )}</strong>, 
       seleziona l'opzione <span class="text-primary">${getTranslatedString(
         "event_editor.deny_access_by_default_label"
       )}</span>.</p>
-      <p class="mt-2">Dopodiché, clicca sul bottone <span class="text-primary inline-icon material-icons">people</span> <span class="text-primary">${getTranslatedString(
+      <p class="mt-4">Dopodiché, clicca sul bottone <span class="text-primary inline-icon material-icons">people</span> <span class="text-primary">${getTranslatedString(
         "event_editor.choose_allowed"
       )}</span>.</p>
       <h4 class="my-2">Inserimento manuale</h4>
@@ -163,5 +199,43 @@ export const articles: HelpCenterArticle[] = [
       <p>Puoi importare la lista degli iscritti all'appello dal portale <strong>Valutami</strong>. Seleziona il file CSV scaricato da Valutami
       che contiene la lista degli iscritti all'esame e importalo nella sezione <strong>Importa da Valutami</strong>. Gli indirzzi email degli studenti
       contenuti nel foglio CSV verranno automaticamente aggiunti.</p>`,
+  },
+  {
+    id: "how_to_save_exercises",
+    title: "Come si salvano le modifiche fatte a un esercizio?",
+    tags: ["exercises", "editor"],
+    related: [],
+    content: `
+    <p>Tutte le modifiche che fai a un esercizio sono salvate automaticamente; non c'è bisogno di salvare manualmente le tue modifiche.</p>
+    <p class="mt-4">Se in alto a destra nell'editor compare l'icona <span class="material-icons-outlined inline-icon icon-light">
+    cloud_done
+    </span>, le tue modifiche sono state salvate.
+    </p>
+    <p class="mt-4">
+    <span class="material-icons-outlined inline-icon mr-1 icon-light">
+    error_outline
+    </span>
+    A volte il salvataggio potrebbe richiedere un po' più tempo, per cui assicurati che tutte le modifiche siano state salvate prima di uscire
+    dalla pagina. In ogni caso, se esci prima che le modifiche siano state salvate, ti verrà chiesta conferma.</p>
+    `,
+  },
+  {
+    id: "how_to_save_exams",
+    title: "Come si salvano le modifiche fatte a un esame?",
+    tags: ["exams", "editor"],
+    related: [],
+    content: `
+    <p>Tutte le modifiche che fai a un esame sono salvate automaticamente; non c'è bisogno di salvare manualmente le tue modifiche.</p>
+    <p class="mt-4">Se in alto a destra nell'editor compare l'icona <span class="material-icons-outlined inline-icon icon-light">
+    cloud_done
+    </span>, le tue modifiche sono state salvate.
+    </p>
+    <p class="mt-4">
+    <span class="material-icons-outlined inline-icon mr-1 icon-light">
+    error_outline
+    </span>
+    A volte il salvataggio potrebbe richiedere un po' più tempo, per cui assicurati che tutte le modifiche siano state salvate prima di uscire
+    dalla pagina. In ogni caso, se esci prima che le modifiche siano state salvate, ti verrà chiesta conferma.</p>
+    `,
   },
 ];

@@ -140,7 +140,7 @@ const routes: Array<RouteRecordRaw> = [
         name: "ExamEditor",
         meta: {
           sidebarOptions: courseDashboardSidebarOptions,
-          tags: ["exams", "exercises"],
+          tags: ["exams", "exercises", "editor"],
         },
       },
       {
@@ -150,7 +150,7 @@ const routes: Array<RouteRecordRaw> = [
         meta: {
           sidebarOptions: courseDashboardSidebarOptions,
           routeTitle: _("headings.exam_progress"),
-          tags: ["exams"],
+          tags: ["exams", "participations"],
         },
       },
       {
@@ -164,7 +164,7 @@ const routes: Array<RouteRecordRaw> = [
         meta: {
           sidebarOptions: courseDashboardSidebarOptions,
           routeTitle: _("headings.exam_results"),
-          tags: ["exams"],
+          tags: ["exams", "participations"],
         },
       },
       {

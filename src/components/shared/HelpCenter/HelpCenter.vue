@@ -7,7 +7,7 @@
     @close="$emit('close')"
     :title="$t('help.help_center_title')"
   >
-    <div class="mt-3">
+    <div class="mt-3" style="max-height: 30rem">
       <div v-if="selectedArticleId === null">
         <div
           v-if="courseId"
@@ -122,6 +122,8 @@
 </template>
 
 <script lang="ts">
+const SHOWN_ARTICLES = 10;
+
 import { defineComponent, PropType } from "@vue/runtime-core";
 import DraggablePopup from "@/components/ui/DraggablePopup.vue";
 import { getArticle, getArticles, HelpCenterArticle } from "@/helpCenter";
@@ -142,21 +144,24 @@ export default defineComponent({
   data() {
     return {
       selectedArticleId: null as string | null,
+      showAll: false,
     };
   },
   computed: {
+    sortedArticles(): HelpCenterArticle[] {
+      return [...getArticles()].sort(
+        (a, b) => this.getArticleRelevance(b) - this.getArticleRelevance(a)
+      );
+    },
     relevantArticles(): HelpCenterArticle[] {
-      return [...getArticles()]
-        .sort(
-          (a, b) => this.getArticleRelevance(b) - this.getArticleRelevance(a)
-        )
+      return this.sortedArticles
         .filter((a) => this.getArticleRelevance(a) > 0)
         .slice(0, 3);
     },
     irrelevantArticles(): HelpCenterArticle[] {
-      return getArticles().filter(
-        (a) => !this.relevantArticles.map((r) => r.id).includes(a.id)
-      );
+      return this.sortedArticles
+        .filter((a) => !this.relevantArticles.map((r) => r.id).includes(a.id))
+        .slice(0, this.showAll ? Infinity : SHOWN_ARTICLES);
     },
     selectedArticle(): HelpCenterArticle | undefined {
       if (this.selectedArticleId === null) {
