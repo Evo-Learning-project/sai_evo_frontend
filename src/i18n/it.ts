@@ -719,6 +719,7 @@ export const it = {
   },
   errors: {
     retry: "Riprova",
+    back: "Torna indietro",
     no_connection: "Connessione assente",
     400: "La tua richiesta contiene un errore",
     403: "Non hai i permessi necessari per effettuare quest'azione",

@@ -815,7 +815,7 @@ export default defineComponent({
     },
     async onAddCloze() {
       const selection = this.textEditorInstance.getSelection();
-      console.log(selection);
+
       const insertionIndex = selection.index + selection.length;
       this.textEditorInstance.insertText(insertionIndex, CLOZE_SEPARATOR);
       await this.onAddSubExercise();

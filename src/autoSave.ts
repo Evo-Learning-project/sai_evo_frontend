@@ -73,6 +73,8 @@ export class AutoSaveManager<T> {
   }): Promise<void> {
     this.state = AutoSaveManagerState.PENDING;
 
+    console.log("CHANGE", this.instance);
+
     // record new change to field
     this.unsavedChanges[field] = value as any;
 
@@ -99,7 +101,6 @@ export class AutoSaveManager<T> {
   }
 
   async flush(): Promise<void> {
-    console.log("flushing", this.instance);
     if (this.state !== AutoSaveManagerState.UP_TO_DATE) {
       await this.remotePatchFunction.flush();
     }

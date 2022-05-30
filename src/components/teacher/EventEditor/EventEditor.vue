@@ -39,7 +39,11 @@
     </transition>
     <div class="flex w-full">
       <h3>{{ $t("event_editor.editor_title") }}</h3>
-      <CloudSaveStatus class="ml-auto" :saving="saving"></CloudSaveStatus>
+      <CloudSaveStatus
+        class="ml-auto"
+        :saving="saving"
+        :hadError="savingError"
+      ></CloudSaveStatus>
     </div>
     <div class="flex flex-col">
       <EventMetaEditor

@@ -160,7 +160,6 @@
                   color: '#303f9f',
                 }"
                 class="relative overflow-hidden rounded-r-full"
-                @mousedown="onRouteMouseDown"
                 v-for="(option, index) in allowedSidebarOptions"
                 :key="'sidebar-' + option.label"
                 :to="{ name: option.routeName }"
@@ -241,7 +240,6 @@
           <ul class="flex flex-col w-full h-full mt-6">
             <router-link
               class="relative my-1 overflow-hidden rounded-md"
-              @mousedown="onRouteMouseDown"
               v-for="(option, index) in allowedSidebarOptions"
               :key="'sidebar-' + option.label"
               :to="{ name: option.routeName }"

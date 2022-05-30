@@ -30,7 +30,7 @@ export const en = {
     begin_timestamp: "Beings at",
     end_timestamp: "Ends at",
     instructions: "Istruzioni (opzionale)",
-    editor_title: "Editor esame",
+    editor_title: "Exam editor",
     flow_rules: "Regole di svolgimento",
     exercises_shown_at_a_time_label:
       "Numero di esercizi da mostrare per pagina",
@@ -157,6 +157,12 @@ export const en = {
     still_open_for_some: "L'esame è ancora aperto per alcuni studenti.",
     copy_link: "Copia link per gli studenti",
     copied_link: "Copiato link per gli studenti",
+  },
+  cloud: {
+    changes_saved_to_server: "All changes saved to server",
+    saving: "Saving...",
+    saved: "All changed saved!",
+    error: "An error occurred while saving your changes",
   },
   event_template_rule_editor: {
     exercise_number: "Slot",

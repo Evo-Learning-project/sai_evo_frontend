@@ -15,6 +15,7 @@ import EventParticipationFull from "../views/shared/EventParticipationFull.vue";
 import ExamPreview from "../views/student/ExamPreview.vue";
 import EventParticipationsMonitor from "../views/teacher/EventParticipationsMonitor.vue";
 import Login from "../views/Login.vue";
+import PageNotFound from "../views/shared/PageNotFound.vue";
 import CourseCreationForm from "../views/teacher/CourseCreationForm.vue";
 import {
   courseDashboardSidebarOptions,
@@ -266,6 +267,10 @@ const routes: Array<RouteRecordRaw> = [
         props: {
           showAssessmentCard: true,
         },
+      },
+      {
+        path: "/:catchAll(.*)",
+        component: PageNotFound,
       },
     ],
   },
