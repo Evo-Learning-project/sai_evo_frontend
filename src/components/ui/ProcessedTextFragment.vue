@@ -1,6 +1,6 @@
 <template>
   <div
-    v-html="$sanitize(formattedValue)"
+    v-html="sanitizedFormattedValue"
     :class="{
       'text-muted font-light': useDefault && defaultValue.length > 0,
     }"
@@ -33,6 +33,9 @@ export default defineComponent({
         return this.defaultValue;
       }
       return formatExerciseText(this.value);
+    },
+    sanitizedFormattedValue(): string {
+      return this.$sanitize(this.formattedValue);
     },
   },
 });

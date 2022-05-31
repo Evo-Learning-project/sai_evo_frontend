@@ -235,6 +235,7 @@ export const it = {
     download_as_csv: "Scarica come CSV",
     select_one: "Seleziona...",
     delete: "Elimina",
+    logout: "Logout",
   },
   cloud: {
     saving: "Salvataggio in corso...",
@@ -572,6 +573,11 @@ export const it = {
     rule_amount_1: "Quanti esercizi col tag",
     rule_amount_2: "vuoi vedere?",
     exercise_amount: "Numero di esercizi",
+    seen_exercises_wont_be_selected:
+      "Non verranno selezionati esercizi che hai già visto. Hai già incontrato",
+    exercises_with_this_tag: "esercizi con questo tag.",
+    all_exercises_seen_with_this_tag:
+      "Hai già visto tutti gli esercizi per questo tag",
   },
   programming_exercise: {
     open_text_popup: "Apri popup",

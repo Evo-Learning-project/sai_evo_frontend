@@ -152,7 +152,7 @@
         totalRuleAmount > MAX_PRACTICE_EXERCISE_COUNT ||
         isEditingRule
       "
-      :show-dialog="!!editingEvent"
+      :showDialog="!!editingEvent"
     >
       <template v-slot:title>
         {{
@@ -302,8 +302,9 @@ export default defineComponent({
   },
   computed: {
     ...mapGetters("student", ["examParticipations", "practiceParticipations"]),
-    ...mapGetters("shared", ["course", "tags"]),
+    ...mapGetters("shared", ["course"]),
     ...mapState("student", ["editingEvent"]),
+    ...mapState("shared", ["tags"]),
     filteredPracticeParticipations() {
       return (this.practiceParticipations as EventParticipation[]).filter(
         (p, i) =>

@@ -83,6 +83,7 @@ export interface Tag {
   id?: string;
   name: string;
   public_exercises?: number;
+  public_exercises_not_seen?: number;
 }
 
 export interface Event extends Lockable {

@@ -366,9 +366,7 @@ export const sanitizeOptions = {
   disallowedTagsMode: "discard",
   allowedAttributes: {
     a: ["href", "name", "target"],
-    // We don't currently allow img itself by default, but
-    // these attributes would make sense if we did.
-    img: ["src", "alt", "title", "width", "height"],
+    img: ["src", "alt", "title", "width", "height", "data"],
   },
   // Lots of these won't come up by default because we don't allow them
   selfClosing: [
@@ -383,7 +381,7 @@ export const sanitizeOptions = {
     "meta",
   ],
   // URL schemes we permit
-  allowedSchemes: ["http", "https", "ftp", "mailto", "tel"],
+  allowedSchemes: ["http", "https", "ftp", "mailto", "tel", "data"],
   allowedSchemesByTag: {},
   allowedSchemesAppliedToAttributes: ["href", "src", "cite"],
   allowProtocolRelative: true,

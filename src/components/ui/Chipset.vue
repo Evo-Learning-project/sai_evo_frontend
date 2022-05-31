@@ -13,14 +13,16 @@
           class="font-normal transition-colors duration-75 ease-linear cursor-pointer  chip hover:bg-gray-200"
           :class="{
             'chip-primary': modelValue.includes(option.value),
+            'opacity-50 bg-gray-50': option.disabled,
           }"
-          v-wave
+          v-wave="!option.disabled"
         >
           <!-- ring-primary ring-2 text-primary font-semibold -->
           <input
             :type="allowMultiple ? 'checkbox' : 'radio'"
             class="w-0 h-0 opacity-0"
             v-model="proxyModelValue"
+            :disabled="option.disabled"
             :id="'chipset-' + id + '-option-' + index"
             :value="option.value"
           />

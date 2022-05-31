@@ -4,7 +4,7 @@
       <div class="relative">
         <div
           v-show="editingRule"
-          class="absolute z-50 w-full h-full faded-overlay opacity-20 -top-1"
+          class="absolute z-50 w-full h-full opacity-0 -top-1"
         ></div>
         <div
           v-if="tagsAsSelectableOptions.length === 0"
@@ -34,6 +34,7 @@
           v-model="proxyModelValue"
           :allowMultiple="true"
           v-slot="{ optionValue }"
+          :class="{ 'opacity-20': editingRule }"
         >
           <div
             v-if="
@@ -49,8 +50,17 @@
           </div>
         </Chipset>
       </div>
+      <div :class="[editingRule ? 'visible' : 'invisible', 'mt-8']">
+        <p>
+          {{
+            $t("practice_template_editor.seen_exercises_wont_be_selected") + " "
+          }}
+          <strong>{{ editingRuleTagSeenExercises }}</strong>
+          {{ " " + $t("practice_template_editor.exercises_with_this_tag") }}
+        </p>
+      </div>
       <div
-        class="flex flex-col flex-wrap mt-8 md:items-center md:flex-row"
+        class="flex flex-col flex-wrap mt-4 md:items-center md:flex-row"
         :class="[editingRule ? 'visible' : 'invisible']"
       >
         <div class="flex flex-wrap">
@@ -63,10 +73,10 @@
             v-model="editingRuleDirtyAmount"
             class="mt-2 w-28 md:ml-4 md:mt-0"
             :min="0"
-            :max="editingRuleTag?.public_exercises ?? 100000000"
+            :max="editingRuleTag?.public_exercises_not_seen ?? 100000000"
           >
             <template v-slot:rightHint>
-              /{{ editingRuleTag?.public_exercises ?? "" }}</template
+              /{{ editingRuleTag?.public_exercises_not_seen ?? "" }}</template
             ></NumberInput
           >
           <Btn
@@ -262,9 +272,12 @@ export default defineComponent({
           value: String(t.id),
           content: t.name,
           description:
-            String(t.public_exercises ?? 0) +
-            " " +
-            _("student_course_dashboard.available_exercises_tooltip"),
+            (t.public_exercises_not_seen ?? 0) === 0
+              ? _("practice_template_editor.all_exercises_seen_with_this_tag")
+              : String(t.public_exercises ?? 0) +
+                " " +
+                _("student_course_dashboard.available_exercises_tooltip"),
+          disabled: (t.public_exercises_not_seen ?? 0) === 0,
         }));
     },
     proxyModelValue: {
@@ -310,6 +323,15 @@ export default defineComponent({
           t.id ==
           this.modelValue.rules.find((r) => r.id == this.editingRule)
             ?.clauses?.[0].tags[0].id
+      );
+    },
+    editingRuleTagSeenExercises(): number {
+      if (!this.editingRuleTag) {
+        return 0;
+      }
+      return (
+        (this.editingRuleTag.public_exercises ?? 0) -
+        (this.editingRuleTag.public_exercises_not_seen ?? 0)
       );
     },
     firstRule(): EventTemplateRule | undefined {

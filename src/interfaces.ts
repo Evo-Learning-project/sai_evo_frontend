@@ -4,6 +4,7 @@ export interface SelectableOption {
   content: string;
   description?: string | string[];
   icons?: string[];
+  disabled?: boolean;
 }
 
 export interface DialogData {
