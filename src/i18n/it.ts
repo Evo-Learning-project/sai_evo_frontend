@@ -565,10 +565,13 @@ export const it = {
   practice_template_editor: {
     begin_practice: "Inizia esercitazione",
     add_rule: "Aggiungi esercizi",
-    choose_exercises_text:
+    choose_tags_text:
       "Seleziona i tag che ti interessano per creare l'esercitazione.",
+    choose_exercises_no_tag_text:
+      "Quanti esercizi vuoi che l'esercitazione contenga?",
     rule_amount_1: "Quanti esercizi col tag",
     rule_amount_2: "vuoi vedere?",
+    exercise_amount: "Numero di esercizi",
   },
   programming_exercise: {
     open_text_popup: "Apri popup",

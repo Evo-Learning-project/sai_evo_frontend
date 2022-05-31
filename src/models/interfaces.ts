@@ -43,7 +43,7 @@ export interface Course {
   // student fields
   participations?: EventParticipation[];
   unstarted_practice_events?: Event[];
-  public_exercises_exist?: boolean;
+  public_exercises_count?: number;
 }
 
 export interface Exercise extends Orderable, Lockable {

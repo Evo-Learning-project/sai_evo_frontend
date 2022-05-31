@@ -1,17 +1,4 @@
 <template>
-  <!-- <div class="flex items-center justify-center">
-    <div
-      class="inline-block rounded-full spinner-border animate-spin"
-      :class="{
-        'border-blue-300 border-opacity-40': variant === 'primary',
-        'border-gray': variant === 'gray',
-        'w-3 h-3 border': size == 'sm',
-        'w-8 h-8 border-4': size == 'md',
-        'w-8 h-8 border-4': size == 'lg'
-      }"
-      role="status"
-    ></div>
-  </div> -->
   <div class="flex items-center justify-center">
     <div
       :style="
@@ -27,7 +14,7 @@
         'border-gray-800': variant === 'dark',
         'border-gray': variant === 'gray',
         'animate-spin-fast': fast,
-        'animate-spin': !fast
+        'animate-spin': !fast,
       }"
       role="status"
     ></div>
@@ -35,26 +22,26 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/runtime-core'
-import { PropType } from 'vue'
+import { defineComponent } from "@vue/runtime-core";
+import { PropType } from "vue";
 
 export default defineComponent({
-  name: 'Spinner',
+  name: "Spinner",
   props: {
     size: {
-      type: String as PropType<'sm' | 'md' | 'lg' | 'xl'>,
-      default: 'md'
+      type: String as PropType<"sm" | "md" | "lg" | "xl">,
+      default: "md",
     },
     variant: {
-      type: String as PropType<'primary' | 'gray' | 'light' | 'dark'>,
-      default: 'gray'
+      type: String as PropType<"primary" | "gray" | "light" | "dark">,
+      default: "gray",
     },
     fast: {
       type: Boolean,
-      default: false
-    }
-  }
-})
+      default: false,
+    },
+  },
+});
 </script>
 
 <style>

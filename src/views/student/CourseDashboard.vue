@@ -146,7 +146,7 @@
       @yes="onBeginPractice(editingEvent)"
       :noText="$t('dialog.default_cancel_text')"
       :yesText="$t('practice_template_editor.begin_practice')"
-      :large="true"
+      :large="(tags?.length ?? 0) > 0"
       :disableOk="
         totalRuleAmount < 1 ||
         totalRuleAmount > MAX_PRACTICE_EXERCISE_COUNT ||
@@ -163,7 +163,11 @@
       </template>
       <template v-slot:body>
         <p class="mb-4 text-muted">
-          {{ $t("practice_template_editor.choose_exercises_text") }}
+          {{
+            (tags?.length ?? 0) > 0
+              ? $t("practice_template_editor.choose_tags_text")
+              : $t("practice_template_editor.choose_exercises_no_tag_text")
+          }}
         </p>
         <PracticeTemplateEditor
           class="mt-6"
@@ -280,7 +284,7 @@ export default defineComponent({
       if (this.loading) {
         return;
       }
-      if (!this.currentCourse.public_exercises_exist) {
+      if (this.currentCourse.public_exercises_count === 0) {
         this.setErrorNotification(
           _("student_course_dashboard.no_public_exercises"),
           true
@@ -298,7 +302,7 @@ export default defineComponent({
   },
   computed: {
     ...mapGetters("student", ["examParticipations", "practiceParticipations"]),
-    ...mapGetters("shared", ["course"]),
+    ...mapGetters("shared", ["course", "tags"]),
     ...mapState("student", ["editingEvent"]),
     filteredPracticeParticipations() {
       return (this.practiceParticipations as EventParticipation[]).filter(

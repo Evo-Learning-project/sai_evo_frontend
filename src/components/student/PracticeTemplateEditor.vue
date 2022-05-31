@@ -6,9 +6,31 @@
           v-show="editingRule"
           class="absolute z-50 w-full h-full faded-overlay opacity-20 -top-1"
         ></div>
+        <div
+          v-if="tagsAsSelectableOptions.length === 0"
+          v-show="modelValue.rules.length !== 0"
+        >
+          <NumberInput
+            :min="0"
+            class="w-full mt-12"
+            :modelValue="firstRule?.amount ?? 0"
+            @update:modelValue="
+              rulesAutoSaveInstances[firstRule?.id ?? '']?.onChange({
+                field: 'amount',
+                value: $event,
+              })
+            "
+          >
+            {{ $t("practice_template_editor.exercise_amount") }}
+            <template v-slot:rightHint>
+              /{{ currentCourse?.public_exercises_count ?? "" }}</template
+            >
+          </NumberInput>
+        </div>
 
         <Chipset
           :options="tagsAsSelectableOptions"
+          v-else
           v-model="proxyModelValue"
           :allowMultiple="true"
           v-slot="{ optionValue }"
@@ -102,6 +124,15 @@ export default defineComponent({
     },
   },
   async created() {
+    if ((this.tags?.length ?? 0) === 0 && this.modelValue.rules.length === 0) {
+      // if there are no tags, create a rule with type FULLY_RANDOM to allow user
+      // to at least get a selection of random public exercises
+      await this.addEventTemplateRule({
+        courseId: this.courseId,
+        templateId: this.modelValue.id,
+        rule: getBlankEventTemplateRule(EventTemplateRuleType.FULLY_RANDOM),
+      });
+    }
     this.modelValue.rules.forEach((r) => {
       this.instantiateRuleAutoSaveManager(r);
     });
@@ -166,7 +197,6 @@ export default defineComponent({
       this.editingRule = null;
     },
     async onRuleUpdateClause(clause: EventTemplateRuleClause) {
-      console.log("clause update template", clause);
       await this.ruleClausesAutoSaveInstances[clause.id].onChange({
         field: "tags",
         value: clause.tags,
@@ -221,7 +251,7 @@ export default defineComponent({
   },
   computed: {
     ...mapState("student", ["editingEventTemplate"]),
-    ...mapState("shared", ["tags"]),
+    ...mapState("shared", ["tags", "course"]),
     tagsAsSelectableOptions(): SelectableOption[] {
       if (!this.tags?.length) {
         return [];
@@ -242,7 +272,6 @@ export default defineComponent({
         return this.selectedTags;
       },
       async set(val: string[]) {
-        console.log(val);
         if (val.length > this.selectedTags.length) {
           const newlyAdded = val[val.length - 1];
           // get rule containing this tag or create it if it doesn't exist
@@ -282,6 +311,9 @@ export default defineComponent({
           this.modelValue.rules.find((r) => r.id == this.editingRule)
             ?.clauses?.[0].tags[0].id
       );
+    },
+    firstRule(): EventTemplateRule | undefined {
+      return this.modelValue.rules?.[0];
     },
   },
 });

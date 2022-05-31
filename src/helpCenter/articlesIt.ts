@@ -19,8 +19,7 @@ const getSidebarOptionHtml = (routeName: string): string => {
 
   return `
   <span class="material-icons-outlined inline-icon text-primary">${option.icon}</span> 
-  <span class="font-semibold text-primary">${option.label}</span>
-  `;
+  <span class="font-semibold text-primary">${option.label}</span>`;
 };
 
 export const articles: HelpCenterArticle[] = [
@@ -236,6 +235,21 @@ export const articles: HelpCenterArticle[] = [
     </span>
     A volte il salvataggio potrebbe richiedere un po' più tempo, per cui assicurati che tutte le modifiche siano state salvate prima di uscire
     dalla pagina. In ogni caso, se esci prima che le modifiche siano state salvate, ti verrà chiesta conferma.</p>
+    `,
+  },
+  {
+    id: "where_do_i_find_enrolled_students",
+    title: "Dove trovo la lista degli studenti attivi nel mio corso?",
+    tags: ["general"],
+    related: [],
+    content: `
+    <p>
+    Dalla pagina
+    ${getSidebarOptionHtml("CourseInsights")}, puoi 
+    visualizzare la lista degli studenti attivi nel tuo corso.</p>
+    <p class="mt-4">Per ciascuno studente attivo, puoi visualizzare la lista delle sue esercitazioni e
+    degli esami che ha sostenuto. Per farlo, clicca sull'icona <span class="material-icons-outlined inline-icon light-icon">
+    expand_more</span> accanto al suo nome.</p>
     `,
   },
 ];
