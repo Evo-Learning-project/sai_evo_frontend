@@ -333,12 +333,11 @@ import {
   ROUTE_TITLE_EVENT_NAME_TOKEN,
 } from "@/navigation/const";
 import { SidebarOption } from "@/navigation/sidebar";
-import { logOut, rippleEffect } from "@/utils";
+import { logOut } from "@/utils";
 import { defineComponent } from "@vue/runtime-core";
 import ErrorView from "../shared/ErrorView.vue";
 import SnackBar from "@/components/ui/SnackBar.vue";
 import Btn from "@/components/ui/Btn.vue";
-import { redirectToMainView } from "@/utils";
 import HelpCenter from "@/components/shared/HelpCenter/HelpCenter.vue";
 import {
   newSidebarHelpCenterTourSteps,
@@ -357,12 +356,6 @@ export default defineComponent({
     },
   },
   mounted() {
-    // this is called before courses have been retrieved, you should probably do this check in App.vue if the route has a meta flag
-    setTimeout(() => {
-      if (!this.hasAnyPrivileges() && this.courseId) {
-        this.redirectToMainView();
-      }
-    }, 1500);
     setTimeout(() => {
       this.routerViewPaddingLeft =
         document.getElementById("desktop-nav")?.clientWidth ?? 0;
@@ -402,7 +395,6 @@ export default defineComponent({
   },
   mixins: [courseIdMixin, eventIdMixin, coursePrivilegeMixin],
   methods: {
-    redirectToMainView,
     logOut,
     startTour() {
       (this.$tours["helpCenterTour"] as any).start();
