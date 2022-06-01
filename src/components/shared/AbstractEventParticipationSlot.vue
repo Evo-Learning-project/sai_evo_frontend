@@ -284,7 +284,7 @@
                 isSolutionOrCommentShown) ||
               expandAssessmentCard,
           }"
-          class="sticky mb-auto  top-4 md:self-start shadow-elevation card card-filled"
+          class="sticky mb-auto  top-18 md:self-start shadow-elevation card card-filled"
           v-if="showAssessmentCard"
         >
           <div
