@@ -15,8 +15,10 @@ import {
   createEvent,
   createEventTemplateRule,
   createEventTemplateRuleClause,
+  getCourseEventParticipations,
   getEvent,
   getEventParticipation,
+  getEventParticipations,
   moveEventParticipationCurrentSlotCursor,
   partialUpdateEventParticipation,
   partialUpdateEventParticipationSlot,
@@ -64,7 +66,11 @@ export const actions = {
     { commit }: { commit: Commit },
     { courseId, eventId }: { courseId: string; eventId: string }
   ) => {
-    console.log("DATA: ", courseId, eventId);
+    /**
+     * Gets an event in detail mode
+     *
+     * Used to display a preview of an exam before participating into it
+     */
     const event = await getEvent(courseId, eventId);
     commit("setPreviewingEvent", event);
   },
@@ -72,8 +78,12 @@ export const actions = {
     { commit, state }: { commit: Commit; state: StudentState },
     { courseId, event }: { courseId: string; event: Event }
   ) => {
+    /**
+     * Creates an event
+     *
+     * Used when creating a new practice event
+     */
     const newEvent = await createEvent(courseId, event);
-    //commit('setEvents', [newEvent, ...state.events]);
     return newEvent;
   },
   partialUpdateEventParticipation: async (
@@ -90,6 +100,14 @@ export const actions = {
       changes: Record<keyof EventParticipation, unknown>;
     }
   ) => {
+    /**
+     * Updates a participation
+     *
+     * Used with no event or participation id for when updating the current participation
+     * (e.g. turning in)
+     *
+     * Used with event and participation id when bookmarking a specific participation
+     */
     const response = await partialUpdateEventParticipation(
       courseId,
       eventId ??
@@ -119,6 +137,13 @@ export const actions = {
       participationId
     );
     commit("setCurrentEventParticipation", participation);
+  },
+  getPracticeEventParticipations: async (
+    { commit }: { commit: Commit },
+    { courseId }: { courseId: string }
+  ) => {
+    const participations = await getCourseEventParticipations(courseId, true);
+    commit("setEventParticipations", participations);
   },
   partialUpdateEventParticipationSlot: async (
     { commit, state }: { commit: Commit; state: StudentState },

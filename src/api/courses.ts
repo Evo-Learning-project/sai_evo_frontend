@@ -13,6 +13,34 @@ export async function getCourses(): Promise<Course[]> {
   return response?.data ?? [];
 }
 
+export async function getCourseUnstartedPracticeEvents(
+  courseId: string
+): Promise<Event[]> {
+  // TODO make action for this
+  const response = await axios.get(
+    `/courses/${courseId}/unstarted_practice_events/`
+  );
+
+  if (response.data.length > 0) {
+    const event = response.data[0] as Event; // currently can only have one unstarted event
+    const processedRules = convertEventTemplateRules(
+      event.template?.rules as EventTemplateRule[]
+    );
+
+    const convertedEvent = {
+      ...event,
+      template: {
+        ...event.template,
+        rules: processedRules,
+      },
+    } as Event;
+
+    return [convertedEvent];
+  }
+
+  return [];
+}
+
 export async function getCourse(courseId: string): Promise<Course> {
   const response = await axios.get(`/courses/${courseId}/`);
   const { unstarted_practice_events, ...course } = response.data;
@@ -30,11 +58,6 @@ export async function getCourse(courseId: string): Promise<Course> {
         rules: processedRules,
       },
     } as Event;
-
-    console.log({
-      ...course,
-      unstarted_practice_events: [convertedEvent],
-    });
 
     return { ...course, unstarted_practice_events: [convertedEvent] };
   }
