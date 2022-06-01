@@ -130,11 +130,11 @@ export async function deleteEvent(
 
 export async function getCourseEventParticipations(
   courseId: string,
-  preview?: boolean
+  includeDetails?: boolean
 ): Promise<EventParticipation[]> {
   const response = await axios.get(
     `/courses/${courseId}/participations/${
-      typeof preview !== "undefined" ? "?preview=" + preview : ""
+      includeDetails ? "?include_details=" + includeDetails : ""
     }`
   );
   return response.data;
@@ -143,13 +143,13 @@ export async function getCourseEventParticipations(
 export async function getEventParticipations(
   courseId: string,
   eventId: string,
-  preview?: boolean,
-  asStudent?: boolean
+  includeDetails?: boolean,
+  forCsv?: boolean
 ): Promise<EventParticipation[]> {
   const response = await axios.get(
     `/courses/${courseId}/events/${eventId}/participations/${
-      typeof preview !== "undefined" ? "?preview=" + preview : ""
-    }${typeof asStudent !== "undefined" ? "&as_student=" + asStudent : ""}`
+      includeDetails ? "?include_details=" + includeDetails : ""
+    }${forCsv ? "&for_csv=" + forCsv : ""}`
   );
   return response.data;
 }
