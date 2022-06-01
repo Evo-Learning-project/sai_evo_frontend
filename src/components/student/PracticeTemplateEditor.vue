@@ -50,7 +50,10 @@
           </div>
         </Chipset>
       </div>
-      <div :class="[editingRule ? 'visible' : 'invisible', 'mt-8']">
+      <div
+        v-if="editingRuleTagSeenExercises > 0"
+        :class="[editingRule ? 'visible' : 'invisible', 'mt-8']"
+      >
         <p>
           {{
             $t("practice_template_editor.seen_exercises_wont_be_selected") + " "
