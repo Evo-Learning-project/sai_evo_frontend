@@ -2,14 +2,15 @@
   <div>
     <div class="w-0 h-8 opacity-0" v-if="showOutOfViewFeedback">&nbsp;</div>
     <div
+      class=""
       :id="elementId"
       :class="{
-        'fixed top-18 right-8 z-999 px-2  pt-1.5 pb-1 shadow-all-around  pr-2 rounded-full':
+        'fixed top-18 right-8 z-999  px-2 pt-1.5 pb-1 shadow-all-around  pr-2 rounded-full':
           showOutOfViewFeedback,
-        'opacity-50 duration-75 transition-opacity':
-          showOutOfViewFeedback && !fadingOutOfViewFeedback,
+        'opacity-0': showOutOfViewFeedback && !fadingOutOfViewFeedback,
+        'opacity-50 transition-opacity duration-100 delay-75':
+          fadingOutOfViewFeedback,
         'h-8': !showOutOfViewFeedback,
-        'opacity-0  duration-0 ': fadingOutOfViewFeedback,
       }"
     >
       <div
@@ -91,20 +92,27 @@ export default defineComponent({
   },
   watch: {
     saving(newVal: boolean, oldVal: boolean) {
+      if (newVal && this.showOutOfViewFeedbackHandle !== null) {
+        clearTimeout(this.showOutOfViewFeedbackHandle);
+      }
+
       if (!newVal && oldVal) {
         // done saving
+        if (this.showSavedHandle !== null) {
+          clearTimeout(this.showSavedHandle);
+        }
         this.showSaved = true;
-        setTimeout(() => {
+        this.showSavedHandle = setTimeout(() => {
           this.showSaved = false;
         }, 5000);
-        setTimeout(() => {
+        this.showOutOfViewFeedbackHandle = setTimeout(() => {
           this.showOutOfViewFeedback = false;
+          this.fadingOutOfViewFeedback = false;
         }, 1000);
       }
       if (newVal && !this.isElementInViewPort()) {
-        this.fadingOutOfViewFeedback = true;
-        this.$nextTick(() => (this.showOutOfViewFeedback = true));
-        setTimeout(() => (this.fadingOutOfViewFeedback = false), 1);
+        this.showOutOfViewFeedback = true;
+        setTimeout(() => (this.fadingOutOfViewFeedback = true), 201);
       }
     },
   },
@@ -114,6 +122,8 @@ export default defineComponent({
       elementId: uuid4(),
       showOutOfViewFeedback: false,
       fadingOutOfViewFeedback: false,
+      showSavedHandle: null as number | null,
+      showOutOfViewFeedbackHandle: null as number | null,
     };
   },
   methods: {
