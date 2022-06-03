@@ -1,4 +1,5 @@
 <template>
+  <!-- -->
   <div class="p-3 rounded bg-gray-50">
     <ChoiceEditor
       v-for="choice in modelValue.choices"
