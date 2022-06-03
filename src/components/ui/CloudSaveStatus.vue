@@ -8,7 +8,7 @@
         'fixed top-18 right-8 z-999  px-2 pt-1.5 pb-1 shadow-all-around  pr-2 rounded-full':
           showOutOfViewFeedback,
         'opacity-0': showOutOfViewFeedback && !fadingOutOfViewFeedback,
-        'opacity-50 transition-opacity duration-100 delay-75':
+        'opacity-70 transition-opacity duration-100 delay-75':
           fadingOutOfViewFeedback,
         'h-8': !showOutOfViewFeedback,
       }"
