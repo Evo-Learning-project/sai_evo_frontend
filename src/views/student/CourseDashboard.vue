@@ -229,6 +229,7 @@ export default defineComponent({
         includeExerciseCount: true,
       });
       await this.getCourse({ courseId: this.courseId });
+      await this.getPracticeEventParticipations({ courseId: this.courseId });
     });
   },
   data() {
@@ -245,6 +246,7 @@ export default defineComponent({
     ...mapActions("student", [
       "createEvent",
       "partialUpdateEventParticipation",
+      "getPracticeEventParticipations",
     ]),
     //...mapActions("teacher", ["partialUpdateEventParticipation"]),
     ...mapMutations("student", ["setEditingEvent"]),

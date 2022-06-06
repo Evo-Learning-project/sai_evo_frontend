@@ -113,5 +113,8 @@ export const getFakeEventParticipationSlot = (
   exercise,
   answer_text: "",
   selected_choices: [],
-  sub_slots: [],
+  sub_slots: [
+    ...(exercise.sub_exercises?.map((e) => getFakeEventParticipationSlot(e)) ??
+      []),
+  ],
 });

@@ -31,7 +31,8 @@ export default defineComponent({
         await this.getEventParticipations({
           courseId: this.courseId,
           eventId: this.eventId,
-          preview: false,
+          includeDetails: true,
+          forCsv: true,
         });
         forceFileDownload(
           {

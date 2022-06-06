@@ -55,6 +55,7 @@ import { getTranslatedString as _ } from "./i18n";
 
 import { createNamespacedHelpers } from "vuex";
 import { debounce } from "lodash";
+import { Course, CoursePrivilege } from "./models";
 //import { typesetTex } from "./utils";
 const { mapState, mapGetters } = createNamespacedHelpers("shared");
 
@@ -73,6 +74,9 @@ export default defineComponent({
     if (this.$store.getters["shared/isAuthenticated"]) {
       try {
         await this.$store.dispatch("shared/getCourses");
+        if (!this.hasAnyPrivileges && this.isTeacherRoute) {
+          this.$router.push("/student/courses");
+        }
       } catch (e) {
         console.log("Caught", e);
       }
@@ -111,8 +115,27 @@ export default defineComponent({
     },
   },
   computed: {
-    ...mapState(["loading", "showSuccessFeedback", "dirtyTex"]),
+    ...mapState(["loading", "showSuccessFeedback", "dirtyTex", "courses"]),
     ...mapGetters(["unsavedChanges"]),
+    hasAnyPrivileges(): boolean {
+      if (this.$router.currentRoute.value.params.courseId) {
+        // check user has privileges for course currrently visited
+        const myPrivileges: CoursePrivilege[] =
+          this.courses.find(
+            (c: Course) =>
+              c.id == (this.$router.currentRoute.value.params.courseId ?? "")
+          )?.privileges ?? [];
+
+        return myPrivileges.length > 0;
+      }
+      // check user has any privileges at all if not visiting a course (i.e. in course list)
+      return (this.courses as Course[])
+        .map((c) => c.privileges ?? [])
+        .some((p) => p.length > 0);
+    },
+    isTeacherRoute(): boolean {
+      return !!this.$route.meta.teacherRoute;
+    },
   },
 });
 </script>

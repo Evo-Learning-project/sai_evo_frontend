@@ -9,27 +9,27 @@
 import {
   EventParticipationSlot,
   Exercise,
-  getFakeEventParticipationSlot
-} from '@/models'
-import { defineComponent, PropType } from '@vue/runtime-core'
-import AbstractEventParticipationSlot from '@/components/shared/AbstractEventParticipationSlot.vue' // A read-only fake EventParticipationSlot as a wrapper to show an exercise
+  getFakeEventParticipationSlot,
+} from "@/models";
+import { defineComponent, PropType } from "@vue/runtime-core";
+import AbstractEventParticipationSlot from "@/components/shared/AbstractEventParticipationSlot.vue"; // A read-only fake EventParticipationSlot as a wrapper to show an exercise
 export default defineComponent({
-  name: 'FullExercise',
+  name: "FullExercise",
   props: {
     exercise: {
       type: Object as PropType<Exercise>,
-      required: true
-    }
+      required: true,
+    },
   },
   components: {
-    AbstractEventParticipationSlot
+    AbstractEventParticipationSlot,
   },
   computed: {
-    exerciseWrapperSlot (): EventParticipationSlot {
-      return getFakeEventParticipationSlot(this.exercise)
-    }
-  }
-})
+    exerciseWrapperSlot(): EventParticipationSlot {
+      return getFakeEventParticipationSlot(this.exercise);
+    },
+  },
+});
 </script>
 
 <style></style>

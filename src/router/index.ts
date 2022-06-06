@@ -235,14 +235,16 @@ const routes: Array<RouteRecordRaw> = [
         },
       },
       {
-        path: "courses/:courseId/exams/:examId/review/:participationId",
+        path: "courses/:courseId/exams/:examId/review/:participationId/:showSubmissionConfirmationMessage?",
         component: EventParticipationFull,
         name: "SubmissionReviewPage",
         meta: {
           routeTitle: _("headings.review_submission"),
           breadcrumbs: submissionReviewBreadCrumbs,
         },
-        props: true,
+        props: {
+          showSolutionAndScores: false,
+        },
       },
       {
         path: "courses/:courseId/exams/:examId/assessment/:participationId",

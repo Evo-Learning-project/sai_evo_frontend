@@ -819,6 +819,17 @@
       transition: opacity 0.25s 0.7s ease;
     }
 
+    .fade-autosave-enter-active,
+    .fade-autosave-leave-active {
+      transition: opacity 0.15s ease;
+    }
+    
+    .fade-autosave-enter-from,
+    .fade-autosave-leave-to {
+      opacity: 0;
+      transition: opacity 0.15s ease;
+    }
+
     .fade-delay-rev-leave-active {
       transition: opacity 0.25s ease;
     }

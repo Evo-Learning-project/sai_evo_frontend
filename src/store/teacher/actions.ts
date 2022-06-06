@@ -108,13 +108,20 @@ export const actions = {
     {
       courseId,
       eventId,
-      preview,
-    }: { courseId: string; eventId: string; preview?: boolean }
+      includeDetails,
+      forCsv,
+    }: {
+      courseId: string;
+      eventId: string;
+      includeDetails?: boolean;
+      forCsv?: boolean;
+    }
   ) => {
     const participations = await getEventParticipations(
       courseId,
       eventId,
-      preview
+      includeDetails,
+      forCsv
     );
     commit("setEventParticipations", participations);
   },

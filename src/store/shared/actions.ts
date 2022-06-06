@@ -46,9 +46,9 @@ export const actions = {
     { courseId }: { courseId: string }
   ) => {
     const { participations, ...course } = await getCourse(courseId);
-    console.log("GOTTEN COURSE", course);
     commit("setCourse", course);
 
+    // TODO remove as this is now handled by a separate call in student store
     if (participations) {
       commit("student/setEventParticipations", participations, {
         root: true,

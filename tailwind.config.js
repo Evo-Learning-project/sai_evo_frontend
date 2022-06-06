@@ -45,6 +45,7 @@ module.exports = {
       },
       zIndex: {
         "-1": "-1",
+        999: "999",
       },
       fontFamily: {
         sans: ['"Source Sans Pro"'],

@@ -115,7 +115,7 @@
         "
         class="flex-col hidden h-full md:block bg-light"
         :class="{
-          'absolute top-0': !fixSideBar,
+          'absolute top-0': true || !fixSideBar,
           'w-18': !hoveringSidebar && !fixSideBar,
           'w-2/12 hovering-sidebar': hoveringSidebar || fixSideBar,
           'transition-width duration-200 ease-in-out': !unfixingSideBar,
@@ -288,11 +288,17 @@
         :style="
           !fixSideBar && mediaQueryMd
             ? 'width: 97%; padding-left: ' +
-              (routerViewPaddingLeft + 30) +
+              Math.max(routerViewPaddingLeft + 30, 100) +
               'px; padding-right: 30px'
-            : ''
+            : (fixSideBar && mediaQueryMd
+                ? 'padding-left: calc(16.66667% + 30px); width: 100%; padding-right: 30px'
+                : '') +
+              (!mediaQueryMd
+                ? 'width: 100%; padding-left: 12px; padding-right: 12px'
+                : '')
         "
         :class="{
+          // TODO REMOVE
           'mx-auto px-2': !fixSideBar,
           'md:w-10/12 mx-auto md:px-10': fixSideBar,
         }"
@@ -333,12 +339,11 @@ import {
   ROUTE_TITLE_EVENT_NAME_TOKEN,
 } from "@/navigation/const";
 import { SidebarOption } from "@/navigation/sidebar";
-import { logOut, rippleEffect } from "@/utils";
+import { logOut } from "@/utils";
 import { defineComponent } from "@vue/runtime-core";
 import ErrorView from "../shared/ErrorView.vue";
 import SnackBar from "@/components/ui/SnackBar.vue";
 import Btn from "@/components/ui/Btn.vue";
-import { redirectToMainView } from "@/utils";
 import HelpCenter from "@/components/shared/HelpCenter/HelpCenter.vue";
 import {
   newSidebarHelpCenterTourSteps,
@@ -357,12 +362,6 @@ export default defineComponent({
     },
   },
   mounted() {
-    // this is called before courses have been retrieved, you should probably do this check in App.vue if the route has a meta flag
-    setTimeout(() => {
-      if (!this.hasAnyPrivileges() && this.courseId) {
-        this.redirectToMainView();
-      }
-    }, 1500);
     setTimeout(() => {
       this.routerViewPaddingLeft =
         document.getElementById("desktop-nav")?.clientWidth ?? 0;
@@ -385,6 +384,11 @@ export default defineComponent({
         localStorage.setItem(LOCAL_STORAGE_HAS_TAKEN_SIDEBAR_TOUR_KEY, "true");
       }, 500);
     }
+
+    // adjust router view padding and width according to screen size breakpoint
+    const mq = window.matchMedia("(min-width: 768px)");
+    mq.addEventListener("change", (event) => (this.mediaQueryMd = mq.matches));
+    this.mediaQueryMd = mq.matches;
   },
   data() {
     return {
@@ -398,11 +402,11 @@ export default defineComponent({
       teacherTourSteps,
       newSidebarHelpCenterTourSteps,
       tourOptions,
+      mediaQueryMd: false,
     };
   },
   mixins: [courseIdMixin, eventIdMixin, coursePrivilegeMixin],
   methods: {
-    redirectToMainView,
     logOut,
     startTour() {
       (this.$tours["helpCenterTour"] as any).start();
@@ -462,8 +466,21 @@ export default defineComponent({
     currentEvent(): Event {
       return this.$store.getters["teacher/event"](this.eventId);
     },
-    mediaQueryMd(): boolean {
-      return window.matchMedia("(min-width: 768px)").matches;
+    routerViewStyle() {
+      const unfixedSidebarOnMdScreen = !this.fixSideBar && this.mediaQueryMd;
+      return {
+        ...(unfixedSidebarOnMdScreen
+          ? { width: "97%" }
+          : !this.mediaQueryMd
+          ? { width: "100%" }
+          : {}),
+        ...(unfixedSidebarOnMdScreen
+          ? {
+              "padding-left": this.routerViewPaddingLeft + "30" + "px",
+              "padding-right": "30px",
+            }
+          : {}),
+      };
     },
   },
   components: { ErrorView, SnackBar, Btn, HelpCenter },

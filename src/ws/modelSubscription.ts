@@ -1,7 +1,12 @@
+import { SharedState } from "./../store/types";
+import { Exercise } from "./../models/interfaces";
 import { convertEventTemplateRules } from "@/api/utils";
 import { Event } from "@/models";
 import store from "@/store";
 import { getWsRequestId, openAuthenticatedWsConnection } from "./utils";
+
+const getCurrentUserId = () =>
+  (store.state as { shared: SharedState }).shared.user.id;
 
 export const subscribeToExerciseChanges = async (
   exerciseId: string,
@@ -17,11 +22,14 @@ export const subscribeToExerciseChanges = async (
     "exercises",
     (s) => s.send(JSON.stringify(subscriptionMessage)),
     (m) => {
-      console.log("WS MSG", JSON.parse(m.data));
       const payload = JSON.parse(m.data);
 
       if (payload.action === "update") {
-        store.commit("teacher/setExercise", payload.data);
+        const exercise = payload.data as Exercise;
+        if ((exercise.locked_by?.id ?? "") != getCurrentUserId()) {
+          // update local object if edit is done by another user
+          store.commit("teacher/setExercise", exercise);
+        }
       }
     }
   );
@@ -39,7 +47,6 @@ export const subscribeToSubmissionSlotChanges = async (slotId: string) => {
     (s) => s.send(JSON.stringify(subscriptionMessage)),
     (m) => {
       const payload = JSON.parse(m.data);
-      console.log("SLOT WS MSG", payload);
       if (payload.action === "execution_results") {
         store.commit("student/patchCurrentEventParticipationSlot", {
           slotId,
@@ -62,7 +69,6 @@ export const subscribeToEventChanges = async (eventId: string, lock = true) => {
     "events",
     (s) => s.send(JSON.stringify(subscriptionMessage)),
     (m) => {
-      console.log("WS MSG", JSON.parse(m.data));
       const payload = JSON.parse(m.data);
 
       if (payload.action === "update") {
@@ -78,11 +84,13 @@ export const subscribeToEventChanges = async (eventId: string, lock = true) => {
           },
         } as Event;
 
-        console.log("converted event", convertedEvent);
-        store.commit("teacher/setEvent", {
-          eventId: convertedEvent.id,
-          payload: convertedEvent,
-        });
+        if ((convertedEvent.locked_by?.id ?? "") != getCurrentUserId()) {
+          // update local object if edit is done by another user
+          store.commit("teacher/setEvent", {
+            eventId: convertedEvent.id,
+            payload: convertedEvent,
+          });
+        }
       }
     }
   );

@@ -1,6 +1,9 @@
 <template>
   <div>
-    <div v-if="showSubmissionConfirmationMessage" class="banner banner-success">
+    <div
+      v-if="$route.params.showSubmissionConfirmationMessage"
+      class="banner banner-success"
+    >
       <span class="material-icons-outlined"> check </span>
       <p class="">{{ $t("event_participation_page.turned_in_text") }}</p>
     </div>
@@ -248,11 +251,11 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
-    showSubmissionConfirmationMessage: {
-      // should be boolean only, but it's passed via route params and TS complains about boolean params
-      type: [Boolean, String],
-      default: false,
-    },
+    // showSubmissionConfirmationMessage: {
+    //   // should be boolean only, but it's passed via route params and TS complains about boolean params
+    //   type: [Boolean, String],
+    //   default: false,
+    // },
   },
   components: {
     AbstractEventParticipationSlot,
