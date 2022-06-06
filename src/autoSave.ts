@@ -73,8 +73,6 @@ export class AutoSaveManager<T> {
   }): Promise<void> {
     this.state = AutoSaveManagerState.PENDING;
 
-    console.log("CHANGE", this.instance);
-
     // record new change to field
     this.unsavedChanges[field] = value as any;
 

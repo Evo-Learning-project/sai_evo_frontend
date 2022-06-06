@@ -188,7 +188,14 @@ export default defineComponent({
   mixins: [courseIdMixin, eventIdMixin, loadingMixin, savingMixin],
   props: [],
   beforeRouteLeave() {
+    document.removeEventListener("keydown", this.doSave);
     this.ws?.close();
+  },
+  mounted() {
+    document.addEventListener("keydown", this.doSave);
+  },
+  beforeDestroy() {
+    document.removeEventListener("keydown", this.doSave);
   },
   async created() {
     await this.withLoading(async () => {
@@ -281,6 +288,20 @@ export default defineComponent({
         this.loadingExamples = false;
       }
       this.showInstancesDialog = true;
+    },
+    doSave(e: KeyboardEvent) {
+      if (!(e.keyCode === 83 && (e.ctrlKey || e.metaKey))) {
+        return;
+      }
+
+      e.preventDefault();
+      if (this.autoSaveManager?.isPending()) {
+        this.autoSaveManager.flush();
+      } else {
+        // fake save as a placebo for the user
+        this.saving = true;
+        this.$nextTick(() => (this.saving = false));
+      }
     },
   },
   computed: {
