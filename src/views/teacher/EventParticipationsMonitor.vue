@@ -1,6 +1,10 @@
 <template>
   <div class="flex flex-col">
-    <div class="mb-3" v-if="event.state === EventState.RESTRICTED">
+    <div
+      class="mb-3"
+      v-if="event.state === EventState.RESTRICTED"
+      v-show="showRestrictedModeBanner"
+    >
       <div class="banner banner-danger">
         <span class="text-yellow-900 material-icons-outlined">
           error_outline
@@ -8,10 +12,27 @@
         <p>
           {{ $t("event_monitor.some_exams_still_open") }}
         </p>
+        <Btn
+          :outline="true"
+          :size="'xs'"
+          :variant="'icon'"
+          class="mt-1 mb-auto"
+          @click="showRestrictedModeBanner = false"
+        >
+          <span
+            class="material-icons-outlined"
+            style="font-size: 17px !important"
+            >close</span
+          ></Btn
+        >
       </div>
     </div>
     <div class="mb-4" v-if="!loading && resultsMode">
-      <div v-if="thereArePartialAssessments" class="mb-3 banner banner-danger">
+      <div
+        v-if="thereArePartialAssessments"
+        v-show="showThereArePendingAssessmentsBanner"
+        class="mb-3 banner banner-danger"
+      >
         <span class="ml-px text-yellow-900 material-icons-outlined">
           pending_actions
         </span>
@@ -24,23 +45,69 @@
             >pending_actions</span
           >.
         </p>
+        <Btn
+          :outline="true"
+          :size="'xs'"
+          :variant="'icon'"
+          class="mt-1 mb-auto"
+          @click="showThereArePendingAssessmentsBanner = false"
+        >
+          <span
+            class="material-icons-outlined"
+            style="font-size: 17px !important"
+            >close</span
+          ></Btn
+        >
       </div>
       <div
         v-else-if="thereAreUnpublishedAssessments"
+        v-show="showThereAreUnpublishedResultsBanner"
         class="mb-3 banner banner-light"
       >
         <span class="ml-px material-icons-outlined text-success"> task </span>
         <p>
           {{ $t("event_assessment.ready_to_publish_1") }}
-          <em>{{ $t("event_results.publish_results") }}</em
+          <span>{{ $t("event_results.publish_results") }}</span
           >. {{ $t("event_assessment.ready_to_publish_2") }}
         </p>
+        <Btn
+          :outline="true"
+          :size="'xs'"
+          :variant="'icon'"
+          class="mt-1 mb-auto"
+          style="margin-left: auto !important"
+          @click="showThereAreUnpublishedResultsBanner = false"
+        >
+          <span
+            class="material-icons-outlined"
+            style="font-size: 17px !important"
+            >close</span
+          ></Btn
+        >
       </div>
-      <div class="mb-3 banner banner-success" v-else>
+      <div
+        class="mb-3 banner banner-success"
+        v-else
+        v-show="showAllAssessmentsPublishedBanner"
+      >
         <span class="text-xl material-icons-outlined"> done </span>
         <p class="">
           {{ $t("event_assessment.all_published") }}
         </p>
+        <Btn
+          :outline="true"
+          :size="'xs'"
+          :variant="'icon'"
+          class="mt-1 mb-auto"
+          style="margin-left: auto !important"
+          @click="showAllAssessmentsPublishedBanner = false"
+        >
+          <span
+            class="material-icons-outlined"
+            style="font-size: 17px !important"
+            >close</span
+          ></Btn
+        >
       </div>
     </div>
     <div class="z-50 flex flex-col my-1">
@@ -374,6 +441,12 @@ export default defineComponent({
       closingExamsMode: false,
       reOpeningTurnedInParticipationMode: false,
       reOpeningClosedExamsMode: false,
+
+      // show banners
+      showThereAreUnpublishedResultsBanner: true,
+      showRestrictedModeBanner: true,
+      showThereArePendingAssessmentsBanner: true,
+      showAllAssessmentsPublishedBanner: true,
 
       EventParticipationState,
       participationStateIcons,
