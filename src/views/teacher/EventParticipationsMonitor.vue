@@ -1,11 +1,14 @@
 <template>
   <div class="flex flex-col">
     <div
-      class="mb-3"
+      class="flex w-full mb-3 transition-all duration-200"
       v-if="event.state === EventState.RESTRICTED"
-      v-show="showRestrictedModeBanner"
+      :class="{
+        'opacity-0 max-h-0': !showRestrictedModeBanner,
+        'opacity-100 max-h-96': showRestrictedModeBanner,
+      }"
     >
-      <div class="banner banner-danger">
+      <div class="w-full mb-4 banner banner-danger">
         <span class="text-yellow-900 material-icons-outlined">
           error_outline
         </span>
@@ -16,12 +19,11 @@
           :outline="true"
           :size="'xs'"
           :variant="'icon'"
-          class="mt-1 mb-auto"
           @click="showRestrictedModeBanner = false"
         >
           <span
             class="material-icons-outlined"
-            style="font-size: 17px !important"
+            style="font-size: 17px !important; margin-right: 0 !important"
             >close</span
           ></Btn
         >
@@ -30,8 +32,11 @@
     <div class="mb-4" v-if="!loading && resultsMode">
       <div
         v-if="thereArePartialAssessments"
-        v-show="showThereArePendingAssessmentsBanner"
-        class="mb-3 banner banner-danger"
+        class="flex mb-3 transition-all duration-200 banner banner-danger"
+        :class="{
+          'opacity-0 max-h-0': !showThereArePendingAssessmentsBanner,
+          'opacity-100 max-h-96': showThereArePendingAssessmentsBanner,
+        }"
       >
         <span class="ml-px text-yellow-900 material-icons-outlined">
           pending_actions
@@ -49,20 +54,22 @@
           :outline="true"
           :size="'xs'"
           :variant="'icon'"
-          class="mt-1 mb-auto"
           @click="showThereArePendingAssessmentsBanner = false"
         >
           <span
             class="material-icons-outlined"
-            style="font-size: 17px !important"
+            style="font-size: 17px !important; margin-right: 3px !important"
             >close</span
           ></Btn
         >
       </div>
       <div
         v-else-if="thereAreUnpublishedAssessments"
-        v-show="showThereAreUnpublishedResultsBanner"
-        class="mb-3 banner banner-light"
+        class="flex mb-3 transition-all duration-200 banner banner-light"
+        :class="{
+          'opacity-0 max-h-0': !showThereAreUnpublishedResultsBanner,
+          'opacity-100 max-h-96': showThereAreUnpublishedResultsBanner,
+        }"
       >
         <span class="ml-px material-icons-outlined text-success"> task </span>
         <p>
@@ -74,21 +81,23 @@
           :outline="true"
           :size="'xs'"
           :variant="'icon'"
-          class="mt-1 mb-auto"
           style="margin-left: auto !important"
           @click="showThereAreUnpublishedResultsBanner = false"
         >
           <span
             class="material-icons-outlined"
-            style="font-size: 17px !important"
+            style="font-size: 17px !important; margin-right: 0 !important"
             >close</span
           ></Btn
         >
       </div>
       <div
-        class="mb-3 banner banner-success"
         v-else
-        v-show="showAllAssessmentsPublishedBanner"
+        class="flex mb-3 transition-all duration-200 banner banner-success"
+        :class="{
+          'opacity-0 max-h-0': !showAllAssessmentsPublishedBanner,
+          'opacity-100 max-h-96': showAllAssessmentsPublishedBanner,
+        }"
       >
         <span class="text-xl material-icons-outlined"> done </span>
         <p class="">
@@ -98,13 +107,12 @@
           :outline="true"
           :size="'xs'"
           :variant="'icon'"
-          class="mt-1 mb-auto"
           style="margin-left: auto !important"
           @click="showAllAssessmentsPublishedBanner = false"
         >
           <span
             class="material-icons-outlined"
-            style="font-size: 17px !important"
+            style="font-size: 17px !important; margin-right: 0 !important"
             >close</span
           ></Btn
         >
@@ -114,7 +122,7 @@
       <Btn
         @click="showStats = !showStats"
         :outline="true"
-        :tooltip="!showStats ? $t('help_texts.stats') : $t('misc.close')"
+        :tooltip="!showStats ? $t('help_texts.stats') : ''"
         :variant="'icon'"
         class="ml-auto -mt-8 transition-transform duration-200 transform"
         :class="{

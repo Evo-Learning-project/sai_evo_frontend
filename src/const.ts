@@ -287,15 +287,16 @@ export const getEventParticipationMonitorHeaders = (
       cellRenderer: renderEventParticipationSlotCell(resultsMode),
     })
   );
-  ret.push({
-    field: "score",
-    type: "numericColumn",
-    width: 50,
-    resizable: true,
-    headerName: _("event_participation_headings.grade"),
-  });
+  if (resultsMode) {
+    ret.push({
+      field: "score",
+      type: "numericColumn",
+      width: 50,
+      resizable: true,
+      headerName: _("event_participation_headings.grade"),
+    });
+  }
   return ret;
-  // TODO handle case of all exercises shown at once for line 287...
 };
 
 // returns the html contained inside of a participation slot in the
@@ -310,22 +311,19 @@ const renderEventParticipationSlotCell =
       resultsMode
         ? params.value.score ??
           "text-lg text-yellow-900 material-icons-outlined"
-        : "material-icons-outlined text-lg " +
-          (params.data.currentSlotCursor > params.value.slot_number ||
-          params.data.state === EventParticipationState.TURNED_IN
-            ? "text-success opacity-70"
-            : "text-muted opacity-70")
+        : "material-icons text-lg " +
+          (params.value.has_answer
+            ? "text-success opacity-80"
+            : "text-muted opacity-50")
     }">
                   ${
                     resultsMode
                       ? Number.isInteger(parseFloat(params.value.score))
                         ? parseInt(params.value.score)
                         : params.value.score ?? "pending_actions"
-                      : params.data.currentSlotCursor >
-                          params.value.slot_number ||
-                        params.data.state === EventParticipationState.TURNED_IN
+                      : params.value.has_answer
                       ? "done"
-                      : "more_horiz"
+                      : "remove"
                   }
                 </span>` +
     `</div>`;

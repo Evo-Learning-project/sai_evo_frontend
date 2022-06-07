@@ -568,13 +568,9 @@
               }}</TextEditor>
             </p>
           </div>
-          <div v-else class="flex space-x-2">
-            <Btn
-              :outline="true"
-              :variant="'icon'"
-              class="mb-auto"
-              @click="$emit('openFull')"
-              ><span class="material-icons-outlined text-base mr-0.5 text-muted"
+          <div v-else class="flex items-center space-x-2">
+            <Btn :outline="true" :variant="'icon'" @click="$emit('openFull')"
+              ><span class="material-icons-outlined text-muted"
                 >launch</span
               ></Btn
             >

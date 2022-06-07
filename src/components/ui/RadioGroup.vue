@@ -30,7 +30,7 @@
         <input
           @input="onInput(option.value, $event)"
           style="min-width: 15px; min-height: 15px"
-          class="mt-1.5"
+          class="mt-1.5 input-radio"
           type="radio"
           :id="id + '-input-' + index"
           :value="option.value"
@@ -85,4 +85,11 @@ export default defineComponent({
 });
 </script>
 
-<style></style>
+<style>
+@-moz-document url-prefix() {
+  .input-radio {
+    margin-top: 0 !important;
+    margin-bottom: 7.5px !important;
+  }
+}
+</style>
