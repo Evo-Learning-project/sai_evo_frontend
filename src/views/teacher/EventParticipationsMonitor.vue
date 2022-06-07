@@ -43,11 +43,11 @@
         </p>
       </div>
     </div>
-    <div class="flex flex-col mt-2 mb-9">
+    <div class="z-50 flex flex-col my-1">
       <Btn
         @click="showStats = !showStats"
         :outline="true"
-        :tooltip="!showStats ? $t('help_texts.stats') : ''"
+        :tooltip="!showStats ? $t('help_texts.stats') : $t('misc.close')"
         :variant="'icon'"
         class="ml-auto -mt-8 transition-transform duration-200 transform"
         :class="{
@@ -129,7 +129,10 @@
 
     <div class="flex-grow">
       <DataTable
-        :class="{ 'opacity-50': participationsData.length === 0 }"
+        :class="{
+          'opacity-50': participationsData.length === 0,
+          '': true,
+        }"
         :columnDefs="participationPreviewColumns"
         :rowData="participationsData"
         :isRowSelectable="isRowSelectable"
@@ -770,6 +773,7 @@ export default defineComponent({
           fullName: p.user?.full_name,
           state: this.resultsMode ? p.assessment_progress : p.state,
           visibility: p.visibility,
+          score: parseFloat(p.score ?? ""),
         } as Record<string, unknown>;
         p.slots.forEach(
           (s) => (ret["slot-" + ((s.slot_number as number) + 1)] = s) //s.score ?? '-')

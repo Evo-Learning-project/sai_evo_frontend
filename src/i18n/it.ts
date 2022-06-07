@@ -98,6 +98,7 @@ export const it = {
     participation_state: "Consegna",
     email: "Email",
     exercise: "Es.",
+    grade: "Voto",
   },
   event_assessment: {
     undo_score_edit_tooltip: "Ripristina punteggio originale",

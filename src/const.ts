@@ -174,7 +174,7 @@ export const CLOZE_SEPARATOR = "[[?]]";
 import { icons as assessmentStateIcons } from "@/assets/assessmentStateIcons";
 import { icons as participationStateIcons } from "@/assets/participationStateIcons";
 export const getEventParticipationMonitorHeaders = (
-  resultsMode: boolean,
+  resultsMode: boolean, // true if the event is over
   eventParticipations: EventParticipation[]
 ): ColDef[] => {
   if ((eventParticipations?.length ?? 0) === 0) {
@@ -220,6 +220,7 @@ export const getEventParticipationMonitorHeaders = (
         suppressAndOrCondition: true,
       },
       filter: "agTextColumnFilter",
+      resizable: true,
     },
     {
       field: "course",
@@ -229,6 +230,7 @@ export const getEventParticipationMonitorHeaders = (
         suppressAndOrCondition: true,
       },
       filter: "agTextColumnFilter",
+      resizable: true,
     },
     { field: "visibility", hide: true },
     ...(resultsMode
@@ -272,33 +274,45 @@ export const getEventParticipationMonitorHeaders = (
         ]
       : []),
   ] as ColDef[];
+  // add a heading for each slot
   (eventParticipations[0] as EventParticipation).slots.forEach((s) =>
     ret.push({
       width: 90,
-      cellClassRules: {
-        //'bg-danger bg-opacity-30': '!x'
-      },
       type: "numericColumn",
       field: "slot-" + ((s.slot_number as number) + 1),
       headerName:
         _("event_participation_headings.exercise") +
         " " +
         ((s.slot_number as number) + 1),
-      cellRenderer: (params: any) =>
-        `<div class="ml-10 -mr-2 ag-selectable-cell ${
-          params.value.score ??
-          "transition-opacity duration-75 hover:opacity-100 opacity-70 "
-        }">` +
-        `<span class="mx-auto ${
-          resultsMode
-            ? params.value.score ??
-              "text-lg text-yellow-900 material-icons-outlined"
-            : "material-icons-outlined text-lg " +
-              (params.data.currentSlotCursor > params.value.slot_number ||
-              params.data.state === EventParticipationState.TURNED_IN
-                ? "text-success opacity-70"
-                : "text-muted opacity-70")
-        }">
+      cellRenderer: renderEventParticipationSlotCell(resultsMode),
+    })
+  );
+  ret.push({
+    field: "score",
+    headerName: _("event_participation_headings.grade"),
+  });
+  return ret;
+  // TODO handle case of all exercises shown at once for line 287...
+};
+
+// returns the html contained inside of a participation slot in the
+// participations monitoring ag-grid table
+const renderEventParticipationSlotCell =
+  (resultsMode: boolean) => (params: any) =>
+    `<div class="ml-10 -mr-2 ag-selectable-cell ${
+      params.value.score ??
+      "transition-opacity duration-75 hover:opacity-100 opacity-70 "
+    }">` +
+    `<span class="mx-auto ${
+      resultsMode
+        ? params.value.score ??
+          "text-lg text-yellow-900 material-icons-outlined"
+        : "material-icons-outlined text-lg " +
+          (params.data.currentSlotCursor > params.value.slot_number ||
+          params.data.state === EventParticipationState.TURNED_IN
+            ? "text-success opacity-70"
+            : "text-muted opacity-70")
+    }">
                   ${
                     resultsMode
                       ? Number.isInteger(parseFloat(params.value.score))
@@ -311,12 +325,7 @@ export const getEventParticipationMonitorHeaders = (
                       : "more_horiz"
                   }
                 </span>` +
-        `</div>`,
-    })
-  );
-  return ret;
-  // TODO handle case of all exercises shown at once for line 287...
-};
+    `</div>`;
 
 export const MAX_PRACTICE_EXERCISE_COUNT = 500;
 
