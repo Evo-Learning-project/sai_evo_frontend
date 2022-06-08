@@ -181,6 +181,11 @@ export const it = {
       "L'inserimento del numero di matricola e la selezione del corso sono necessari per poter partecipare agli esami. Fallo ora e non pensarci più!",
   },
   misc: {
+    ok: "OK",
+    slots: "slot",
+    from: "da",
+    to: "a",
+    add: "Aggiungi",
     wrong_file_format: "Il formato del file che hai selezionato non è corretto",
     expand: "Espandi",
     collapse: "Riduci",
@@ -351,6 +356,7 @@ export const it = {
     publish: "Pubblica",
   },
   event_template_editor: {
+    add_more_rules: "Aggiungi più slot",
     editor_title: "Modello esame",
     introduction_text:
       "Crea il modello per questo esame. Per ogni slot, puoi scegliere se far vedere a ogni studente lo stesso esercizio o se utilizzare i criteri di scelta casuale.",
@@ -399,6 +405,9 @@ export const it = {
       "Ogni studente vedrà un esercizio scelto a caso tra questi:",
     tag_based_description:
       "Ogni studente vedrà un esercizio scelto a caso che tra i tag ha:",
+    tag_based_description_multiple_1: "Ogni studente vedrà",
+    tag_based_description_multiple_2:
+      "esercizi scelti a caso che tra i tag hanno:",
     same_exercise_for_everyone_description:
       "Tutti gli studenti vedranno questo esercizio:",
     tag_based_introduction:

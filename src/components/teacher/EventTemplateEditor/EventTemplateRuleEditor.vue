@@ -13,7 +13,7 @@
         </span>
         <h4>
           {{ $t("event_template_rule_editor.exercise_number") }}
-          {{ modelValue._ordering + 1 }}
+          {{ displayedOrdering }}
         </h4>
         <div class="flex items-center my-auto ml-auto space-x-2">
           <Btn :variant="'secondary'" @click="showRuleDialog()" :size="'sm'">
@@ -88,8 +88,19 @@
         "
         class="mt-4"
       >
-        <p class="mb-2 text-muted">
+        <p class="mb-2 text-muted" v-if="modelValue.amount === 1">
           {{ $t("event_template_rule_editor.tag_based_description") }}
+        </p>
+        <p class="mb-2 text-muted" v-else>
+          {{
+            $t("event_template_rule_editor.tag_based_description_multiple_1") +
+            " "
+          }}<strong>{{ modelValue.amount }}</strong>
+
+          {{
+            " " +
+            $t("event_template_rule_editor.tag_based_description_multiple_2")
+          }}
         </p>
         <div class="flex flex-wrap space-x-3">
           <div
@@ -125,7 +136,10 @@
       :confirmOnly="true"
       @yes="onCloseDialog()"
     >
-      <template v-if="modelValue.rule_type != null" v-slot:backButton>
+      <template
+        v-if="modelValue.rule_type != null && !lockRuleType"
+        v-slot:backButton
+      >
         <Btn
           :variant="'icon'"
           :outline="true"
@@ -141,7 +155,7 @@
         {{
           $t("event_template_rule_editor.populate_slot_title") +
           " " +
-          (modelValue._ordering + 1)
+          displayedOrdering
         }}
       </template>
       <template v-slot:body>
@@ -316,6 +330,14 @@ export default defineComponent({
       type: Boolean,
       required: true,
     },
+    ordering: {
+      type: Number,
+      required: true,
+    },
+    lockRuleType: {
+      type: Boolean,
+      default: false,
+    },
   },
   // setup() {
   //   return { v$: useVuelidate() };
@@ -408,6 +430,24 @@ export default defineComponent({
     },
   },
   computed: {
+    displayedOrdering(): String {
+      const baseOrdering = this.ordering + 1;
+      if (this.modelValue.amount === 1) {
+        return String(baseOrdering);
+      }
+      return (
+        _("misc.from") +
+        " " +
+        baseOrdering +
+        " " +
+        _("misc.to") +
+        " " +
+        // make sure we're dealing with numbers
+        (parseInt(String(baseOrdering)) +
+          parseInt(String(this.modelValue.amount)) -
+          1)
+      );
+    },
     ruleExercises(): Exercise[] {
       if (this.modelValue.rule_type != EventTemplateRuleType.ID_BASED) {
         return [];

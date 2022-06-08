@@ -27,6 +27,8 @@
             :randomOrder="randomRuleOrder"
             :globallySelectedExercises="selectedExercises"
             :modelValue="element"
+            :lockRuleType="element.amount > 1"
+            :ordering="getActualSlotOrdering(index)"
             @updateRule="
               onRuleUpdate(element, $event.field, $event.value);
               $emit('templateChanged');
@@ -83,10 +85,33 @@
           $emit('templateChanged');
         "
         :loading="localLoading"
-        ><span class="mr-1 text-base material-icons-outlined">
-          add </span
+        ><span class="mr-1 text-base material-icons-outlined"> add </span
         >{{ $t("event_template_editor.add_rule") }}</Btn
       >
+      <DropdownMenu
+        :expanded="addMultipleRulesExpanded"
+        @toggleExpanded="addMultipleRulesExpanded = !addMultipleRulesExpanded"
+        class="ml-0.5"
+        :tooltip="$t('event_template_editor.add_more_rules')"
+      >
+        <div class="w-max">
+          <div class="flex items-center w-full">
+            <p>{{ $t("misc.add") }}</p>
+            <NumberInput
+              v-model="addRuleAmount"
+              class="w-16 mx-2"
+              :min="2"
+            ></NumberInput>
+            <p>{{ $t("misc.slots") }}</p>
+            <Btn :size="'sm'" class="ml-12" @click="onAddRule(addRuleAmount)">{{
+              $t("misc.add")
+            }}</Btn>
+          </div>
+          <!-- <p class="mt-2 text-sm text-muted">
+            Tutti gli slot aggiunti avranno le stesse impostazioni.
+          </p> -->
+        </div>
+      </DropdownMenu>
     </div>
   </div>
 </template>
@@ -116,6 +141,8 @@ import { eventTemplateValidation } from "@/validation/models";
 import useVuelidate from "@vuelidate/core";
 //import Card from "@/components/ui/Card.vue";
 import { getTranslatedString as _ } from "@/i18n";
+import DropdownMenu from "@/components/ui/DropdownMenu.vue";
+import NumberInput from "@/components/ui/NumberInput.vue";
 export default defineComponent({
   setup() {
     return { v$: useVuelidate() };
@@ -129,6 +156,8 @@ export default defineComponent({
     Btn,
     EventTemplateRuleEditor,
     draggable,
+    DropdownMenu,
+    NumberInput,
   },
   mixins: [courseIdMixin, loadingMixin],
   name: "EventTemplateEditor",
@@ -165,6 +194,8 @@ export default defineComponent({
         string,
         AutoSaveManager<EventTemplateRuleClause>
       >,
+      addRuleAmount: 2,
+      addMultipleRulesExpanded: false,
     };
   },
   methods: {
@@ -199,6 +230,16 @@ export default defineComponent({
           [],
           0
         );
+    },
+    getActualSlotOrdering(index: number) {
+      // returns the amount of exercises that precede the first one
+      // targeted by the rule at given index, i.e. the sum of all the values
+      // of `amount` of the rules that come before the one at given index
+      return this.modelValue.rules
+        .filter((_, i) => i < index)
+        .map((r) => r.amount)
+        .reduce((a, b) => a + b, 0);
+      //return this.modelValue.rules[index]._ordering ?? 0;
     },
     instantiateRuleClauseAutoSaveManager(
       ruleId: string,
@@ -237,15 +278,24 @@ export default defineComponent({
         await this.onRuleUpdate(draggedRule, "_ordering", event.newIndex);
       }
     },
-    async onAddRule() {
+    async onAddRule(amount = 1) {
       await this.withLocalLoading(async () => {
         const newRule = await this.addEventTemplateRule({
           courseId: this.courseId,
           templateId: this.modelValue.id,
-          rule: getBlankEventTemplateRule(),
+          rule: getBlankEventTemplateRule(
+            amount === 1 ? undefined : EventTemplateRuleType.TAG_BASED,
+            amount
+          ),
         });
         this.instantiateRuleAutoSaveManager(newRule);
       });
+      if (amount > 1) {
+        // multiple slots were added through the dropdown menu
+        // restore data to defaults
+        this.addMultipleRulesExpanded = false;
+        this.addRuleAmount = 2;
+      }
     },
     async onRuleUpdate(
       rule: EventTemplateRule,
