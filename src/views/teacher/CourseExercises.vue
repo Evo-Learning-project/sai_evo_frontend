@@ -16,7 +16,7 @@
       >
     </div>
     <div v-if="!firstLoading">
-      <transition-group name="bounce">
+      <transition-group name="quick-bounce">
         <ExerciseEditorWrapper
           v-for="(exercise, index) in exercises"
           :key="'course-' + courseId + '-exercise-' + exercise.id"
@@ -28,7 +28,7 @@
         ></ExerciseEditorWrapper
       ></transition-group>
     </div>
-    <div v-else>
+    <div class="flex flex-col space-y-4" v-else>
       <ExerciseEditorWrapperSkeleton></ExerciseEditorWrapperSkeleton>
       <ExerciseEditorWrapperSkeleton></ExerciseEditorWrapperSkeleton>
       <ExerciseEditorWrapperSkeleton></ExerciseEditorWrapperSkeleton>

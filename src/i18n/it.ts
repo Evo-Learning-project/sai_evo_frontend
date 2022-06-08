@@ -760,6 +760,7 @@ export const it = {
     practice_score: "Basato sugli esercizi correggibili automaticamente",
     student_practice_rule_amount: "Quanti esercizi con questo tag vuoi vedere?",
     exercise_editor: {
+      label: "Il nome dell'esercizio non viene mai mostrato agli studenti",
       score_if_checked: "Punteggio se la risposta viene selezionata",
       score_if_unchecked: "Punteggio se la risposta non viene selezionata",
       solution:

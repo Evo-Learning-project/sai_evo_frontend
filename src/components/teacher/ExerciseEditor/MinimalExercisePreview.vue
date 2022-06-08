@@ -126,7 +126,7 @@
             :forceActive="highlighted"
             :disabled="selectionDisabled"
             @click="onSelection()"
-            class="icon-btn-success"
+            :class="{ 'icon-btn-success': highlighted }"
             ><span class="text-lg material-icons-outlined"> done </span></Btn
           >
           <Tooltip v-else :textValue="selectButtonTitle" :placement="'bottom'">

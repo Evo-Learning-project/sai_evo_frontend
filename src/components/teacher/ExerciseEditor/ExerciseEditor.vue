@@ -111,6 +111,7 @@
                 @update:modelValue="onBaseExerciseChange('label', $event)"
                 >{{ $t("exercise_editor.exercise_label") }}</TextInput
               >
+              <Tooltip class="" :text-code="'exercise_editor.label'"></Tooltip>
             </div>
             <div
               v-if="!subExercise"
