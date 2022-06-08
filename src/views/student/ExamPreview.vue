@@ -137,7 +137,7 @@ export default defineComponent({
   },
   async created() {
     await this.withFirstLoading(async () => {
-      await this.$store.dispatch("shared/getCourses");
+      await this.getCourses();
       await this.getEvent({
         courseId: this.courseId,
         eventId: this.eventId,
@@ -166,7 +166,7 @@ export default defineComponent({
   },
   methods: {
     ...mapActions("student", ["getEvent"]),
-    ...mapActions("shared", ["updateUser"]),
+    ...mapActions("shared", ["updateUser", "getCourses"]),
     async onSaveStudentData() {
       await this.withLocalLoading(async () =>
         this.updateUser({
