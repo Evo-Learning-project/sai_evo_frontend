@@ -1,11 +1,11 @@
 <template>
   <div class="flex flex-col">
     <div
-      class="flex w-full mb-3 transition-all duration-200"
+      class="flex w-full transition-all duration-200"
       v-if="event.state === EventState.RESTRICTED"
       :class="{
-        'opacity-0 max-h-0': !showRestrictedModeBanner,
-        'opacity-100 max-h-96': showRestrictedModeBanner,
+        'opacity-0 max-h-0 mb-0': !showRestrictedModeBanner,
+        'opacity-100 max-h-96 mb-3': showRestrictedModeBanner,
       }"
     >
       <div class="w-full mb-4 banner banner-danger">
@@ -32,10 +32,10 @@
     <div class="mb-4" v-if="!loading && resultsMode">
       <div
         v-if="thereArePartialAssessments"
-        class="flex mb-3 transition-all duration-200 banner banner-danger"
+        class="flex transition-all duration-200 banner banner-danger"
         :class="{
-          'opacity-0 max-h-0': !showThereArePendingAssessmentsBanner,
-          'opacity-100 max-h-96': showThereArePendingAssessmentsBanner,
+          'opacity-0 max-h-0 mb-0 py-0': !showThereArePendingAssessmentsBanner,
+          'opacity-100 max-h-96 mb-3': showThereArePendingAssessmentsBanner,
         }"
       >
         <span class="ml-px text-yellow-900 material-icons-outlined">
@@ -65,10 +65,10 @@
       </div>
       <div
         v-else-if="thereAreUnpublishedAssessments"
-        class="flex mb-3 transition-all duration-200 banner banner-light"
+        class="flex transition-all duration-200 banner banner-light"
         :class="{
-          'opacity-0 max-h-0': !showThereAreUnpublishedResultsBanner,
-          'opacity-100 max-h-96': showThereAreUnpublishedResultsBanner,
+          'opacity-0 max-h-0 mb-0 py-0': !showThereAreUnpublishedResultsBanner,
+          'opacity-100 max-h-96 mb-3': showThereAreUnpublishedResultsBanner,
         }"
       >
         <span class="ml-px material-icons-outlined text-success"> task </span>
@@ -93,10 +93,10 @@
       </div>
       <div
         v-else
-        class="flex mb-3 transition-all duration-200 banner banner-success"
+        class="flex transition-all duration-200 banner banner-success"
         :class="{
-          'opacity-0 max-h-0': !showAllAssessmentsPublishedBanner,
-          'opacity-100 max-h-96': showAllAssessmentsPublishedBanner,
+          'opacity-0 max-h-0 mb-0 py-0': !showAllAssessmentsPublishedBanner,
+          'opacity-100 max-h-96 mb-3': showAllAssessmentsPublishedBanner,
         }"
       >
         <span class="text-xl material-icons-outlined"> done </span>
