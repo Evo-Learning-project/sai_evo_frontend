@@ -341,6 +341,17 @@
         </div>
       </template>
     </Dialog>
+    <Btn @click="showStatsDialog = true">Stats</Btn>
+    <Dialog
+      :large="true"
+      :showDialog="showStatsDialog"
+      @yes="showStatsDialog = false"
+      :confirmOnly="true"
+    >
+      <template v-slot:body>
+        <EventStats v-if="showStatsDialog"></EventStats>
+      </template>
+    </Dialog>
   </div>
 </template>
 
@@ -379,6 +390,7 @@ import { downloadEventParticipationSlotAttachment } from "@/api/events";
 import CsvParticipationDownloader from "@/components/teacher/CsvParticipationDownloader.vue";
 import SkeletonCard from "@/components/ui/SkeletonCard.vue";
 import { getEventParticipationMonitorHeaders } from "@/const";
+import EventStats from "./EventStats.vue";
 
 export default defineComponent({
   components: {
@@ -388,6 +400,7 @@ export default defineComponent({
     Btn,
     CsvParticipationDownloader,
     SkeletonCard,
+    EventStats,
   },
   name: "EventParticipationsMonitor",
   props: {
@@ -455,6 +468,8 @@ export default defineComponent({
       showRestrictedModeBanner: true,
       showThereArePendingAssessmentsBanner: true,
       showAllAssessmentsPublishedBanner: true,
+
+      showStatsDialog: false,
 
       EventParticipationState,
       participationStateIcons,
