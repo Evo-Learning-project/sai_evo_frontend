@@ -291,7 +291,7 @@ export const getEventParticipationMonitorHeaders = (
     ret.push({
       field: "score",
       type: "numericColumn",
-      width: 50,
+      width: 70,
       resizable: true,
       headerName: _("event_participation_headings.grade"),
     });
