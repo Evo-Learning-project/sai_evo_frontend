@@ -136,13 +136,13 @@ export default defineComponent({
     RadioGroup,
   },
   async created() {
-    await this.withFirstLoading(
-      async () =>
-        await this.getEvent({
-          courseId: this.courseId,
-          eventId: this.eventId,
-        })
-    );
+    await this.withFirstLoading(async () => {
+      await this.$store.dispatch("shared/getCourses");
+      await this.getEvent({
+        courseId: this.courseId,
+        eventId: this.eventId,
+      });
+    });
 
     this.dirtyCourse = this.user.course;
     this.dirtyMat = this.user.mat;

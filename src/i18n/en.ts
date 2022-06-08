@@ -164,9 +164,13 @@ export const en = {
     saved: "All changed saved!",
     error: "An error occurred while saving your changes",
   },
+  event_template_editor: {
+    add_rule: "Add slot",
+    randomize_rule_order: "Randomize order of slots",
+  },
   event_template_rule_editor: {
     exercise_number: "Slot",
-    choose_exercise: "Scegli esercizio",
+    choose_exercise: "Choose exercise",
     change_exercise: "Cambia esercizio",
     populate_slot_title: "Select exercise(s) for slot",
     mode_selection_text: "Come vuoi scegliere l'esercizio per questo slot?",

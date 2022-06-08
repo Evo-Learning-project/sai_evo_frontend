@@ -29,6 +29,12 @@ export const eventIdMixin = {
           .currentEventParticipation?.event?.name ?? ""
       );
     },
+    previewingEvent(): string {
+      return (
+        (store.state as { student: StudentState }).student.previewingEvent
+          ?.name ?? ""
+      );
+    },
   },
 };
 
