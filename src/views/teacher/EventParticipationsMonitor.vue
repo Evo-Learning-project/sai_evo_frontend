@@ -119,27 +119,29 @@
       </div>
     </div>
     <div class="z-50 flex flex-col my-1">
-      <Btn
-        @click="showStats = !showStats"
-        :outline="true"
-        :tooltip="!showStats ? $t('help_texts.stats') : ''"
-        :variant="'icon'"
-        class="ml-auto -mt-8 transition-transform duration-200 transform"
-        :class="{
-          'icon-btn-primary': !showStats,
-        }"
-      >
-        <span
-          v-show="!showStats"
-          class="transition-opacity duration-75 material-icons-outlined"
-          >insights</span
+      <router-link class="ml-auto" :to="{ name: 'ExamStats' }">
+        <Btn
+          :outline="true"
+          :tooltip="!showStats ? $t('help_texts.stats') : ''"
+          :variant="'icon'"
+          class="-mt-8 transition-transform duration-200 transform"
+          :class="{
+            'icon-btn-primary': !showStats,
+          }"
         >
-        <span
-          v-show="showStats"
-          class="text-xl transition-opacity duration-75 material-icons-outlined"
-          >close
-        </span>
-      </Btn>
+          <span
+            v-show="!showStats"
+            class="transition-opacity duration-75 material-icons-outlined"
+            >insights</span
+          >
+          <span
+            v-show="showStats"
+            class="text-xl transition-opacity duration-75  material-icons-outlined"
+            >close
+          </span>
+        </Btn>
+      </router-link>
+
       <div
         class="flex transition-all duration-200"
         :class="{
@@ -869,7 +871,7 @@ export default defineComponent({
           fullName: p.user?.full_name,
           state: this.resultsMode ? p.assessment_progress : p.state,
           visibility: p.visibility,
-          score: parseFloat(p.score ?? ""),
+          score: p.score ?? "",
         } as Record<string, unknown>;
         p.slots.forEach(
           (s) => (ret["slot-" + ((s.slot_number as number) + 1)] = s) //s.score ?? '-')

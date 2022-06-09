@@ -1,6 +1,6 @@
 <template>
   <div class="relative">
-    <div class="mx-auto md:w-2/5">
+    <div class="mx-auto md:w-2/5" v-if="showTabs">
       <SegmentedControls
         v-model="currentTab"
         :options="filteredTabsOptions"
@@ -27,6 +27,7 @@
             :disabled="showPopup"
             class="ml-auto -mr-2"
             :variant="'icon'"
+            v-if="allowPopup"
             :outline="'true'"
             :tooltip="$t('programming_exercise.open_text_popup')"
           >
@@ -179,6 +180,14 @@ export default defineComponent({
       type: Boolean,
     },
     showEditor: {
+      type: Boolean,
+      default: true,
+    },
+    allowPopup: {
+      type: Boolean,
+      default: true,
+    },
+    showTabs: {
       type: Boolean,
       default: true,
     },

@@ -2,6 +2,8 @@
   <AbstractEventParticipationSlot
     :showExerciseLabel="true"
     :modelValue="exerciseWrapperSlot"
+    :showTabs="showProgrammingExerciseTabs"
+    :allowPopup="allowProgrammingExercisePopup"
   ></AbstractEventParticipationSlot>
 </template>
 
@@ -19,6 +21,14 @@ export default defineComponent({
     exercise: {
       type: Object as PropType<Exercise>,
       required: true,
+    },
+    allowProgrammingExercisePopup: {
+      type: Boolean,
+      default: true,
+    },
+    showProgrammingExerciseTabs: {
+      type: Boolean,
+      default: true,
     },
   },
   components: {

@@ -349,6 +349,13 @@ export const it = {
       "Per riaprire l'esame di uno studente che ha già consegnato, clicca sull'icona",
     in_column_state: "nella colonna Consegna.",
   },
+  event_stats: {
+    overall: "Riepilogo",
+    exercises: "Esercizi",
+    score_distribution: "Distribuzione voti",
+    per_exercise_stats: "Statistiche per esercizio",
+    selections: "Selezioni",
+  },
   event_results: {
     publish_results: "Pubblica risultati",
     publish_confirm_text:

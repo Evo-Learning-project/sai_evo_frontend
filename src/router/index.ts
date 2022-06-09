@@ -14,6 +14,7 @@ import EventParticipationPage from "../views/student/EventParticipationPage.vue"
 import EventParticipationFull from "../views/shared/EventParticipationFull.vue";
 import ExamPreview from "../views/student/ExamPreview.vue";
 import EventParticipationsMonitor from "../views/teacher/EventParticipationsMonitor.vue";
+import EventStats from "../views/teacher/EventStats.vue";
 import Login from "../views/Login.vue";
 import PageNotFound from "../views/shared/PageNotFound.vue";
 import CourseCreationForm from "../views/teacher/CourseCreationForm.vue";
@@ -164,6 +165,16 @@ const routes: Array<RouteRecordRaw> = [
         meta: {
           sidebarOptions: courseDashboardSidebarOptions,
           routeTitle: _("headings.exam_results"),
+          tags: ["exams", "participations"],
+        },
+      },
+      {
+        path: "courses/:courseId/exams/:examId/stats",
+        component: EventStats,
+        name: "ExamStats",
+        meta: {
+          sidebarOptions: courseDashboardSidebarOptions,
+          //routeTitle: _("headings.exam_results"),
           tags: ["exams", "participations"],
         },
       },

@@ -206,6 +206,8 @@
 
           <!-- programming exercise -->
           <ProgrammingExercise
+            :showTabs="showTabs"
+            :allowPopup="allowPopup"
             v-else-if="
               isProgrammingExercise &&
               (allowEditSubmission || showExerciseLabel)
@@ -735,6 +737,14 @@ export default defineComponent({
     showTags: {
       type: Boolean,
       default: false,
+    },
+    allowPopup: {
+      type: Boolean,
+      default: true,
+    },
+    showTabs: {
+      type: Boolean,
+      default: true,
     },
   },
   mixins: [texMixin],
