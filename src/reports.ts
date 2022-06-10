@@ -155,9 +155,10 @@ export const makeLabelText = (text: string): string | string[] => {
   const MAX_LINE_LENGTH = 100;
 
   const LINE_LENGTH =
-    text.length > MAX_LINE_LENGTH || text.length < MAX_LINE_LENGTH / 2
+    processedText.length > MAX_LINE_LENGTH ||
+    processedText.length < MAX_LINE_LENGTH / 2
       ? MAX_LINE_LENGTH
-      : Math.ceil(text.length / 2);
+      : Math.ceil(processedText.length / 2);
 
   if (processedText.length < LINE_LENGTH) {
     return processedText;
