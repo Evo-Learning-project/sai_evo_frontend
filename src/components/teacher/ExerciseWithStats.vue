@@ -20,7 +20,12 @@
       />
     </div>
 
-    <div v-if="isProgrammingExercise"></div>
+    <div v-else-if="isProgrammingExercise"></div>
+    <div v-else>
+      <p class="text-muted">
+        {{ $t("event_stats.no_stats_available_for_exercise") }}
+      </p>
+    </div>
   </div>
 </template>
 

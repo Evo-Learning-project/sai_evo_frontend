@@ -357,6 +357,8 @@ export const it = {
     selections: "Selezioni",
     event_stats: "Statistiche esame",
     back_to_results: "Torna ai risultati",
+    no_stats_available_for_exercise:
+      "Nessuna statistica disponibile per questo esercizio",
   },
   event_results: {
     publish_results: "Pubblica risultati",
