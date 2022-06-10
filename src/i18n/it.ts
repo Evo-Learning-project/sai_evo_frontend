@@ -355,6 +355,8 @@ export const it = {
     score_distribution: "Distribuzione voti",
     per_exercise_stats: "Statistiche per esercizio",
     selections: "Selezioni",
+    event_stats: "Statistiche esame",
+    back_to_results: "Torna ai risultati",
   },
   event_results: {
     publish_results: "Pubblica risultati",

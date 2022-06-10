@@ -1,10 +1,19 @@
 <template>
   <div class="">
-    <router-link class="hidden" :to="{ name: 'ExamResults' }">
-      <Btn :outline="true" :variant="'icon'" :tooltip="$t('misc.back')"
-        ><span class="material-icons-outlined">arrow_back</span></Btn
-      ></router-link
-    >
+    <div class="flex items-center mb-8 space-x-2">
+      <router-link class="" :to="{ name: 'ExamResults' }">
+        <Btn
+          :outline="true"
+          :variant="'icon'"
+          :tooltip="$t('event_stats.back_to_results')"
+          ><span class="material-icons-outlined">arrow_back</span></Btn
+        ></router-link
+      >
+      <h3 class="mb-0.5">
+        {{ $t("event_stats.event_stats") }}
+        {{ event(eventId).name }}
+      </h3>
+    </div>
 
     <Tabs
       class="mb-10"
