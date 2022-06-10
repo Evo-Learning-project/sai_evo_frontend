@@ -10,7 +10,7 @@
       <Bar
         :chart-data="selectedChoicesFrequencyChartData"
         :chart-options="exerciseChoicesBarChartOptions"
-        :height="30"
+        :height="mediaQueryMdMatches ? 30 : 100"
         :width="100"
       />
     </div>
@@ -88,6 +88,11 @@ export default defineComponent({
   },
   methods: {},
   computed: {
+    // TODO extract to mixin
+    mediaQueryMdMatches(): boolean {
+      const mq = window.matchMedia("(min-width: 768px)");
+      return mq.matches;
+    },
     isMultipleChoice(): boolean {
       return multipleChoiceExerciseTypes.includes(
         this.exercise.exercise_type as ExerciseType

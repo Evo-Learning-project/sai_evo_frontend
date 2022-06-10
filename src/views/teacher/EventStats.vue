@@ -84,7 +84,7 @@
           <Bar
             :chart-data="scoreFrequencyChartData"
             :chart-options="scoreChartOptions"
-            :height="100"
+            :height="mediaQueryMdMatches ? 100 : 300"
           />
         </div>
       </div>
@@ -198,6 +198,11 @@ export default defineComponent({
   computed: {
     ...mapState(["eventParticipations"]),
     ...mapGetters(["event"]),
+    // TODO extract to mixin
+    mediaQueryMdMatches(): boolean {
+      const mq = window.matchMedia("(min-width: 768px)");
+      return mq.matches;
+    },
     tabsAsSelectableOptions(): SelectableOption[] {
       return [
         {
