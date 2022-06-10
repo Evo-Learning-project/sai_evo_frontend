@@ -152,41 +152,51 @@ export const exerciseChoiceDatasetSettings = {
 export const makeLabelText = (text: string): string | string[] => {
   const processedText = text.replace(/(<([^>]+)>)/gi, "");
 
-  const MAX_LINE_LENGTH = 70;
-  const MAX_TEXT_LENGTH = 2 * MAX_LINE_LENGTH;
+  const MAX_LINE_LENGTH = 100;
 
-  if (processedText.length < MAX_LINE_LENGTH) {
+  const LINE_LENGTH =
+    text.length > MAX_LINE_LENGTH || text.length < MAX_LINE_LENGTH / 2
+      ? MAX_LINE_LENGTH
+      : Math.ceil(text.length / 2);
+
+  if (processedText.length < LINE_LENGTH) {
     return processedText;
   }
-
   // try to break at a point that makes the lines balanced in length
   // and break when encountering a space to avoid warping mid-word
-  const breakAt = findNearestSpace(
-    processedText,
-    Math.min(MAX_LINE_LENGTH, Math.ceil(text.length / 2))
-  );
+  const breakPivot =
+    processedText.length > MAX_LINE_LENGTH * 2
+      ? LINE_LENGTH
+      : Math.floor(processedText.length / 2);
+  const breakFirstLineAt = findNearestSpace(processedText, breakPivot);
 
-  // returning an array will cause chart.js to break text into multple lines
+  const remaining = processedText.slice(breakFirstLineAt);
+
+  if (remaining.length <= LINE_LENGTH) {
+    // two lines are enough, no need to break text into a third line
+    return [processedText.slice(0, breakFirstLineAt), remaining];
+  }
+
+  const breakSecondLineAt = findNearestSpace(remaining, LINE_LENGTH);
+
   return [
-    processedText.slice(0, breakAt),
-    processedText.slice(breakAt, MAX_TEXT_LENGTH) +
-      (processedText.slice(breakAt).length > MAX_TEXT_LENGTH - breakAt
-        ? "..."
-        : ""),
+    processedText.slice(0, breakFirstLineAt),
+    remaining.slice(0, breakSecondLineAt),
+    remaining.slice(breakSecondLineAt, LINE_LENGTH + breakSecondLineAt) +
+      (remaining.slice(breakSecondLineAt).length > LINE_LENGTH ? "..." : ""),
   ];
 };
 
 const findNearestSpace = (text: string, index: number): number => {
   let i = 0;
-  while (i >= -Infinity) {
+  while (i < text.length) {
     if (text.charAt(index - i) === " ") {
       return index - i;
     }
     if (text.charAt(index + i) === " ") {
       return index + i;
     }
-
-    i--;
+    i++;
   }
   return -1;
 };
