@@ -39,6 +39,7 @@ export const courseDashboardSidebarOptions: SidebarOption[] = [
       "ExamEditor",
       "ExamResults",
       "ExamProgress",
+      "ExamStats",
       "ExamParticipationFull",
     ],
     requiredPrivileges: [],
