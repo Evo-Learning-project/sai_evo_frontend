@@ -21,8 +21,8 @@
       v-model="currentTab"
     ></Tabs>
 
-    <div v-if="!loading">
-      <div v-show="currentTab === ExamStatsTabs.OVERALL">
+    <div v-if="true || !loading">
+      <div v-if="!loading" v-show="currentTab === ExamStatsTabs.OVERALL">
         <!-- stats cards -->
         <div class="flex mt-8 mb-12">
           <div
@@ -89,7 +89,7 @@
         </div>
       </div>
 
-      <div v-show="currentTab === ExamStatsTabs.EXERCISES">
+      <div v-if="!localLoading" v-show="currentTab === ExamStatsTabs.EXERCISES">
         <h2>{{ $t("event_stats.per_exercise_stats") }}</h2>
         <div
           v-for="(exercise, index) in exercises"
@@ -101,6 +101,12 @@
             :slots="getSlotsContaining(exercise)"
           ></ExerciseWithStats>
         </div>
+      </div>
+      <div class="flex flex-col space-y-8" v-else>
+        <MinimalExercisePreviewSkeleton></MinimalExercisePreviewSkeleton>
+        <MinimalExercisePreviewSkeleton></MinimalExercisePreviewSkeleton>
+        <MinimalExercisePreviewSkeleton></MinimalExercisePreviewSkeleton>
+        <MinimalExercisePreviewSkeleton></MinimalExercisePreviewSkeleton>
       </div>
     </div>
   </div>
@@ -151,6 +157,7 @@ import Btn from "@/components/ui/Btn.vue";
 import Tabs from "@/components/ui/Tabs.vue";
 import { SelectableOption } from "@/interfaces";
 import ExerciseWithStats from "@/components/teacher/ExerciseWithStats.vue";
+import MinimalExercisePreviewSkeleton from "@/components/ui/skeletons/MinimalExercisePreviewSkeleton.vue";
 ChartJS.register(
   Title,
   Tooltip,
@@ -163,20 +170,37 @@ ChartJS.register(
 export default defineComponent({
   name: "EventStats",
   props: {},
-  components: { Bar, Btn, Tabs, ExerciseWithStats },
+  components: {
+    Bar,
+    Btn,
+    Tabs,
+    ExerciseWithStats,
+    MinimalExercisePreviewSkeleton,
+  },
   mixins: [courseIdMixin, eventIdMixin, loadingMixin],
   async created() {
     await this.withLoading(async () => {
+      // make a first request without the heavy fields in order
+      // to quickly show the first chart...
       await this.getEventParticipations({
         courseId: this.courseId,
         eventId: this.eventId,
-        includeDetails: true, // needed to get slots' exercises and answer texts
       });
       await this.getEvent({
         courseId: this.courseId,
         eventId: this.eventId,
       });
     });
+    // ... then make the heavy request, whose data is to be shown
+    // in a tab that's not yet visible to the user
+    await this.withLocalLoading(
+      async () =>
+        await this.getEventParticipations({
+          courseId: this.courseId,
+          eventId: this.eventId,
+          includeDetails: true, // needed to get slots' exercises and answer texts
+        })
+    );
   },
   data() {
     return {

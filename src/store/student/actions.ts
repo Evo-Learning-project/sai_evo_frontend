@@ -142,7 +142,11 @@ export const actions = {
     { commit }: { commit: Commit },
     { courseId }: { courseId: string }
   ) => {
-    const participations = await getCourseEventParticipations(courseId, true);
+    const participations = await getCourseEventParticipations(
+      courseId,
+      true,
+      true
+    );
     commit("setEventParticipations", participations);
   },
   partialUpdateEventParticipationSlot: async (

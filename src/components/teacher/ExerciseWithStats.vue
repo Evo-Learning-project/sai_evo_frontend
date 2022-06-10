@@ -1,12 +1,17 @@
 <template>
   <div class="card shadow-elevation hover-shadow-elevation-2">
     <FullExercise
+      v-if="false"
       :exercise="exercise"
       :allowProgrammingExercisePopup="false"
       :showProgrammingExerciseTabs="false"
     ></FullExercise>
 
-    <div v-if="true || isMultipleChoice">
+    <div class="mb-4 user-content">
+      <ProcessedTextFragment :value="exercise.text"></ProcessedTextFragment>
+    </div>
+
+    <div v-if="isMultipleChoice">
       <Bar
         :chart-data="selectedChoicesFrequencyChartData"
         :chart-options="exerciseChoicesBarChartOptions"
@@ -30,6 +35,7 @@ import {
 } from "@/models";
 import { defineComponent, PropType } from "@vue/runtime-core";
 import FullExercise from "../shared/FullExercise.vue";
+import ProcessedTextFragment from "../ui/ProcessedTextFragment.vue";
 
 import { Bar } from "vue-chartjs";
 import { TChartData } from "vue-chartjs/dist/types";
@@ -70,7 +76,7 @@ ChartJS.register(
 
 export default defineComponent({
   name: "ExerciseWithStats",
-  components: { FullExercise, Bar },
+  components: { FullExercise, Bar, ProcessedTextFragment },
   props: {
     exercise: {
       type: Object as PropType<Exercise>,

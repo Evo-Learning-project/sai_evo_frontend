@@ -150,13 +150,17 @@ export const exerciseChoiceDatasetSettings = {
 // strips html off the given string as chart.js doesn't support html in labels,
 // and breaks longer texts into multiple lines
 export const makeLabelText = (text: string): string | string[] => {
-  const processedText = text.replace(/(<([^>]+)>)/gi, "");
+  const processedText = text
+    .replace(/(<([^>]+)>)/gi, "")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&amp;/g, "&");
 
   const MAX_LINE_LENGTH = 100;
 
   const LINE_LENGTH =
     processedText.length > MAX_LINE_LENGTH ||
-    processedText.length < MAX_LINE_LENGTH / 2
+    processedText.length < MAX_LINE_LENGTH / 1.5
       ? MAX_LINE_LENGTH
       : Math.ceil(processedText.length / 2);
 

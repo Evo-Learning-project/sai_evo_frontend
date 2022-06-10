@@ -130,12 +130,13 @@ export async function deleteEvent(
 
 export async function getCourseEventParticipations(
   courseId: string,
-  includeDetails?: boolean
+  includeDetails?: boolean,
+  includeEvent?: boolean
 ): Promise<EventParticipation[]> {
   const response = await axios.get(
     `/courses/${courseId}/participations/${
       includeDetails ? "?include_details=" + includeDetails : ""
-    }`
+    }${includeEvent ? "&include_event=" + includeEvent : ""}`
   );
   return response.data;
 }

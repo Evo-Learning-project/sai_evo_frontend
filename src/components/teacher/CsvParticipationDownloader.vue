@@ -3,6 +3,7 @@
     <Btn
       @click="getParticipationsAsCsv"
       :outline="true"
+      :loading="loadingCsv"
       :disabled="(eventParticipations?.length ?? 0) === 0"
       ><span class="mr-1 material-icons-outlined"> file_download </span
       >{{ $t("misc.download_as_csv") }}</Btn
@@ -24,10 +25,16 @@ export default defineComponent({
   props: {},
   mixins: [loadingMixin, courseIdMixin, eventIdMixin],
   components: { Btn },
+  data() {
+    return {
+      loadingCsv: false,
+    };
+  },
   methods: {
     ...mapActions(["getEventParticipations"]),
     async getParticipationsAsCsv() {
-      await this.withLoading(async () => {
+      this.loadingCsv = true;
+      try {
         await this.getEventParticipations({
           courseId: this.courseId,
           eventId: this.eventId,
@@ -43,7 +50,11 @@ export default defineComponent({
           },
           this.eventParticipations[0]?.event.name + ".csv"
         );
-      });
+      } catch (e) {
+        this.setErrorNotification(e);
+      } finally {
+        this.loadingCsv = false;
+      }
     },
   },
   computed: {
