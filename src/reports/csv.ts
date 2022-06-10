@@ -103,7 +103,6 @@ const getHeaderString = (header: string) => {
 };
 
 const getCellValue = (participation: EventParticipation, field: string) => {
-  console.log(participation, field, get(participation, field));
   // for fields that don't actually exist on the participation,
   // or need additional processing, manually set the value
   const matchPassedTestCases = field.match(/slots\[(\d+)\].passed_testcases/);
@@ -117,10 +116,9 @@ const getCellValue = (participation: EventParticipation, field: string) => {
     // take the id of the selected choices and map them to the texts of
     // the corresponding choices
     const slot = participation.slots[parseInt(matchSelectedChoices[1])];
-    return slot.selected_choices.map(
-      (cId) => slot.exercise.choices?.find((c) => c.id === cId)?.text
-    );
-    // TODO! .join("\r\n"); doesn't work because the value gets stringified, try \\r\\n
+    return slot.selected_choices
+      .map((cId) => slot.exercise.choices?.find((c) => c.id === cId)?.text) // TODO strip off html from text - write a general function that does that from any text and use for answers etc.
+      .join(" --- ");
   } else if (matchFailedTestCases !== null || matchPassedTestCases !== null) {
     const slot =
       participation.slots[
@@ -131,7 +129,6 @@ const getCellValue = (participation: EventParticipation, field: string) => {
         )
       ];
     const results = slot.execution_results ?? { tests: [] };
-    console.log(results, "results", "tests" in results);
     const passedTests =
       results.tests?.filter((t: { passed: boolean }) => t.passed).length ?? 0;
     return matchPassedTestCases !== null
