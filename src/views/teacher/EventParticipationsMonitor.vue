@@ -1,5 +1,6 @@
 <template>
   <div class="relative flex flex-col">
+    <!-- insights button -->
     <div
       v-if="!firstLoading && resultsMode"
       class="z-50 flex flex-col mb-2 -mt-8"
@@ -17,6 +18,9 @@
         </Btn>
       </router-link>
     </div>
+
+    <!-- alerts -->
+    <!-- event restricted alert -->
     <div
       class="flex w-full transition-all duration-200"
       v-if="event.state === EventState.RESTRICTED"
@@ -47,8 +51,9 @@
       </div>
     </div>
     <div class="" v-if="!firstLoading && resultsMode">
+      <!-- pending assessments alert -->
       <div
-        v-if="!areAllParticipationsFullyAssessed(this.eventParticipations)"
+        v-if="!areAllParticipationsFullyAssessed(eventParticipations)"
         class="flex transition-all duration-200 banner banner-danger"
         :class="{
           'opacity-0 max-h-0 mb-0 py-0': !showThereArePendingAssessmentsBanner,
@@ -80,6 +85,7 @@
           ></Btn
         >
       </div>
+      <!-- you can publish results alert -->
       <div
         v-else-if="thereAreUnpublishedAssessments"
         class="flex transition-all duration-200 banner banner-light"
@@ -108,6 +114,7 @@
           ></Btn
         >
       </div>
+      <!-- all assessments published alert -->
       <div
         v-else
         class="flex transition-all duration-200 banner banner-success"
@@ -135,6 +142,8 @@
         >
       </div>
     </div>
+
+    <!-- stats cards -->
     <div v-if="!firstLoading && !resultsMode" class="mb-2">
       <div class="flex">
         <div class="flex w-1/3 mr-4 card shadow-elevation">
@@ -205,6 +214,8 @@
         @selectionChanged="onSelectionChanged"
       ></DataTable>
     </div>
+
+    <!-- buttons to publish results and download participations -->
     <div v-if="!firstLoading && resultsMode" class="flex mt-4">
       <Btn
         :variant="'success'"
@@ -217,6 +228,7 @@
       <CsvParticipationDownloader class="ml-auto"></CsvParticipationDownloader>
     </div>
 
+    <!-- buttons to close/open participations-->
     <div v-else-if="!firstLoading" class="flex mt-2 space-x-2">
       <Btn
         class=""
@@ -472,6 +484,12 @@ export default defineComponent({
       "getEventParticipationSlot",
     ]),
     areAllParticipationsFullyAssessed,
+    showFeedbackAndCleanup() {
+      this.$store.commit("shared/showSuccessFeedback");
+      this.hideDialog();
+      this.deselectAllRows();
+      this.gridApi.refreshCells({ force: true });
+    },
     async onAttachmentDownload(slot: EventParticipationSlot) {
       // TODO refactor as another component is using this method as well
       await this.withLoading(
@@ -574,27 +592,32 @@ export default defineComponent({
     async closeExams() {
       // closing exams only for a group of participant means putting all of the
       // participants except those ones inside the `users_allowed_past_closure`
-      // list of the exam and setting the exam state to CLOSED
+      // list of the exam and setting the exam state to RESTRICTED
+
+      // these are the ones the exam will stay open for
       const unselectedParticipations = (
         this.eventParticipations as EventParticipation[]
-      ).filter((p) => !this.selectedParticipations.includes(p.id)); // these are the ones the exam will stay open for
+      ).filter((p) => !this.selectedParticipations.includes(p.id));
       const unselectedUserIds = unselectedParticipations.map((p) => p.user.id);
+
       await this.withLoading(
         async () =>
           await this.partialUpdateEvent({
             courseId: this.courseId,
             eventId: this.eventId,
-            mutate: true,
+            mutate: true, // update local object too
             changes: {
               state: EventState.RESTRICTED,
               users_allowed_past_closure: [
+                // users that were already allowed and haven't been selected now
                 ...(this.event.users_allowed_past_closure ?? []).filter(
                   (i) =>
                     !this.selectedCloseableParticipations
                       .map((p) => p.user.id)
                       .includes(i)
                 ),
-                // unselected id's
+                // unselected id's that were already allowed (unless it's the
+                // first time the exam gets restricted)
                 ...unselectedUserIds.filter(
                   (i) =>
                     this.event.state !== EventState.RESTRICTED ||
@@ -604,70 +627,61 @@ export default defineComponent({
             },
           })
       );
-      this.$store.commit("shared/showSuccessFeedback");
-      this.hideDialog();
-      this.deselectAllRows();
-      this.gridApi.refreshCells({ force: true });
+      this.showFeedbackAndCleanup();
     },
     async openExams() {
       // re-opening exam for a group of participants means adding those
       // participants to the `users_allowed_past_closure` list for the exam
+
+      // these are the ones the exam will stay open for
       const selectedParticipations = (
         this.eventParticipations as EventParticipation[]
-      ).filter((p) => this.selectedParticipations.includes(p.id)); // these are the ones the exam will stay open for
-
+      ).filter((p) => this.selectedParticipations.includes(p.id));
       const selectedUserIds = selectedParticipations.map((p) => p.user.id);
+
       await this.withLoading(
         async () =>
           await this.partialUpdateEvent({
             courseId: this.courseId,
             eventId: this.eventId,
-            mutate: true,
+            mutate: true, // update local object
             changes: {
               users_allowed_past_closure: [
+                // those that were already allowed
                 ...(this.event.users_allowed_past_closure ?? []),
-                ...selectedUserIds,
+                ...selectedUserIds, // those added now
               ],
             },
           })
       );
-      this.$store.commit("shared/showSuccessFeedback");
-      this.hideDialog();
-      this.deselectAllRows();
-      this.gridApi.refreshCells({ force: true });
+      this.showFeedbackAndCleanup();
     },
-    async publishResults() {
+    async dispatchParticipationsUpdate(
+      participationIds: string[],
+      changes: Partial<EventParticipation>
+    ) {
+      // generic method to update multiple participations at once and show feedback/error
       await this.withLoading(
         async () =>
           await this.partialUpdateEventParticipation({
             courseId: this.courseId,
             eventId: this.eventId,
-            participationIds: this.selectedParticipations,
-            changes: {
-              visibility: AssessmentVisibility.PUBLISHED,
-            },
+            participationIds,
+            changes,
           }),
-        this.setErrorNotification,
-        () => this.$store.commit("shared/showSuccessFeedback")
+        this.setErrorNotification
       );
-      this.hideDialog();
-      this.deselectAllRows();
-      this.gridApi.refreshCells({ force: true });
+      this.showFeedbackAndCleanup();
+    },
+    async publishResults() {
+      await this.dispatchParticipationsUpdate(this.selectedParticipations, {
+        visibility: AssessmentVisibility.PUBLISHED,
+      });
     },
     async reOpenSubmission() {
-      await this.withLoading(async () => {
-        await this.partialUpdateEventParticipation({
-          courseId: this.courseId,
-          eventId: this.eventId,
-          changes: {
-            state: EventParticipationState.IN_PROGRESS,
-          },
-          participationIds: [this.editingParticipationId],
-        });
+      await this.dispatchParticipationsUpdate([this.editingParticipationId], {
+        state: EventParticipationState.IN_PROGRESS,
       });
-      this.hideDialog();
-      this.$store.commit("shared/showSuccessFeedback");
-      this.gridApi.refreshCells({ force: true });
     },
     async dispatchAssessmentUpdate() {
       await this.withLoading(async () => {
@@ -691,7 +705,6 @@ export default defineComponent({
       this.gridApi.refreshCells({ force: true });
     },
     hideDialog() {
-      //this.showDialog = false
       this.editingSlot = null;
       this.editingSlotDirty = null;
       this.editingFullName = "";
@@ -862,9 +875,8 @@ export default defineComponent({
       return this.eventParticipations.filter(
         (p: EventParticipation) =>
           this.selectedParticipations.includes(p.id) && // participation is selected
-          // if event isn't closed, no participation can be opened as they all already are
+          // event is restricted and participant isn't in the list of those still allowed
           this.event.state === EventState.RESTRICTED &&
-          // event is closed and participant isn't in the list of those still allowed
           !this.event.users_allowed_past_closure?.includes(p.user.id)
       );
     },
