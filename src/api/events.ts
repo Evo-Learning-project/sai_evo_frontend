@@ -33,7 +33,7 @@ export async function getEvent(
   eventId: string
 ): Promise<Event> {
   const response = await axios.get(`/courses/${courseId}/events/${eventId}/`);
-  const event = response.data as Event;
+  const event = response.data as Event; // TODO this causes errors when 401ing (response undefined)
 
   const processedRules = convertEventTemplateRules(event.template?.rules);
 

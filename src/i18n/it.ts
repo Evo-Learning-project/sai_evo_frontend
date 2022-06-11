@@ -818,6 +818,9 @@ export const it = {
     permissions_header: "Aggiungi docenti",
     permissions_content:
       "Dalla pagina dei permessi puoi consentire l'accesso alle funzionalità di gestione del corso ad altri docenti o figure di rilievo, come i tutor.",
+    exam_insights_header: "Statistiche esame",
+    exam_insights_content:
+      "Visita la pagina delle statistiche per vedere approfondimenti sull'andamento dell'esame.",
   },
   reports: {
     csv_headers: {

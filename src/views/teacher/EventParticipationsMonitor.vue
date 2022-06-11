@@ -12,7 +12,9 @@
           :variant="'icon'"
           class="-mt-8 transition-transform duration-200 transform  icon-btn-primary"
         >
-          <span class="transition-opacity duration-75 material-icons-outlined"
+          <span
+            id="insights-btn"
+            class="transition-opacity duration-75 rounded-full  material-icons-outlined"
             >insights</span
           >
         </Btn>
@@ -50,7 +52,7 @@
         >
       </div>
     </div>
-    <div class="" v-if="!firstLoading && resultsMode">
+    <div v-if="!firstLoading && resultsMode">
       <!-- pending assessments alert -->
       <div
         v-if="!areAllParticipationsFullyAssessed(eventParticipations)"
@@ -345,10 +347,17 @@
       class="absolute transform -translate-x-1/2 -translate-y-1/2  top-1/2 left-1/2"
       v-if="firstLoading"
     ></Spinner>
+    <v-tour
+      name="examInsightsTour"
+      :steps="examInsightsPageTourSteps"
+      :options="tourOptions"
+    ></v-tour>
   </div>
 </template>
 
 <script lang="ts">
+const VISITED_INSIGHTS_TOUR_KEY = "VISITED_INSIGHTS_TOUR_KEY";
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import DataTable from "@/components/ui/DataTable.vue";
 import { courseIdMixin, eventIdMixin, loadingMixin } from "@/mixins";
@@ -383,7 +392,11 @@ import Btn from "@/components/ui/Btn.vue";
 import { downloadEventParticipationSlotAttachment } from "@/api/events";
 import CsvParticipationDownloader from "@/components/teacher/CsvParticipationDownloader.vue";
 import SkeletonCard from "@/components/ui/SkeletonCard.vue";
-import { getEventParticipationMonitorHeaders } from "@/const";
+import {
+  examInsightsPageTourSteps,
+  getEventParticipationMonitorHeaders,
+  tourOptions,
+} from "@/const";
 import {
   areAllParticipationsFullyAssessed,
   getParticipationsAverageProgress,
@@ -426,6 +439,11 @@ export default defineComponent({
       });
     });
 
+    if (this.resultsMode && !(VISITED_INSIGHTS_TOUR_KEY in localStorage)) {
+      setTimeout(() => (this.$tours as any)["examInsightsTour"].start(), 200);
+      localStorage.setItem(VISITED_INSIGHTS_TOUR_KEY, "true");
+    }
+
     if (this.refreshData) {
       this.refreshHandle = setInterval(
         async () =>
@@ -438,6 +456,7 @@ export default defineComponent({
     }
     // setTimeout(() => this.columnApi.autoSizeAllColumns(false), 5000);
   },
+
   beforeRouteLeave() {
     if (this.refreshHandle != null) {
       clearInterval(this.refreshHandle);
@@ -468,6 +487,10 @@ export default defineComponent({
       showRestrictedModeBanner: true,
       showThereArePendingAssessmentsBanner: true,
       showAllAssessmentsPublishedBanner: true,
+
+      //tour
+      tourOptions,
+      examInsightsPageTourSteps,
 
       EventParticipationState,
       participationStateIcons,
@@ -628,6 +651,13 @@ export default defineComponent({
           })
       );
       this.showFeedbackAndCleanup();
+      if (this.resultsMode && !(VISITED_INSIGHTS_TOUR_KEY in localStorage)) {
+        setTimeout(
+          () => (this.$tours as any)["examInsightsTour"].start(),
+          1000
+        );
+        localStorage.setItem(VISITED_INSIGHTS_TOUR_KEY, "true");
+      }
     },
     async openExams() {
       // re-opening exam for a group of participants means adding those

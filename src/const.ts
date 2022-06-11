@@ -82,6 +82,16 @@ export enum ProgrammingExerciseTabs {
   TEST_CASES,
 }
 
+export const examInsightsPageTourSteps = [
+  {
+    target: "#insights-btn",
+    header: {
+      title: _("tour.exam_insights_header"),
+    },
+    content: _("tour.exam_insights_content"),
+  },
+];
+
 export const newSidebarHelpCenterTourSteps = [
   {
     target: "#toggle-sidebar",
