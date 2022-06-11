@@ -75,7 +75,7 @@ export async function getUserCourseParticipations(
   userId: string
 ): Promise<EventParticipation[]> {
   const response = await axios.get(
-    `/courses/${courseId}/participations/?user_id=${userId}`
+    `/courses/${courseId}/participations/?user_id=${userId}&include_event=true`
   );
   return response.data;
 }
