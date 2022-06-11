@@ -34,7 +34,11 @@
       <slot></slot>
     </div>
   </div>
-  <div style="z-index: 999999" v-else class="flex overflow-hidden">
+  <div
+    style="z-index: 999999"
+    v-else
+    class="absolute flex overflow-hidden top-20 right-20"
+  >
     <div class="absolute right-0">
       <Btn
         @click="expanded = !expanded"

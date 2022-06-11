@@ -274,6 +274,16 @@ export const getEventParticipationMonitorHeaders = (
         ]
       : []),
   ] as ColDef[];
+  if (resultsMode) {
+    ret.push({
+      field: "score",
+      type: "numericColumn",
+      width: 60,
+      resizable: true,
+      headerName: _("event_participation_headings.grade"),
+    });
+  }
+
   // add a heading for each slot
   (eventParticipations[0] as EventParticipation).slots.forEach((s) =>
     ret.push({
@@ -287,15 +297,6 @@ export const getEventParticipationMonitorHeaders = (
       cellRenderer: renderEventParticipationSlotCell(resultsMode),
     })
   );
-  if (resultsMode) {
-    ret.push({
-      field: "score",
-      type: "numericColumn",
-      width: 70,
-      resizable: true,
-      headerName: _("event_participation_headings.grade"),
-    });
-  }
   return ret;
 };
 

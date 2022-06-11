@@ -18,7 +18,7 @@ import { forceFileDownload } from "@/utils";
 import { defineComponent, PropType } from "@vue/runtime-core";
 import { createNamespacedHelpers } from "vuex";
 import Btn from "../ui/Btn.vue";
-const { mapState, mapActions } = createNamespacedHelpers("teacher");
+const { mapState, mapActions, mapGetters } = createNamespacedHelpers("teacher");
 
 export default defineComponent({
   name: "CsvParticipationDownloader",
@@ -48,7 +48,7 @@ export default defineComponent({
               "\n"
             ),
           },
-          this.eventParticipations[0]?.event.name + ".csv"
+          this.event(this.eventId).name + ".csv"
         );
       } catch (e) {
         this.setErrorNotification(e);
@@ -59,6 +59,7 @@ export default defineComponent({
   },
   computed: {
     ...mapState(["eventParticipations"]),
+    ...mapGetters(["event"]),
   },
 });
 </script>

@@ -1,9 +1,11 @@
 import { getTranslatedString as _ } from "./i18n/index";
+import { EventParticipationState, EventTemplateRule } from "./models";
 import {
   EventParticipation,
   EventParticipationSlot,
   Exercise,
   ExerciseChoice,
+  Event,
 } from "./models/interfaces";
 
 export interface DataFrequency<T> {
@@ -15,6 +17,31 @@ export enum ExamStatsTabs {
   OVERALL,
   EXERCISES,
 }
+
+export const getParticipationsAverageProgress = (
+  participations: EventParticipation[],
+  event: Event
+) => {
+  if (!participations?.length) {
+    return 0;
+  }
+  const divisor =
+    (event.template?.rules as EventTemplateRule[])
+      .map((r) => r.amount)
+      .reduce((a, b) => a + b, 0) * participations.length;
+
+  const perc =
+    (100 *
+      participations
+        .map((p) =>
+          p.state === EventParticipationState.TURNED_IN
+            ? p.slots.length
+            : p.current_slot_cursor ?? 0
+        )
+        .reduce((a, b) => a + b)) /
+    divisor;
+  return Math.round(perc * 100) / 100;
+};
 
 // given an array of participations to an event, returns an array of exercises
 // where each member has been assigned to a slot in at least one participation

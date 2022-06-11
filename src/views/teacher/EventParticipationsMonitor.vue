@@ -1,5 +1,19 @@
 <template>
-  <div class="flex flex-col">
+  <div class="relative flex flex-col">
+    <div v-if="!loading && resultsMode" class="z-50 flex flex-col mb-2 -mt-8">
+      <router-link class="ml-auto" :to="{ name: 'ExamStats' }">
+        <Btn
+          :outline="true"
+          :tooltip="!showStats ? $t('help_texts.stats') : ''"
+          :variant="'icon'"
+          class="-mt-8 transition-transform duration-200 transform  icon-btn-primary"
+        >
+          <span class="transition-opacity duration-75 material-icons-outlined"
+            >insights</span
+          >
+        </Btn>
+      </router-link>
+    </div>
     <div
       class="flex w-full transition-all duration-200"
       v-if="event.state === EventState.RESTRICTED"
@@ -29,7 +43,7 @@
         >
       </div>
     </div>
-    <div class="mb-4" v-if="!loading && resultsMode">
+    <div class="" v-if="!loading && resultsMode">
       <div
         v-if="thereArePartialAssessments"
         class="flex transition-all duration-200 banner banner-danger"
@@ -118,71 +132,36 @@
         >
       </div>
     </div>
-    <div class="z-50 flex flex-col my-1">
-      <router-link class="ml-auto" :to="{ name: 'ExamStats' }">
-        <Btn
-          :outline="true"
-          :tooltip="!showStats ? $t('help_texts.stats') : ''"
-          :variant="'icon'"
-          class="-mt-8 transition-transform duration-200 transform"
-          :class="{
-            'icon-btn-primary': !showStats,
-          }"
-        >
-          <span
-            v-show="!showStats"
-            class="transition-opacity duration-75 material-icons-outlined"
-            >insights</span
-          >
-          <span
-            v-show="showStats"
-            class="text-xl transition-opacity duration-75  material-icons-outlined"
-            >close
-          </span>
-        </Btn>
-      </router-link>
-
-      <div
-        class="flex transition-all duration-200"
-        :class="{
-          'opacity-0 max-h-0': !showStats,
-          'opacity-100 max-h-96': showStats,
-        }"
-      >
-        <div
-          class="flex flex-col items-center w-1/3 mr-4  card card-filled shadow-elevation"
-        >
-          <div class="flex space-x-0.5 text-2xl items-center">
+    <div v-if="!loading && !resultsMode" class="mb-2">
+      <div class="flex">
+        <div class="flex w-1/3 mr-4 card shadow-elevation">
+          <div class="flex items-center mx-auto">
+            <span class="mr-1 material-icons icon-light">people</span>
             <p>{{ participantCount }}</p>
-            <span class="text-3xl material-icons icon-light">people</span>
+            <p class="ml-2 text-sm text-muted">
+              {{ $t("event_monitor.stats_participants") }}
+            </p>
           </div>
-          <p class="text-sm text-muted">
-            {{ $t("event_monitor.stats_participants") }}
-          </p>
         </div>
-        <div
-          class="flex flex-col items-center w-1/3 mr-4  card card-filled shadow-elevation"
-        >
-          <div class="flex space-x-0.5 text-2xl items-center">
-            <p>{{ turnedInCount }}</p>
-            <span class="text-3xl material-icons-two-tone two-tone-success"
+        <div class="flex items-center w-1/3 mr-4 card shadow-elevation">
+          <div class="flex items-center mx-auto">
+            <span class="mr-1 material-icons-two-tone two-tone-success"
               >assignment_turned_in</span
             >
+            <p>{{ turnedInCount }}</p>
+            <p class="ml-2 text-sm text-muted">
+              {{ $t("event_monitor.stats_turned_in") }}
+            </p>
           </div>
-          <p class="text-sm text-muted">
-            {{ $t("event_monitor.stats_turned_in") }}
-          </p>
         </div>
-        <div
-          class="flex flex-col items-center w-1/3  card card-filled shadow-elevation"
-        >
-          <div class="flex space-x-0.5 text-2xl items-center">
+        <div class="flex items-center w-1/3 card shadow-elevation">
+          <div class="flex items-center mx-auto">
             <p>{{ averageProgress }}</p>
             <p>%</p>
+            <p class="ml-2 text-sm text-center text-muted">
+              {{ $t("event_monitor.stats_average_progress") }}
+            </p>
           </div>
-          <p class="text-sm text-center text-muted">
-            {{ $t("event_monitor.stats_average_progress") }}
-          </p>
         </div>
         <div class="hidden md:ml-auto banner banner-light">
           <span class="material-icons-outlined icon-light">
@@ -207,11 +186,10 @@
     <div class="flex-grow">
       <DataTable
         :class="{
-          'opacity-50': participationsData.length === 0,
-          '': true,
+          'opacity-50': participationsData.length === 0 || firstLoading,
         }"
         :columnDefs="participationPreviewColumns"
-        :rowData="participationsData"
+        :rowData="firstLoading ? [] : participationsData"
         :isRowSelectable="isRowSelectable"
         :getRowClass="getRowClass"
         :getRowId="getRowId"
@@ -224,7 +202,7 @@
         @selectionChanged="onSelectionChanged"
       ></DataTable>
     </div>
-    <div v-if="resultsMode" class="flex mt-8">
+    <div v-if="resultsMode" class="flex mt-4">
       <Btn
         :variant="'success'"
         @click="onPublish"
@@ -236,9 +214,10 @@
       <CsvParticipationDownloader class="ml-auto"></CsvParticipationDownloader>
     </div>
 
-    <div v-else-if="!loading" class="flex mt-8 space-x-2">
+    <div v-else-if="!loading" class="flex mt-2 space-x-2">
       <Btn
         class=""
+        :outline="true"
         :variant="'danger'"
         @click="onCloseSelectedExams"
         :disabled="selectedCloseableParticipations.length === 0"
@@ -343,6 +322,14 @@
         </div>
       </template>
     </Dialog>
+    <Spinner
+      style="z-index: 99999999"
+      :variant="'dark'"
+      :fast="true"
+      :size="'xl'"
+      class="absolute transform -translate-x-1/2 -translate-y-1/2  top-1/2 left-1/2"
+      v-if="firstLoading"
+    ></Spinner>
   </div>
 </template>
 
@@ -357,6 +344,7 @@ import {
   EventParticipationSlot,
   EventParticipationState,
   EventState,
+  EventTemplateRule,
   ParticipationAssessmentProgress,
 } from "@/models";
 import { defineComponent } from "@vue/runtime-core";
@@ -381,6 +369,8 @@ import { downloadEventParticipationSlotAttachment } from "@/api/events";
 import CsvParticipationDownloader from "@/components/teacher/CsvParticipationDownloader.vue";
 import SkeletonCard from "@/components/ui/SkeletonCard.vue";
 import { getEventParticipationMonitorHeaders } from "@/const";
+import { getParticipationsAverageProgress } from "@/reports";
+import Spinner from "@/components/ui/Spinner.vue";
 
 export default defineComponent({
   components: {
@@ -390,6 +380,7 @@ export default defineComponent({
     Btn,
     CsvParticipationDownloader,
     SkeletonCard,
+    Spinner,
   },
   name: "EventParticipationsMonitor",
   props: {
@@ -404,11 +395,13 @@ export default defineComponent({
   },
   mixins: [courseIdMixin, eventIdMixin, loadingMixin],
   async created() {
-    await this.withLoading(async () => {
+    await this.withFirstLoading(async () => {
       await this.getEventParticipations({
         courseId: this.courseId,
         eventId: this.eventId,
       });
+      this.gridApi.refreshCells({ force: true });
+
       await this.getEvent({
         courseId: this.courseId,
         eventId: this.eventId,
@@ -805,23 +798,10 @@ export default defineComponent({
       );
     },
     averageProgress() {
-      const participations = this.eventParticipations as EventParticipation[];
-      if (!participations?.length) {
-        return 0;
-      }
-      const divisor =
-        (this.event.template?.rules.length ?? Infinity) * participations.length;
-      const perc =
-        (100 *
-          participations
-            .map((p) =>
-              p.state === EventParticipationState.TURNED_IN
-                ? p.slots.length
-                : p.current_slot_cursor ?? 0
-            )
-            .reduce((a, b) => a + b)) /
-        divisor;
-      return Math.round(perc * 100) / 100;
+      return getParticipationsAverageProgress(
+        this.eventParticipations,
+        this.event
+      );
     },
     thereArePartialAssessments() {
       return this.eventParticipations.some(

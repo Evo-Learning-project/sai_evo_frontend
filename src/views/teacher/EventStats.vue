@@ -102,7 +102,11 @@
           ></ExerciseWithStats>
         </div>
       </div>
-      <div class="flex flex-col space-y-8" v-else>
+      <div
+        class="flex flex-col space-y-8"
+        v-show="currentTab === ExamStatsTabs.EXERCISES"
+        v-else
+      >
         <MinimalExercisePreviewSkeleton></MinimalExercisePreviewSkeleton>
         <MinimalExercisePreviewSkeleton></MinimalExercisePreviewSkeleton>
         <MinimalExercisePreviewSkeleton></MinimalExercisePreviewSkeleton>
