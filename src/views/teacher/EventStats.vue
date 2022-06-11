@@ -21,7 +21,7 @@
       v-model="currentTab"
     ></Tabs>
 
-    <div v-if="true || !loading">
+    <div>
       <div v-if="!loading" v-show="currentTab === ExamStatsTabs.OVERALL">
         <!-- stats cards -->
         <div class="flex mt-8 mb-12">
@@ -80,6 +80,7 @@
         <!-- score distribution chart -->
         <h2>{{ $t("event_stats.score_distribution") }}</h2>
         <!-- TODO add warning if not all grades are final (i.e. some slots still need assessment) -->
+        <div>!!!!!!!</div>
         <div class="w-full h-96">
           <Bar
             :chart-data="scoreFrequencyChartData"
@@ -93,10 +94,13 @@
         <h2>{{ $t("event_stats.per_exercise_stats") }}</h2>
         <div
           v-for="(exercise, index) in exercises"
-          :key="'e-stats-' + exercise.id + '-' + index"
+          :key="'e-stats-' + exercise?.id + '-' + index"
           class="my-8"
         >
+          <!-- TODO find a better way to check exercises have been loaded 
+        than v-if="exercise" -->
           <ExerciseWithStats
+            v-if="exercise"
             :exercise="exercise"
             :slots="getSlotsContaining(exercise)"
           ></ExerciseWithStats>
@@ -218,9 +222,12 @@ export default defineComponent({
   methods: {
     ...mapActions(["getEventParticipations", "getEvent"]),
     getSlotsContaining(exercise: Exercise) {
-      return (this.eventParticipations as EventParticipation[])
-        .flatMap((p) => p.slots)
-        .filter((s) => s.exercise.id == exercise.id);
+      if (exercise) {
+        return (this.eventParticipations as EventParticipation[])
+          .flatMap((p) => p.slots)
+          .filter((s) => s.exercise?.id == exercise.id);
+      }
+      return [];
     },
   },
   computed: {

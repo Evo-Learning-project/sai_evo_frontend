@@ -51,7 +51,7 @@ export const getExerciseListFromParticipations = (
   participations
     .flatMap((p) => p.slots)
     .map((s) => s.exercise)
-    .filter((e, i, a) => a.findIndex((o) => o.id == e.id) === i); // eliminate duplicates
+    .filter((e, i, a) => a.findIndex((o) => o?.id == e?.id) === i); // eliminate duplicates
 
 // returns an array of pairs <s, f> where s is a score and f is the
 // frequency with which that score appears among the given participations

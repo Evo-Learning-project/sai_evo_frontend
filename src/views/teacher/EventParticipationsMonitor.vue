@@ -1,6 +1,9 @@
 <template>
   <div class="relative flex flex-col">
-    <div v-if="!loading && resultsMode" class="z-50 flex flex-col mb-2 -mt-8">
+    <div
+      v-if="!firstLoading && resultsMode"
+      class="z-50 flex flex-col mb-2 -mt-8"
+    >
       <router-link class="ml-auto" :to="{ name: 'ExamStats' }">
         <Btn
           :outline="true"
@@ -43,7 +46,7 @@
         >
       </div>
     </div>
-    <div class="" v-if="!loading && resultsMode">
+    <div class="" v-if="!firstLoading && resultsMode">
       <div
         v-if="thereArePartialAssessments"
         class="flex transition-all duration-200 banner banner-danger"
@@ -132,7 +135,7 @@
         >
       </div>
     </div>
-    <div v-if="!loading && !resultsMode" class="mb-2">
+    <div v-if="!firstLoading && !resultsMode" class="mb-2">
       <div class="flex">
         <div class="flex w-1/3 mr-4 card shadow-elevation">
           <div class="flex items-center mx-auto">
@@ -202,7 +205,7 @@
         @selectionChanged="onSelectionChanged"
       ></DataTable>
     </div>
-    <div v-if="resultsMode" class="flex mt-4">
+    <div v-if="!firstLoading && resultsMode" class="flex mt-4">
       <Btn
         :variant="'success'"
         @click="onPublish"
@@ -214,7 +217,7 @@
       <CsvParticipationDownloader class="ml-auto"></CsvParticipationDownloader>
     </div>
 
-    <div v-else-if="!loading" class="flex mt-2 space-x-2">
+    <div v-else-if="!firstLoading" class="flex mt-2 space-x-2">
       <Btn
         class=""
         :outline="true"

@@ -130,7 +130,7 @@ export interface EventTemplateRuleClause {
 
 export interface EventParticipation {
   id: string;
-  event: Event;
+  event: Event; // TODO make optional
   user: User;
   state: EventParticipationState;
   slots: EventParticipationSlot[];
@@ -154,14 +154,14 @@ export interface EventParticipation {
 export interface EventParticipationSlot {
   id: string;
   slot_number?: number;
-  exercise: Exercise;
+  exercise: Exercise; // TODO make optional
   score?: number;
   comment?: string;
   score_edited?: boolean;
   assessment_state?: AssessmentSlotState;
   sub_slots: EventParticipationSlot[];
   selected_choices: string[];
-  answer_text: string;
+  answer_text: string; // TODO make optional
   seen_at?: string;
   answered_at?: string;
   is_first?: boolean;
