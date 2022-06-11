@@ -397,11 +397,12 @@ import {
   getEventParticipationMonitorHeaders,
   tourOptions,
 } from "@/const";
+
+import Spinner from "@/components/ui/Spinner.vue";
 import {
   areAllParticipationsFullyAssessed,
   getParticipationsAverageProgress,
 } from "@/reports";
-import Spinner from "@/components/ui/Spinner.vue";
 
 export default defineComponent({
   components: {

@@ -64,12 +64,13 @@ import { getTranslatedString as _ } from "@/i18n";
 
 import { SelectableOption } from "@/interfaces";
 import {
-  DataFrequency,
-  exerciseChoiceDatasetSettings,
   exerciseChoicesBarChartOptions,
+  DataFrequency,
   getChoiceSelectionFrequencyFor,
   makeLabelText,
+  exerciseChoiceDatasetSettings,
 } from "@/reports";
+
 ChartJS.register(
   Title,
   Tooltip,

@@ -136,15 +136,6 @@ import {
   EventTemplateRule,
   Exercise,
 } from "@/models";
-import {
-  areAllParticipationsFullyAssessed,
-  DataFrequency,
-  ExamStatsTabs,
-  getExerciseListFromParticipations,
-  getScoreFrequencyFromParticipations,
-  scoreChartDatasetSettings,
-  scoreChartOptions,
-} from "@/reports";
 import { defineComponent, PropType } from "@vue/runtime-core";
 import { createNamespacedHelpers } from "vuex";
 import { icons as participationStateIcons } from "@/assets/participationStateIcons";
@@ -160,12 +151,6 @@ import {
   BarElement,
   CategoryScale,
   LinearScale,
-  CoreChartOptions,
-  DatasetChartOptions,
-  ElementChartOptions,
-  PluginChartOptions,
-  ScaleChartOptions,
-  BarControllerChartOptions,
 } from "chart.js";
 import { _DeepPartialObject } from "chart.js/types/utils";
 import { getTranslatedString as _ } from "@/i18n";
@@ -174,6 +159,15 @@ import Tabs from "@/components/ui/Tabs.vue";
 import { SelectableOption } from "@/interfaces";
 import ExerciseWithStats from "@/components/teacher/ExerciseWithStats.vue";
 import MinimalExercisePreviewSkeleton from "@/components/ui/skeletons/MinimalExercisePreviewSkeleton.vue";
+import {
+  areAllParticipationsFullyAssessed,
+  DataFrequency,
+  ExamStatsTabs,
+  getExerciseListFromParticipations,
+  getScoreFrequencyFromParticipations,
+  scoreChartDatasetSettings,
+  scoreChartOptions,
+} from "@/reports";
 ChartJS.register(
   Title,
   Tooltip,
