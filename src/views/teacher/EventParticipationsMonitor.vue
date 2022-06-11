@@ -48,7 +48,7 @@
     </div>
     <div class="" v-if="!firstLoading && resultsMode">
       <div
-        v-if="thereArePartialAssessments"
+        v-if="!areAllParticipationsFullyAssessed(this.eventParticipations)"
         class="flex transition-all duration-200 banner banner-danger"
         :class="{
           'opacity-0 max-h-0 mb-0 py-0': !showThereArePendingAssessmentsBanner,
@@ -372,7 +372,10 @@ import { downloadEventParticipationSlotAttachment } from "@/api/events";
 import CsvParticipationDownloader from "@/components/teacher/CsvParticipationDownloader.vue";
 import SkeletonCard from "@/components/ui/SkeletonCard.vue";
 import { getEventParticipationMonitorHeaders } from "@/const";
-import { getParticipationsAverageProgress } from "@/reports";
+import {
+  areAllParticipationsFullyAssessed,
+  getParticipationsAverageProgress,
+} from "@/reports";
 import Spinner from "@/components/ui/Spinner.vue";
 
 export default defineComponent({
@@ -468,6 +471,7 @@ export default defineComponent({
       "partialUpdateEventParticipationSlot",
       "getEventParticipationSlot",
     ]),
+    areAllParticipationsFullyAssessed,
     async onAttachmentDownload(slot: EventParticipationSlot) {
       // TODO refactor as another component is using this method as well
       await this.withLoading(
@@ -804,13 +808,6 @@ export default defineComponent({
       return getParticipationsAverageProgress(
         this.eventParticipations,
         this.event
-      );
-    },
-    thereArePartialAssessments() {
-      return this.eventParticipations.some(
-        (p: EventParticipation) =>
-          p.assessment_progress ==
-          ParticipationAssessmentProgress.PARTIALLY_ASSESSED
       );
     },
     thereAreUnpublishedAssessments() {

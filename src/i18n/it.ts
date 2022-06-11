@@ -359,6 +359,8 @@ export const it = {
     back_to_results: "Torna ai risultati",
     no_stats_available_for_exercise:
       "Nessuna statistica disponibile per questo esercizio",
+    incomplete_scores:
+      "Le statistiche visualizzate sono incomplete perché non hai ancora corretto tutti gli esami",
   },
   event_results: {
     publish_results: "Pubblica risultati",

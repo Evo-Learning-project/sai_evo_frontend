@@ -1,5 +1,9 @@
 import { getTranslatedString as _ } from "./i18n/index";
-import { EventParticipationState, EventTemplateRule } from "./models";
+import {
+  EventParticipationState,
+  EventTemplateRule,
+  ParticipationAssessmentProgress,
+} from "./models";
 import {
   EventParticipation,
   EventParticipationSlot,
@@ -17,6 +21,14 @@ export enum ExamStatsTabs {
   OVERALL,
   EXERCISES,
 }
+
+export const areAllParticipationsFullyAssessed = (
+  participations: EventParticipation[]
+) =>
+  participations.every(
+    (p: EventParticipation) =>
+      p.assessment_progress === ParticipationAssessmentProgress.FULLY_ASSESSED
+  );
 
 export const getParticipationsAverageProgress = (
   participations: EventParticipation[],

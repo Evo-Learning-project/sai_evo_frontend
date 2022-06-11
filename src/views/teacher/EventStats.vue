@@ -1,6 +1,6 @@
 <template>
-  <div class="">
-    <div class="flex items-center mb-8 space-x-2">
+  <div class="-mt-6">
+    <div class="flex items-center mb-4 space-x-2">
       <router-link class="" :to="{ name: 'ExamResults' }">
         <Btn
           :outline="true"
@@ -16,7 +16,7 @@
     </div>
 
     <Tabs
-      class="mb-10"
+      class="mb-8"
       :options="tabsAsSelectableOptions"
       v-model="currentTab"
     ></Tabs>
@@ -79,8 +79,15 @@
 
         <!-- score distribution chart -->
         <h2>{{ $t("event_stats.score_distribution") }}</h2>
-        <!-- TODO add warning if not all grades are final (i.e. some slots still need assessment) -->
-        <div>!!!!!!!</div>
+        <div
+          v-if="!areAllParticipationsFullyAssessed(eventParticipations)"
+          class="flex my-4 transition-all duration-200 banner banner-danger"
+        >
+          <span class="ml-px text-yellow-900 material-icons-outlined">
+            pending_actions
+          </span>
+          <p class="">{{ $t("event_stats.incomplete_scores") }}.</p>
+        </div>
         <div class="w-full h-96">
           <Bar
             :chart-data="scoreFrequencyChartData"
@@ -130,6 +137,7 @@ import {
   Exercise,
 } from "@/models";
 import {
+  areAllParticipationsFullyAssessed,
   DataFrequency,
   ExamStatsTabs,
   getExerciseListFromParticipations,
@@ -229,6 +237,7 @@ export default defineComponent({
       }
       return [];
     },
+    areAllParticipationsFullyAssessed,
   },
   computed: {
     ...mapState(["eventParticipations"]),
