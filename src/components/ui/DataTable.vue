@@ -10,6 +10,7 @@
     :rowSelection="'multiple'"
     :isRowSelectable="isRowSelectable"
     :getRowClass="getRowClass"
+    :rowClassRules="rowClassRules"
     :rowData="rowData"
     :getRowNodeId="getRowId"
     :immutableData="true"
@@ -50,6 +51,10 @@ export default defineComponent({
     getRowClass: {
       type: Function,
       default: () => "",
+    },
+    rowClassRules: {
+      type: Object,
+      default: () => {},
     },
     getRowId: {
       type: Function,

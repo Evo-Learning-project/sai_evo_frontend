@@ -194,7 +194,7 @@
         :columnDefs="participationPreviewColumns"
         :rowData="firstLoading ? [] : participationsData"
         :isRowSelectable="isRowSelectable"
-        :getRowClass="getRowClass"
+        :rowClassRules="getRowClassRules()"
         :getRowId="getRowId"
         @cellClicked="onCellClicked"
         @gridReady="
@@ -499,22 +499,20 @@ export default defineComponent({
     getRowId(data: any) {
       return data.id;
     },
-    getRowClass(row: RowClassParams) {
-      if (this.resultsMode) {
-        return (row.data as EventParticipation).visibility ==
-          AssessmentVisibility.PUBLISHED
-          ? ["bg-success-important", "hover:bg-success-important"]
-          : "";
-      }
-      return this.event.state === EventState.RESTRICTED &&
-        !this.event.users_allowed_past_closure?.includes(
-          this.eventParticipations.find(
-            (p: EventParticipation) =>
-              p.id === (row.data as EventParticipation).id
-          )?.user?.id
-        )
-        ? ["bg-danger-important", "hover:bg-danger-important"]
-        : "";
+    getRowClassRules() {
+      return {
+        "bg-success-important hover:bg-success-important": (params: RowNode) =>
+          this.resultsMode &&
+          params.data.visibility === AssessmentVisibility.PUBLISHED,
+        "bg-danger-important hover:bg-danger-important": (params: RowNode) =>
+          !this.resultsMode &&
+          this.event.state === EventState.RESTRICTED &&
+          !this.event.users_allowed_past_closure?.includes(
+            this.eventParticipations.find(
+              (p: EventParticipation) => p.id === params.data.id
+            )?.user?.id
+          ),
+      };
     },
     onSelectionChanged() {
       // copy the id's of the selected participations
@@ -522,7 +520,11 @@ export default defineComponent({
         ?.getSelectedNodes()
         .map((n: any) => n.data.id);
     },
+    deselectAllRows() {
+      this.gridApi.deselectAll();
+    },
     async onCellClicked(event: CellClickedEvent) {
+      // TODO refactor to have separate methods
       // open full participation
       if (event.colDef.field === "email") {
         this.$router.push({
@@ -604,6 +606,7 @@ export default defineComponent({
       );
       this.$store.commit("shared/showSuccessFeedback");
       this.hideDialog();
+      this.deselectAllRows();
       this.gridApi.refreshCells({ force: true });
     },
     async openExams() {
@@ -630,6 +633,7 @@ export default defineComponent({
       );
       this.$store.commit("shared/showSuccessFeedback");
       this.hideDialog();
+      this.deselectAllRows();
       this.gridApi.refreshCells({ force: true });
     },
     async publishResults() {
@@ -647,6 +651,7 @@ export default defineComponent({
         () => this.$store.commit("shared/showSuccessFeedback")
       );
       this.hideDialog();
+      this.deselectAllRows();
       this.gridApi.refreshCells({ force: true });
     },
     async reOpenSubmission() {

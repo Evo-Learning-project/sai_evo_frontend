@@ -886,7 +886,7 @@
       @apply text-gray-600 font-semibold font-sans text-sm !important
     }
     .ag-row {
-      @apply border-l-0 border-r-0 border-b border-light transition-colors duration-75 !important
+      @apply border-l-0 border-r-0 border-b bg-white border-light transition-colors duration-75 !important
     }
     .ag-row:hover {
       @apply bg-gray-50 border-b-0 !important;
