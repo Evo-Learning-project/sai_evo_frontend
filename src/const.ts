@@ -291,6 +291,10 @@ export const getEventParticipationMonitorHeaders = (
       width: 60,
       resizable: true,
       headerName: _("event_participation_headings.grade"),
+      cellRenderer: (params: any) =>
+        Number.isInteger(parseFloat(params.value))
+          ? parseInt(params.value)
+          : params.value,
     });
   }
 
