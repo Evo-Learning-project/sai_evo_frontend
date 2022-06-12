@@ -564,6 +564,17 @@
       border-bottom-color: transparent !important;
       max-width: 400px !important;
     }
+    .v-step[x-placement^=bottom] .v-step__arrow {
+      @apply border-light !important;
+      border-width: 0 0.5rem 0.5rem 0.5rem;
+      border-left-color: transparent !important;
+      border-right-color: transparent !important;
+      border-top-color: transparent !important;
+      top: -0.5rem;
+      left: calc(50% - 1rem);
+      margin-top: 0;
+      margin-bottom: 0;
+  }
     .v-tour__target--highlighted {
       z-index: 99999;
       box-shadow: 0 0 0 99999px rgba(0,0,0,.4) !important;

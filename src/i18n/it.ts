@@ -260,7 +260,7 @@ export const it = {
     custom_title: "Personalizzato",
     custom_description: "Scegli quali campi includere",
     introduction:
-      "Scegli quali informazioni vuoi includere nel report. Per ciascuno studente, esporta:",
+      "Scegli quali informazioni vuoi includere nel report. Per ciascuno studente, includi:",
   },
   report_fields: {
     [ReportField.EXERCISES_ANSWER]: "Risposte dello studente",

@@ -89,6 +89,9 @@ export const examInsightsPageTourSteps = [
       title: _("tour.exam_insights_header"),
     },
     content: _("tour.exam_insights_content"),
+    params: {
+      placement: "bottom",
+    },
   },
 ];
 

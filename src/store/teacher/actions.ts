@@ -110,11 +110,13 @@ export const actions = {
       eventId,
       includeDetails,
       forCsv,
+      mutate = true,
     }: {
       courseId: string;
       eventId: string;
       includeDetails?: boolean;
       forCsv?: boolean;
+      mutate: boolean;
     }
   ) => {
     const participations = await getEventParticipations(
@@ -123,7 +125,10 @@ export const actions = {
       includeDetails,
       forCsv
     );
-    commit("setEventParticipations", participations);
+    if (mutate) {
+      commit("setEventParticipations", participations);
+    }
+    return participations;
   },
   getEventParticipation: async (
     { commit }: { commit: Commit },

@@ -3,7 +3,6 @@
     <Btn
       @click="showDialog = true"
       :outline="true"
-      :loading="loadingReport"
       :disabled="(eventParticipations?.length ?? 0) === 0"
       ><span class="mr-1 material-icons-outlined"> file_download </span
       >{{ $t("misc.download_results") }}</Btn
@@ -36,19 +35,23 @@
             >
           </RadioGroup>
           <div
-            v-if="selectedDownloadPreset === ReportSettingsPreset.CUSTOM"
-            class="mt-4 mb-12 ml-7"
+            :class="{
+              'opacity-40':
+                selectedDownloadPreset !== ReportSettingsPreset.CUSTOM,
+            }"
+            class="mb-12 ml-7"
           >
             <CheckboxGroup
+              :disabled="selectedDownloadPreset !== ReportSettingsPreset.CUSTOM"
               :options="fieldsAsOptions"
-              class="grid grid-cols-4 gap-y-2"
+              class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-y-2"
               @update:modelValue="
                 downloadSettingsProxy = {
                   ...downloadSettingsProxy,
                   fields: $event,
                 }
               "
-              :modelValue="downloadSettingsProxy.fields"
+              :modelValue="availablePresets[ReportSettingsPreset.CUSTOM].fields"
             ></CheckboxGroup>
           </div>
           <div class="flex items-center mt-12 ml-1.5 space-x-2 w-44 hidden">
@@ -87,6 +90,7 @@ import Dialog from "../ui/Dialog.vue";
 import RadioGroup from "../ui/RadioGroup.vue";
 import SegmentedControls from "../ui/SegmentedControls.vue";
 import CheckboxGroup from "../ui/CheckboxGroup.vue";
+import { EventParticipation } from "@/models";
 const { mapState, mapActions, mapGetters } = createNamespacedHelpers("teacher");
 
 const LOCAL_STORAGE_SETTINGS_KEY = "report_settings";
@@ -120,6 +124,11 @@ export default defineComponent({
         });
       }
     }
+
+    // pre-fetch data and save returned Promise so it can be awaited
+    // when user actually tries to download participations
+    this.apiCallPromise = (async () =>
+      (this.participations = await this.getReportData()))();
   },
   data() {
     return {
@@ -130,6 +139,8 @@ export default defineComponent({
       availablePresets: getPresets(),
       reportType: ReportType.CSV,
       ReportSettingsPreset,
+      apiCallPromise: null as Promise<any> | null,
+      participations: [] as EventParticipation[],
     };
   },
   methods: {
@@ -137,7 +148,7 @@ export default defineComponent({
     async onDownload() {
       this.loadingReport = true;
       try {
-        const participations = await this.getReportData();
+        const participations = await this.apiCallPromise;
         const fileContents = this.formatDataForReportType(participations);
         this.downloadReportFile(
           fileContents,
@@ -151,13 +162,14 @@ export default defineComponent({
     async getReportData() {
       try {
         // TODO download to local data instead of saving to store
-        await this.getEventParticipations({
+        const participations = await this.getEventParticipations({
           courseId: this.courseId,
           eventId: this.eventId,
           includeDetails: true,
           forCsv: this.reportType === ReportType.CSV,
+          mutate: false,
         });
-        return this.eventParticipations;
+        return participations;
       } catch (e) {
         this.setErrorNotification(e);
       }
