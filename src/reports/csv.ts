@@ -26,6 +26,7 @@ const getEventParticipationHeaders = (
   reportSettings.fields.includes(ReportField.EXERCISES_LABEL)
     ? ["begin_timestamp", "end_timestamp"]
     : []),
+  ...(reportSettings.fields.includes(ReportField.SCORE) ? ["score"] : []),
   ...(reportSettings.fields.includes(ReportField.EXERCISES_ANSWER) ||
   reportSettings.fields.includes(ReportField.EXERCISES_SCORE) ||
   reportSettings.fields.includes(ReportField.EXERCISES_LABEL)
@@ -100,7 +101,6 @@ const getEventParticipationHeaders = (
       })
     : []
   ).flat(),
-  "score",
 ];
 
 const getHeaderString = (header: string) => {
