@@ -145,7 +145,7 @@ export default defineComponent({
             (this.reportType === ReportType.CSV ? ".csv" : ".pdf")
         );
       } finally {
-        this.loadingReport = false;
+        setTimeout(() => (this.loadingReport = false), 1500);
       }
     },
     async getReportData() {
