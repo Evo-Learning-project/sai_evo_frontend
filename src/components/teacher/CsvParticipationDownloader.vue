@@ -3,16 +3,18 @@
     <Btn
       @click="showDialog = true"
       :outline="true"
-      :loading="loadingCsv"
+      :loading="loadingReport"
       :disabled="(eventParticipations?.length ?? 0) === 0"
       ><span class="mr-1 material-icons-outlined"> file_download </span
-      >{{ $t("misc.download_as_csv") }}</Btn
+      >{{ $t("misc.download_results") }}</Btn
     >
     <Dialog
       :showDialog="showDialog"
-      :confirmOnly="true"
-      :yesText="$t('dialog.default_cancel_text')"
-      @yes="showDialog = false"
+      :yesText="loadingReport ? $t('misc.downloading') : $t('misc.download')"
+      :noText="$t('dialog.default_cancel_text')"
+      :disableOk="loadingReport"
+      @no="showDialog = false"
+      @yes="onDownload()"
       :large="true"
     >
       <template v-slot:title>
@@ -49,7 +51,7 @@
               :modelValue="downloadSettingsProxy.fields"
             ></CheckboxGroup>
           </div>
-          <div class="flex items-center mt-12 space-x-2 w-44">
+          <div class="flex items-center mt-12 ml-1.5 space-x-2 w-44 hidden">
             <SegmentedControls
               class="w-full"
               :options="formatsAsOptions"
@@ -121,7 +123,7 @@ export default defineComponent({
   },
   data() {
     return {
-      loadingCsv: false,
+      loadingReport: false,
       showDialog: false,
       downloadSettings: null as ReportSettings | null,
       selectedDownloadPreset: ReportSettingsPreset.MAT_AND_SCORES,
@@ -132,29 +134,51 @@ export default defineComponent({
   },
   methods: {
     ...mapActions(["getEventParticipations"]),
-    async getParticipationsAsCsv() {
-      this.loadingCsv = true;
+    async onDownload() {
+      this.loadingReport = true;
       try {
+        const participations = await this.getReportData();
+        const fileContents = this.formatDataForReportType(participations);
+        this.downloadReportFile(
+          fileContents,
+          this.event(this.eventId).name +
+            (this.reportType === ReportType.CSV ? ".csv" : ".pdf")
+        );
+      } finally {
+        this.loadingReport = false;
+      }
+    },
+    async getReportData() {
+      try {
+        // TODO download to local data instead of saving to store
         await this.getEventParticipations({
           courseId: this.courseId,
           eventId: this.eventId,
           includeDetails: true,
-          forCsv: true,
+          forCsv: this.reportType === ReportType.CSV,
         });
-        forceFileDownload(
-          {
-            data: getParticipationsAsCsv(this.eventParticipations).replace(
-              /(\\r)?\\n/g,
-              "\n"
-            ),
-          },
-          this.event(this.eventId).name + ".csv"
-        );
+        return this.eventParticipations;
       } catch (e) {
         this.setErrorNotification(e);
-      } finally {
-        this.loadingCsv = false;
       }
+    },
+    formatDataForReportType(data: any) {
+      if (this.reportType === ReportType.CSV) {
+        return getParticipationsAsCsv(data, this.downloadSettingsProxy).replace(
+          /(\\r)?\\n/g,
+          "\n"
+        );
+      }
+      // TODO implement PDF
+      throw new Error("pdf unimplemented");
+    },
+    downloadReportFile(data: any, filename: string) {
+      forceFileDownload(
+        {
+          data,
+        },
+        filename
+      );
     },
   },
   computed: {

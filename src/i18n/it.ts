@@ -182,6 +182,8 @@ export const it = {
       "L'inserimento del numero di matricola e la selezione del corso sono necessari per poter partecipare agli esami. Fallo ora e non pensarci più!",
   },
   misc: {
+    download: "Scarica",
+    downloading: "Download in corso...",
     csv: "CSV",
     pdf: "PDF",
     ok: "OK",
@@ -242,6 +244,7 @@ export const it = {
     solution: "Soluzione",
     warning: "Attenzione",
     download_as_csv: "Scarica come CSV",
+    download_results: "Scarica risultati",
     select_one: "Seleziona...",
     delete: "Elimina",
     logout: "Logout",

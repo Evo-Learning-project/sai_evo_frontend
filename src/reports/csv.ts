@@ -1,78 +1,105 @@
+import { ReportField, ReportSettings } from "./types";
 import { ExerciseTestCase } from "./../models/interfaces";
 import { getTranslatedString as _ } from "@/i18n";
 import { EventParticipation, ExerciseType } from "@/models";
 import { get } from "lodash";
 
 const getEventParticipationHeaders = (
-  participations: EventParticipation[]
+  participations: EventParticipation[],
+  reportSettings: ReportSettings
 ): string[] => [
-  "user.email",
-  "user.mat",
-  "user.course",
-  "user.last_name",
-  "user.first_name",
-  "begin_timestamp",
-  "end_timestamp",
-  ...participations[0].slots
-    .map((__, i) => {
-      const ret: string[] = [`slots[${i}].exercise.label`]; // TODO! if exercise has no label, put text instead
-      // for each exercise type, check if any participation has that type in the
-      // slot with current number, in which case add relevant headers
-      const samePositionSlotTypes = participations.map(
-        (p) => p.slots[i].exercise.exercise_type
-      );
-      const samePositionExercises = participations.map(
-        (p) => p.slots[i].exercise
-      );
-      if (
-        samePositionSlotTypes.some((t) =>
-          [ExerciseType.OPEN_ANSWER, ExerciseType.JS].includes(
-            t as ExerciseType
+  ...(reportSettings.fields.includes(ReportField.STUDENT_EMAIL)
+    ? ["user.email"]
+    : []),
+  ...(reportSettings.fields.includes(ReportField.STUDENT_MAT)
+    ? ["user.mat"]
+    : []),
+  ...(reportSettings.fields.includes(ReportField.STUDENT_COURSE)
+    ? ["user.course"]
+    : []),
+  ...(reportSettings.fields.includes(ReportField.STUDENT_FULL_NAME)
+    ? ["user.last_name", "user.first_name"]
+    : []),
+  // TODO explicit condition for timestamp fields
+  ...(reportSettings.fields.includes(ReportField.EXERCISES_ANSWER) ||
+  reportSettings.fields.includes(ReportField.EXERCISES_SCORE) ||
+  reportSettings.fields.includes(ReportField.EXERCISES_LABEL)
+    ? ["begin_timestamp", "end_timestamp"]
+    : []),
+  ...(reportSettings.fields.includes(ReportField.EXERCISES_ANSWER) ||
+  reportSettings.fields.includes(ReportField.EXERCISES_SCORE) ||
+  reportSettings.fields.includes(ReportField.EXERCISES_LABEL)
+    ? participations[0].slots.map((__, i) => {
+        const ret: string[] = reportSettings.fields.includes(
+          ReportField.EXERCISES_LABEL
+        )
+          ? [`slots[${i}].exercise.label`]
+          : []; // TODO! if exercise has no label, put text instead
+        // for each exercise type, check if any participation has that type in the
+        // slot with current number, in which case add relevant headers
+        const samePositionSlotTypes = participations.map(
+          (p) => p.slots[i].exercise.exercise_type
+        );
+        const samePositionExercises = participations.map(
+          (p) => p.slots[i].exercise
+        );
+        if (
+          reportSettings.fields.includes(ReportField.EXERCISES_ANSWER) &&
+          samePositionSlotTypes.some((t) =>
+            [
+              ExerciseType.OPEN_ANSWER,
+              ExerciseType.JS,
+              ExerciseType.C,
+            ].includes(t as ExerciseType)
           )
-        )
-      ) {
-        ret.push(`slots[${i}].answer_text`);
-      }
-      if (
-        samePositionSlotTypes.some((t) =>
-          [
-            ExerciseType.MULTIPLE_CHOICE_MULTIPLE_POSSIBLE,
-            ExerciseType.MULTIPLE_CHOICE_SINGLE_POSSIBLE,
-          ].includes(t as ExerciseType)
-        )
-      ) {
-        ret.push(`slots[${i}].selected_choices`);
-      }
-      if (
-        samePositionSlotTypes.some((t) =>
-          [ExerciseType.JS, ExerciseType.C].includes(t as ExerciseType)
-        )
-      ) {
-        const otherProgrammingExercises = samePositionExercises.filter((e) =>
-          [ExerciseType.JS, ExerciseType.C].includes(
-            e.exercise_type as ExerciseType
+        ) {
+          ret.push(`slots[${i}].answer_text`);
+        }
+        if (
+          reportSettings.fields.includes(ReportField.EXERCISES_ANSWER) &&
+          samePositionSlotTypes.some((t) =>
+            [
+              ExerciseType.MULTIPLE_CHOICE_MULTIPLE_POSSIBLE,
+              ExerciseType.MULTIPLE_CHOICE_SINGLE_POSSIBLE,
+            ].includes(t as ExerciseType)
           )
-        );
-        // add as many "testcase i passed" columns as the highest number
-        // of testcases in the exercises of the same slot
-        const maxTestcases = Math.max(
-          ...otherProgrammingExercises.map((e) => e.testcases?.length ?? 0)
-        );
-        [...Array(maxTestcases)].forEach((_, j) =>
-          ret.push(`slots[${i}].passed_testcase_${j}`)
-        );
+        ) {
+          ret.push(`slots[${i}].selected_choices`);
+        }
+        if (
+          reportSettings.fields.includes(ReportField.EXERCISES_SCORE) &&
+          samePositionSlotTypes.some((t) =>
+            [ExerciseType.JS, ExerciseType.C].includes(t as ExerciseType)
+          )
+        ) {
+          const otherProgrammingExercises = samePositionExercises.filter((e) =>
+            [ExerciseType.JS, ExerciseType.C].includes(
+              e.exercise_type as ExerciseType
+            )
+          );
+          // add as many "testcase i passed" columns as the highest number
+          // of testcases in the exercises of the same slot
+          const maxTestcases = Math.max(
+            ...otherProgrammingExercises.map((e) => e.testcases?.length ?? 0)
+          );
+          [...Array(maxTestcases)].forEach((_, j) =>
+            ret.push(`slots[${i}].passed_testcase_${j}`)
+          );
 
-        ret.push(
-          `slots[${i}].passed_testcases`,
-          `slots[${i}].failed_testcases`
-        );
-      } else {
-        ret.push(`slots[${i}].score`);
-      }
-      // TODO! handle upload exercises and aggregated exercises
-      return ret;
-    })
-    .flat(),
+          ret.push(
+            `slots[${i}].passed_testcases`,
+            `slots[${i}].failed_testcases`
+          );
+        } else if (
+          reportSettings.fields.includes(ReportField.EXERCISES_SCORE)
+        ) {
+          ret.push(`slots[${i}].score`);
+        }
+        // TODO! handle upload exercises and aggregated exercises
+        return ret;
+      })
+    : []
+  ).flat(),
   "score",
 ];
 
@@ -153,10 +180,10 @@ const getCellValue = (participation: EventParticipation, field: string) => {
 };
 
 export const getParticipationsAsCsv = (
-  participations: EventParticipation[]
+  participations: EventParticipation[],
+  reportSettings: ReportSettings
 ): string => {
-  console.log("calling");
-  const headers = getEventParticipationHeaders(participations);
+  const headers = getEventParticipationHeaders(participations, reportSettings);
   const replacer = (key: string, value: string) =>
     value === null
       ? ""
