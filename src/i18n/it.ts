@@ -1,3 +1,4 @@
+import { ReportField } from "./../reports/types";
 import { EventType, ExerciseTestCaseType } from "./../models/types";
 import {
   CoursePrivilege,
@@ -181,6 +182,8 @@ export const it = {
       "L'inserimento del numero di matricola e la selezione del corso sono necessari per poter partecipare agli esami. Fallo ora e non pensarci più!",
   },
   misc: {
+    csv: "CSV",
+    pdf: "PDF",
     ok: "OK",
     slots: "slot",
     from: "da",
@@ -242,6 +245,30 @@ export const it = {
     select_one: "Seleziona...",
     delete: "Elimina",
     logout: "Logout",
+  },
+  participation_downloader: {
+    report_type: "Formato del report",
+    download_results: "Scarica risultati",
+    mat_and_scores_title: "Matricola e voto",
+    full_name_and_scores_title: "Nome, cognome e voto",
+    all_fields_title: "Tutte le informazioni",
+    all_fields_description:
+      "Nome, cognome, matricola, corso, voto e, per ogni esercizio, risposta data e punteggio",
+    custom_title: "Personalizzato",
+    custom_description: "Scegli quali campi includere",
+    introduction:
+      "Scegli quali informazioni vuoi includere nel report. Per ciascuno studente, esporta:",
+  },
+  report_fields: {
+    [ReportField.EXERCISES_ANSWER]: "Risposte dello studente",
+    [ReportField.EXERCISES_SCORE]: "Punteggio ottenuto per ciascun esercizio",
+    [ReportField.EXERCISES_LABEL]: "Nomi degli esercizi assegnati",
+    [ReportField.STUDENT_COURSE]: "Corso",
+    [ReportField.STUDENT_MAT]: "Matricola",
+    [ReportField.STUDENT_FULL_NAME]: "Nome e cognome",
+    [ReportField.STUDENT_EMAIL]: "Email",
+    [ReportField.STUDENT_COURSE]: "Corso",
+    [ReportField.SCORE]: "Voto",
   },
   cloud: {
     saving: "Salvataggio in corso...",

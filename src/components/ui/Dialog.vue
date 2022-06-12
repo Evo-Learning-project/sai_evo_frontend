@@ -79,9 +79,10 @@
                 :disabled="disableOk"
               >
                 {{
-                  confirmOnly
+                  yesText ||
+                  (confirmOnly
                     ? $t("dialog.default_ok_text")
-                    : yesText || $t("dialog.default_yes_text")
+                    : $t("dialog.default_yes_text"))
                 }}
               </Btn>
               <Btn

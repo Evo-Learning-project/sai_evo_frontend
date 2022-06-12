@@ -1,5 +1,3 @@
-// returns an array of pairs <s, f> where s is a score and f is the
-
 import {
   EventParticipation,
   Exercise,
@@ -9,6 +7,7 @@ import {
 import { getTranslatedString as _ } from "@/i18n";
 import { DataFrequency } from ".";
 
+// returns an array of pairs <s, f> where s is a score and f is the
 // frequency with which that score appears among the given participations
 export const getScoreFrequencyFromParticipations = (
   participations: EventParticipation[]
@@ -46,6 +45,8 @@ export const getScoreFrequencyFromParticipations = (
     );
   }, [] as DataFrequency<string>[]);
 
+// returns an array of pairs <c, f> where c is an ExerciseChoice and
+// f is the frequency with which it's been selected in the given slots
 export const getChoiceSelectionFrequencyFor = (
   exercise: Exercise,
   slots: EventParticipationSlot[]

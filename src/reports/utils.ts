@@ -1,4 +1,10 @@
 import {
+  ReportField,
+  ReportSettings,
+  ReportSettingsPreset,
+  ReportType,
+} from "./types";
+import {
   EventParticipation,
   ParticipationAssessmentProgress,
   EventTemplateRule,
@@ -49,3 +55,39 @@ export const getExerciseListFromParticipations = (
     .flatMap((p) => p.slots)
     .map((s) => s.exercise)
     .filter((e, i, a) => a.findIndex((o) => o?.id == e?.id) === i); // eliminate duplicates
+
+export const getPresets = (): Record<ReportSettingsPreset, ReportSettings> => ({
+  [ReportSettingsPreset.ALL_FIELDS]: getAllFieldsReportPreset(),
+  [ReportSettingsPreset.MAT_AND_SCORES]: getMatAndScoreReportPreset(),
+  [ReportSettingsPreset.FULL_NAME_AND_SCORES]:
+    getFullNameAndScoreReportPreset(),
+  [ReportSettingsPreset.CUSTOM]: getCustomReportPreset(),
+});
+
+export const getCustomReportPreset = (): ReportSettings => ({
+  fields: [],
+  // reportType: ReportType.CSV,
+});
+
+export const getMatAndScoreReportPreset = (): ReportSettings => ({
+  fields: [ReportField.STUDENT_MAT, ReportField.SCORE],
+  //  reportType: ReportType.CSV,
+});
+
+export const getFullNameAndScoreReportPreset = (): ReportSettings => ({
+  fields: [ReportField.STUDENT_FULL_NAME, ReportField.SCORE],
+  //  reportType: ReportType.CSV,
+});
+
+export const getAllFieldsReportPreset = (): ReportSettings => ({
+  fields: [
+    ReportField.STUDENT_EMAIL,
+    ReportField.STUDENT_FULL_NAME,
+    ReportField.STUDENT_MAT,
+    ReportField.SCORE,
+    ReportField.EXERCISES_LABEL,
+    ReportField.EXERCISES_ANSWER,
+    ReportField.EXERCISES_SCORE,
+  ],
+  // reportType: ReportType.CSV,
+});

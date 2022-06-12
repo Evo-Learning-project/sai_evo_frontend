@@ -177,6 +177,5 @@ export const getParticipationsAsCsv = (
         .join(",")
     ),
   ].join("\r\n");
-  console.log("returning", ret);
   return ret;
 };
