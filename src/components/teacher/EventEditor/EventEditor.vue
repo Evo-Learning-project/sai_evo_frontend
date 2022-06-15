@@ -224,6 +224,7 @@ export default defineComponent({
       },
       (changes) => {
         this.saving = true;
+        this.savingError = false;
         //this.$store.state.shared.localLoading = true;
         this.setEvent({
           eventId: this.eventId,

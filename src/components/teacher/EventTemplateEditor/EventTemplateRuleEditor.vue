@@ -14,6 +14,9 @@
         <h4>
           {{ $t("event_template_rule_editor.exercise_number") }}
           {{ displayedOrdering }}
+          <span v-if="modelValue.amount > 1" class="ml-2 text-muted"
+            >({{ modelValue.amount + " " + $t("misc.slots") }})</span
+          >
         </h4>
         <div class="flex items-center my-auto ml-auto space-x-2">
           <Btn :variant="'secondary'" @click="showRuleDialog()" :size="'sm'">
