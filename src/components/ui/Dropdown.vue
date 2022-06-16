@@ -5,10 +5,10 @@
     ></label>
     <div
       :class="{
-        'max-h-20 hover:shadow-md': !expanded,
-        'max-h-screen shadow-popup': expanded,
+        'max-h-20 relative hover:shadow-md': !expanded,
+        'max-h-screen z-50 absolute shadow-popup bg-white': expanded,
       }"
-      class="relative flex overflow-y-hidden transition-all duration-300 ease-in-out border border-gray-300 rounded-md "
+      class="flex w-full overflow-y-hidden transition-all duration-300 ease-in-out border border-gray-300 rounded-md "
     >
       <div class="w-full">
         <label
@@ -133,7 +133,7 @@ export default defineComponent({
         value == this.modelValue &&
         !this.expanded
       ) {
-        this.expanded = true;
+        setTimeout(() => (this.expanded = true), 50);
       } else if (this.modelValue == value && this.expanded) {
         this.expanded = false;
       }

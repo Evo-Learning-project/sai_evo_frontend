@@ -23,14 +23,7 @@
     class="flex items-center w-full h-12 px-6 py-3 mt-auto text-sm text-white  bg-dark"
   >
     <p>
-      Crafted with ❤️
-      <!-- <img
-        alt="love"
-        class="inline-block mb-0.5"
-        style="width: 0.95rem; margin-left: 1px; margin-right: 1px"
-        src="./assets/heart.png"
-      /> -->
-      by
+      Crafted with ❤️ by
       <a
         target="_blank"
         class="font-semibold text-indigo-400 hover:underline"
@@ -38,12 +31,13 @@
         >Samuele Bonini</a
       >
     </p>
-    <!-- <p class="ml-auto cursor-pointer" @click="showReportForm = true">
-      <i class="text-red-500 opacity-70 mr-0.5 fas fa-exclamation-triangle"></i>
-      <span class="hidden ml-1 animated-underline md:inline"
-        >Segnala malfunzionamento</span
-      >
-    </p> -->
+    <Tooltip :placement="'left'" class="ml-auto" :textCode="'telegram'">
+      <a href="https://t.me/sai_evo" target="_blank"
+        ><img
+          class="w-5 h-5 transition-opacity duration-75  opacity-70 hover:opacity-100"
+          src="../public/telegram.jpg"
+      /></a>
+    </Tooltip>
   </footer>
   <!-- </div> -->
 </template>
@@ -56,6 +50,7 @@ import { getTranslatedString as _ } from "./i18n";
 import { createNamespacedHelpers } from "vuex";
 import { debounce } from "lodash";
 import { Course, CoursePrivilege } from "./models";
+import Tooltip from "./components/ui/Tooltip.vue";
 //import { typesetTex } from "./utils";
 const { mapState, mapGetters } = createNamespacedHelpers("shared");
 
@@ -69,6 +64,7 @@ export default defineComponent({
   components: {
     Spinner,
     Notification,
+    Tooltip,
   },
   async created() {
     if (this.$store.getters["shared/isAuthenticated"]) {

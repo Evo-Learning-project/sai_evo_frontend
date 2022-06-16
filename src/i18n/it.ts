@@ -807,6 +807,7 @@ export const it = {
       "Non ci sono corsi che corrispondono ai criteri di ricerca",
   },
   help_texts: {
+    telegram: "Canale Telegram",
     testcase_passes: "Test case superato dalla soluzione",
     testcase_fails: "Test case non superato dalla soluzione",
     practice_score: "Basato sugli esercizi correggibili automaticamente",
