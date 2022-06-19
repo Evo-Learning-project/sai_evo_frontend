@@ -1,12 +1,5 @@
 <template>
   <div class="card shadow-elevation hover-shadow-elevation-2">
-    <FullExercise
-      v-if="false"
-      :exercise="exercise"
-      :allowProgrammingExercisePopup="false"
-      :showProgrammingExerciseTabs="false"
-    ></FullExercise>
-
     <div class="mb-4 user-content">
       <ProcessedTextFragment :value="exercise.text"></ProcessedTextFragment>
     </div>
@@ -20,7 +13,43 @@
       />
     </div>
 
-    <div v-else-if="isProgrammingExercise"></div>
+    <div v-else-if="isProgrammingExercise">
+      <Bar
+        :chart-data="programmingExerciseScoreFrequencyChartData"
+        :chart-options="passedTestCasesBarChartOptions"
+        :height="mediaQueryMdMatches ? 30 : 100"
+        :width="100"
+      />
+      <!-- test case details -->
+      <div>
+        <div
+          v-for="record in Object.entries(
+            programmingExerciseScoresFrequency.testCasePassingRate
+          )"
+          :key="record[0] + '-passed-data'"
+          class="flex items-center my-6 space-x-12"
+        >
+          <ExerciseTestCase
+            class="w-full"
+            :showDescription="false"
+            :small="true"
+            :testCase="exercise.testcases?.find((t) => t.id == record[0])"
+          ></ExerciseTestCase>
+          <div class="w-1/2 text-lg text-muted">
+            {{ $t("event_stats.testcase_passed_in") }}
+            <strong>{{ record[1] }}</strong> {{ $t("event_stats.submissions") }}
+
+            {{ $t("misc.out_of") }}
+            {{ slots.length }}
+            <strong class="ml-4"
+              >({{
+                Math.floor((record[1] / slots.length) * 1000) / 10
+              }}%)</strong
+            >
+          </div>
+        </div>
+      </div>
+    </div>
     <div v-else>
       <p class="text-muted">
         {{ $t("event_stats.no_stats_available_for_exercise") }}
@@ -39,7 +68,6 @@ import {
   programmingExerciseTypes,
 } from "@/models";
 import { defineComponent, PropType } from "@vue/runtime-core";
-import FullExercise from "../shared/FullExercise.vue";
 import ProcessedTextFragment from "../ui/ProcessedTextFragment.vue";
 
 import { Bar } from "vue-chartjs";
@@ -69,7 +97,11 @@ import {
   getChoiceSelectionFrequencyFor,
   makeLabelText,
   exerciseChoiceDatasetSettings,
+  getTestCasePassingFrequencyFor,
+  passedTestCasesBarChartOptions,
+  scoreChartDatasetSettings,
 } from "@/reports";
+import ExerciseTestCase from "../shared/ExerciseTestCase.vue";
 
 ChartJS.register(
   Title,
@@ -82,7 +114,7 @@ ChartJS.register(
 
 export default defineComponent({
   name: "ExerciseWithStats",
-  components: { FullExercise, Bar, ProcessedTextFragment },
+  components: { Bar, ProcessedTextFragment, ExerciseTestCase },
   props: {
     exercise: {
       type: Object as PropType<Exercise>,
@@ -96,6 +128,7 @@ export default defineComponent({
   data() {
     return {
       exerciseChoicesBarChartOptions,
+      passedTestCasesBarChartOptions,
     };
   },
   methods: {},
@@ -121,6 +154,15 @@ export default defineComponent({
       }
       return getChoiceSelectionFrequencyFor(this.exercise, this.slots);
     },
+    programmingExerciseScoresFrequency(): {
+      scoreFrequency: DataFrequency<number>[];
+      testCasePassingRate: Record<string, number>;
+    } {
+      if ((this.exercise.testcases?.length ?? 0) === 0) {
+        return { scoreFrequency: [], testCasePassingRate: {} };
+      }
+      return getTestCasePassingFrequencyFor(this.exercise, this.slots);
+    },
     selectedChoicesFrequencyChartData(): TChartData<"bar", number[], unknown> {
       return {
         labels: this.selectedChoicesFrequency.map(
@@ -137,6 +179,26 @@ export default defineComponent({
                 ? "#10B981b3"
                 : "#e5e7ebb3"
             ),
+          },
+        ],
+      };
+    },
+    programmingExerciseScoreFrequencyChartData(): TChartData<
+      "bar",
+      number[],
+      unknown
+    > {
+      return {
+        labels: this.programmingExerciseScoresFrequency.scoreFrequency.map(
+          (r) => r.datum
+        ),
+        datasets: [
+          {
+            data: this.programmingExerciseScoresFrequency.scoreFrequency.map(
+              (r) => r.frequency
+            ),
+            ...scoreChartDatasetSettings,
+            maxBarThickness: 100,
           },
         ],
       };

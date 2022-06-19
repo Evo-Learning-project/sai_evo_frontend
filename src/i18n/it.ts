@@ -387,6 +387,8 @@ export const it = {
     selections: "Selezioni",
     event_stats: "Statistiche esame",
     back_to_results: "Torna ai risultati",
+    testcase_passed_in: "Superato in",
+    submissions: "sottomissioni",
     no_stats_available_for_exercise:
       "Nessuna statistica disponibile per questo esercizio",
     incomplete_scores:

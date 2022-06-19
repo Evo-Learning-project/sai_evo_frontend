@@ -3,7 +3,7 @@
     <div
       class="w-full mb-4 user-content"
       :class="[small ? 'py-2.5 mt-2' : '']"
-      v-if="!!testCase.text"
+      v-if="!!testCase.text && showDescription"
       v-html="testCase.text"
     ></div>
     <CodeFragment
@@ -52,6 +52,10 @@ export default defineComponent({
     small: {
       type: Boolean,
       default: false,
+    },
+    showDescription: {
+      type: Boolean,
+      default: true,
     },
   },
   methods: {},
