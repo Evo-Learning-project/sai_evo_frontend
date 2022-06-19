@@ -149,6 +149,7 @@
               (allowEditSubmission || showExerciseLabel)
             "
             v-model="answerTextProxy"
+            @blur="$emit('blur', { slot: modelValue })"
           >
             {{
               allowEditSubmission
@@ -200,6 +201,7 @@
               "
               @openFull="$emit('openFull')"
               @updateAssessment="$emit('updateAssessment', $event)"
+              @blur="$emit('blur', $event)"
             >
             </AbstractEventParticipationSlot>
           </div>

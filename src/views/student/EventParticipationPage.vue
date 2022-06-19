@@ -34,6 +34,7 @@
         @updateAttachment="onUpdateAttachment($event.slot, $event.payload)"
         @download="onAttachmentDownload($event.slot)"
         @runCode="onRunCode($event.slot)"
+        @blur="onBlur($event.slot)"
         :allowEditSubmission="true"
         :saving="saving"
         :running="running"
@@ -223,6 +224,14 @@ export default defineComponent({
             slot.id
           )
       );
+    },
+    async onBlur(slot: EventParticipationSlot) {
+      console.log("blur", slot);
+      try {
+        await this.slotAutoSaveManagers[slot.id].flush();
+      } catch (e) {
+        this.setErrorNotification(e);
+      }
     },
     async onRunCode(slot: EventParticipationSlot) {
       this.running = true;

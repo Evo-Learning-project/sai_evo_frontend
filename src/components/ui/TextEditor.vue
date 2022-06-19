@@ -108,17 +108,16 @@ export default defineComponent({
       this.showBaseEditor = !this.showBaseEditor;
     },
     onEditorChange({ quill, html, text }: unknown) {
-      //console.log("editor change!", quill, html, text);
       this.content = html;
       this.$emit("update:modelValue", html);
     },
     onEditorReady(quill: any) {
       this.$emit("ready", quill);
       quill.on("selection-change", this.onSelectionChange);
+      quill.root.addEventListener("blur", () => this.$emit("blur"));
       this.instance = quill;
     },
     onSelectionChange(event: any) {
-      console.log(event);
       if (event) {
         this.$emit("selectionChange", {
           fullText: this.instance.getText(),
@@ -130,51 +129,3 @@ export default defineComponent({
   },
 });
 </script>
-
-<style>
-/* .ql-container {
-  font-size: inherit !important;
-}
-
-.ql-editor-container:focus-within {
-  border-bottom: 2px solid #303f9f !important;
-}
-
-.ql-editor-container {
-  display: flex;
-  flex-direction: column;
-  border-bottom: 2px solid rgb(229, 231, 235) !important;
-}
-.ql-editor {
-  z-index: 10 !important;
-  box-sizing: border-box;
-  line-height: 1.42;
-  height: 100%;
-  outline: none;
-  overflow-y: auto;
-  padding: 12px 15px;
-  -o-tab-size: 4;
-  tab-size: 4;
-  -moz-tab-size: 4;
-  text-align: left;
-  white-space: pre-wrap;
-  word-wrap: break-word;
-  font-family: "Source Sans Pro", "Helvetica Neue", "Helvetica", "Arial",
-    sans-serif !important;
-}
-.ql-container.ql-snow {
-  border: 0 !important; /*1px solid #ccc;
-}
-
-.ql-container.ql-snow:focus-within {
-  border: 1px solid #303f9f;
-}
-.ql-toolbar.ql-snow {
-  order: 12 !important;
-  border: 0 !important; /* 1px solid #ccc !important;
-  box-sizing: border-box;
-  font-family: "Source Sans Pro", "Helvetica Neue", "Helvetica", "Arial",
-    sans-serif !important;
-  padding: 8px;
-} */
-</style>
