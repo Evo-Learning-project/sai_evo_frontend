@@ -755,7 +755,6 @@ export default defineComponent({
   },
   methods: {
     emitUpdate(key: keyof EventParticipationSlot, value: unknown) {
-      console.log(key, value);
       this.$emit("update:modelValue", {
         ...this.modelValue,
         [key]: value,
@@ -846,7 +845,8 @@ export default defineComponent({
       return this.modelValue.sub_slots.some((s) => s.score === null);
     },
     nonUniformScores(): boolean {
-      // Returns whether all choices aside from the correct ones have the same score_selected
+      // Returns whether all choices aside from the correct
+      // ones have the same score_selected
       if (
         ![
           ExerciseType.MULTIPLE_CHOICE_MULTIPLE_POSSIBLE,

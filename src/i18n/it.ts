@@ -182,6 +182,8 @@ export const it = {
       "L'inserimento del numero di matricola e la selezione del corso sono necessari per poter partecipare agli esami. Fallo ora e non pensarci più!",
   },
   misc: {
+    scored_plural: "punti",
+    scored_singular: "punto",
     download: "Scarica",
     downloading: "Download in corso...",
     csv: "CSV",
@@ -380,6 +382,7 @@ export const it = {
     in_column_state: "nella colonna Consegna.",
   },
   event_stats: {
+    not_yet_assessed: "Non ancora corretto",
     overall: "Riepilogo",
     exercises: "Esercizi",
     score_distribution: "Distribuzione voti",

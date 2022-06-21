@@ -50,6 +50,36 @@
         </div>
       </div>
     </div>
+
+    <div v-if="isOpenAnswerExercise">
+      <h3>Risposte</h3>
+      <div class="my-4" v-for="slot in slots" :key="'stats-slot-' + slot.id">
+        <div class="flex card card-border">
+          <div class="w-10/12 overflow-auto max-h-36">
+            <ProcessedTextFragment
+              :value="slot.answer_text"
+              :defaultValue="$t('misc.no_answer')"
+            ></ProcessedTextFragment>
+          </div>
+          <div class="w-2/12 ml-auto text-right">
+            <p :class="{ 'text-muted': slot.score === null }">
+              {{
+                slot.score !== null
+                  ? Number.isInteger(parseFloat(slot.score))
+                    ? parseInt(slot.score)
+                    : slot.score
+                  : $t("event_stats.not_yet_assessed")
+              }}
+              <span v-if="slot.score !== null">{{
+                parseFloat(slot.score) === 1
+                  ? $t("misc.scored_singular")
+                  : $t("misc.scored_plural")
+              }}</span>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
     <div v-else>
       <p class="text-muted">
         {{ $t("event_stats.no_stats_available_for_exercise") }}
@@ -147,6 +177,9 @@ export default defineComponent({
       return programmingExerciseTypes.includes(
         this.exercise.exercise_type as ExerciseType
       );
+    },
+    isOpenAnswerExercise(): boolean {
+      return this.exercise.exercise_type === ExerciseType.OPEN_ANSWER;
     },
     selectedChoicesFrequency(): DataFrequency<ExerciseChoice>[] {
       if ((this.exercise.choices?.length ?? 0) === 0) {
