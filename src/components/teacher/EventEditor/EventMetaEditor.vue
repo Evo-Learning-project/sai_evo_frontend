@@ -1,14 +1,32 @@
 <template>
   <div>
     <div
-      class="flex flex-col mt-6 mb-6 space-y-4  md:space-x-4 md:flex-row md:space-y-0"
+      class="flex flex-col mt-6 space-y-4 md:space-x-4 md:flex-row md:space-y-0"
+      :class="[
+        v$.modelValue.name.$errors.length > 0 ||
+        v$.modelValue.begin_timestamp.$errors.length > 0 ||
+        v$.modelValue.end_timestamp.$errors.length > 0
+          ? 'mb-1'
+          : 'mb-6',
+      ]"
     >
       <TextInput
         class="w-full md:mr-auto"
         :modelValue="modelValue.name"
         @update:modelValue="emitUpdate('name', $event)"
-        >{{ $t("event_editor.name") }}</TextInput
-      >
+        >{{ $t("event_editor.name") }}
+        <template v-if="v$.modelValue.name.$errors.length > 0" v-slot:errors>
+          <div
+            class="input-errors"
+            v-for="error of v$.modelValue.name.$errors"
+            :key="error.$uid"
+          >
+            <div class="error-msg">
+              {{ $t("validation_errors.event." + error.$uid) }}
+            </div>
+          </div>
+        </template>
+      </TextInput>
       <CalendarInput
         class=""
         :modelValue="modelValue.begin_timestamp"
@@ -17,13 +35,41 @@
         @update:modelValue="
           isDraft ? emitUpdate('begin_timestamp', $event) : () => null
         "
-        >{{ $t("event_editor.begin_timestamp") }}</CalendarInput
+        >{{ $t("event_editor.begin_timestamp") }}
+        <template
+          v-if="v$.modelValue.begin_timestamp.$errors.length > 0"
+          v-slot:errors
+        >
+          <div
+            class="input-errors"
+            v-for="error of v$.modelValue.begin_timestamp.$errors"
+            :key="error.$uid"
+          >
+            <div class="error-msg">
+              {{ $t("validation_errors.event." + error.$uid) }}
+            </div>
+          </div>
+        </template></CalendarInput
       >
       <CalendarInput
         class=""
         :modelValue="modelValue.end_timestamp"
         @update:modelValue="emitUpdate('end_timestamp', $event)"
-        >{{ $t("event_editor.end_timestamp") }}</CalendarInput
+        >{{ $t("event_editor.end_timestamp") }}
+        <template
+          v-if="v$.modelValue.end_timestamp.$errors.length > 0"
+          v-slot:errors
+        >
+          <div
+            class="input-errors"
+            v-for="error of v$.modelValue.end_timestamp.$errors"
+            :key="error.$uid"
+          >
+            <div class="error-msg">
+              {{ $t("validation_errors.event." + error.$uid) }}
+            </div>
+          </div>
+        </template></CalendarInput
       >
     </div>
     <TextEditor
@@ -53,12 +99,6 @@
 
     <div class="flex flex-col mt-12 space-y-4">
       <h3>{{ $t("event_editor.access_rules") }}</h3>
-      <!-- <Toggle
-        :labelOnLeft="true"
-        v-show="modelValue.exercises_shown_at_a_time == 1"
-        v-model="proxyAccessRule"
-        >{{ $t("event_editor.allow_everyone_access_label") }}</Toggle
-      > -->
       <RadioGroup
         class="-ml-1.5"
         :modelValue="modelValue.access_rule"
@@ -187,7 +227,7 @@
 import CalendarInput from "@/components/ui/CalendarInput.vue";
 import TextInput from "@/components/ui/TextInput.vue";
 import TextEditor from "@/components/ui/TextEditor.vue";
-import { defineComponent } from "@vue/runtime-core";
+import { defineComponent, inject } from "@vue/runtime-core";
 import { Event, EventAccessRule, EventState, Tag } from "@/models";
 import Toggle from "@/components/ui/Toggle.vue";
 //import NumberInput from '@/components/ui/NumberInput.vue'
@@ -222,14 +262,11 @@ export default defineComponent({
       required: true,
     },
   },
-  // created () {
-  //   this.event = this.modelValue
-  // },
-  // watch: {
-  //   serializedModelValue (newVal: string) {
-  //     this.$emit('update:modelValue', JSON.parse(newVal))
-  //   }
-  // },
+  setup() {
+    return {
+      v$: inject("v$"),
+    };
+  },
   data() {
     return {
       event: {} as Event,

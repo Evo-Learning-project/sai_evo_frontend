@@ -2,6 +2,7 @@ import { EventTemplateRule } from "./../models/interfaces";
 import {
   Course,
   EventTemplateRuleClause,
+  EventTemplateRuleSatisfying,
   EventTemplateRuleType,
 } from "@/models";
 import store from "@/store";
@@ -27,6 +28,13 @@ export const tagBasedRulePopulated = (
   rule.rule_type !== EventTemplateRuleType.TAG_BASED ||
   (((clauses?.length ?? 0) > 0 && clauses?.some((c) => c.tags.length > 0)) ??
     false);
+
+export const tagBasedRuleSatisfied = (
+  satisfying: EventTemplateRuleSatisfying,
+  rule: EventTemplateRule
+) =>
+  rule.rule_type !== EventTemplateRuleType.TAG_BASED ||
+  (satisfying?.count ?? 0) >= rule.amount;
 
 export const ruleTypeSet = (ruleType: EventTemplateRuleType) =>
   typeof ruleType !== "undefined" && ruleType !== null;

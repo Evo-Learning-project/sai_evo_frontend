@@ -4,6 +4,7 @@ import {
   idBasedRulePopulated,
   ruleTypeSet,
   tagBasedRulePopulated,
+  tagBasedRuleSatisfied,
 } from "./validators";
 
 export const courseValidation = {
@@ -24,6 +25,9 @@ export const eventTemplateRuleValidation = {
   clauses: {
     tagBasedRulePopulated,
   },
+  satisfying: {
+    tagBasedRuleSatisfied,
+  },
 };
 
 export const eventTemplateValidation = {
@@ -31,4 +35,22 @@ export const eventTemplateValidation = {
     $each: helpers.forEach(eventTemplateRuleValidation),
     $autoDirty: true,
   },
+};
+
+export const eventValidation = {
+  name: {
+    required,
+    $autoDirty: true,
+  },
+  begin_timestamp: {
+    required,
+    $autoDirty: true,
+  },
+  end_timestamp: {
+    required,
+    $autoDirty: true,
+  },
+  // template: {
+  //   eventTemplateValidation,
+  // },
 };

@@ -65,6 +65,7 @@ export const getBlankExam = (): Event => ({
   randomize_rule_order: false,
   access_rule: EventAccessRule.ALLOW_ACCESS,
   access_rule_exceptions: [],
+  template: { rules: [] },
 });
 
 export const getBlankPractice = (): Event => ({

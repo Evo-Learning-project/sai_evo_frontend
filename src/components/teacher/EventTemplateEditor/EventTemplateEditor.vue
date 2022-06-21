@@ -46,6 +46,11 @@
               $emit('templateChanged');
             "
             @ruleDialogClose="v$.$touch()"
+            :invalid="
+              Object.values(
+                v$.$errors[0]?.$response?.$errors[index] ?? {}
+              ).some((e) => (e?.length ?? 0) > 0)
+            "
           >
             <template v-slot:error>
               <p
@@ -71,6 +76,28 @@
                 "
               >
                 {{ $t("validation_errors.eventTemplateRule.no_valid_clauses") }}
+              </p>
+              <p
+                class="font-light text-muted text-danger-dark"
+                v-if="
+                  v$.$errors[0]?.$response?.$errors[index].satisfying?.length >
+                    0 && element.amount === 1
+                "
+              >
+                {{ $t("validation_errors.eventTemplateRule.not_satisfied") }}
+              </p>
+              <p
+                class="font-light text-muted text-danger-dark"
+                v-if="
+                  v$.$errors[0]?.$response?.$errors[index].satisfying?.length >
+                    0 && element.amount > 1
+                "
+              >
+                {{
+                  $t(
+                    "validation_errors.eventTemplateRule.not_satisfied_by_enough"
+                  )
+                }}
               </p>
             </template>
           </EventTemplateRuleEditor>
@@ -145,6 +172,7 @@ import DropdownMenu from "@/components/ui/DropdownMenu.vue";
 import NumberInput from "@/components/ui/NumberInput.vue";
 export default defineComponent({
   setup() {
+    // TODO use inject to get v$ from EventEditor parent
     return { v$: useVuelidate() };
   },
   validations() {

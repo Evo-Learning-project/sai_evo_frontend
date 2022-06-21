@@ -16,13 +16,6 @@
             </div>
           </template>
         </TextInput>
-        <!-- <div
-          class="input-errors"
-          v-for="error of v$.firstName.$errors"
-          :key="error.$uid"
-        >
-          <div class="error-msg">{{ error.$message }}</div>
-        </div> -->
         <TextEditor v-model="course.description">
           {{ $t("course_creation_form.course_description") }}
         </TextEditor>

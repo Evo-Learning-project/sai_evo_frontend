@@ -113,6 +113,11 @@ export interface EventTemplate {
   rules: EventTemplateRule[];
 }
 
+export interface EventTemplateRuleSatisfying {
+  count: number;
+  example?: Exercise;
+}
+
 export interface EventTemplateRule {
   id: string;
   rule_type?: EventTemplateRuleType;
@@ -120,7 +125,7 @@ export interface EventTemplateRule {
   clauses?: EventTemplateRuleClause[];
   amount: number;
   _ordering?: number;
-  satisfying?: { count: number; example?: Exercise };
+  satisfying?: EventTemplateRuleSatisfying;
 }
 
 export interface EventTemplateRuleClause {

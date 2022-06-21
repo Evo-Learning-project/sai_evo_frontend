@@ -138,9 +138,8 @@
 import EventMetaEditor from "@/components/teacher/EventEditor/EventMetaEditor.vue";
 import EventStateEditor from "@/components/teacher/EventEditor/EventStateEditor.vue";
 import EventTemplateEditor from "@/components/teacher/EventTemplateEditor/EventTemplateEditor.vue";
-//import CollapsiblePanelGroup from '@/components/ui/CollapsiblePanelGroup.vue'
 import CloudSaveStatus from "@/components/ui/CloudSaveStatus.vue";
-import { defineComponent } from "@vue/runtime-core";
+import { defineComponent, provide } from "@vue/runtime-core";
 import {
   Event,
   EventState,
@@ -155,7 +154,6 @@ import {
   savingMixin,
 } from "@/mixins";
 import Dialog from "@/components/ui/Dialog.vue";
-//import Btn from "@/components/ui/Btn.vue";
 import { getTranslatedString as _ } from "@/i18n";
 
 import { createNamespacedHelpers, mapActions, mapState } from "vuex";
@@ -171,12 +169,23 @@ import Btn from "@/components/ui/Btn.vue";
 import { getEventInstances } from "@/api/events";
 import EventInstancesPreview from "./EventInstancesPreview.vue";
 const { mapGetters, mapMutations } = createNamespacedHelpers("teacher");
+import useVuelidate from "@vuelidate/core";
+import { eventValidation } from "@/validation/models";
 
 export default defineComponent({
+  setup() {
+    const v = useVuelidate();
+    provide("v$", v);
+    return { v$: v };
+  },
+  validations() {
+    return {
+      modelValue: eventValidation,
+    };
+  },
   name: "EventEditor",
   components: {
     EventMetaEditor,
-    // Btn,
     EventTemplateEditor,
     CloudSaveStatus,
     EventStateEditor,

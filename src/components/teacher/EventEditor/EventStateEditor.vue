@@ -14,17 +14,21 @@
       <p class="">{{ currentEventStateDescription }}</p>
     </div>
     <div class="">
-      <div v-if="validationErrors.length > 0" class="mb-12">
-        <p>{{ $t("event_editor.correct_errors_to_publish") }}</p>
-        <ul class="list-disc list-inside">
-          <li
-            class="text-muted text-danger-dark"
-            v-for="(error, index) in validationErrors"
-            :key="'err-' + index"
-          >
-            {{ error }}
-          </li>
-        </ul>
+      <div v-if="v$.$errors.length > 0" class="mb-12 banner banner-danger">
+        <div>
+          <p class="font-semibold">
+            {{ $t("event_editor.correct_errors_to_publish") }}
+          </p>
+          <ul class="mt-2 list-disc list-inside">
+            <li
+              class="text-muted text-danger-dark"
+              v-for="(error, index) in v$.$errors"
+              :key="'err-' + index"
+            >
+              {{ $t("validation_errors.event." + error.$uid) }}
+            </li>
+          </ul>
+        </div>
       </div>
       <div
         class="flex flex-col mt-2 space-y-2  md:items-center md:flex-row md:space-y-0 md:space-x-4"
@@ -42,9 +46,11 @@
           class=""
           v-if="isDraft || isPlanned"
           :variant="'primary'"
-          :disabled="isDraft && validationErrors.length > 0"
           :loading="localLoading"
-          @click="isDraft ? publish() : revertToDraft()"
+          :disabled="isDraft && v$.$invalid && v$.$dirty"
+          @click="
+            isDraft ? (v$.$invalid ? v$.$touch() : publish()) : revertToDraft()
+          "
         >
           {{
             isDraft
@@ -76,8 +82,8 @@
 </template>
 
 <script lang="ts">
-import { Event, EventState, getExamValidationErrors } from "@/models";
-import { defineComponent, PropType } from "@vue/runtime-core";
+import { Event, EventState } from "@/models";
+import { defineComponent, inject, PropType } from "@vue/runtime-core";
 import { icons as eventStateIcons } from "@/assets/eventStateIcons";
 import { getTranslatedString as _ } from "@/i18n";
 //import Card from "@/components/ui/Card.vue";
@@ -86,11 +92,9 @@ import { getFormattedTimestamp } from "@/utils";
 import Timestamp from "@/components/ui/Timestamp.vue";
 import CopyToClipboard from "@/components/ui/CopyToClipboard.vue";
 import { loadingMixin } from "@/mixins";
-//import Dropdown from '@/components/ui/Dropdown.vue'
 
 export default defineComponent({
   components: {
-    // Card,
     Btn,
     Timestamp,
     CopyToClipboard,
@@ -101,6 +105,11 @@ export default defineComponent({
       type: Object as PropType<Event>,
       required: true,
     },
+  },
+  setup() {
+    return {
+      v$: inject("v$"),
+    };
   },
   name: "EventStateEditor",
   methods: {
@@ -144,14 +153,6 @@ export default defineComponent({
     },
     formattedTimestamp() {
       return getFormattedTimestamp(this.modelValue.begin_timestamp ?? "");
-    },
-    validationErrors() {
-      if (!this.modelValue) {
-        return [];
-      }
-      return getExamValidationErrors(this.modelValue).map((e) =>
-        _("exam_validation_errors." + e)
-      );
     },
     permalink(): string {
       return (

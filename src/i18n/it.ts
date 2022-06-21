@@ -5,7 +5,7 @@ import {
   EventParticipationState,
   EventState,
   EventTemplateRuleType,
-  ExamValidationError,
+  // ExamValidationError,
   ExerciseState,
   ExerciseType,
   ExerciseValidationError,
@@ -438,7 +438,8 @@ export const it = {
     exercise_number: "Slot",
     choose_exercise: "Scegli esercizio",
     change_exercise: "Cambia esercizio",
-    populate_slot_title: "Seleziona esercizio per lo slot",
+    populate_slot_singular_title: "Seleziona esercizio per lo slot",
+    populate_slot_plural_title: "Seleziona esercizi per gli slot",
     mode_selection_text: "Come vuoi scegliere l'esercizio per questo slot?",
     pick_single_exercise: "Seleziona un esercizio",
     pick_exercise_from_pool: "Seleziona esercizio da un insieme",
@@ -710,6 +711,14 @@ export const it = {
     [EventState.CLOSED]: "",
   },
   validation_errors: {
+    event: {
+      modelValue: {
+        "name-required": "Inserisci un nome per l'esame",
+        "begin_timestamp-required": "Inserisci una data e ora di inizio",
+        "end_timestamp-required": "Inserisci una data e ora di fine",
+        "rules-$each": "Alcuni slot sono configurati in maniera errata",
+      },
+    },
     course: {
       "name-required": "Il nome del corso non può essere vuoto",
       "name-unique": "Esiste già un corso con questo nome",
@@ -722,19 +731,22 @@ export const it = {
       no_exercises: "Questo slot non contiene esercizi",
       no_rule_type: "Non hai impostato un criterio per popolare questo slot",
       no_valid_clauses: "Questo slot non contiene tag",
+      not_satisfied: "Non ci sono esercizi che soddisfano le condizioni scelte",
+      not_satisfied_by_enough:
+        "Non ci sono abbastanza esercizi che soddisfano le condizioni scelte",
     },
   },
-  exam_validation_errors: {
-    [ExamValidationError.NO_NAME]: "Non hai assegnato un nome all'esame",
-    [ExamValidationError.NO_VALID_TEMPLATE_RULES]:
-      "Non hai creato slot per gli esercizi per questo esame",
-    [ExamValidationError.NO_END_TIMESTAMP]:
-      "Non hai assegnato una data e ora di fine a questo esame",
-    [ExamValidationError.NO_BEGIN_TIMESTAMP]:
-      "Non hai assegnato una data e ora di inizio a questo esame",
-    [ExamValidationError.INVALID_TIMESTAMPS]:
-      "Hai selezionato data e ora di inizio e fine non corrette per questo esame",
-  },
+  // exam_validation_errors: {
+  //   [ExamValidationError.NO_NAME]: "Non hai assegnato un nome all'esame",
+  //   [ExamValidationError.NO_VALID_TEMPLATE_RULES]:
+  //     "Non hai creato slot per gli esercizi per questo esame",
+  //   [ExamValidationError.NO_END_TIMESTAMP]:
+  //     "Non hai assegnato una data e ora di fine a questo esame",
+  //   [ExamValidationError.NO_BEGIN_TIMESTAMP]:
+  //     "Non hai assegnato una data e ora di inizio a questo esame",
+  //   [ExamValidationError.INVALID_TIMESTAMPS]:
+  //     "Hai selezionato data e ora di inizio e fine non corrette per questo esame",
+  // },
   exercise_validation_errors: {
     [ExerciseValidationError.BLANK_TEXT]: "Questo esercizio è senza testo",
     [ExerciseValidationError.NO_CHOICES]:

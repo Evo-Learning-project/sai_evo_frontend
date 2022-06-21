@@ -2,15 +2,23 @@
   <div>
     <div
       class="my-3 transition-shadow duration-75 ease-in-out  card shadow-elevation hover-shadow-elevation-2"
-      :class="[modelValue._ordering % 2 ? 'bg-white' : 'card-filled']"
+      :class="[
+        invalid
+          ? 'bg-danger bg-opacity-10'
+          : modelValue._ordering % 2
+          ? 'bg-white'
+          : 'card-filled',
+      ]"
     >
       <div class="flex items-center">
+        <!-- drag handle -->
         <span
           v-if="!randomOrder"
           class="my-auto mr-2 text-lg cursor-move  drag-handle material-icons-outlined opacity-70"
         >
           drag_indicator
         </span>
+        <!-- heading -->
         <h4>
           {{ $t("event_template_rule_editor.exercise_number") }}
           {{ displayedOrdering }}
@@ -19,13 +27,14 @@
           >
         </h4>
         <div class="flex items-center my-auto ml-auto space-x-2">
+          <!-- settings button -->
           <Btn :variant="'secondary'" @click="showRuleDialog()" :size="'sm'">
             <div class="flex items-center">
               <span class="material-icons mr-1.5"> settings </span
               >{{ $t("event_template_rule_editor.choose_exercise") }}
             </div>
           </Btn>
-          <!--@click="deleteRule()"-->
+          <!-- delete button -->
           <Btn
             :tooltip="$t('misc.delete')"
             :variant="'icon'"
@@ -38,6 +47,7 @@
           </Btn>
         </div>
       </div>
+      <!-- exercises preview -->
       <div
         v-if="
           isSlotPopulated &&
@@ -57,6 +67,7 @@
           }}
         </p>
         <div>
+          <!-- previews -->
           <div
             v-if="!loadingPreview"
             :class="[
@@ -78,18 +89,29 @@
               "
             ></MinimalExercisePreview>
           </div>
-          <div v-else class="grid grid-cols-2 gap-2">
+          <div
+            v-else
+            :class="[
+              ruleExercises.length > 1 ? 'grid md:grid-cols-2 gap-2' : '',
+              'overflow-x-auto md:overflow-visible',
+            ]"
+          >
             <SkeletonCard :short="true"></SkeletonCard>
-            <SkeletonCard :short="true"></SkeletonCard>
+            <SkeletonCard
+              v-if="ruleExercises.length > 1"
+              :short="true"
+            ></SkeletonCard>
           </div>
         </div>
       </div>
+      <!-- tags preview -->
       <div
         v-else-if="
           isSlotPopulated &&
           modelValue.rule_type == EventTemplateRuleType.TAG_BASED
         "
         class="mt-4"
+        :class="{ 'opacity-40': invalid }"
       >
         <p class="mb-2 text-muted" v-if="modelValue.amount === 1">
           {{ $t("event_template_rule_editor.tag_based_description") }}
@@ -129,6 +151,7 @@
           </div>
         </div>
       </div>
+      <!-- error message -->
       <slot name="error"></slot>
     </div>
     <Dialog
@@ -151,12 +174,14 @@
           class="-ml-3.5 mt-1.25px"
           @click="setRuleMode(null)"
         >
-          <span class="material-icons-outlined"> arrow_back </span>
+          <span class="material-icons-outlined"> restart_alt </span>
         </Btn>
       </template>
       <template v-slot:title>
         {{
-          $t("event_template_rule_editor.populate_slot_title") +
+          (modelValue.amount === 1
+            ? $t("event_template_rule_editor.populate_slot_singular_title")
+            : $t("event_template_rule_editor.populate_slot_plural_title")) +
           " " +
           displayedOrdering
         }}
@@ -290,12 +315,7 @@
 
 <script lang="ts">
 import Dialog from "@/components/ui/Dialog.vue";
-import {
-  EventTemplateRule,
-  EventTemplateRuleType,
-  Exercise,
-  //Tag as ITag
-} from "@/models";
+import { EventTemplateRule, EventTemplateRuleType, Exercise } from "@/models";
 import { defineComponent, PropType } from "@vue/runtime-core";
 import Btn from "@/components/ui/Btn.vue";
 import ExercisePicker from "@/components/teacher/ExercisePicker.vue";
@@ -306,8 +326,6 @@ import { courseIdMixin, loadingMixin } from "@/mixins";
 import TagBasedEventTemplateRuleEditor from "./TagBasedEventTemplateRuleEditor.vue";
 import Tag from "@/components/ui/Tag.vue";
 import { getTranslatedString as _ } from "@/i18n";
-// import { eventTemplateRuleValidation } from "@/validation/models";
-// import useVuelidate from "@vuelidate/core";
 
 export default defineComponent({
   components: {
@@ -341,28 +359,24 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
+    invalid: {
+      type: Boolean,
+      required: true,
+    },
   },
-  // setup() {
-  //   return { v$: useVuelidate() };
-  // },
-  // validations() {
-  //   return {
-  //     modelValue: eventTemplateRuleValidation,
-  //   };
-  // },
   mixins: [courseIdMixin, loadingMixin],
   async created() {
+    // fetch exercises related to this rule
     if (
       this.modelValue.rule_type == EventTemplateRuleType.ID_BASED &&
       (this.modelValue.exercises?.length ?? 0) > 0
     ) {
       this.loadingPreview = true;
       try {
-        const previews = await getExercisesById(
+        this.previewExercises = await getExercisesById(
           this.courseId,
           this.modelValue.exercises as string[]
         );
-        this.previewExercises.push(...previews);
       } catch (e) {
         this.setErrorNotification(e);
       } finally {
@@ -373,6 +387,7 @@ export default defineComponent({
   data() {
     return {
       showDialog: false,
+      // rule is ID-based and only one exercise is allowed (same for everyone)
       pickOneExerciseOnly: null as boolean | null,
       previewExercises: [] as Exercise[],
       EventTemplateRuleType,
@@ -385,7 +400,6 @@ export default defineComponent({
       this.$emit("ruleDialogClose");
     },
     emitUpdate(key: keyof EventTemplateRule, value: unknown) {
-      console.log("EMITTING", { key, value });
       this.$emit("updateRule", {
         field: key,
         value,
@@ -401,11 +415,8 @@ export default defineComponent({
         ]);
       }
       // fetch exercise from server and add to local array for preview
-      // TODO the withLoading caused dialog to disappear on adding an exercise - investigate
-      // await this.withLoading(async () => {
       const preview = await getExercisesById(this.courseId, [exercise.id]);
       this.previewExercises.push(...preview);
-      // });
     },
     onRemoveExercise(exercise: Exercise) {
       // emit modelValue update of new exercise list without removed one
@@ -423,17 +434,25 @@ export default defineComponent({
     },
     setRuleMode(ruleType: EventTemplateRuleType, pickOne = false) {
       if (
-        ruleType == null &&
+        ruleType === null &&
         !confirm(_("event_template_rule_editor.unset_rule_type_confirmation"))
       ) {
         return;
       }
+      // TODO if ruleType === null reset slot (clear exercises and clauses)
       this.emitUpdate("rule_type", ruleType);
       this.pickOneExerciseOnly = pickOne;
     },
   },
   computed: {
     displayedOrdering(): String {
+      /**
+       * Returns the appropriate slot order text for the rule: if all
+       * rules have amount === 1, it's simply the target slot number,
+       * otherwise it takes into account the actual amount of exercises
+       * that precede this rule (sum of amounts of preceding rules) and
+       * the amount of this rule
+       */
       const baseOrdering = this.ordering + 1;
       if (this.modelValue.amount === 1) {
         return String(baseOrdering);
@@ -462,7 +481,11 @@ export default defineComponent({
         return (this.modelValue.exercises?.length ?? 0) > 0;
       }
       if (this.modelValue.rule_type == EventTemplateRuleType.TAG_BASED) {
-        return (this.modelValue.clauses?.length ?? 0) > 0;
+        // there's at least a non-empty clause
+        return (
+          (this.modelValue.clauses?.length ?? 0) > 0 &&
+          this.modelValue.clauses?.some((c) => c.tags.length > 0)
+        );
       }
       return false;
     },
