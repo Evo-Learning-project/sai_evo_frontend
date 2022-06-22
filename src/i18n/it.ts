@@ -716,7 +716,10 @@ export const it = {
         "name-required": "Inserisci un nome per l'esame",
         "begin_timestamp-required": "Inserisci una data e ora di inizio",
         "end_timestamp-required": "Inserisci una data e ora di fine",
-        "rules-$each": "Alcuni slot sono configurati in maniera errata",
+        template: {
+          "rules-$each": "Alcuni slot sono configurati in maniera errata",
+          "rules-required": "Aggiungi almeno uno slot",
+        },
       },
     },
     course: {
@@ -728,12 +731,16 @@ export const it = {
       "name-unique": "Esiste già un corso con questo nome",
     },
     eventTemplateRule: {
-      no_exercises: "Questo slot non contiene esercizi",
-      no_rule_type: "Non hai impostato un criterio per popolare questo slot",
-      no_valid_clauses: "Questo slot non contiene tag",
-      not_satisfied: "Non ci sono esercizi che soddisfano le condizioni scelte",
-      not_satisfied_by_enough:
-        "Non ci sono abbastanza esercizi che soddisfano le condizioni scelte",
+      modelValue: {
+        "rule_type-ruleTypeSet":
+          "Non hai impostato un criterio per popolare questo slot",
+        "exercises-idBasedRulePopulated": "Questo slot non contiene esercizi",
+        "clauses-tagBasedRulePopulated": "Questo slot non contiene tag",
+        "satisfying-tagBasedRuleSatisfied":
+          "Non ci sono abbastanza esercizi che soddisfano le condizioni scelte",
+        // not_satisfied_by_enough:
+        //   "Non ci sono abbastanza esercizi che soddisfano le condizioni scelte",
+      },
     },
   },
   // exam_validation_errors: {

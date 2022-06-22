@@ -33,7 +33,8 @@ export const eventTemplateRuleValidation = {
 export const eventTemplateValidation = {
   rules: {
     $each: helpers.forEach(eventTemplateRuleValidation),
-    $autoDirty: true,
+    //$autoDirty: true,
+    required,
   },
 };
 
@@ -50,7 +51,7 @@ export const eventValidation = {
     required,
     $autoDirty: true,
   },
-  // template: {
-  //   eventTemplateValidation,
-  // },
+  template: {
+    ...eventTemplateValidation,
+  },
 };

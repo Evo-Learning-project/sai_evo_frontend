@@ -2,13 +2,7 @@
   <div>
     <div
       class="my-3 transition-shadow duration-75 ease-in-out  card shadow-elevation hover-shadow-elevation-2"
-      :class="[
-        invalid
-          ? 'bg-danger bg-opacity-10'
-          : modelValue._ordering % 2
-          ? 'bg-white'
-          : 'card-filled',
-      ]"
+      :class="[modelValue._ordering % 2 ? 'bg-white' : 'card-filled']"
     >
       <div class="flex items-center">
         <!-- drag handle -->
@@ -19,7 +13,7 @@
           drag_indicator
         </span>
         <!-- heading -->
-        <h4>
+        <h4 :class="{ 'text-danger-dark': v$.$errors.length > 0 }">
           {{ $t("event_template_rule_editor.exercise_number") }}
           {{ displayedOrdering }}
           <span v-if="modelValue.amount > 1" class="ml-2 text-muted"
@@ -111,7 +105,7 @@
           modelValue.rule_type == EventTemplateRuleType.TAG_BASED
         "
         class="mt-4"
-        :class="{ 'opacity-40': invalid }"
+        :class="{ 'opacity-40': v$.$errors.length > 0 }"
       >
         <p class="mb-2 text-muted" v-if="modelValue.amount === 1">
           {{ $t("event_template_rule_editor.tag_based_description") }}
@@ -152,7 +146,14 @@
         </div>
       </div>
       <!-- error message -->
-      <slot name="error"></slot>
+      <slot v-if="displayErrors" name="error"></slot>
+      <p
+        class="text-danger-dark"
+        v-for="error in v$.$errors"
+        :key="modelValue.id + '-' + error.$uid"
+      >
+        {{ $t("validation_errors.eventTemplateRule." + error.$uid) }}
+      </p>
     </div>
     <Dialog
       :showDialog="showDialog"
@@ -326,6 +327,8 @@ import { courseIdMixin, loadingMixin } from "@/mixins";
 import TagBasedEventTemplateRuleEditor from "./TagBasedEventTemplateRuleEditor.vue";
 import Tag from "@/components/ui/Tag.vue";
 import { getTranslatedString as _ } from "@/i18n";
+import useVuelidate from "@vuelidate/core";
+import { eventTemplateRuleValidation } from "@/validation/models";
 
 export default defineComponent({
   components: {
@@ -338,6 +341,14 @@ export default defineComponent({
     Tag,
   },
   name: "EventTemplateRuleEditor",
+  setup() {
+    return {
+      v$: useVuelidate(),
+    };
+  },
+  validations() {
+    return { modelValue: eventTemplateRuleValidation };
+  },
   props: {
     modelValue: {
       type: Object as PropType<EventTemplateRule>,
@@ -398,6 +409,7 @@ export default defineComponent({
     onCloseDialog() {
       this.showDialog = false;
       this.$emit("ruleDialogClose");
+      this.v$.$touch();
     },
     emitUpdate(key: keyof EventTemplateRule, value: unknown) {
       this.$emit("updateRule", {

@@ -45,18 +45,14 @@
               onRuleDelete(element);
               $emit('templateChanged');
             "
-            @ruleDialogClose="v$.$touch()"
-            :invalid="
-              Object.values(
-                v$.$errors[0]?.$response?.$errors[index] ?? {}
-              ).some((e) => (e?.length ?? 0) > 0)
-            "
           >
-            <template v-slot:error>
+            <!-- v$.modelValue.template.rules.$model[index].$touch()-->
+            <!-- <template v-slot:error>
               <p
                 class="font-light text-muted text-danger-dark"
                 v-if="
-                  v$.$errors[0]?.$response?.$errors[index].rule_type.length > 0
+                  v$.modelValue.template.rules.$each.$response.$errors[index]
+                    .rule_type.length > 0 && v$.modelValue.template.rules.$dirty
                 "
               >
                 {{ $t("validation_errors.eventTemplateRule.no_rule_type") }}
@@ -64,7 +60,8 @@
               <p
                 class="font-light text-muted text-danger-dark"
                 v-if="
-                  v$.$errors[0]?.$response?.$errors[index].exercises.length > 0
+                  v$.modelValue.template.rules.$each.$response.$errors[index]
+                    .exercises.length > 0 && v$.modelValue.template.rules.$dirty
                 "
               >
                 {{ $t("validation_errors.eventTemplateRule.no_exercises") }}
@@ -72,7 +69,8 @@
               <p
                 class="font-light text-muted text-danger-dark"
                 v-if="
-                  v$.$errors[0]?.$response?.$errors[index].clauses.length > 0
+                  v$.modelValue.template.rules.$each.$response.$errors[index]
+                    .clauses.length > 0 && v$.modelValue.template.rules.$dirty
                 "
               >
                 {{ $t("validation_errors.eventTemplateRule.no_valid_clauses") }}
@@ -80,8 +78,10 @@
               <p
                 class="font-light text-muted text-danger-dark"
                 v-if="
-                  v$.$errors[0]?.$response?.$errors[index].satisfying?.length >
-                    0 && element.amount === 1
+                  v$.modelValue.template.rules.$each.$response.$errors[index]
+                    .satisfying.length > 0 &&
+                  element.amount === 1 &&
+                  v$.modelValue.template.rules.$dirty
                 "
               >
                 {{ $t("validation_errors.eventTemplateRule.not_satisfied") }}
@@ -89,8 +89,10 @@
               <p
                 class="font-light text-muted text-danger-dark"
                 v-if="
-                  v$.$errors[0]?.$response?.$errors[index].satisfying?.length >
-                    0 && element.amount > 1
+                  v$.modelValue.template.rules.$each.$response.$errors[index]
+                    .satisfying.length > 0 &&
+                  element.amount > 1 &&
+                  v$.modelValue.template.rules.$dirty
                 "
               >
                 {{
@@ -99,7 +101,7 @@
                   )
                 }}
               </p>
-            </template>
+            </template> -->
           </EventTemplateRuleEditor>
         </template>
       </draggable>
@@ -146,7 +148,7 @@
 <script lang="ts">
 import { v4 as uuid4 } from "uuid";
 import Btn from "@/components/ui/Btn.vue";
-import { defineComponent, PropType } from "@vue/runtime-core";
+import { defineComponent, inject, PropType } from "@vue/runtime-core";
 import EventTemplateRuleEditor from "./EventTemplateRuleEditor.vue";
 import {
   EventTemplate,
@@ -172,14 +174,16 @@ import DropdownMenu from "@/components/ui/DropdownMenu.vue";
 import NumberInput from "@/components/ui/NumberInput.vue";
 export default defineComponent({
   setup() {
-    // TODO use inject to get v$ from EventEditor parent
-    return { v$: useVuelidate() };
-  },
-  validations() {
     return {
-      modelValue: eventTemplateValidation,
+      v$: inject("v$"),
+      //  v$: useVuelidate()
     };
   },
+  // validations() {
+  //   return {
+  //     modelValue: eventTemplateValidation,
+  //   };
+  // },
   components: {
     Btn,
     EventTemplateRuleEditor,

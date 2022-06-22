@@ -22,7 +22,7 @@
           <ul class="mt-2 list-disc list-inside">
             <li
               class="text-muted text-danger-dark"
-              v-for="(error, index) in v$.$errors"
+              v-for="(error, index) in relevantErrors"
               :key="'err-' + index"
             >
               {{ $t("validation_errors.event." + error.$uid) }}
@@ -47,7 +47,7 @@
           v-if="isDraft || isPlanned"
           :variant="'primary'"
           :loading="localLoading"
-          :disabled="isDraft && v$.$invalid && v$.$dirty"
+          :disabled="false && isDraft && v$.$invalid && v$.$dirty"
           @click="
             isDraft ? (v$.$invalid ? v$.$touch() : publish()) : revertToDraft()
           "
@@ -161,6 +161,23 @@ export default defineComponent({
           name: "ExamParticipationPreview",
           params: { examId: this.modelValue.id },
         }).fullPath
+      );
+    },
+    relevantErrors() {
+      // remove the errors that are relative to event template rules as those
+      // are displayed in the rule editor component
+      return (
+        (this.v$ as any).$errors
+          // TODO find a less hacky way
+          .filter(
+            (e: { $uid: string }) =>
+              ![
+                "rule_type-ruleTypeSet",
+                "exercises-idBasedRulePopulated",
+                "clauses-tagBasedRulePopulated",
+                "satisfying-tagBasedRuleSatisfied",
+              ].includes(e.$uid.slice("modelValue".length + 1))
+          )
       );
     },
   },
