@@ -14,6 +14,7 @@
       <p class="">{{ currentEventStateDescription }}</p>
     </div>
     <div class="">
+      <!-- TODO shake when button is clicked and there are errors -->
       <div v-if="v$.$errors.length > 0" class="mb-12 banner banner-danger">
         <div>
           <p class="font-semibold">
