@@ -165,8 +165,17 @@ export const en = {
     error: "An error occurred while saving your changes",
   },
   event_template_editor: {
+    add_more_rules: "Aggiungi più slot",
+    editor_title: "Exam template",
+    introduction_text:
+      "Crea il modello per questo esame. Per ogni slot, puoi scegliere se far vedere a ogni studente lo stesso esercizio o se utilizzare i criteri di scelta casuale.",
     add_rule: "Add slot",
+    confirm_delete_rule: "Sei sicuro di voler eliminare questo slot?",
     randomize_rule_order: "Randomize order of slots",
+    rule_order_randomization_off:
+      "Gli slot verranno assegnati agli studenti nell'ordine in cui sono disposti qui",
+    rule_order_randomization_on:
+      "Gli slot verranno assegnati agli studenti in ordine casuale",
   },
   event_template_rule_editor: {
     exercise_number: "Slot",

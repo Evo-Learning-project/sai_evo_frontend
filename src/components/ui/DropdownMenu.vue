@@ -6,7 +6,10 @@
       :tooltip="!expanded ? tooltip : ''"
       @click="$emit('toggleExpanded')"
     >
-      <span class="material-icons-outlined">{{ icon }}</span>
+      <slot name="icon"></slot>
+      <span v-if="!$slots.icon?.()" class="material-icons-outlined">{{
+        icon
+      }}</span>
     </Btn>
     <div
       class="absolute overflow-hidden transition-all duration-75 ease-in origin-top-left transform bg-white  card shadow-popup"

@@ -46,8 +46,9 @@
         <div class="">
           <div
             v-if="$store.getters['shared/isAuthenticated']"
-            class="flex items-center ml-4 space-x-2 md:ml-6"
+            class="flex items-center ml-4 md:ml-6"
           >
+            <LocaleSelector v-if="false"></LocaleSelector>
             <Btn
               :tooltip="$t('help.help_guide_label')"
               @click="onHelpCenterOpen()"
@@ -58,7 +59,7 @@
                 help_outline
               </span></Btn
             >
-            <p class="text-xs text-lightText md:text-base">
+            <p class="ml-4 mr-1 text-xs text-lightText md:text-base">
               {{ $store.getters["shared/email"] }}
             </p>
             <p
@@ -350,6 +351,7 @@ import {
   teacherTourSteps,
   tourOptions,
 } from "@/const";
+import LocaleSelector from "@/components/ui/LocaleSelector.vue";
 
 const LOCAL_STORAGE_FIX_SIDEBAR_KEY = "sai_evo_fix_sidebar";
 const LOCAL_STORAGE_HAS_TAKEN_SIDEBAR_TOUR_KEY = "has_taken_sidebar_tour";
@@ -483,7 +485,7 @@ export default defineComponent({
       };
     },
   },
-  components: { ErrorView, SnackBar, Btn, HelpCenter },
+  components: { ErrorView, SnackBar, Btn, HelpCenter, LocaleSelector },
 });
 </script>
 

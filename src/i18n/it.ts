@@ -913,4 +913,8 @@ export const it = {
       },
     },
   },
+  locales: {
+    it: "Italiano",
+    en: "English",
+  },
 };
