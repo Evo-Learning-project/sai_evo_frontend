@@ -84,10 +84,11 @@ export const getAllFieldsReportPreset = (): ReportSettings => ({
     ReportField.STUDENT_EMAIL,
     ReportField.STUDENT_FULL_NAME,
     ReportField.STUDENT_MAT,
-    ReportField.SCORE,
+    ReportField.STUDENT_COURSE,
     ReportField.EXERCISES_LABEL,
     ReportField.EXERCISES_ANSWER,
     ReportField.EXERCISES_SCORE,
+    ReportField.SCORE,
   ],
   // reportType: ReportType.CSV,
 });

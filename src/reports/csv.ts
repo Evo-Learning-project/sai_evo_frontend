@@ -26,7 +26,6 @@ const getEventParticipationHeaders = (
   reportSettings.fields.includes(ReportField.EXERCISES_LABEL)
     ? ["begin_timestamp", "end_timestamp"]
     : []),
-  ...(reportSettings.fields.includes(ReportField.SCORE) ? ["score"] : []),
   ...(reportSettings.fields.includes(ReportField.EXERCISES_ANSWER) ||
   reportSettings.fields.includes(ReportField.EXERCISES_SCORE) ||
   reportSettings.fields.includes(ReportField.EXERCISES_LABEL)
@@ -101,6 +100,7 @@ const getEventParticipationHeaders = (
       })
     : []
   ).flat(),
+  ...(reportSettings.fields.includes(ReportField.SCORE) ? ["score"] : []),
 ];
 
 const getHeaderString = (header: string) => {
@@ -184,15 +184,34 @@ export const getParticipationsAsCsv = (
   reportSettings: ReportSettings
 ): string => {
   const headers = getEventParticipationHeaders(participations, reportSettings);
-  const replacer = (key: string, value: string) =>
-    value === null
-      ? ""
-      : typeof value === "string"
-      ? value
-          .replace(/\\n/g, "\n")
-          .replace(/<img src="[^"]+"/g, "[img]")
-          .replace(/"/g, '""')
-      : value;
+  // const replacer = (key: string, value: string) =>
+  //   value === null
+  //     ? ""
+  //     : typeof value === "string"
+  //     ? value
+  //         .replace(/\\n/g, "\n")
+  //         .replace(/<img src="[^"]+"/g, "[img]")
+  //         .replace(/"/g, '""')
+  //     : value;
+
+  const replacer = (key: string, value: string) => {
+    if (value === null) {
+      return null;
+    }
+    if (!Number.isNaN(parseFloat(value))) {
+      // ! TODO keep an eye on this, locale problems
+      return String(parseFloat(value)).replace(".", ",");
+    }
+
+    if (typeof value === "string") {
+      return value
+        .replace(/\\n/g, "\n")
+        .replace(/<img src="[^"]+"/g, "[img]")
+        .replace(/"/g, '""');
+    }
+
+    return value;
+  };
 
   const ret = [
     headers.map((h) => getHeaderString(h)).join(","),
