@@ -14,8 +14,12 @@
       <p class="">{{ currentEventStateDescription }}</p>
     </div>
     <div class="">
-      <!-- TODO shake when button is clicked and there are errors -->
-      <div v-if="v$.$errors.length > 0" class="mb-12 banner banner-danger">
+      <div
+        :class="{ shake: shakeErrorBanner }"
+        v-if="v$.$errors.length > 0"
+        @animationend="shakeErrorBanner = false"
+        class="mb-12 banner banner-danger"
+      >
         <div>
           <p class="font-semibold">
             {{ $t("event_editor.correct_errors_to_publish") }}
@@ -50,7 +54,11 @@
           :loading="localLoading"
           :disabled="false && isDraft && v$.$invalid && v$.$dirty"
           @click="
-            isDraft ? (v$.$invalid ? v$.$touch() : publish()) : revertToDraft()
+            isDraft
+              ? v$.$invalid
+                ? onInvalidSubmission()
+                : publish()
+              : revertToDraft()
           "
         >
           {{
@@ -113,9 +121,30 @@ export default defineComponent({
     };
   },
   name: "EventStateEditor",
+  data() {
+    return {
+      shakeErrorBanner: false,
+    };
+  },
   methods: {
     emitUpdate(value: EventState) {
       this.$emit("update:modelValue", value);
+    },
+    onInvalidSubmission() {
+      (this.v$ as any).$touch();
+      window.scrollTo(
+        0,
+        document.body.scrollHeight || document.documentElement.scrollHeight
+      );
+      // scroll to bottom of page to account for error messages appearing
+      // in order to keep error banner in view
+      this.$nextTick(() =>
+        window.scrollTo(
+          0,
+          document.body.scrollHeight || document.documentElement.scrollHeight
+        )
+      );
+      this.shakeErrorBanner = true;
     },
     publish() {
       this.emitUpdate(EventState.PLANNED);
