@@ -65,6 +65,8 @@ export const it = {
     practice_summary: "Riepilogo esercitazione",
   },
   event_participation_page: {
+    times_up: "Tempo scaduto",
+    all_answers_saved: "Tutte le tue risposte sono state salvate",
     exercise: "Esercizio",
     of: "di",
     next_exercise: "Avanti",

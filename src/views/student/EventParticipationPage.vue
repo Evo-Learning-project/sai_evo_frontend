@@ -1,11 +1,42 @@
 <template>
   <div class="flex flex-col flex-grow h-full">
+    <div
+      v-if="showTimeUpBackdrop"
+      style="z-index: 99999"
+      class="fixed top-0 left-0 w-full h-full bg-opacity-50 bg-dark"
+    >
+      <div
+        class="fixed z-50 w-full px-6 py-4 text-center transform -translate-x-1/2 -translate-y-1/2 rounded  md:w-max top-1/2 left-1/2"
+      >
+        <p
+          style="font-size: 10rem"
+          class="opacity-50 material-icons-outlined text-lightText"
+        >
+          timer_off
+        </p>
+        <h3
+          class="pt-1 mx-auto rounded-t  md:bg-transparent text-lightText md:px-2"
+          style="text-shadow: 0.5px 0.5px 4px rgb(0 0 0 / 50%)"
+        >
+          {{ $t("event_participation_page.times_up") }}
+        </h3>
+        <p
+          class="pb-1 rounded-b  md:bg-transparent text-lightText md:mx-2 md:px-2"
+          style="text-shadow: 0.5px 0.5px 4px rgb(0 0 0 / 50%)"
+        >
+          {{ $t("event_participation_page.all_answers_saved") }}
+        </p>
+      </div>
+    </div>
     <teleport v-if="mounted" to="#main-student-header-right">
-      <CloudSaveStatus
-        :saving="saving"
-        :hadError="savingError"
-      ></CloudSaveStatus
-    ></teleport>
+      <div class="flex items-start mt-1 space-x-10">
+        <CloudSaveStatus
+          :saving="saving"
+          :hadError="savingError"
+        ></CloudSaveStatus>
+        <Countdown @timeUp="onTimeUp()"></Countdown>
+      </div>
+    </teleport>
 
     <div class="mt-3" v-if="firstLoading">
       <SlotSkeleton class="mb-24"></SlotSkeleton>
@@ -138,6 +169,7 @@ import {
 } from "@/api/events";
 import SlotSkeleton from "@/components/ui/skeletons/SlotSkeleton.vue";
 import { subscribeToSubmissionSlotChanges } from "@/ws/modelSubscription";
+import Countdown from "@/components/ui/Countdown.vue";
 const { mapActions, mapMutations } = createNamespacedHelpers("student");
 
 export default defineComponent({
@@ -147,6 +179,7 @@ export default defineComponent({
     Btn,
     Dialog,
     SlotSkeleton,
+    Countdown,
   },
   name: "EventParticipationPage",
   mixins: [courseIdMixin, eventIdMixin, savingMixin, loadingMixin],
@@ -202,6 +235,7 @@ export default defineComponent({
       } as DialogData,
       ws: null as WebSocket | null,
       EventType,
+      showTimeUpBackdrop: false,
     };
   },
   methods: {
@@ -226,7 +260,6 @@ export default defineComponent({
       );
     },
     async onBlur(slot: EventParticipationSlot) {
-      console.log("blur", slot);
       try {
         await this.slotAutoSaveManagers[slot.id].flush();
       } catch (e) {
@@ -277,6 +310,10 @@ export default defineComponent({
           courseId: this.courseId,
         });
       });
+    },
+    async onTimeUp() {
+      this.showTimeUpBackdrop = true;
+      setTimeout(async () => await this.onTurnIn(), 500);
     },
     async onTurnIn() {
       this.showConfirmDialog = false;
