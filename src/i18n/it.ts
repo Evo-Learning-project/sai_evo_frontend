@@ -488,8 +488,10 @@ export const it = {
     end_timestamp: "Data e ora di fine",
     instructions: "Istruzioni (opzionale)",
     editor_title: "Editor esame",
-    flow_rules: "Regole di svolgimento",
-    access_rules: "Regole di accesso",
+    flow_rules: "Visualizzazione esercizi",
+    access_rules: "Accesso all'esame",
+    time_limit_rules: "Limite di tempo",
+    time_limit_label: "Imponi un limite di tempo ai partecipanti",
     exercises_shown_at_a_time_label:
       "Numero di esercizi da mostrare per pagina",
     allow_everyone_access_label:
