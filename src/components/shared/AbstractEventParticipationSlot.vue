@@ -909,6 +909,7 @@ export default defineComponent({
         return this.modelValue.answer_text;
       },
       set(val: string) {
+        console.log("updateAnswerText", val);
         this.$emit("updateAnswerText", { slot: this.modelValue, payload: val });
       },
     },

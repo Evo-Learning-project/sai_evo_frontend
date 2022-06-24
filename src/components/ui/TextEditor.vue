@@ -109,6 +109,7 @@ export default defineComponent({
     },
     onEditorChange({ quill, html, text }: unknown) {
       this.content = html;
+      console.log("onEditorChange", html, text);
       this.$emit("update:modelValue", html);
     },
     onEditorReady(quill: any) {
