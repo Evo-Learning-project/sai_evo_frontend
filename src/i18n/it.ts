@@ -495,6 +495,7 @@ export const it = {
     manage_time_limit_exceptions: "Gestisci eccezioni",
     time_limit_exceptions: "eccezioni",
     no_time_limit_description: "Dovrai chiudere manualmente l'esame.",
+    exceptions_to_time_limit: "Eccezioni al limite di tempo",
     time_limit_description:
       "Al termine del tempo, l'esame si chiude automaticamente.",
     exercises_shown_at_a_time_label:

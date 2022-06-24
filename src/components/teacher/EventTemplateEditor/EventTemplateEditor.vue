@@ -1,6 +1,6 @@
 <template>
   <div class="">
-    <h3 class="mb-3.5">{{ $t("event_template_editor.editor_title") }}</h3>
+    <h4 class="mb-1.5">{{ $t("event_template_editor.editor_title") }}</h4>
     <div class="mb-6">
       <p class="mb-6 text-muted" v-if="!showEditWarning">
         {{ $t("event_template_editor.introduction_text") }}
@@ -46,62 +46,6 @@
               $emit('templateChanged');
             "
           >
-            <!-- v$.modelValue.template.rules.$model[index].$touch()-->
-            <!-- <template v-slot:error>
-              <p
-                class="font-light text-muted text-danger-dark"
-                v-if="
-                  v$.modelValue.template.rules.$each.$response.$errors[index]
-                    .rule_type.length > 0 && v$.modelValue.template.rules.$dirty
-                "
-              >
-                {{ $t("validation_errors.eventTemplateRule.no_rule_type") }}
-              </p>
-              <p
-                class="font-light text-muted text-danger-dark"
-                v-if="
-                  v$.modelValue.template.rules.$each.$response.$errors[index]
-                    .exercises.length > 0 && v$.modelValue.template.rules.$dirty
-                "
-              >
-                {{ $t("validation_errors.eventTemplateRule.no_exercises") }}
-              </p>
-              <p
-                class="font-light text-muted text-danger-dark"
-                v-if="
-                  v$.modelValue.template.rules.$each.$response.$errors[index]
-                    .clauses.length > 0 && v$.modelValue.template.rules.$dirty
-                "
-              >
-                {{ $t("validation_errors.eventTemplateRule.no_valid_clauses") }}
-              </p>
-              <p
-                class="font-light text-muted text-danger-dark"
-                v-if="
-                  v$.modelValue.template.rules.$each.$response.$errors[index]
-                    .satisfying.length > 0 &&
-                  element.amount === 1 &&
-                  v$.modelValue.template.rules.$dirty
-                "
-              >
-                {{ $t("validation_errors.eventTemplateRule.not_satisfied") }}
-              </p>
-              <p
-                class="font-light text-muted text-danger-dark"
-                v-if="
-                  v$.modelValue.template.rules.$each.$response.$errors[index]
-                    .satisfying.length > 0 &&
-                  element.amount > 1 &&
-                  v$.modelValue.template.rules.$dirty
-                "
-              >
-                {{
-                  $t(
-                    "validation_errors.eventTemplateRule.not_satisfied_by_enough"
-                  )
-                }}
-              </p>
-            </template> -->
           </EventTemplateRuleEditor>
         </template>
       </draggable>

@@ -79,7 +79,7 @@
       {{ $t("event_editor.instructions") }}</TextEditor
     >
     <div class="flex flex-col mt-12">
-      <h3 class="mb-4">{{ $t("event_editor.flow_rules") }}</h3>
+      <h4 class="mb-1.5">{{ $t("event_editor.flow_rules") }}</h4>
       <div class="mb-2">
         <RadioGroup
           class="-ml-1.5"
@@ -98,7 +98,7 @@
     </div>
 
     <div class="flex flex-col mt-12">
-      <h3 class="mb-4">{{ $t("event_editor.access_rules") }}</h3>
+      <h4 class="mb-1.5">{{ $t("event_editor.access_rules") }}</h4>
       <RadioGroup
         class="-ml-1.5 mb-2"
         :modelValue="modelValue.access_rule"
@@ -160,7 +160,7 @@
     </div>
 
     <div class="flex flex-col mt-12">
-      <h3 class="mb-4">{{ $t("event_editor.time_limit_rules") }}</h3>
+      <h4 class="mb-1.5">{{ $t("event_editor.time_limit_rules") }}</h4>
       <div
         class="flex flex-col mb-2 -mt-2 space-y-4  md:flex-row md:space-x-8 md:space-y-0"
       >
@@ -189,13 +189,8 @@
             <p class="text-sm select-none text-muted">minuti</p>
           </div>
           <Btn
-            @click="showAccessRuleDialog = true"
-            :class="[
-              modelValue.access_rule === EventAccessRule.DENY_ACCESS
-                ? 'visible'
-                : 'invisible',
-              'md:ml-10',
-            ]"
+            @click="showTimeLimitDialog = true"
+            class="md:ml-10"
             :size="'sm'"
             :variant="'secondary'"
           >
@@ -283,6 +278,41 @@
     </Dialog>
 
     <Dialog
+      @yes="showTimeLimitDialog = false"
+      :showDialog="showTimeLimitDialog"
+      :confirmOnly="true"
+      :large="true"
+    >
+      <template v-slot:title>
+        {{ $t("event_editor.exceptions_to_time_limit") }}
+      </template>
+      <template v-slot:body>
+        <div class="mt-8">
+          <div
+            v-for="(exception, index) in modelValue.time_limit_exceptions"
+            :key="modelValue.id + '-time-limit-exc-' + index"
+            class="flex w-1/2 my-6 space-x-2"
+          >
+            <TextInput class="w-full" v-model="exception[0]"
+              >Email dello studente</TextInput
+            >
+            <div class="flex items-center w-1/2 space-x-1">
+              <NumberInput
+                class="w-full"
+                :small="false"
+                v-model="exception[1]"
+                :leftIcon="'timer'"
+                >Limite di tempo</NumberInput
+              >
+              <p class="text-sm select-none text-muted">minuti</p>
+            </div>
+          </div>
+          <Btn @click="onAddTimeLimitException()">Nuova eccezione</Btn>
+        </div>
+      </template>
+    </Dialog>
+
+    <Dialog
       @yes="showDialog = false"
       :showDialog="showDialog"
       :confirmOnly="true"
@@ -348,12 +378,18 @@ export default defineComponent({
       v$: inject("v$"),
     };
   },
+  watch: {
+    timeLimitExceptionsSerialized(_newVal) {
+      this.emitUpdate("time_limit_exceptions", JSON.parse(_newVal));
+    },
+  },
   data() {
     return {
       event: {} as Event,
       saving: false,
       showDialog: false,
       showAccessRuleDialog: false,
+      showTimeLimitDialog: false,
       EventAccessRule,
       EventTimeLimitRule,
     };
@@ -361,11 +397,6 @@ export default defineComponent({
   methods: {
     emitUpdate(key: keyof Event, value: unknown) {
       this.$emit("updateEvent", { field: key, value });
-      console.log(key, value);
-      // this.$emit('update:modelValue', {
-      //   ...this.modelValue,
-      //   [key]: value
-      // })
     },
     onBeginTimestampOpen() {
       if (this.modelValue.state != EventState.DRAFT) {
@@ -374,6 +405,14 @@ export default defineComponent({
         this.showDialog = true;
       }
     },
+    onAddTimeLimitException() {
+      //this.modelValue.time_limit_exceptions?.push(["", 0]);
+      this.emitUpdate("time_limit_exceptions", [
+        ...(this.modelValue.time_limit_exceptions ?? []),
+        ["", this.timeLimitProxy],
+      ]);
+    },
+    onRemoveTimeLimitException(index: number) {},
     onAccessRuleChange(newVal: EventAccessRule) {
       this.emitUpdate("access_rule", newVal);
       if (newVal === EventAccessRule.ALLOW_ACCESS) {
@@ -443,6 +482,9 @@ export default defineComponent({
   computed: {
     isDraft() {
       return this.modelValue.state == EventState.DRAFT;
+    },
+    timeLimitExceptionsSerialized(): string {
+      return JSON.stringify(this.modelValue.time_limit_exceptions ?? "");
     },
     timeLimitProxy: {
       // handles conversion between seconds and minutes
