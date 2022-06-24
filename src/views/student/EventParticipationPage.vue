@@ -152,7 +152,7 @@ export default defineComponent({
   mixins: [courseIdMixin, eventIdMixin, savingMixin, loadingMixin],
   watch: {
     "proxyModelValue.slots"(newVal: EventParticipationSlot[]) {
-      console.log("watcher", newVal);
+      // TODO might need to get more sophisticated to track new slots, old slots leaving etc.
       newVal.forEach((s) => this.instantiateSlotAutoSaveManager(s));
     },
   },
@@ -226,7 +226,6 @@ export default defineComponent({
       );
     },
     async onBlur(slot: EventParticipationSlot) {
-      console.log("blur", slot);
       try {
         await this.slotAutoSaveManagers[slot.id].flush();
       } catch (e) {
@@ -356,7 +355,6 @@ export default defineComponent({
         }
       }
       this.lastSlotChanged = slot;
-      console.log("ONCHANGE", field, value);
       await this.slotAutoSaveManagers[slot.id].onChange({ field, value });
     },
     instantiateSlotAutoSaveManager(slot: EventParticipationSlot) {
