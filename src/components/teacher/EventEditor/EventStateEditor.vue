@@ -16,7 +16,7 @@
     <div class="">
       <div
         :class="{ shake: shakeErrorBanner }"
-        v-if="v$.$errors.length > 0"
+        v-if="relevantErrors.length > 0"
         @animationend="shakeErrorBanner = false"
         class="mb-12 banner banner-danger"
       >
