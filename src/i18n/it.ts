@@ -492,6 +492,11 @@ export const it = {
     access_rules: "Accesso all'esame",
     time_limit_rules: "Limite di tempo",
     time_limit_label: "Imponi un limite di tempo ai partecipanti",
+    manage_time_limit_exceptions: "Gestisci eccezioni",
+    time_limit_exceptions: "eccezioni",
+    no_time_limit_description: "Dovrai chiudere manualmente l'esame.",
+    time_limit_description:
+      "Al termine del tempo, l'esame si chiude automaticamente.",
     exercises_shown_at_a_time_label:
       "Numero di esercizi da mostrare per pagina",
     allow_everyone_access_label:
