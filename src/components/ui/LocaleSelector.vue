@@ -46,6 +46,7 @@ export default defineComponent({
     onLocaleChange(locale: string) {
       this.$i18n.locale = locale;
       localStorage.setItem(SELECTED_LOCALE_KEY, locale);
+      this.expanded = false;
     },
   },
   computed: {},

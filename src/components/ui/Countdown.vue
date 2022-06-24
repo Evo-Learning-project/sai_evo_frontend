@@ -8,10 +8,10 @@
     }"
     @animationend="onShakeEnd()"
   >
-    <span class="mr-1.5 material-icons-outlined" v-if="!littleTimeRemaining"
+    <span class="mr-0.5 material-icons-outlined" v-if="!littleTimeRemaining"
       >timer</span
     >
-    <span class="mr-1 pr-0.5 text-danger-dark -mt-0.5" v-else
+    <span class="mr-0.5 text-danger-dark -mt-0.5" v-else
       ><svg style="width: 24px; height: 24px" viewBox="0 0 24 24">
         <path
           fill="currentColor"
@@ -20,9 +20,8 @@
       </svg>
     </span>
     <p class="ml-1" :class="{ 'text-danger-dark': littleTimeRemaining }">
-      {{ formattedTime.hours }}:{{ formattedTime.minutes }}:{{
-        formattedTime.seconds
-      }}
+      <span v-if="initialSeconds >= 3600">{{ formattedTime.hours }}:</span
+      >{{ formattedTime.minutes }}:{{ formattedTime.seconds }}
     </p>
   </div>
 </template>
@@ -37,7 +36,7 @@ export default defineComponent({
   },
   data() {
     return {
-      initialSeconds: 10,
+      initialSeconds: 60 * 5 + 10,
       seconds: 0,
       shake: false,
       handle: null as number | null,
