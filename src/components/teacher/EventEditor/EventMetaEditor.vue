@@ -78,9 +78,9 @@
     >
       {{ $t("event_editor.instructions") }}</TextEditor
     >
-    <div class="flex flex-col mt-12 space-y-4">
-      <h3>{{ $t("event_editor.flow_rules") }}</h3>
-      <div class="flex items-center space-x-4">
+    <div class="flex flex-col mt-12">
+      <h3 class="mb-4">{{ $t("event_editor.flow_rules") }}</h3>
+      <div class="mb-2">
         <RadioGroup
           class="-ml-1.5"
           :modelValue="modelValue.exercises_shown_at_a_time"
@@ -97,10 +97,10 @@
       >
     </div>
 
-    <div class="flex flex-col mt-12 space-y-4">
-      <h3>{{ $t("event_editor.access_rules") }}</h3>
+    <div class="flex flex-col mt-12">
+      <h3 class="mb-4">{{ $t("event_editor.access_rules") }}</h3>
       <RadioGroup
-        class="-ml-1.5"
+        class="-ml-1.5 mb-2"
         :modelValue="modelValue.access_rule"
         :options="accessRulesOptions"
         @update:modelValue="onAccessRuleChange($event)"
@@ -156,6 +156,41 @@
           {{ $t("event_editor.allowed_students") }}
         </p>
       </div>
+    </div>
+
+    <div class="flex flex-col mt-12">
+      <h3 class="mb-4">{{ $t("event_editor.time_limit_rules") }}</h3>
+      <div class="flex mb-2 space-x-8">
+        <Toggle :labelOnLeft="true" v-model="timeLimitRuleProxy">{{
+          $t("event_editor.time_limit_label")
+        }}</Toggle>
+
+        <div
+          class="flex items-center transition-opacity duration-75"
+          :class="{
+            'opacity-50':
+              modelValue.time_limit_rule !== EventTimeLimitRule.TIME_LIMIT,
+          }"
+        >
+          <NumberInput
+            :disabled="
+              modelValue.time_limit_rule !== EventTimeLimitRule.TIME_LIMIT
+            "
+            :small="false"
+            v-model="timeLimitProxy"
+            :leftIcon="'timer'"
+            >Limite di tempo</NumberInput
+          >
+          <p class="ml-1 text-sm select-none text-muted">minuti</p>
+        </div>
+      </div>
+      <p class="text-muted">
+        {{
+          modelValue.time_limit_rule === EventTimeLimitRule.TIME_LIMIT
+            ? $t("event_editor.time_limit_description")
+            : $t("event_editor.no_time_limit_description")
+        }}
+      </p>
     </div>
 
     <Dialog
@@ -228,7 +263,13 @@ import CalendarInput from "@/components/ui/CalendarInput.vue";
 import TextInput from "@/components/ui/TextInput.vue";
 import TextEditor from "@/components/ui/TextEditor.vue";
 import { defineComponent, inject } from "@vue/runtime-core";
-import { Event, EventAccessRule, EventState, Tag } from "@/models";
+import {
+  Event,
+  EventAccessRule,
+  EventState,
+  EventTimeLimitRule,
+  Tag,
+} from "@/models";
 import Toggle from "@/components/ui/Toggle.vue";
 //import NumberInput from '@/components/ui/NumberInput.vue'
 import { PropType } from "vue";
@@ -241,6 +282,7 @@ import Btn from "@/components/ui/Btn.vue";
 import TagInput from "@/components/ui/TagInput.vue";
 import { ChangeEvent } from "ag-grid-community/dist/lib/widgets/agCheckbox";
 import { csvToArray, setErrorNotification } from "@/utils";
+import NumberInput from "@/components/ui/NumberInput.vue";
 
 export default defineComponent({
   name: "EventMetaEditor",
@@ -255,6 +297,7 @@ export default defineComponent({
     Dialog,
     Btn,
     TagInput,
+    NumberInput,
   },
   props: {
     modelValue: {
@@ -274,12 +317,13 @@ export default defineComponent({
       showDialog: false,
       showAccessRuleDialog: false,
       EventAccessRule,
+      EventTimeLimitRule,
     };
   },
   methods: {
     emitUpdate(key: keyof Event, value: unknown) {
       this.$emit("updateEvent", { field: key, value });
-      // console.log(key, value)
+      console.log(key, value);
       // this.$emit('update:modelValue', {
       //   ...this.modelValue,
       //   [key]: value
@@ -319,7 +363,6 @@ export default defineComponent({
       );
     },
     async onFileInputChange(event: { target: HTMLInputElement }) {
-      console.log("FILES", event.target.files);
       if (event.target.files === null || event.target.files.length === 0) {
         return;
       }
@@ -337,7 +380,6 @@ export default defineComponent({
 
         const FIRST_HEADER_NAME = "Matricola";
         const EMAIL_HEADER_NAME = "Email";
-        console.log("contents", csvToArray(fileContents, FIRST_HEADER_NAME));
 
         const csvElements = csvToArray(fileContents, FIRST_HEADER_NAME);
 
@@ -364,6 +406,28 @@ export default defineComponent({
     isDraft() {
       return this.modelValue.state == EventState.DRAFT;
     },
+    timeLimitProxy: {
+      // handles conversion between seconds and minutes
+      get() {
+        return (this.modelValue.time_limit_seconds ?? 0) / 60;
+      },
+      set(val: any) {
+        this.emitUpdate("time_limit_seconds", (val ?? 0) * 60);
+      },
+    },
+    timeLimitRuleProxy: {
+      get() {
+        return (
+          this.modelValue.time_limit_rule === EventTimeLimitRule.TIME_LIMIT
+        );
+      },
+      set(val: boolean) {
+        this.emitUpdate(
+          "time_limit_rule",
+          val ? EventTimeLimitRule.TIME_LIMIT : EventTimeLimitRule.NO_TIME_LIMIT
+        );
+      },
+    },
     allowedAccessAsTags(): Tag[] {
       return (
         this.modelValue.access_rule_exceptions?.map((e) => ({
@@ -384,6 +448,18 @@ export default defineComponent({
         },
       ];
     },
+    // timeLimitRulesOptions(): SelectableOption[] {
+    //   return [
+    //     {
+    //       value: EventTimeLimitRule.NO_TIME_LIMIT,
+    //       content: _("event_editor.no_time_limit_label"),
+    //     },
+    //     {
+    //       value: EventTimeLimitRule.TIME_LIMIT,
+    //       content: _("event_editor.time_limit_label"),
+    //     },
+    //   ];
+    // },
     exercisesShownAtOnceOptions(): SelectableOption[] {
       return [
         {

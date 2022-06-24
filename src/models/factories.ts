@@ -66,6 +66,7 @@ export const getBlankExam = (): Event => ({
   access_rule: EventAccessRule.ALLOW_ACCESS,
   access_rule_exceptions: [],
   template: { rules: [] },
+  time_limit_seconds: null,
 });
 
 export const getBlankPractice = (): Event => ({
@@ -79,6 +80,7 @@ export const getBlankPractice = (): Event => ({
   exercises_shown_at_a_time: null,
   allow_going_back: true,
   randomize_rule_order: false,
+  time_limit_seconds: null,
 });
 
 export const getBlankEventTemplate = (): EventTemplate => ({

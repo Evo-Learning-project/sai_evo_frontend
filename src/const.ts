@@ -27,6 +27,7 @@ export const EVENT_AUTO_SAVE_DEBOUNCE_TIME_MS = 3000;
 export const EVENT_AUTO_SAVE_DEBOUNCED_FIELDS: FieldList<Event> = [
   "name",
   "instructions",
+  "time_limit_seconds",
 ];
 
 export const EXERCISE_AUTO_SAVE_DEBOUNCE_TIME_MS = 3000;
