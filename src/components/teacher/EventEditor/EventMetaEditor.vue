@@ -184,9 +184,11 @@
               :small="false"
               v-model="timeLimitProxy"
               :leftIcon="'timer'"
-              >Limite di tempo</NumberInput
+              >{{ $t("misc.time_limit") }}</NumberInput
             >
-            <p class="text-sm select-none text-muted">minuti</p>
+            <p class="text-sm select-none text-muted">
+              {{ $t("misc.minutes") }}
+            </p>
           </div>
           <Btn
             @click="showTimeLimitDialog = true"
@@ -206,7 +208,7 @@
           >
           <p
             :class="[
-              modelValue.access_rule === EventAccessRule.DENY_ACCESS
+              modelValue.time_limit_rule === EventTimeLimitRule.TIME_LIMIT
                 ? 'visible'
                 : 'invisible',
               'md:ml-4',
@@ -291,23 +293,38 @@
           <div
             v-for="(exception, index) in modelValue.time_limit_exceptions"
             :key="modelValue.id + '-time-limit-exc-' + index"
-            class="flex w-1/2 my-6 space-x-2"
+            class="flex w-1/2 my-6"
           >
-            <TextInput class="w-full" v-model="exception[0]"
-              >Email dello studente</TextInput
-            >
+            <TextInput class="w-full mr-4" v-model="exception[0]">{{
+              $t("event_editor.student_email")
+            }}</TextInput>
             <div class="flex items-center w-1/2 space-x-1">
+              <!-- TODO convert back and forth between minutes and seconds -->
               <NumberInput
                 class="w-full"
                 :small="false"
-                v-model="exception[1]"
+                :modelValue="parseFloat(exception[1]) / 60"
+                @update:modelValue="exception[1] = parseFloat($event) * 60"
                 :leftIcon="'timer'"
-                >Limite di tempo</NumberInput
+                >{{ $t("misc.time_limit") }}</NumberInput
               >
-              <p class="text-sm select-none text-muted">minuti</p>
+              <p class="text-sm select-none text-muted">
+                {{ $t("misc.minutes") }}
+              </p>
             </div>
+            <Btn
+              class="transition-opacity duration-100 opacity-50  md:ml-4 hover:opacity-100"
+              :outline="true"
+              :variant="'icon'"
+              :tooltip="$t('event_editor.delete_exception')"
+              @click="onRemoveTimeLimitException(index)"
+              ><span class="text-base material-icons"> delete </span></Btn
+            >
           </div>
-          <Btn @click="onAddTimeLimitException()">Nuova eccezione</Btn>
+          <Btn @click="onAddTimeLimitException()"
+            ><span class="mr-1 text-base material-icons-outlined"> add </span
+            >{{ $t("event_editor.add_exception") }}</Btn
+          >
         </div>
       </template>
     </Dialog>
@@ -409,10 +426,17 @@ export default defineComponent({
       //this.modelValue.time_limit_exceptions?.push(["", 0]);
       this.emitUpdate("time_limit_exceptions", [
         ...(this.modelValue.time_limit_exceptions ?? []),
-        ["", this.timeLimitProxy],
+        ["", this.modelValue.time_limit_seconds],
       ]);
     },
-    onRemoveTimeLimitException(index: number) {},
+    onRemoveTimeLimitException(index: number) {
+      if (confirm(_("event_editor.remove_time_limit_exception_confirmation"))) {
+        this.emitUpdate(
+          "time_limit_exceptions",
+          this.modelValue.time_limit_exceptions?.filter((_, i) => i !== index)
+        );
+      }
+    },
     onAccessRuleChange(newVal: EventAccessRule) {
       this.emitUpdate("access_rule", newVal);
       if (newVal === EventAccessRule.ALLOW_ACCESS) {
@@ -516,6 +540,7 @@ export default defineComponent({
         })) ?? []
       );
     },
+    // TODO extract
     accessRulesOptions(): SelectableOption[] {
       return [
         {
@@ -528,18 +553,6 @@ export default defineComponent({
         },
       ];
     },
-    // timeLimitRulesOptions(): SelectableOption[] {
-    //   return [
-    //     {
-    //       value: EventTimeLimitRule.NO_TIME_LIMIT,
-    //       content: _("event_editor.no_time_limit_label"),
-    //     },
-    //     {
-    //       value: EventTimeLimitRule.TIME_LIMIT,
-    //       content: _("event_editor.time_limit_label"),
-    //     },
-    //   ];
-    // },
     exercisesShownAtOnceOptions(): SelectableOption[] {
       return [
         {

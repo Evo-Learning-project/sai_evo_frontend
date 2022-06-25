@@ -230,7 +230,6 @@ import {
 import Timestamp from "@/components/ui/Timestamp.vue";
 import SlotSkeleton from "@/components/ui/skeletons/SlotSkeleton.vue";
 import Btn from "@/components/ui/Btn.vue";
-//import NumberInput from "../../components/ui/NumberInput.vue";
 import TextInput from "@/components/ui/TextInput.vue";
 import { getTranslatedString } from "@/i18n";
 const { mapState, mapMutations } = createNamespacedHelpers("student");
@@ -251,11 +250,6 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
-    // showSubmissionConfirmationMessage: {
-    //   // should be boolean only, but it's passed via route params and TS complains about boolean params
-    //   type: [Boolean, String],
-    //   default: false,
-    // },
   },
   components: {
     AbstractEventParticipationSlot,

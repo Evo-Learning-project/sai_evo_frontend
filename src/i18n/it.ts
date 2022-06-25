@@ -184,6 +184,8 @@ export const it = {
       "L'inserimento del numero di matricola e la selezione del corso sono necessari per poter partecipare agli esami. Fallo ora e non pensarci più!",
   },
   misc: {
+    time_limit: "Limite di tempo",
+    minutes: "minuti",
     scored_plural: "punti",
     scored_singular: "punto",
     download: "Scarica",
@@ -498,6 +500,10 @@ export const it = {
     exceptions_to_time_limit: "Eccezioni al limite di tempo",
     time_limit_description:
       "Al termine del tempo, l'esame si chiude automaticamente.",
+    add_exception: "Aggiungi eccezione",
+    remove_time_limit_exception_confirmation:
+      "Sei sicuro di voler rimuovere questa eccezione al limite di tempo?",
+    delete_exception: "Rimuovi eccezione",
     exercises_shown_at_a_time_label:
       "Numero di esercizi da mostrare per pagina",
     allow_everyone_access_label:
