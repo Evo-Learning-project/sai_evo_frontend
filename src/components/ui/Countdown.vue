@@ -5,6 +5,7 @@
       shake:
         (littleTimeRemaining && !hasShakenLittleTime) ||
         (lessThanHalfTimeRemaining && !hasShakenHalfTime),
+      'opacity-0': !isInitialTimeValid,
     }"
     @animationend="onShakeEnd()"
   >
@@ -30,13 +31,27 @@
 import { defineComponent, PropType } from "@vue/runtime-core";
 export default defineComponent({
   name: "Countdown",
-  props: {},
-  created() {
-    this.startTimer();
+  props: {
+    initialSeconds: {
+      type: Number,
+      required: true,
+    },
+    isInitialized: {
+      type: Boolean,
+      required: true,
+    },
+  },
+  watch: {
+    isInitialized(newVal) {
+      if (newVal) {
+        this.startTimer();
+      } else {
+        this.stopTimer();
+      }
+    },
   },
   data() {
     return {
-      initialSeconds: 60 * 5 + 10,
       seconds: 0,
       shake: false,
       handle: null as number | null,
@@ -47,17 +62,25 @@ export default defineComponent({
   methods: {
     startTimer() {
       this.seconds = this.initialSeconds;
+      if (this.seconds <= 0) {
+        this.stopTimer();
+        this.$emit("timeUp");
+      }
+
       this.handle = setInterval(() => {
-        this.seconds--;
+        if (--this.seconds === 0) {
+          this.stopTimer();
+          this.$emit("timeUp");
+        }
+
         if (this.littleTimeRemaining) {
           this.shake = true;
         }
-        if (this.seconds === 0) {
-          clearInterval(this.handle as number);
-          this.handle = null;
-          this.$emit("timeUp");
-        }
       }, 1000);
+    },
+    stopTimer() {
+      clearInterval(this.handle as number);
+      this.handle = null;
     },
     onShakeEnd() {
       if (!this.hasShakenHalfTime) {
@@ -80,10 +103,15 @@ export default defineComponent({
       };
     },
     littleTimeRemaining(): boolean {
-      return this.seconds < 5 * 60;
+      return this.isInitialized && this.seconds < 5 * 60;
     },
     lessThanHalfTimeRemaining(): boolean {
-      return this.seconds < Math.floor(this.initialSeconds / 2);
+      return (
+        this.isInitialized && this.seconds < Math.floor(this.initialSeconds / 2)
+      );
+    },
+    isInitialTimeValid(): boolean {
+      return !isNaN(this.initialSeconds);
     },
   },
 });

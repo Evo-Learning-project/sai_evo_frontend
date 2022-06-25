@@ -34,7 +34,12 @@
           :saving="saving"
           :hadError="savingError"
         ></CloudSaveStatus>
-        <Countdown @timeUp="onTimeUp()"></Countdown>
+        <Countdown
+          v-show="remainingTime !== null"
+          @timeUp="onTimeUp()"
+          :initialSeconds="remainingTime ?? 0"
+          :isInitialized="runTimer"
+        ></Countdown>
       </div>
     </teleport>
 
@@ -170,6 +175,7 @@ import {
 import SlotSkeleton from "@/components/ui/skeletons/SlotSkeleton.vue";
 import { subscribeToSubmissionSlotChanges } from "@/ws/modelSubscription";
 import Countdown from "@/components/ui/Countdown.vue";
+import { getParticipationRemainingTime } from "@/utils";
 const { mapActions, mapMutations } = createNamespacedHelpers("student");
 
 export default defineComponent({
@@ -197,6 +203,16 @@ export default defineComponent({
           eventId: this.eventId,
         })
     );
+
+    // set up timer, if there is a time limit
+    const remainingTime = getParticipationRemainingTime(
+      this.currentEventParticipation,
+      this.currentEventParticipation.event
+    );
+    if (remainingTime !== null) {
+      this.remainingTime = remainingTime;
+      this.runTimer = true;
+    }
 
     // already turned in, redirect to submission review page
     if (this.proxyModelValue.state === EventParticipationState.TURNED_IN) {
@@ -236,6 +252,8 @@ export default defineComponent({
       ws: null as WebSocket | null,
       EventType,
       showTimeUpBackdrop: false,
+      remainingTime: null as number | null,
+      runTimer: false,
     };
   },
   methods: {
@@ -312,12 +330,15 @@ export default defineComponent({
       });
     },
     async onTimeUp() {
+      console.log("TIME UP");
       this.showTimeUpBackdrop = true;
       setTimeout(async () => await this.onTurnIn(), 500);
     },
     async onTurnIn() {
       this.showConfirmDialog = false;
       await this.withLoading(async () => {
+        // stop timer
+        this.runTimer = false;
         // flush any pending slots to make sure the most recent content is saved
         //const s of this.proxyModelValue.slots
         for (const s of Object.values(this.slotAutoSaveManagers)) {
@@ -327,26 +348,29 @@ export default defineComponent({
             await this.onRunCode(s.instance);
           }
         }
-        await this.partialUpdateEventParticipation({
-          courseId: this.courseId,
-          changes: {
-            state: EventParticipationState.TURNED_IN,
-          },
-        });
+        try {
+          await this.partialUpdateEventParticipation({
+            courseId: this.courseId,
+            changes: {
+              state: EventParticipationState.TURNED_IN,
+            },
+          });
+          this.$router.push({
+            name:
+              this.proxyModelValue.event.event_type ===
+              EventType.SELF_SERVICE_PRACTICE
+                ? "PracticeSummaryPage"
+                : "SubmissionReviewPage",
+            params: {
+              participationId: this.currentEventParticipation.id,
+              showSubmissionConfirmationMessage: 1, // should be `true`, but TS complains about type
+            },
+          });
+          this.$store.commit("shared/showSuccessFeedback");
+        } catch (e) {
+          this.setErrorNotification(e);
+        }
       });
-
-      this.$router.push({
-        name:
-          this.proxyModelValue.event.event_type ===
-          EventType.SELF_SERVICE_PRACTICE
-            ? "PracticeSummaryPage"
-            : "SubmissionReviewPage",
-        params: {
-          participationId: this.currentEventParticipation.id,
-          showSubmissionConfirmationMessage: 1, // should be `true`, but TS complains about type
-        },
-      });
-      this.$store.commit("shared/showSuccessFeedback");
     },
     confirmGoForward() {
       this.dialogData = {
