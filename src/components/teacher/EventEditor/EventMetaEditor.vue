@@ -366,7 +366,7 @@ import { SelectableOption } from "@/interfaces";
 import Btn from "@/components/ui/Btn.vue";
 import TagInput from "@/components/ui/TagInput.vue";
 import { ChangeEvent } from "ag-grid-community/dist/lib/widgets/agCheckbox";
-import { csvToArray, setErrorNotification } from "@/utils";
+import { csvToArray, getFileContent, setErrorNotification } from "@/utils";
 import NumberInput from "@/components/ui/NumberInput.vue";
 
 export default defineComponent({
@@ -470,17 +470,10 @@ export default defineComponent({
       try {
         const file = event.target.files[0];
 
-        const fileContents = await new Promise<string>((resolve, reject) => {
-          const reader = new FileReader();
-          reader.onload = () => {
-            resolve(reader.result as string);
-          };
-          reader.onerror = reject;
-          reader.readAsText(file);
-        });
+        const fileContents = await getFileContent(file);
 
-        const FIRST_HEADER_NAME = "Matricola";
-        const EMAIL_HEADER_NAME = "Email";
+        const FIRST_HEADER_NAME = _("reports.csv_headers.user.mat");
+        const EMAIL_HEADER_NAME = _("reports.csv_headers.user.email");
 
         const csvElements = csvToArray(fileContents, FIRST_HEADER_NAME);
 
