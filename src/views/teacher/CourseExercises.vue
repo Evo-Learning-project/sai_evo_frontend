@@ -9,7 +9,7 @@
       </template>
     </Card>
 
-    <div class="flex w-full mt-12 mb-6">
+    <div class="flex items-center w-full mt-12 mb-6">
       <Btn @click="onAddExercise()" :loading="localLoading" class="ml-auto"
         ><span class="mr-1 text-base material-icons-outlined"> add </span>
         {{ $t("course_exercises.new_exercise") }}</Btn
@@ -95,7 +95,7 @@
         {{ $t("course_exercises.import_exercises_title") }}</template
       >
       <template v-slot:body>
-        <ExerciseImporter class="mt-8 text-darkText"></ExerciseImporter>
+        <ExerciseImporter class="mt-4 text-darkText"></ExerciseImporter>
       </template>
     </Dialog>
   </div>
