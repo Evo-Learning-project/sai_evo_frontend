@@ -1,3 +1,4 @@
+import { DataFormat } from "./../integrations/types";
 import { ReportField } from "./../reports/types";
 import { EventType, ExerciseTestCaseType } from "./../models/types";
 import {
@@ -325,6 +326,7 @@ export const it = {
   course_exercises: {
     new_exercise: "Nuovo esercizio",
     import_exercises: "Importa",
+    import_exercises_title: "Importa esercizi",
     no_exercises: "Non ci sono ancora esercizi",
     no_matching_exercises:
       "Non ci sono risultati coi filtri di ricerca selezionati",
@@ -933,5 +935,14 @@ export const it = {
   locales: {
     it: "Italiano",
     en: "English",
+  },
+  exercise_import: {
+    formats: {
+      [DataFormat.MOODLE_XML]: "Moodle XML",
+      [DataFormat.EVO_JSON]: "SAI Evo JSON",
+    },
+    select_format: "Seleziona il formato",
+    choose_file: "Scegli il file da importare",
+    import: "Importa",
   },
 };

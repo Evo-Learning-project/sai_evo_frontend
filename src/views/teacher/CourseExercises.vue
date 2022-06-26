@@ -18,7 +18,7 @@
         :tooltip="$t('course_exercises.import_exercises')"
         :outline="true"
         :variant="'icon'"
-        @click="onImport()"
+        @click="showExerciseImporter = true"
         class="ml-1"
         ><span class="material-icons-outlined"> file_upload </span>
       </Btn>
@@ -85,6 +85,19 @@
       <template v-slot:title> {{ dialogData.title }}</template>
       <template v-slot:body> {{ dialogData.text }} </template>
     </Dialog>
+
+    <Dialog
+      :show-dialog="showExerciseImporter"
+      @no="showExerciseImporter = false"
+      :large="true"
+    >
+      <template v-slot:title>
+        {{ $t("course_exercises.import_exercises_title") }}</template
+      >
+      <template v-slot:body>
+        <ExerciseImporter class="mt-8 text-darkText"></ExerciseImporter>
+      </template>
+    </Dialog>
   </div>
 </template>
 
@@ -117,6 +130,7 @@ import ExerciseEditorWrapperSkeleton from "@/components/ui/skeletons/ExerciseEdi
 import { getBlankExerciseSearchFilters, isEmptyFilter } from "@/api/utils";
 import Dialog from "@/components/ui/Dialog.vue";
 import { DataFormat, getImportedData } from "@/integrations";
+import ExerciseImporter from "@/components/teacher/ExerciseImporter.vue";
 export default defineComponent({
   name: "CourseExercises",
   props: {
@@ -145,6 +159,7 @@ export default defineComponent({
     ExerciseSearchFilters,
     ExerciseEditorWrapperSkeleton,
     Dialog,
+    ExerciseImporter,
   },
   async created() {
     this.onFilterChange = getDebouncedForFilter(this.onFilterChange);
@@ -179,6 +194,7 @@ export default defineComponent({
       searchFilter: getBlankExerciseSearchFilters(),
       showDialog: false,
       dialogData: {} as DialogData,
+      showExerciseImporter: false,
     };
   },
   methods: {

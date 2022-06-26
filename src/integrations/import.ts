@@ -7,6 +7,9 @@ import {
 import { ImportedExerciseData, MoodleQuestion } from "./interfaces";
 import { DataFormat } from "./types";
 
+// TODO actually implement
+const importExercisesFromEvoJson = (data: string) => JSON.parse(data);
+
 const importExercisesFromMoodleXml = async (
   data: string
 ): Promise<ImportedExerciseData> => {
@@ -68,6 +71,7 @@ const importFunctions: Record<
   (data: string) => Promise<ImportedExerciseData>
 > = {
   [DataFormat.MOODLE_XML]: importExercisesFromMoodleXml,
+  [DataFormat.EVO_JSON]: importExercisesFromEvoJson,
 };
 
 export const getImportedData = async (
