@@ -1,5 +1,6 @@
 <template>
   <div
+    v-if="icons?.length > 0"
     :class="[
       icons?.length == 1 ? '-mb-1.5' : 'my-auto',
       icons?.length == 2 ? 'flex flex-col -space-y-1.25px' : '',

@@ -1,4 +1,4 @@
-import { Exercise, ExerciseType } from "@/models";
+import { Exercise, ExerciseState, ExerciseType } from "@/models";
 import {
   getExerciseTypeFromMoodleQuestion,
   getTagsFromMoodleCategory,
@@ -46,6 +46,7 @@ const importExercisesFromMoodleXml = async (
       }
       ret.data.push({
         id: "",
+        state: ExerciseState.DRAFT,
         label: q.name[0].text[0],
         text: q.questiontext[0].text[0],
         exercise_type: exerciseType,
