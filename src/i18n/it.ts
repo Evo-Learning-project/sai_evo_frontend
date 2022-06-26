@@ -324,6 +324,7 @@ export const it = {
   },
   course_exercises: {
     new_exercise: "Nuovo esercizio",
+    import_exercises: "Importa",
     no_exercises: "Non ci sono ancora esercizi",
     no_matching_exercises:
       "Non ci sono risultati coi filtri di ricerca selezionati",
