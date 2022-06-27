@@ -25,12 +25,12 @@
         >
           <div class="flex">
             <img
-              class="mx-auto pointer-events-none w-18"
+              class="mx-auto pointer-events-none select-none w-18"
               :src="format.description"
             />
           </div>
           <div class="flex mt-4">
-            <p class="mx-auto">{{ format.content }}</p>
+            <p class="mx-auto select-none">{{ format.content }}</p>
           </div>
         </div>
       </div>
@@ -43,23 +43,27 @@
       </div>
     </div>
     <div v-show="currentStep === 'file_chosen'">
-      <div class="mb-8">
-        <p class="mb-4">
-          <strong>{{ exercises.length }}</strong> esercizi rilevati
-        </p>
-        <div class="relative flex items-start space-x-3">
-          <p>Visibilità degli esercizi importati</p>
+      <div class="flex flex-col w-full mt-10 space-y-6">
+        <div class="relative flex self-start w-full space-x-4">
+          <p class="text-lg">
+            <strong>{{ exercises.length }}</strong> esercizi rilevati
+          </p>
           <Dropdown
             v-if="exercises.length > 0"
-            class="w-1/4 -mt-3"
+            class="self-start w-1/3 mb-auto -mt-3"
             id="imported-exercises-state-dropdown"
             :options="exerciseStateOptions"
             v-model="importedExercisesStateProxy"
-          ></Dropdown>
+            >Visibilità degli esercizi importati</Dropdown
+          >
         </div>
-        <div class="mt-4" v-if="extras.tags?.length > 0">
+
+        <div v-if="extras.tags?.length > 0">
           <h4 class="">
-            <span class="mr-1 material-icons inline-icon text-primary">
+            <span
+              style="margin-top: -2px; font-size: 18px; vertical-align: middle"
+              class="mr-1 material-icons text-primary"
+            >
               auto_awesome
             </span>
             Tag rilevati
@@ -76,18 +80,18 @@
             v-model="selectedTagsProxy"
           ></Chipset>
         </div>
-      </div>
 
-      <div class="grid grid-cols-2 gap-4">
-        <div
-          v-for="(exercise, index) in exercises"
-          :key="'imported-exercise-' + index"
-          class=""
-        >
-          <MinimalExercisePreview
-            :selectable="false"
-            :exercise="exercise"
-          ></MinimalExercisePreview>
+        <div class="grid grid-cols-2 gap-4">
+          <div
+            v-for="(exercise, index) in exercises"
+            :key="'imported-exercise-' + index"
+            class=""
+          >
+            <MinimalExercisePreview
+              :selectable="false"
+              :exercise="exercise"
+            ></MinimalExercisePreview>
+          </div>
         </div>
       </div>
     </div>
