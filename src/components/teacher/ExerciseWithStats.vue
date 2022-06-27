@@ -51,7 +51,7 @@
       </div>
     </div>
 
-    <div v-if="isOpenAnswerExercise">
+    <div v-else-if="isOpenAnswerExercise">
       <h3>Risposte</h3>
       <div class="my-4" v-for="slot in slots" :key="'stats-slot-' + slot.id">
         <div class="flex card card-border">
