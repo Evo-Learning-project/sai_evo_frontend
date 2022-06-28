@@ -946,6 +946,7 @@ export const it = {
     select_format: "Seleziona il formato",
     choose_file: "Scegli il file da importare",
     import: "Importa",
+    importing: "Attendi...",
     imported_exercises_state: "Visibilità degli esercizi importati",
     detected_exercises: "esercizi rilevati",
     extras_detected_tags: "Tag rilevati",

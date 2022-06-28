@@ -96,9 +96,12 @@
       "
       :confirmOnly="importedExercises.length === 0"
       :noText="$t('dialog.default_cancel_text')"
+      :disableOk="importLoading"
       :yesText="
         importedExercises.length === 0
           ? $t('dialog.default_cancel_text')
+          : importLoading
+          ? $t('exercise_import.importing')
           : $t('exercise_import.import')
       "
       :large="true"
@@ -211,12 +214,14 @@ export default defineComponent({
       dialogData: {} as DialogData,
       showExerciseImporter: false,
       importedExercises: [] as Exercise[],
+      importLoading: false,
     };
   },
   methods: {
     ...mapActions("teacher", [
       "getExercises",
       "createExercise",
+      "bulkCreateExercises",
       "deleteExercise",
     ]),
     ...mapActions("shared", ["getTags"]),
@@ -364,7 +369,23 @@ export default defineComponent({
       );
     },
     async onImportDone() {
-      // TODO implement
+      await this.withLoading(
+        async () => {
+          this.importLoading = true;
+          await this.bulkCreateExercises({
+            courseId: this.courseId,
+            exercises: this.importedExercises,
+          });
+          this.importLoading = false;
+          this.$store.commit("shared/showSuccessFeedback");
+          this.importedExercises = [];
+          this.showExerciseImporter = false;
+        },
+        (e) => {
+          this.setErrorNotification(e);
+          this.importLoading = false;
+        }
+      );
     },
     async onLoadMore({ loaded, noMore, error }: LoadAction) {
       try {
