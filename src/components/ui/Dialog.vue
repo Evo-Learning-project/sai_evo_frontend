@@ -157,6 +157,26 @@ export default defineComponent({
   components: {
     Btn,
   },
+  beforeUnmount() {
+    const bodyContainsOverflowHidden =
+      document.body.classList.contains("overflow-y-hidden");
+    if (bodyContainsOverflowHidden) {
+      document.body.classList.remove("overflow-y-hidden");
+    }
+  },
+  watch: {
+    showDialog(newVal) {
+      // prevent scrolling of the underlying page when dialog is open
+      const bodyContainsOverflowHidden =
+        document.body.classList.contains("overflow-y-hidden");
+
+      if (newVal && !bodyContainsOverflowHidden) {
+        document.body.classList.add("overflow-y-hidden");
+      } else if (!newVal && bodyContainsOverflowHidden) {
+        document.body.classList.remove("overflow-y-hidden");
+      }
+    },
+  },
   created() {
     setTimeout(() => (this.showContent = true), 0);
   },
