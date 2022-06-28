@@ -46,15 +46,16 @@
       <div class="flex flex-col w-full mt-10 space-y-6">
         <div class="relative flex self-start w-full space-x-4">
           <p class="text-lg">
-            <strong>{{ exercises.length }}</strong> esercizi rilevati
+            <strong>{{ exercises.length }}</strong>
+            {{ $t("exercise_import.detected_exercises") }}
           </p>
           <Dropdown
             v-if="exercises.length > 0"
-            class="self-start w-1/3 mb-auto -mt-3"
+            class="self-start w-1/4 mb-auto -mt-3"
             id="imported-exercises-state-dropdown"
             :options="exerciseStateOptions"
             v-model="importedExercisesStateProxy"
-            >Visibilità degli esercizi importati</Dropdown
+            >{{ $t("exercise_import.imported_exercises_state") }}</Dropdown
           >
         </div>
 
@@ -66,12 +67,11 @@
             >
               auto_awesome
             </span>
-            Tag rilevati
+            {{ $t("exercise_import.extras_detected_tags") }}
           </h4>
           <p class="mb-2 text-muted">
-            Clicca sui tag che vuoi aggiungere agli esercizi importati. I tag
-            selezionati verranno aggiunti come tag pubblici.
-            <span class="underline text-primary">Scopri di più.</span>
+            {{ $t("exercise_import.extras_detected_tags_description") }}
+            <!-- <span class="underline text-primary">Scopri di più.</span> -->
           </p>
           <Chipset
             v-if="exercises.length > 0"
@@ -118,6 +118,14 @@ export default defineComponent({
   name: "ExerciseImporter",
   props: {},
   mixins: [loadingMixin],
+  watch: {
+    exercises: {
+      deep: true,
+      handler(newVal) {
+        this.$emit("updateExercises", newVal);
+      },
+    },
+  },
   data() {
     return {
       DataFormat,
@@ -160,7 +168,6 @@ export default defineComponent({
       }
     },
     getImageUrl(imageName: string) {
-      console.log("requiring", "../../assets/" + imageName);
       // eslint-disable-next-line no-undef
       return require("@/assets/" + imageName);
     },
@@ -211,7 +218,6 @@ export default defineComponent({
         return (this.exercises[0]?.public_tags ?? []).map((t) => t.name);
       },
       set(val: string[]) {
-        console.log(val);
         for (const e of this.exercises) {
           e.public_tags = val.map((v) => ({ name: v }));
         }
