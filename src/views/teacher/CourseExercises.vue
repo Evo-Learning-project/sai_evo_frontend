@@ -89,13 +89,28 @@
     <Dialog
       :show-dialog="showExerciseImporter"
       @no="showExerciseImporter = false"
+      @yes="
+        importedExercises.length === 0
+          ? (showExerciseImporter = false)
+          : onImportDone()
+      "
+      :confirmOnly="importedExercises.length === 0"
+      :noText="$t('dialog.default_cancel_text')"
+      :yesText="
+        importedExercises.length === 0
+          ? $t('dialog.default_cancel_text')
+          : $t('exercise_import.import')
+      "
       :large="true"
     >
       <template v-slot:title>
         {{ $t("course_exercises.import_exercises_title") }}</template
       >
       <template v-slot:body>
-        <ExerciseImporter class="mt-4 text-darkText"></ExerciseImporter>
+        <ExerciseImporter
+          @updateExercises="importedExercises = $event"
+          class="mt-4 text-darkText"
+        ></ExerciseImporter>
       </template>
     </Dialog>
   </div>
@@ -195,6 +210,7 @@ export default defineComponent({
       showDialog: false,
       dialogData: {} as DialogData,
       showExerciseImporter: false,
+      importedExercises: [] as Exercise[],
     };
   },
   methods: {
@@ -346,6 +362,9 @@ export default defineComponent({
       `,
         DataFormat.MOODLE_XML
       );
+    },
+    async onImportDone() {
+      // TODO implement
     },
     async onLoadMore({ loaded, noMore, error }: LoadAction) {
       try {
