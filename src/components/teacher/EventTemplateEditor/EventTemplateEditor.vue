@@ -41,6 +41,10 @@
               onRuleUpdateClause(element, $event);
               $emit('templateChanged');
             "
+            @deleteClause="
+              onRuleDeleteClause(element, $event);
+              $emit('templateChanged');
+            "
             @deleteRule="
               onRuleDelete(element);
               $emit('templateChanged');
@@ -191,6 +195,7 @@ export default defineComponent({
       "addEventTemplateRuleClause",
       "updateEventTemplateRuleClause",
       "deleteEventTemplateRule",
+      "deleteEventTemplateRuleClause",
     ]),
     ...mapMutations(["patchEventTemplateRule", "patchEventTemplateRuleClause"]),
     instantiateRuleAutoSaveManager(rule: EventTemplateRule) {
@@ -332,7 +337,7 @@ export default defineComponent({
         value: clause.tags,
       });
 
-      // reload rule to change "satisfying" preview
+      // reload rule to update "satisfying" preview
       await this.withLocalLoading(
         async () =>
           await this.getEventTemplateRule({
@@ -341,6 +346,26 @@ export default defineComponent({
             ruleId: rule.id,
           })
       );
+    },
+    async onRuleDeleteClause(rule: EventTemplateRule, clauseId: string) {
+      if (confirm(_("event_template_editor.confirm_delete_rule_clause"))) {
+        await this.deleteEventTemplateRuleClause({
+          courseId: this.courseId,
+          templateId: this.modelValue.id,
+          ruleId: rule.id,
+          clauseId,
+        });
+
+        // reload rule to update "satisfying" preview
+        await this.withLocalLoading(
+          async () =>
+            await this.getEventTemplateRule({
+              courseId: this.courseId,
+              templateId: this.modelValue.id,
+              ruleId: rule.id,
+            })
+        );
+      }
     },
   },
   computed: {

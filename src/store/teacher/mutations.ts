@@ -241,4 +241,24 @@ export const mutations = {
       console.error("removeEventTemplateRule didn't find", templateId);
     }
   },
+  removeEventTemplateRuleClause: (
+    state: TeacherState,
+    {
+      templateId,
+      ruleId,
+      clauseId,
+    }: { templateId: string; ruleId: string; clauseId: string }
+  ) => {
+    const event = state.events.find((e) => e.template?.id == templateId);
+    const target = event?.template?.rules.find((r) => r.id == ruleId);
+    if (target) {
+      target.clauses = target.clauses?.filter((c) => c.id != clauseId);
+    } else {
+      console.error(
+        "removeEventTemplateRuleClause didn't find",
+        templateId,
+        ruleId
+      );
+    }
+  },
 };

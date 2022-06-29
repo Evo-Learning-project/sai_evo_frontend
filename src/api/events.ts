@@ -339,10 +339,6 @@ export async function downloadEventParticipationSlotAttachment(
   const response = await axios.get(
     `/courses/${courseId}/events/${eventId}/participations/${participationId}/slots/${slotId}/attachment/`
   );
-  console.log(
-    "SPLIT",
-    response.headers["content-disposition"].split(/.*filename=(.*)/)
-  );
   const fileName = response.headers["content-disposition"]
     .split(/.*filename=(.*)/)[1]
     .replace('"', "");

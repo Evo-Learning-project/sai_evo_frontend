@@ -49,6 +49,7 @@ import {
   createEventTemplateRule,
   createEventTemplateRuleClause,
   deleteEventTemplateRule,
+  deleteEventTemplateRuleClause,
   getEvent,
   getEventParticipation,
   getEventParticipations,
@@ -259,6 +260,27 @@ export const actions = {
     commit("removeEventTemplateRule", {
       templateId,
       ruleId,
+    });
+  },
+  deleteEventTemplateRuleClause: async (
+    { commit }: { commit: Commit },
+    {
+      courseId,
+      templateId,
+      ruleId,
+      clauseId,
+    }: {
+      courseId: string;
+      templateId: string;
+      ruleId: string;
+      clauseId: string;
+    }
+  ) => {
+    await deleteEventTemplateRuleClause(courseId, templateId, ruleId, clauseId);
+    commit("removeEventTemplateRuleClause", {
+      templateId,
+      ruleId,
+      clauseId,
     });
   },
   partialUpdateEventTemplateRule: async (

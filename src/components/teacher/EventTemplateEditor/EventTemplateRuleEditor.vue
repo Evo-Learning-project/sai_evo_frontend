@@ -307,7 +307,7 @@
             :modelValue="modelValue.clauses"
             :satisfying="modelValue.satisfying"
             @addClause="$emit('addClause')"
-            @removeClause="$emit('removeClause', $event)"
+            @deleteClause="$emit('deleteClause', $event)"
             @updateClause="$emit('updateClause', $event)"
           ></TagBasedEventTemplateRuleEditor>
         </div>

@@ -7,6 +7,7 @@
       class="flex flex-col mb-12"
       v-if="showTeacherIntroductionText && tags.length === 0"
     >
+      <!-- TODO make nicer empty state -->
       <p class="mb-2 text-muted text-danger-dark">
         {{ $t("event_template_rule_editor.no_tags") }}
       </p>
@@ -28,7 +29,7 @@
       :class="{
         'opacity-50 cursor-not-allowed pointer-events-none': tags.length === 0,
       }"
-      class="flex flex-col space-y-4 md:flex-row md:space-y-0"
+      class="flex flex-col items-start space-y-4 md:flex-row md:space-y-0"
     >
       <div
         v-if="showTeacherIntroductionText || tags.length > 0"
@@ -53,16 +54,32 @@
             }}</strong>
             {{ $t("event_template_rule_editor.tag_based_among") }}
           </p>
-          <TagInput
-            :placeholder="$t('misc.tags')"
-            :modelValue="clause.tags"
-            :alwaysShowAutocomplete="!allowCreateMoreClauses"
-            @addTag="onAddTag(clause, $event)"
-            @removeTag="onRemoveTag(clause, $event)"
-            :choices="tags"
-            :existingOnly="true"
-          ></TagInput>
+          <div class="flex items-center space-x-2">
+            <TagInput
+              :placeholder="$t('misc.tags')"
+              :modelValue="clause.tags"
+              :alwaysShowAutocomplete="!allowCreateMoreClauses"
+              @addTag="onAddTag(clause, $event)"
+              @removeTag="onRemoveTag(clause, $event)"
+              :choices="tags"
+              :existingOnly="true"
+              class="w-full"
+            ></TagInput>
+            <!-- delete button -->
+            <Btn
+              :tooltip="$t('misc.delete')"
+              :variant="'icon'"
+              :outline="true"
+              @click="$emit('deleteClause', clause.id)"
+              class="transition-opacity duration-100 opacity-50  hover:opacity-100"
+              ><span style="font-size: 17px" class="material-icons">
+                delete
+              </span>
+            </Btn>
+          </div>
         </div>
+
+        <!-- ghost clause -->
         <div
           v-if="allowCreateMoreClauses"
           @click="onAddClause"
@@ -75,17 +92,26 @@
             }}</strong>
             {{ $t("event_template_rule_editor.tag_based_among") }}
           </p>
-          <TagInput
-            :disabled="true"
-            class="cursor-pointer"
-            :placeholder="$t('exercise_editor.exercise_tags')"
-            :modelValue="[]"
-          ></TagInput>
+          <div class="flex items-center space-x-2">
+            <TagInput
+              :disabled="true"
+              class="w-full cursor-pointer"
+              :placeholder="$t('exercise_editor.exercise_tags')"
+              :modelValue="[]"
+            ></TagInput>
+            <Btn :variant="'icon'" :outline="true" class="invisible"
+              ><span style="font-size: 17px" class="material-icons">
+                delete
+              </span>
+            </Btn>
+          </div>
         </div>
       </div>
+
+      <!-- preview card -->
       <div
         v-if="showPreview"
-        class="relative flex  card shadow-elevation md:w-9/12 md:ml-16 md:max-h-96 card-filled"
+        class="relative flex mb-auto  card shadow-elevation md:w-9/12 md:ml-16 md:max-h-96 card-filled"
       >
         <Spinner
           :size="'xl'"
@@ -94,14 +120,16 @@
           v-if="localLoading"
         ></Spinner>
         <div
-          class="flex flex-col justify-between flex-grow"
+          class="flex flex-col flex-grow"
           :class="{ 'opacity-50 pointer-events-none': localLoading }"
         >
-          <p class="mb-8 text-muted">
+          <p class="mb-8 text-lg text-muted">
             {{ $t("event_template_rule_editor.eligible_exercises") }}
             <strong>{{ satisfying.count }}</strong>
           </p>
-          <h4 v-if="!!satisfying.example">{{ $t("misc.example") }}</h4>
+          <h4 v-if="!!satisfying.example" class="mt-auto">
+            {{ $t("misc.example") }}
+          </h4>
           <MinimalExercisePreview
             :selectable="false"
             :previewable="false"
@@ -114,11 +142,13 @@
             class="flex flex-col items-center mt-2 mb-auto opacity-70"
           >
             <span
-              class="opacity-50 material-icons-outlined"
-              style="font-size: 4rem"
+              class="mb-4 opacity-50 material-icons-outlined"
+              style="font-size: 5rem"
               >error_outline</span
             >
-            <p>{{ $t("event_template_rule_editor.unsatisfiable_tag_rule") }}</p>
+            <p class="mb-4 select-none">
+              {{ $t("event_template_rule_editor.unsatisfiable_tag_rule") }}
+            </p>
           </div>
         </div>
       </div>
