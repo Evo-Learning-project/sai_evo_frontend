@@ -47,6 +47,15 @@ export const texMixin = {
   },
 };
 
+export const mediaQueryMixin = {
+  computed: {
+    mediaQueryMdMatches(): boolean {
+      const mq = window.matchMedia("(min-width: 768px)");
+      return mq.matches;
+    },
+  },
+};
+
 export const loadingMixin = {
   methods: {
     async withLoading(

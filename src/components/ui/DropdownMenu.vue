@@ -12,10 +12,12 @@
       }}</span>
     </Btn>
     <div
-      class="absolute overflow-hidden transition-all duration-75 ease-in origin-top-left transform bg-white  card shadow-popup"
+      class="absolute z-20 overflow-hidden transition-all duration-75 ease-in transform bg-white  card shadow-popup"
       :class="{
         'max-h-0 opacity-0 scale-95': !expanded,
         'max-h-44 opacity-100 scale-100': expanded,
+        'origin-top-left left-0': placement === 'left',
+        'origin-top-right right-0': placement === 'right',
       }"
     >
       <slot></slot>
@@ -40,6 +42,10 @@ export default defineComponent({
     expanded: {
       type: Boolean,
       required: true,
+    },
+    placement: {
+      type: String as PropType<"left" | "right">,
+      default: "left",
     },
   },
   methods: {},

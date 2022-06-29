@@ -65,8 +65,7 @@
           @templateChanged="invalidateExamples()"
         ></EventTemplateEditor>
         <Toggle
-          style="margin-top: -1.85rem"
-          class="ml-auto"
+          class="mt-3 md:ml-auto md:-mt-7.5"
           :label-on-left="true"
           :modelValue="modelValue.randomize_rule_order"
           @update:modelValue="onChange('randomize_rule_order', $event)"
@@ -90,7 +89,8 @@
               {{ $t("event_editor.tip_you_used_randomization") }}
             </p>
             <Btn
-              class="md:ml-auto"
+              class="-mr-2 md:ml-auto"
+              :outline="true"
               @click="getInstances"
               :disabled="loadingExamples"
             >

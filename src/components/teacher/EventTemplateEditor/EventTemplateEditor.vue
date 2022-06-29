@@ -46,62 +46,6 @@
               $emit('templateChanged');
             "
           >
-            <!-- v$.modelValue.template.rules.$model[index].$touch()-->
-            <!-- <template v-slot:error>
-              <p
-                class="font-light text-muted text-danger-dark"
-                v-if="
-                  v$.modelValue.template.rules.$each.$response.$errors[index]
-                    .rule_type.length > 0 && v$.modelValue.template.rules.$dirty
-                "
-              >
-                {{ $t("validation_errors.eventTemplateRule.no_rule_type") }}
-              </p>
-              <p
-                class="font-light text-muted text-danger-dark"
-                v-if="
-                  v$.modelValue.template.rules.$each.$response.$errors[index]
-                    .exercises.length > 0 && v$.modelValue.template.rules.$dirty
-                "
-              >
-                {{ $t("validation_errors.eventTemplateRule.no_exercises") }}
-              </p>
-              <p
-                class="font-light text-muted text-danger-dark"
-                v-if="
-                  v$.modelValue.template.rules.$each.$response.$errors[index]
-                    .clauses.length > 0 && v$.modelValue.template.rules.$dirty
-                "
-              >
-                {{ $t("validation_errors.eventTemplateRule.no_valid_clauses") }}
-              </p>
-              <p
-                class="font-light text-muted text-danger-dark"
-                v-if="
-                  v$.modelValue.template.rules.$each.$response.$errors[index]
-                    .satisfying.length > 0 &&
-                  element.amount === 1 &&
-                  v$.modelValue.template.rules.$dirty
-                "
-              >
-                {{ $t("validation_errors.eventTemplateRule.not_satisfied") }}
-              </p>
-              <p
-                class="font-light text-muted text-danger-dark"
-                v-if="
-                  v$.modelValue.template.rules.$each.$response.$errors[index]
-                    .satisfying.length > 0 &&
-                  element.amount > 1 &&
-                  v$.modelValue.template.rules.$dirty
-                "
-              >
-                {{
-                  $t(
-                    "validation_errors.eventTemplateRule.not_satisfied_by_enough"
-                  )
-                }}
-              </p>
-            </template> -->
           </EventTemplateRuleEditor>
         </template>
       </draggable>
@@ -109,6 +53,7 @@
 
     <div class="flex items-center mt-auto">
       <Btn
+        class="w-full md:w-max"
         @click="
           onAddRule();
           $emit('templateChanged');
@@ -121,20 +66,28 @@
         :expanded="addMultipleRulesExpanded"
         @toggleExpanded="addMultipleRulesExpanded = !addMultipleRulesExpanded"
         class="ml-0.5"
+        :placement="mediaQueryMdMatches ? 'left' : 'right'"
         :tooltip="$t('event_template_editor.add_more_rules')"
       >
         <div class="w-max">
-          <div class="flex items-center w-full">
-            <p>{{ $t("misc.add") }}</p>
-            <NumberInput
-              v-model="addRuleAmount"
-              class="w-16 mx-2"
-              :min="2"
-            ></NumberInput>
-            <p>{{ $t("misc.slots") }}</p>
-            <Btn :size="'sm'" class="ml-12" @click="onAddRule(addRuleAmount)">{{
-              $t("misc.add")
-            }}</Btn>
+          <div
+            class="flex flex-col w-full space-y-2  md:space-y-0 md:items-center md:flex-row"
+          >
+            <div class="flex items-center">
+              <p>{{ $t("misc.add") }}</p>
+              <NumberInput
+                v-model="addRuleAmount"
+                class="w-16 mx-2"
+                :min="2"
+              ></NumberInput>
+              <p>{{ $t("misc.slots") }}</p>
+            </div>
+            <Btn
+              :size="'sm'"
+              class="md:ml-12"
+              @click="onAddRule(addRuleAmount)"
+              >{{ $t("misc.add") }}</Btn
+            >
           </div>
           <!-- <p class="mt-2 text-sm text-muted">
             Tutti gli slot aggiunti avranno le stesse impostazioni.
@@ -158,7 +111,7 @@ import {
   getBlankEventTemplateRule,
   getBlankTagBasedEventTemplateRuleClause,
 } from "@/models";
-import { courseIdMixin, loadingMixin } from "@/mixins";
+import { courseIdMixin, loadingMixin, mediaQueryMixin } from "@/mixins";
 
 import draggable from "vuedraggable";
 
@@ -191,7 +144,7 @@ export default defineComponent({
     DropdownMenu,
     NumberInput,
   },
-  mixins: [courseIdMixin, loadingMixin],
+  mixins: [courseIdMixin, loadingMixin, mediaQueryMixin],
   name: "EventTemplateEditor",
   props: {
     modelValue: {

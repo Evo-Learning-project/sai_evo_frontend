@@ -21,11 +21,19 @@ export const en = {
     [EventState.CLOSED]: "Closed",
     [EventState.RESTRICTED]: "Restricted access",
   },
+  event_states_descriptions: {
+    [EventState.PLANNED]:
+      "It's all set! The exam preview is visible to students, but they won't be able to access it until its begin timestamp.",
+    [EventState.DRAFT]:
+      "Exam won't be visible to students until you publish it.",
+    [EventState.OPEN]: "",
+    [EventState.CLOSED]: "",
+  },
   event_editor: {
     name: "Nome",
-    state_editor_title: "Pubblica",
+    state_editor_title: "Publish",
     state: "Stato esame",
-    current_state_is: "L'esame è attualmente in stato",
+    current_state_is: "Exam is currently in state: ",
     state_is: "L'esame è",
     begin_timestamp: "Beings at",
     end_timestamp: "Ends at",
@@ -38,7 +46,7 @@ export const en = {
       "Permetti agli studenti di tornare indietro a un esercizio già visto",
     show_all_exercises_at_once: "Mostra tutti gli esercizi insieme",
     show_one_exercise_at_once: "Mostra solo un esercizio alla volta",
-    publish: "Pubblica",
+    publish: "Publish",
     revert_to_draft: "Torna a stato di bozza",
     event_planned_help_text:
       "L'esame verrà aperto agli studenti automaticamente in data",
@@ -106,20 +114,25 @@ export const en = {
     make_public_confirmation_body:
       "Se rendi questo esercizio pubblico, tutti gli studenti potranno visualizzarlo in qualsiasi momento. Se vuoi utilizzare questo esercizio in un esame, rendilo privato.",
   },
+  filter_results: {
+    title: "Search exercises",
+    more_filters: "More filters",
+  },
   exercise_types: {
     [ExerciseType.MULTIPLE_CHOICE_SINGLE_POSSIBLE]:
       "Multiple choices, only one correct",
     [ExerciseType.MULTIPLE_CHOICE_MULTIPLE_POSSIBLE]:
       "Multiple choices, more than one correct",
     [ExerciseType.OPEN_ANSWER]: "Open answer",
-    [ExerciseType.JS]: "Esercizio JavaScript",
-    [ExerciseType.COMPLETION]: "Esercizio a completamento",
-    [ExerciseType.ATTACHMENT]: "Caricamento di file",
-    [ExerciseType.AGGREGATED]: "Esercizio composto",
+    [ExerciseType.JS]: "JavaScript Exercise",
+    [ExerciseType.COMPLETION]: "Cloze exercise",
+    [ExerciseType.ATTACHMENT]: "Attachment answer",
+    [ExerciseType.AGGREGATED]: "Composite exercise",
+    [ExerciseType.C]: "C Exercise",
   },
   exercise_states: {
     [ExerciseState.PUBLIC]: "Public",
-    [ExerciseState.PRIVATE]: "Hidden",
+    [ExerciseState.PRIVATE]: "Exams only",
     [ExerciseState.DRAFT]: "Draft",
   },
   misc: {
@@ -129,6 +142,8 @@ export const en = {
     out_of: "out of",
     at: "at",
     edit: "Edit",
+    select: "Select",
+    preview: "Preview",
   },
   help_texts: {
     student_practice_rule_amount: "Quanti esercizi con questo tag vuoi vedere?",
@@ -168,7 +183,7 @@ export const en = {
     add_more_rules: "Aggiungi più slot",
     editor_title: "Exam template",
     introduction_text:
-      "Crea il modello per questo esame. Per ogni slot, puoi scegliere se far vedere a ogni studente lo stesso esercizio o se utilizzare i criteri di scelta casuale.",
+      "Create the template for this exam. For each slot, you can decide whether to show the same exercise to all students or to use randomization criteria.",
     add_rule: "Add slot",
     confirm_delete_rule: "Sei sicuro di voler eliminare questo slot?",
     randomize_rule_order: "Randomize order of slots",
@@ -178,22 +193,23 @@ export const en = {
       "Gli slot verranno assegnati agli studenti in ordine casuale",
   },
   event_template_rule_editor: {
+    reset_slot_settings: "Reset slot",
     exercise_number: "Slot",
     choose_exercise: "Choose exercise",
-    change_exercise: "Cambia esercizio",
-    populate_slot_title: "Select exercise(s) for slot",
+    populate_slot_plural_title: "Select exercise(s) for slots",
+    populate_slot_singular_title: "Select exercise(s) for slot",
     mode_selection_text: "Come vuoi scegliere l'esercizio per questo slot?",
     pick_single_exercise: "Seleziona un esercizio",
-    pick_exercise_from_pool: "Seleziona esercizio da un insieme",
+    pick_exercise_from_pool: "Pick exercise from a pool",
     pick_exercise_tag_based: "Seleziona esercizio in base ai tag",
     pick_single_exercise_help_text:
       "Tutti gli studenti vedranno lo stesso esercizio",
     pick_exercise_from_pool_help_text:
-      "Ogni studente vedrà un esercizio scelto a caso dall'insieme selezionato",
+      "Each student will be shown an exercise randomly picked from the pool you define",
     pick_exercise_tag_based_help_text:
       "Ogni studente vedrà un esercizio scelto a caso con i tag selezionati",
     one_exercise_from_set_description:
-      "Ogni studente vedrà un esercizio scelto a caso tra questi:",
+      "Each student will be shown a randomly picked exercise among these:",
     tag_based_description:
       "Ogni studente vedrà un esercizio a caso che tra i tag ha:",
     same_exercise_for_everyone_description:
