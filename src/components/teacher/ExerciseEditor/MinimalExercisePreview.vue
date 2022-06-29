@@ -1,6 +1,23 @@
 <template>
   <div>
+    <div v-if="reduced" class="flex items-center space-x-0.5">
+      <p class="font-medium">{{ previewTitle }}</p>
+      <Btn
+        v-if="previewable"
+        :variant="'icon'"
+        :outline="true"
+        :tooltip="$t('misc.preview')"
+        @click="showPreview = true"
+        ><span
+          style="font-size: 25px !important"
+          class="material-icons-outlined -mb-0.5"
+        >
+          fullscreen
+        </span>
+      </Btn>
+    </div>
     <div
+      v-else
       class="flex flex-col h-full card card-border"
       :class="{
         'card-hoverable hover:border-transparent hover-shadow-elevation':
@@ -225,6 +242,10 @@ export default defineComponent({
       default: false,
     },
     showEdit: {
+      type: Boolean,
+      default: false,
+    },
+    reduced: {
       type: Boolean,
       default: false,
     },

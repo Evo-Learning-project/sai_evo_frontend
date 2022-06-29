@@ -1,8 +1,7 @@
 <template>
   <div>
     <div
-      class="my-3 transition-shadow duration-75 ease-in-out  card shadow-elevation hover-shadow-elevation-2"
-      :class="[modelValue._ordering % 2 ? 'bg-white' : 'card-filled']"
+      class="h-full my-3 transition-shadow duration-75 ease-in-out  card shadow-elevation hover-shadow-elevation-2"
     >
       <div class="flex items-center">
         <!-- drag handle -->
@@ -65,23 +64,32 @@
           <div
             v-if="!loadingPreview"
             :class="[
-              ruleExercises.length > 1 ? 'grid md:grid-cols-2 gap-2' : '',
+              ruleExercises.length > 1
+                ? reduced
+                  ? 'flex flex-wrap'
+                  : 'grid md:grid-cols-2 gap-2'
+                : '',
               'overflow-x-auto md:overflow-visible',
             ]"
           >
-            <MinimalExercisePreview
+            <div
               v-for="exercise in ruleExercises"
               :key="'r-' + modelValue.id + '-e-' + exercise.id"
-              :exercise="exercise"
-              :selectable="false"
-              :showEdit="false"
-              @edit="
-                $router.push({
-                  name: 'CourseExercises',
-                  hash: '#editor-' + exercise.id,
-                })
-              "
-            ></MinimalExercisePreview>
+            >
+              <MinimalExercisePreview
+                :reduced="reduced"
+                :exercise="exercise"
+                :selectable="false"
+                :showEdit="false"
+                :class="{ 'mr-6': reduced }"
+                @edit="
+                  $router.push({
+                    name: 'CourseExercises',
+                    hash: '#editor-' + exercise.id,
+                  })
+                "
+              ></MinimalExercisePreview>
+            </div>
           </div>
           <div
             v-else
@@ -375,6 +383,14 @@ export default defineComponent({
     invalid: {
       type: Boolean,
       required: true,
+    },
+    expanded: {
+      type: Boolean,
+      default: true,
+    },
+    reduced: {
+      type: Boolean,
+      default: false,
     },
   },
   mixins: [courseIdMixin, loadingMixin],

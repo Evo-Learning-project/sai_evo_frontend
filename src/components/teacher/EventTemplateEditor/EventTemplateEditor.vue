@@ -1,6 +1,53 @@
 <template>
   <div class="">
-    <h3 class="mb-3.5">{{ $t("event_template_editor.editor_title") }}</h3>
+    <div class="mb-3.5 flex items-center">
+      <h3>{{ $t("event_template_editor.editor_title") }}</h3>
+      <Btn
+        class="hidden ml-auto md:block"
+        :variant="'icon'"
+        :outline="true"
+        :tooltip="$t('event_template_editor.grid_view')"
+        @click="viewMode = 'grid'"
+        ><span
+          :class="{
+            'material-icons-sharp': viewMode === 'grid',
+            'material-icons-outlined': viewMode !== 'grid',
+          }"
+        >
+          grid_view
+        </span></Btn
+      >
+      <Btn
+        :tooltip="$t('event_template_editor.list_view')"
+        class="hidden md:block"
+        :variant="'icon'"
+        :outline="true"
+        @click="viewMode = 'list'"
+        ><span
+          :class="{
+            'material-icons': viewMode === 'list',
+            'material-icons-outlined': viewMode !== 'list',
+          }"
+        >
+          view_list
+        </span></Btn
+      >
+      <!-- <Btn
+        :tooltip="$t('event_template_editor.compact_list_view')"
+        class=""
+        :variant="'icon'"
+        :outline="true"
+        @click="viewMode = 'compact_list'"
+        ><span
+          :class="{
+            'material-icons': viewMode === 'compact_list',
+            'material-icons-outlined': viewMode !== 'compact_list',
+          }"
+        >
+          calendar_view_day
+        </span></Btn
+      > -->
+    </div>
     <div class="mb-6">
       <p class="mb-6 text-muted" v-if="!showEditWarning">
         {{ $t("event_template_editor.introduction_text") }}
@@ -15,6 +62,9 @@
         </div>
       </div>
       <draggable
+        :class="{
+          'grid grid-cols-2 2xl:grid-cols-3 gap-6 mb-10': viewMode === 'grid',
+        }"
         ghost-class="drag-ghost"
         drag-class="dragging-element"
         handle=".drag-handle"
@@ -24,11 +74,15 @@
       >
         <template #item="{ element, index }">
           <EventTemplateRuleEditor
+            :class="[
+              viewMode === 'list' && index % 2 ? 'card-filled' : 'bg-white',
+            ]"
             :randomOrder="randomRuleOrder"
             :globallySelectedExercises="selectedExercises"
             :modelValue="element"
             :lockRuleType="element.amount > 1"
             :ordering="getActualSlotOrdering(index)"
+            :reduced="viewMode === 'grid' || viewMode === 'compact_list'"
             @updateRule="
               onRuleUpdate(element, $event.field, $event.value);
               $emit('templateChanged');
@@ -185,6 +239,7 @@ export default defineComponent({
       >,
       addRuleAmount: 2,
       addMultipleRulesExpanded: false,
+      viewMode: "list" as "grid" | "list" | "compact_list",
     };
   },
   methods: {
