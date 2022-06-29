@@ -10,19 +10,19 @@
         @apply text-darkText
     }
     h1 {
-      @apply font-semibold text-2.5xl mb-6
+      @apply font-medium text-2.5xl mb-6
     }
     h2 {
-      @apply font-semibold text-2xl mb-4
+      @apply font-medium text-2xl mb-4
     }
     h3 {
-      @apply font-semibold text-xl
+      @apply font-medium text-xl
     }
     h4 {
-      @apply font-semibold text-lg
+      @apply font-medium text-lg
     }
     h5 {
-      @apply font-semibold
+      @apply font-medium
     }
     strong {
       @apply font-bold text-primary;
