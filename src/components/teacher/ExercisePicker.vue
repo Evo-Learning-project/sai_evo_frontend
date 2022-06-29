@@ -39,6 +39,7 @@
       v-if="!firstLoading && exercises.length === 0 && emptyFilter"
       class="flex flex-col space-y-4"
     >
+      <!-- TODO make nicer empty state -->
       <p class="text-muted">
         {{ $t("exercise_picker.no_available_exercises") }}
       </p>
@@ -100,12 +101,12 @@ export default defineComponent({
   async created() {
     this.onFilterChange = getDebouncedForFilter(this.onFilterChange);
 
-    this.firstLoading = true;
-    await this.getExercises({
-      courseId: this.courseId,
-      fromFirstPage: true,
-    });
-    this.firstLoading = false;
+    // this.firstLoading = true;
+    // await this.getExercises({
+    //   courseId: this.courseId,
+    //   fromFirstPage: true,
+    // });
+    // this.firstLoading = false;
   },
   mixins: [courseIdMixin],
   watch: {
