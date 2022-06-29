@@ -25,6 +25,7 @@ module.exports = {
         "4.5px": "4.5px",
         "5px": "5px",
         18: "4.25rem",
+        7.5: "1.85rem",
         "2.5px": "2.5px",
         "8.5rem": "8.5rem",
         "15rem": "15.5rem",
@@ -89,7 +90,7 @@ module.exports = {
         },
         success: {
           light: "#34D399",
-          DEFAULT: "#10B981",
+          DEFAULT: "#10B981", // #007800
           dark: "#064E3B",
         },
       },

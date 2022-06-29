@@ -159,6 +159,8 @@
       :showDialog="showDialog"
       :large="true"
       :fullHeight="modelValue.rule_type === EventTemplateRuleType.ID_BASED"
+      :headerBorder="modelValue.rule_type === EventTemplateRuleType.ID_BASED"
+      :stickyHeader="modelValue.rule_type === EventTemplateRuleType.ID_BASED"
       :footerBorder="true"
       :confirmOnly="true"
       @yes="onCloseDialog()"
@@ -289,7 +291,7 @@
                   )
             }}
           </p>
-          <div class="mt-4" style="max-height: 60vh">
+          <div class="mt-4" style="height: calc(100vh - 224px)">
             <ExercisePicker
               :modelValue="modelValue.exercises"
               :alreadySelected="globallySelectedExercises"

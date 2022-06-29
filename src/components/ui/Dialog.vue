@@ -1,7 +1,5 @@
 <template>
   <transition name="fade" v-show="showDialog" appear>
-    <!--@after-enter="showContent = true"-->
-    <!--@after-leave="$emit(choice)"-->
     <div
       style="z-index: 1000"
       class="fixed top-0 left-0 flex items-center justify-center w-full h-full"
@@ -23,19 +21,30 @@
             rounded-md
             shadow-all-around
             md:mx-0
+            flex flex-col
           "
           :class="{
             'md:max-w-4xl md:min-w-md': !large,
             'md:w-full md:mx-4': large,
           }"
+          :style="fullHeight ? 'height: calc(100vh - 10px)' : ''"
         >
           <div
             style=""
             class="w-full overflow-y-auto"
-            :class="{ 'px-4 py-6 md:px-8': !noPadding }"
+            :class="{ 'px-4 md:px-8': !noPadding }"
           >
-            <!-- overflow-y-auto-->
-            <div v-if="$slots.title" class="flex items-center mb-2 space-x-2">
+            <!-- header-->
+            <div
+              v-if="$slots.title"
+              class="flex items-center space-x-2 bg-white"
+              :class="{
+                'py-2': !noPadding && $slots.backButton?.(),
+                'pt-4': !noPadding && !$slots.backButton?.(),
+                'sticky top-0 z-50': stickyHeader,
+                'border-b border-gray-200 -mx-8 px-8': headerBorder,
+              }"
+            >
               <slot class="" name="backButton"></slot>
               <div v-if="error">
                 <div class="icon-surrounding bg-danger-light text-danger-dark">
@@ -56,17 +65,30 @@
                   <span class="material-icons-outlined"> check </span>
                 </div>
               </div>
+
               <h2 class="mb-0">
                 <slot name="title"></slot>
               </h2>
             </div>
-            <div class="text-gray-600">
+
+            <!-- body-->
+            <div
+              class="pb-3 text-gray-600"
+              :class="[
+                !$slots.title
+                  ? 'pt-6'
+                  : error || warning || success
+                  ? 'pt-4'
+                  : 'pt-3',
+              ]"
+            >
               <slot name="body"></slot>
             </div>
           </div>
 
+          <!-- footer -->
           <div
-            class="flex flex-col pt-5 pb-4 pr-2 md:flex-row"
+            class="z-50 flex flex-col pt-2 pb-2 pr-2 mt-auto md:flex-row"
             :class="{
               'border-t border-gray-200': footerBorder,
             }"
@@ -107,6 +129,14 @@ export default defineComponent({
   name: "Dialog",
   props: {
     title: String,
+    fullHeight: {
+      type: Boolean,
+      default: false,
+    },
+    stickyHeader: {
+      type: Boolean,
+      default: false,
+    },
     showDialog: {
       type: Boolean,
       required: true,
@@ -140,6 +170,10 @@ export default defineComponent({
       default: false,
     },
     success: {
+      type: Boolean,
+      default: false,
+    },
+    headerBorder: {
       type: Boolean,
       default: false,
     },
@@ -203,4 +237,15 @@ export default defineComponent({
 });
 </script>
 
-<style></style>
+<style>
+/* ::-webkit-scrollbar {
+  -webkit-appearance: none;
+  width: 7px;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 4px;
+  background-color: rgba(0, 0, 0, 0.5);
+  box-shadow: 0 0 1px rgba(255, 255, 255, 0.5);
+} */
+</style>

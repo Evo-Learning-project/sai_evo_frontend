@@ -132,6 +132,7 @@ import {
   scoreChartDatasetSettings,
 } from "@/reports";
 import ExerciseTestCase from "../shared/ExerciseTestCase.vue";
+import { mediaQueryMixin } from "@/mixins";
 
 ChartJS.register(
   Title,
@@ -155,6 +156,7 @@ export default defineComponent({
       required: true,
     },
   },
+  mixins: [mediaQueryMixin],
   data() {
     return {
       exerciseChoicesBarChartOptions,
@@ -163,11 +165,6 @@ export default defineComponent({
   },
   methods: {},
   computed: {
-    // TODO extract to mixin
-    mediaQueryMdMatches(): boolean {
-      const mq = window.matchMedia("(min-width: 768px)");
-      return mq.matches;
-    },
     isMultipleChoice(): boolean {
       return multipleChoiceExerciseTypes.includes(
         this.exercise.exercise_type as ExerciseType

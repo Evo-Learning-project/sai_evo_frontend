@@ -22,8 +22,7 @@
           </div>
           <div>
             <div
-              style="max-height: 70vh"
-              class="px-8 overflow-y-auto"
+              class="px-8"
               v-show="instanceIndex === currentInstance"
               v-for="(_, instanceIndex) in instances"
               :key="'instance-' + instanceIndex"

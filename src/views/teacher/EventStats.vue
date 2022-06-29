@@ -128,7 +128,12 @@
 </template>
 
 <script lang="ts">
-import { courseIdMixin, eventIdMixin, loadingMixin } from "@/mixins";
+import {
+  courseIdMixin,
+  eventIdMixin,
+  loadingMixin,
+  mediaQueryMixin,
+} from "@/mixins";
 import {
   Event,
   EventParticipation,
@@ -187,7 +192,7 @@ export default defineComponent({
     ExerciseWithStats,
     MinimalExercisePreviewSkeleton,
   },
-  mixins: [courseIdMixin, eventIdMixin, loadingMixin],
+  mixins: [courseIdMixin, eventIdMixin, loadingMixin, mediaQueryMixin],
   async created() {
     await this.withLoading(async () => {
       // make a first request without the heavy fields in order
@@ -236,11 +241,6 @@ export default defineComponent({
   computed: {
     ...mapState(["eventParticipations"]),
     ...mapGetters(["event"]),
-    // TODO extract to mixin
-    mediaQueryMdMatches(): boolean {
-      const mq = window.matchMedia("(min-width: 768px)");
-      return mq.matches;
-    },
     tabsAsSelectableOptions(): SelectableOption[] {
       return [
         {
