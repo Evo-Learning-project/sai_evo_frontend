@@ -68,6 +68,17 @@ export async function createExercise(
   return response.data;
 }
 
+export async function bulkCreateExercises(
+  courseId: string,
+  exercises: Exercise[]
+): Promise<Exercise[]> {
+  const response = await axios.post(
+    `courses/${courseId}/exercises/`,
+    exercises
+  );
+  return response.data;
+}
+
 export async function updateExercise(
   courseId: string,
   exerciseId: string,

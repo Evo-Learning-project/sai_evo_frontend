@@ -26,6 +26,7 @@ import { Commit } from "vuex";
 
 import {
   addTagToExercise,
+  bulkCreateExercises,
   createExercise,
   createExerciseChoice,
   createExerciseSubExercise,
@@ -88,6 +89,14 @@ export const actions = {
     const newExercise = await createExercise(courseId, exercise);
     commit("setExercises", [newExercise, ...state.exercises]);
     return newExercise;
+  },
+  bulkCreateExercises: async (
+    { commit, state }: { commit: Commit; state: any },
+    { courseId, exercises }: { courseId: string; exercises: Exercise[] }
+  ) => {
+    const newExercises = await bulkCreateExercises(courseId, exercises);
+    commit("setExercises", [...newExercises, ...state.exercises]);
+    return newExercises;
   },
   deleteExercise: async (
     { commit, state }: { commit: Commit; state: any },

@@ -1,11 +1,47 @@
 <template>
   <div class="flex flex-col flex-grow h-full">
+    <div
+      v-if="showTimeUpBackdrop"
+      style="z-index: 99999"
+      class="fixed top-0 left-0 w-full h-full bg-opacity-50 bg-dark"
+    >
+      <div
+        class="fixed z-50 w-full px-6 py-4 text-center transform -translate-x-1/2 -translate-y-1/2 rounded  md:w-max top-1/2 left-1/2"
+      >
+        <p
+          style="font-size: 10rem"
+          class="opacity-50 material-icons-outlined text-lightText"
+        >
+          timer_off
+        </p>
+        <h3
+          class="pt-1 mx-auto rounded-t  md:bg-transparent text-lightText md:px-2"
+          style="text-shadow: 0.5px 0.5px 4px rgb(0 0 0 / 50%)"
+        >
+          {{ $t("event_participation_page.times_up") }}
+        </h3>
+        <p
+          class="pb-1 rounded-b  md:bg-transparent text-lightText md:mx-2 md:px-2"
+          style="text-shadow: 0.5px 0.5px 4px rgb(0 0 0 / 50%)"
+        >
+          {{ $t("event_participation_page.all_answers_saved") }}
+        </p>
+      </div>
+    </div>
     <teleport v-if="mounted" to="#main-student-header-right">
-      <CloudSaveStatus
-        :saving="saving"
-        :hadError="savingError"
-      ></CloudSaveStatus
-    ></teleport>
+      <div class="flex items-start mt-1 space-x-10">
+        <CloudSaveStatus
+          :saving="saving"
+          :hadError="savingError"
+        ></CloudSaveStatus>
+        <Countdown
+          v-show="remainingTime !== null"
+          @timeUp="onTimeUp()"
+          :initialSeconds="remainingTime ?? 0"
+          :isInitialized="runTimer"
+        ></Countdown>
+      </div>
+    </teleport>
 
     <div class="mt-3" v-if="firstLoading">
       <SlotSkeleton class="mb-24"></SlotSkeleton>
@@ -138,6 +174,8 @@ import {
 } from "@/api/events";
 import SlotSkeleton from "@/components/ui/skeletons/SlotSkeleton.vue";
 import { subscribeToSubmissionSlotChanges } from "@/ws/modelSubscription";
+import Countdown from "@/components/ui/Countdown.vue";
+import { getParticipationRemainingTime } from "@/utils";
 const { mapActions, mapMutations } = createNamespacedHelpers("student");
 
 export default defineComponent({
@@ -147,6 +185,7 @@ export default defineComponent({
     Btn,
     Dialog,
     SlotSkeleton,
+    Countdown,
   },
   name: "EventParticipationPage",
   mixins: [courseIdMixin, eventIdMixin, savingMixin, loadingMixin],
@@ -164,6 +203,16 @@ export default defineComponent({
           eventId: this.eventId,
         })
     );
+
+    // set up timer, if there is a time limit
+    const remainingTime = getParticipationRemainingTime(
+      this.currentEventParticipation,
+      this.currentEventParticipation.event
+    );
+    if (remainingTime !== null) {
+      this.remainingTime = remainingTime;
+      this.runTimer = true;
+    }
 
     // already turned in, redirect to submission review page
     if (this.proxyModelValue.state === EventParticipationState.TURNED_IN) {
@@ -202,6 +251,9 @@ export default defineComponent({
       } as DialogData,
       ws: null as WebSocket | null,
       EventType,
+      showTimeUpBackdrop: false,
+      remainingTime: null as number | null,
+      runTimer: false,
     };
   },
   methods: {
@@ -277,9 +329,16 @@ export default defineComponent({
         });
       });
     },
+    async onTimeUp() {
+      console.log("TIME UP");
+      this.showTimeUpBackdrop = true;
+      setTimeout(async () => await this.onTurnIn(), 500);
+    },
     async onTurnIn() {
       this.showConfirmDialog = false;
       await this.withLoading(async () => {
+        // stop timer
+        this.runTimer = false;
         // flush any pending slots to make sure the most recent content is saved
         //const s of this.proxyModelValue.slots
         for (const s of Object.values(this.slotAutoSaveManagers)) {
@@ -289,26 +348,29 @@ export default defineComponent({
             await this.onRunCode(s.instance);
           }
         }
-        await this.partialUpdateEventParticipation({
-          courseId: this.courseId,
-          changes: {
-            state: EventParticipationState.TURNED_IN,
-          },
-        });
+        try {
+          await this.partialUpdateEventParticipation({
+            courseId: this.courseId,
+            changes: {
+              state: EventParticipationState.TURNED_IN,
+            },
+          });
+          this.$router.push({
+            name:
+              this.proxyModelValue.event.event_type ===
+              EventType.SELF_SERVICE_PRACTICE
+                ? "PracticeSummaryPage"
+                : "SubmissionReviewPage",
+            params: {
+              participationId: this.currentEventParticipation.id,
+              showSubmissionConfirmationMessage: 1, // should be `true`, but TS complains about type
+            },
+          });
+          this.$store.commit("shared/showSuccessFeedback");
+        } catch (e) {
+          this.setErrorNotification(e);
+        }
       });
-
-      this.$router.push({
-        name:
-          this.proxyModelValue.event.event_type ===
-          EventType.SELF_SERVICE_PRACTICE
-            ? "PracticeSummaryPage"
-            : "SubmissionReviewPage",
-        params: {
-          participationId: this.currentEventParticipation.id,
-          showSubmissionConfirmationMessage: 1, // should be `true`, but TS complains about type
-        },
-      });
-      this.$store.commit("shared/showSuccessFeedback");
     },
     confirmGoForward() {
       this.dialogData = {

@@ -4,6 +4,7 @@
     :modelValue="exerciseWrapperSlot"
     :showTabs="showProgrammingExerciseTabs"
     :allowPopup="allowProgrammingExercisePopup"
+    :showSolutionAndScores="true"
   ></AbstractEventParticipationSlot>
 </template>
 

@@ -2,25 +2,17 @@
   <div
     :class="{
       'border-danger-dark focus-within:border-danger-dark': $slots.errors,
+      'py-1.5 px-2': !small,
+      'py-0.5 px-1 w-20': small,
+      'bg-light': filled,
     }"
-    class="
-      light-input
-      transition-border
-      duration-300
-      relative
-      z-10
-      px-2
-      py-1.5
-      bg-light
-      border-b-2
-      rounded-t-sm
-      focus-within:border-primary
-    "
+    class="relative z-10 duration-300 border-b-2 rounded-t-sm  light-input transition-border focus-within:border-primary"
   >
     <input
       type="number"
       :min="min"
       :max="max"
+      :disabled="disabled"
       placeholder=" "
       :value="modelValue"
       @input="onInput($event.target.value)"
@@ -68,6 +60,10 @@ import { defineComponent } from "@vue/runtime-core";
 export default defineComponent({
   name: "NumberInput",
   props: {
+    disabled: {
+      type: Boolean,
+      default: false,
+    },
     modelValue: {
       type: [Number, String],
       required: true,
@@ -87,6 +83,14 @@ export default defineComponent({
     max: {
       type: Number,
       default: 1000000000,
+    },
+    small: {
+      type: Boolean,
+      default: false,
+    },
+    filled: {
+      type: Boolean,
+      default: true,
     },
   },
   methods: {

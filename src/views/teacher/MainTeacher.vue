@@ -48,7 +48,7 @@
             v-if="$store.getters['shared/isAuthenticated']"
             class="flex items-center ml-4 md:ml-6"
           >
-            <LocaleSelector v-if="false"></LocaleSelector>
+            <LocaleSelector></LocaleSelector>
             <Btn
               :tooltip="$t('help.help_guide_label')"
               @click="setHelpCenterVisibility(true)"

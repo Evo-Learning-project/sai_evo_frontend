@@ -1,3 +1,4 @@
+import { DataFormat } from "./../integrations/types";
 import { ReportField } from "./../reports/types";
 import { EventType, ExerciseTestCaseType } from "./../models/types";
 import {
@@ -65,6 +66,8 @@ export const it = {
     practice_summary: "Riepilogo esercitazione",
   },
   event_participation_page: {
+    times_up: "Tempo scaduto",
+    all_answers_saved: "Tutte le tue risposte sono state salvate",
     exercise: "Esercizio",
     of: "di",
     next_exercise: "Avanti",
@@ -183,6 +186,10 @@ export const it = {
   },
   misc: {
     find_out_more: "Scopri di più",
+    experimental_feature_warning:
+      "Questa funzionalità è ancora in fase sperimentale. Per favore, segnala eventuali bug verificatisi durante l'utilizzo.",
+    time_limit: "Limite di tempo",
+    minutes: "minuti",
     scored_plural: "punti",
     scored_singular: "punto",
     download: "Scarica",
@@ -321,6 +328,8 @@ export const it = {
   },
   course_exercises: {
     new_exercise: "Nuovo esercizio",
+    import_exercises: "Importa",
+    import_exercises_title: "Importa esercizi",
     no_exercises: "Non ci sono ancora esercizi",
     no_matching_exercises:
       "Non ci sono risultati coi filtri di ricerca selezionati",
@@ -489,8 +498,20 @@ export const it = {
     end_timestamp: "Data e ora di fine",
     instructions: "Istruzioni (opzionale)",
     editor_title: "Editor esame",
-    flow_rules: "Regole di svolgimento",
-    access_rules: "Regole di accesso",
+    flow_rules: "Visualizzazione esercizi",
+    access_rules: "Accesso all'esame",
+    time_limit_rules: "Limite di tempo",
+    time_limit_label: "Imponi un limite di tempo ai partecipanti",
+    manage_time_limit_exceptions: "Gestisci eccezioni",
+    time_limit_exceptions: "eccezioni",
+    no_time_limit_description: "Dovrai chiudere manualmente l'esame.",
+    exceptions_to_time_limit: "Eccezioni al limite di tempo",
+    time_limit_description:
+      "Al termine del tempo, l'esame si chiude automaticamente.",
+    add_exception: "Aggiungi eccezione",
+    remove_time_limit_exception_confirmation:
+      "Sei sicuro di voler rimuovere questa eccezione al limite di tempo?",
+    delete_exception: "Rimuovi eccezione",
     exercises_shown_at_a_time_label:
       "Numero di esercizi da mostrare per pagina",
     allow_everyone_access_label:
@@ -919,5 +940,20 @@ export const it = {
   locales: {
     it: "Italiano",
     en: "English",
+  },
+  exercise_import: {
+    formats: {
+      [DataFormat.MOODLE_XML]: "Moodle XML",
+      [DataFormat.EVO_JSON]: "SAI Evo JSON",
+    },
+    select_format: "Seleziona il formato",
+    choose_file: "Scegli il file da importare",
+    import: "Importa",
+    importing: "Attendi...",
+    imported_exercises_state: "Visibilità degli esercizi importati",
+    detected_exercises: "esercizi rilevati",
+    extras_detected_tags: "Tag rilevati",
+    extras_detected_tags_description:
+      "Clicca sui tag che vuoi aggiungere agli esercizi importati. I tag selezionati verranno aggiunti come tag pubblici.",
   },
 };
