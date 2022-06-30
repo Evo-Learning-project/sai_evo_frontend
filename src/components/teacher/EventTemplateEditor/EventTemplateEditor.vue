@@ -2,7 +2,14 @@
   <div class="">
     <div class="mb-3.5 flex items-center">
       <h3>{{ $t("event_template_editor.editor_title") }}</h3>
-      <Btn
+      <SegmentedControls
+        :small="true"
+        class="hidden ml-auto md:block"
+        :options="viewModesAsOptions"
+        v-model="viewMode"
+      ></SegmentedControls>
+
+      <!-- <Btn
         class="hidden ml-auto md:block"
         :variant="'icon'"
         :outline="true"
@@ -19,7 +26,7 @@
         :outline="true"
         @click="viewMode = 'list'"
         ><span class="material-icons-outlined"> view_list </span></Btn
-      >
+      > -->
       <!-- <Btn
         :tooltip="$t('event_template_editor.compact_list_view')"
         class=""
@@ -173,6 +180,8 @@ import { getTranslatedString as _ } from "@/i18n";
 import DropdownMenu from "@/components/ui/DropdownMenu.vue";
 import NumberInput from "@/components/ui/NumberInput.vue";
 import ArticleHandle from "@/components/shared/HelpCenter/ArticleHandle.vue";
+import SegmentedControls from "@/components/ui/SegmentedControls.vue";
+import { SelectableOption } from "@/interfaces";
 export default defineComponent({
   setup() {
     return {
@@ -192,6 +201,7 @@ export default defineComponent({
     DropdownMenu,
     NumberInput,
     ArticleHandle,
+    SegmentedControls,
   },
   mixins: [courseIdMixin, loadingMixin, mediaQueryMixin],
   name: "EventTemplateEditor",
@@ -420,6 +430,20 @@ export default defineComponent({
         .filter((r) => r.rule_type == EventTemplateRuleType.ID_BASED)
         .map((r) => r.exercises as string[])
         .flat();
+    },
+    viewModesAsOptions(): SelectableOption[] {
+      return [
+        {
+          value: "list",
+          icons: ["view_list"],
+          content: "",
+        },
+        {
+          value: "grid",
+          icons: ["view_module"],
+          content: "",
+        },
+      ];
     },
   },
 });
