@@ -2,7 +2,7 @@
   <Card :marginLess="true" :filled="isDraft">
     <template v-slot:header>
       <div class="flex items-start w-full">
-        <h3
+        <h4
           class="mt-1.25px mr-4"
           :class="{ 'text-muted': event.name.length === 0 }"
           style="
@@ -13,7 +13,7 @@
           "
         >
           {{ previewTitle }}
-        </h3>
+        </h4>
         <div class="">
           <div
             class="mr-0 chip"

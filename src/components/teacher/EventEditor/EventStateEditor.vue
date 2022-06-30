@@ -1,6 +1,6 @@
 <template>
   <div class="">
-    <h3 class="mb-3">{{ $t("event_editor.state_editor_title") }}</h3>
+    <h4 class="mb-3">{{ $t("event_editor.state_editor_title") }}</h4>
     <div class="my-4 banner banner-light" v-if="isDraft">
       <span class="ml-px text-yellow-900 material-icons-outlined">
         error_outline

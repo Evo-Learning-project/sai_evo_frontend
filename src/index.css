@@ -17,11 +17,11 @@
 @layer base {
     body {
       font-size: 16px;
-      letter-spacing: 0.25px;
+      letter-spacing: 0.225px;
       @apply text-darkText
     }
     button {
-      letter-spacing: 1.25px;
+      letter-spacing: 1px;
       @apply font-medium;
     }
     h1 {
