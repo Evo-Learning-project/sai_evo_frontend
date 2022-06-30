@@ -38,7 +38,7 @@
       </div>
     </transition>
     <div class="flex w-full">
-      <h3>{{ $t("event_editor.editor_title") }}</h3>
+      <h2 class="mb-0">{{ $t("event_editor.editor_title") }}</h2>
       <CloudSaveStatus
         class="ml-auto"
         :saving="saving"

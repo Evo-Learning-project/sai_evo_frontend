@@ -78,8 +78,8 @@
     >
       {{ $t("event_editor.instructions") }}</TextEditor
     >
-    <div class="flex flex-col mt-12">
-      <h4 class="mb-1.5">{{ $t("event_editor.flow_rules") }}</h4>
+    <div class="flex flex-col mt-10">
+      <h4 class="mb-3">{{ $t("event_editor.flow_rules") }}</h4>
       <div class="mb-2">
         <RadioGroup
           class="-ml-1.5"
@@ -97,8 +97,8 @@
       >
     </div>
 
-    <div class="flex flex-col mt-12">
-      <h4 class="mb-1.5">{{ $t("event_editor.access_rules") }}</h4>
+    <div class="flex flex-col mt-10">
+      <h4 class="mb-3">{{ $t("event_editor.access_rules") }}</h4>
       <RadioGroup
         class="-ml-1.5 mb-2"
         :modelValue="modelValue.access_rule"
@@ -159,8 +159,8 @@
       </div>
     </div>
 
-    <div class="flex flex-col mt-12">
-      <h4 class="mb-1.5">{{ $t("event_editor.time_limit_rules") }}</h4>
+    <div class="flex flex-col mt-10">
+      <h4 class="mb-3">{{ $t("event_editor.time_limit_rules") }}</h4>
       <div
         class="flex flex-col mb-2 -mt-2 space-y-4  md:flex-row md:space-x-8 md:space-y-0"
       >

@@ -40,7 +40,7 @@
       {{ value }}
     </div>
     <div class="flex ml-2 border-l">
-      <div class="tooltip">
+      <div class="h-full -mb-0.5 tooltip">
         <Btn
           v-clipboard:copy="value"
           v-clipboard:success="onCopy"

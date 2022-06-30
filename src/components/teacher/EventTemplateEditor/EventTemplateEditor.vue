@@ -1,50 +1,16 @@
 <template>
   <div class="">
-    <div class="mb-3.5 flex items-center">
-      <h3>{{ $t("event_template_editor.editor_title") }}</h3>
+    <div class="flex items-center mb-2">
+      <h4>{{ $t("event_template_editor.editor_title") }}</h4>
       <SegmentedControls
         :small="true"
         class="hidden ml-auto md:block"
         :options="viewModesAsOptions"
         v-model="viewMode"
       ></SegmentedControls>
-
-      <!-- <Btn
-        class="hidden ml-auto md:block"
-        :variant="'icon'"
-        :outline="true"
-        v-if="viewMode === 'list'"
-        :tooltip="$t('event_template_editor.grid_view')"
-        @click="viewMode = 'grid'"
-        ><span class="material-icons-outlined"> grid_view </span></Btn
-      >
-      <Btn
-        v-else
-        :tooltip="$t('event_template_editor.list_view')"
-        class="hidden ml-auto md:block"
-        :variant="'icon'"
-        :outline="true"
-        @click="viewMode = 'list'"
-        ><span class="material-icons-outlined"> view_list </span></Btn
-      > -->
-      <!-- <Btn
-        :tooltip="$t('event_template_editor.compact_list_view')"
-        class=""
-        :variant="'icon'"
-        :outline="true"
-        @click="viewMode = 'compact_list'"
-        ><span
-          :class="{
-            'material-icons': viewMode === 'compact_list',
-            'material-icons-outlined': viewMode !== 'compact_list',
-          }"
-        >
-          calendar_view_day
-        </span></Btn
-      > -->
     </div>
     <div class="mb-6">
-      <p class="mb-6 text-muted" v-if="!showEditWarning">
+      <p class="mb-8 text-muted" v-if="!showEditWarning">
         {{ $t("event_template_editor.introduction_text") }}
         <ArticleHandle :articleId="'whats_exam_template'"></ArticleHandle>.
       </p>
