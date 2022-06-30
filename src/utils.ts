@@ -284,3 +284,31 @@ export const getFileContent = async (file: File): Promise<string> => {
     reader.readAsText(file);
   });
 };
+
+export const clickOutsideDirective = {
+  beforeMount: (
+    el: {
+      clickOutsideEvent: {
+        (event: any): void;
+        (this: Document, ev: MouseEvent): any;
+      };
+      contains: (arg0: any) => any;
+    },
+    binding: { value: () => void }
+  ) => {
+    el.clickOutsideEvent = (event: any) => {
+      console.log("CLICK EVENT", event, binding, binding.value);
+      // here I check that click was outside the el and his children
+      if (!(el == event.target || el.contains(event.target))) {
+        // and if it did, call method provided in attribute value
+        binding.value?.();
+      }
+    };
+    document.addEventListener("click", el.clickOutsideEvent);
+  },
+  unmounted: (el: {
+    clickOutsideEvent: (this: Document, ev: MouseEvent) => any;
+  }) => {
+    document.removeEventListener("click", el.clickOutsideEvent);
+  },
+};

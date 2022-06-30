@@ -21,7 +21,7 @@ import * as Sentry from "@sentry/vue";
 import { BrowserTracing } from "@sentry/tracing";
 
 import "vue3-tour/dist/vue3-tour.css";
-import { logOut } from "./utils";
+import { clickOutsideDirective, logOut } from "./utils";
 
 import Vue3Sanitize from "vue-3-sanitize";
 
@@ -62,6 +62,7 @@ axios.interceptors.response.use(
 const app = createApp(App);
 
 app
+  .directive("click-outside", clickOutsideDirective)
   .use(VWave, {
     duration: 0.3,
   })

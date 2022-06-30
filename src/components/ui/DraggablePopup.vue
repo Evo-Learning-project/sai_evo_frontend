@@ -7,9 +7,10 @@
       initialTop +
       'px;left: ' +
       initialLeft +
-      '%;z-index: 101;'
+      '%;z-index: ' +
+      (inForeground ? '99999' : '200')
     "
-    class="absolute z-50 w-2/5 p-2 overflow-y-auto transition-opacity duration-75 resize  opacity-80 card hover:opacity-100"
+    class="fixed w-2/5 p-2 overflow-y-auto transition-opacity duration-75 resize  opacity-80 card hover:opacity-100"
     :class="{
       'bg-light': !whiteBg,
       'bg-white': whiteBg,
@@ -67,6 +68,10 @@ export default defineComponent({
     initialLeft: {
       type: Number,
       default: 63,
+    },
+    inForeground: {
+      type: Boolean,
+      default: false,
     },
   },
   mounted() {

@@ -1,20 +1,31 @@
 <template>
-  <div class="relative">
-    <Btn
-      :variant="'icon'"
-      :outline="true"
-      :tooltip="!expanded ? tooltip : ''"
-      @click="$emit('toggleExpanded')"
-    >
+  <div
+    class="relative"
+    v-click-outside="() => (expanded ? $emit('toggleExpanded') : undefined)"
+  >
+    <Btn :variant="'icon'" :outline="true" @click="$emit('toggleExpanded')">
+      <!-- :tooltip="!expanded ? tooltip : ''" -->
       <slot name="icon"></slot>
       <span v-if="!$slots.icon?.()" class="material-icons-outlined">{{
         icon
       }}</span>
     </Btn>
     <div
-      class="absolute z-20 overflow-hidden transition-all duration-75 ease-in transform bg-white  card shadow-popup"
+      class="
+        absolute
+        z-20
+        overflow-hidden
+        transition-all
+        duration-75
+        ease-in
+        transform
+        bg-white
+        mt-1.5
+        card
+        shadow-popup
+      "
       :class="{
-        'max-h-0 opacity-0 scale-95': !expanded,
+        'max-h-0 opacity-0 scale-95 invisible': !expanded,
         'max-h-44 opacity-100 scale-100': expanded,
         'origin-top-left left-0': placement === 'left',
         'origin-top-right right-0': placement === 'right',

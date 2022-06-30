@@ -1,5 +1,10 @@
 <template>
   <div class="relative flex flex-col flex-grow">
+    <HelpCenter
+      @startTour="startTour()"
+      @close="setHelpCenterVisibility(false)"
+      v-if="helpCenterOpen"
+    ></HelpCenter>
     <nav
       style="z-index: 100"
       class="
@@ -18,12 +23,7 @@
         w-full
       "
     >
-      <HelpCenter
-        @startTour="startTour()"
-        @close="setHelpCenterVisibility(false)"
-        v-if="helpCenterOpen"
-      ></HelpCenter>
-      <div class="flex items-center h-14">
+      <div class="flex items-center h-14 z-999">
         <div class="flex items-center mt-4 mb-4 -ml-4.5">
           <Btn
             id="toggle-sidebar"
@@ -48,7 +48,7 @@
             v-if="$store.getters['shared/isAuthenticated']"
             class="flex items-center ml-4 md:ml-6"
           >
-            <LocaleSelector></LocaleSelector>
+            <LocaleSelector v-if="false"></LocaleSelector>
             <Btn
               :tooltip="$t('help.help_guide_label')"
               @click="setHelpCenterVisibility(true)"
