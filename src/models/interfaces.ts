@@ -1,4 +1,8 @@
-import { EventAccessRule, ExerciseTestCaseType } from "./types";
+import {
+  EventAccessRule,
+  EventTimeLimitRule,
+  ExerciseTestCaseType,
+} from "./types";
 import {
   EventState,
   EventType,
@@ -103,6 +107,9 @@ export interface Event extends Lockable {
   randomize_rule_order?: boolean;
   access_rule?: EventAccessRule;
   access_rule_exceptions?: string[];
+  time_limit_rule?: EventTimeLimitRule;
+  time_limit_seconds: number | null;
+  time_limit_exceptions?: [string, number][];
 }
 
 export interface EventTemplate {

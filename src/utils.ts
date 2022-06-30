@@ -1,5 +1,6 @@
+import { EventParticipation } from "@/models";
 import { getTranslatedString } from "./i18n/index";
-import { Exercise } from "./models/interfaces";
+import { Event, Exercise } from "./models/interfaces";
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import debounce from "lodash/debounce";
 import moment from "moment";
@@ -255,4 +256,31 @@ export const csvToArray = (
 
   // return the array
   return arr;
+};
+
+export const getParticipationRemainingTime = (
+  participation: EventParticipation,
+  event: Event
+): number | null => {
+  if (event.time_limit_seconds === null) {
+    return null;
+  }
+  const endDate = new Date(participation.begin_timestamp);
+  endDate.setSeconds(endDate.getSeconds() + event.time_limit_seconds);
+
+  return Math.max(
+    Math.floor((endDate.getTime() - new Date().getTime()) / 1000),
+    0
+  );
+};
+
+export const getFileContent = async (file: File): Promise<string> => {
+  return new Promise<string>((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      resolve(reader.result as string);
+    };
+    reader.onerror = reject;
+    reader.readAsText(file);
+  });
 };

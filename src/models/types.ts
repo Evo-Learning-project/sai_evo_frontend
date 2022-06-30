@@ -43,6 +43,11 @@ export enum EventAccessRule {
   DENY_ACCESS,
 }
 
+export enum EventTimeLimitRule {
+  NO_TIME_LIMIT,
+  TIME_LIMIT,
+}
+
 export enum EventTemplateRuleType {
   TAG_BASED,
   ID_BASED,

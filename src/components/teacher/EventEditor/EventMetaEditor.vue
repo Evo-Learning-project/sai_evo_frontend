@@ -78,9 +78,9 @@
     >
       {{ $t("event_editor.instructions") }}</TextEditor
     >
-    <div class="flex flex-col mt-12 space-y-4">
-      <h3>{{ $t("event_editor.flow_rules") }}</h3>
-      <div class="flex items-center space-x-4">
+    <div class="flex flex-col mt-12">
+      <h4 class="mb-1.5">{{ $t("event_editor.flow_rules") }}</h4>
+      <div class="mb-2">
         <RadioGroup
           class="-ml-1.5"
           :modelValue="modelValue.exercises_shown_at_a_time"
@@ -97,10 +97,10 @@
       >
     </div>
 
-    <div class="flex flex-col mt-12 space-y-4">
-      <h3>{{ $t("event_editor.access_rules") }}</h3>
+    <div class="flex flex-col mt-12">
+      <h4 class="mb-1.5">{{ $t("event_editor.access_rules") }}</h4>
       <RadioGroup
-        class="-ml-1.5"
+        class="-ml-1.5 mb-2"
         :modelValue="modelValue.access_rule"
         :options="accessRulesOptions"
         @update:modelValue="onAccessRuleChange($event)"
@@ -140,7 +140,8 @@
               : 'invisible',
             'md:ml-8',
           ]"
-          :variant="'primary'"
+          :size="'sm'"
+          :variant="'secondary'"
           ><span class="mr-2 material-icons"> people </span>
           {{ $t("event_editor.choose_allowed") }}</Btn
         >
@@ -156,6 +157,75 @@
           {{ $t("event_editor.allowed_students") }}
         </p>
       </div>
+    </div>
+
+    <div class="flex flex-col mt-12">
+      <h4 class="mb-1.5">{{ $t("event_editor.time_limit_rules") }}</h4>
+      <div
+        class="flex flex-col mb-2 -mt-2 space-y-4  md:flex-row md:space-x-8 md:space-y-0"
+      >
+        <Toggle :labelOnLeft="true" v-model="timeLimitRuleProxy">{{
+          $t("event_editor.time_limit_label")
+        }}</Toggle>
+
+        <div
+          class="flex flex-col space-y-2  md:items-center md:flex-row md:space-y-0"
+          :class="{
+            'opacity-0 hidden md:flex':
+              modelValue.time_limit_rule !== EventTimeLimitRule.TIME_LIMIT,
+          }"
+        >
+          <div class="flex items-center space-x-1">
+            <NumberInput
+              :disabled="
+                modelValue.time_limit_rule !== EventTimeLimitRule.TIME_LIMIT
+              "
+              class="w-full"
+              :small="false"
+              v-model="timeLimitProxy"
+              :leftIcon="'timer'"
+              >{{ $t("misc.time_limit") }}</NumberInput
+            >
+            <p class="text-sm select-none text-muted">
+              {{ $t("misc.minutes") }}
+            </p>
+          </div>
+          <Btn
+            @click="showTimeLimitDialog = true"
+            class="md:ml-10"
+            :size="'sm'"
+            :variant="'secondary'"
+          >
+            <span class="mr-2 text-sm">
+              <svg style="width: 20px; height: 20px" viewBox="0 0 24 24">
+                <path
+                  fill="currentColor"
+                  d="M13 14H11V8H13V14M15 1H9V3H15V1M5 13C5 9.13 8.13 6 12 6C15.29 6 18.05 8.28 18.79 11.34L19.39 10.74C19.71 10.42 20.1 10.21 20.5 10.1C20.18 9.11 19.67 8.19 19.03 7.39L20.45 5.97C20 5.46 19.55 5 19.04 4.56L17.62 6C16.07 4.74 14.12 4 12 4C7.03 4 3 8.03 3 13C3 17.63 6.5 21.44 11 21.94V19.92C7.61 19.43 5 16.53 5 13M13 19.96V22H15.04L21.17 15.88L19.13 13.83L13 19.96M22.85 13.47L21.53 12.15C21.33 11.95 21 11.95 20.81 12.15L19.83 13.13L21.87 15.17L22.85 14.19C23.05 14 23.05 13.67 22.85 13.47Z"
+                /></svg
+            ></span>
+            <!-- <span class="mr-2 material-icons"> person </span> -->
+            {{ $t("event_editor.manage_time_limit_exceptions") }}</Btn
+          >
+          <p
+            :class="[
+              modelValue.time_limit_rule === EventTimeLimitRule.TIME_LIMIT
+                ? 'visible'
+                : 'invisible',
+              'md:ml-4',
+            ]"
+          >
+            <strong>{{ modelValue.time_limit_exceptions?.length ?? 0 }}</strong>
+            {{ $t("event_editor.time_limit_exceptions") }}
+          </p>
+        </div>
+      </div>
+      <p class="text-muted">
+        {{
+          modelValue.time_limit_rule === EventTimeLimitRule.TIME_LIMIT
+            ? $t("event_editor.time_limit_description")
+            : $t("event_editor.no_time_limit_description")
+        }}
+      </p>
     </div>
 
     <Dialog
@@ -210,6 +280,56 @@
     </Dialog>
 
     <Dialog
+      @yes="showTimeLimitDialog = false"
+      :showDialog="showTimeLimitDialog"
+      :confirmOnly="true"
+      :large="true"
+    >
+      <template v-slot:title>
+        {{ $t("event_editor.exceptions_to_time_limit") }}
+      </template>
+      <template v-slot:body>
+        <div class="mt-8">
+          <div
+            v-for="(exception, index) in modelValue.time_limit_exceptions"
+            :key="modelValue.id + '-time-limit-exc-' + index"
+            class="flex w-1/2 my-6"
+          >
+            <TextInput class="w-full mr-4" v-model="exception[0]">{{
+              $t("event_editor.student_email")
+            }}</TextInput>
+            <div class="flex items-center w-1/2 space-x-1">
+              <!-- TODO convert back and forth between minutes and seconds -->
+              <NumberInput
+                class="w-full"
+                :small="false"
+                :modelValue="parseFloat(exception[1]) / 60"
+                @update:modelValue="exception[1] = parseFloat($event) * 60"
+                :leftIcon="'timer'"
+                >{{ $t("misc.time_limit") }}</NumberInput
+              >
+              <p class="text-sm select-none text-muted">
+                {{ $t("misc.minutes") }}
+              </p>
+            </div>
+            <Btn
+              class="transition-opacity duration-100 opacity-50  md:ml-4 hover:opacity-100"
+              :outline="true"
+              :variant="'icon'"
+              :tooltip="$t('event_editor.delete_exception')"
+              @click="onRemoveTimeLimitException(index)"
+              ><span class="text-base material-icons"> delete </span></Btn
+            >
+          </div>
+          <Btn @click="onAddTimeLimitException()"
+            ><span class="mr-1 text-base material-icons-outlined"> add </span
+            >{{ $t("event_editor.add_exception") }}</Btn
+          >
+        </div>
+      </template>
+    </Dialog>
+
+    <Dialog
       @yes="showDialog = false"
       :showDialog="showDialog"
       :confirmOnly="true"
@@ -228,7 +348,13 @@ import CalendarInput from "@/components/ui/CalendarInput.vue";
 import TextInput from "@/components/ui/TextInput.vue";
 import TextEditor from "@/components/ui/TextEditor.vue";
 import { defineComponent, inject } from "@vue/runtime-core";
-import { Event, EventAccessRule, EventState, Tag } from "@/models";
+import {
+  Event,
+  EventAccessRule,
+  EventState,
+  EventTimeLimitRule,
+  Tag,
+} from "@/models";
 import Toggle from "@/components/ui/Toggle.vue";
 //import NumberInput from '@/components/ui/NumberInput.vue'
 import { PropType } from "vue";
@@ -240,7 +366,8 @@ import { SelectableOption } from "@/interfaces";
 import Btn from "@/components/ui/Btn.vue";
 import TagInput from "@/components/ui/TagInput.vue";
 import { ChangeEvent } from "ag-grid-community/dist/lib/widgets/agCheckbox";
-import { csvToArray, setErrorNotification } from "@/utils";
+import { csvToArray, getFileContent, setErrorNotification } from "@/utils";
+import NumberInput from "@/components/ui/NumberInput.vue";
 
 export default defineComponent({
   name: "EventMetaEditor",
@@ -255,6 +382,7 @@ export default defineComponent({
     Dialog,
     Btn,
     TagInput,
+    NumberInput,
   },
   props: {
     modelValue: {
@@ -267,29 +395,46 @@ export default defineComponent({
       v$: inject("v$"),
     };
   },
+  watch: {
+    timeLimitExceptionsSerialized(_newVal) {
+      this.emitUpdate("time_limit_exceptions", JSON.parse(_newVal));
+    },
+  },
   data() {
     return {
       event: {} as Event,
       saving: false,
       showDialog: false,
       showAccessRuleDialog: false,
+      showTimeLimitDialog: false,
       EventAccessRule,
+      EventTimeLimitRule,
     };
   },
   methods: {
     emitUpdate(key: keyof Event, value: unknown) {
       this.$emit("updateEvent", { field: key, value });
-      // console.log(key, value)
-      // this.$emit('update:modelValue', {
-      //   ...this.modelValue,
-      //   [key]: value
-      // })
     },
     onBeginTimestampOpen() {
       if (this.modelValue.state != EventState.DRAFT) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (this.$refs.beginTimestampElement as any).close();
         this.showDialog = true;
+      }
+    },
+    onAddTimeLimitException() {
+      //this.modelValue.time_limit_exceptions?.push(["", 0]);
+      this.emitUpdate("time_limit_exceptions", [
+        ...(this.modelValue.time_limit_exceptions ?? []),
+        ["", this.modelValue.time_limit_seconds],
+      ]);
+    },
+    onRemoveTimeLimitException(index: number) {
+      if (confirm(_("event_editor.remove_time_limit_exception_confirmation"))) {
+        this.emitUpdate(
+          "time_limit_exceptions",
+          this.modelValue.time_limit_exceptions?.filter((_, i) => i !== index)
+        );
       }
     },
     onAccessRuleChange(newVal: EventAccessRule) {
@@ -319,25 +464,16 @@ export default defineComponent({
       );
     },
     async onFileInputChange(event: { target: HTMLInputElement }) {
-      console.log("FILES", event.target.files);
       if (event.target.files === null || event.target.files.length === 0) {
         return;
       }
       try {
         const file = event.target.files[0];
 
-        const fileContents = await new Promise<string>((resolve, reject) => {
-          const reader = new FileReader();
-          reader.onload = () => {
-            resolve(reader.result as string);
-          };
-          reader.onerror = reject;
-          reader.readAsText(file);
-        });
+        const fileContents = await getFileContent(file);
 
-        const FIRST_HEADER_NAME = "Matricola";
-        const EMAIL_HEADER_NAME = "Email";
-        console.log("contents", csvToArray(fileContents, FIRST_HEADER_NAME));
+        const FIRST_HEADER_NAME = _("reports.csv_headers.user.mat");
+        const EMAIL_HEADER_NAME = _("reports.csv_headers.user.email");
 
         const csvElements = csvToArray(fileContents, FIRST_HEADER_NAME);
 
@@ -364,6 +500,31 @@ export default defineComponent({
     isDraft() {
       return this.modelValue.state == EventState.DRAFT;
     },
+    timeLimitExceptionsSerialized(): string {
+      return JSON.stringify(this.modelValue.time_limit_exceptions ?? "");
+    },
+    timeLimitProxy: {
+      // handles conversion between seconds and minutes
+      get() {
+        return (this.modelValue.time_limit_seconds ?? 0) / 60;
+      },
+      set(val: any) {
+        this.emitUpdate("time_limit_seconds", (val ?? 0) * 60);
+      },
+    },
+    timeLimitRuleProxy: {
+      get() {
+        return (
+          this.modelValue.time_limit_rule === EventTimeLimitRule.TIME_LIMIT
+        );
+      },
+      set(val: boolean) {
+        this.emitUpdate(
+          "time_limit_rule",
+          val ? EventTimeLimitRule.TIME_LIMIT : EventTimeLimitRule.NO_TIME_LIMIT
+        );
+      },
+    },
     allowedAccessAsTags(): Tag[] {
       return (
         this.modelValue.access_rule_exceptions?.map((e) => ({
@@ -372,6 +533,7 @@ export default defineComponent({
         })) ?? []
       );
     },
+    // TODO extract
     accessRulesOptions(): SelectableOption[] {
       return [
         {

@@ -72,7 +72,10 @@
             :disabled="!allowEditSubmission"
           >
             <template v-slot:item="{ description }">
-              <div class="flex items-center mb-2 space-x-2">
+              <div
+                v-if="showSolutionAndScores"
+                class="flex items-center mb-2 space-x-2"
+              >
                 <p
                   :class="{
                     'text-success': description?.[0] === 'done',
@@ -110,7 +113,10 @@
             :disabled="!allowEditSubmission"
           >
             <template v-slot:item="{ description }">
-              <div class="flex items-center mb-2 space-x-2">
+              <div
+                v-if="showSolutionAndScores"
+                class="flex items-center mb-2 space-x-2"
+              >
                 <p
                   :class="{
                     'text-success': description?.[0] === 'done',
@@ -883,9 +889,11 @@ export default defineComponent({
           ((c.score_selected ?? "") + "").length > 0 &&
           ((c.score_unselected ?? "") + "").length > 0 && {
             description: [
-              this.modelValue.exercise.correct_choices?.includes(c.id)
-                ? "done"
-                : "close",
+              (this.modelValue.exercise.correct_choices ?? []).length > 0
+                ? this.modelValue.exercise.correct_choices?.includes(c.id)
+                  ? "done"
+                  : "close"
+                : "",
               String(c.score_selected),
               String(c.score_unselected),
               c.id,
