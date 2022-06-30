@@ -88,6 +88,45 @@ export const articles: HelpCenterArticle[] = [
     related: [],
   },
   {
+    id: "whats_exam_template",
+    title: "Cos'è il modello di un esame?",
+    tags: ["exams"],
+    related: [],
+    content: `
+    <p>Il modello di un esame è un insieme di regole che stabilisce come vengono selezionati gli esercizi
+    da assegnare agli studenti che partecipano all'esame.</p>
+
+    <p class="mt-4">Il modello è composto da slot, e ogni slot stabilisce il criterio per scegliere un esercizio
+    da assegnare ai partecipanti dell'esame. Questo ti consente sia di creare esami uguali per tutti,
+    che creare esami dove ogni studente
+    vedrà esercizi diversi.</p>
+
+    <p class="mt-4">
+    Ogni slot del modello ti permette di impostare un criterio di scelta tra questi:
+    </p>
+
+    <ul class="list-none list-inside">
+      <li class="my-2">
+      <span class="mr-1 inline-icon material-icons-two-tone two-tone-primary">topic</span>
+      <span class="mt-4 text-primary font-semibold">Stesso esercizio per tutti</span>
+        <p>A tutti gli studenti verrà assegnato lo stesso esercizio.</p>
+      </li>
+
+      <li class="my-2">
+        <span class="mr-1 inline-icon material-icons-two-tone two-tone-primary">shuffle</span>
+        <span class="mt-4 text-primary font-semibold">Esercizio scelto casualmente da un insieme</span>
+        <p>A ciascuno studente verrà assegnato un esercizio scelto casualmente tra quelli che selezioni.</p>
+      </li>
+
+      <li class="my-2">
+        <span class="mr-1 inline-icon material-icons-two-tone two-tone-primary">label</span>
+        <span class="mt-4 text-primary font-semibold">Esercizio scelto casualmente in base ai tag</span>
+        <p>A ciascuno studente verrà assegnato un esercizio scelto casualmente tra quelli che hanno i tag che selezioni.</p>
+      </li>
+   </ul>
+    `,
+  },
+  {
     id: "how_to_add_exercises_to_exam",
     title: "Come si inseriscono esercizi in un esame?",
     tags: ["exercises", "exams"],

@@ -39,6 +39,7 @@
     <div class="mb-6">
       <p class="mb-6 text-muted" v-if="!showEditWarning">
         {{ $t("event_template_editor.introduction_text") }}
+        <ArticleHandle :articleId="'whats_exam_template'"></ArticleHandle>.
       </p>
       <div v-else class="banner banner-danger">
         <span class="material-icons-outlined"> error_outline </span>
@@ -171,6 +172,7 @@ import useVuelidate from "@vuelidate/core";
 import { getTranslatedString as _ } from "@/i18n";
 import DropdownMenu from "@/components/ui/DropdownMenu.vue";
 import NumberInput from "@/components/ui/NumberInput.vue";
+import ArticleHandle from "@/components/shared/HelpCenter/ArticleHandle.vue";
 export default defineComponent({
   setup() {
     return {
@@ -189,6 +191,7 @@ export default defineComponent({
     draggable,
     DropdownMenu,
     NumberInput,
+    ArticleHandle,
   },
   mixins: [courseIdMixin, loadingMixin, mediaQueryMixin],
   name: "EventTemplateEditor",
