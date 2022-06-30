@@ -9,25 +9,10 @@
         v-wave
         @mousedown="onMouseDown"
         :for="id + '-input-' + index"
-        class="
-          flex flex-grow
-          text-center
-          min-w-fit
-          overflow-ellipsis
-          whitespace-nowrap
-          text-gray-600
-          font-semibold
-          relative
-          overflow-hidden
-          max-h-screen
-          py-1.5
-          px-2
-          overflow-y-hidden overflow-x-hidden
-          rounded-md
-          cursor-pointer
-          items-top
-        "
+        class="relative flex flex-grow max-h-screen overflow-hidden overflow-x-hidden overflow-y-hidden font-semibold text-center text-gray-600 rounded-md cursor-pointer  min-w-fit overflow-ellipsis whitespace-nowrap items-top"
         :class="{
+          'py-1.5 px-2': !small,
+          'py-0.5 px-1': small,
           'rounded-r-none': index < options.length - 1,
           'rounded-l-none': index !== 0,
           'border border-primary bg-primary bg-opacity-20 text-primary ':
@@ -53,7 +38,7 @@
             class="w-6"
             :icons="option.icons"
           ></multi-icon>
-          <div class="flex flex-col">
+          <div class="flex flex-col" v-if="option.content.length > 0">
             <p class="" v-html="option.content"></p>
             <!-- <p
               class="mb-2 text-sm text-muted"
@@ -69,14 +54,31 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "@vue/runtime-core";
+import { defineComponent, PropType } from "@vue/runtime-core";
 import { v4 as uuid4 } from "uuid";
 import MultiIcon from "@/components/ui/MultiIcon.vue";
 import { rippleEffect } from "@/utils";
+import { SelectableOption } from "@/interfaces";
 
 export default defineComponent({
   name: "SegmentedControls",
-  props: ["options", "modelValue", "disabled"],
+  props: {
+    options: {
+      type: Array as PropType<SelectableOption[]>,
+      required: true,
+    },
+    modelValue: {
+      required: true,
+    },
+    disabled: {
+      type: Boolean,
+      default: false,
+    },
+    small: {
+      type: Boolean,
+      default: false,
+    },
+  },
   components: {
     MultiIcon,
   },
