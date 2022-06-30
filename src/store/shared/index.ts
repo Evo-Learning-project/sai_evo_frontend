@@ -36,6 +36,8 @@ export const sharedStore = {
     showSuccessFeedback: false,
     tags: [] as Tag[],
     dirtyTex: false,
+    helpCenterOpen: false,
+    helpCenterSelectedArticleId: null,
   }),
   mutations: {
     ...mutations,

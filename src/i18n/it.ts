@@ -404,8 +404,8 @@ export const it = {
     publish: "Pubblica",
   },
   event_template_editor: {
-    list_view: "Lista",
-    grid_view: "Griglia",
+    list_view: "Visualizzazione lista",
+    grid_view: "Visualizzazione griglia",
     add_more_rules: "Aggiungi più slot",
     editor_title: "Modello esame",
     introduction_text:

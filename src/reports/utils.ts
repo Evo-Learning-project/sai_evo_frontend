@@ -39,7 +39,8 @@ export const getParticipationsAverageProgress = (
         .map((p) =>
           p.state === EventParticipationState.TURNED_IN
             ? p.slots.length
-            : p.current_slot_cursor ?? 0
+            : // TODO use slots that have answers
+              p.current_slot_cursor ?? 0
         )
         .reduce((a, b) => a + b)) /
     divisor;

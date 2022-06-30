@@ -37,6 +37,8 @@ export interface SharedState {
   showSuccessFeedback: boolean;
   tags: Tag[];
   dirtyTex: boolean;
+  helpCenterOpen: boolean;
+  helpCenterSelectedArticleId: string | null;
 }
 
 interface StoreOperationParameters<T> {

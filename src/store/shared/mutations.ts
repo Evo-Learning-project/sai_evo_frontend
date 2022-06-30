@@ -59,6 +59,14 @@ export const mutations = {
   },
   setCourses: (state: SharedState, courses: Course[]) =>
     (state.courses = courses),
+  setHelpCenterVisibility: (state: SharedState, visibility: boolean) => {
+    state.helpCenterOpen = visibility;
+    if (!visibility) {
+      state.helpCenterSelectedArticleId = null;
+    }
+  },
+  setHelpCenterArticleId: (state: SharedState, articleId: string | null) =>
+    (state.helpCenterSelectedArticleId = articleId),
   setErrorNotificationData: (
     state: SharedState,
     {

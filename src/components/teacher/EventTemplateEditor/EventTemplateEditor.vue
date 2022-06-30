@@ -6,31 +6,19 @@
         class="hidden ml-auto md:block"
         :variant="'icon'"
         :outline="true"
+        v-if="viewMode === 'list'"
         :tooltip="$t('event_template_editor.grid_view')"
         @click="viewMode = 'grid'"
-        ><span
-          :class="{
-            'material-icons-sharp': viewMode === 'grid',
-            'material-icons-outlined': viewMode !== 'grid',
-          }"
-        >
-          grid_view
-        </span></Btn
+        ><span class="material-icons-outlined"> grid_view </span></Btn
       >
       <Btn
+        v-else
         :tooltip="$t('event_template_editor.list_view')"
-        class="hidden md:block"
+        class="hidden ml-auto md:block"
         :variant="'icon'"
         :outline="true"
         @click="viewMode = 'list'"
-        ><span
-          :class="{
-            'material-icons': viewMode === 'list',
-            'material-icons-outlined': viewMode !== 'list',
-          }"
-        >
-          view_list
-        </span></Btn
+        ><span class="material-icons-outlined"> view_list </span></Btn
       >
       <!-- <Btn
         :tooltip="$t('event_template_editor.compact_list_view')"
@@ -63,7 +51,7 @@
       </div>
       <draggable
         :class="{
-          'grid grid-cols-2 2xl:grid-cols-3 gap-6 mb-10': viewMode === 'grid',
+          'grid grid-cols-2 2xl:grid-cols-3 gap-4 mb-10': viewMode === 'grid',
         }"
         ghost-class="drag-ghost"
         drag-class="dragging-element"
