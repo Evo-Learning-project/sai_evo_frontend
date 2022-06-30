@@ -23,7 +23,7 @@
                 :variant="'icon'"
                 @click="editCourseName"
               >
-                <span class="text-xl material-icons-outlined"> edit </span>
+                <span class="text-xl material-icons"> edit </span>
               </Btn>
             </div>
             <div v-show="editingName" class="flex items-center">
@@ -50,9 +50,7 @@
                 :loading="localLoading"
                 @click="v$.$invalid ? v$.$touch() : onDoneEditingName()"
               >
-                <span class="text-xl text-primary material-icons-outlined">
-                  save
-                </span>
+                <span class="text-xl material-icons-outlined"> done </span>
               </Btn>
               <Btn
                 :outline="true"
@@ -60,9 +58,7 @@
                 :variant="'icon'"
                 @click="onDoneEditingName(true)"
               >
-                <span class="text-xl text-danger-dark material-icons-outlined">
-                  close
-                </span>
+                <span class="text-xl material-icons-outlined"> close </span>
               </Btn>
             </div>
             <div class="flex flex-col" v-show="!editingDescription">
@@ -76,7 +72,7 @@
                   :variant="'icon'"
                   @click="editCourseDescription"
                 >
-                  <span class="text-xl material-icons-outlined"> edit </span>
+                  <span class="text-xl material-icons"> edit </span>
                 </Btn>
               </div>
               <p class="mr-3" v-html="currentCourse.description"></p>
@@ -91,9 +87,7 @@
                 :loading="localLoading"
                 @click="onDoneEditingDescription()"
               >
-                <span class="text-xl text-primary material-icons-outlined">
-                  save
-                </span>
+                <span class="text-xl material-icons-outlined"> done </span>
               </Btn>
               <Btn
                 :outline="true"
@@ -101,9 +95,7 @@
                 :variant="'icon'"
                 @click="onDoneEditingDescription(true)"
               >
-                <span class="text-xl text-danger-dark material-icons-outlined">
-                  close
-                </span>
+                <span class="text-xl material-icons-outlined"> close </span>
               </Btn>
             </div>
             <div

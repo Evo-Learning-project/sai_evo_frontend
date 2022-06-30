@@ -8,7 +8,7 @@
     :title="$t('help.help_center_title')"
   >
     <div class="mt-3" style="max-height: 30rem">
-      <div v-if="selectedArticleId === null">
+      <div v-if="helpCenterSelectedArticleId === null">
         <div
           v-if="courseId"
           class="flex items-center px-6 py-4 mb-2 -mx-6  bg-light place-content-evenly"
@@ -29,7 +29,7 @@
         </div>
         <div
           v-wave
-          @click="selectedArticleId = article.id"
+          @click="setHelpCenterArticleId(article.id)"
           class="
             flex
             px-2
@@ -75,7 +75,7 @@
         </div>
         <div
           v-wave
-          @click="selectedArticleId = article.id"
+          @click="setHelpCenterArticleId(article.id)"
           class="
             flex
             px-2
@@ -115,7 +115,7 @@
       <HelpCenterArticleFull
         v-else
         :article="selectedArticle"
-        @back="selectedArticleId = null"
+        @back="setHelpCenterArticleId(null)"
       ></HelpCenterArticleFull>
     </div>
   </DraggablePopup>
@@ -130,12 +130,15 @@ import { getArticle, getArticles, HelpCenterArticle } from "@/helpCenter";
 import HelpCenterArticleFull from "./HelpCenterArticleFull.vue";
 import Btn from "@/components/ui/Btn.vue";
 import { courseIdMixin } from "@/mixins";
+import { createNamespacedHelpers } from "vuex";
+const { mapState, mapMutations } = createNamespacedHelpers("shared");
 export default defineComponent({
   name: "HelpCenter",
   components: { DraggablePopup, HelpCenterArticleFull, Btn },
   mixins: [courseIdMixin],
   props: {},
   methods: {
+    ...mapMutations(["setHelpCenterArticleId"]),
     getArticleRelevance(article: HelpCenterArticle): number {
       const routeTags: string[] = this.$route.meta.tags as string[];
       return article.tags.filter((t) => routeTags.includes(t)).length;
@@ -143,11 +146,11 @@ export default defineComponent({
   },
   data() {
     return {
-      selectedArticleId: null as string | null,
       showAll: false,
     };
   },
   computed: {
+    ...mapState(["helpCenterSelectedArticleId"]),
     sortedArticles(): HelpCenterArticle[] {
       return [...getArticles()].sort(
         (a, b) => this.getArticleRelevance(b) - this.getArticleRelevance(a)
@@ -164,10 +167,10 @@ export default defineComponent({
         .slice(0, this.showAll ? Infinity : SHOWN_ARTICLES);
     },
     selectedArticle(): HelpCenterArticle | undefined {
-      if (this.selectedArticleId === null) {
+      if (this.helpCenterSelectedArticleId === null) {
         return undefined;
       }
-      return getArticle(this.selectedArticleId);
+      return getArticle(this.helpCenterSelectedArticleId);
     },
   },
 });

@@ -20,8 +20,8 @@
     >
       <HelpCenter
         @startTour="startTour()"
-        @close="showHelpCenter = false"
-        v-if="showHelpCenter"
+        @close="setHelpCenterVisibility(false)"
+        v-if="helpCenterOpen"
       ></HelpCenter>
       <div class="flex items-center h-14">
         <div class="flex items-center mt-4 mb-4 -ml-4.5">
@@ -51,7 +51,7 @@
             <LocaleSelector v-if="false"></LocaleSelector>
             <Btn
               :tooltip="$t('help.help_guide_label')"
-              @click="onHelpCenterOpen()"
+              @click="setHelpCenterVisibility(true)"
               id="help-center"
               :variant="'icon'"
               :outline="true"
@@ -353,6 +353,9 @@ import {
 } from "@/const";
 import LocaleSelector from "@/components/ui/LocaleSelector.vue";
 
+import { createNamespacedHelpers } from "vuex";
+const { mapMutations, mapState } = createNamespacedHelpers("shared");
+
 const LOCAL_STORAGE_FIX_SIDEBAR_KEY = "sai_evo_fix_sidebar";
 const LOCAL_STORAGE_HAS_TAKEN_SIDEBAR_TOUR_KEY = "has_taken_sidebar_tour";
 
@@ -400,7 +403,6 @@ export default defineComponent({
       fixSideBar: false,
       unfixingSideBar: false,
       routerViewPaddingLeft: 0,
-      showHelpCenter: false,
       teacherTourSteps,
       newSidebarHelpCenterTourSteps,
       tourOptions,
@@ -409,6 +411,7 @@ export default defineComponent({
   },
   mixins: [courseIdMixin, eventIdMixin, coursePrivilegeMixin],
   methods: {
+    ...mapMutations(["setHelpCenterVisibility"]),
     logOut,
     startTour() {
       (this.$tours["helpCenterTour"] as any).start();
@@ -450,11 +453,9 @@ export default defineComponent({
         String(this.fixSideBar)
       );
     },
-    onHelpCenterOpen() {
-      this.showHelpCenter = true;
-    },
   },
   computed: {
+    ...mapState(["helpCenterOpen"]),
     allowedSidebarOptions(): SidebarOption[] {
       return (
         (this.$route.meta?.sidebarOptions ?? []) as SidebarOption[]

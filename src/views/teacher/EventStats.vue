@@ -289,6 +289,7 @@ export default defineComponent({
       );
     },
     averageProgress() {
+      // TODO use method in utils (like in monitor view)
       const participations = this.eventParticipations as EventParticipation[];
       if (!participations?.length) {
         return 0;
