@@ -217,7 +217,7 @@
                     {{ $t("event_template_rule_editor.pick_single_exercise") }}
                   </h4>
                 </div>
-                <p>
+                <p style="letter-spacing: 0.25px" class="font-normal">
                   {{
                     $t(
                       "event_template_rule_editor.pick_single_exercise_help_text"
@@ -242,7 +242,7 @@
                     }}
                   </h4>
                 </div>
-                <p>
+                <p style="letter-spacing: 0.25px" class="font-normal">
                   {{
                     $t(
                       "event_template_rule_editor.pick_exercise_from_pool_help_text"
@@ -269,7 +269,7 @@
                     }}
                   </h4>
                 </div>
-                <p>
+                <p style="letter-spacing: 0.25px" class="font-normal">
                   {{
                     $t(
                       "event_template_rule_editor.pick_exercise_tag_based_help_text"

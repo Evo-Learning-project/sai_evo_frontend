@@ -30,7 +30,7 @@
         <input
           @input="onInput(option.value, $event)"
           style="min-width: 15px; min-height: 15px"
-          class="mt-1.5 input-radio"
+          class="mt-1 input-radio"
           type="radio"
           :id="id + '-input-' + index"
           :value="option.value"
