@@ -29,7 +29,7 @@
             v-model="proxyModelValue"
             style="min-width: 15px; min-height: 15px"
             :value="option.value"
-            class="mr-2 mt-5px"
+            class="mt-1 mr-2"
           />
           <Toggle
             v-else

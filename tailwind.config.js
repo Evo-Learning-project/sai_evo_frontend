@@ -49,7 +49,7 @@ module.exports = {
         999: "999",
       },
       fontFamily: {
-        sans: ['"Source Sans Pro"'],
+        sans: ['"Source Sans 3"'],
       },
       fontSize: {
         "2xs": ".7rem",

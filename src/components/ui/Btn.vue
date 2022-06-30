@@ -14,11 +14,11 @@
         'shadow-elevation-2 bg-light': forceActive,
         'bg-success-light bg-opacity-30':
           forceActive && variant === 'success-borderless',
-        'px-6 py-1.5 font-medium':
+        'px-6 py-2 font-medium':
           !outline && size === 'base' && variant !== 'transparent',
         'px-6 py-4.5px font-medium':
           outline && size === 'base' && variant !== 'icon',
-        'px-3.5 py-1': size === 'sm' && variant !== 'icon',
+        'px-3.5 .5': size === 'sm' && variant !== 'icon',
         'px-1': size === 'xs' && variant !== 'icon',
         'px-14 py-2 text-lg font-medium': size === 'lg' && variant !== 'icon',
         'text-lightText bg-primary hover:bg-primary-dark shadow-btn':
@@ -38,7 +38,7 @@
         'hover:bg-light hover:shadow-inner': variant === 'light',
         'text-primary bg-transparent hover:bg-primary hover:bg-opacity-5 border-primary border-1.5 ':
           outline && variant === 'primary',
-        'text-lg font-semibold text-primary hover:bg-light focus:bg-primary-light focus:bg-opacity-30':
+        'text-base text-primary hover:bg-light focus:bg-primary-light focus:bg-opacity-30':
           variant === 'primary-borderless',
         'px-6': variant === 'primary-borderless' && size !== 'xs',
         'text-lg font-bold text-secondary hover:bg-light px-6 focus:bg-secondary-light focus:bg-opacity-30':
@@ -86,11 +86,11 @@
       'shadow-elevation-2 bg-light': forceActive,
       'bg-success-light bg-opacity-30':
         forceActive && variant === 'success-borderless',
-      'px-6 py-1.5 font-medium':
+      'px-6 py-2 font-medium':
         !outline && size === 'base' && variant !== 'transparent',
       'px-6 py-4.5px font-medium':
         outline && size === 'base' && variant !== 'icon',
-      'px-3.5 py-1': size === 'sm' && variant !== 'icon',
+      'px-3.5 py-1.5': size === 'sm' && variant !== 'icon',
       'px-1': size === 'xs' && variant !== 'icon',
       'px-14 py-2 text-lg font-medium': size === 'lg' && variant !== 'icon',
       'text-lightText bg-primary hover:bg-primary-dark shadow-btn':
@@ -109,7 +109,7 @@
       'hover:bg-light hover:shadow-inner': variant === 'light',
       'text-primary bg-transparent hover:bg-primary hover:bg-opacity-5 border-primary border-1.5 ':
         outline && variant === 'primary',
-      'text-lg font-semibold text-primary hover:bg-light focus:bg-primary-light focus:bg-opacity-30':
+      'text-base text-primary hover:bg-light focus:bg-primary-light focus:bg-opacity-30':
         variant === 'primary-borderless',
       'px-6': variant === 'primary-borderless' && size !== 'xs',
       'text-lg font-bold text-secondary hover:bg-light px-6 focus:bg-secondary-light focus:bg-opacity-30':

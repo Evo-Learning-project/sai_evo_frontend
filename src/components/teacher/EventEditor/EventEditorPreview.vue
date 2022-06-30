@@ -4,7 +4,7 @@
       <div class="flex items-start w-full">
         <h3
           class="mt-1.25px mr-4"
-          :class="{ 'text-muted font-semibold': event.name.length === 0 }"
+          :class="{ 'text-muted': event.name.length === 0 }"
           style="
             display: -webkit-box;
             -webkit-line-clamp: 2;

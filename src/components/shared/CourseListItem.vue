@@ -26,9 +26,9 @@
         "
         >book</span
       >
-      <h3 style="margin-top: 1.5px" class="mb-0 pr-4.5">
+      <h4 style="margin-top: 1.5px" class="mb-0 pr-4.5">
         {{ course.name }}
-      </h3>
+      </h4>
       <Tooltip
         v-if="course.hidden"
         :textCode="'hidden_course'"
