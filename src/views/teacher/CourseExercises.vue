@@ -14,14 +14,26 @@
         ><span class="mr-1 text-base material-icons-outlined"> add </span>
         {{ $t("course_exercises.new_exercise") }}</Btn
       >
-      <Btn
-        :tooltip="$t('course_exercises.import_exercises')"
-        :outline="true"
-        :variant="'icon'"
-        @click="showExerciseImporter = true"
-        class="ml-1"
-        ><span class="material-icons-outlined"> file_upload </span>
-      </Btn>
+      <DropdownMenu
+        class="-mr-4"
+        :expanded="dropdownExpanded"
+        @toggleExpanded="dropdownExpanded = !dropdownExpanded"
+        :placement="'right'"
+      >
+        <div class="-mx-5 -my-2.5">
+          <Btn
+            :outline="true"
+            class="px-8 pt-2 pb-2"
+            :variant="'transparent'"
+            @click="showExerciseImporter = true"
+          >
+            <div class="flex items-center align-top">
+              <span class="mr-2 material-icons-outlined"> file_upload </span>
+              {{ $t("course_exercises.import_exercises") }}
+            </div>
+          </Btn>
+        </div>
+      </DropdownMenu>
     </div>
     <div v-if="!firstLoading">
       <transition-group name="quick-bounce">
@@ -94,6 +106,8 @@
           ? (showExerciseImporter = false)
           : onImportDone()
       "
+      :dismissible="false"
+      :footerBorder="true"
       :confirmOnly="importedExercises.length === 0"
       :noText="$t('dialog.default_cancel_text')"
       :disableOk="importLoading"
@@ -149,6 +163,7 @@ import { getBlankExerciseSearchFilters, isEmptyFilter } from "@/api/utils";
 import Dialog from "@/components/ui/Dialog.vue";
 import { DataFormat, getImportedData } from "@/integrations";
 import ExerciseImporter from "@/components/teacher/ExerciseImporter.vue";
+import DropdownMenu from "@/components/ui/DropdownMenu.vue";
 export default defineComponent({
   name: "CourseExercises",
   props: {
@@ -178,6 +193,7 @@ export default defineComponent({
     ExerciseEditorWrapperSkeleton,
     Dialog,
     ExerciseImporter,
+    DropdownMenu,
   },
   async created() {
     this.onFilterChange = getDebouncedForFilter(this.onFilterChange);
@@ -215,6 +231,7 @@ export default defineComponent({
       showExerciseImporter: false,
       importedExercises: [] as Exercise[],
       importLoading: false,
+      dropdownExpanded: false,
     };
   },
   methods: {

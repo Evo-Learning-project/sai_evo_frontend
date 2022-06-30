@@ -6,6 +6,7 @@
     :initialLeft="56.5"
     @close="$emit('close')"
     :title="$t('help.help_center_title')"
+    :inForeground="true"
   >
     <div class="mt-3" style="max-height: 30rem">
       <div v-if="helpCenterSelectedArticleId === null">

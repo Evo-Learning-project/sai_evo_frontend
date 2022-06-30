@@ -35,7 +35,7 @@
         </div>
       </div>
 
-      <div class="mt-8" :class="{ invisible: selectedFormat === null }">
+      <div class="mt-8 mb-2" :class="{ invisible: selectedFormat === null }">
         <h3 class="mb-4">{{ $t("exercise_import.choose_file") }}</h3>
         <div>
           <input type="file" @change="onFileInputChange" />
@@ -71,7 +71,7 @@
           </h4>
           <p class="mb-2 text-muted">
             {{ $t("exercise_import.extras_detected_tags_description") }}
-            <!-- <span class="underline text-primary">Scopri di più.</span> -->
+            <ArticleHandle :articleId="'what_are_tags_for'"></ArticleHandle>.
           </p>
           <Chipset
             v-if="exercises.length > 0"
@@ -114,6 +114,7 @@ import MinimalExercisePreview from "./ExerciseEditor/MinimalExercisePreview.vue"
 import Dropdown from "../ui/Dropdown.vue";
 import { exerciseStateOptions } from "@/const";
 import Chipset from "../ui/Chipset.vue";
+import ArticleHandle from "../shared/HelpCenter/ArticleHandle.vue";
 export default defineComponent({
   name: "ExerciseImporter",
   props: {},
@@ -224,7 +225,7 @@ export default defineComponent({
       },
     },
   },
-  components: { MinimalExercisePreview, Dropdown, Chipset },
+  components: { MinimalExercisePreview, Dropdown, Chipset, ArticleHandle },
 });
 </script>
 
