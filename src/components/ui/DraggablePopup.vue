@@ -10,7 +10,7 @@
       '%;z-index: ' +
       (inForeground ? '99999' : '200')
     "
-    class="fixed w-2/5 p-2 overflow-y-auto transition-opacity duration-75 resize  opacity-80 card hover:opacity-100"
+    class="fixed w-11/12 p-2 overflow-y-auto transition-opacity duration-75 resize  md:w-2/5 opacity-80 card hover:opacity-100"
     :class="{
       'bg-light': !whiteBg,
       'bg-white': whiteBg,
@@ -80,7 +80,6 @@ export default defineComponent({
       const container = document.getElementById(
         this.containerId + "-draggable-container"
       );
-      console.log("container", container);
       if (container) {
         this.overlayHeight = container.scrollHeight - 10;
         this.overlayWidth = container.scrollWidth - 10;
@@ -102,7 +101,6 @@ export default defineComponent({
   },
   methods: {
     dragMouseDown: function (event: any) {
-      console.log("drag");
       event.preventDefault();
       // get the mouse cursor position at startup:
       this.positions.clientX = event.clientX;

@@ -330,7 +330,6 @@ export default defineComponent({
       });
     },
     async onTimeUp() {
-      console.log("TIME UP");
       this.showTimeUpBackdrop = true;
       setTimeout(async () => await this.onTurnIn(), 500);
     },
