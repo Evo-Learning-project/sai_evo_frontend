@@ -304,7 +304,7 @@
           'md:w-10/12 mx-auto md:px-10': fixSideBar,
         }"
       >
-        <h1 class="">
+        <h1 v-if="routeTitle?.length > 0" class="">
           {{ routeTitle }}
         </h1>
         <ErrorView v-if="!!$store.state.shared.pageWideErrorData"></ErrorView>

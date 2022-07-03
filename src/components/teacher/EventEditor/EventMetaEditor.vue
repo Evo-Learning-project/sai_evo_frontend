@@ -90,6 +90,7 @@
       </div>
       <Toggle
         :labelOnLeft="true"
+        style="max-width: 95%"
         v-show="modelValue.exercises_shown_at_a_time == 1"
         :modelValue="modelValue.allow_going_back"
         @update:modelValue="emitUpdate('allow_going_back', $event)"
@@ -137,7 +138,7 @@
           :class="[
             modelValue.access_rule === EventAccessRule.DENY_ACCESS
               ? 'visible'
-              : 'invisible',
+              : 'hidden md:block invisible',
             'md:ml-8',
           ]"
           :size="'sm'"
@@ -149,7 +150,7 @@
           :class="[
             modelValue.access_rule === EventAccessRule.DENY_ACCESS
               ? 'visible'
-              : 'invisible',
+              : 'hidden md:block invisible',
             'md:ml-4',
           ]"
         >
@@ -293,9 +294,9 @@
           <div
             v-for="(exception, index) in modelValue.time_limit_exceptions"
             :key="modelValue.id + '-time-limit-exc-' + index"
-            class="flex w-1/2 my-6"
+            class="flex my-6 md:w-1/2"
           >
-            <TextInput class="w-full mr-4" v-model="exception[0]">{{
+            <TextInput class="w-full mr-2 md:mr-4" v-model="exception[0]">{{
               $t("event_editor.student_email")
             }}</TextInput>
             <div class="flex items-center w-1/2 space-x-1">
@@ -306,7 +307,9 @@
                 :modelValue="parseFloat(exception[1]) / 60"
                 @update:modelValue="exception[1] = parseFloat($event) * 60"
                 :leftIcon="'timer'"
-                >{{ $t("misc.time_limit") }}</NumberInput
+                >{{
+                  mediaQueryMdMatches ? $t("misc.time_limit") : $t("misc.limit")
+                }}</NumberInput
               >
               <p class="text-sm select-none text-muted">
                 {{ $t("misc.minutes") }}
@@ -368,6 +371,7 @@ import TagInput from "@/components/ui/TagInput.vue";
 import { ChangeEvent } from "ag-grid-community/dist/lib/widgets/agCheckbox";
 import { csvToArray, getFileContent, setErrorNotification } from "@/utils";
 import NumberInput from "@/components/ui/NumberInput.vue";
+import { mediaQueryMixin } from "@/mixins";
 
 export default defineComponent({
   name: "EventMetaEditor",
@@ -376,8 +380,6 @@ export default defineComponent({
     TextInput,
     TextEditor,
     Toggle,
-    //NumberInput,
-    //Btn,
     RadioGroup,
     Dialog,
     Btn,
@@ -390,6 +392,7 @@ export default defineComponent({
       required: true,
     },
   },
+  mixins: [mediaQueryMixin],
   setup() {
     return {
       v$: inject("v$"),

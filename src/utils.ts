@@ -297,10 +297,8 @@ export const clickOutsideDirective = {
     binding: { value: () => void }
   ) => {
     el.clickOutsideEvent = (event: any) => {
-      console.log("CLICK EVENT", event, binding, binding.value);
-      // here I check that click was outside the el and his children
+      // check that click was outside the element and its children
       if (!(el == event.target || el.contains(event.target))) {
-        // and if it did, call method provided in attribute value
         binding.value?.();
       }
     };

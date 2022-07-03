@@ -222,9 +222,6 @@ export default defineComponent({
   },
   methods: {
     emitChoice(choice: string) {
-      //   this.choice = choice
-      //   this.showContent = false
-      console.log("emitting", choice);
       this.$emit(choice);
     },
     dismiss() {

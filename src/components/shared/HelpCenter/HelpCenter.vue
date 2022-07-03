@@ -3,12 +3,15 @@
     :whiteBg="true"
     :dragOnTitleOnly="true"
     :initialTop="60"
-    :initialLeft="56.5"
+    :initialLeft="mediaQueryMdMatches ? 56.5 : 10"
     @close="$emit('close')"
     :title="$t('help.help_center_title')"
     :inForeground="true"
   >
-    <div class="mt-3" style="max-height: 30rem">
+    <div
+      class="mt-3"
+      :style="'max-height:' + (mediaQueryMdMatches ? '30' : '15') + 'rem'"
+    >
       <div v-if="helpCenterSelectedArticleId === null">
         <div
           v-if="courseId"
@@ -130,13 +133,13 @@ import DraggablePopup from "@/components/ui/DraggablePopup.vue";
 import { getArticle, getArticles, HelpCenterArticle } from "@/helpCenter";
 import HelpCenterArticleFull from "./HelpCenterArticleFull.vue";
 import Btn from "@/components/ui/Btn.vue";
-import { courseIdMixin } from "@/mixins";
+import { courseIdMixin, mediaQueryMixin } from "@/mixins";
 import { createNamespacedHelpers } from "vuex";
 const { mapState, mapMutations } = createNamespacedHelpers("shared");
 export default defineComponent({
   name: "HelpCenter",
   components: { DraggablePopup, HelpCenterArticleFull, Btn },
-  mixins: [courseIdMixin],
+  mixins: [courseIdMixin, mediaQueryMixin],
   props: {},
   methods: {
     ...mapMutations(["setHelpCenterArticleId"]),

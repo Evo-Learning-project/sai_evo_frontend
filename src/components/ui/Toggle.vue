@@ -7,7 +7,7 @@
   >
     <div
       v-wave-trigger:toggleCheckbox
-      :class="{ 'order-12 ml-2': labelOnLeft }"
+      :class="{ 'order-12 ml-4': labelOnLeft }"
       class="relative inline-block w-10 h-4 mt-1 mr-2 align-middle transition duration-200 ease-in bg-transparent rounded-full select-none  toggle-container"
     >
       <input
