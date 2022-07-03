@@ -60,10 +60,9 @@ export default defineComponent({
         el.scrollWidth > el.clientWidth &&
         ["scroll", "auto"].indexOf(getComputedStyle(el).overflowX) >= 0;
 
-      console.log(el.scrollLeft + el.clientWidth - el.scrollWidth);
       this.toEndX =
         !isScrollable ||
-        Math.abs(el.scrollLeft + el.clientWidth - el.scrollWidth) <= 1;
+        -(el.scrollLeft + el.clientWidth) + el.scrollWidth <= 1;
       this.toBeginX = el.scrollLeft === 0;
     },
   },
