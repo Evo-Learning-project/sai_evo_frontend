@@ -1,7 +1,7 @@
 <template>
   <div class="">
     <ExerciseSearchFilters
-      class="px-8 py-4 mb-6 -mx-8 bg-light"
+      class="px-8 py-4 mb-6 -mx-4 md:-mx-8 bg-light"
       v-model="searchFilter"
       @resetFilters="searchFilter = getBlankExerciseSearchFilters()"
       :full="false"

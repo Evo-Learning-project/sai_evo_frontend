@@ -42,7 +42,7 @@
                 'py-2': !noPadding && $slots.backButton?.(),
                 'pt-4': !noPadding && !$slots.backButton?.(),
                 'sticky top-0 z-50': stickyHeader,
-                'border-b border-gray-200 -mx-8 px-8': headerBorder,
+                'border-b border-gray-200 -mx-4 md:-mx-8 px-8': headerBorder,
               }"
             >
               <slot class="" name="backButton"></slot>
