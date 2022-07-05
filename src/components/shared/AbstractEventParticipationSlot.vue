@@ -137,19 +137,14 @@
           class="sticky mb-auto  top-18 md:self-start shadow-elevation card card-filled"
           v-if="showAssessmentCard"
         >
-          <!-- score -->
+          <!-- banner to inform slot isn't assessed -->
           <div
-            v-if="
-              !showAssessmentControls &&
-              allowEditAssessment &&
-              modelValue.score == null
-            "
-            class="flex items-center space-x-1 text-sm  text-danger-dark text-muted"
+            v-if="allowEditAssessment && modelValue.score === null"
+            class="text-sm banner banner-danger"
           >
-            <span
-              class="my-auto text-base text-yellow-900 material-icons-outlined"
-              >pending_actions</span
-            >
+            <p class="my-auto text-base material-icons-outlined">
+              pending_actions
+            </p>
             <p>
               {{
                 $t("event_assessment.this_exercise_requires_manual_assessment")
@@ -157,6 +152,7 @@
             </p>
           </div>
 
+          <!-- read only part -->
           <!-- score -->
           <div class="flex items-center transition-opacity duration-100">
             <p class="text-muted">
@@ -205,7 +201,6 @@
               ></Btn
             >
           </div>
-
           <!-- teacher comment -->
           <div class="transition-opacity duration-100">
             <p
@@ -220,6 +215,7 @@
             </p>
             <p v-html="modelValue.comment"></p>
           </div>
+          <!-- end read-only part -->
 
           <!-- in-card assessment controls -->
           <div
@@ -235,16 +231,6 @@
             >
               <h3>{{ $t("event_assessment.your_assessment") }}</h3>
             </div>
-
-            <!-- notice text to assess -->
-            <p
-              class="text-sm text-muted text-danger-dark"
-              v-if="modelValue.score == null || modelValue.score.length == 0"
-            >
-              {{
-                $t("event_assessment.this_exercise_requires_manual_assessment")
-              }}
-            </p>
 
             <!-- actual assessment controls -->
             <div class="mt-4">
@@ -460,13 +446,6 @@ export default defineComponent({
         this.allowEditAssessment ||
         // submission is closed
         (!this.allowEditSubmission && this.isOpenAnswerExercise)
-      );
-    },
-    showExpandButton(): boolean {
-      return !(
-        this.subSlot ||
-        (this.assessingOrNearOpenAnswerExercise &&
-          this.answerTextProxy.trim().length === 0)
       );
     },
     isSolutionOrCommentShown(): boolean {
