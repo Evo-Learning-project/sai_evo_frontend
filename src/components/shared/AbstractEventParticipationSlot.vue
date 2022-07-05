@@ -7,31 +7,11 @@
           <!-- used to indicate the slot number, e.g. "Exercise 1" -->
           <slot></slot>
         </div>
-        <div v-if="showTags" class="flex flex-wrap items-center">
-          <Tag
-            v-for="tag in modelValue.exercise.public_tags"
-            :key="'tag-' + tag.id + '-slot-' + modelValue.id"
-            :tag="tag"
-            class="mb-0.5 mr-2"
-          ></Tag>
-        </div>
       </div>
-      <!-- exercise label (shown in teacher mode) -->
-      <div class="flex my-2">
-        <h3 v-if="showExerciseLabel">{{ exercise.label }}</h3>
-      </div>
+
       <!-- exercise text (not shown if programming exercise and not in review mode) -->
       <!-- TODO clarify condition (!allowEditSubmission && !showExerciseLabel) -->
-      <div
-        class="mb-8 user-content"
-        v-if="
-          exercise.exercise_type !== ExerciseType.COMPLETION &&
-          (!isProgrammingExercise ||
-            (!allowEditSubmission && !showExerciseLabel))
-        "
-      >
-        <ProcessedTextFragment :value="exercise.text"></ProcessedTextFragment>
-      </div>
+
       <!-- if assessment edit mode, make flex so to fit submission on the left and assessment on the right -->
       <div
         :class="{
@@ -41,6 +21,7 @@
       >
         <!-- controls to submit -->
         <div
+          v-if="false"
           class=""
           :class="{
             // take up 8/12 of width if exercise isn't open answer or programming
@@ -61,159 +42,41 @@
               !isAnswerEmpty,
           }"
         >
-          <!-- multiple choice multiple possible -->
-          <CheckboxGroup
-            v-if="
-              exercise.exercise_type ===
-              ExerciseType.MULTIPLE_CHOICE_MULTIPLE_POSSIBLE
-            "
-            :options="exerciseChoicesAsOptions"
-            v-model="selectedChoicesProxy"
-            :disabled="!allowEditSubmission"
-          >
-            <template v-slot:item="{ description }">
-              <div
-                v-if="showSolutionAndScores"
-                class="flex items-center mb-2 space-x-2"
+          <!--  @blur="$emit('blur', { slot: modelValue })"-->
+
+          <div v-if="exercise.exercise_type === ExerciseType.AGGREGATED">
+            <!-- aggregated exercise -->
+            <div
+              v-for="(subSlot, index) in modelValue.sub_slots"
+              :key="modelValue.id + '-sub-slot-' + subSlot.id"
+              :class="{ 'mb-12': index !== modelValue.sub_slots.length - 1 }"
+            >
+              <AbstractEventParticipationSlot
+                :subSlot="true"
+                :modelValue="subSlot"
+                :allowEditAssessment="allowEditAssessment"
+                :allowEditSubmission="allowEditSubmission"
+                :showAssessmentCard="showAssessmentCard"
+                :showSolutionAndScores="showSolutionAndScores"
+                :assessmentControlsVisibility="assessmentControlsVisibility"
+                @updateSelectedChoices="$emit('updateSelectedChoices', $event)"
+                @updateAnswerText="$emit('updateAnswerText', $event)"
+                @updateAttachment="$emit('updateAttachment', $event)"
+                @download="$emit('download', $event)"
+                @runCode="$emit('runCode', $event)"
+                @setAssessmentControlsVisibility="
+                  $emit('setAssessmentControlsVisibility', $event)
+                "
+                @openFull="$emit('openFull')"
+                @updateAssessment="$emit('updateAssessment', $event)"
+                @blur="$emit('blur', $event)"
               >
-                <p
-                  :class="{
-                    'text-success': description?.[0] === 'done',
-                    'text-danger-dark': description?.[0] === 'close',
-                  }"
-                  class="text-sm font-semibold  text-muted material-icons-outlined"
-                >
-                  {{ description?.[0] }}
-                </p>
-                <p class="text-sm text-muted" v-if="nonUniformScores">
-                  {{ description?.[1] }}
-                  {{
-                    $t(
-                      `exercise.choice_score_word_${
-                        parseFloat(description?.[1] ?? "") == 1 ||
-                        parseFloat(description?.[1] ?? "") == -1
-                          ? "singular"
-                          : "plural"
-                      }`
-                    )
-                  }}
-                </p>
-              </div></template
-            >
-          </CheckboxGroup>
-
-          <!-- multiple choice single possible -->
-          <RadioGroup
-            v-else-if="
-              exercise.exercise_type ===
-              ExerciseType.MULTIPLE_CHOICE_SINGLE_POSSIBLE
-            "
-            :options="exerciseChoicesAsOptions"
-            v-model="selectedChoicesProxy"
-            :disabled="!allowEditSubmission"
-          >
-            <template v-slot:item="{ description }">
-              <div
-                v-if="showSolutionAndScores"
-                class="flex items-center mb-2 space-x-2"
-              >
-                <p
-                  :class="{
-                    'text-success': description?.[0] === 'done',
-                    'text-danger-dark': description?.[0] === 'close',
-                  }"
-                  class="text-sm font-semibold  text-muted material-icons-outlined"
-                >
-                  {{ description?.[0] }}
-                </p>
-                <p
-                  :id="description?.[3] ?? ''"
-                  class="text-sm text-muted"
-                  v-if="nonUniformScores"
-                >
-                  {{ description?.[1] }}
-                  {{
-                    $t(
-                      `exercise.choice_score_word_${
-                        parseFloat(description?.[1] ?? "") == 1 ||
-                        parseFloat(description?.[1] ?? "") == -1
-                          ? "singular"
-                          : "plural"
-                      }`
-                    )
-                  }}
-                </p>
-              </div></template
-            >
-          </RadioGroup>
-
-          <!-- open answer -->
-          <TextEditor
-            :disabled="!allowEditSubmission"
-            v-else-if="
-              exercise.exercise_type === ExerciseType.OPEN_ANSWER &&
-              (allowEditSubmission || showExerciseLabel)
-            "
-            v-model="answerTextProxy"
-            @blur="$emit('blur', { slot: modelValue })"
-          >
-            {{
-              allowEditSubmission
-                ? $t("event_participation_slot.text_answer_label")
-                : $t("event_assessment.text_answer_label")
-            }}
-          </TextEditor>
-          <div
-            v-else-if="
-              exercise.exercise_type === ExerciseType.OPEN_ANSWER &&
-              !allowEditSubmission
-            "
-            class="w-full whitespace-pre"
-            style="margin-top: -21px"
-          >
-            <p class="ml-2 text-sm text-muted">
-              {{ $t("event_assessment.text_answer_label") }}
-            </p>
-            <ProcessedTextFragment
-              style="white-space: break-spaces"
-              class="w-full px-4 py-2 rounded bg-gray-50"
-              :value="answerTextProxy"
-              :defaultValue="$t('misc.no_answer')"
-            ></ProcessedTextFragment>
-          </div>
-
-          <!-- aggregated answer -->
-          <div
-            v-else-if="exercise.exercise_type === ExerciseType.AGGREGATED"
-            v-for="(subSlot, index) in modelValue.sub_slots"
-            :key="modelValue.id + '-sub-slot-' + subSlot.id"
-            :class="{ 'mb-12': index !== modelValue.sub_slots.length - 1 }"
-          >
-            <AbstractEventParticipationSlot
-              :subSlot="true"
-              :modelValue="subSlot"
-              :allowEditAssessment="allowEditAssessment"
-              :allowEditSubmission="allowEditSubmission"
-              :showAssessmentCard="showAssessmentCard"
-              :showSolutionAndScores="showSolutionAndScores"
-              :assessmentControlsVisibility="assessmentControlsVisibility"
-              @updateSelectedChoices="$emit('updateSelectedChoices', $event)"
-              @updateAnswerText="$emit('updateAnswerText', $event)"
-              @updateAttachment="$emit('updateAttachment', $event)"
-              @download="$emit('download', $event)"
-              @runCode="$emit('runCode', $event)"
-              @setAssessmentControlsVisibility="
-                $emit('setAssessmentControlsVisibility', $event)
-              "
-              @openFull="$emit('openFull')"
-              @updateAssessment="$emit('updateAssessment', $event)"
-              @blur="$emit('blur', $event)"
-            >
-            </AbstractEventParticipationSlot>
+              </AbstractEventParticipationSlot>
+            </div>
           </div>
 
           <!-- programming exercise -->
-          <ProgrammingExercise
+          <!-- <ProgrammingExercise
             :showTabs="showTabs"
             :allowPopup="allowPopup"
             v-else-if="
@@ -227,41 +90,18 @@
             :running="running"
             @runCode="$emit('runCode', { slot: modelValue })"
             :showEditor="allowEditSubmission"
-          ></ProgrammingExercise>
+          ></ProgrammingExercise> -->
           <!-- if reviewing submission, just show submitted code and execution results-->
-          <div v-else-if="isProgrammingExercise && !allowEditSubmission">
-            <CodeFragment
-              class="mb-4"
-              :value="modelValue.answer_text"
-              v-if="!showExerciseLabel"
-              :defaultValue="$t('misc.no_answer')"
-            ></CodeFragment>
-            <div
-              v-if="!showExerciseLabel && !isAnswerEmpty"
-              class="card card-filled"
-            >
-              <CodeExecutionResults :slot="modelValue"></CodeExecutionResults>
-            </div>
-            <!--TODO when viewing in teacher mode, check if execution results is empty
-                      (should never happen) and if it is, add an emergency "run" button  -->
-          </div>
-
-          <!-- attachment exercise-->
-          <FileUpload
-            @download="$emit('download', { slot: modelValue })"
-            v-model="attachmentProxy"
-            :disabled="!allowEditSubmission"
-            v-else-if="exercise.exercise_type === ExerciseType.ATTACHMENT"
-          ></FileUpload>
-
-          <!-- completion exercise -->
-          <ClozeExercise
-            v-else-if="exercise.exercise_type === ExerciseType.COMPLETION"
-            @updateSelectedChoices="$emit('updateSelectedChoices', $event)"
-            :slot="modelValue"
-            :showScores="showSolutionAndScores"
-          ></ClozeExercise>
         </div>
+
+        <!-- exercise -->
+        <Exercise
+          :exercise="exercise"
+          :readOnly="!allowEditSubmission"
+          :showLabel="showExerciseLabel"
+          :showSolution="showSolutionAndScores"
+          :showPublicTags="showTags"
+        />
 
         <!-- assessment card-->
         <div
@@ -297,32 +137,6 @@
           class="sticky mb-auto  top-18 md:self-start shadow-elevation card card-filled"
           v-if="showAssessmentCard"
         >
-          <div
-            v-if="false && showExpandButton"
-            class="absolute top-0 right-0 flex w-full"
-          >
-            <Btn
-              :tooltip="
-                expandAssessmentCard ? $t('misc.collapse') : $t('misc.expand')
-              "
-              :variant="'icon'"
-              :outline="true"
-              class="ml-auto"
-              :size="'sm'"
-              @click="expandAssessmentCard = !expandAssessmentCard"
-            >
-              <span
-                style="font-size: 16px !important"
-                :class="[
-                  expandAssessmentCard ? 'rotate-45' : 'rotate-90',
-                  'transform material-icons-outlined',
-                ]"
-              >
-                {{ expandAssessmentCard ? "close_fullscreen" : "expand" }}
-              </span></Btn
-            >
-          </div>
-
           <!-- score -->
           <div
             v-if="
@@ -391,17 +205,6 @@
               ></Btn
             >
           </div>
-          <div
-            class="flex items-start mt-2 space-x-2 text-sm"
-            v-if="false && allowEditAssessment && someSubSlotsPending"
-          >
-            <span class="text-lg text-yellow-900 material-icons-outlined"
-              >pending_actions</span
-            >
-            <p class="text-danger-dark text-muted">
-              {{ $t("event_assessment.some_sub_slots_pending") }}
-            </p>
-          </div>
 
           <!-- teacher comment -->
           <div class="transition-opacity duration-100">
@@ -418,22 +221,6 @@
             <p v-html="modelValue.comment"></p>
           </div>
 
-          <!-- exercise solution -->
-          <p
-            v-if="(modelValue.exercise.solution?.length ?? 0) > 0"
-            class="mt-2 text-muted"
-          >
-            {{ $t("misc.solution") }}:
-          </p>
-          <p
-            v-if="!isProgrammingExercise"
-            v-html="modelValue.exercise.solution"
-          ></p>
-          <CodeFragment
-            v-else-if="modelValue.exercise.solution"
-            :value="modelValue.exercise.solution"
-          ></CodeFragment>
-
           <!-- in-card assessment controls -->
           <div
             :class="{
@@ -447,34 +234,8 @@
               class="flex flex-col mt-4 ease-in-out"
             >
               <h3>{{ $t("event_assessment.your_assessment") }}</h3>
-              <!-- FIXME move this somewhere else SEEN AT ANSWERED AT -->
-              <!-- <div
-                :class="{ 'md:ml-auto': !subSlot }"
-                class="flex flex-col text-sm"
-                v-if="modelValue.seen_at || modelValue.answered_at"
-              >
-                <div class="flex items-center" v-if="modelValue.seen_at">
-                  <span class="mr-1 text-sm material-icons-outlined text-muted">
-                    visibility
-                  </span>
-                  <span class="text-muted"
-                    >{{ $t("event_assessment.exercise_seen_at") }}&nbsp;</span
-                  >
-                  <Timestamp :value="modelValue.seen_at"></Timestamp>
-                </div>
-                <div class="flex items-center" v-if="modelValue.answered_at">
-                  <span class="mr-1 text-sm material-icons-outlined text-muted">
-                    question_answer
-                  </span>
-                  <span class="text-muted"
-                    >{{
-                      $t("event_assessment.exercise_answered_at")
-                    }}&nbsp;</span
-                  ><Timestamp :value="modelValue.answered_at"></Timestamp>
-                </div>
-              </div> -->
-              <!-- END SEEN AT ANSWERED AT -->
             </div>
+
             <!-- notice text to assess -->
             <p
               class="text-sm text-muted text-danger-dark"
@@ -484,8 +245,9 @@
                 $t("event_assessment.this_exercise_requires_manual_assessment")
               }}
             </p>
+
+            <!-- actual assessment controls -->
             <div class="mt-4">
-              <!-- actual assessment controls -->
               <p>
                 <NumberInput class="mb-4" v-model="scoreProxy"
                   >{{ $t("event_assessment.assigned_score") }}
@@ -495,7 +257,9 @@
                 }}</TextEditor>
               </p>
             </div>
-            <!-- controls to save or discard changes -->
+
+            <!-- buttons to save or discard changes -->
+            <!-- TODO don't display when in modal -->
             <div class="mt-4 ml-auto">
               <Btn
                 class="mr-2"
@@ -520,92 +284,6 @@
           <!-- end in-card assessment controls  -->
         </div>
         <!-- end assessment card -->
-
-        <!-- standalone assessment controls (to use inside the modal, single-slot assessment mode) -->
-        <div
-          v-if="allowEditAssessment && !showAssessmentCard"
-          class="sticky flex flex-col md:w-2/3 top-4"
-        >
-          <div
-            v-if="!subSlot"
-            class="flex flex-col mt-4 ease-in-out md:flex-row md:items-center"
-          >
-            <h3>{{ $t("event_assessment.your_assessment") }}</h3>
-
-            <!-- FIXME move this somewhere else SEEN AT ANSWERED AT -->
-            <!-- <div
-              :class="{ 'md:ml-auto': !subSlot }"
-              class="flex flex-col text-sm"
-              v-if="modelValue.seen_at || modelValue.answered_at"
-            >
-              <div class="flex items-center" v-if="modelValue.seen_at">
-                <span class="mr-1 text-sm material-icons-outlined text-muted">
-                  visibility
-                </span>
-                <span class="text-muted"
-                  >{{ $t("event_assessment.exercise_seen_at") }}&nbsp;</span
-                >
-                <Timestamp :value="modelValue.seen_at"></Timestamp>
-              </div>
-              <div class="flex items-center" v-if="modelValue.answered_at">
-                <span class="mr-1 text-sm material-icons-outlined text-muted">
-                  question_answer
-                </span>
-                <span class="text-muted"
-                  >{{ $t("event_assessment.exercise_answered_at") }}&nbsp;</span
-                ><Timestamp :value="modelValue.answered_at"></Timestamp>
-              </div>
-            </div> -->
-            <!-- END SEEN AT - ANSWERED AT -->
-          </div>
-          <!-- notice text to assess -->
-          <p
-            class="text-sm text-muted text-danger-dark"
-            v-if="modelValue.score == null || modelValue.score.length == 0"
-          >
-            {{
-              $t("event_assessment.this_exercise_requires_manual_assessment")
-            }}
-          </p>
-          <div class="mt-4" v-if="!subSlot">
-            <!-- actual assessment controls -->
-            <p>
-              <NumberInput class="mb-4" v-model="scoreProxy"
-                >{{ $t("event_assessment.assigned_score") }}
-              </NumberInput>
-              <TextEditor class="w-full" v-model="commentProxy">{{
-                $t("event_assessment.comment_for_student")
-              }}</TextEditor>
-            </p>
-          </div>
-          <div v-else class="flex items-center space-x-2">
-            <Btn :outline="true" :variant="'icon'" @click="$emit('openFull')"
-              ><span class="material-icons-outlined text-muted"
-                >launch</span
-              ></Btn
-            >
-            <p class="text-muted">
-              {{
-                $t(
-                  "event_assessment.sub_slot_assessment_unavailable_open_full_1"
-                )
-              }}
-
-              <span>{{
-                $t(
-                  "event_assessment.sub_slot_assessment_unavailable_open_full_2"
-                )
-              }}</span>
-
-              {{
-                $t(
-                  "event_assessment.sub_slot_assessment_unavailable_open_full_3"
-                )
-              }}
-            </p>
-          </div>
-        </div>
-        <!-- end standalone assessment controls -->
       </div>
 
       <!-- seen at - answered at info -->
@@ -640,47 +318,26 @@
 <script lang="ts">
 import {
   EventParticipationSlot,
-  Exercise,
-  ExerciseChoice,
+  Exercise as IExercise,
   ExerciseType,
   programmingExerciseTypes,
 } from "@/models";
 import { defineComponent, PropType } from "@vue/runtime-core";
-import CheckboxGroup from "@/components/ui/CheckboxGroup.vue";
-import { SelectableOption } from "@/interfaces";
-import RadioGroup from "../ui/RadioGroup.vue";
-import { getTranslatedString, getTranslatedString as _ } from "@/i18n";
+import { getTranslatedString as _ } from "@/i18n";
 import TextEditor from "../ui/TextEditor.vue";
 import NumberInput from "../ui/NumberInput.vue";
 import Timestamp from "../ui/Timestamp.vue";
-import ProgrammingExercise from "./ProgrammingExercise.vue";
-import CodeFragment from "../ui/CodeFragment.vue";
-import CodeExecutionResults from "./CodeExecutionResults.vue";
 import { texMixin } from "@/mixins";
-import FileUpload from "../ui/FileUpload.vue";
-import { downloadEventParticipationSlotAttachment } from "@/api/events";
 import Btn from "../ui/Btn.vue";
-import { every, some } from "lodash";
-import ClozeExercise from "./ClozeExercise.vue";
-import { formatExerciseText } from "@/utils";
-import ProcessedTextFragment from "../ui/ProcessedTextFragment.vue";
-import Tag from "../ui/Tag.vue";
+import Exercise from "./Exercise/Exercise.vue";
 
 export default defineComponent({
   components: {
-    CheckboxGroup,
-    RadioGroup,
     TextEditor,
     NumberInput,
     Timestamp,
-    ProgrammingExercise,
-    CodeFragment,
-    CodeExecutionResults,
-    FileUpload,
     Btn,
-    ClozeExercise,
-    ProcessedTextFragment,
-    Tag,
+    Exercise,
   },
   name: "AbstractEventParticipationSlot",
   props: {
@@ -722,14 +379,14 @@ export default defineComponent({
       default: false,
     },
     assessmentControlsVisibility: {
-      // whether the card containing the input fields to assess the slot should be displayed
-      // should be used when accessing a full participation as a teacher and the user is editing
+      // whether the card containing the input fields to assess the slot should be displayed.
+      // to be used when accessing a full participation as a teacher and the user is editing
       // the assessment fields of the slot (i.e. clicked on edit button)
       type: Object as PropType<Record<string, boolean>>, // Boolean,
       default: () => {},
     },
     assessmentLoading: {
-      // used when dispatching the changes to the assessment slots, to disable the button
+      // used when dispatching changes to the assessment slots, to disable the button
       // until the action has succeeded
       type: Boolean,
       default: false,
@@ -739,20 +396,12 @@ export default defineComponent({
       default: false,
     },
     running: {
-      // code for the submission if being run on the server
+      // whether code for the submission is being run on the server
       type: Boolean,
     },
     showTags: {
       type: Boolean,
       default: false,
-    },
-    allowPopup: {
-      type: Boolean,
-      default: true,
-    },
-    showTabs: {
-      type: Boolean,
-      default: true,
     },
   },
   mixins: [texMixin],
@@ -789,7 +438,7 @@ export default defineComponent({
       });
     },
     onUndoScoreEdit() {
-      if (confirm(getTranslatedString("event_assessment.undo_score_edit"))) {
+      if (confirm(_("event_assessment.undo_score_edit"))) {
         this.dirtyScore = null;
         this.onHideAssessmentControls();
       }
@@ -831,7 +480,7 @@ export default defineComponent({
       return this.modelValue.answer_text.trim().length === 0;
     },
 
-    exercise(): Exercise {
+    exercise(): IExercise {
       return this.modelValue.exercise;
     },
     isProgrammingExercise(): boolean {
@@ -849,86 +498,6 @@ export default defineComponent({
     },
     someSubSlotsPending(): boolean {
       return this.modelValue.sub_slots.some((s) => s.score === null);
-    },
-    nonUniformScores(): boolean {
-      // Returns whether all choices aside from the correct
-      // ones have the same score_selected
-      if (
-        ![
-          ExerciseType.MULTIPLE_CHOICE_MULTIPLE_POSSIBLE,
-          ExerciseType.MULTIPLE_CHOICE_SINGLE_POSSIBLE,
-        ].includes(this.modelValue.exercise.exercise_type as ExerciseType)
-      ) {
-        return false;
-      }
-
-      const nonCorrectChoices = (
-        this.modelValue.exercise.choices as ExerciseChoice[]
-      ).filter(
-        (c) => !this.modelValue.exercise.correct_choices?.includes(c.id)
-      );
-
-      return nonCorrectChoices.some(
-        (c) => c.score_selected != nonCorrectChoices[0].score_selected
-      );
-    },
-    exerciseChoicesAsOptions(): SelectableOption[] {
-      if (
-        this.exercise.exercise_type !==
-          ExerciseType.MULTIPLE_CHOICE_SINGLE_POSSIBLE &&
-        this.exercise.exercise_type !==
-          ExerciseType.MULTIPLE_CHOICE_MULTIPLE_POSSIBLE
-      ) {
-        return [];
-      }
-
-      return (this.exercise.choices as ExerciseChoice[]).map((c) => ({
-        value: c.id,
-        content: formatExerciseText(c.text),
-        ...(this.showSolutionAndScores &&
-          ((c.score_selected ?? "") + "").length > 0 &&
-          ((c.score_unselected ?? "") + "").length > 0 && {
-            description: [
-              (this.modelValue.exercise.correct_choices ?? []).length > 0
-                ? this.modelValue.exercise.correct_choices?.includes(c.id)
-                  ? "done"
-                  : "close"
-                : "",
-              String(c.score_selected),
-              String(c.score_unselected),
-              c.id,
-            ],
-          }),
-      }));
-    },
-    selectedChoicesProxy: {
-      get() {
-        return this.modelValue.selected_choices;
-      },
-      set(val: string | string[]) {
-        this.$emit("updateSelectedChoices", {
-          slot: this.modelValue,
-          payload: typeof val === "object" ? val : [val],
-        });
-      },
-    },
-    answerTextProxy: {
-      get() {
-        return this.modelValue.answer_text;
-      },
-      set(val: string) {
-        this.$emit("updateAnswerText", { slot: this.modelValue, payload: val });
-      },
-    },
-    attachmentProxy: {
-      get() {
-        return this.modelValue.attachment
-          ? [{ ...this.modelValue.attachment }] //  success: true,
-          : [];
-      },
-      set(val: any) {
-        this.$emit("updateAttachment", { slot: this.modelValue, payload: val });
-      },
     },
     // proxies used to get the correct values and emit the correct events for assessment
     // fields depending on current usage mode of the component

@@ -86,15 +86,27 @@
 </template>
 
 <script lang="ts">
-import { EventParticipationSlot } from "@/models";
+import {
+  CodeExecutionResults,
+  EventParticipationSlot,
+  ExerciseTestCase as IExerciseTestCase,
+} from "@/models";
 import { defineComponent, PropType } from "@vue/runtime-core";
 import ExerciseTestCase from "./ExerciseTestCase.vue";
 import CodeFragment from "../ui/CodeFragment.vue";
 export default defineComponent({
   name: "CodeExecutionResults",
   props: {
-    slot: {
-      type: Object as PropType<EventParticipationSlot>,
+    // slot: {
+    //   type: Object as PropType<EventParticipationSlot>,
+    //   required: true,
+    // },
+    executionResults: {
+      type: Object as PropType<CodeExecutionResults>,
+      required: true,
+    },
+    testCases: {
+      type: Array as PropType<IExerciseTestCase[]>,
       required: true,
     },
     showTestIds: {
@@ -110,10 +122,10 @@ export default defineComponent({
   computed: {
     exerciseTestCase() {
       return (id: string) =>
-        this.slot.exercise.testcases?.find((t) => t.id == id);
+        this.testCases.find((t) => String(t.id) === String(id));
     },
     filteredExecutionResultsTests() {
-      return this.slot.execution_results?.tests?.filter(
+      return this.executionResults?.tests?.filter(
         (t) =>
           this.showTestIds.length === 0 ||
           this.showTestIds.map((i) => String(i)).includes(String(t.id))

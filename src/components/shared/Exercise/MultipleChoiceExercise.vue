@@ -84,11 +84,11 @@
 
 <script lang="ts">
 import {
-  EventParticipationSlot,
+  EventParticipationSlotSubmission,
   Exercise,
   ExerciseChoice,
   ExerciseType,
-  getFakeEventParticipationSlot,
+  getEmptySubmission,
 } from "@/models";
 import { defineComponent, PropType } from "@vue/runtime-core";
 import AbstractExercise from "./AbstractExercise.vue";
@@ -96,28 +96,11 @@ import CheckboxGroup from "@/components/ui/CheckboxGroup.vue";
 import RadioGroup from "@/components/ui/RadioGroup.vue";
 import { SelectableOption } from "@/interfaces";
 import { formatExerciseText } from "@/utils";
+import { exerciseProps } from "./shared";
 export default defineComponent({
   name: "MultipleChoiceExercise",
-  emits: {
-    // TODO add emits
-  },
   props: {
-    exercise: {
-      type: Object as PropType<Exercise>,
-      required: true,
-    },
-    slot: {
-      type: Object as PropType<EventParticipationSlot>,
-      default: getFakeEventParticipationSlot,
-    },
-    readOnly: {
-      type: Boolean,
-      default: false,
-    },
-    showSolution: {
-      type: Boolean,
-      default: false,
-    },
+    ...exerciseProps,
   },
   data() {
     return {
@@ -128,13 +111,12 @@ export default defineComponent({
   computed: {
     selectedChoicesProxy: {
       get() {
-        return this.slot.selected_choices;
+        return this.submission.selected_choices;
       },
       set(val: string | string[]) {
-        this.$emit(
-          "updateSelectedChoices",
-          typeof val === "object" ? val : [val]
-        );
+        this.$emit("updateSubmission", {
+          selected_choices: typeof val === "object" ? val : [val],
+        });
       },
     },
     exerciseChoicesAsOptions(): SelectableOption[] {
@@ -151,19 +133,21 @@ export default defineComponent({
         value: c.id,
         content: formatExerciseText(c.text),
         ...(this.showSolution &&
-          ((c.score_selected ?? "") + "").length > 0 &&
-          ((c.score_unselected ?? "") + "").length > 0 && {
-            description: [
-              (this.exercise.correct_choices ?? []).length > 0
-                ? this.exercise.correct_choices?.includes(c.id)
-                  ? "done"
-                  : "close"
-                : "",
-              String(c.score_selected),
-              String(c.score_unselected),
-              c.id,
-            ],
-          }),
+        String(c.score_selected ?? "").length > 0 &&
+        String(c.score_unselected ?? "").length > 0
+          ? {
+              description: [
+                (this.exercise.correct_choices ?? []).length > 0
+                  ? this.exercise.correct_choices?.includes(c.id)
+                    ? "done"
+                    : "close"
+                  : "",
+                String(c.score_selected),
+                String(c.score_unselected),
+                c.id,
+              ],
+            }
+          : {}),
       }));
     },
     nonUniformScores(): boolean {
