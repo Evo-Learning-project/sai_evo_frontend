@@ -218,7 +218,8 @@
                 <template v-slot:sidePane>
                   <CodeExecutionResults
                     v-if="solutionTestSlot?.execution_results"
-                    :slot="solutionTestSlot"
+                    :executionResults="solutionTestSlot.execution_results"
+                    :testCases="modelValue.testcases"
                   ></CodeExecutionResults>
                   <div class="flex flex-col" v-else>
                     <span

@@ -233,7 +233,7 @@
     }
     
     .user-content {
-      @apply py-5 pl-4 pr-2 rounded-sm border-l-6 bg-gray-50 border-secondary;
+      @apply py-5 pl-4 pr-2 rounded-sm border-l-6 bg-gray-50 border-primary;
     }
 
     .bg-gray-50 .user-content {

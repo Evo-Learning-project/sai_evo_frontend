@@ -32,7 +32,8 @@
               class="max-w-lg m-2 overflow-y-scroll rounded-sm  max-h-64 bg-light"
             >
               <CodeExecutionResults
-                :slot="executionResultsSlot"
+                :executionResults="executionResults"
+                :testCases="executionResultsSlot?.exercise.testcases"
                 :showTestIds="[modelValue.id]"
                 :onlyErrors="true"
               ></CodeExecutionResults>

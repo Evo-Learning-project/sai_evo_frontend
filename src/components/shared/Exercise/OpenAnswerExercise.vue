@@ -9,9 +9,10 @@
         {{ $t("event_participation_slot.text_answer_label") }}
       </TextEditor>
     </template>
+
     <template #readOnlyAnswer>
-      <div class="w-full whitespace-pre" style="margin-top: -21px">
-        <p class="ml-2 text-sm text-muted">
+      <div class="w-full whitespace-pre">
+        <p class="mb-2 ml-2 text-sm text-muted">
           {{ $t("event_assessment.text_answer_label") }}
         </p>
         <ProcessedTextFragment
@@ -30,37 +31,28 @@ import { defineComponent, PropType } from "@vue/runtime-core";
 import TextEditor from "@/components/ui/TextEditor.vue";
 import {
   Exercise,
-  EventParticipationSlot,
-  getFakeEventParticipationSlot,
+  EventParticipationSlotSubmission,
+  getEmptySubmission,
 } from "@/models";
+import AbstractExercise from "./AbstractExercise.vue";
+import { exerciseProps } from "./shared";
 export default defineComponent({
   name: "OpenAnswerExercise",
   props: {
-    exercise: {
-      type: Object as PropType<Exercise>,
-      required: true,
-    },
-    slot: {
-      type: Object as PropType<EventParticipationSlot>,
-      default: getFakeEventParticipationSlot,
-    },
-    readOnly: {
-      type: Boolean,
-      default: false,
-    },
+    ...exerciseProps,
   },
   methods: {},
   computed: {
     answerTextProxy: {
       get() {
-        return this.slot.answer_text;
+        return this.submission.answer_text;
       },
       set(val: string) {
-        this.$emit("updateAnswerText", val);
+        this.$emit("updateSubmission", { answer_text: val });
       },
     },
   },
-  components: { TextEditor },
+  components: { TextEditor, AbstractExercise },
 });
 </script>
 
