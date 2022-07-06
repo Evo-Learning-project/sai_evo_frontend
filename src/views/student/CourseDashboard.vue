@@ -63,7 +63,7 @@
       </div>
 
       <div
-        class="grid grid-cols-1 gap-4 xl:gap-8 md:grid-cols-3 lg:grid-cols-4"
+        class="grid grid-cols-1 gap-4  xl:gap-8 md:grid-cols-2 lg:grid-cols-4 2xl:grid-cols-5"
         v-if="!firstLoading"
       >
         <div v-if="(currentCourse.unstarted_practice_events?.length ?? 0) > 0">
@@ -132,7 +132,7 @@
         ></EventParticipationPreview>
       </div>
       <div
-        class="grid grid-cols-1 gap-4 xl:gap-8 md:grid-cols-3 lg:grid-cols-4"
+        class="grid grid-cols-1 gap-4  xl:gap-8 md:grid-cols-2 lg:grid-cols-4 2xl:grid-cols-5"
         v-else
       >
         <SkeletonCard :full="true"></SkeletonCard>

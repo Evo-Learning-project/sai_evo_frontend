@@ -103,9 +103,9 @@
         <div v-if="!subExercise || !cloze" class="flex flex-col space-y-6">
           <div
             v-if="!subExercise || !cloze"
-            class="flex flex-col items-start my-4 space-y-5  md:space-x-8 md:space-y-0 md:flex-row"
+            class="flex flex-col items-start my-4 space-y-6  lg:space-x-8 lg:space-y-0 lg:flex-row"
           >
-            <div v-if="!subExercise" class="w-full mt-0.5 mr-auto md:w-4/12">
+            <div v-if="!subExercise" class="w-full mt-0.5 mr-auto lg:w-4/12">
               <TextInput
                 :modelValue="modelValue.label"
                 @update:modelValue="onBaseExerciseChange('label', $event)"
@@ -115,7 +115,7 @@
             </div>
             <div
               v-if="!subExercise"
-              class="self-start w-full mr-auto md:w-3/12"
+              class="self-start w-full mr-auto lg:w-3/12"
             >
               <Dropdown
                 :id="'exercise_state_' + elementId"
@@ -130,7 +130,7 @@
             <div
               v-if="!cloze"
               :class="{ 'md:ml-auto': !subExercise }"
-              class="flex flex-col w-full md:flex-row md:w-5/12"
+              class="flex flex-col w-full md:flex-row lg:w-5/12"
             >
               <Dropdown
                 class="w-full"

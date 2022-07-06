@@ -10,7 +10,7 @@
         </div>
       </template>
       <template v-slot:body>
-        <div class="flex flex-col justify-between mt-2 md:flex-row">
+        <div class="flex flex-col justify-between mt-2 lg:flex-row">
           <div class="flex flex-col space-y-6">
             <div class="flex items-center" v-show="!editingName">
               <p class="mr-2 text-muted">
@@ -112,7 +112,7 @@
             </div>
           </div>
 
-          <div class="flex flex-col items-end mt-4 md:mt-0 md:w-2/5">
+          <div class="flex flex-col items-end mt-4 lg:mt-0 lg:w-2/5">
             <Toggle
               :disabled="!hasPrivileges([CoursePrivilege.UPDATE_COURSE])"
               :modelValue="currentCourse.hidden"
