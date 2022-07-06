@@ -34,6 +34,7 @@
             :assessment="assessment"
             :readOnly="!allowEditAssessment"
             :expanded="assessmentExpanded"
+            :writeOnly="assessmentWriteOnly"
             @toggleExpanded="setAssessmentExpanded($event)"
             @save="onSaveAssessment()"
             @updateAssessment="onUpdateAssessment($event)"
@@ -194,6 +195,12 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
+    assessmentWriteOnly: {
+      // whether the assessment controls should be displayed "stand-alone",
+      // without the ability to collapse them and show the current assessment
+      type: Boolean,
+      default: false,
+    },
     assessmentControlsVisibility: {
       // whether the card containing the input fields to assess the slot should be displayed.
       // to be used when accessing a full participation as a teacher and the user is editing
@@ -297,7 +304,10 @@ export default defineComponent({
       return isOpenAnswerExercise(this.exercise);
     },
     assessmentExpanded(): boolean {
-      return this.assessmentControlsVisibility?.[this.modelValue.id] ?? false;
+      return (
+        this.assessmentWriteOnly ||
+        (this.assessmentControlsVisibility?.[this.modelValue.id] ?? false)
+      );
     },
     someSubSlotsPending(): boolean {
       return this.modelValue.sub_slots.some((s) => s.score === null);
