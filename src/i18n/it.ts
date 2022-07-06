@@ -185,6 +185,7 @@ export const it = {
       "L'inserimento del numero di matricola e la selezione del corso sono necessari per poter partecipare agli esami. Fallo ora e non pensarci più!",
   },
   misc: {
+    wait: "Attendi...",
     limit: "Limite",
     find_out_more: "Scopri di più",
     experimental_feature_warning:

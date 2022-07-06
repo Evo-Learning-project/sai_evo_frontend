@@ -5,61 +5,66 @@
     <!-- call to action to assess -->
     <div
       v-if="!readOnly && assessment.score === null"
-      class="text-sm banner banner-danger"
+      class="mb-2 -mx-5 -mt-4 text-sm rounded-b-none banner banner-danger"
     >
-      <p class="my-auto text-base material-icons-outlined">pending_actions</p>
-      <p>
-        {{ $t("event_assessment.this_exercise_requires_manual_assessment") }}
-      </p>
+      <div class="flex items-center mx-auto space-x-2">
+        <p class="my-auto text-base material-icons-outlined">pending_actions</p>
+        <p class="">
+          {{ $t("event_assessment.this_exercise_requires_manual_assessment") }}
+        </p>
+      </div>
     </div>
 
     <!-- read only part -->
-    <!-- score -->
-    <div class="flex items-center transition-opacity duration-100">
-      <p class="text-muted">
-        <span class="mr-2"><slot name="scoreTitle"></slot></span>
-        <strong class="text-lg">{{ formattedScore ?? "" }}</strong>
-        <span v-if="maxScore"
-          >&nbsp;{{ $t("misc.out_of") }}
-          <strong class="text-lg"> {{ maxScore }}</strong></span
-        >
-      </p>
-      <div v-if="!readOnly" class="flex items-center w-full ml-1">
-        <Btn
-          :outline="true"
-          :variant="'icon'"
-          :size="'sm'"
-          :tooltip="expanded ? '' : $t('help_texts.edit_score')"
-          :disabled="expanded"
-          @click="onShowAssessmentControls()"
-          ><span class="text-lg icon-light material-icons">edit</span></Btn
-        >
-        <Btn
-          v-if="!readOnly && assessment.score_edited"
-          :outline="true"
-          class="ml-auto"
-          :variant="'icon'"
-          :size="'sm'"
-          :tooltip="$t('event_assessment.undo_score_edit_tooltip')"
-          :disabled="expanded"
-          @click="onUndoScoreEdit()"
-          ><span class="text-lg icon-light material-icons-outlined"
-            >undo</span
-          ></Btn
-        >
+    <div v-if="!writeOnly">
+      <div class="flex items-center transition-opacity duration-100">
+        <p class="text-muted">
+          <span class="mr-2"><slot name="scoreTitle"></slot></span>
+          <strong class="text-lg">{{ formattedScore ?? "" }}</strong>
+          <span v-if="maxScore"
+            >&nbsp;{{ $t("misc.out_of") }}
+            <strong class="text-lg"> {{ maxScore }}</strong></span
+          >
+        </p>
+        <div v-if="!readOnly" class="flex items-center w-full ml-1">
+          <Btn
+            :outline="true"
+            :variant="'icon'"
+            :size="'sm'"
+            :tooltip="expanded ? '' : $t('help_texts.edit_score')"
+            :disabled="expanded"
+            @click="onShowAssessmentControls()"
+            ><span class="text-lg icon-light material-icons">edit</span></Btn
+          >
+          <Btn
+            v-if="!readOnly && assessment.score_edited"
+            :outline="true"
+            class="ml-auto"
+            :variant="'icon'"
+            :size="'sm'"
+            :tooltip="$t('event_assessment.undo_score_edit_tooltip')"
+            :disabled="expanded"
+            @click="onUndoScoreEdit()"
+            ><span class="text-lg icon-light material-icons-outlined"
+              >undo</span
+            ></Btn
+          >
+        </div>
+      </div>
+      <!-- teacher comment -->
+      <div class="transition-opacity duration-100">
+        <p v-if="(assessment.comment?.length ?? 0) > 0" class="mt-2 text-muted">
+          {{
+            !readOnly
+              ? $t("event_assessment.comment_for_student")
+              : $t("misc.teacher_comment")
+          }}:
+        </p>
+        <p v-html="assessment.comment"></p>
       </div>
     </div>
-    <!-- teacher comment -->
-    <div class="transition-opacity duration-100">
-      <p v-if="(assessment.comment?.length ?? 0) > 0" class="mt-2 text-muted">
-        {{
-          !readOnly
-            ? $t("event_assessment.comment_for_student")
-            : $t("misc.teacher_comment")
-        }}:
-      </p>
-      <p v-html="assessment.comment"></p>
-    </div>
+    <!-- score -->
+
     <!-- end read-only part -->
 
     <!-- in-card assessment controls -->
@@ -71,8 +76,11 @@
       class="flex flex-col overflow-y-hidden duration-200 ease-in-out  transition-max-height"
     >
       <div
-        :class="{ 'md:flex-row  md:items-center': !isSubSlot }"
-        class="flex flex-col mt-4 ease-in-out"
+        :class="{
+          'md:flex-row  md:items-center': !isSubSlot,
+          'mt-4': !writeOnly,
+        }"
+        class="flex flex-col ease-in-out"
       >
         <h3>{{ $t("event_assessment.your_assessment") }}</h3>
       </div>
@@ -91,7 +99,7 @@
 
       <!-- buttons to save or discard changes -->
       <!-- TODO don't display when in modal -->
-      <div class="mt-4 ml-auto">
+      <div class="mt-4 ml-auto" v-if="!writeOnly">
         <Btn
           class="mr-2"
           :outline="false"
@@ -150,6 +158,10 @@ export default defineComponent({
       type: Number,
     },
     expanded: {
+      type: Boolean,
+      default: false,
+    },
+    writeOnly: {
       type: Boolean,
       default: false,
     },
