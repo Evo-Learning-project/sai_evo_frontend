@@ -33,14 +33,14 @@
             :variant="'icon'"
             :outline="true"
             @click="toggleFixSideBar()"
-            class=""
+            class="hidden lg:block"
           >
             <span class="text-gray-200 material-icons-outlined">{{
               fixSideBar ? "menu_open" : "menu"
             }}</span>
           </Btn>
         </div>
-        <div class="flex items-center ml-10 mr-auto">
+        <div class="flex items-center mr-auto lg:ml-10">
           <img class="w-32 -ml-1" src="../../../public/unipi-logo.svg" />
         </div>
         <div class="">
@@ -118,7 +118,7 @@
         :class="{
           'absolute top-0': true || !fixSideBar,
           'w-18': !hoveringSidebar && !fixSideBar,
-          'w-2/12 hovering-sidebar': hoveringSidebar || fixSideBar,
+          'lg:w-2/12 w-4/12 hovering-sidebar': hoveringSidebar || fixSideBar,
           'transition-width duration-200 ease-in-out': !unfixingSideBar,
         }"
         id="desktop-nav"

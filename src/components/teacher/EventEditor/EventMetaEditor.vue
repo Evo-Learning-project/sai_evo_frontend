@@ -163,7 +163,7 @@
     <div class="flex flex-col mt-10">
       <h4 class="mb-3">{{ $t("event_editor.time_limit_rules") }}</h4>
       <div
-        class="flex flex-col mb-2 -mt-2 space-y-4  md:flex-row md:space-x-8 md:space-y-0"
+        class="flex flex-col mb-2 -mt-2 space-y-4  lg:flex-row lg:space-x-8 lg:space-y-0"
       >
         <Toggle :labelOnLeft="true" v-model="timeLimitRuleProxy">{{
           $t("event_editor.time_limit_label")
@@ -172,7 +172,7 @@
         <div
           class="flex flex-col space-y-2  md:items-center md:flex-row md:space-y-0"
           :class="{
-            'opacity-0 hidden md:flex':
+            'opacity-0 hidden lg:flex':
               modelValue.time_limit_rule !== EventTimeLimitRule.TIME_LIMIT,
           }"
         >
@@ -294,7 +294,7 @@
           <div
             v-for="(exception, index) in modelValue.time_limit_exceptions"
             :key="modelValue.id + '-time-limit-exc-' + index"
-            class="flex my-6 md:w-1/2"
+            class="flex my-6 lg:w-1/2"
           >
             <TextInput class="w-full mr-2 md:mr-4" v-model="exception[0]">{{
               $t("event_editor.student_email")

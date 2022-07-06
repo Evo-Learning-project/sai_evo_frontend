@@ -85,11 +85,11 @@
           <div
             class="flex flex-col w-full space-y-2  md:items-center md:space-y-0 md:flex-row"
           >
-            <p>
+            <p class="mr-2 lg:mr-0">
               {{ $t("event_editor.tip_you_used_randomization") }}
             </p>
             <Btn
-              class="-mr-2 md:ml-auto"
+              class="w-1/2 -mr-3 lg:-mr-2 lg:w-max md:ml-auto"
               :outline="true"
               @click="getInstances"
               :disabled="loadingExamples"

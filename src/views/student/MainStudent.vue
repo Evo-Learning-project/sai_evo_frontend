@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col flex-grow">
-    <nav class="relative py-0.5 z-50 md:px-12 bg-primary">
+    <nav class="relative py-0.5 z-50 md:px-2 lg:px-12 bg-primary">
       <div class="px-4 mx-auto sm:px-6 lg:px-8">
         <div class="flex items-center justify-between h-14">
           <div class="flex items-center">
@@ -33,7 +33,7 @@
       </div>
     </nav>
     <header
-      class="sticky top-0 z-50 shadow  bg-primary-light bg-opacity-20 bg-fallback-firefox md:px-12 backdrop-blur-sm backdrop-filter"
+      class="sticky top-0 z-50 shadow  bg-primary-light bg-opacity-20 bg-fallback-firefox md:px-2 lg:px-12 backdrop-blur-sm backdrop-filter"
     >
       <div
         class="flex w-full px-4 py-4 mx-auto md:items-center sm:px-6 lg:px-8"
@@ -53,7 +53,7 @@
         </div>
       </div>
     </header>
-    <main class="flex-grow px-2 bg-white md:px-12">
+    <main class="flex-grow px-2 bg-white md:px-8 lg:px-12">
       <div class="h-full px-2 py-6 mx-auto sm:px-1 lg:px-8">
         <ErrorView v-if="!!$store.state.shared.pageWideErrorData"></ErrorView>
         <router-view v-else />

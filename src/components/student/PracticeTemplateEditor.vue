@@ -66,15 +66,19 @@
         class="flex flex-col flex-wrap mt-4 md:items-center md:flex-row"
         :class="[editingRule ? 'visible' : 'invisible']"
       >
-        <div class="flex flex-wrap">
-          <p>{{ $t("practice_template_editor.rule_amount_1") }}</p>
-          <Tag class="mx-2" v-if="editingRuleTag" :tag="editingRuleTag"></Tag>
-          <p>{{ $t("practice_template_editor.rule_amount_2") }}</p>
+        <div class="flex flex-wrap md:mr-4">
+          <p class="mt-3">{{ $t("practice_template_editor.rule_amount_1") }}</p>
+          <Tag
+            class="mx-2 mt-3"
+            v-if="editingRuleTag"
+            :tag="editingRuleTag"
+          ></Tag>
+          <p class="mt-3">{{ $t("practice_template_editor.rule_amount_2") }}</p>
         </div>
-        <div class="flex items-center">
+        <div class="flex items-center mt-3">
           <NumberInput
             v-model="editingRuleDirtyAmount"
-            class="mt-2 w-28 md:ml-4 md:mt-0"
+            class="mt-2 w-28 md:mt-0"
             :min="0"
             :max="editingRuleTag?.public_exercises_not_seen ?? 100000000"
           >
@@ -83,12 +87,12 @@
             ></NumberInput
           >
           <Btn
-            class="ml-2"
+            class="my-auto ml-2"
             :disabled="editingRuleDirtyAmount < 1"
             @click="saveRule"
             >{{ $t("dialog.default_ok_text") }}</Btn
           >
-          <Btn class="ml-2" :outline="true" @click="discardRule">{{
+          <Btn class="my-auto ml-2" :outline="true" @click="discardRule">{{
             $t("dialog.default_cancel_text")
           }}</Btn>
         </div>

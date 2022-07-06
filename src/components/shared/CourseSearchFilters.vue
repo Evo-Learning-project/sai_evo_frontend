@@ -8,7 +8,7 @@
     </div>
     <div class="flex flex-col flex-wrap mb-3 md:items-center md:flex-row">
       <TextInput
-        class="w-full mt-2 mr-auto md:w-1/3"
+        class="w-full mt-2 mr-auto md:w-1/2 lg:w-1/3"
         :modelValue="modelValue.name"
         @update:modelValue="emitUpdate('name', $event)"
         :rightIcon="'search'"
@@ -25,7 +25,7 @@
       </Toggle>
       <Toggle
         v-if="user.is_teacher"
-        class="mt-2"
+        class="mt-2 md:mt-4 lg:mt-2"
         :label-on-left="true"
         :modelValue="modelValue.hidden"
         @update:modelValue="emitUpdate('hidden', $event)"
