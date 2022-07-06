@@ -190,7 +190,7 @@
           {{ slot.slot_number + 1 }}
         </h3>
         <AbstractEventParticipationSlot
-          :modelValue="slot"
+          :modelValue="getSlotWithDirtyChanges(slot)"
           @saveAssessment="onSlotSaveAssessment($event)"
           @updateAssessment="
             onSlotUpdateAssessment($event.slot, $event.payload)
@@ -306,6 +306,15 @@ export default defineComponent({
     ]),
     ...mapActions("teacher", ["partialUpdateEventParticipationSlot"]),
     ...mapMutations(["setCurrentEventParticipationSlot"]),
+    getSlotWithDirtyChanges(slot: EventParticipationSlot) {
+      // returns the given slot merged with any dirty changes to it,
+      // to allow passing those changes back to the slot component
+      // as part of its modelValue
+      return {
+        ...slot,
+        ...(this.slotsDirtyAssessments[slot.id] ?? {}),
+      };
+    },
     onShowEditScore() {
       this.dirtyScore = this.participation.score;
       this.showEditScore = true;
@@ -340,14 +349,12 @@ export default defineComponent({
       slot: EventParticipationSlot,
       payload: [keyof EventParticipationSlotAssessment, any]
     ) {
-      if (!this.slotsDirtyAssessments[slot.id]) {
-        this.slotsDirtyAssessments[slot.id] = {};
-      }
+      this.slotsDirtyAssessments[slot.id] ??= {};
       this.slotsDirtyAssessments[slot.id][payload[0]] = payload[1];
     },
     async onSlotSaveAssessment(slot: EventParticipationSlot) {
       this.slotsAssessmentLoading[slot.id] = true;
-      const changes = this.slotsDirtyAssessments[slot.id];
+      const changes = this.slotsDirtyAssessments[slot.id] ?? {};
       try {
         await this.partialUpdateEventParticipationSlot({
           courseId: this.courseId,
@@ -363,7 +370,7 @@ export default defineComponent({
           eventId: this.eventId,
           participationId: this.participationId,
         });
-
+        // clear pending changes
         delete this.slotsDirtyAssessments[slot.id];
         this.slotsAssessmentControlsVisibility[slot.id] = false;
       } catch (e) {
