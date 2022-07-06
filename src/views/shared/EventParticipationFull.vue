@@ -191,6 +191,7 @@
         </h3>
         <AbstractEventParticipationSlot
           :modelValue="slot"
+          @saveAssessment="onSlotSaveAssessment($event)"
           @updateAssessment="
             onSlotUpdateAssessment($event.slot, $event.payload)
           "
@@ -198,7 +199,7 @@
           :showSolutionAndScores="showSolutionAndScores"
           :showAssessmentCard="showAssessmentCard"
           :assessmentControlsVisibility="slotsAssessmentControlsVisibility"
-          @setAssessmentControlsVisibility="
+          @setAssessmentExpanded="
             slotsAssessmentControlsVisibility[$event.slot.id] = $event.payload
           "
           :assessmentLoading="slotsAssessmentLoading[slot.id] ?? false"
@@ -223,6 +224,7 @@ import { createNamespacedHelpers, mapActions } from "vuex";
 import {
   EventParticipation,
   EventParticipationSlot,
+  EventParticipationSlotAssessment,
   EventParticipationState,
   EventState,
   EventType,
@@ -287,6 +289,10 @@ export default defineComponent({
     return {
       slotsAssessmentControlsVisibility: {} as Record<string, boolean>,
       slotsAssessmentLoading: {} as Record<string, boolean>,
+      slotsDirtyAssessments: {} as Record<
+        string,
+        Partial<EventParticipationSlotAssessment>
+      >,
       showEditScore: false,
       dirtyScore: undefined as string | null | undefined,
       EventType,
@@ -330,18 +336,25 @@ export default defineComponent({
       this.assessmentLoading = false;
       this.showEditScore = false;
     },
-    async onSlotUpdateAssessment(
+    onSlotUpdateAssessment(
       slot: EventParticipationSlot,
-      assessment: { score: number; comment: string }
+      payload: [keyof EventParticipationSlotAssessment, any]
     ) {
+      if (!this.slotsDirtyAssessments[slot.id]) {
+        this.slotsDirtyAssessments[slot.id] = {};
+      }
+      this.slotsDirtyAssessments[slot.id][payload[0]] = payload[1];
+    },
+    async onSlotSaveAssessment(slot: EventParticipationSlot) {
       this.slotsAssessmentLoading[slot.id] = true;
+      const changes = this.slotsDirtyAssessments[slot.id];
       try {
-        const updatedSlot = await this.partialUpdateEventParticipationSlot({
+        await this.partialUpdateEventParticipationSlot({
           courseId: this.courseId,
           eventId: this.eventId,
           participationId: this.participation.id,
           slotId: slot.id,
-          changes: assessment,
+          changes,
           mutate: false,
         });
         // re-fetch participation to register any updates (e.g. the score property)
@@ -350,7 +363,8 @@ export default defineComponent({
           eventId: this.eventId,
           participationId: this.participationId,
         });
-        //this.setCurrentEventParticipationSlot(updatedSlot);
+
+        delete this.slotsDirtyAssessments[slot.id];
         this.slotsAssessmentControlsVisibility[slot.id] = false;
       } catch (e) {
         this.setErrorNotification(e);

@@ -130,7 +130,7 @@ export const it = {
     student_will_see_this_comment:
       "Questo commento sarà visibile allo studente quando pubblicherai i risultati",
     this_exercise_requires_manual_assessment:
-      "Devi assegnare manualmente un punteggio a questa risposta.",
+      "Devi assegnare un punteggio a questa risposta.",
     some_sub_slots_pending:
       "Il punteggio mostrato è incompleto perché alcuni sotto-esercizi non hanno ancora ricevuto una valutazione.",
     some_slots_pending:

@@ -5,7 +5,7 @@
     </div>
 
     <div
-      class="flex flex-wrap items-center mt-2"
+      class="flex flex-wrap items-center mt-1 mb-2.5"
       v-if="showPrivateTags || showPublicTags"
     >
       <Tag
@@ -35,8 +35,8 @@
       v-if="showSolution && (exercise.solution?.trim().length ?? 0) > 0"
       name="solution"
     >
-      <div class="w-full whitespace-pre">
-        <p class="mb-2 ml-2 text-sm text-muted">
+      <div class="w-full mt-4 whitespace-pre">
+        <p class="ml-2 text-sm text-muted">
           {{ $t("misc.solution") }}
         </p>
         <ProcessedTextFragment

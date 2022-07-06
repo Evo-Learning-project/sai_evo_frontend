@@ -17,17 +17,14 @@
     <!-- score -->
     <div class="flex items-center transition-opacity duration-100">
       <p class="text-muted">
-        <slot name="scoreTitle"></slot>
-        <!-- {{
-          !isProgrammingExercise ? $t("misc.score") : $t("misc.passed_tests")
-        }}: -->
+        <span class="mr-2"><slot name="scoreTitle"></slot></span>
         <strong class="text-lg">{{ formattedScore ?? "" }}</strong>
         <span v-if="maxScore"
           >&nbsp;{{ $t("misc.out_of") }}
           <strong class="text-lg"> {{ maxScore }}</strong></span
         >
       </p>
-      <div v-if="!readOnly" class="flex items-center ml-1">
+      <div v-if="!readOnly" class="flex items-center w-full ml-1">
         <Btn
           :outline="true"
           :variant="'icon'"
@@ -74,7 +71,7 @@
       class="flex flex-col overflow-y-hidden duration-200 ease-in-out  transition-max-height"
     >
       <div
-        :class="{ 'md:flex-row  md:items-center': !subSlot }"
+        :class="{ 'md:flex-row  md:items-center': !isSubSlot }"
         class="flex flex-col mt-4 ease-in-out"
       >
         <h3>{{ $t("event_assessment.your_assessment") }}</h3>
@@ -99,15 +96,18 @@
           class="mr-2"
           :outline="false"
           :variant="'primary'"
-          :loading="assessmentLoading"
-          :disabled="dirtyScore === null || dirtyScore?.length === 0"
+          :loading="loading"
+          :disabled="
+            assessment.score === null ||
+            String(assessment.score ?? '').length === 0
+          "
           @click="onHideAssessmentControls()"
         >
           {{ $t("event_assessment.confirm_assessment") }}
         </Btn>
         <Btn
           :outline="true"
-          :disabled="assessmentLoading"
+          :disabled="loading"
           :variant="'primary'"
           @click="onHideAssessmentControls(true)"
         >
@@ -123,8 +123,20 @@
 import { getTranslatedString as _ } from "@/i18n";
 import { EventParticipationSlotAssessment } from "@/models";
 import { defineComponent, PropType } from "@vue/runtime-core";
+import Btn from "../ui/Btn.vue";
+import NumberInput from "../ui/NumberInput.vue";
+import TextEditor from "../ui/TextEditor.vue";
 export default defineComponent({
   name: "ParticipationSlotAssessment",
+  emits: {
+    toggleExpanded(value: boolean) {
+      return true;
+    },
+    updateAssessment(payload: [keyof EventParticipationSlotAssessment, any]) {
+      return true;
+    },
+    save: null,
+  },
   props: {
     assessment: {
       type: Object as PropType<EventParticipationSlotAssessment>,
@@ -141,6 +153,14 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
+    loading: {
+      type: Boolean,
+      default: false,
+    },
+    isSubSlot: {
+      type: Boolean,
+      default: false,
+    },
   },
   methods: {
     onShowAssessmentControls() {
@@ -154,7 +174,7 @@ export default defineComponent({
     },
     onUndoScoreEdit() {
       if (confirm(_("event_assessment.undo_score_edit"))) {
-        this.$emit("updateAssessment", { score: null });
+        this.$emit("updateAssessment", ["score", null]);
         this.onHideAssessmentControls();
       }
     },
@@ -177,7 +197,7 @@ export default defineComponent({
         return this.assessment.score ?? 0;
       },
       set(val: any) {
-        this.$emit("updateAssessment", { score: val });
+        this.$emit("updateAssessment", ["score", val]);
       },
     },
     commentProxy: {
@@ -185,10 +205,11 @@ export default defineComponent({
         return this.assessment.comment ?? "";
       },
       set(val: string) {
-        this.$emit("updateAssessment", { comment: val });
+        this.$emit("updateAssessment", ["comment", val]);
       },
     },
   },
+  components: { Btn, NumberInput, TextEditor },
 });
 </script>
 
