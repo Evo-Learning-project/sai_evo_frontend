@@ -25,12 +25,10 @@ export default defineComponent({
   name: "Exercise",
   emits: {
     updateSubmission: (
-      event: Record<keyof EventParticipationSlotSubmission, any>
+      payload: [keyof EventParticipationSlotSubmission, any]
     ) => {
       /**
-       * Emitted when the submission to this exercise changes the event contains
-       * a single key which is a `keyof EventParticipationSlotSubmission`, and
-       * its value is the new submission content
+       * Emitted when the submission to this exercise changes
        */
       const validators: Record<
         keyof EventParticipationSlotSubmission,
@@ -40,39 +38,17 @@ export default defineComponent({
         selected_choices: (val) =>
           val &&
           Array.isArray(val) &&
-          val.forEach((v) => ["string", "number"].includes(typeof v)),
+          val.every((v) => ["string", "number"].includes(typeof v)),
         attachment: (val) => true,
         execution_results: (val) => false, // meant to be read-only
       };
-
-      // check event is a non-null object
-      if (event === null || typeof event !== "object") {
-        console.warn("Invalid updateSubmission event", event);
-        return false;
-      }
-      // check event contains a single key
-      const keys = Object.keys(event);
-      if (keys.length !== 1) {
-        console.warn("Too many arguments in updateSubmission event", event);
-        return false;
-      }
-      // check the single key in event is a valid submission field
-      const changeKey = keys[0];
-      if (!(changeKey in validators)) {
-        console.warn("Invalid key in updateSubmission event", changeKey);
+      if (!(payload[0] in validators)) {
+        console.warn("Invalid key in updateSubmission event", payload[0]);
         return false;
       }
       // check the value for that key is valid
-      if (
-        !validators[changeKey as keyof EventParticipationSlotSubmission](
-          event[changeKey as keyof EventParticipationSlotSubmission]
-        )
-      ) {
-        console.warn(
-          "Invalid value for key",
-          changeKey,
-          event[changeKey as keyof EventParticipationSlotSubmission]
-        );
+      if (!validators[payload[0]](payload[1])) {
+        console.warn("Invalid value for key", payload[0], payload[1]);
         return false;
       }
       return true;

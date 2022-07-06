@@ -66,9 +66,7 @@
         @updateSelectedChoices="
           onChange($event.slot, 'selected_choices', $event.payload)
         "
-        @updateAnswerText="onChange($event.slot, 'answer_text', $event.payload)"
-        @updateAttachment="onUpdateAttachment($event.slot, $event.payload)"
-        @download="onAttachmentDownload($event.slot)"
+        @updateSubmission="onUpdateSubmission($event.slot, $event.payload)"
         @runCode="onRunCode($event.slot)"
         @blur="onBlur($event.slot)"
         :allowEditSubmission="true"
@@ -154,6 +152,7 @@ import {
 import {
   EventParticipation,
   EventParticipationSlot,
+  EventParticipationSlotSubmission,
   EventParticipationState,
   EventType,
   ExerciseType,
@@ -266,7 +265,14 @@ export default defineComponent({
       "runEventParticipationSlotCode",
     ]),
     ...mapMutations(["setCurrentEventParticipationSlot"]),
+    async onUpdateSubmission(
+      slot: EventParticipationSlot,
+      change: [keyof EventParticipationSlotSubmission, any]
+    ) {
+      await this.onChange(slot, change[0], change[1]);
+    },
     async onAttachmentDownload(slot: EventParticipationSlot) {
+      // TODO move to attachment exercise
       await this.withLoading(
         async () =>
           await downloadEventParticipationSlotAttachment(

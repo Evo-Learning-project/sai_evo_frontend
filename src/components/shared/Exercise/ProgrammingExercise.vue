@@ -195,7 +195,7 @@ export default defineComponent({
         return this.submission.answer_text;
       },
       set(val: string) {
-        this.$emit("updateSubmission", { answer_text: val });
+        this.$emit("updateSubmission", ["answer_text", val]);
       },
     },
     filteredTabsOptions(): SelectableOption[] {

@@ -114,9 +114,10 @@ export default defineComponent({
         return this.submission.selected_choices;
       },
       set(val: string | string[]) {
-        this.$emit("updateSubmission", {
-          selected_choices: typeof val === "object" ? val : [val],
-        });
+        this.$emit("updateSubmission", [
+          "selected_choices",
+          typeof val === "object" ? val : [val],
+        ]);
       },
     },
     exerciseChoicesAsOptions(): SelectableOption[] {

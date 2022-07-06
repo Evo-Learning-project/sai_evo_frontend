@@ -12,7 +12,7 @@
 
     <template #readOnlyAnswer>
       <div class="w-full whitespace-pre">
-        <p class="mb-2 ml-2 text-sm text-muted">
+        <p class="ml-2 text-sm text-muted">
           {{ $t("event_assessment.text_answer_label") }}
         </p>
         <ProcessedTextFragment
@@ -36,6 +36,7 @@ import {
 } from "@/models";
 import AbstractExercise from "./AbstractExercise.vue";
 import { exerciseProps } from "./shared";
+import ProcessedTextFragment from "@/components/ui/ProcessedTextFragment.vue";
 export default defineComponent({
   name: "OpenAnswerExercise",
   props: {
@@ -48,11 +49,11 @@ export default defineComponent({
         return this.submission.answer_text;
       },
       set(val: string) {
-        this.$emit("updateSubmission", { answer_text: val });
+        this.$emit("updateSubmission", ["answer_text", val]);
       },
     },
   },
-  components: { TextEditor, AbstractExercise },
+  components: { TextEditor, AbstractExercise, ProcessedTextFragment },
 });
 </script>
 
