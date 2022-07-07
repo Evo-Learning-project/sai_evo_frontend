@@ -105,6 +105,7 @@ export const it = {
     grade: "Voto",
   },
   event_assessment: {
+    no_score_for_exercise: "Punteggio non assegnato",
     undo_score_edit_tooltip: "Ripristina punteggio originale",
     overall_score: "Voto",
     you_overrode_score:

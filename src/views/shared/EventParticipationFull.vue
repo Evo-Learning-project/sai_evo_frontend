@@ -29,7 +29,7 @@
       </h3>
     </div>
     <div class="px-2 py-6" v-if="!firstLoading">
-      <div class="flex flex-col space-y-8">
+      <div class="flex flex-col mb-6 space-y-8">
         <!--md:flex-row md:space-y-0-->
         <div class="text-sm">
           <div class="flex space-x-1">
@@ -177,20 +177,17 @@
 
       <div
         :class="{
-          'mt-12': index === 0,
-          'mb-0 border-b-0': index === participation.slots.length - 1,
-          'mb-16': index !== participation.slots.length - 1,
+          'mt-0': index === 0,
+          'mb-5': index === participation.slots.length - 1,
+          'mb-10': index !== participation.slots.length - 1,
         }"
         class=""
         v-for="(slot, index) in participation.slots"
         :key="'p-' + participation.id + '-s-' + slot.id"
       >
         <AbstractEventParticipationSlot
-          :modelValue="getSlotWithDirtyChanges(slot)"
-          @saveAssessment="onSlotSaveAssessment($event)"
-          @updateAssessment="
-            onSlotUpdateAssessment($event.slot, $event.payload)
-          "
+          :modelValue="slot"
+          @saveAssessment="onSlotSaveAssessment($event.slot, $event.changes)"
           :allowEditAssessment="allowEditAssessment"
           :showSolutionAndScores="showSolutionAndScores"
           :showAssessmentCard="showAssessmentCard"
@@ -203,8 +200,8 @@
           <h3 class="mb-1">
             {{ $t("event_participation_page.exercise") }}
             {{ slot.slot_number + 1 }}
-          </h3></AbstractEventParticipationSlot
-        >
+          </h3>
+        </AbstractEventParticipationSlot>
       </div>
     </div>
     <div class="py-6" v-else>
@@ -290,10 +287,6 @@ export default defineComponent({
     return {
       slotsAssessmentControlsVisibility: {} as Record<string, boolean>,
       slotsAssessmentLoading: {} as Record<string, boolean>,
-      slotsDirtyAssessments: {} as Record<
-        string,
-        Partial<EventParticipationSlotAssessment>
-      >,
       showEditScore: false,
       dirtyScore: undefined as string | null | undefined,
       EventType,
@@ -307,18 +300,6 @@ export default defineComponent({
     ]),
     ...mapActions("teacher", ["partialUpdateEventParticipationSlot"]),
     ...mapMutations(["setCurrentEventParticipationSlot"]),
-    getSlotWithDirtyChanges(
-      slot: EventParticipationSlot
-    ): EventParticipationSlot {
-      // returns the given slot merged with any dirty changes to it,
-      // to allow passing those changes back to the slot component
-      // as part of its modelValue
-      return {
-        ...slot,
-        sub_slots: slot.sub_slots.map((s) => this.getSlotWithDirtyChanges(s)),
-        ...(this.slotsDirtyAssessments[slot.id] ?? {}),
-      };
-    },
     onShowEditScore() {
       this.dirtyScore = this.participation.score;
       this.showEditScore = true;
@@ -349,17 +330,11 @@ export default defineComponent({
       this.assessmentLoading = false;
       this.showEditScore = false;
     },
-    onSlotUpdateAssessment(
+    async onSlotSaveAssessment(
       slot: EventParticipationSlot,
-      payload: [keyof EventParticipationSlotAssessment, any]
+      changes: { score: number | null; comment: string }
     ) {
-      console.log("slot change", slot, payload);
-      this.slotsDirtyAssessments[slot.id] ??= {};
-      this.slotsDirtyAssessments[slot.id][payload[0]] = payload[1];
-    },
-    async onSlotSaveAssessment(slot: EventParticipationSlot) {
       this.slotsAssessmentLoading[slot.id] = true;
-      const changes = this.slotsDirtyAssessments[slot.id] ?? {};
       try {
         await this.partialUpdateEventParticipationSlot({
           courseId: this.courseId,
@@ -375,8 +350,6 @@ export default defineComponent({
           eventId: this.eventId,
           participationId: this.participationId,
         });
-        // clear pending changes
-        delete this.slotsDirtyAssessments[slot.id];
         this.slotsAssessmentControlsVisibility[slot.id] = false;
       } catch (e) {
         this.setErrorNotification(e);

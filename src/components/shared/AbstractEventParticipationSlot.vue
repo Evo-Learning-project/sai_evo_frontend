@@ -36,7 +36,7 @@
             :expanded="assessmentExpanded"
             :writeOnly="assessmentWriteOnly"
             @toggleExpanded="setAssessmentExpanded($event)"
-            @save="onSaveAssessment()"
+            @save="onSaveAssessment($event)"
             @updateAssessment="onUpdateAssessment($event)"
             :loading="assessmentLoading"
           >
@@ -142,7 +142,10 @@ export default defineComponent({
     blur(slot: EventParticipationSlot) {
       return true;
     },
-    saveAssessment(slot: EventParticipationSlot) {
+    saveAssessment(payload: {
+      slot: EventParticipationSlot;
+      changes: { score: number | null; comment: string };
+    }) {
       return true;
     },
     updateSubmission(payload: {
@@ -259,8 +262,8 @@ export default defineComponent({
         payload: value,
       });
     },
-    onSaveAssessment() {
-      this.$emit("saveAssessment", this.modelValue);
+    onSaveAssessment(changes: { score: number | null; comment: string }) {
+      this.$emit("saveAssessment", { changes, slot: this.modelValue });
     },
   },
   data() {

@@ -12,7 +12,7 @@
       class="checkbox-item"
     >
       <div class="flex flex-col w-full">
-        <div class="flex w-full">
+        <div class="flex items-start w-full">
           <div
             v-if="!useToggles"
             v-wave-trigger:checkbox
@@ -29,19 +29,21 @@
             v-model="proxyModelValue"
             style="min-width: 15px; min-height: 15px"
             :value="option.value"
-            class="mt-1 mr-2"
+            class="mr-2 mt-5px"
           />
           <Toggle
             v-else
-            class="order-1 mt-1 ml-4"
+            class="order-1 ml-4 mt-5px"
             :overrideId="id + '-option-' + index"
             :modelValue="proxyModelValue.includes(option.value)"
             @update:modelValue="onToggleUpdate($event, option)"
           ></Toggle>
-          <slot v-bind:icons="option.icons"></slot>
-          <p :class="labelClass" v-html="option.content"></p>
+          <div class="flex flex-col">
+            <slot v-bind:icons="option.icons"></slot>
+            <p :class="labelClass" v-html="option.content"></p>
+            <slot name="item" v-bind:description="option.description"></slot>
+          </div>
         </div>
-        <slot name="item" v-bind:description="option.description"></slot>
       </div>
     </label>
   </div>

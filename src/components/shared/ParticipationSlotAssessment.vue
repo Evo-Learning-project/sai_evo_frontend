@@ -18,13 +18,16 @@
     <!-- read only part -->
     <div class="w-full" v-if="!writeOnly">
       <div class="flex items-center w-full transition-opacity duration-100">
-        <p class="mr-auto text-muted">
+        <p class="mr-auto text-muted" v-if="assessment.score !== null">
           <span class="mr-2"><slot name="scoreTitle"></slot></span>
           <strong class="text-lg">{{ formattedScore ?? "" }}</strong>
           <span v-if="maxScore"
             >&nbsp;{{ $t("misc.out_of") }}
             <strong class="text-lg"> {{ maxScore }}</strong></span
           >
+        </p>
+        <p class="text-muted" v-else>
+          {{ $t("event_assessment.no_score_for_exercise") }}
         </p>
         <div v-if="!readOnly" class="flex items-center ml-1">
           <Btn
@@ -63,8 +66,6 @@
         <p v-html="assessment.comment"></p>
       </div>
     </div>
-    <!-- score -->
-
     <!-- end read-only part -->
 
     <!-- in-card assessment controls -->
@@ -87,18 +88,16 @@
 
       <!-- actual assessment controls -->
       <div class="mt-4">
-        <p>
-          <NumberInput class="mb-4" v-model="scoreProxy"
-            >{{ $t("event_assessment.assigned_score") }}
-          </NumberInput>
-          <TextEditor class="w-full" v-model="commentProxy">{{
-            $t("event_assessment.comment_for_student")
-          }}</TextEditor>
-        </p>
+        <!-- TODO validate input (e.g. no more than 1 decimal place) -->
+        <NumberInput class="mb-4" v-model="scoreProxy"
+          >{{ $t("event_assessment.assigned_score") }}
+        </NumberInput>
+        <TextEditor class="w-full" v-model="commentProxy">{{
+          $t("event_assessment.comment_for_student")
+        }}</TextEditor>
       </div>
 
       <!-- buttons to save or discard changes -->
-      <!-- TODO don't display when in modal -->
       <div class="mt-4 ml-auto" v-if="!writeOnly">
         <Btn
           class="mr-2"
@@ -106,10 +105,9 @@
           :variant="'primary'"
           :loading="loading"
           :disabled="
-            assessment.score === null ||
-            String(assessment.score ?? '').length === 0
+            dirtyScore === null || String(dirtyScore ?? '').length === 0
           "
-          @click="onHideAssessmentControls()"
+          @click="onSave()"
         >
           {{ $t("event_assessment.confirm_assessment") }}
         </Btn>
@@ -117,7 +115,7 @@
           :outline="true"
           :disabled="loading"
           :variant="'primary'"
-          @click="onHideAssessmentControls(true)"
+          @click="onHideAssessmentControls()"
         >
           {{ $t("dialog.default_cancel_text") }}
         </Btn>
@@ -130,6 +128,7 @@
 <script lang="ts">
 import { getTranslatedString as _ } from "@/i18n";
 import { EventParticipationSlotAssessment } from "@/models";
+import { tupleExpression } from "@babel/types";
 import { defineComponent, PropType } from "@vue/runtime-core";
 import Btn from "../ui/Btn.vue";
 import NumberInput from "../ui/NumberInput.vue";
@@ -143,7 +142,9 @@ export default defineComponent({
     updateAssessment(payload: [keyof EventParticipationSlotAssessment, any]) {
       return true;
     },
-    save: null,
+    save(changes: { score: number | null; comment: string }) {
+      return true;
+    },
   },
   props: {
     assessment: {
@@ -174,19 +175,39 @@ export default defineComponent({
       default: false,
     },
   },
+  watch: {
+    assessment: {
+      immediate: true,
+      deep: true,
+      handler(newVal: EventParticipationSlotAssessment) {
+        console.log("PROP CHANGED", newVal);
+        this.dirtyComment = newVal.comment ?? "";
+        this.dirtyScore = newVal.score ?? null;
+      },
+    },
+  },
+  data() {
+    return {
+      dirtyScore: null as null | number,
+      dirtyComment: null as null | string,
+    };
+  },
   methods: {
     onShowAssessmentControls() {
       this.$emit("toggleExpanded", true);
     },
-    onHideAssessmentControls(discard = false) {
+    onSave() {
+      this.$emit("save", {
+        comment: this.dirtyComment ?? "",
+        score: this.dirtyScore,
+      });
+    },
+    onHideAssessmentControls() {
       this.$emit("toggleExpanded", false);
-      if (!discard) {
-        this.$emit("save");
-      }
     },
     onUndoScoreEdit() {
       if (confirm(_("event_assessment.undo_score_edit"))) {
-        this.$emit("updateAssessment", ["score", null]);
+        this.scoreProxy = null;
         this.onHideAssessmentControls();
       }
     },
@@ -205,18 +226,20 @@ export default defineComponent({
         : this.assessment.score;
     },
     scoreProxy: {
-      get() {
-        return this.assessment.score ?? 0;
+      get(): number | null {
+        return this.dirtyScore ?? 0;
       },
       set(val: any) {
+        this.dirtyScore = val;
         this.$emit("updateAssessment", ["score", val]);
       },
     },
     commentProxy: {
       get() {
-        return this.assessment.comment ?? "";
+        return this.dirtyComment ?? "";
       },
       set(val: string) {
+        this.dirtyComment = val;
         this.$emit("updateAssessment", ["comment", val]);
       },
     },
