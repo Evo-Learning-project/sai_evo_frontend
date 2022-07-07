@@ -1,5 +1,10 @@
 <template>
-  <Exercise :exercise="exercise" :readOnly="true"></Exercise>
+  <!-- <Exercise :exercise="exercise" :readOnly="true"></Exercise> -->
+  <AbstractEventParticipationSlot
+    :modelValue="exerciseWrapperSlot"
+    :allowEditAssessment="false"
+    :allowEditSubmission="false"
+  />
 </template>
 
 <script lang="ts">
@@ -9,7 +14,8 @@ import {
   getFakeEventParticipationSlot,
 } from "@/models";
 import { defineComponent, PropType } from "@vue/runtime-core";
-import Exercise from "./Exercise/Exercise.vue"; // A read-only fake EventParticipationSlot as a wrapper to show an exercise
+import Exercise from "./Exercise/Exercise.vue";
+import AbstractEventParticipationSlot from "./AbstractEventParticipationSlot.vue"; // A read-only fake EventParticipationSlot as a wrapper to show an exercise
 export default defineComponent({
   name: "FullExercise",
   props: {
@@ -19,7 +25,8 @@ export default defineComponent({
     },
   },
   components: {
-    Exercise,
+    // Exercise,
+    AbstractEventParticipationSlot,
   },
   computed: {
     exerciseWrapperSlot(): EventParticipationSlot {

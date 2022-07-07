@@ -185,10 +185,6 @@
         v-for="(slot, index) in participation.slots"
         :key="'p-' + participation.id + '-s-' + slot.id"
       >
-        <h3 class="mb-1">
-          {{ $t("event_participation_page.exercise") }}
-          {{ slot.slot_number + 1 }}
-        </h3>
         <AbstractEventParticipationSlot
           :modelValue="getSlotWithDirtyChanges(slot)"
           @saveAssessment="onSlotSaveAssessment($event)"
@@ -203,7 +199,12 @@
             slotsAssessmentControlsVisibility[$event.slot.id] = $event.payload
           "
           :assessmentLoading="slotsAssessmentLoading[slot.id] ?? false"
-        ></AbstractEventParticipationSlot>
+        >
+          <h3 class="mb-1">
+            {{ $t("event_participation_page.exercise") }}
+            {{ slot.slot_number + 1 }}
+          </h3></AbstractEventParticipationSlot
+        >
       </div>
     </div>
     <div class="py-6" v-else>
@@ -306,12 +307,15 @@ export default defineComponent({
     ]),
     ...mapActions("teacher", ["partialUpdateEventParticipationSlot"]),
     ...mapMutations(["setCurrentEventParticipationSlot"]),
-    getSlotWithDirtyChanges(slot: EventParticipationSlot) {
+    getSlotWithDirtyChanges(
+      slot: EventParticipationSlot
+    ): EventParticipationSlot {
       // returns the given slot merged with any dirty changes to it,
       // to allow passing those changes back to the slot component
       // as part of its modelValue
       return {
         ...slot,
+        sub_slots: slot.sub_slots.map((s) => this.getSlotWithDirtyChanges(s)),
         ...(this.slotsDirtyAssessments[slot.id] ?? {}),
       };
     },
@@ -349,6 +353,7 @@ export default defineComponent({
       slot: EventParticipationSlot,
       payload: [keyof EventParticipationSlotAssessment, any]
     ) {
+      console.log("slot change", slot, payload);
       this.slotsDirtyAssessments[slot.id] ??= {};
       this.slotsDirtyAssessments[slot.id][payload[0]] = payload[1];
     },

@@ -1,5 +1,5 @@
 <template>
-  <div :class="{ 'pl-6': subSlot }">
+  <div :class="{ 'pl-4': subSlot }">
     <div class="w-full">
       <!-- heading, above the exercise text -->
       <div v-if="$slots.default" class="flex flex-wrap items-center">
@@ -13,7 +13,7 @@
       <div
         :class="{
           'flex flex-col space-y-4': allowEditAssessment || showAssessmentCard,
-          'md:flex-row md:space-x-8 md:space-y-0': !subSlot,
+          'md:flex-row md:space-x-8 md:space-y-0': true || !subSlot,
         }"
       >
         <!-- exercise -->
@@ -79,12 +79,15 @@
       </div>
 
       <!-- sub-slots -->
-      <div v-if="exercise.exercise_type === ExerciseType.AGGREGATED">
+      <div
+        class="mt-8"
+        v-if="exercise.exercise_type === ExerciseType.AGGREGATED"
+      >
         <!-- aggregated exercise -->
         <div
           v-for="(subSlot, index) in modelValue.sub_slots"
           :key="modelValue.id + '-sub-slot-' + subSlot.id"
-          :class="{ 'mb-12': index !== modelValue.sub_slots.length - 1 }"
+          :class="{ 'mb-8': index !== modelValue.sub_slots.length - 1 }"
         >
           <AbstractEventParticipationSlot
             :subSlot="true"
@@ -99,7 +102,12 @@
             @updateAssessment="$emit('updateAssessment', $event)"
             @updateSubmission="$emit('updateSubmission', $event)"
             @blur="$emit('blur', $event)"
+            @saveAssessment="$emit('saveAssessment', $event)"
           >
+            <h4 class="text-lg">
+              {{ $t("event_participation_page.exercise") }}
+              {{ modelValue.slot_number + 1 }}.{{ subSlot.slot_number + 1 }}
+            </h4>
           </AbstractEventParticipationSlot>
         </div>
       </div>
@@ -239,6 +247,7 @@ export default defineComponent({
       });
     },
     onUpdateAssessment(change: [keyof EventParticipationSlotAssessment, any]) {
+      console.log("update assessment", change);
       this.$emit("updateAssessment", {
         slot: this.modelValue,
         payload: change,

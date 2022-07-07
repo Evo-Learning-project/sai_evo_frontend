@@ -16,9 +16,9 @@
     </div>
 
     <!-- read only part -->
-    <div v-if="!writeOnly">
-      <div class="flex items-center transition-opacity duration-100">
-        <p class="text-muted">
+    <div class="w-full" v-if="!writeOnly">
+      <div class="flex items-center w-full transition-opacity duration-100">
+        <p class="mr-auto text-muted">
           <span class="mr-2"><slot name="scoreTitle"></slot></span>
           <strong class="text-lg">{{ formattedScore ?? "" }}</strong>
           <span v-if="maxScore"
@@ -26,7 +26,7 @@
             <strong class="text-lg"> {{ maxScore }}</strong></span
           >
         </p>
-        <div v-if="!readOnly" class="flex items-center w-full ml-1">
+        <div v-if="!readOnly" class="flex items-center ml-1">
           <Btn
             :outline="true"
             :variant="'icon'"
