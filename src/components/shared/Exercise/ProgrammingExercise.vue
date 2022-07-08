@@ -1,17 +1,10 @@
 <template>
-  <div class="relative">
-    <div class="mx-auto md:w-2/5">
-      <Tabs v-model="currentTab" :options="filteredTabsOptions"></Tabs>
-    </div>
-    <DraggablePopup
-      @close="showPopup = false"
-      v-show="showPopup"
-      :title="$t('programming_exercise.tab_text')"
-    >
-      <div class="user-content" v-html="exercise.text"></div>
-    </DraggablePopup>
-
-    <div class="mt-4">
+  <AbstractExercise v-bind="$props">
+    <template #exerciseText>
+      <div class="mx-auto mb-4 md:w-2/5">
+        <Tabs v-model="currentTab" :options="filteredTabsOptions"></Tabs>
+      </div>
+      <!-- exercise text pane -->
       <div
         class="user-content"
         v-show="currentTab === ProgrammingExerciseTabs.TEXT"
@@ -36,6 +29,33 @@
         </div>
         <div v-html="exercise.text"></div>
       </div>
+
+      <!-- test cases pane -->
+      <div v-show="currentTab === ProgrammingExerciseTabs.TEST_CASES">
+        <div
+          class="my-8"
+          v-for="(testcase, index) in exercise.testcases"
+          :key="'t-' + testcase.id"
+        >
+          <h4 class="mb-1">
+            {{ $t("programming_exercise.testcase") }} {{ index + 1 }}
+            <span
+              v-if="!testcase.code && !testcase.text && !testcase.stdin"
+              class="ml-2 icon-light inline-icon material-icons-outlined"
+              >visibility_off</span
+            >
+          </h4>
+          <ExerciseTestCase :test-case="testcase"></ExerciseTestCase>
+        </div>
+        <div v-if="exercise.testcases?.length === 0">
+          <h4 class="mt-8 text-center text-muted">
+            {{ $t("programming_exercise.no_testcases") }}
+          </h4>
+        </div>
+      </div>
+    </template>
+
+    <template #submissionControls>
       <div
         v-if="currentTab === ProgrammingExerciseTabs.EDITOR"
         class="relative flex"
@@ -84,7 +104,7 @@
               >
                 code
               </span>
-              <p class="px-4 mx-auto text-muted">
+              <p class="px-4 mx-auto select-none text-muted">
                 {{ $t("programming_exercise.code_execution_will_appear_here") }}
               </p>
             </div>
@@ -102,30 +122,20 @@
           >
         </CodeEditor>
       </div>
-      <div v-show="currentTab === ProgrammingExerciseTabs.TEST_CASES">
-        <div
-          class="my-8"
-          v-for="(testcase, index) in exercise.testcases"
-          :key="'t-' + testcase.id"
-        >
-          <h4 class="mb-1">
-            {{ $t("programming_exercise.testcase") }} {{ index + 1 }}
-            <span
-              v-if="!testcase.code && !testcase.text && !testcase.stdin"
-              class="ml-2 icon-light inline-icon material-icons-outlined"
-              >visibility_off</span
-            >
-          </h4>
-          <ExerciseTestCase :test-case="testcase"></ExerciseTestCase>
-        </div>
-        <div v-if="exercise.testcases?.length === 0">
-          <h4 class="mt-8 text-center text-muted">
-            {{ $t("programming_exercise.no_testcases") }}
-          </h4>
-        </div>
-      </div>
-    </div>
-  </div>
+    </template>
+  </AbstractExercise>
+
+  <!-- <div class="relative">
+    <DraggablePopup
+      @close="showPopup = false"
+      v-show="showPopup"
+      :title="$t('programming_exercise.tab_text')"
+    >
+      <div class="user-content" v-html="exercise.text"></div>
+    </DraggablePopup>
+
+    <div class="mt-4"></div>
+  </div> -->
 </template>
 
 <script lang="ts">
@@ -152,6 +162,7 @@ import CodeExecutionResults from "../CodeExecutionResults.vue";
 import Spinner from "@/components/ui/Spinner.vue";
 import ExerciseTestCase from "../ExerciseTestCase.vue";
 import { exerciseProps } from "./shared";
+import AbstractExercise from "./AbstractExercise.vue";
 export default defineComponent({
   name: "ProgrammingExercise",
   mixins: [loadingMixin, texMixin],
@@ -209,12 +220,13 @@ export default defineComponent({
   },
   components: {
     Tabs,
-    DraggablePopup,
+    // DraggablePopup,
     Btn,
     CodeEditor,
     CodeExecutionResults,
     Spinner,
     ExerciseTestCase,
+    AbstractExercise,
   },
 });
 </script>

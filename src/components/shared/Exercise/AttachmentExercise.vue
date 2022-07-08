@@ -1,5 +1,5 @@
 <template>
-  <AbstractExercise v-bind="$slots">
+  <AbstractExercise v-bind="$props">
     <template #submissionControls>
       <FileUpload
         v-model="attachmentProxy"
