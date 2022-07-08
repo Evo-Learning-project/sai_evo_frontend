@@ -14,6 +14,32 @@ export const en = {
     rule_amount_1: "How many exercises with tag",
     rule_amount_2: "do you want to see?",
   },
+  programming_exercise: {
+    open_text_popup: "Open as popup",
+    tab_text: "Text",
+    tab_testcases: "Test cases",
+    tab_editor: "Editor",
+    run_code: "Run",
+    running_code: "Running your code...",
+    execution_results: "Execution results",
+    testcase: "Test case",
+    testcase_stdin: "Standard input",
+    testcase_expected_stdout: "Expected output",
+    passed: "Passed",
+    not_passed: "Failed",
+    test_failed_with_error: "Execution aborted with the following error",
+    test_failed_stdout: "Your program produced the following output",
+    code_errored: "Execution aborted with the following error",
+    compilation_errored: "Compilation failed producing the following error",
+    no_testcases:
+      "This exercise doesn't have any test cases. Try asking your teacher to add some.",
+    results_ok_but_no_testcases:
+      "Your code ran without producing errors. Unfortunately, this exercise doesn't have any test cases, so that's all we know.",
+    internal_error:
+      "An internal error occurred while attempting to run your code. Please, report this error to the teachers.",
+    code_execution_will_appear_here:
+      "The execution results for your code will appear here.",
+  },
   event_states: {
     [EventState.DRAFT]: "Draft",
     [EventState.PLANNED]: "Planned",
@@ -229,7 +255,7 @@ export const en = {
     next_exercise: "Avanti",
     previous_exercise: "Indietro",
     skip_exercise: "Salta esercizio",
-    turn_in: "Consegna",
+    turn_in: "Turn in",
     turn_in_dialog_title: "Sei sicuro di voler consegnare?",
     turn_in_dialog_text:
       "Una volta consegnato, non potrai più modificare le tue risposte.",
