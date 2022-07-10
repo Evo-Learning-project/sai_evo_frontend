@@ -167,10 +167,7 @@ import {
   EVENT_PARTICIPATION_SLOT_DEBOUNCED_FIELDS,
   EVENT_PARTICIPATION_SLOT_DEBOUNCE_TIME_MS,
 } from "@/const";
-import {
-  downloadEventParticipationSlotAttachment,
-  partialUpdateEventParticipationSlot,
-} from "@/api/events";
+import { partialUpdateEventParticipationSlot } from "@/api/events";
 import SlotSkeleton from "@/components/ui/skeletons/SlotSkeleton.vue";
 import { subscribeToSubmissionSlotChanges } from "@/ws/modelSubscription";
 import Countdown from "@/components/ui/Countdown.vue";
@@ -276,18 +273,6 @@ export default defineComponent({
         console.log("FILE BLOB", change[1]);
         await this.onUpdateAttachment(slot, change[1]);
       }
-    },
-    async onAttachmentDownload(slot: EventParticipationSlot) {
-      // TODO move to attachment exercise
-      await this.withLoading(
-        async () =>
-          await downloadEventParticipationSlotAttachment(
-            this.courseId,
-            this.eventId,
-            this.currentEventParticipation.id,
-            slot.id
-          )
-      );
     },
     async onBlur(slot: EventParticipationSlot) {
       try {
