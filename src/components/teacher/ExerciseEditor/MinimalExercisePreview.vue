@@ -41,10 +41,10 @@
             :placement="'bottom'"
             :textValue="$t('exercise_states.' + exercise.state)"
           >
-            <div class="my-auto cursor-default chip chip-sm">
+            <div class="my-auto cursor-default chip">
               <div class="flex items-center">
                 <MultiIcon
-                  class="w-6 mr-0.5 -ml-1"
+                  class="w-6 -ml-0.5 -mr-1.25px"
                   :icons="exerciseStateIcons"
                 ></MultiIcon>
               </div></div
@@ -54,10 +54,10 @@
             :placement="'bottom'"
             :textValue="$t('exercise_types.' + exercise.exercise_type)"
           >
-            <div class="my-auto cursor-default chip chip-sm">
+            <div class="my-auto cursor-default chip">
               <div class="flex items-center">
                 <MultiIcon
-                  class="w-6 -ml-1"
+                  class="w-6 -ml-0.5 -mr-1.25px"
                   :class="{
                     '-ml-1.5 mr-1 mt-0.5':
                       exercise.exercise_type === ExerciseType.JS,

@@ -37,6 +37,7 @@ export default defineComponent({
           : [];
       },
       set(val: any) {
+        console.log("NEW ATTACHMENT", val);
         this.$emit("updateSubmission", ["attachment", val]);
       },
     },

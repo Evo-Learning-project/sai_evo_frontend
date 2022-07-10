@@ -318,8 +318,10 @@
                   onUpdateChoice(element.id, $event.field, $event.value)
                 "
                 :icon-type="
-                  modelValue.exercise_type ===
-                  ExerciseType.MULTIPLE_CHOICE_SINGLE_POSSIBLE
+                  cloze
+                    ? 'dropdown'
+                    : modelValue.exercise_type ===
+                      ExerciseType.MULTIPLE_CHOICE_SINGLE_POSSIBLE
                     ? 'radio'
                     : 'checkbox'
                 "

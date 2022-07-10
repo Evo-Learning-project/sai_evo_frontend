@@ -31,7 +31,7 @@
                 :class="{
                   'two-tone-success mr-0.5': event.state === EventState.PLANNED,
                 }"
-                class="w-6"
+                class="w-6 mr-1 -mt-0.5"
                 :icons="eventStateIcons"
               ></MultiIcon>
               <p v-html="$t('event_states.' + event.state)"></p>
