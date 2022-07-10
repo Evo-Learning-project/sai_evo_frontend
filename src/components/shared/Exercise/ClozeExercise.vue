@@ -42,12 +42,11 @@
 </template>
 
 <script lang="ts">
-import { CLOZE_SEPARATOR } from "@/const";
+import { CLOZE_SEPARATOR, ESCAPED_CLOZE_SEPARATOR } from "@/const";
 import {
   EventParticipationSlot,
   EventParticipationSlotSubmission,
   Exercise,
-  ExerciseChoice,
 } from "@/models";
 import { defineComponent, PropType } from "@vue/runtime-core";
 import AbstractExercise from "./AbstractExercise.vue";
@@ -107,12 +106,7 @@ export default defineComponent({
       // inputs in correspondence of CLOZE_SEPARATOR sequences.
       let i = 0;
       return this.slot?.exercise.text.replace(
-        new RegExp(
-          CLOZE_SEPARATOR.replace(/\[/g, "\\[")
-            .replace(/\]/g, "\\]")
-            .replace(/\?/g, "\\?"),
-          "g"
-        ),
+        new RegExp(ESCAPED_CLOZE_SEPARATOR, "g"),
         (_) => {
           const ret = this.slot.sub_slots[i]
             ? `
@@ -120,10 +114,14 @@ export default defineComponent({
                 ${this.readOnly ? 'disabled="true"' : ""}
                 class="inline material-select"
                 value="${this.slot.sub_slots[i]?.selected_choices[0] ?? ""}"
-                @change="$emit('selectionUpdate', {
+                ${
+                  this.slot.sub_slots[i].id
+                    ? `@change="$emit('selectionUpdate', {
                     slotId: ${this.slot.sub_slots[i].id},
                     value: $event.target.value
-                })"
+                })"`
+                    : ""
+                }
             >
                 <option value="">${getTranslatedString(
                   "misc.select_one"
