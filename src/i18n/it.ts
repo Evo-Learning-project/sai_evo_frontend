@@ -146,7 +146,7 @@ export const it = {
     assess: "Valuta",
     assigned_score: "Punteggio assegnato",
     your_assessment: "Valutazione",
-    text_answer_label: "Risposta dello studente",
+    text_answer_label: "Risposta",
     exercise_seen_at: "Visto:",
     exercise_answered_at: "Risposto:",
     viewing_participation_of: "Stai visualizzando l'esame di",
@@ -186,6 +186,7 @@ export const it = {
       "L'inserimento del numero di matricola e la selezione del corso sono necessari per poter partecipare agli esami. Fallo ora e non pensarci più!",
   },
   misc: {
+    correct_answers: "Risposte corrette",
     wait: "Attendi...",
     limit: "Limite",
     find_out_more: "Scopri di più",

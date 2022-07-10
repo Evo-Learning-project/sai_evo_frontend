@@ -10,5 +10,10 @@ module.exports = {
         languages: ["typescript"],
       }),
     ],
+    resolve: {
+      alias: {
+        vue$: "vue/dist/vue.esm-bundler.js",
+      },
+    },
   },
 };

@@ -45,11 +45,6 @@
           :value="exercise.solution"
           :defaultValue="$t('misc.no_answer')"
         ></ProcessedTextFragment>
-        <!-- TODO implement in programming exercise 
-          <CodeFragment
-            :value="modelValue.exercise.solution"
-          ></CodeFragment>
-        -->
       </div>
     </slot>
   </div>

@@ -39,7 +39,7 @@
         <div class="flex flex-col h-full">
           <img class="hidden my-4" src="../../../public/thumb.png" />
 
-          <!-- thumbail -->
+          <!-- thumbnail -->
           <div
             class=""
             v-if="
