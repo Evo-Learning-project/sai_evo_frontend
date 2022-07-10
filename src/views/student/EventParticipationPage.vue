@@ -269,7 +269,13 @@ export default defineComponent({
       slot: EventParticipationSlot,
       change: [keyof EventParticipationSlotSubmission, any]
     ) {
-      await this.onChange(slot, change[0], change[1]);
+      if (change[0] !== "attachment") {
+        await this.onChange(slot, change[0], change[1]);
+      } else {
+        // handle file uploads separately
+        console.log("FILE BLOB", change[1]);
+        await this.onUpdateAttachment(slot, change[1]);
+      }
     },
     async onAttachmentDownload(slot: EventParticipationSlot) {
       // TODO move to attachment exercise

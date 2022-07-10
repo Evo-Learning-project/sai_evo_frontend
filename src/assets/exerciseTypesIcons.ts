@@ -13,7 +13,7 @@ export const icons = {
   [ExerciseType.JS]: ["javascript-lg"],
   [ExerciseType.C]: ["code-sm"], // raw-c.svg
   [ExerciseType.COMPLETION]: [
-    "expand_more",
+    "expand_circle_down",
     // "horizontal_rule",
     // "horizontal_rule",
   ],

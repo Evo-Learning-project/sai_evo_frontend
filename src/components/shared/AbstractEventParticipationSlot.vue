@@ -38,7 +38,7 @@
           :slot="modelValue"
           :showScores="showSolutionAndScores"
           :readOnly="!allowEditSubmission"
-        ></ClozeExercise>
+        />
 
         <!-- assessment card-->
         <div class="w-1/2" v-if="showAssessmentCard">
