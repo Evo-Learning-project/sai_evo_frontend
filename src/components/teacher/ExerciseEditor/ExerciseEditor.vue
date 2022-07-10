@@ -88,7 +88,7 @@
             </span></Btn
           >
         </div>
-        <div v-else class="flex">
+        <div v-else-if="!cloze" class="flex">
           <Btn
             :outline="true"
             :variant="'icon'"
@@ -436,7 +436,7 @@
             </div>
           </template>
         </Dialog>
-        <div v-if="!subExercise" class="flex w-full">
+        <div v-if="!subExercise" class="flex w-full mt-4">
           <Btn
             style="margin-top: 1px"
             class="ml-auto"
