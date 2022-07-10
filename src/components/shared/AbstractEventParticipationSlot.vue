@@ -267,7 +267,6 @@ export default defineComponent({
       });
     },
     onUpdateAssessment(change: [keyof EventParticipationSlotAssessment, any]) {
-      console.log("update assessment", change);
       this.$emit("updateAssessment", {
         slot: this.modelValue,
         payload: change,
@@ -280,7 +279,10 @@ export default defineComponent({
       });
     },
     onSaveAssessment(changes: { score: number | null; comment: string }) {
-      this.$emit("saveAssessment", { changes, slot: this.modelValue });
+      this.$emit("saveAssessment", {
+        slot: this.modelValue,
+        changes,
+      });
     },
   },
   data() {
@@ -289,6 +291,9 @@ export default defineComponent({
     };
   },
   computed: {
+    exercise(): IExercise {
+      return this.modelValue.exercise;
+    },
     assessment(): EventParticipationSlotAssessment {
       const { comment, score, score_edited, assessment_state } =
         this.modelValue;
@@ -308,23 +313,6 @@ export default defineComponent({
         execution_results,
         attachment,
       };
-    },
-
-    // presentation-related
-    assessingOrNearOpenAnswerExercise(): boolean {
-      return (
-        // assessment card is shown
-        this.allowEditAssessment ||
-        // submission is closed
-        (!this.allowEditSubmission && this.isOpenAnswerExercise)
-      );
-    },
-    isAnswerEmpty(): boolean {
-      return this.modelValue.answer_text.trim().length === 0;
-    },
-
-    exercise(): IExercise {
-      return this.modelValue.exercise;
     },
     isProgrammingExercise() {
       return isProgrammingExercise(this.exercise);

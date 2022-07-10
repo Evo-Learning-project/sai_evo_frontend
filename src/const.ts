@@ -185,6 +185,9 @@ export const courseSelectionOptions: SelectableOption[] = [
 ];
 
 export const CLOZE_SEPARATOR = "[[?]]";
+export const ESCAPED_CLOZE_SEPARATOR = CLOZE_SEPARATOR.replace(/\[/g, "\\[")
+  .replace(/\]/g, "\\]")
+  .replace(/\?/g, "\\?");
 
 import { icons as assessmentStateIcons } from "@/assets/assessmentStateIcons";
 import { icons as participationStateIcons } from "@/assets/participationStateIcons";

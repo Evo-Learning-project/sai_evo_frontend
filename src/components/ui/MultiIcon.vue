@@ -14,15 +14,16 @@
     />
     <span
       v-else
-      :class="[
+      :style="
         icons?.length > 1
-          ? 'text-2xs'
-          : icons[index].slice(-3) === '-sm'
-          ? 'text-base mb-1.5 ml-1'
+          ? 'font-size: 14px !important'
           : icons[index].slice(-3) === '-lg'
-          ? ''
-          : '',
-        'mx-auto',
+          ? 'font-size: 28px !important'
+          : 'font-size: 20px !important'
+      "
+      :class="[
+        icons[index].slice(0, -3) === 'javascript' ? '-ml-1 -mt-0.5' : '',
+        'mt-0.5 mx-auto',
         useTwoTone ? 'material-icons-two-tone' : 'material-icons-outlined',
       ]"
       v-for="(icon, index) in parsedIcons"
