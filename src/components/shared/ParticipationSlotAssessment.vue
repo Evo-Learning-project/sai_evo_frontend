@@ -208,6 +208,7 @@ export default defineComponent({
     onUndoScoreEdit() {
       if (confirm(_("event_assessment.undo_score_edit"))) {
         this.scoreProxy = null;
+        this.onSave();
         this.onHideAssessmentControls();
       }
     },
