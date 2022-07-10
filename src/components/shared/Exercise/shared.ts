@@ -8,9 +8,7 @@ import { PropType } from "@vue/runtime-core";
 export const exerciseProps = {
   exercise: {
     type: Object as PropType<Exercise>,
-    required: true,
-    // TODO this is required to prevent Exercise|undefined in component, investigate and then remove
-    default: () => {},
+    required: true as const,
   },
   submission: {
     type: Object as PropType<EventParticipationSlotSubmission>,

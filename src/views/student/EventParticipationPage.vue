@@ -67,8 +67,8 @@
           onChange($event.slot, 'selected_choices', $event.payload)
         "
         @updateSubmission="onUpdateSubmission($event.slot, $event.payload)"
-        @runCode="onRunCode($event.slot)"
-        @blur="onBlur($event.slot)"
+        @runCode="onRunCode($event)"
+        @blur="onBlur($event)"
         :allowEditSubmission="true"
         :saving="saving"
         :running="running"

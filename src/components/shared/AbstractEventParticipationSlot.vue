@@ -25,8 +25,20 @@
           :showSolution="showSolutionAndScores"
           :showPublicTags="showTags"
           @updateSubmission="onUpdateSubmission($event)"
+          @runCode="$emit('runCode', modelValue)"
           class="w-full"
+          v-if="exercise.exercise_type !== ExerciseType.COMPLETION"
         />
+        <!-- cloze exercise requires special treatment; might need
+        to improve on this eventually -->
+        <ClozeExercise
+          v-else
+          class="w-full"
+          @updateSubmission="$emit('updateSubmission', $event)"
+          :slot="modelValue"
+          :showScores="showSolutionAndScores"
+          :readOnly="!allowEditSubmission"
+        ></ClozeExercise>
 
         <!-- assessment card-->
         <div class="w-1/2" v-if="showAssessmentCard">
@@ -80,7 +92,7 @@
 
       <!-- sub-slots -->
       <div
-        class="mt-8"
+        class="mt-8 sub-slot-container"
         v-if="exercise.exercise_type === ExerciseType.AGGREGATED"
       >
         <!-- aggregated exercise -->
@@ -131,12 +143,14 @@ import { texMixin } from "@/mixins";
 import Exercise from "./Exercise/Exercise.vue";
 import ParticipationSlotAssessment from "./ParticipationSlotAssessment.vue";
 import { isOpenAnswerExercise, isProgrammingExercise } from "./Exercise/utils";
+import ClozeExercise from "./Exercise/ClozeExercise.vue";
 
 export default defineComponent({
   components: {
     Timestamp,
     Exercise,
     ParticipationSlotAssessment,
+    ClozeExercise,
   },
   emits: {
     blur(slot: EventParticipationSlot) {
@@ -164,6 +178,9 @@ export default defineComponent({
       slot: EventParticipationSlot;
       payload: boolean;
     }) {
+      return true;
+    },
+    runCode(slot: EventParticipationSlot) {
       return true;
     },
   },

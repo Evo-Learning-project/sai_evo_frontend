@@ -3,6 +3,7 @@
     :is="exerciseComponentName"
     v-bind="$props"
     @updateSubmission="$emit('updateSubmission', $event)"
+    @runCode="$emit('runCode')"
   ></component>
 </template>
 
@@ -53,6 +54,7 @@ export default defineComponent({
       }
       return true;
     },
+    runCode: null,
   },
   props: { ...exerciseProps },
   methods: {},

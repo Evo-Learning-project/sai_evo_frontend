@@ -65,7 +65,7 @@ export default defineComponent({
   methods: {
     onSelectionUpdate(slot: EventParticipationSlot, selection: string) {
       console.log("slot", slot.id, "selection", selection);
-      this.$emit("updateSelectedChoices", {
+      this.$emit("updateSubmission", {
         slot: slot,
         payload: selection.length === 0 ? [] : [selection],
       });

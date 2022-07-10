@@ -1,7 +1,7 @@
 <template>
   <AbstractExercise v-bind="$props">
     <template #exerciseText>
-      <div class="mx-auto mb-4 md:w-2/5">
+      <div class="mx-auto mb-4 md:w-2/5 hide-in-thumbnail">
         <Tabs v-model="currentTab" :options="filteredTabsOptions"></Tabs>
       </div>
       <!-- exercise text pane -->
@@ -70,7 +70,7 @@
           :showRunButton="true"
           :runCoolDown="runCoolDown"
           :running="executionState === 'running' || running || runCoolDown > 0"
-          @run="onRun"
+          @run="onRun()"
         >
           <template v-slot:runButton
             ><span class="ml-1 mr-1 text-base material-icons"> play_arrow </span
@@ -123,6 +123,35 @@
         </CodeEditor>
       </div>
     </template>
+
+    <template #readOnlyAnswer>
+      <div class="w-full mt-4">
+        <p class="ml-2 text-sm text-muted">
+          {{ $t("event_assessment.text_answer_label") }}
+        </p>
+        <CodeFragment :value="submission.answer_text"></CodeFragment>
+
+        <div class="mt-4 card card-filled" v-if="submission.execution_results">
+          <h4 class="ml-2 text-sm text-muted">
+            {{ $t("programming_exercise.execution_results") }}
+          </h4>
+          <CodeExecutionResults
+            class="-mx-2"
+            :testCases="exercise.testcases"
+            :executionResults="submission.execution_results"
+          />
+        </div>
+      </div>
+    </template>
+
+    <template #solution>
+      <div class="w-full mt-4">
+        <p class="ml-2 text-sm text-muted">
+          {{ $t("misc.solution") }}
+        </p>
+        <CodeFragment :value="exercise.solution" />
+      </div>
+    </template>
   </AbstractExercise>
 
   <!-- <div class="relative">
@@ -139,7 +168,7 @@
 </template>
 
 <script lang="ts">
-const RUN_COOL_DOWN = 0;
+const RUN_COOL_DOWN = 3;
 
 import {
   programmingExerciseTabsOptions,
@@ -163,6 +192,7 @@ import Spinner from "@/components/ui/Spinner.vue";
 import ExerciseTestCase from "../ExerciseTestCase.vue";
 import { exerciseProps } from "./shared";
 import AbstractExercise from "./AbstractExercise.vue";
+import CodeFragment from "@/components/ui/CodeFragment.vue";
 export default defineComponent({
   name: "ProgrammingExercise",
   mixins: [loadingMixin, texMixin],
@@ -220,13 +250,13 @@ export default defineComponent({
   },
   components: {
     Tabs,
-    // DraggablePopup,
     Btn,
     CodeEditor,
     CodeExecutionResults,
     Spinner,
     ExerciseTestCase,
     AbstractExercise,
+    CodeFragment,
   },
 });
 </script>

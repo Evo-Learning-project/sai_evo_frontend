@@ -1,13 +1,10 @@
 <template>
   <div>
-    <div
-      class="px-4 pt-1"
-      v-if="slot.execution_results?.state === 'internal_error'"
-    >
+    <div class="px-4 pt-1" v-if="executionResults?.state === 'internal_error'">
       {{ $t("programming_exercise.internal_error") }}
     </div>
-    <div v-if="slot.execution_results?.tests">
-      <div v-if="slot.execution_results.tests.length === 0">
+    <div v-if="executionResults?.tests">
+      <div v-if="executionResults.tests.length === 0">
         <p class="px-4 text-muted">
           {{ $t("programming_exercise.results_ok_but_no_testcases") }}
         </p>
@@ -58,28 +55,22 @@
     </div>
     <div
       class="px-4 pt-1"
-      v-else-if="
-        !!slot.execution_results && slot.execution_results.execution_error
-      "
+      v-else-if="!!executionResults && executionResults.execution_error"
     >
       <p class="mb-1 text-muted">
         {{ $t("programming_exercise.code_errored") }}:
       </p>
-      <CodeFragment
-        :value="slot.execution_results?.execution_error"
-      ></CodeFragment>
+      <CodeFragment :value="executionResults?.execution_error"></CodeFragment>
     </div>
     <div
       class="px-4 pt-1"
-      v-else-if="
-        !!slot.execution_results && slot.execution_results.compilation_errors
-      "
+      v-else-if="!!executionResults && executionResults.compilation_errors"
     >
       <p class="mb-1 text-muted">
         {{ $t("programming_exercise.compilation_errored") }}:
       </p>
       <CodeFragment
-        :value="String(slot.execution_results?.compilation_errors)"
+        :value="String(executionResults?.compilation_errors)"
       ></CodeFragment>
     </div>
   </div>
