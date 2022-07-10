@@ -395,7 +395,6 @@ import Dialog from "@/components/ui/Dialog.vue";
 import AbstractEventParticipationSlot from "@/components/shared/AbstractEventParticipationSlot.vue";
 import { DialogData } from "@/interfaces";
 import Btn from "@/components/ui/Btn.vue";
-import { downloadEventParticipationSlotAttachment } from "@/api/events";
 import CsvParticipationDownloader from "@/components/teacher/CsvParticipationDownloader.vue";
 import SkeletonCard from "@/components/ui/SkeletonCard.vue";
 import {
@@ -528,18 +527,6 @@ export default defineComponent({
       if (this.editingSlotDirty) {
         this.editingSlotDirty[event.payload[0]] = event.payload[1];
       }
-    },
-    async onAttachmentDownload(slot: EventParticipationSlot) {
-      // TODO refactor as another component is using this method as well
-      await this.withLoading(
-        async () =>
-          await downloadEventParticipationSlotAttachment(
-            this.courseId,
-            this.eventId,
-            this.editingParticipationId,
-            slot.id
-          )
-      );
     },
     isRowSelectable(row: RowNode) {
       /**

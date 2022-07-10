@@ -168,7 +168,17 @@ export interface EventParticipationSlotSubmission {
   answer_text: string; // TODO make optional
   execution_results?: CodeExecutionResults;
   attachment?:
-    | { name: string; size: number } // download representation
+    | {
+        name: string;
+        size: number;
+        // TODO find a better way to retrieve the attachment
+        // information needed to be able to make API call from
+        // AttachmentExercise and download the attached file
+        extras: {
+          slot_id: string;
+          participation_id: string;
+        };
+      } // download representation
     | Blob; // upload representation
 }
 

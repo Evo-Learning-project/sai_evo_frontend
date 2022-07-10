@@ -2,6 +2,7 @@
   <AbstractExercise v-bind="$props">
     <template #submissionControls>
       <FileUpload
+        :disabled="readOnly"
         v-model="attachmentProxy"
         @download="onDownloadAttachment"
       ></FileUpload>
@@ -13,20 +14,31 @@
 import { defineComponent, PropType } from "@vue/runtime-core";
 import AbstractExercise from "./AbstractExercise.vue";
 import FileUpload from "@/components/ui/FileUpload.vue";
-import {
-  Exercise,
-  EventParticipationSlotSubmission,
-  getEmptySubmission,
-} from "@/models";
 import { exerciseProps } from "./shared";
+import { downloadEventParticipationSlotAttachment } from "@/api/events";
+import { courseIdMixin, eventIdMixin, loadingMixin } from "@/mixins";
 export default defineComponent({
   name: "AttachmentExercise",
   props: {
     ...exerciseProps,
   },
+  mixins: [loadingMixin, courseIdMixin, eventIdMixin],
   methods: {
-    onDownloadAttachment() {
-      // TODO implement
+    async onDownloadAttachment() {
+      const attachment = this.submission.attachment as {
+        name: string;
+        size: number;
+        extras: { slot_id: string; participation_id: string };
+      };
+      await this.withLoading(
+        async () =>
+          await downloadEventParticipationSlotAttachment(
+            this.courseId,
+            this.eventId,
+            attachment.extras.participation_id,
+            attachment.extras.slot_id
+          )
+      );
     },
   },
   computed: {
