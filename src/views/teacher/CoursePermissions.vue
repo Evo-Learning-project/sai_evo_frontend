@@ -25,8 +25,9 @@
           >
             <template v-slot="{ icons }">
               <span
+                style="font-size: 1.3rem"
                 v-if="icons?.length > 0"
-                class="mx-1 mt-0.5 text-base material-icons-outlined"
+                class="ml-1 mr-2 material-icons-outlined"
                 >{{ icons[0] }}</span
               ></template
             >
@@ -44,7 +45,12 @@
 import DataTable from "@/components/ui/DataTable.vue";
 import { courseIdMixin, loadingMixin, savingMixin } from "@/mixins";
 import { defineComponent } from "@vue/runtime-core";
-import { CellClickedEvent, ColDef, RowClassParams, RowNode } from "ag-grid-community";
+import {
+  CellClickedEvent,
+  ColDef,
+  RowClassParams,
+  RowNode,
+} from "ag-grid-community";
 
 import { createNamespacedHelpers, mapState } from "vuex";
 const { mapActions } = createNamespacedHelpers("teacher");

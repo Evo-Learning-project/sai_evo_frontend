@@ -9,9 +9,9 @@ export const icons = {
     "check_box",
     // "check_box_outline_blank",
   ],
-  [ExerciseType.OPEN_ANSWER]: ["text_snippet-sm"],
-  [ExerciseType.JS]: ["javascript-lg"],
-  [ExerciseType.C]: ["code-sm"], // raw-c.svg
+  [ExerciseType.OPEN_ANSWER]: ["notes"],
+  [ExerciseType.JS]: ["javascript"],
+  [ExerciseType.C]: ["code"], // raw-c.svg
   [ExerciseType.COMPLETION]: [
     "expand_circle_down",
     // "horizontal_rule",
