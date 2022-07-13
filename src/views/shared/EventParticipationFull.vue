@@ -61,7 +61,7 @@
             class="flex flex-col items-center mb-2 space-y-2  md:flex-row md:space-x-8 md:space-y-0"
             v-if="showAssessmentCard && !firstLoading"
           >
-            <div class="card card-filled shadow-elevation md:w-1/2">
+            <div class="card card-filled shadow-elevation md:w-5/12">
               <div class="flex items-center">
                 <h4 class="">
                   {{ $t("event_assessment.overall_score") }}:
@@ -105,9 +105,6 @@
                 }"
                 class="flex flex-col max-w-md space-y-4 overflow-y-hidden duration-200 ease-in-out  lg:max-w-lg transition-max-height"
               >
-                <!-- <NumberInput v-model="dirtyScore">{{
-                $t("event_assessment.overall_score")
-              }}</NumberInput> -->
                 <p class="my-4 text-muted">
                   {{ $t("event_assessment.overall_score_instructions") }}
                 </p>
