@@ -38,9 +38,11 @@
             :modelValue="proxyModelValue.includes(option.value)"
             @update:modelValue="onToggleUpdate($event, option)"
           ></Toggle>
-          <div class="flex flex-col">
-            <slot v-bind:icons="option.icons"></slot>
-            <p :class="labelClass" v-html="option.content"></p>
+          <div :class="labelClass" class="flex flex-col">
+            <div class="flex items-center">
+              <slot v-bind:icons="option.icons"></slot>
+              <p v-html="option.content"></p>
+            </div>
             <slot name="item" v-bind:description="option.description"></slot>
           </div>
         </div>

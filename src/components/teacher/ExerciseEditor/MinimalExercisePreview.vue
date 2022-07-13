@@ -29,7 +29,7 @@
       <div class="relative">
         <div class="flex items-center mb-3">
           <h4
-            class="mr-2"
+            class="mr-4"
             :class="{
               'text-muted font-semibold': exercise.label?.length === 0,
             }"
