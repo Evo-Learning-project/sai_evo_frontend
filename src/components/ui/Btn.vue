@@ -16,7 +16,7 @@
           forceActive && variant === 'success-borderless',
         'px-6 py-2 font-medium':
           !outline && size === 'base' && variant !== 'transparent',
-        'px-6 py-4.5px font-medium':
+        'px-6 py-6.3px font-medium':
           outline && size === 'base' && variant !== 'icon',
         'px-3.5 .5': size === 'sm' && variant !== 'icon',
         'px-1': size === 'xs' && variant !== 'icon',
@@ -88,7 +88,7 @@
         forceActive && variant === 'success-borderless',
       'px-6 py-2 font-medium':
         !outline && size === 'base' && variant !== 'transparent',
-      'px-6 py-4.5px font-medium':
+      'px-6 py-6.3px font-medium':
         outline && size === 'base' && variant !== 'icon',
       'px-3.5 py-1.5': size === 'sm' && variant !== 'icon',
       'px-1': size === 'xs' && variant !== 'icon',

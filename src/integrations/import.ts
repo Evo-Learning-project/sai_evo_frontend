@@ -41,7 +41,7 @@ const importExercisesFromMoodleXml = async (
     } else {
       const exerciseType = getExerciseTypeFromMoodleQuestion(q);
       if (typeof exerciseType === "undefined") {
-        ret.errors?.push("UNSUPPORTED TYPE " + questionType);
+        ret.errors?.push("Unsupported exercise type: " + questionType);
         return;
       }
       ret.data.push({

@@ -29,7 +29,7 @@
       <div class="relative">
         <div class="flex items-center mb-3">
           <h4
-            class="mr-2"
+            class="mr-4"
             :class="{
               'text-muted font-semibold': exercise.label?.length === 0,
             }"
@@ -43,7 +43,10 @@
           >
             <div class="my-auto cursor-default chip chip-sm">
               <div class="flex items-center">
-                <MultiIcon class="w-6" :icons="exerciseStateIcons"></MultiIcon>
+                <MultiIcon
+                  class="-ml-1"
+                  :icons="exerciseStateIcons"
+                ></MultiIcon>
               </div></div
           ></Tooltip>
           <Tooltip
@@ -54,15 +57,9 @@
             <div class="my-auto cursor-default chip chip-sm">
               <div class="flex items-center">
                 <MultiIcon
-                  class="w-6"
+                  class="-ml-1"
                   :class="{
-                    'pl-0.5': [
-                      ExerciseType.MULTIPLE_CHOICE_MULTIPLE_POSSIBLE,
-                      ExerciseType.MULTIPLE_CHOICE_SINGLE_POSSIBLE,
-                      ExerciseType.AGGREGATED,
-                      ExerciseType.COMPLETION,
-                    ].includes(exercise.exercise_type),
-                    '-ml-1 mr-1': exercise.exercise_type === ExerciseType.JS,
+                    '-ml-1.5  mt-1': exercise.exercise_type === ExerciseType.JS,
                   }"
                   :icons="exerciseTypeIcons"
                 ></MultiIcon>

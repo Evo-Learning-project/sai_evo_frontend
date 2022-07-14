@@ -1,13 +1,10 @@
 <template>
   <div>
-    <div
-      class="px-4 pt-1"
-      v-if="slot.execution_results?.state === 'internal_error'"
-    >
+    <div class="px-4 pt-1" v-if="executionResults?.state === 'internal_error'">
       {{ $t("programming_exercise.internal_error") }}
     </div>
-    <div v-if="slot.execution_results?.tests">
-      <div v-if="slot.execution_results.tests.length === 0">
+    <div v-if="executionResults?.tests">
+      <div v-if="executionResults.tests.length === 0">
         <p class="px-4 text-muted">
           {{ $t("programming_exercise.results_ok_but_no_testcases") }}
         </p>
@@ -58,43 +55,49 @@
     </div>
     <div
       class="px-4 pt-1"
-      v-else-if="
-        !!slot.execution_results && slot.execution_results.execution_error
-      "
+      v-else-if="!!executionResults && executionResults.execution_error"
     >
       <p class="mb-1 text-muted">
         {{ $t("programming_exercise.code_errored") }}:
       </p>
-      <CodeFragment
-        :value="slot.execution_results?.execution_error"
-      ></CodeFragment>
+      <CodeFragment :value="executionResults?.execution_error"></CodeFragment>
     </div>
     <div
       class="px-4 pt-1"
-      v-else-if="
-        !!slot.execution_results && slot.execution_results.compilation_errors
-      "
+      v-else-if="!!executionResults && executionResults.compilation_errors"
     >
       <p class="mb-1 text-muted">
         {{ $t("programming_exercise.compilation_errored") }}:
       </p>
       <CodeFragment
-        :value="String(slot.execution_results?.compilation_errors)"
+        :value="String(executionResults?.compilation_errors)"
       ></CodeFragment>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { EventParticipationSlot } from "@/models";
+import {
+  CodeExecutionResults,
+  EventParticipationSlot,
+  ExerciseTestCase as IExerciseTestCase,
+} from "@/models";
 import { defineComponent, PropType } from "@vue/runtime-core";
 import ExerciseTestCase from "./ExerciseTestCase.vue";
 import CodeFragment from "../ui/CodeFragment.vue";
 export default defineComponent({
   name: "CodeExecutionResults",
   props: {
-    slot: {
-      type: Object as PropType<EventParticipationSlot>,
+    // slot: {
+    //   type: Object as PropType<EventParticipationSlot>,
+    //   required: true,
+    // },
+    executionResults: {
+      type: Object as PropType<CodeExecutionResults>,
+      required: true,
+    },
+    testCases: {
+      type: Array as PropType<IExerciseTestCase[]>,
       required: true,
     },
     showTestIds: {
@@ -110,10 +113,10 @@ export default defineComponent({
   computed: {
     exerciseTestCase() {
       return (id: string) =>
-        this.slot.exercise.testcases?.find((t) => t.id == id);
+        this.testCases.find((t) => String(t.id) === String(id));
     },
     filteredExecutionResultsTests() {
-      return this.slot.execution_results?.tests?.filter(
+      return this.executionResults?.tests?.filter(
         (t) =>
           this.showTestIds.length === 0 ||
           this.showTestIds.map((i) => String(i)).includes(String(t.id))

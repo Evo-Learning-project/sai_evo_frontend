@@ -26,7 +26,10 @@
       <slot></slot>
     </label>
     <div v-if="rightIcon.length > 0" class="absolute bottom-0.5 right-1.5 -z-1">
-      <span class="text-base text-muted material-icons-outlined">
+      <span
+        class="text-base text-muted"
+        :class="[iconFilled ? 'material-icons' : 'material-icons-outlined']"
+      >
         {{ rightIcon }}
       </span>
     </div>
@@ -41,7 +44,10 @@
       style="bottom: 3.2px"
       class="absolute left-1.5 -z-1"
     >
-      <span class="text-base text-muted material-icons-outlined">
+      <span
+        class="text-base text-muted"
+        :class="[iconFilled ? 'material-icons' : 'material-icons-outlined']"
+      >
         {{ leftIcon }}
       </span>
     </div>
@@ -75,6 +81,10 @@ export default defineComponent({
     leftIcon: {
       type: String,
       default: "",
+    },
+    iconFilled: {
+      type: Boolean,
+      default: false,
     },
     min: {
       type: Number,

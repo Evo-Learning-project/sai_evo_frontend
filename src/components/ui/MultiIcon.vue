@@ -1,12 +1,5 @@
 <template>
-  <div
-    v-if="icons?.length > 0"
-    :class="[
-      icons?.length == 1 ? '-mb-1.5' : 'my-auto',
-      icons?.length == 2 ? 'flex flex-col -space-y-1.25px' : '',
-      icons?.length > 2 ? 'flex flex-col -space-y-2' : '',
-    ]"
-  >
+  <div v-if="icons?.length > 0" :class="['-mb-5px']">
     <img
       class="transform scale-125 ml-1.5 my-0"
       v-if="isRawIcon"
@@ -14,15 +7,10 @@
     />
     <span
       v-else
+      :style="'font-size:' + fontSize"
       :class="[
-        icons?.length > 1
-          ? 'text-2xs'
-          : icons[index].slice(-3) === '-sm'
-          ? 'text-base mb-1.5 ml-1'
-          : icons[index].slice(-3) === '-lg'
-          ? ''
-          : '',
-        'mx-auto',
+        classExceptions[icon] ?? '',
+        'mt-0.5 mx-auto',
         useTwoTone ? 'material-icons-two-tone' : 'material-icons-outlined',
       ]"
       v-for="(icon, index) in parsedIcons"
@@ -57,6 +45,30 @@ export default defineComponent({
     };
   },
   computed: {
+    icon() {
+      return this.icons?.[0] ?? "";
+    },
+    sizeExceptions(): Record<string, string | undefined> {
+      return {
+        javascript: "28px !important",
+      };
+    },
+    classExceptions(): Record<string, string | undefined> {
+      return {
+        javascript: "-ml-1 -mt-1.25px",
+        update: "pt-0.5",
+        block: "pt-0.5",
+        event_available: "two-tone-success pt-0.5 mr-0.5",
+      };
+    },
+    fontSize() {
+      const sizeException = this.sizeExceptions[this.icon];
+      if (sizeException) {
+        return sizeException;
+      }
+
+      return "20px !important";
+    },
     isRawIcon(): boolean {
       return this.icons?.[0].startsWith("raw-") ?? false;
     },

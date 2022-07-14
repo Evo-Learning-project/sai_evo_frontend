@@ -3,6 +3,7 @@ import {
   Course,
   Event,
   EventParticipationSlot,
+  EventParticipationSlotSubmission,
   EventState,
   EventTemplate,
   EventTemplateRule,
@@ -120,4 +121,10 @@ export const getFakeEventParticipationSlot = (
     ...(exercise.sub_exercises?.map((e) => getFakeEventParticipationSlot(e)) ??
       []),
   ],
+});
+
+export const getEmptySubmission = (): EventParticipationSlotSubmission => ({
+  selected_choices: [],
+  answer_text: "",
+  attachment: undefined,
 });

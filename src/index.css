@@ -233,7 +233,7 @@
     }
     
     .user-content {
-      @apply py-5 pl-4 pr-2 rounded-sm border-l-6 bg-gray-50 border-secondary;
+      @apply py-5 pl-4 pr-2 rounded-sm border-l-6 bg-gray-50 border-primary;
     }
 
     .bg-gray-50 .user-content {
@@ -1183,18 +1183,27 @@
       @apply -mr-0.5 !important;
     }
 
+    .thumbnail-slot select {
+      @apply py-0 px-0 !important;
+      font-size: 7px !important;
+    }
+
     .thumbnail-slot .user-content {
       @apply py-1.5 pl-2 pr-0.5 border-l-2 bg-gray-50 border-secondary mb-2.5 !important;
       border-radius: 0.4px !important;
     }
-    .thumbnail-slot h5 {
+    .thumbnail-slot h5,
+    .thumbnail-slot h4 {
       font-size: 8px !important;
-      @apply -mb-4 !important;
     }
 
-    .thumbnail-slot .checkbox-item, .thumbnail-slot .radio-item {
-      @apply -my-1 !important;
+    .thumbnail-slot .sub-slot-container {
+      @apply my-0 !important;
     }
+
+    /* .thumbnail-slot .checkbox-item, .thumbnail-slot .radio-item {
+      @apply -my-1 !important;
+    } */
 
     .thumbnail-slot .checkbox-item, 
     .thumbnail-slot .radio-item,
@@ -1216,7 +1225,7 @@
       height: 100%;
       outline: none;
       overflow-y: auto;
-      padding: 7px 6px !important;
+      padding: 4px 6px !important;
       -o-tab-size: 4;
       tab-size: 4;
       -moz-tab-size: 4;
@@ -1232,12 +1241,12 @@
       box-sizing: border-box;
       font-family: "Source Sans Pro", "Helvetica Neue", "Helvetica", "Arial",
         sans-serif !important;
-      padding: 2px;
+      padding: 0px;
       font-size: 5px !important;
     }
 
     .thumbnail-slot .ql-editor-container button {
-      transform: scale(0.5);
+      transform: scale(0.3);
     }
 
     .thumbnail-slot .ql-toolbar.ql-snow .ql-formats {

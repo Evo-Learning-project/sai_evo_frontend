@@ -1,38 +1,31 @@
 <template>
+  <!-- <Exercise :exercise="exercise" :readOnly="true"></Exercise> -->
   <AbstractEventParticipationSlot
-    :showExerciseLabel="true"
     :modelValue="exerciseWrapperSlot"
-    :showTabs="showProgrammingExerciseTabs"
-    :allowPopup="allowProgrammingExercisePopup"
-    :showSolutionAndScores="true"
-  ></AbstractEventParticipationSlot>
+    :allowEditAssessment="false"
+    :allowEditSubmission="false"
+  />
 </template>
 
 <script lang="ts">
 import {
   EventParticipationSlot,
-  Exercise,
+  Exercise as IExercise,
   getFakeEventParticipationSlot,
 } from "@/models";
 import { defineComponent, PropType } from "@vue/runtime-core";
-import AbstractEventParticipationSlot from "@/components/shared/AbstractEventParticipationSlot.vue"; // A read-only fake EventParticipationSlot as a wrapper to show an exercise
+import Exercise from "./Exercise/Exercise.vue";
+import AbstractEventParticipationSlot from "./AbstractEventParticipationSlot.vue"; // A read-only fake EventParticipationSlot as a wrapper to show an exercise
 export default defineComponent({
   name: "FullExercise",
   props: {
     exercise: {
-      type: Object as PropType<Exercise>,
+      type: Object as PropType<IExercise>,
       required: true,
-    },
-    allowProgrammingExercisePopup: {
-      type: Boolean,
-      default: true,
-    },
-    showProgrammingExerciseTabs: {
-      type: Boolean,
-      default: true,
     },
   },
   components: {
+    // Exercise,
     AbstractEventParticipationSlot,
   },
   computed: {

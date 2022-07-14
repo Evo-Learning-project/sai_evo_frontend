@@ -66,11 +66,9 @@
         @updateSelectedChoices="
           onChange($event.slot, 'selected_choices', $event.payload)
         "
-        @updateAnswerText="onChange($event.slot, 'answer_text', $event.payload)"
-        @updateAttachment="onUpdateAttachment($event.slot, $event.payload)"
-        @download="onAttachmentDownload($event.slot)"
-        @runCode="onRunCode($event.slot)"
-        @blur="onBlur($event.slot)"
+        @updateSubmission="onUpdateSubmission($event.slot, $event.payload)"
+        @runCode="onRunCode($event)"
+        @blur="onBlur($event)"
         :allowEditSubmission="true"
         :saving="saving"
         :running="running"
@@ -154,6 +152,7 @@ import {
 import {
   EventParticipation,
   EventParticipationSlot,
+  EventParticipationSlotSubmission,
   EventParticipationState,
   EventType,
   ExerciseType,
@@ -168,10 +167,7 @@ import {
   EVENT_PARTICIPATION_SLOT_DEBOUNCED_FIELDS,
   EVENT_PARTICIPATION_SLOT_DEBOUNCE_TIME_MS,
 } from "@/const";
-import {
-  downloadEventParticipationSlotAttachment,
-  partialUpdateEventParticipationSlot,
-} from "@/api/events";
+import { partialUpdateEventParticipationSlot } from "@/api/events";
 import SlotSkeleton from "@/components/ui/skeletons/SlotSkeleton.vue";
 import { subscribeToSubmissionSlotChanges } from "@/ws/modelSubscription";
 import Countdown from "@/components/ui/Countdown.vue";
@@ -266,16 +262,17 @@ export default defineComponent({
       "runEventParticipationSlotCode",
     ]),
     ...mapMutations(["setCurrentEventParticipationSlot"]),
-    async onAttachmentDownload(slot: EventParticipationSlot) {
-      await this.withLoading(
-        async () =>
-          await downloadEventParticipationSlotAttachment(
-            this.courseId,
-            this.eventId,
-            this.currentEventParticipation.id,
-            slot.id
-          )
-      );
+    async onUpdateSubmission(
+      slot: EventParticipationSlot,
+      change: [keyof EventParticipationSlotSubmission, any]
+    ) {
+      if (change[0] !== "attachment") {
+        await this.onChange(slot, change[0], change[1]);
+      } else {
+        // handle file uploads separately
+        console.log("FILE BLOB", change[1]);
+        await this.onUpdateAttachment(slot, change[1]);
+      }
     },
     async onBlur(slot: EventParticipationSlot) {
       try {

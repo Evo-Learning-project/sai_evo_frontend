@@ -20,6 +20,8 @@ export interface DialogData {
   onNo?: () => void;
   error?: boolean;
   warning?: boolean;
+  footerBorder?: boolean;
+  disableOk?: boolean;
 }
 
 export interface ErrorMessage {

@@ -264,9 +264,12 @@
       :noText="dialogData.noText"
       :yesText="dialogData.yesText"
       :dismissible="!editingSlot"
+      :footerBorder="dialogData.footerBorder"
       :disableOk="
-        editingSlotDirty &&
-        (editingSlotDirty.score == null || editingSlotDirty.score.length == 0)
+        dialogData.disableOk ||
+        (editingSlotDirty &&
+          (editingSlotDirty.score == null ||
+            editingSlotDirty.score.length == 0))
       "
     >
       <template v-if="editingSlot" v-slot:title>
@@ -284,14 +287,16 @@
         <div class="text-darkText" v-if="editingSlot">
           <AbstractEventParticipationSlot
             :allowEditAssessment="true"
-            @download="onAttachmentDownload(editingSlotDirty)"
+            :showAssessmentCard="true"
+            :assessmentWriteOnly="true"
+            :modelValue="editingSlotDirty"
             @openFull="
               $router.push({
                 name: 'ExamParticipationFull',
                 params: { participationId: editingParticipationId },
               })
             "
-            v-model="editingSlotDirty"
+            @updateAssessment="onUpdateSlotAssessment($event)"
             v-if="!localLoading && editingSlotDirty"
           ></AbstractEventParticipationSlot>
           <div v-else>
@@ -366,6 +371,7 @@ import {
   Event,
   EventParticipation,
   EventParticipationSlot,
+  EventParticipationSlotAssessment,
   EventParticipationState,
   EventState,
   EventTemplateRule,
@@ -389,7 +395,6 @@ import Dialog from "@/components/ui/Dialog.vue";
 import AbstractEventParticipationSlot from "@/components/shared/AbstractEventParticipationSlot.vue";
 import { DialogData } from "@/interfaces";
 import Btn from "@/components/ui/Btn.vue";
-import { downloadEventParticipationSlotAttachment } from "@/api/events";
 import CsvParticipationDownloader from "@/components/teacher/CsvParticipationDownloader.vue";
 import SkeletonCard from "@/components/ui/SkeletonCard.vue";
 import {
@@ -475,6 +480,7 @@ export default defineComponent({
       columnApi: null as any,
       selectedParticipations: [] as string[],
       showStats: false,
+      saving: false,
 
       // dialog functions
       editingAssessmentSlotMode: false,
@@ -514,17 +520,13 @@ export default defineComponent({
       this.deselectAllRows();
       this.gridApi.refreshCells({ force: true });
     },
-    async onAttachmentDownload(slot: EventParticipationSlot) {
-      // TODO refactor as another component is using this method as well
-      await this.withLoading(
-        async () =>
-          await downloadEventParticipationSlotAttachment(
-            this.courseId,
-            this.eventId,
-            this.editingParticipationId,
-            slot.id
-          )
-      );
+    onUpdateSlotAssessment(event: {
+      slot: EventParticipationSlot;
+      payload: [keyof EventParticipationSlotAssessment, any];
+    }) {
+      if (this.editingSlotDirty) {
+        this.editingSlotDirty[event.payload[0]] = event.payload[1];
+      }
     },
     isRowSelectable(row: RowNode) {
       /**
@@ -579,7 +581,6 @@ export default defineComponent({
         this.editingSlot = event.value;
         this.editingParticipationId = event.data.id;
         this.editingAssessmentSlotMode = true;
-
         await this.withLocalLoading(
           async () =>
             await this.getEventParticipationSlot({
@@ -589,7 +590,6 @@ export default defineComponent({
               eventId: this.eventId,
             })
         );
-
         // deep copy slot to prevent affecting the original one while editing
         this.editingSlotDirty = JSON.parse(JSON.stringify(this.editingSlot));
         this.editingFullName = event.data.fullName;
@@ -652,6 +652,7 @@ export default defineComponent({
           })
       );
       this.showFeedbackAndCleanup();
+      // TODO extract
       if (this.resultsMode && !(VISITED_INSIGHTS_TOUR_KEY in localStorage)) {
         setTimeout(
           () => (this.$tours as any)["examInsightsTour"].start(),
@@ -715,7 +716,8 @@ export default defineComponent({
       });
     },
     async dispatchAssessmentUpdate() {
-      await this.withLoading(async () => {
+      this.saving = true;
+      try {
         await this.partialUpdateEventParticipationSlot({
           courseId: this.courseId,
           eventId: this.eventId,
@@ -731,9 +733,14 @@ export default defineComponent({
           eventId: this.eventId,
           participationId: this.editingParticipationId,
         });
-      }, this.setErrorNotification);
-      this.hideDialog();
-      this.gridApi.refreshCells({ force: true });
+        this.hideDialog();
+        this.$store.commit("shared/showSuccessFeedback");
+        this.gridApi.refreshCells({ force: true });
+      } catch (e) {
+        this.setErrorNotification(e);
+      } finally {
+        this.saving = false;
+      }
     },
     hideDialog() {
       this.editingSlot = null;
@@ -787,6 +794,7 @@ export default defineComponent({
         ret = {
           onYes: this.dispatchAssessmentUpdate,
           yesText: _("event_assessment.confirm_assessment"),
+          footerBorder: true,
         };
       }
 
@@ -829,6 +837,12 @@ export default defineComponent({
           onYes: this.openExams,
         };
       }
+
+      if (this.saving) {
+        ret.disableOk = true;
+        ret.yesText = _("misc.wait");
+      }
+
       return { ...defaultData, ...ret };
     },
     selectedParticipation() {

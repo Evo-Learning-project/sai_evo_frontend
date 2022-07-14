@@ -88,7 +88,7 @@
             </span></Btn
           >
         </div>
-        <div v-else class="flex">
+        <div v-else-if="!cloze" class="flex">
           <Btn
             :outline="true"
             :variant="'icon'"
@@ -218,7 +218,8 @@
                 <template v-slot:sidePane>
                   <CodeExecutionResults
                     v-if="solutionTestSlot?.execution_results"
-                    :slot="solutionTestSlot"
+                    :executionResults="solutionTestSlot.execution_results"
+                    :testCases="modelValue.testcases"
                   ></CodeExecutionResults>
                   <div class="flex flex-col" v-else>
                     <span
@@ -317,8 +318,10 @@
                   onUpdateChoice(element.id, $event.field, $event.value)
                 "
                 :icon-type="
-                  modelValue.exercise_type ===
-                  ExerciseType.MULTIPLE_CHOICE_SINGLE_POSSIBLE
+                  cloze
+                    ? 'dropdown'
+                    : modelValue.exercise_type ===
+                      ExerciseType.MULTIPLE_CHOICE_SINGLE_POSSIBLE
                     ? 'radio'
                     : 'checkbox'
                 "
@@ -433,7 +436,7 @@
             </div>
           </template>
         </Dialog>
-        <div v-if="!subExercise" class="flex w-full">
+        <div v-if="!subExercise" class="flex w-full mt-4">
           <Btn
             style="margin-top: 1px"
             class="ml-auto"

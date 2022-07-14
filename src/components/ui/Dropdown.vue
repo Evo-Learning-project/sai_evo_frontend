@@ -52,13 +52,14 @@
                 }"
               ></p>
               <p
+                style="margin-left: -26px"
                 v-if="option.description && expanded"
                 v-html="option.description"
                 :class="[
                   option.value == modelValue
                     ? 'text-primary-dark'
                     : 'text-muted text-description',
-                  'text-sm my-1 -ml-6',
+                  'text-sm my-1',
                 ]"
               ></p>
             </div>
