@@ -163,25 +163,45 @@ export interface EventParticipation {
   score_edited?: boolean;
 }
 
-export interface EventParticipationSlot {
-  id: string;
-  slot_number?: number;
-  exercise: Exercise; // TODO make optional
+export interface EventParticipationSlotSubmission {
+  selected_choices: string[];
+  answer_text: string; // TODO make optional
+  execution_results?: CodeExecutionResults;
+  attachment?:
+    | {
+        name: string;
+        size: number;
+        // TODO find a better way to retrieve the attachment
+        // information needed to be able to make API call from
+        // AttachmentExercise and download the attached file
+        extras: {
+          slot_id: string;
+          participation_id: string;
+        };
+      } // download representation
+    | Blob; // upload representation
+}
+
+export interface EventParticipationSlotAssessment {
   score?: number;
   comment?: string;
   score_edited?: boolean;
   assessment_state?: AssessmentSlotState;
+}
+
+export interface EventParticipationSlot
+  extends EventParticipationSlotSubmission,
+    EventParticipationSlotAssessment {
+  id: string;
+  slot_number?: number;
+  exercise: Exercise; // TODO make optional
+
   sub_slots: EventParticipationSlot[];
-  selected_choices: string[];
-  answer_text: string; // TODO make optional
+
   seen_at?: string;
   answered_at?: string;
   is_first?: boolean;
   is_last?: boolean;
-  execution_results?: CodeExecutionResults;
-  attachment?:
-    | { name: string; size: number } // download representation
-    | Blob; // upload representation
 }
 
 export interface CodeExecutionResults {

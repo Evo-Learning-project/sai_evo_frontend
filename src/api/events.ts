@@ -337,11 +337,22 @@ export async function downloadEventParticipationSlotAttachment(
   slotId: string
 ): Promise<any> {
   const response = await axios.get(
-    `/courses/${courseId}/events/${eventId}/participations/${participationId}/slots/${slotId}/attachment/`
+    `/courses/${courseId}/events/${eventId}/participations/${participationId}/slots/${slotId}/attachment/`,
+    { responseType: "arraybuffer" }
+  );
+  console.log(
+    "FILE",
+    response,
+    response.headers,
+    "----",
+    response.headers["content-disposition"],
+    response.headers["content-disposition"]
+      .split(/.*filename=(.*)/)[1]
+      .replace(/"/g, "")
   );
   const fileName = response.headers["content-disposition"]
     .split(/.*filename=(.*)/)[1]
-    .replace('"', "");
+    .replace(/"/g, "");
   forceFileDownload(response, fileName);
 }
 

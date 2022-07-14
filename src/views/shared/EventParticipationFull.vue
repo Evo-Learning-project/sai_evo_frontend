@@ -29,7 +29,7 @@
       </h3>
     </div>
     <div class="px-2 py-6" v-if="!firstLoading">
-      <div class="flex flex-col space-y-8">
+      <div class="flex flex-col mb-6 space-y-8">
         <!--md:flex-row md:space-y-0-->
         <div class="text-sm">
           <div class="flex space-x-1">
@@ -61,7 +61,7 @@
             class="flex flex-col items-center mb-2 space-y-2  md:flex-row md:space-x-8 md:space-y-0"
             v-if="showAssessmentCard && !firstLoading"
           >
-            <div class="card card-filled shadow-elevation md:w-1/2">
+            <div class="card card-filled shadow-elevation md:w-5/12">
               <div class="flex items-center">
                 <h4 class="">
                   {{ $t("event_assessment.overall_score") }}:
@@ -105,9 +105,6 @@
                 }"
                 class="flex flex-col max-w-md space-y-4 overflow-y-hidden duration-200 ease-in-out  lg:max-w-lg transition-max-height"
               >
-                <!-- <NumberInput v-model="dirtyScore">{{
-                $t("event_assessment.overall_score")
-              }}</NumberInput> -->
                 <p class="my-4 text-muted">
                   {{ $t("event_assessment.overall_score_instructions") }}
                 </p>
@@ -177,32 +174,31 @@
 
       <div
         :class="{
-          'mt-12': index === 0,
-          'mb-0 border-b-0': index === participation.slots.length - 1,
-          'mb-16': index !== participation.slots.length - 1,
+          'mt-0': index === 0,
+          'mb-5': index === participation.slots.length - 1,
+          'mb-10': index !== participation.slots.length - 1,
         }"
         class=""
         v-for="(slot, index) in participation.slots"
         :key="'p-' + participation.id + '-s-' + slot.id"
       >
-        <h3 class="mb-1">
-          {{ $t("event_participation_page.exercise") }}
-          {{ slot.slot_number + 1 }}
-        </h3>
         <AbstractEventParticipationSlot
           :modelValue="slot"
-          @updateAssessment="
-            onSlotUpdateAssessment($event.slot, $event.payload)
-          "
+          @saveAssessment="onSlotSaveAssessment($event.slot, $event.changes)"
           :allowEditAssessment="allowEditAssessment"
           :showSolutionAndScores="showSolutionAndScores"
           :showAssessmentCard="showAssessmentCard"
           :assessmentControlsVisibility="slotsAssessmentControlsVisibility"
-          @setAssessmentControlsVisibility="
+          @setAssessmentExpanded="
             slotsAssessmentControlsVisibility[$event.slot.id] = $event.payload
           "
           :assessmentLoading="slotsAssessmentLoading[slot.id] ?? false"
-        ></AbstractEventParticipationSlot>
+        >
+          <h3 class="mb-1">
+            {{ $t("event_participation_page.exercise") }}
+            {{ slot.slot_number + 1 }}
+          </h3>
+        </AbstractEventParticipationSlot>
       </div>
     </div>
     <div class="py-6" v-else>
@@ -223,6 +219,7 @@ import { createNamespacedHelpers, mapActions } from "vuex";
 import {
   EventParticipation,
   EventParticipationSlot,
+  EventParticipationSlotAssessment,
   EventParticipationState,
   EventState,
   EventType,
@@ -330,18 +327,18 @@ export default defineComponent({
       this.assessmentLoading = false;
       this.showEditScore = false;
     },
-    async onSlotUpdateAssessment(
+    async onSlotSaveAssessment(
       slot: EventParticipationSlot,
-      assessment: { score: number; comment: string }
+      changes: { score: number | null; comment: string }
     ) {
       this.slotsAssessmentLoading[slot.id] = true;
       try {
-        const updatedSlot = await this.partialUpdateEventParticipationSlot({
+        await this.partialUpdateEventParticipationSlot({
           courseId: this.courseId,
           eventId: this.eventId,
           participationId: this.participation.id,
           slotId: slot.id,
-          changes: assessment,
+          changes,
           mutate: false,
         });
         // re-fetch participation to register any updates (e.g. the score property)
@@ -350,7 +347,6 @@ export default defineComponent({
           eventId: this.eventId,
           participationId: this.participationId,
         });
-        //this.setCurrentEventParticipationSlot(updatedSlot);
         this.slotsAssessmentControlsVisibility[slot.id] = false;
       } catch (e) {
         this.setErrorNotification(e);

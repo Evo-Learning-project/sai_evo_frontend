@@ -14,7 +14,7 @@
           max-h-screen
           space-x-1.5
           cursor-pointer
-          items-top
+          items-start
           radio-item
         "
         :class="{ 'radio-container': !disabled }"
@@ -30,7 +30,7 @@
         <input
           @input="onInput(option.value, $event)"
           style="min-width: 15px; min-height: 15px"
-          class="mt-1 input-radio"
+          class="mt-5px input-radio"
           type="radio"
           :id="id + '-input-' + index"
           :value="option.value"
@@ -38,7 +38,7 @@
           :disabled="disabled"
         />
 
-        <div class="flex space-x-2 items-top">
+        <div class="flex items-start space-x-2">
           <MultiIcon
             v-if="option.icons"
             class="w-6"

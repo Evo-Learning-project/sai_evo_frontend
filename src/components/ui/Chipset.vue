@@ -32,7 +32,7 @@
           >
             <MultiIcon
               v-if="option.icons"
-              class="w-6 mr-1"
+              class="w-6 mr-2 -ml-1"
               :icons="option.icons"
             ></MultiIcon>
             <p v-html="option.content"></p>

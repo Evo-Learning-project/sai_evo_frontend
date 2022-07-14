@@ -105,6 +105,7 @@ export const it = {
     grade: "Voto",
   },
   event_assessment: {
+    no_score_for_exercise: "Punteggio non assegnato",
     undo_score_edit_tooltip: "Ripristina punteggio originale",
     overall_score: "Voto",
     you_overrode_score:
@@ -130,7 +131,7 @@ export const it = {
     student_will_see_this_comment:
       "Questo commento sarà visibile allo studente quando pubblicherai i risultati",
     this_exercise_requires_manual_assessment:
-      "Devi assegnare manualmente un punteggio a questa risposta.",
+      "Devi assegnare un punteggio a questa risposta.",
     some_sub_slots_pending:
       "Il punteggio mostrato è incompleto perché alcuni sotto-esercizi non hanno ancora ricevuto una valutazione.",
     some_slots_pending:
@@ -145,7 +146,7 @@ export const it = {
     assess: "Valuta",
     assigned_score: "Punteggio assegnato",
     your_assessment: "Valutazione",
-    text_answer_label: "Risposta dello studente",
+    text_answer_label: "Risposta",
     exercise_seen_at: "Visto:",
     exercise_answered_at: "Risposto:",
     viewing_participation_of: "Stai visualizzando l'esame di",
@@ -185,6 +186,8 @@ export const it = {
       "L'inserimento del numero di matricola e la selezione del corso sono necessari per poter partecipare agli esami. Fallo ora e non pensarci più!",
   },
   misc: {
+    correct_answers: "Risposte corrette",
+    wait: "Attendi...",
     limit: "Limite",
     find_out_more: "Scopri di più",
     experimental_feature_warning:
@@ -848,7 +851,7 @@ export const it = {
     exam_assessment: "Valutazione " + ROUTE_TITLE_EVENT_NAME_TOKEN,
   },
   course_list: {
-    filter_courses: "Filtra corsi",
+    filter_courses: "Cerca corsi",
     courses_i_teach: "Mostra solo i miei corsi",
     hidden_courses: "Mostra corsi nascosti agli studenti",
     no_courses: "Non ci sono ancora corsi",

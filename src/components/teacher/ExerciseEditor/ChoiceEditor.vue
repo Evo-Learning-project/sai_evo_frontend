@@ -29,7 +29,7 @@
     >
     <TextInput
       v-else
-      class="w-full md:w-9/12"
+      class="w-full md:w-7/12"
       :modelValue="modelValue.text"
       @update:modelValue="onUpdate('text', $event)"
       >{{ $t("exercise_editor.choice_text") }}</TextInput
@@ -39,10 +39,15 @@
       <div class="w-full">
         <NumberInput
           class="mb-auto"
+          :iconFilled="true"
           :modelValue="modelValue.score_selected"
           @update:modelValue="onUpdate('score_selected', $event)"
           :leftIcon="
-            iconType === 'radio' ? 'radio_button_checked' : 'check_box'
+            iconType === 'radio'
+              ? 'radio_button_checked'
+              : iconType === 'dropdown'
+              ? 'expand_circle_down'
+              : 'check_box'
           "
         >
           <div class="flex w-full items-center space-x-0.5">
@@ -59,9 +64,12 @@
         <NumberInput
           class="mb-auto"
           :modelValue="modelValue.score_unselected"
+          :iconFilled="false"
           :leftIcon="
             iconType === 'radio'
               ? 'radio_button_unchecked'
+              : iconType === 'dropdown'
+              ? 'expand_circle_down'
               : 'check_box_outline_blank'
           "
           @update:modelValue="onUpdate('score_unselected', $event)"
@@ -115,7 +123,7 @@ export default defineComponent({
       required: true,
     },
     iconType: {
-      type: String as PropType<"checkbox" | "radio">,
+      type: String as PropType<"checkbox" | "radio" | "dropdown">,
       required: true,
     },
     singleLine: {
