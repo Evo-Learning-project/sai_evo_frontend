@@ -4,6 +4,7 @@
     v-bind="$props"
     @updateSubmission="$emit('updateSubmission', $event)"
     @runCode="$emit('runCode')"
+    @blur="$emit('blur')"
   ></component>
 </template>
 
@@ -25,6 +26,7 @@ import { exerciseProps } from "./shared";
 export default defineComponent({
   name: "Exercise",
   emits: {
+    blur: null,
     updateSubmission: (
       payload: [keyof EventParticipationSlotSubmission, any]
     ) => {
