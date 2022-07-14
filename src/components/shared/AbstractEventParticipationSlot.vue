@@ -26,6 +26,7 @@
           :showPublicTags="showTags"
           @updateSubmission="onUpdateSubmission($event)"
           @runCode="$emit('runCode', modelValue)"
+          @blur="$emit('blur', modelValue)"
           class="w-full"
           v-if="exercise.exercise_type !== ExerciseType.COMPLETION"
         />

@@ -5,6 +5,17 @@
         <Tabs v-model="currentTab" :options="filteredTabsOptions"></Tabs>
       </div>
       <!-- exercise text pane -->
+      <div class="relative">
+        <DraggablePopup
+          @close="showPopup = false"
+          v-show="showPopup"
+          :title="$t('programming_exercise.tab_text')"
+        >
+          <div class="user-content" v-html="exercise.text"></div>
+        </DraggablePopup>
+
+        <div class="mt-4"></div>
+      </div>
       <div
         class="user-content"
         v-show="currentTab === ProgrammingExerciseTabs.TEXT"
@@ -153,18 +164,6 @@
       </div>
     </template>
   </AbstractExercise>
-
-  <!-- <div class="relative">
-    <DraggablePopup
-      @close="showPopup = false"
-      v-show="showPopup"
-      :title="$t('programming_exercise.tab_text')"
-    >
-      <div class="user-content" v-html="exercise.text"></div>
-    </DraggablePopup>
-
-    <div class="mt-4"></div>
-  </div> -->
 </template>
 
 <script lang="ts">
@@ -184,7 +183,6 @@ import { defineComponent, PropType } from "@vue/runtime-core";
 import { loadingMixin, texMixin } from "@/mixins";
 import { SelectableOption } from "@/interfaces";
 import Tabs from "@/components/ui/Tabs.vue";
-import DraggablePopup from "@/components/ui/DraggablePopup.vue";
 import Btn from "@/components/ui/Btn.vue";
 import CodeEditor from "@/components/ui/CodeEditor.vue";
 import CodeExecutionResults from "../CodeExecutionResults.vue";
@@ -193,6 +191,7 @@ import ExerciseTestCase from "../ExerciseTestCase.vue";
 import { exerciseProps } from "./shared";
 import AbstractExercise from "./AbstractExercise.vue";
 import CodeFragment from "@/components/ui/CodeFragment.vue";
+import DraggablePopup from "@/components/ui/DraggablePopup.vue";
 export default defineComponent({
   name: "ProgrammingExercise",
   mixins: [loadingMixin, texMixin],
@@ -257,6 +256,7 @@ export default defineComponent({
     ExerciseTestCase,
     AbstractExercise,
     CodeFragment,
+    DraggablePopup,
   },
 });
 </script>

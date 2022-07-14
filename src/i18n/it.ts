@@ -851,7 +851,7 @@ export const it = {
     exam_assessment: "Valutazione " + ROUTE_TITLE_EVENT_NAME_TOKEN,
   },
   course_list: {
-    filter_courses: "Filtra corsi",
+    filter_courses: "Cerca corsi",
     courses_i_teach: "Mostra solo i miei corsi",
     hidden_courses: "Mostra corsi nascosti agli studenti",
     no_courses: "Non ci sono ancora corsi",
