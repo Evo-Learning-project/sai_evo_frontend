@@ -56,7 +56,7 @@
         <EventTemplateEditor
           class=""
           :randomRuleOrder="modelValue.randomize_rule_order"
-          v-if="!loading || modelValue.id"
+          v-if="!loading"
           :modelValue="modelValueTemplate"
           :showEditWarning="
             modelValue.state === EventState.OPEN ||

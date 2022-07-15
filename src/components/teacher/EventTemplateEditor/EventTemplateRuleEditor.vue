@@ -40,7 +40,7 @@
             :min="0"
             class="my-4 md:ml-auto md:my-0"
             :class="{ 'md:w-1/4': !reduced, 'md:w-1/2': reduced }"
-            :modelValue="modelValue.max_score"
+            :modelValue="modelValue.max_score ?? 0"
             @update:modelValue="emitUpdate('max_score', $event)"
           >
             {{ $t("event_template_rule_editor.max_score") }}
@@ -411,10 +411,6 @@ export default defineComponent({
     lockRuleType: {
       type: Boolean,
       default: false,
-    },
-    invalid: {
-      type: Boolean,
-      required: true,
     },
     expanded: {
       type: Boolean,
