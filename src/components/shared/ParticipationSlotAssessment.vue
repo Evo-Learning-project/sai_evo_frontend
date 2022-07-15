@@ -19,11 +19,11 @@
     <div class="w-full" v-if="!writeOnly">
       <div class="flex items-center w-full transition-opacity duration-100">
         <p class="mr-auto text-muted" v-if="assessment.score !== null">
-          <span class="mr-2"><slot name="scoreTitle"></slot></span>
+          <span class="mr-1"><slot name="scoreTitle"></slot></span>
           <strong class="text-lg">{{ formattedScore ?? "" }}</strong>
           <span v-if="maxScore"
             >&nbsp;{{ $t("misc.out_of") }}
-            <strong class="text-lg"> {{ maxScore }}</strong></span
+            <strong class="text-lg"> {{ formattedMaxScore }}</strong></span
           >
         </p>
         <p class="text-muted" v-else>
@@ -89,8 +89,9 @@
       <!-- actual assessment controls -->
       <div class="mt-4">
         <!-- TODO validate input (e.g. no more than 1 decimal place) -->
-        <NumberInput class="mb-4" v-model="scoreProxy"
+        <NumberInput class="mb-4" v-model="scoreProxy" :max="maxScore"
           >{{ $t("event_assessment.assigned_score") }}
+          <template #rightHint>/{{ formattedMaxScore }}</template>
         </NumberInput>
         <TextEditor class="w-full" v-model="commentProxy">{{
           $t("event_assessment.comment_for_student")
@@ -214,6 +215,12 @@ export default defineComponent({
     },
   },
   computed: {
+    formattedMaxScore(): number {
+      // TODO extract this logic to utils
+      return Number.isInteger(parseFloat(String(this.maxScore ?? "")))
+        ? parseInt(String(this.maxScore ?? ""))
+        : this.maxScore ?? 0;
+    },
     formattedScore(): number | null {
       if (
         typeof this.assessment.score === "undefined" ||

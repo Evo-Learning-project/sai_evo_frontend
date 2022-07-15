@@ -225,7 +225,6 @@ export default defineComponent({
     ]),
     ...mapMutations(["patchEventTemplateRule", "patchEventTemplateRuleClause"]),
     instantiateRuleAutoSaveManager(rule: EventTemplateRule) {
-      console.log("INSTANTIATING");
       this.rulesAutoSaveInstances[rule.id] =
         new AutoSaveManager<EventTemplateRule>(
           rule,
