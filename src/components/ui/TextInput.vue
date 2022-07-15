@@ -22,11 +22,17 @@
         type="text"
         :value="modelValue"
         @input="$emit('update:modelValue', $event.target.value)"
-        placeholder=" "
-        :class="{ 'floating-label-error': $slots.errors?.() }"
-        class="z-10 block w-full bg-transparent appearance-none  floating-label focus:outline-none"
+        :placeholder="placeholder"
+        :class="{
+          'floating-label-error': $slots.errors?.(),
+          'floating-label': !fixedLabel,
+        }"
+        class="z-10 block w-full bg-transparent appearance-none  focus:outline-none"
       />
-      <label class="absolute bottom-1.5 origin-0 -z-1">
+      <label
+        :class="{ 'top-2 left-1.5 origin-0 fixed-label': fixedLabel }"
+        class="absolute bottom-1.5 origin-0 -z-1"
+      >
         <slot></slot>
       </label>
       <div
@@ -57,6 +63,14 @@ export default defineComponent({
     rightIcon: {
       type: String,
       default: "",
+    },
+    placeholder: {
+      type: String,
+      default: "",
+    },
+    fixedLabel: {
+      type: Boolean,
+      default: false,
     },
   },
 });

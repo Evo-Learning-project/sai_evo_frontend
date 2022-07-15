@@ -581,6 +581,7 @@ export const it = {
     exercise_tags: "Tag",
     exercise_private_tags: "Tag privati",
     choice_text: "Testo",
+    choice_correctness_percentage: "Percentuale punteggio",
     choice_score_checked: "Punteggio selez.",
     choice_score_unchecked: "Punteg. non selez.",
     testcase_type: "Visibilità",
@@ -601,6 +602,7 @@ export const it = {
     edit_cloze: "Modifica domanda",
     editing_cloze: "Stai modificando il gruppo di scelte",
     sub_exercises_title: "Sotto-esercizi",
+    sub_exercise_weight: "Peso sotto-esercizio",
     cannot_publish: "Non puoi ancora pubblicare questo esercizio",
     cannot_publish_body:
       "Per poter rimuovere lo stato di bozza, correggi i seguenti errori:",
@@ -866,8 +868,11 @@ export const it = {
     student_practice_rule_amount: "Quanti esercizi con questo tag vuoi vedere?",
     exercise_editor: {
       label: "Il nome dell'esercizio non viene mai mostrato agli studenti",
-      score_if_checked: "Punteggio se la risposta viene selezionata",
-      score_if_unchecked: "Punteggio se la risposta non viene selezionata",
+      sub_exercise_weight:
+        "Percentuale con cui il punteggio ottenuto in questo sotto-esercizio incide sulla valutazione complessiva dell'esercizio.",
+      score_if_checked:
+        "100% indica risposta corretta. Puoi usare valori negativi per dare una penalità.",
+      //score_if_unchecked: "Punteggio se la risposta non viene selezionata",
       solution:
         "Se pubblichi questo esercizio, quando viene incluso in un'esercitazione creata da uno studente, la soluzione verrà mostrata al termine della stessa.",
       public_tags:
