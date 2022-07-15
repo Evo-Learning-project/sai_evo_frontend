@@ -63,7 +63,44 @@
             modelValue.state === EventState.RESTRICTED
           "
           @templateChanged="invalidateExamples()"
-        ></EventTemplateEditor>
+          @saving="saving = true"
+          @doneSaving="saving = false"
+          ><template #afterRules>
+            <h4>{{ $t("event_editor.max_grade") }}</h4>
+            <div class="ml-2">
+              <span v-if="!editingMaxScore" class="text-lg text-muted">{{
+                computedMaxScore
+              }}</span>
+              <NumberInput v-else v-model="dirtyMaxScore">{{
+                $t("event_editor.max_grade")
+              }}</NumberInput>
+            </div>
+            <Btn
+              v-if="!editingMaxScore"
+              :variant="'icon'"
+              :outline="true"
+              class="hidden ml-2"
+              @click="onEditMaxScore"
+              ><span class="material-icons">edit</span></Btn
+            >
+            <div v-else>
+              <Btn
+                :variant="'icon'"
+                :outline="true"
+                class="ml-2"
+                @click="onSaveMaxScore"
+                ><span class="material-icons">done</span></Btn
+              >
+              <Btn
+                :variant="'icon'"
+                :outline="true"
+                class=""
+                @click="editingMaxScore = false"
+                ><span class="material-icons">close</span></Btn
+              >
+            </div></template
+          ></EventTemplateEditor
+        >
         <Toggle
           class="mt-3 md:ml-auto md:-mt-7.5"
           :label-on-left="true"
@@ -171,6 +208,7 @@ import EventInstancesPreview from "./EventInstancesPreview.vue";
 const { mapGetters, mapMutations } = createNamespacedHelpers("teacher");
 import useVuelidate from "@vuelidate/core";
 import { eventValidation } from "@/validation/models";
+import NumberInput from "@/components/ui/NumberInput.vue";
 
 export default defineComponent({
   setup() {
@@ -193,6 +231,7 @@ export default defineComponent({
     Toggle,
     Btn,
     EventInstancesPreview,
+    NumberInput,
   },
   mixins: [courseIdMixin, eventIdMixin, loadingMixin, savingMixin],
   props: [],
@@ -266,6 +305,8 @@ export default defineComponent({
       instances: [] as Exercise[][],
       showInstancesDialog: false,
       loadingExamples: false,
+      editingMaxScore: false,
+      dirtyMaxScore: null as null | number,
     };
   },
   methods: {
@@ -279,6 +320,15 @@ export default defineComponent({
     ...mapMutations(["setEvent"]),
     invalidateExamples() {
       this.instances = [];
+    },
+    onEditMaxScore() {
+      this.dirtyMaxScore = this.modelValue.max_score ?? 0;
+      this.editingMaxScore = true;
+    },
+    async onSaveMaxScore() {
+      await this.onChange("max_score", this.dirtyMaxScore);
+      this.editingMaxScore = false;
+      // TODO implement re-setting the rules' max_score
     },
     async onChange(field: keyof Event, value: unknown) {
       if (field === "randomize_rule_order") {
@@ -303,7 +353,6 @@ export default defineComponent({
       if (!(e.keyCode === 83 && (e.ctrlKey || e.metaKey))) {
         return;
       }
-
       e.preventDefault();
       if (this.autoSaveManager?.isPending()) {
         this.autoSaveManager.flush();
@@ -319,6 +368,12 @@ export default defineComponent({
     ...mapState("shared", ["user"]),
     modelValue(): Event {
       return this.event(this.eventId);
+    },
+    computedMaxScore(): number {
+      // modelValue.max_score ?? 0
+      return (this.modelValue.template?.rules ?? [])
+        .map((r) => r.max_score * r.amount)
+        .reduce((a, b) => a + b, 0);
     },
     modelValueTemplate(): EventTemplate {
       // return a blank object until the event has been retrieved

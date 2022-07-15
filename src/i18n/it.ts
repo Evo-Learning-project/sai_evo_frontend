@@ -450,6 +450,7 @@ export const it = {
     articles: "Articoli",
   },
   event_template_rule_editor: {
+    max_score: "Punteggio massimo esercizio",
     reset_slot_settings: "Resetta slot",
     exercise_number: "Slot",
     choose_exercise: "Scegli esercizio",
@@ -498,6 +499,7 @@ export const it = {
     state: "Stato esame",
     current_state_is: "L'esame è attualmente in stato",
     state_is: "L'esame è",
+    max_grade: "Voto massimo",
     begin_timestamp: "Data e ora di inizio",
     end_timestamp: "Data e ora di fine",
     instructions: "Istruzioni (opzionale)",

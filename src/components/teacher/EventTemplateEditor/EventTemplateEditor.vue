@@ -71,6 +71,10 @@
       </draggable>
     </div>
 
+    <div class="flex items-center mb-4 -mt-2">
+      <slot name="afterRules"></slot>
+    </div>
+
     <div class="flex items-center mt-auto">
       <Btn
         class="w-full md:w-max"
@@ -315,7 +319,14 @@ export default defineComponent({
       value: unknown,
       reFetch = false
     ) {
-      await this.rulesAutoSaveInstances[rule.id].onChange({ field, value });
+      this.$emit("saving");
+      try {
+        await this.rulesAutoSaveInstances[rule.id].onChange({ field, value });
+      } catch (e) {
+        this.setErrorNotification(e);
+      } finally {
+        this.$emit("doneSaving");
+      }
     },
     async onRuleAddClause(rule: EventTemplateRule) {
       await this.withLocalLoading(async () => {
