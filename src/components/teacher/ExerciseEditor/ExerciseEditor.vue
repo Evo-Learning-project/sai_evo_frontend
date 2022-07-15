@@ -62,7 +62,7 @@
           class="flex items-center mb-8"
           v-if="!subExercise"
         >
-          <h3 v-if="!subExercise" class="pt-2">
+          <h3 class="pt-2">
             {{ $t("exercise_editor.exercise_editor_title") }}
             <span
               v-if="modelValue.state === ExerciseState.DRAFT"
@@ -88,13 +88,40 @@
             </span></Btn
           >
         </div>
-        <div v-else-if="!cloze" class="flex">
+        <div v-else class="flex">
+          <div class="w-1/5 mt-3" :class="{ 'mb-8': cloze }">
+            <NumberInput
+              :max="100"
+              :min="0"
+              :modelValue="modelValue.child_weight"
+              @update:modelValue="onBaseExerciseChange('child_weight', $event)"
+              class="w-full"
+              :rightIcon="'percentage'"
+            >
+              <div class="flex space-x-1">
+                <p>{{ $t("exercise_editor.sub_exercise_weight") }}</p>
+                <Tooltip
+                  class="transform scale-125"
+                  :text-code="'exercise_editor.sub_exercise_weight'"
+                ></Tooltip>
+              </div>
+            </NumberInput>
+          </div>
           <Btn
+            v-if="!cloze"
             :outline="true"
             :variant="'icon'"
             :tooltip="$t('exercise_editor.delete_sub_exercise')"
             @click="$emit('delete')"
-            class="ml-auto -mr-4 transition-opacity duration-100 opacity-50  hover:opacity-100"
+            class="
+              ml-auto
+              -mt-1
+              -mr-2.5
+              transition-opacity
+              duration-100
+              opacity-50
+              hover:opacity-100
+            "
             ><span class="text-base material-icons"> delete </span></Btn
           >
         </div>
@@ -108,10 +135,18 @@
             <div v-if="!subExercise" class="w-full mt-0.5 mr-auto lg:w-4/12">
               <TextInput
                 :modelValue="modelValue.label"
+                :fixedLabel="true"
+                :placeholder="$t('exercise_preview.unnamed_exercise')"
                 @update:modelValue="onBaseExerciseChange('label', $event)"
-                >{{ $t("exercise_editor.exercise_label") }}</TextInput
               >
-              <Tooltip class="" :text-code="'exercise_editor.label'"></Tooltip>
+                <div class="flex space-x-1">
+                  <p>{{ $t("exercise_editor.exercise_label") }}</p>
+                  <Tooltip
+                    class="transform scale-125"
+                    :text-code="'exercise_editor.label'"
+                  ></Tooltip>
+                </div>
+              </TextInput>
             </div>
             <div
               v-if="!subExercise"
@@ -524,6 +559,7 @@ import { subscribeToExerciseChanges } from "@/ws/modelSubscription";
 import Toggle from "@/components/ui/Toggle.vue";
 import { testProgrammingExerciseSolution } from "@/api/exercises";
 import CodeExecutionResults from "@/components/shared/CodeExecutionResults.vue";
+import NumberInput from "@/components/ui/NumberInput.vue";
 const { mapMutations } = createNamespacedHelpers("teacher");
 const { mapState } = createNamespacedHelpers("shared");
 
@@ -545,6 +581,7 @@ export default defineComponent({
     Tooltip,
     Toggle,
     CodeExecutionResults,
+    NumberInput,
   },
   props: {
     modelValue: {

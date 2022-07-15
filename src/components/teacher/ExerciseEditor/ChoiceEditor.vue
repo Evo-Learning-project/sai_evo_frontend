@@ -22,68 +22,45 @@
     </div>
     <TextEditor
       v-if="!singleLine"
-      class="w-full md:w-7/12"
+      class="w-full md:w-10/12"
       :modelValue="modelValue.text"
       @update:modelValue="onUpdate('text', $event)"
       >{{ $t("exercise_editor.choice_text") }}</TextEditor
     >
     <TextInput
       v-else
-      class="w-full md:w-7/12"
+      class="w-full md:w-10/12"
       :modelValue="modelValue.text"
       @update:modelValue="onUpdate('text', $event)"
       >{{ $t("exercise_editor.choice_text") }}</TextInput
     >
 
-    <div class="flex flex-grow space-x-2">
-      <div class="w-full">
-        <NumberInput
-          class="mb-auto"
-          :iconFilled="true"
-          :modelValue="modelValue.correctness_percentage"
-          @update:modelValue="onUpdate('correctness_percentage', $event)"
-          :leftIcon="
-            iconType === 'radio'
-              ? 'radio_button_checked'
-              : iconType === 'dropdown'
-              ? 'expand_circle_down'
-              : 'check_box'
-          "
-        >
-          <div class="flex w-full items-center space-x-0.5">
-            <p>{{ $t("exercise_editor.choice_score_checked") }}</p>
-            <Tooltip
-              :placement="'top'"
-              class="-ml-1.5 -mb-1.25px transform scale-125"
-              :textCode="'exercise_editor.score_if_checked'"
-            ></Tooltip>
-          </div>
-        </NumberInput>
-      </div>
-      <!-- <div class="w-full">
-        <NumberInput
-          class="mb-auto"
-          :modelValue="modelValue.score_unselected"
-          :iconFilled="false"
-          :leftIcon="
-            iconType === 'radio'
-              ? 'radio_button_unchecked'
-              : iconType === 'dropdown'
-              ? 'expand_circle_down'
-              : 'check_box_outline_blank'
-          "
-          @update:modelValue="onUpdate('score_unselected', $event)"
-        >
-          <div class="flex items-center space-x-0.5">
-            <p>{{ $t("exercise_editor.choice_score_unchecked") }}</p>
-            <Tooltip
-              :placement="'top'"
-              class="-ml-1.5 -mb-1.25px transform scale-125"
-              :textCode="'exercise_editor.score_if_unchecked'"
-            ></Tooltip>
-          </div>
-        </NumberInput>
-      </div> -->
+    <div class="md:w-2/12">
+      <NumberInput
+        class="mb-auto"
+        :iconFilled="true"
+        :max="100"
+        :min="-100"
+        :rightIcon="'percent'"
+        :modelValue="modelValue.correctness_percentage"
+        @update:modelValue="onUpdate('correctness_percentage', $event)"
+        :leftIcon="
+          iconType === 'radio'
+            ? 'radio_button_checked'
+            : iconType === 'dropdown'
+            ? 'expand_circle_down'
+            : 'check_box'
+        "
+      >
+        <div class="flex w-full items-center space-x-0.5">
+          <p>{{ $t("exercise_editor.choice_correctness_percentage") }}</p>
+          <Tooltip
+            :placement="'left'"
+            class="-ml-1.5 -mb-1.25px transform scale-125"
+            :textCode="'exercise_editor.score_if_checked'"
+          ></Tooltip>
+        </div>
+      </NumberInput>
     </div>
     <div class="my-auto">
       <Btn
