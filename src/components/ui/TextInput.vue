@@ -66,7 +66,7 @@ export default defineComponent({
     },
     placeholder: {
       type: String,
-      default: "",
+      default: " ",
     },
     fixedLabel: {
       type: Boolean,

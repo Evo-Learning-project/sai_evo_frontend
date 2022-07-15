@@ -3,41 +3,73 @@
     <div
       class="h-full my-3 transition-shadow duration-75 ease-in-out  card shadow-elevation hover-shadow-elevation-2"
     >
-      <div class="flex items-center">
-        <!-- drag handle -->
-        <span
-          v-if="!randomOrder"
-          class="my-auto mr-2 text-lg cursor-move  drag-handle material-icons-outlined opacity-70"
-        >
-          drag_indicator
-        </span>
-        <!-- heading -->
-        <h4 :class="{ 'text-danger-dark': v$.$errors.length > 0 }">
-          {{ $t("event_template_rule_editor.exercise_number") }}
-          {{ displayedOrdering }}
-          <span v-if="modelValue.amount > 1" class="ml-2 text-muted"
-            >({{ modelValue.amount + " " + $t("misc.slots") }})</span
+      <div class="flex flex-col w-full md:items-center md:flex-row">
+        <div class="flex md:w-1/3 md:mr-auto">
+          <!-- drag handle -->
+          <span
+            v-if="!randomOrder"
+            class="my-auto mr-2 text-lg cursor-move  drag-handle material-icons-outlined opacity-70"
           >
-        </h4>
-        <div class="flex items-center my-auto ml-auto space-x-2">
-          <!-- settings button -->
-          <Btn :variant="'secondary'" @click="showRuleDialog()" :size="'sm'">
-            <div class="flex items-center">
-              <span class="material-icons mr-1.5"> settings </span
-              >{{ $t("event_template_rule_editor.choose_exercise") }}
-            </div>
-          </Btn>
-          <!-- delete button -->
+            drag_indicator
+          </span>
+          <!-- heading -->
+          <h4 :class="{ 'text-danger-dark': v$.$errors.length > 0 }" class="">
+            {{ $t("event_template_rule_editor.exercise_number") }}
+            {{ displayedOrdering }}
+            <span v-if="modelValue.amount > 1" class="ml-2 text-muted"
+              >({{ modelValue.amount + " " + $t("misc.slots") }})</span
+            >
+          </h4>
+          <!-- delete button mobile -->
           <Btn
             :tooltip="$t('misc.delete')"
             :variant="'icon'"
             :outline="true"
             @click="$emit('deleteRule')"
-            class="transition-opacity duration-100 opacity-50 hover:opacity-100"
+            class="ml-auto -mt-2 -mr-3 transition-opacity duration-100 opacity-50  md:hidden hover:opacity-100"
             ><span style="font-size: 17px" class="material-icons">
               delete
             </span>
           </Btn>
+        </div>
+
+        <div
+          class="flex flex-col w-full my-auto  md:space-x-2 md:items-center md:flex-row md:ml-auto"
+        >
+          <NumberInput
+            :min="0"
+            class="my-4 md:ml-auto md:my-0"
+            :class="{ 'md:w-1/4': !reduced, 'md:w-1/2': reduced }"
+            :modelValue="modelValue.max_score"
+            @update:modelValue="emitUpdate('max_score', $event)"
+          >
+            {{ $t("event_template_rule_editor.max_score") }}
+          </NumberInput>
+          <div class="flex items-center space-x-2">
+            <!-- settings button -->
+            <Btn
+              :variant="'secondary'"
+              @click="showRuleDialog()"
+              :size="'sm'"
+              class="w-full"
+            >
+              <div class="flex items-center">
+                <span class="material-icons mr-1.5"> settings </span
+                >{{ $t("event_template_rule_editor.choose_exercise") }}
+              </div>
+            </Btn>
+            <!-- delete button -->
+            <Btn
+              :tooltip="$t('misc.delete')"
+              :variant="'icon'"
+              :outline="true"
+              @click="$emit('deleteRule')"
+              class="hidden transition-opacity duration-100 opacity-50  md:block hover:opacity-100"
+              ><span style="font-size: 17px" class="material-icons">
+                delete
+              </span>
+            </Btn>
+          </div>
         </div>
       </div>
       <!-- exercises preview -->
@@ -153,8 +185,6 @@
           </div>
         </div>
       </div>
-      <!-- error message -->
-      <slot v-if="displayErrors" name="error"></slot>
       <p
         class="text-danger-dark"
         v-for="error in v$.$errors"
@@ -339,6 +369,7 @@ import Tag from "@/components/ui/Tag.vue";
 import { getTranslatedString as _ } from "@/i18n";
 import useVuelidate from "@vuelidate/core";
 import { eventTemplateRuleValidation } from "@/validation/models";
+import NumberInput from "@/components/ui/NumberInput.vue";
 
 export default defineComponent({
   components: {
@@ -349,6 +380,7 @@ export default defineComponent({
     SkeletonCard,
     TagBasedEventTemplateRuleEditor,
     Tag,
+    NumberInput,
   },
   name: "EventTemplateRuleEditor",
   setup() {
