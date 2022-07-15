@@ -163,7 +163,11 @@ export default defineComponent({
       passedTestCasesBarChartOptions,
     };
   },
-  methods: {},
+  methods: {
+    getCorrectChoices(exercise: Exercise): string[] {
+      return [];
+    },
+  },
   computed: {
     isMultipleChoice(): boolean {
       return multipleChoiceExerciseTypes.includes(
@@ -205,7 +209,7 @@ export default defineComponent({
             data: this.selectedChoicesFrequency.map((r) => r.frequency),
             ...exerciseChoiceDatasetSettings,
             backgroundColor: this.selectedChoicesFrequency.map((r) =>
-              (this.exercise.correct_choices ?? []).includes(r.datum.id)
+              this.getCorrectChoices(this.exercise).includes(r.datum.id)
                 ? "#10B981b3"
                 : "#e5e7ebb3"
             ),

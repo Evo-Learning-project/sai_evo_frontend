@@ -40,8 +40,8 @@
         <NumberInput
           class="mb-auto"
           :iconFilled="true"
-          :modelValue="modelValue.score_selected"
-          @update:modelValue="onUpdate('score_selected', $event)"
+          :modelValue="modelValue.correctness_percentage"
+          @update:modelValue="onUpdate('correctness_percentage', $event)"
           :leftIcon="
             iconType === 'radio'
               ? 'radio_button_checked'
@@ -60,7 +60,7 @@
           </div>
         </NumberInput>
       </div>
-      <div class="w-full">
+      <!-- <div class="w-full">
         <NumberInput
           class="mb-auto"
           :modelValue="modelValue.score_unselected"
@@ -83,7 +83,7 @@
             ></Tooltip>
           </div>
         </NumberInput>
-      </div>
+      </div> -->
     </div>
     <div class="my-auto">
       <Btn

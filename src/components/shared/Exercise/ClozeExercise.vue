@@ -16,7 +16,7 @@
         <div class="w-full px-4 py-2 rounded bg-gray-50">
           <ul>
             <li
-              v-for="choiceId in exercise.correct_choices ?? []"
+              v-for="choiceId in getCorrectChoices()"
               :key="'corr-' + choiceId"
             >
               {{ getChoice(choiceId).text }}
@@ -42,11 +42,12 @@
 </template>
 
 <script lang="ts">
-import { CLOZE_SEPARATOR, ESCAPED_CLOZE_SEPARATOR } from "@/const";
+import { ESCAPED_CLOZE_SEPARATOR } from "@/const";
 import {
   EventParticipationSlot,
   EventParticipationSlotSubmission,
   Exercise,
+  ExerciseChoice,
 } from "@/models";
 import { defineComponent, PropType } from "@vue/runtime-core";
 import AbstractExercise from "./AbstractExercise.vue";
@@ -89,6 +90,9 @@ export default defineComponent({
           payload.value.length === 0 ? [] : [payload.value],
         ],
       });
+    },
+    getCorrectChoices(): string[] {
+      return [];
     },
     getChoice(choiceId: string) {
       return this.exercise.sub_exercises
@@ -137,7 +141,7 @@ export default defineComponent({
             ` +
               (this.showScores
                 ? `<span class="ml-2 text-base material-icons-outlined ${
-                    (this.slot.exercise.correct_choices ?? []).includes(
+                    this.getCorrectChoices().includes(
                       this.slot.sub_slots[i].selected_choices[0] ?? ""
                     )
                       ? "text-success"
@@ -145,7 +149,7 @@ export default defineComponent({
                   }"
             >
                 ${
-                  (this.slot.exercise.correct_choices ?? []).includes(
+                  this.getCorrectChoices().includes(
                     this.slot.sub_slots[i].selected_choices[0] ?? ""
                   )
                     ? "done"
