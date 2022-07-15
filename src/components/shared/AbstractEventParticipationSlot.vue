@@ -51,14 +51,16 @@
             @toggleExpanded="setAssessmentExpanded($event)"
             @save="onSaveAssessment($event)"
             @updateAssessment="onUpdateAssessment($event)"
+            :maxScore="modelValue.max_score"
             :loading="assessmentLoading"
           >
             <template #scoreTitle>
-              {{
+              <!-- {{
                 !isProgrammingExercise
                   ? $t("misc.score")
                   : $t("misc.passed_tests")
-              }}
+              }} -->
+              {{ $t("misc.score") }}:
             </template>
           </ParticipationSlotAssessment>
         </div>
