@@ -217,9 +217,10 @@ export default defineComponent({
   computed: {
     formattedMaxScore(): number {
       // TODO extract this logic to utils
-      return Number.isInteger(parseFloat(String(this.maxScore ?? "")))
-        ? parseInt(String(this.maxScore ?? ""))
-        : this.maxScore ?? 0;
+      // return Number.isInteger(parseFloat(String(this.maxScore ?? "")))
+      //   ? parseInt(String(this.maxScore ?? ""))
+      //   : this.maxScore ?? 0;
+      return this.maxScore ?? 0;
     },
     formattedScore(): number | null {
       if (

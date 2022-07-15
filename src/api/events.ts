@@ -16,6 +16,7 @@ import {
   getEventUrlQueryParams,
   tagIdsToTags,
   tagNamesToTags,
+  truncateDecimalZeroes,
 } from "./utils";
 
 export async function getEvents(
@@ -163,7 +164,15 @@ export async function getEventParticipation(
   const response = await axios.get(
     `/courses/${courseId}/events/${eventId}/participations/${participationId}/`
   );
-  return response.data;
+  const data = response.data as EventParticipation;
+  const ret: EventParticipation = {
+    ...data,
+    ...(typeof data.score !== "undefined"
+      ? { score: String(truncateDecimalZeroes(data.score)) }
+      : {}),
+    // TODO convert slots' scores too
+  };
+  return ret;
 }
 
 export async function createEventTemplateRule(

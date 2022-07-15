@@ -111,3 +111,15 @@ export const convertEventTemplateRules = (
 
   return processedRules;
 };
+
+const isNumeric = (num: any) =>
+  (typeof num === "number" || (typeof num === "string" && num.trim() !== "")) &&
+  !isNaN(num as number);
+
+// if given a string
+export const truncateDecimalZeroes = (val: string | number) =>
+  !isNumeric(val)
+    ? val
+    : Number.isInteger(parseFloat(String(val)))
+    ? parseInt(String(val))
+    : val;
