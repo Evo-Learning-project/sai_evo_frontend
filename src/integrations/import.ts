@@ -52,11 +52,12 @@ const importExercisesFromMoodleXml = async (
         exercise_type: exerciseType,
         choices: q.answer.map((a) => ({
           text: a.text[0],
-          score_unselected: 0,
-          score_selected:
-            Math.floor(
-              parseFloat(q.defaultgrade[0]) * parseFloat(a.$.fraction) * 100
-            ) / 10000,
+          correctness_percentage: parseFloat(a.$.fraction) * 100,
+          // score_unselected: 0,
+          // score_selected:
+          //   Math.floor(
+          //     parseFloat(q.defaultgrade[0]) * parseFloat(a.$.fraction) * 100
+          //   ) / 10000,
         })),
       } as Exercise);
     }

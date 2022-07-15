@@ -133,35 +133,35 @@ export default defineComponent({
       return (this.exercise.choices as ExerciseChoice[]).map((c) => ({
         value: c.id,
         content: formatExerciseText(c.text),
-        ...(this.showSolution &&
-        String(c.score_selected ?? "").length > 0 &&
-        String(c.score_unselected ?? "").length > 0
-          ? {
-              description: [
-                (this.exercise.correct_choices ?? []).length > 0
-                  ? this.exercise.correct_choices?.includes(c.id)
-                    ? "done"
-                    : "close"
-                  : "",
-                String(c.score_selected),
-                String(c.score_unselected),
-                c.id,
-              ],
-            }
-          : {}),
+        // ...(this.showSolution &&
+        // String(c.score_selected ?? "").length > 0 &&
+        // String(c.score_unselected ?? "").length > 0
+        //   ? {
+        //       description: [
+        //         (this.exercise.correct_choices ?? []).length > 0
+        //           ? this.exercise.correct_choices?.includes(c.id)
+        //             ? "done"
+        //             : "close"
+        //           : "",
+        //         String(c.score_selected),
+        //         String(c.score_unselected),
+        //         c.id,
+        //       ],
+        //     }
+        //   : {}),
       }));
     },
-    nonUniformScores(): boolean {
-      // Returns whether all choices aside from the correct
-      // ones have the same score_selected
-      const nonCorrectChoices = (
-        this.exercise.choices as ExerciseChoice[]
-      ).filter((c) => !this.exercise.correct_choices?.includes(c.id));
+    // nonUniformScores(): boolean {
+    //   // Returns whether all choices aside from the correct
+    //   // ones have the same score_selected
+    //   const nonCorrectChoices = (
+    //     this.exercise.choices as ExerciseChoice[]
+    //   ).filter((c) => !this.exercise.correct_choices?.includes(c.id));
 
-      return nonCorrectChoices.some(
-        (c) => c.score_selected != nonCorrectChoices[0].score_selected
-      );
-    },
+    //   return nonCorrectChoices.some(
+    //     (c) => c.score_selected != nonCorrectChoices[0].score_selected
+    //   );
+    // },
   },
   components: { AbstractExercise, CheckboxGroup, RadioGroup },
 });

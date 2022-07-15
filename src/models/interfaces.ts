@@ -55,25 +55,28 @@ export interface Exercise extends Orderable, Lockable {
   text: string;
   solution?: string;
   label?: string;
-  exercise_type: ExerciseType | null;
+  child_weight?: number;
+  exercise_type: ExerciseType | null; // TODO make non-nullable
   state?: ExerciseState;
   choices?: ExerciseChoice[];
   testcases?: ExerciseTestCase[];
   sub_exercises?: Exercise[];
   public_tags?: Tag[];
   private_tags?: Tag[];
-  max_score?: number;
-  correct_choices?: string[];
+  // max_score?: number;
+  // correct_choices?: string[];
   requires_typescript?: boolean;
 }
 
 export interface ExerciseChoice extends Orderable {
   id: string;
   text: string;
-  score_selected?: number;
-  score_unselected?: number;
+  correctness_percentage?: number;
+  // score_selected?: number;
+  // score_unselected?: number;
 }
 
+// TODO make orderable
 export interface ExerciseTestCase {
   id: string;
   code: string;
@@ -110,6 +113,7 @@ export interface Event extends Lockable {
   time_limit_rule?: EventTimeLimitRule;
   time_limit_seconds: number | null;
   time_limit_exceptions?: [string, number][];
+  max_score?: number;
 }
 
 export interface EventTemplate {
@@ -125,14 +129,14 @@ export interface EventTemplateRuleSatisfying {
   example?: Exercise;
 }
 
-export interface EventTemplateRule {
+export interface EventTemplateRule extends Orderable {
   id: string;
   rule_type?: EventTemplateRuleType;
   exercises?: string[];
   clauses?: EventTemplateRuleClause[];
   amount: number;
-  _ordering?: number;
   satisfying?: EventTemplateRuleSatisfying;
+  max_score: number;
 }
 
 export interface EventTemplateRuleClause {
@@ -202,6 +206,7 @@ export interface EventParticipationSlot
   answered_at?: string;
   is_first?: boolean;
   is_last?: boolean;
+  max_score?: number;
 }
 
 export interface CodeExecutionResults {

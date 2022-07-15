@@ -27,19 +27,13 @@
         v-if="showScores && slot.sub_slots[index]"
         class="ml-2 text-base material-icons-outlined"
         :class="[
-          slot.exercise.correct_choices?.includes(
-            slot.sub_slots[index]?.selected_choices[0]
-          )
+          false && slot.sub_slots[index]?.selected_choices[0]
             ? 'text-success'
             : 'text-danger-dark',
         ]"
       >
         {{
-          slot.exercise.correct_choices?.includes(
-            slot.sub_slots[index]?.selected_choices[0]
-          )
-            ? "done"
-            : "close"
+          false && slot.sub_slots[index]?.selected_choices[0] ? "done" : "close"
         }}
       </span>
     </span>
