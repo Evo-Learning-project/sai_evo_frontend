@@ -63,8 +63,6 @@ export interface Exercise extends Orderable, Lockable {
   sub_exercises?: Exercise[];
   public_tags?: Tag[];
   private_tags?: Tag[];
-  // max_score?: number;
-  // correct_choices?: string[];
   requires_typescript?: boolean;
 }
 
@@ -72,8 +70,6 @@ export interface ExerciseChoice extends Orderable {
   id: string;
   text: string;
   correctness_percentage?: number;
-  // score_selected?: number;
-  // score_unselected?: number;
 }
 
 // TODO make orderable
@@ -187,7 +183,7 @@ export interface EventParticipationSlotSubmission {
 }
 
 export interface EventParticipationSlotAssessment {
-  score?: number;
+  score?: number | null;
   comment?: string;
   score_edited?: boolean;
   assessment_state?: AssessmentSlotState;

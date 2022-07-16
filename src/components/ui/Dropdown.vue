@@ -79,7 +79,6 @@
 import { defineComponent } from "@vue/runtime-core";
 import { v4 as uuid4 } from "uuid";
 import MultiIcon from "@/components/ui/MultiIcon.vue";
-import { rippleEffect } from "@/utils";
 
 export default defineComponent({
   name: "Dropdown",
@@ -138,16 +137,6 @@ export default defineComponent({
       } else if (this.modelValue == value && this.expanded) {
         this.expanded = false;
       }
-    },
-    onMouseDown(event: any) {
-      // if (this.expanded) {
-      //   rippleEffect(event, "ripple-gray");
-      // }
-    },
-    onOuterMouseDown(event: any) {
-      // if (!this.expanded) {
-      //   rippleEffect(event, "ripple-gray");
-      // }
     },
   },
 });

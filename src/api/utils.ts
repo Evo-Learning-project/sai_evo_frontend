@@ -116,6 +116,32 @@ const isNumeric = (num: any) =>
   (typeof num === "number" || (typeof num === "string" && num.trim() !== "")) &&
   !isNaN(num as number);
 
+export const normalizeOptionalStringContainingNumber = (
+  val: undefined | null | string | number
+): undefined | null | string | number => {
+  /**
+   * Takes in a value that can be either null, undefined, a number, or a string
+   * If the value is null, undefined, or a string that doesn't describe a number
+   * (e.g. '2.1'), the value is returned unchanged.
+   *
+   * If the value is a string describing a number, the value is returned as a number
+   */
+  if (typeof val === "undefined") {
+    return undefined;
+  }
+  if (val === null) {
+    return null;
+  }
+
+  const strVal = String(val);
+  // if strVal doesn't contain a valid number, return it as is
+  if (!isNumeric(strVal)) {
+    return val;
+  }
+  // if strVal represents a number, return it as a number
+  return parseFloat(strVal);
+};
+
 // if given a string
 export const truncateDecimalZeroes = (val: string | number) =>
   !isNumeric(val)

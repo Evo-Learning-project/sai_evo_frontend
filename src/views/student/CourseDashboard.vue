@@ -197,7 +197,6 @@
 
 import { courseIdMixin, loadingMixin } from "@/mixins";
 import { defineComponent } from "@vue/runtime-core";
-import { rippleEffect } from "@/utils";
 
 import { mapGetters, mapActions, mapMutations, mapState } from "vuex";
 import EventParticipationPreview from "@/components/student/EventParticipationPreview.vue";
@@ -250,9 +249,7 @@ export default defineComponent({
     ]),
     //...mapActions("teacher", ["partialUpdateEventParticipation"]),
     ...mapMutations("student", ["setEditingEvent"]),
-    onCardMouseDown(event: any) {
-      //rippleEffect(event, "ripple-gray");
-    },
+
     onBeginPractice(event: Event) {
       this.setEditingEvent(null);
       this.$router.push({

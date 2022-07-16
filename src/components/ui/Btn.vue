@@ -146,7 +146,6 @@
 </template>
 
 <script lang="ts">
-import { rippleEffect } from "@/utils";
 import { defineComponent, PropType } from "@vue/runtime-core";
 import Spinner from "./Spinner.vue";
 import Tooltip from "./Tooltip.vue";
@@ -201,12 +200,6 @@ export default defineComponent({
   },
   data() {
     return {};
-  },
-  methods: {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    onMouseDown(event: any) {
-      //rippleEffect(event, this.rippleClass);
-    },
   },
   computed: {
     rippleClass() {

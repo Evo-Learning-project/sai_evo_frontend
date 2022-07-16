@@ -14,8 +14,7 @@
       :max="max"
       :disabled="disabled"
       placeholder=" "
-      :value="modelValue"
-      @input="onInput($event.target.value)"
+      v-model.number="proxyModelValue"
       class="z-10 block w-full bg-transparent appearance-none  floating-label focus:outline-none"
       :class="{
         'pl-5': leftIcon.length > 0,
@@ -103,10 +102,20 @@ export default defineComponent({
       default: true,
     },
   },
-  methods: {
-    onInput(value: string) {
-      //console.log(String(value));
-      this.$emit("update:modelValue", value);
+  // methods: {
+  //   onInput(value: string) {
+  //     this.$emit("update:modelValue", value);
+  //   },
+  // },
+  computed: {
+    proxyModelValue: {
+      get() {
+        return this.modelValue;
+      },
+      set(value: any) {
+        console.log(value, typeof value, Number(value));
+        this.$emit("update:modelValue", value);
+      },
     },
   },
 });
