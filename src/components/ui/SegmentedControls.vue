@@ -57,7 +57,6 @@
 import { defineComponent, PropType } from "@vue/runtime-core";
 import { v4 as uuid4 } from "uuid";
 import MultiIcon from "@/components/ui/MultiIcon.vue";
-import { rippleEffect } from "@/utils";
 import { SelectableOption } from "@/interfaces";
 
 export default defineComponent({
@@ -92,9 +91,6 @@ export default defineComponent({
     };
   },
   methods: {
-    onMouseDown(event: any) {
-      // rippleEffect(event, "ripple-primary");
-    },
     onInput(value: string, inputEvent: Event) {
       // eslint-disable-next-line @typescript-eslint/no-extra-semi
       (inputEvent.target as unknown as { checked: boolean }).checked = false;

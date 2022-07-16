@@ -1,3 +1,7 @@
+import {
+  normalizeIncomingEvent,
+  normalizeIncomingEventParticipation,
+} from "./converters";
 import { Exercise } from "./../models/interfaces";
 import { EventSearchFilter } from "./interfaces";
 import {
@@ -26,7 +30,7 @@ export async function getEvents(
   const response = await axios.get(
     `/courses/${courseId}/events/${getEventUrlQueryParams(filters ?? null)}`
   );
-  return response.data;
+  return (response.data as Event[]).map((e) => normalizeIncomingEvent(e));
 }
 
 export async function getEvent(
@@ -164,15 +168,9 @@ export async function getEventParticipation(
   const response = await axios.get(
     `/courses/${courseId}/events/${eventId}/participations/${participationId}/`
   );
-  const data = response.data as EventParticipation;
-  const ret: EventParticipation = {
-    ...data,
-    ...(typeof data.score !== "undefined"
-      ? { score: String(truncateDecimalZeroes(data.score)) }
-      : {}),
-    // TODO convert slots' scores too
-  };
-  return ret;
+  return normalizeIncomingEventParticipation(
+    response.data as EventParticipation
+  );
 }
 
 export async function createEventTemplateRule(

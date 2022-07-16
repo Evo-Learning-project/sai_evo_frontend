@@ -1,3 +1,4 @@
+import { normalizeIncomingExercise } from "./converters";
 import { ExerciseTestCase } from "./../models/interfaces";
 /* eslint-disable no-constant-condition */
 import { CodeExecutionResults, Exercise, ExerciseChoice } from "@/models";
@@ -22,7 +23,9 @@ export async function getExercises(
     `/courses/${courseId}/exercises/?page=${pageNumber}${filterUrlQuery}`
   );
   return {
-    exercises: response.data.results,
+    exercises: (response.data.results as Exercise[]).map((e) =>
+      normalizeIncomingExercise(e)
+    ),
     moreResults: !!response.data.next,
   };
 }
