@@ -5,7 +5,10 @@
       :class="{ 'opacity-80': disabled }"
     >
       <!-- TODO! make this just a textarea for students-->
-      <div class="z-10 ql-editor-container tex2jax_ignore">
+      <div
+        class="z-10 tex2jax_ignore ql-editor-container"
+        :class="[$slots.errors?.() ? 'ql-editor-container-error' : '']"
+      >
         <quill-editor
           :options="editorOptions"
           :value="modelValue"
@@ -51,6 +54,9 @@
           }}
         </p></Btn
       >
+    </div>
+    <div v-if="$slots.errors?.()" class="text-sm font-light text-danger-dark">
+      <slot name="errors"></slot>
     </div>
   </div>
 </template>

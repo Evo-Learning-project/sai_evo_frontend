@@ -112,6 +112,10 @@
     white-space: nowrap;
     color: rgba(0, 0, 0, 0.87)
   }
+
+  .error-msg {
+    @apply text-danger-dark;
+  }
   
   /*------*/
 
@@ -356,6 +360,12 @@
     }
     .bg-light .ql-editor-container:focus-within {
       @apply border-primary !important;
+    }
+    .bg-light .ql-editor-container-error {
+      @apply border-danger-dark !important;
+    }
+    .bg-light .ql-editor-container-error:focus-within {
+      @apply border-danger-dark !important;
     }
     /* .bg-light .floating-label ~ label {
       @apply text-gray-900 duration-300 !important
@@ -673,6 +683,12 @@
     }
     .ql-editor-container:focus-within ~ label {
       @apply duration-300 transform scale-75 -translate-y-7 text-primary;
+     }
+     .ql-editor-container-error ~ label {
+      @apply text-danger-dark duration-300
+    }
+    .ql-editor-container-error:focus-within ~ label {
+      @apply duration-300 transform scale-75 -translate-y-7 text-danger-dark;
      }
     .fixed-label {
       @apply top-0 text-gray-500 duration-300 transform scale-75 -translate-y-7;

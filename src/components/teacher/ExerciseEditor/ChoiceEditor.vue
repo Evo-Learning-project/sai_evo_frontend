@@ -60,6 +60,8 @@
             :textCode="'exercise_editor.score_if_checked'"
           ></Tooltip>
         </div>
+        <!-- highlight in red if there's a score-related error -->
+        <template #errors v-if="correctnessPercentageError"> &nbsp; </template>
       </NumberInput>
     </div>
     <div class="my-auto">
@@ -85,7 +87,7 @@
 
 <script lang="ts">
 import { ExerciseChoice } from "@/models";
-import { defineComponent, PropType } from "@vue/runtime-core";
+import { defineComponent, PropType, inject } from "@vue/runtime-core";
 import TextEditor from "@/components/ui/TextEditor.vue";
 import NumberInput from "@/components/ui/NumberInput.vue";
 import Tooltip from "@/components/ui/Tooltip.vue";
@@ -108,6 +110,11 @@ export default defineComponent({
       default: false,
     },
   },
+  setup() {
+    return {
+      v$: inject("v$"),
+    };
+  },
   components: {
     TextEditor,
     NumberInput,
@@ -119,6 +126,13 @@ export default defineComponent({
     onUpdate(field: keyof ExerciseChoice, value: unknown) {
       console.log("choice update", field, value);
       this.$emit("choiceUpdate", { field, value });
+    },
+  },
+  computed: {
+    correctnessPercentageError() {
+      return (this.v$ as any).modelValue.choices.$errors.find(
+        (e: any) => e.$uid === "modelValue.choices-choiceCorrectnessAddsUp"
+      );
     },
   },
 });

@@ -55,7 +55,7 @@ export const atLeastOneCorrectChoice = (
   if (exercise.exercise_type !== ExerciseType.MULTIPLE_CHOICE_SINGLE_POSSIBLE) {
     return true;
   }
-  return choices.some((c) => (c.correctness_percentage ?? 0) === 10);
+  return choices.some((c) => (c.correctness_percentage ?? 0) === 100);
 };
 
 export const choiceCorrectnessAddsUp = (
@@ -78,7 +78,7 @@ export const choiceCorrectnessAddsUp = (
           .filter((c) => (c.correctness_percentage ?? 0) > 0)
           .map((c) => c.correctness_percentage ?? 0)
           .reduce((a, b) => a + b, 0)
-    ) < 0.01
+    ) <= 0.01
   );
 };
 
@@ -102,16 +102,6 @@ export const subExerciseWeightAddsUp = (
         (exercise.sub_exercises ?? [])
           .map((s) => s.child_weight ?? 0)
           .reduce((a, b) => a + b, 0)
-    ) < 0.01
+    ) <= 0.01
   );
 };
-
-// export const rulePopulated = (rule: EventTemplateRule) =>
-//   (typeof rule.rule_type !== "undefined" &&
-//     rule.rule_type != null &&
-//     ((rule.rule_type === EventTemplateRuleType.ID_BASED && // if it's ID-based, it must include at least one exercise
-//       (rule.exercises?.length ?? 0) > 0) ||
-//       (rule.rule_type === EventTemplateRuleType.TAG_BASED && // if it's tag-based, it must have at least one clause
-//         (rule.clauses?.length ?? 0) > 0 &&
-//         rule.clauses?.some((c) => c.tags.length > 0)))) ??
-//   false; // at least one clause must not be empty
