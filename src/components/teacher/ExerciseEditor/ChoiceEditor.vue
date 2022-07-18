@@ -130,8 +130,11 @@ export default defineComponent({
   },
   computed: {
     correctnessPercentageError() {
-      return (this.v$ as any).modelValue.choices.$errors.find(
-        (e: any) => e.$uid === "modelValue.choices-choiceCorrectnessAddsUp"
+      return (this.v$ as any).modelValue.choices.$errors.find((e: any) =>
+        [
+          "modelValue.choices-choiceCorrectnessAddsUp",
+          "modelValue.choices-atLeastOneCorrectChoice",
+        ].includes(e.$uid)
       );
     },
   },

@@ -66,7 +66,7 @@ export const exerciseChoiceValidation = {
   },
 };
 
-export const exerciseValidation = {
+export const baseExerciseValidation = {
   text: {
     required,
   },
@@ -79,7 +79,12 @@ export const exerciseValidation = {
     atLeastOneCorrectChoice,
     choiceCorrectnessAddsUp,
   },
+};
+
+export const exerciseValidation = {
+  ...baseExerciseValidation,
   sub_exercises: {
     subExerciseWeightAddsUp,
+    $each: helpers.forEach(baseExerciseValidation as any),
   },
 };

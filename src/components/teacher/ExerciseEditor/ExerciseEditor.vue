@@ -105,6 +105,7 @@
                   :text-code="'exercise_editor.sub_exercise_weight'"
                 ></Tooltip>
               </div>
+              <template #errors v-if="invalidChildWeight"> &nbsp; </template>
             </NumberInput>
           </div>
           <Btn
@@ -426,6 +427,7 @@
           >
             <template #item="{ element }">
               <ExerciseEditor
+                :invalidChildWeight="!!childWeightError"
                 @delete="onDeleteSubExercise(element.id)"
                 :subExercise="true"
                 :modelValue="element"
@@ -500,7 +502,7 @@
           <template v-slot:title>{{ dialogData.title }}</template>
           <template v-slot:body
             >{{ dialogData.text }}
-            <div class="mt-2" v-if="v$.$errors">
+            <div class="mt-2" v-if="v$.modelValue.$errors">
               <ul class="list-disc list-inside">
                 <li
                   class="text-muted text-danger-dark"
@@ -567,7 +569,7 @@ import {
 } from "@/models";
 import { multipleChoiceExerciseTypes } from "@/models";
 import Card from "@/components/ui/Card.vue";
-import { defineComponent, provide, PropType } from "@vue/runtime-core";
+import { defineComponent, provide, PropType, inject } from "@vue/runtime-core";
 import useVuelidate from "@vuelidate/core";
 
 import TextEditor from "@/components/ui/TextEditor.vue";
@@ -638,6 +640,10 @@ export default defineComponent({
     },
     cloze: {
       // hides certain fields depending on whether the exercise is a cloze
+      type: Boolean,
+      default: false,
+    },
+    invalidChildWeight: {
       type: Boolean,
       default: false,
     },
@@ -930,7 +936,8 @@ export default defineComponent({
     /* end CRUD on related objects */
     onExerciseStateChange(newState: ExerciseState) {
       this.v$.$touch();
-
+      // TODO don't show errors in sub-exercises, or show them separately
+      // TODO highlight in red the number-input of child weights and and correctness score (for "missing correct choice" error)
       // validation errors dialog
       if (newState != ExerciseState.DRAFT && this.v$.$errors.length > 0) {
         this.showDialog = true;
@@ -1066,6 +1073,11 @@ export default defineComponent({
       return (this.modelValue.sub_exercises as Exercise[])[
         this.editingClozePosition
       ];
+    },
+    childWeightError() {
+      return (this.v$ as any).modelValue.$errors.find((e: any) =>
+        ["modelValue.sub_exercises-subExerciseWeightAddsUp"].includes(e.$uid)
+      );
     },
   },
 });
