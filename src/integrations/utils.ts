@@ -93,13 +93,14 @@ export const processMoodleQuestionText = (q: MoodleQuestion): string => {
   const imgRegex = /<img[^>]+src="?([^"\s]+)"?[^>]*\/?>/g;
   return ret
     .replace(clozeSubQuestionRegex, CLOZE_SEPARATOR)
-    .replace(
-      imgRegex,
-      (_, src: string) =>
-        `<img src="data:image/jpeg;base64,${
+    .replace(imgRegex, (img, src: string) =>
+      img.replace(
+        src,
+        `data:image/jpeg;base64,${
           fileNamesAndContents.find(
             (f) => f.name === src.substring("@@PLUGINFILE@@/".length)
           )?.content ?? ""
-        }" />`
+        }`
+      )
     );
 };
