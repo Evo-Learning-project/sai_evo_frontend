@@ -1,8 +1,12 @@
 import { helpers, required } from "@vuelidate/validators";
 import {
+  atLeastOneCorrectChoice,
+  choiceCorrectnessAddsUp,
+  choicesRequiredIfMultipleChoiceExercise,
   courseNameUnique,
   idBasedRulePopulated,
   ruleTypeSet,
+  subExerciseWeightAddsUp,
   tagBasedRulePopulated,
   tagBasedRuleSatisfied,
 } from "./validators";
@@ -53,5 +57,29 @@ export const eventValidation = {
   },
   template: {
     ...eventTemplateValidation,
+  },
+};
+
+export const exerciseChoiceValidation = {
+  text: {
+    required,
+  },
+};
+
+export const exerciseValidation = {
+  text: {
+    required,
+  },
+  exercise_type: {
+    required,
+  },
+  choices: {
+    $each: helpers.forEach(exerciseChoiceValidation),
+    choicesRequiredIfMultipleChoiceExercise,
+    atLeastOneCorrectChoice,
+    choiceCorrectnessAddsUp,
+  },
+  sub_exercises: {
+    subExerciseWeightAddsUp,
   },
 };

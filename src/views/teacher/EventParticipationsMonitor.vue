@@ -285,6 +285,7 @@
       <template v-slot:body>
         <!-- editing an assessment slot -->
         <div class="text-darkText" v-if="editingSlot">
+          <!-- TODO investigate bug if adding :showSolutionAndScores="true" here -->
           <AbstractEventParticipationSlot
             :allowEditAssessment="true"
             :showAssessmentCard="true"

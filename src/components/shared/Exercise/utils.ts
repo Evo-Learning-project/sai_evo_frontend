@@ -6,6 +6,12 @@ export const isProgrammingExercise = (exercise: Exercise): boolean =>
 export const isOpenAnswerExercise = (exercise: Exercise): boolean =>
   exercise.exercise_type === ExerciseType.OPEN_ANSWER;
 
+export const isMultipleChoiceExercise = (exercise: Exercise): boolean =>
+  [
+    ExerciseType.MULTIPLE_CHOICE_MULTIPLE_POSSIBLE,
+    ExerciseType.MULTIPLE_CHOICE_SINGLE_POSSIBLE,
+  ].includes(exercise.exercise_type as ExerciseType);
+
 export const getCorrectChoices = (exercise: Exercise): string[] => {
   const choices = exercise.choices ?? [];
   const subExercises = exercise.sub_exercises ?? [];
