@@ -767,6 +767,8 @@ export const it = {
         "choices-$each": "Alcune scelte non sono configurate correttamente.",
         "sub_exercises-subExerciseWeightAddsUp":
           "La somma dei pesi dei sotto-esercizi deve essere uguale al 100%.",
+        "sub_exercises-$each":
+          "Alcuni sotto-esercizi non sono configurati correttamente.",
       },
     },
     course: {
