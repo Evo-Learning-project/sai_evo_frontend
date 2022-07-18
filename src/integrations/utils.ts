@@ -73,17 +73,24 @@ export const getMoodleClozeQuestionsAsExercises = (
     childCount++;
     ret.push(child);
   }
+  // for sub-exercises that don't have an explicitly set child_weight, set their
+  // weight so that all children are weighted evenly
+  const remainingChildrenWeight =
+    (100 -
+      ret
+        .filter((e) => typeof e.child_weight !== "undefined")
+        .map((e) => e.child_weight as number)
+        .reduce((a, b) => a + b, 0)) /
+    childCount;
   ret.forEach((e) => {
     if (typeof e.child_weight === "undefined") {
-      e.child_weight = 100 / childCount;
+      e.child_weight = remainingChildrenWeight;
     }
   });
   return ret;
 };
 
 export const processMoodleQuestionText = (q: MoodleQuestion): string => {
-  // TODO add images, process cloze etc.
-  // <img src="data:image/jpeg;base64," />
   const fileNamesAndContents = (q.questiontext[0].file ?? []).map((f) => ({
     name: f.$.name,
     content: f._,
@@ -91,16 +98,20 @@ export const processMoodleQuestionText = (q: MoodleQuestion): string => {
   const ret = q.questiontext[0].text[0];
 
   const imgRegex = /<img[^>]+src="?([^"\s]+)"?[^>]*\/?>/g;
-  return ret
-    .replace(clozeSubQuestionRegex, CLOZE_SEPARATOR)
-    .replace(imgRegex, (img, src: string) =>
-      img.replace(
-        src,
-        `data:image/jpeg;base64,${
-          fileNamesAndContents.find(
-            (f) => f.name === src.substring("@@PLUGINFILE@@/".length)
-          )?.content ?? ""
-        }`
+  return (
+    ret
+      // substitute any cloze questions with the CLOZE_SEPARATOR sequence
+      .replace(clozeSubQuestionRegex, CLOZE_SEPARATOR)
+      // import images
+      .replace(imgRegex, (img, src: string) =>
+        img.replace(
+          src,
+          `data:image/jpeg;base64,${
+            fileNamesAndContents.find(
+              (f) => f.name === src.substring("@@PLUGINFILE@@/".length)
+            )?.content ?? ""
+          }`
+        )
       )
-    );
+  );
 };

@@ -52,7 +52,7 @@
     </div>
 
     <div v-else-if="isOpenAnswerExercise">
-      <h3>Risposte</h3>
+      <h3>{{ $t("event_stats.answers") }}</h3>
       <div class="my-4" v-for="slot in slots" :key="'stats-slot-' + slot.id">
         <div class="flex card card-border">
           <div class="w-10/12 overflow-auto max-h-36">
@@ -80,6 +80,7 @@
         </div>
       </div>
     </div>
+    <!-- TODO implement for cloze exercises -->
     <div v-else>
       <p class="text-muted">
         {{ $t("event_stats.no_stats_available_for_exercise") }}
@@ -169,6 +170,7 @@ export default defineComponent({
     },
   },
   computed: {
+    // TODO import and use the functions in utils
     isMultipleChoice(): boolean {
       return multipleChoiceExerciseTypes.includes(
         this.exercise.exercise_type as ExerciseType

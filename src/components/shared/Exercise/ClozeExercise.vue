@@ -15,9 +15,11 @@
         </p>
         <div class="w-full px-4 py-2 rounded bg-gray-50">
           <ul>
-            <li v-for="choiceId in correctChoices" :key="'corr-' + choiceId">
-              {{ getChoice(choiceId).text }}
-            </li>
+            <li
+              v-for="choiceId in correctChoices"
+              :key="'corr-' + choiceId"
+              v-html="getChoice(choiceId).text"
+            ></li>
           </ul>
         </div>
       </div>
@@ -127,12 +129,13 @@ export default defineComponent({
                     : ""
                 }
             >
-                <option value="">${getTranslatedString(
-                  "misc.select_one"
-                )}</option>
+                <option ${
+                  this.readOnly ? 'disabled="true"' : ""
+                } value="">${getTranslatedString("misc.select_one")}</option>
                 ${(this.slot.sub_slots[i]?.exercise.choices ?? []).map(
                   (c) => `
                     <option
+                        ${this.readOnly ? 'disabled="true"' : ""}
                         value="${c.id}"
                     >${c.text}</option>
                     `
