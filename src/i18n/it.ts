@@ -755,6 +755,20 @@ export const it = {
         },
       },
     },
+    exercise: {
+      modelValue: {
+        "text-required": "Il testo dell'esercizio non può essere vuoto.",
+        "choices-choicesRequiredIfMultipleChoiceExercise":
+          "L'esercizio deve avere almeno una scelta selezionabile.",
+        "choices-atLeastOneCorrectChoice":
+          "L'esercizio deve avere almeno una scelta corretta (con percentuale di punteggio 100%).",
+        "choices-choiceCorrectnessAddsUp":
+          "La somma delle percentuali di punteggio delle scelte corrette deve essere uguale al 100%.",
+        "choices-$each": "Alcune scelte non sono configurate correttamente.",
+        "sub_exercises-subExerciseWeightAddsUp":
+          "La somma dei pesi dei sotto-esercizi deve essere uguale al 100%.",
+      },
+    },
     course: {
       "name-required": "Il nome del corso non può essere vuoto",
       "name-unique": "Esiste già un corso con questo nome",

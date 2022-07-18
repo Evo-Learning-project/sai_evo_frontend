@@ -186,8 +186,22 @@
             @ready="textEditorInstance = $event"
             @selectionChange="onTextSelectionChange($event)"
             @update:modelValue="onBaseExerciseChange('text', $event)"
-            >{{ $t("exercise_editor.exercise_text") }}</TextEditor
-          >
+            >{{ $t("exercise_editor.exercise_text") }}
+            <template
+              v-if="v$.modelValue.text.$errors.length > 0"
+              v-slot:errors
+            >
+              <div
+                class="input-errors"
+                v-for="error of v$.modelValue.text.$errors"
+                :key="error.$uid"
+              >
+                <div class="error-msg">
+                  {{ $t("validation_errors.exercise." + error.$uid) }}
+                </div>
+              </div>
+            </template>
+          </TextEditor>
           <!--<textarea :value="modelValue.text"></textarea>-->
           <div
             class="flex flex-wrap space-y-1 md:space-x-2 md:space-y-0"
@@ -337,6 +351,20 @@
         <!-- Multiple-choice exercise types settings -->
         <div :class="[cloze ? '-mt-6' : 'mt-8']" v-if="isMultipleChoice">
           <h3 class="mb-8">{{ $t("exercise_editor.choices_title") }}</h3>
+          <div
+            class="mb-4 -mt-4"
+            v-if="v$.modelValue.choices.$errors.length > 0"
+          >
+            <div
+              class="input-errors"
+              v-for="error of v$.modelValue.choices.$errors"
+              :key="error.$uid"
+            >
+              <div class="error-msg">
+                {{ $t("validation_errors.exercise." + error.$uid) }}
+              </div>
+            </div>
+          </div>
           <draggable
             handle=".drag-handle"
             :modelValue="modelValue.choices"
@@ -375,6 +403,20 @@
           v-if="modelValue.exercise_type === ExerciseType.AGGREGATED"
         >
           <h3 class="mb-8">{{ $t("exercise_editor.sub_exercises_title") }}</h3>
+          <div
+            class="mb-4 -mt-4"
+            v-if="v$.modelValue.sub_exercises.$errors.length > 0"
+          >
+            <div
+              class="input-errors"
+              v-for="error of v$.modelValue.sub_exercises.$errors"
+              :key="error.$uid"
+            >
+              <div class="error-msg">
+                {{ $t("validation_errors.exercise." + error.$uid) }}
+              </div>
+            </div>
+          </div>
           <draggable
             handle=".drag-handle"
             :modelValue="modelValue.sub_exercises"
@@ -458,14 +500,14 @@
           <template v-slot:title>{{ dialogData.title }}</template>
           <template v-slot:body
             >{{ dialogData.text }}
-            <div class="mt-2" v-if="showValidationErrors">
+            <div class="mt-2" v-if="v$.$errors">
               <ul class="list-disc list-inside">
                 <li
                   class="text-muted text-danger-dark"
-                  v-for="(error, index) in validationErrors"
+                  v-for="(error, index) in v$.$errors"
                   :key="'err-' + index"
                 >
-                  {{ error }}
+                  {{ $t("validation_errors.exercise." + error.$uid) }}
                 </li>
               </ul>
             </div>
@@ -503,8 +545,6 @@
 
 <script lang="ts">
 import { getTranslatedString as _ } from "@/i18n";
-import { icons as exerciseTypesIcons } from "@/assets/exerciseTypesIcons";
-import { icons as exerciseStatesIcons } from "@/assets/exerciseStatesIcons";
 import { v4 as uuid4 } from "uuid";
 import Dropdown from "@/components/ui/Dropdown.vue";
 import Dialog from "@/components/ui/Dialog.vue";
@@ -527,8 +567,9 @@ import {
 } from "@/models";
 import { multipleChoiceExerciseTypes } from "@/models";
 import Card from "@/components/ui/Card.vue";
-//import Dropdown from '@/components/ui/Dropdown.vue'
-import { defineComponent, PropType } from "@vue/runtime-core";
+import { defineComponent, provide, PropType } from "@vue/runtime-core";
+import useVuelidate from "@vuelidate/core";
+
 import TextEditor from "@/components/ui/TextEditor.vue";
 import TextInput from "@/components/ui/TextInput.vue";
 import Btn from "@/components/ui/Btn.vue";
@@ -560,6 +601,7 @@ import Toggle from "@/components/ui/Toggle.vue";
 import { testProgrammingExerciseSolution } from "@/api/exercises";
 import CodeExecutionResults from "@/components/shared/CodeExecutionResults.vue";
 import NumberInput from "@/components/ui/NumberInput.vue";
+import { exerciseValidation } from "@/validation/models";
 const { mapMutations } = createNamespacedHelpers("teacher");
 const { mapState } = createNamespacedHelpers("shared");
 
@@ -601,6 +643,16 @@ export default defineComponent({
     },
   },
   mixins: [courseIdMixin, savingMixin, loadingMixin],
+  validations() {
+    return {
+      modelValue: exerciseValidation,
+    };
+  },
+  setup() {
+    const v = useVuelidate();
+    provide("v$", v);
+    return { v$: v };
+  },
   beforeUnmount() {
     this.ws?.close();
   },
@@ -761,6 +813,7 @@ export default defineComponent({
     onExerciseTypeChange(newVal: ExerciseType) {
       this.onBaseExerciseChange("exercise_type", newVal);
     },
+    /* CRUD on related objects */
     async onAddChoice() {
       const newChoice: ExerciseChoice = await this.addExerciseChoice({
         courseId: this.courseId,
@@ -874,8 +927,12 @@ export default defineComponent({
       this.editingClozePosition =
         (this.modelValue.sub_exercises as Exercise[]).length - 1;
     },
+    /* end CRUD on related objects */
     onExerciseStateChange(newState: ExerciseState) {
-      if (newState != ExerciseState.DRAFT && this.validationErrors.length > 0) {
+      this.v$.$touch();
+
+      // validation errors dialog
+      if (newState != ExerciseState.DRAFT && this.v$.$errors.length > 0) {
         this.showDialog = true;
         this.showValidationErrors = true;
         this.dialogData = {
@@ -890,7 +947,9 @@ export default defineComponent({
         };
         return;
       }
-      if (newState == ExerciseState.PUBLIC) {
+
+      // publish exercise confirmation
+      if (newState === ExerciseState.PUBLIC) {
         this.showDialog = true;
         this.dialogData = {
           title: _("exercise_editor.make_public_confirmation_title"),
