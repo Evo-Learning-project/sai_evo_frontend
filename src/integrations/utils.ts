@@ -1,3 +1,4 @@
+import { CLOZE_SEPARATOR } from "./../const";
 import { Exercise, ExerciseType } from "@/models";
 import { MoodleCategory, MoodleQuestion } from "./interfaces";
 
@@ -31,10 +32,53 @@ export const getExerciseTypeFromMoodleQuestion = (
   return undefined;
 };
 
+const clozeSubQuestionRegex =
+  /\{(\d*\s*):(MULTICHOICE|MC):(=?([^#}]*)\s*#?\s*([^~}]*\s*)?)+\}/g;
+
 export const getMoodleClozeQuestionsAsExercises = (
   q: MoodleQuestion
 ): Exercise[] => {
-  return [];
+  const answerRegex = /(=?)\s*(%[-\d]+%)?([^~]+)/;
+
+  const ret = [] as Exercise[];
+  let childCount = 0;
+
+  const matches = q.questiontext[0].text[0].matchAll(clozeSubQuestionRegex);
+  for (const match of matches) {
+    const childWeight = match[1];
+
+    const child: Exercise = {
+      id: "",
+      text: "",
+      exercise_type: ExerciseType.MULTIPLE_CHOICE_SINGLE_POSSIBLE,
+      choices: [],
+      child_weight: childWeight ? parseFloat(childWeight) : undefined,
+    };
+    const answers = match[3].split("~");
+    for (const answer of answers) {
+      console.log(answer);
+      const answerMatch = answer.match(answerRegex) as RegExpMatchArray;
+      const isCorrectAnswer = answerMatch[1] === "=";
+      const answerScore = (answerMatch[2] ?? "").replace(/%/g, ""); // TODO check validity
+      const answerText = answerMatch[3] as string;
+
+      child.choices?.push({
+        text: answerText,
+        id: "",
+        correctness_percentage: isCorrectAnswer
+          ? 100
+          : parseFloat(answerScore) || 0,
+      });
+    }
+    childCount++;
+    ret.push(child);
+  }
+  ret.forEach((e) => {
+    if (typeof e.child_weight === "undefined") {
+      e.child_weight = 100 / childCount;
+    }
+  });
+  return ret;
 };
 
 export const processMoodleQuestionText = (q: MoodleQuestion): string => {
@@ -47,12 +91,15 @@ export const processMoodleQuestionText = (q: MoodleQuestion): string => {
   const ret = q.questiontext[0].text[0];
 
   const imgRegex = /<img[^>]+src="?([^"\s]+)"?[^>]*\/?>/g;
-  return ret.replace(imgRegex, (_, src: string) => {
-    console.log("IMG", src, "MATCH", _);
-    return `<img src="data:image/jpeg;base64,${
-      fileNamesAndContents.find(
-        (f) => f.name === src.substring("@@PLUGINFILE@@/".length)
-      )?.content ?? ""
-    }" />`;
-  });
+  return ret
+    .replace(clozeSubQuestionRegex, CLOZE_SEPARATOR)
+    .replace(
+      imgRegex,
+      (_, src: string) =>
+        `<img src="data:image/jpeg;base64,${
+          fileNamesAndContents.find(
+            (f) => f.name === src.substring("@@PLUGINFILE@@/".length)
+          )?.content ?? ""
+        }" />`
+    );
 };

@@ -8,17 +8,14 @@
         />
       </div>
     </template>
-    <template #solution>
+    <template #extras v-if="showScores">
       <div class="mt-4">
         <p class="ml-2 text-sm text-muted">
           {{ $t("misc.correct_answers") }}
         </p>
         <div class="w-full px-4 py-2 rounded bg-gray-50">
           <ul>
-            <li
-              v-for="choiceId in getCorrectChoices()"
-              :key="'corr-' + choiceId"
-            >
+            <li v-for="choiceId in correctChoices" :key="'corr-' + choiceId">
               {{ getChoice(choiceId).text }}
             </li>
           </ul>
@@ -42,6 +39,7 @@
 </template>
 
 <script lang="ts">
+/* eslint-disable no-constant-condition */
 import { ESCAPED_CLOZE_SEPARATOR } from "@/const";
 import {
   EventParticipationSlot,
@@ -54,6 +52,7 @@ import AbstractExercise from "./AbstractExercise.vue";
 import VRuntimeTemplate from "vue3-runtime-template";
 import { getTranslatedString } from "@/i18n";
 import ProcessedTextFragment from "@/components/ui/ProcessedTextFragment.vue";
+import { getCorrectChoices } from "./utils";
 
 export default defineComponent({
   name: "ClozeExercise",
@@ -91,9 +90,7 @@ export default defineComponent({
         ],
       });
     },
-    getCorrectChoices(): string[] {
-      return [];
-    },
+
     getChoice(choiceId: string) {
       return this.exercise.sub_exercises
         ?.flatMap((s) => s.choices ?? [])
@@ -103,6 +100,9 @@ export default defineComponent({
   computed: {
     exercise(): Exercise {
       return this.slot?.exercise;
+    },
+    correctChoices(): string[] {
+      return getCorrectChoices(this.exercise);
     },
     textTemplate(): string {
       // Returns a template to be compiled and embedded as the exercise
@@ -115,7 +115,7 @@ export default defineComponent({
           const ret = this.slot.sub_slots[i]
             ? `
             <select
-                ${this.readOnly ? 'disabled="true"' : ""}
+                ${false && this.readOnly ? 'disabled="true"' : ""}
                 class="inline material-select"
                 value="${this.slot.sub_slots[i]?.selected_choices[0] ?? ""}"
                 ${
@@ -141,7 +141,7 @@ export default defineComponent({
             ` +
               (this.showScores
                 ? `<span class="ml-2 text-base material-icons-outlined ${
-                    this.getCorrectChoices().includes(
+                    this.correctChoices.includes(
                       this.slot.sub_slots[i].selected_choices[0] ?? ""
                     )
                       ? "text-success"
@@ -149,7 +149,7 @@ export default defineComponent({
                   }"
             >
                 ${
-                  this.getCorrectChoices().includes(
+                  this.correctChoices.includes(
                     this.slot.sub_slots[i].selected_choices[0] ?? ""
                   )
                     ? "done"
