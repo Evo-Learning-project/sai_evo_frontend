@@ -1,7 +1,9 @@
 import { Exercise, ExerciseState, ExerciseType } from "@/models";
 import {
   getExerciseTypeFromMoodleQuestion,
+  getMoodleClozeQuestionsAsExercises,
   getTagsFromMoodleCategory,
+  processMoodleQuestionText,
   xmlToJson,
 } from "./utils";
 import { ImportedExerciseData, MoodleQuestion } from "./interfaces";
@@ -48,17 +50,13 @@ const importExercisesFromMoodleXml = async (
         id: "",
         state: ExerciseState.DRAFT,
         label: q.name[0].text[0],
-        text: q.questiontext[0].text[0],
+        text: processMoodleQuestionText(q),
         exercise_type: exerciseType,
-        choices: q.answer.map((a) => ({
+        choices: (q.answer ?? []).map((a) => ({
           text: a.text[0],
           correctness_percentage: parseFloat(a.$.fraction) * 100,
-          // score_unselected: 0,
-          // score_selected:
-          //   Math.floor(
-          //     parseFloat(q.defaultgrade[0]) * parseFloat(a.$.fraction) * 100
-          //   ) / 10000,
         })),
+        sub_exercises: getMoodleClozeQuestionsAsExercises(q),
       } as Exercise);
     }
   });
