@@ -47,6 +47,8 @@
         ></ProcessedTextFragment>
       </div>
     </slot>
+
+    <slot name="extras"></slot>
   </div>
 </template>
 
