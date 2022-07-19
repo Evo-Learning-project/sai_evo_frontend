@@ -205,10 +205,13 @@
           </TextEditor>
           <!--<textarea :value="modelValue.text"></textarea>-->
           <div
-            class="flex flex-wrap space-y-1 md:space-x-2 md:space-y-0"
+            class="flex items-start w-full space-y-1 md:space-y-0"
             v-if="modelValue.exercise_type === ExerciseType.COMPLETION"
           >
-            <Btn @click="onAddCloze()" :variant="'secondary'"
+            <Btn
+              @click="onAddCloze()"
+              :variant="'secondary'"
+              class="w-1/2 2xl:w-1/3"
               ><span class="mr-1.5 text-base material-icons-outlined">
                 add </span
               >{{ $t("exercise_editor.new_cloze") }}</Btn
@@ -216,12 +219,25 @@
             <Btn
               :outline="true"
               :disabled="editableClozePosition === null"
+              class="w-1/2 ml-2 mr-auto 2xl:w-1/3"
               @click="editingClozePosition = editableClozePosition"
               ><span class="mr-1.5 text-base material-icons-outlined">
                 edit </span
               >{{ $t("exercise_editor.edit_cloze") }}</Btn
             >
-            <Tooltip class="" :text-code="'exercise_editor.clozes'"></Tooltip>
+            <!-- <Tooltip
+              :placement="'top'"
+              :text-code="'exercise_editor.clozes'"
+            ></Tooltip> -->
+            <div class="flex items-start ml-4">
+              <span
+                class="mt-1.25px material-icons-outlined inline-icon text-muted"
+                >info</span
+              >
+              <p class="ml-1.5 text-sm text-muted">
+                {{ $t("help_texts.exercise_editor.clozes") }}
+              </p>
+            </div>
           </div>
           <div v-if="!cloze">
             <TextEditor
@@ -366,6 +382,19 @@
               </div>
             </div>
           </div>
+          <div
+            v-if="showNoChoicePenaltyWarning"
+            class="mb-8 -mt-4 banner banner-danger"
+          >
+            <span class="material-icons-outlined">warning</span>
+            <p>
+              {{ $t("exercise_editor.no_choice_penalty_warning") }}
+              <ArticleHandle
+                :articleId="'multiple_choice_eval_logic'"
+              ></ArticleHandle
+              >.
+            </p>
+          </div>
           <draggable
             handle=".drag-handle"
             :modelValue="modelValue.choices"
@@ -375,7 +404,10 @@
           >
             <template #item="{ element }">
               <ChoiceEditor
-                :single-line="cloze"
+                :singleLine="cloze"
+                :invalidCorrectnessPercentage="
+                  !!choicesCorrectnessPercentageError
+                "
                 :modelValue="element"
                 @delete="onDeleteChoice(element.id)"
                 @choiceUpdate="
@@ -482,11 +514,12 @@
             {{ $t("exercise_editor.editing_cloze") }}
             {{ editingClozePosition + 1 }}
           </template>
-          <template v-slot:body>
+          <template v-slot:body v-if="!!editingCloze">
             <ExerciseEditor
               :modelValue="editingCloze"
-              :sub-exercise="true"
+              :subExercise="true"
               :cloze="true"
+              :invalidChildWeight="!!childWeightError"
             ></ExerciseEditor
           ></template>
         </Dialog>
@@ -604,6 +637,7 @@ import { testProgrammingExerciseSolution } from "@/api/exercises";
 import CodeExecutionResults from "@/components/shared/CodeExecutionResults.vue";
 import NumberInput from "@/components/ui/NumberInput.vue";
 import { exerciseValidation } from "@/validation/models";
+import ArticleHandle from "@/components/shared/HelpCenter/ArticleHandle.vue";
 const { mapMutations } = createNamespacedHelpers("teacher");
 const { mapState } = createNamespacedHelpers("shared");
 
@@ -626,6 +660,7 @@ export default defineComponent({
     Toggle,
     CodeExecutionResults,
     NumberInput,
+    ArticleHandle,
   },
   props: {
     modelValue: {
@@ -656,7 +691,7 @@ export default defineComponent({
   },
   setup() {
     const v = useVuelidate();
-    provide("v$", v);
+    //provide("v$", v);
     return { v$: v };
   },
   beforeUnmount() {
@@ -691,6 +726,11 @@ export default defineComponent({
     this.modelValue.testcases?.forEach((t) =>
       this.instantiateTestCaseAutoSaveManager(t)
     );
+  },
+  mounted() {
+    if (this.cloze) {
+      (this.v$ as any).$touch();
+    }
   },
   data() {
     return {
@@ -1039,6 +1079,16 @@ export default defineComponent({
   },
   computed: {
     ...mapState(["tags", "user"]),
+    showNoChoicePenaltyWarning(): boolean {
+      return (
+        this.modelValue.exercise_type ===
+          ExerciseType.MULTIPLE_CHOICE_MULTIPLE_POSSIBLE &&
+        !this.v$.$invalid &&
+        !(this.modelValue.choices ?? []).some(
+          (c) => (c.correctness_percentage ?? 0) < 0
+        )
+      );
+    },
     isMultipleChoice(): boolean {
       return multipleChoiceExerciseTypes.includes(
         parseInt((this.modelValue.exercise_type?.toString() ?? "") as string)
@@ -1077,6 +1127,14 @@ export default defineComponent({
     childWeightError() {
       return (this.v$ as any).modelValue.$errors.find((e: any) =>
         ["modelValue.sub_exercises-subExerciseWeightAddsUp"].includes(e.$uid)
+      );
+    },
+    choicesCorrectnessPercentageError() {
+      return (this.v$ as any).modelValue.$errors.find((e: any) =>
+        [
+          "modelValue.choices-choiceCorrectnessAddsUp",
+          "modelValue.choices-atLeastOneCorrectChoice",
+        ].includes(e.$uid)
       );
     },
   },

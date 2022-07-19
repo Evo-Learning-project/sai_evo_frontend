@@ -628,6 +628,8 @@ export const it = {
     delete_choice: "Elimina scelta",
     delete_testcase: "Elimina test case",
     clone_confirm: "Sei sicuro di voler clonare",
+    no_choice_penalty_warning:
+      "Non hai impostato una penalità (percentuale punteggio negativa) per alcuna scelta. Gli studenti potranno ottenere il punteggio massimo per questo esercizio selezionando tutte le scelte disponibili.",
   },
   exercise_wrapper: {
     select: "Seleziona",
@@ -770,6 +772,12 @@ export const it = {
         "sub_exercises-$each":
           "Alcuni sotto-esercizi non sono configurati correttamente.",
       },
+      choice: {
+        choice: {
+          "text-required": "Il testo della scelta non può essere vuoto.",
+        },
+        "text-required": "Il testo della scelta non può essere vuoto.",
+      },
     },
     course: {
       "name-required": "Il nome del corso non può essere vuoto",
@@ -898,6 +906,8 @@ export const it = {
         "Se pubblichi questo esercizio, i tag pubblici potranno essere utilizzati dagli studenti per cercarlo quando compongono un'esercitazione",
       private_tags:
         "Questi tag non verranno mai mostrati agli studenti e possono essere utilizzati per organizzare gli esercizi e aggiungerli agli esami",
+      clozes:
+        "Per aggiungere una sotto-domanda, posiziona il cursore nella posizione del testo dove vuoi aggiungerla e clicca Aggiungi domanda. Per modificare una sotto-domanda, clicca sul simbolo [[?]] corrispondente e clicca Modifica domanda.",
     },
     copy_exam_link: "Copia link all'esame",
     stats: "Statistiche esame",

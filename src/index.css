@@ -114,7 +114,7 @@
   }
 
   .error-msg {
-    @apply text-danger-dark;
+    @apply font-light text-danger-dark;
   }
   
   /*------*/

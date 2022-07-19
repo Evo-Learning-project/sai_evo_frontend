@@ -22,20 +22,42 @@
     </div>
     <TextEditor
       v-if="!singleLine"
-      class="w-full md:w-10/12"
+      class="w-full md:w-9/12"
       :modelValue="modelValue.text"
       @update:modelValue="onUpdate('text', $event)"
-      >{{ $t("exercise_editor.choice_text") }}</TextEditor
+      >{{ $t("exercise_editor.choice_text") }}
+      <template v-if="v$.choice.text.$errors.length > 0" v-slot:errors>
+        <div
+          class="input-errors"
+          v-for="error of v$.choice.text.$errors"
+          :key="error.$uid"
+        >
+          <div class="error-msg">
+            {{ $t("validation_errors.exercise.choice." + error.$uid) }}
+          </div>
+        </div>
+      </template></TextEditor
     >
     <TextInput
       v-else
-      class="w-full md:w-10/12"
+      class="w-full md:w-9/12"
       :modelValue="modelValue.text"
       @update:modelValue="onUpdate('text', $event)"
-      >{{ $t("exercise_editor.choice_text") }}</TextInput
+      >{{ $t("exercise_editor.choice_text") }}
+      <template v-if="v$.choice.text.$errors.length > 0" v-slot:errors>
+        <div
+          class="input-errors"
+          v-for="error of v$.choice.text.$errors"
+          :key="error.$uid"
+        >
+          <div class="error-msg">
+            {{ $t("validation_errors.exercise.choice." + error.$uid) }}
+          </div>
+        </div>
+      </template></TextInput
     >
 
-    <div class="md:w-2/12">
+    <div class="md:w-3/12">
       <NumberInput
         class="mb-auto"
         :iconFilled="true"
@@ -61,7 +83,9 @@
           ></Tooltip>
         </div>
         <!-- highlight in red if there's a score-related error -->
-        <template #errors v-if="correctnessPercentageError"> &nbsp; </template>
+        <template #errors v-if="invalidCorrectnessPercentage">
+          &nbsp;
+        </template>
       </NumberInput>
     </div>
     <div class="my-auto">
@@ -93,6 +117,8 @@ import NumberInput from "@/components/ui/NumberInput.vue";
 import Tooltip from "@/components/ui/Tooltip.vue";
 import TextInput from "@/components/ui/TextInput.vue";
 import Btn from "@/components/ui/Btn.vue";
+import useVuelidate from "@vuelidate/core";
+import { exerciseChoiceValidation } from "@/validation/models";
 
 export default defineComponent({
   name: "ChoiceEditor",
@@ -109,11 +135,20 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
+    invalidCorrectnessPercentage: {
+      type: Boolean,
+      default: false,
+    },
+  },
+  validations() {
+    return {
+      choice: exerciseChoiceValidation,
+    };
   },
   setup() {
-    return {
-      v$: inject("v$"),
-    };
+    const v = useVuelidate();
+    // provide("v$", v);
+    return { v$: v };
   },
   components: {
     TextEditor,
@@ -129,13 +164,8 @@ export default defineComponent({
     },
   },
   computed: {
-    correctnessPercentageError() {
-      return (this.v$ as any).modelValue.choices.$errors.find((e: any) =>
-        [
-          "modelValue.choices-choiceCorrectnessAddsUp",
-          "modelValue.choices-atLeastOneCorrectChoice",
-        ].includes(e.$uid)
-      );
+    choice() {
+      return this.modelValue;
     },
   },
 });

@@ -24,6 +24,12 @@ const getSidebarOptionHtml = (routeName: string): string => {
 
 export const articles: HelpCenterArticle[] = [
   {
+    id: "multiple_choice_eval_logic",
+    title: "Come sono valutate le risposte a scelta multipla?",
+    content: ``,
+    tags: ["exercises"],
+  },
+  {
     id: "what_are_tags_for",
     title: "A cosa servono i tag negli esercizi?",
     content: `<div>

@@ -85,6 +85,6 @@ export const exerciseValidation = {
   ...baseExerciseValidation,
   sub_exercises: {
     subExerciseWeightAddsUp,
-    $each: helpers.forEach(baseExerciseValidation as any),
+    // $each: helpers.forEach(baseExerciseValidation as any),
   },
 };

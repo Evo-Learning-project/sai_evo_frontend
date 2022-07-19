@@ -113,7 +113,7 @@ export default defineComponent({
         return this.modelValue;
       },
       set(value: any) {
-        console.log(value, typeof value, Number(value));
+        // TODO allow 2 decimal digits with "^\d*(\.\d{0,2})?$"
         this.$emit("update:modelValue", value);
       },
     },
