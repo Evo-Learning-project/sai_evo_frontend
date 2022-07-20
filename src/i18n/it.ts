@@ -629,7 +629,7 @@ export const it = {
     delete_testcase: "Elimina test case",
     clone_confirm: "Sei sicuro di voler clonare",
     no_choice_penalty_warning:
-      "Non hai impostato una penalità (percentuale punteggio negativa) per alcuna scelta. Gli studenti potranno ottenere il punteggio massimo per questo esercizio selezionando tutte le scelte disponibili.",
+      "Non hai impostato una penalità (punteggio negativo) per alcuna scelta. Gli studenti potranno ottenere il punteggio massimo per questo esercizio selezionando tutte le scelte disponibili.",
   },
   exercise_wrapper: {
     select: "Seleziona",

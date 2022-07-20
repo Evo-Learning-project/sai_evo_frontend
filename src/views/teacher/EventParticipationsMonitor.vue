@@ -438,7 +438,8 @@ export default defineComponent({
         courseId: this.courseId,
         eventId: this.eventId,
       });
-      this.gridApi.refreshCells({ force: true });
+      // TODO gridApi could be null (doesn't really happen in production) - what did this line solve?
+      //this.gridApi.refreshCells({ force: true });
 
       await this.getEvent({
         courseId: this.courseId,
