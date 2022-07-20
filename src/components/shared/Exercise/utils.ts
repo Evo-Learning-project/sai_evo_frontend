@@ -22,7 +22,6 @@ export const getCorrectChoices = (exercise: Exercise): string[] => {
   }
   if (exercise.exercise_type === ExerciseType.MULTIPLE_CHOICE_SINGLE_POSSIBLE) {
     const maxCorrectness = Math.max(...choices.map((c) => c.correctness ?? 0));
-    console.log("mapped", maxCorrectness, choices);
     return choices
       .filter(
         (c) => (c.correctness ?? 0) == maxCorrectness // TODO use === once api normalization is complete

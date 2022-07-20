@@ -14,14 +14,14 @@
           <div v-if="showSolution" class="flex items-center mb-2 space-x-2">
             <p
               :class="{
-                'text-success': description?.[0] === 'done',
-                'text-danger-dark': description?.[0] === 'close',
+                'text-success': description === 'done',
+                'text-danger-dark': description === 'close',
               }"
               class="text-sm font-semibold text-muted material-icons-outlined"
             >
-              {{ description?.[0] }}
+              {{ description }}
             </p>
-            <p class="text-sm text-muted" v-if="nonUniformScores">
+            <!-- <p class="text-sm text-muted" v-if="nonUniformScores">
               {{ description?.[1] }}
               {{
                 $t(
@@ -33,7 +33,7 @@
                   }`
                 )
               }}
-            </p>
+            </p> -->
           </div></template
         ></CheckboxGroup
       >
@@ -51,14 +51,14 @@
           <div v-if="showSolution" class="flex items-center mb-2 space-x-2">
             <p
               :class="{
-                'text-success': description?.[0] === 'done',
-                'text-danger-dark': description?.[0] === 'close',
+                'text-success': description === 'done',
+                'text-danger-dark': description === 'close',
               }"
               class="text-sm font-semibold text-muted material-icons-outlined"
             >
-              {{ description?.[0] }}
+              {{ description }}
             </p>
-            <p
+            <!-- <p
               :id="description?.[3] ?? ''"
               class="text-sm text-muted"
               v-if="nonUniformScores"
@@ -73,8 +73,8 @@
                       : "plural"
                   }`
                 )
-              }}
-            </p>
+              }} 
+            </p>-->
           </div></template
         ></RadioGroup
       >
@@ -97,6 +97,7 @@ import RadioGroup from "@/components/ui/RadioGroup.vue";
 import { SelectableOption } from "@/interfaces";
 import { formatExerciseText } from "@/utils";
 import { exerciseProps } from "./shared";
+import { getCorrectChoices } from "./utils";
 export default defineComponent({
   name: "MultipleChoiceExercise",
   props: {
@@ -120,6 +121,9 @@ export default defineComponent({
         ]);
       },
     },
+    correctChoices(): string[] {
+      return getCorrectChoices(this.exercise);
+    },
     exerciseChoicesAsOptions(): SelectableOption[] {
       if (
         this.exercise.exercise_type !==
@@ -133,35 +137,13 @@ export default defineComponent({
       return (this.exercise.choices as ExerciseChoice[]).map((c) => ({
         value: c.id,
         content: formatExerciseText(c.text),
-        // ...(this.showSolution &&
-        // String(c.score_selected ?? "").length > 0 &&
-        // String(c.score_unselected ?? "").length > 0
-        //   ? {
-        //       description: [
-        //         (this.exercise.correct_choices ?? []).length > 0
-        //           ? this.exercise.correct_choices?.includes(c.id)
-        //             ? "done"
-        //             : "close"
-        //           : "",
-        //         String(c.score_selected),
-        //         String(c.score_unselected),
-        //         c.id,
-        //       ],
-        //     }
-        //   : {}),
+        description: this.showSolution
+          ? this.correctChoices.includes(c.id)
+            ? "done"
+            : "close"
+          : "", // TODO instead of putting it in the description, there should be an `extras` parameter
       }));
     },
-    // nonUniformScores(): boolean {
-    //   // Returns whether all choices aside from the correct
-    //   // ones have the same score_selected
-    //   const nonCorrectChoices = (
-    //     this.exercise.choices as ExerciseChoice[]
-    //   ).filter((c) => !this.exercise.correct_choices?.includes(c.id));
-
-    //   return nonCorrectChoices.some(
-    //     (c) => c.score_selected != nonCorrectChoices[0].score_selected
-    //   );
-    // },
   },
   components: { AbstractExercise, CheckboxGroup, RadioGroup },
 });
