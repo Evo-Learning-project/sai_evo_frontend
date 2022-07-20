@@ -65,13 +65,11 @@
             <p :class="{ 'text-muted': slot.score === null }">
               {{
                 slot.score !== null
-                  ? Number.isInteger(parseFloat(slot.score))
-                    ? parseInt(slot.score)
-                    : slot.score
+                  ? slot.score
                   : $t("event_stats.not_yet_assessed")
               }}
               <span v-if="slot.score !== null">{{
-                parseFloat(slot.score) === 1
+                slot.score === 1
                   ? $t("misc.scored_singular")
                   : $t("misc.scored_plural")
               }}</span>

@@ -65,11 +65,7 @@
               <div class="flex items-center">
                 <h4 class="">
                   {{ $t("event_assessment.overall_score") }}:
-                  <strong>{{
-                    Number.isInteger(parseFloat(participation.score))
-                      ? parseInt(participation.score)
-                      : participation.score
-                  }}</strong>
+                  <strong>{{ participation.score }}</strong>
                 </h4>
                 <Btn
                   v-if="allowEditAssessment"

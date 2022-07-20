@@ -1086,7 +1086,7 @@ export default defineComponent({
     },
     isMultipleChoice(): boolean {
       return multipleChoiceExerciseTypes.includes(
-        parseInt((this.modelValue.exercise_type?.toString() ?? "") as string)
+        this.modelValue.exercise_type as ExerciseType
       );
     },
     isProgrammingExercise(): boolean {

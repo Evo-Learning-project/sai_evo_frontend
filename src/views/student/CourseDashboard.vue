@@ -72,7 +72,6 @@
             :margin-less="true"
             class="relative h-40 overflow-hidden text-gray-600 cursor-pointer  md:h-23rem elevate-when-pressed bg-light"
             v-wave
-            @mousedown="onCardMouseDown"
             @click="
               onResumePractice(currentCourse.unstarted_practice_events[0])
             "
@@ -103,7 +102,6 @@
           :border-less="true"
           class="relative h-40 overflow-hidden text-gray-600 cursor-pointer  h-23rem elevate-when-pressed bg-light"
           v-wave
-          @mousedown="onCardMouseDown"
           @click="onCreatePractice()"
         >
           <template v-slot:header>
