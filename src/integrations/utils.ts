@@ -52,7 +52,7 @@ export const getMoodleClozeQuestionsAsExercises = (
       text: "",
       exercise_type: ExerciseType.MULTIPLE_CHOICE_SINGLE_POSSIBLE,
       choices: [],
-      child_weight: childWeight ? parseFloat(childWeight) : undefined,
+      child_weight: childWeight ? parseFloat(childWeight) : undefined, // TODO fix and put 1 as default
     };
     const answers = match[3].split("~");
     for (const answer of answers) {
@@ -65,6 +65,7 @@ export const getMoodleClozeQuestionsAsExercises = (
       child.choices?.push({
         text: answerText,
         id: "",
+        // TODO fix and use 1
         correctness: isCorrectAnswer ? 100 : parseFloat(answerScore) || 0,
       });
     }

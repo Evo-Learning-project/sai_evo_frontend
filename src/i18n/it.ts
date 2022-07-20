@@ -571,6 +571,7 @@ export const it = {
   exercise_editor: {
     exercise_editor_title: "Editor esercizio",
     draft_notice: "Bozza",
+    max_score: "Punteggio massimo",
     choices_title: "Scelte",
     clozes_title: "Gruppi di scelte",
     testcases_title: "Test case",
