@@ -404,9 +404,7 @@
             <template #item="{ element }">
               <ChoiceEditor
                 :singleLine="cloze"
-                :invalidCorrectnessPercentage="
-                  !!choicesCorrectnessPercentageError
-                "
+                :invalidCorrectness="!!choicesCorrectnessError"
                 :modelValue="element"
                 @delete="onDeleteChoice(element.id)"
                 @choiceUpdate="
@@ -1126,12 +1124,9 @@ export default defineComponent({
         ["modelValue.sub_exercises-subExerciseWeightAddsUp"].includes(e.$uid)
       );
     },
-    choicesCorrectnessPercentageError() {
+    choicesCorrectnessError() {
       return (this.v$ as any).modelValue.$errors.find((e: any) =>
-        [
-          "modelValue.choices-choiceCorrectnessAddsUp",
-          "modelValue.choices-atLeastOneCorrectChoice",
-        ].includes(e.$uid)
+        ["modelValue.choices-atLeastOneCorrectChoice"].includes(e.$uid)
       );
     },
   },

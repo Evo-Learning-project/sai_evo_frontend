@@ -209,6 +209,7 @@ const { mapGetters, mapMutations } = createNamespacedHelpers("teacher");
 import useVuelidate from "@vuelidate/core";
 import { eventValidation } from "@/validation/models";
 import NumberInput from "@/components/ui/NumberInput.vue";
+import { roundToTwoDecimals } from "@/utils";
 
 export default defineComponent({
   setup() {
@@ -370,10 +371,11 @@ export default defineComponent({
       return this.event(this.eventId);
     },
     computedMaxScore(): number {
-      // modelValue.max_score ?? 0
-      return (this.modelValue.template?.rules ?? [])
-        .map((r) => r.weight * r.amount)
-        .reduce((a, b) => a + b, 0);
+      return roundToTwoDecimals(
+        (this.modelValue.template?.rules ?? [])
+          .map((r) => r.weight * r.amount)
+          .reduce((a, b) => a + b, 0)
+      );
     },
     modelValueTemplate(): EventTemplate {
       // return a blank object until the event has been retrieved

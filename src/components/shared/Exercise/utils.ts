@@ -21,13 +21,11 @@ export const getCorrectChoices = (exercise: Exercise): string[] => {
     return choices.filter((c) => (c.correctness ?? 0) >= 0).map((c) => c.id);
   }
   if (exercise.exercise_type === ExerciseType.MULTIPLE_CHOICE_SINGLE_POSSIBLE) {
-    const maxCorrectnessPercentage = Math.max(
-      ...choices.map((c) => c.correctness ?? 0)
-    );
-    console.log("mapped", maxCorrectnessPercentage, choices);
+    const maxCorrectness = Math.max(...choices.map((c) => c.correctness ?? 0));
+    console.log("mapped", maxCorrectness, choices);
     return choices
       .filter(
-        (c) => (c.correctness ?? 0) == maxCorrectnessPercentage // TODO use === once api normalization is complete
+        (c) => (c.correctness ?? 0) == maxCorrectness // TODO use === once api normalization is complete
       )
       .map((c) => c.id);
   }
