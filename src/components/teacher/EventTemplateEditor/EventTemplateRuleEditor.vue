@@ -1,7 +1,7 @@
 <template>
   <div>
     <div
-      class="h-full my-3 transition-shadow duration-75 ease-in-out  card shadow-elevation hover-shadow-elevation-2"
+      class="h-full py-6 my-3 transition-shadow duration-75 ease-in-out  card shadow-elevation hover-shadow-elevation-2"
     >
       <div class="flex flex-col w-full md:items-center md:flex-row">
         <div class="flex md:w-1/3 md:mr-auto">
@@ -40,10 +40,19 @@
             :min="0"
             class="my-4 md:ml-auto md:my-0"
             :class="{ 'md:w-1/4': !reduced, 'md:w-1/2': reduced }"
-            :modelValue="modelValue.max_score ?? 0"
-            @update:modelValue="emitUpdate('max_score', $event)"
+            :modelValue="modelValue.weight ?? 0"
+            @update:modelValue="emitUpdate('weight', $event)"
           >
-            {{ $t("event_template_rule_editor.max_score") }}
+            <div class="flex space-x-1">
+              <p>
+                {{ $t("event_template_rule_editor.weight") }}
+              </p>
+              <Tooltip
+                :placement="'top'"
+                class="transform scale-125"
+                :text-code="'event_template_rule_editor.weight'"
+              ></Tooltip>
+            </div>
           </NumberInput>
           <div class="flex items-center space-x-2">
             <!-- settings button -->
@@ -370,6 +379,7 @@ import { getTranslatedString as _ } from "@/i18n";
 import useVuelidate from "@vuelidate/core";
 import { eventTemplateRuleValidation } from "@/validation/models";
 import NumberInput from "@/components/ui/NumberInput.vue";
+import Tooltip from "@/components/ui/Tooltip.vue";
 
 export default defineComponent({
   components: {
@@ -381,6 +391,7 @@ export default defineComponent({
     TagBasedEventTemplateRuleEditor,
     Tag,
     NumberInput,
+    Tooltip,
   },
   name: "EventTemplateRuleEditor",
   setup() {

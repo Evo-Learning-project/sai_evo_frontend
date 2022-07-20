@@ -54,7 +54,7 @@ const importExercisesFromMoodleXml = async (
         exercise_type: exerciseType,
         choices: (q.answer ?? []).map((a) => ({
           text: a.text[0],
-          correctness_percentage: parseFloat(a.$.fraction) * 100,
+          correctness: parseFloat(a.$.fraction) * 100,
         })),
         sub_exercises: getMoodleClozeQuestionsAsExercises(q),
       } as Exercise);

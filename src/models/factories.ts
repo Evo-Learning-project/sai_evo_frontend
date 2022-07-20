@@ -28,7 +28,7 @@ export const getBlankCourse = (): Course => ({
 export const getBlankChoice = (): ExerciseChoice => ({
   id: "",
   text: "",
-  correctness_percentage: 0,
+  correctness: 0,
   // score_selected: 0,
   // score_unselected: 0,
 });
@@ -96,7 +96,7 @@ export const getBlankEventTemplateRule = (
 ): EventTemplateRule => ({
   id: "",
   amount: initialAmount ?? 1,
-  max_score: 1,
+  weight: 1,
   rule_type,
 });
 

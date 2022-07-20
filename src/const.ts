@@ -40,7 +40,7 @@ export const EXERCISE_AUTO_SAVE_DEBOUNCED_FIELDS: FieldList<Exercise> = [
 
 export const EXERCISE_CHOICE_AUTO_SAVE_DEBOUNCE_TIME_MS = 3000;
 export const EXERCISE_CHOICE_AUTO_SAVE_DEBOUNCED_FIELDS: FieldList<ExerciseChoice> =
-  ["text", "correctness_percentage"];
+  ["text", "correctness"];
 
 export const EVENT_PARTICIPATION_SLOT_DEBOUNCE_TIME_MS = 10000;
 export const EVENT_PARTICIPATION_SLOT_DEBOUNCED_FIELDS: FieldList<EventParticipationSlot> =

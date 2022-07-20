@@ -372,7 +372,7 @@ export default defineComponent({
     computedMaxScore(): number {
       // modelValue.max_score ?? 0
       return (this.modelValue.template?.rules ?? [])
-        .map((r) => r.max_score * r.amount)
+        .map((r) => r.weight * r.amount)
         .reduce((a, b) => a + b, 0);
     },
     modelValueTemplate(): EventTemplate {

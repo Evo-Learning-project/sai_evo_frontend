@@ -52,56 +52,11 @@ export const atLeastOneCorrectChoice = (
   choices: ExerciseChoice[],
   exercise: Exercise
 ) => {
-  if (exercise.exercise_type !== ExerciseType.MULTIPLE_CHOICE_SINGLE_POSSIBLE) {
-    return true;
-  }
-  return choices.some((c) => (c.correctness_percentage ?? 0) === 100);
-};
-
-export const choiceCorrectnessAddsUp = (
-  choices: ExerciseChoice[],
-  exercise: Exercise
-) => {
   if (
+    exercise.exercise_type !== ExerciseType.MULTIPLE_CHOICE_SINGLE_POSSIBLE &&
     exercise.exercise_type !== ExerciseType.MULTIPLE_CHOICE_MULTIPLE_POSSIBLE
   ) {
     return true;
   }
-  // check that, for checkbox exercises, the correctness_percentage values of
-  // the correct choices (i.e. those with a strictly positive value) add
-  // up to 100% +- 0.01%
-  // TODO review this logic
-  return (
-    Math.abs(
-      100 -
-        choices
-          .filter((c) => (c.correctness_percentage ?? 0) > 0)
-          .map((c) => c.correctness_percentage ?? 0)
-          .reduce((a, b) => a + b, 0)
-    ) <= 0.01
-  );
-};
-
-export const subExerciseWeightAddsUp = (
-  subExercises: Exercise[],
-  exercise: Exercise
-) => {
-  if (
-    ![ExerciseType.AGGREGATED, ExerciseType.COMPLETION].includes(
-      exercise.exercise_type as ExerciseType
-    )
-  ) {
-    return true;
-  }
-  // check that, for checkbox exercises, the child_weight values of
-  // the sub-exercises add up to 100% +- 0.01%
-  // TODO review this logic
-  return (
-    Math.abs(
-      100 -
-        (exercise.sub_exercises ?? [])
-          .map((s) => s.child_weight ?? 0)
-          .reduce((a, b) => a + b, 0)
-    ) <= 0.01
-  );
+  return choices.some((c) => (c.correctness ?? 0) > 0);
 };

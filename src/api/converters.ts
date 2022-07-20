@@ -18,11 +18,11 @@ export const normalizeIncomingExerciseChoice = (
   choice: ExerciseChoice
 ): ExerciseChoice => ({
   ...choice,
-  ...(typeof choice.correctness_percentage === "undefined"
+  ...(typeof choice.correctness === "undefined"
     ? {}
     : {
-        correctness_percentage: normalizeOptionalStringContainingNumber(
-          choice.correctness_percentage
+        correctness: normalizeOptionalStringContainingNumber(
+          choice.correctness
         ) as number,
       }),
 });

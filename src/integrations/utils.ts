@@ -65,9 +65,7 @@ export const getMoodleClozeQuestionsAsExercises = (
       child.choices?.push({
         text: answerText,
         id: "",
-        correctness_percentage: isCorrectAnswer
-          ? 100
-          : parseFloat(answerScore) || 0,
+        correctness: isCorrectAnswer ? 100 : parseFloat(answerScore) || 0,
       });
     }
     childCount++;
