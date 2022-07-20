@@ -469,7 +469,7 @@
           >
         </div>
 
-        <!-- programming exercise settings -->
+        <!-- Programming exercise settings -->
         <div class="mt-8" v-if="isProgrammingExercise">
           <h3 class="mb-8">{{ $t("exercise_editor.testcases_title") }}</h3>
 
@@ -500,6 +500,7 @@
             {{ $t("exercise_editor.new_testcase") }}</Btn
           >
         </div>
+
         <Dialog
           :large="true"
           :confirmOnly="true"
@@ -545,8 +546,18 @@
             </div>
           </template>
         </Dialog>
-        <div v-if="!subExercise" class="flex w-full mt-4">
+
+        <!-- bottom bar -->
+        <div class="flex w-full mt-10">
+          <div v-if="maxScore !== null" class="flex items-center">
+            <h4>{{ $t("exercise_editor.max_score") }}</h4>
+            <div class="ml-2">
+              <span class="text-lg text-muted">{{ maxScore }}</span>
+            </div>
+            <!-- TODO add tooltip explaining this is not the actual grade in the exam -->
+          </div>
           <Btn
+            v-if="!subExercise"
             style="margin-top: 1px"
             class="ml-auto"
             :outline="true"
@@ -559,6 +570,7 @@
             </span></Btn
           >
           <Btn
+            v-if="!subExercise"
             class="ml-5"
             :outline="true"
             :size="'lg'"
@@ -587,7 +599,6 @@ import {
   Exercise,
   ExerciseState,
   ExerciseChoice,
-  getExerciseValidationErrors,
   ExerciseType,
   ExerciseTestCase,
   getBlankTestCase,
@@ -635,6 +646,11 @@ import CodeExecutionResults from "@/components/shared/CodeExecutionResults.vue";
 import NumberInput from "@/components/ui/NumberInput.vue";
 import { exerciseValidation } from "@/validation/models";
 import ArticleHandle from "@/components/shared/HelpCenter/ArticleHandle.vue";
+import {
+  getMaxScore,
+  isMultipleChoiceExercise,
+  isProgrammingExercise,
+} from "@/components/shared/Exercise/utils";
 const { mapMutations } = createNamespacedHelpers("teacher");
 const { mapState } = createNamespacedHelpers("shared");
 
@@ -1085,19 +1101,13 @@ export default defineComponent({
       );
     },
     isMultipleChoice(): boolean {
-      return multipleChoiceExerciseTypes.includes(
-        this.modelValue.exercise_type as ExerciseType
-      );
+      return isMultipleChoiceExercise(this.modelValue);
     },
     isProgrammingExercise(): boolean {
-      return programmingExerciseTypes.includes(
-        this.modelValue.exercise_type as ExerciseType
-      );
+      return isProgrammingExercise(this.modelValue);
     },
-    validationErrors() {
-      return getExerciseValidationErrors(this.modelValue).map((e) =>
-        _("exercise_validation_errors." + e)
-      );
+    maxScore(): number | null {
+      return getMaxScore(this.modelValue);
     },
     exerciseTypeOptions() {
       return exerciseTypeOptions.filter(
