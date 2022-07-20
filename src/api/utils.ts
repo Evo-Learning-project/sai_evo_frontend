@@ -141,11 +141,3 @@ export const normalizeOptionalStringContainingNumber = (
   // if strVal represents a number, return it as a number
   return parseFloat(strVal);
 };
-
-// if given a string
-export const truncateDecimalZeroes = (val: string | number) =>
-  !isNumeric(val)
-    ? val
-    : Number.isInteger(parseFloat(String(val)))
-    ? parseInt(String(val))
-    : val;

@@ -299,10 +299,6 @@ export const getEventParticipationMonitorHeaders = (
       width: 60,
       resizable: true,
       headerName: _("event_participation_headings.grade"),
-      cellRenderer: (params: any) =>
-        Number.isInteger(parseFloat(params.value))
-          ? parseInt(params.value)
-          : params.value,
     });
   }
 
@@ -341,9 +337,7 @@ const renderEventParticipationSlotCell =
     }">
                   ${
                     resultsMode
-                      ? Number.isInteger(parseFloat(params.value.score))
-                        ? parseInt(params.value.score)
-                        : params.value.score ?? "pending_actions"
+                      ? params.value.score ?? "pending_actions"
                       : params.value.has_answer
                       ? "done"
                       : "remove"

@@ -20,7 +20,6 @@ import {
   getEventUrlQueryParams,
   tagIdsToTags,
   tagNamesToTags,
-  truncateDecimalZeroes,
 } from "./utils";
 
 export async function getEvents(
@@ -38,18 +37,7 @@ export async function getEvent(
   eventId: string
 ): Promise<Event> {
   const response = await axios.get(`/courses/${courseId}/events/${eventId}/`);
-  const event = response.data as Event; // TODO this causes errors when 401ing (response undefined)
-
-  const processedRules = convertEventTemplateRules(event.template?.rules);
-
-  const convertedEvent = {
-    ...event,
-    template: {
-      ...event.template,
-      rules: processedRules,
-    },
-  } as Event;
-  return convertedEvent;
+  return normalizeIncomingEvent(response.data);
 }
 
 export async function getEventTemplate(
@@ -143,7 +131,9 @@ export async function getCourseEventParticipations(
       includeDetails ? "?include_details=" + includeDetails : ""
     }${includeEvent ? "&include_event=" + includeEvent : ""}`
   );
-  return response.data;
+  return (response.data as EventParticipation[]).map((p) =>
+    normalizeIncomingEventParticipation(p)
+  );
 }
 
 export async function getEventParticipations(
@@ -157,7 +147,9 @@ export async function getEventParticipations(
       includeDetails ? "?include_details=" + includeDetails : ""
     }${forCsv ? "&for_csv=" + forCsv : ""}`
   );
-  return response.data;
+  return (response.data as EventParticipation[]).map((p) =>
+    normalizeIncomingEventParticipation(p)
+  );
 }
 
 export async function getEventParticipation(
