@@ -1,12 +1,10 @@
 import { helpers, required } from "@vuelidate/validators";
 import {
   atLeastOneCorrectChoice,
-  choiceCorrectnessAddsUp,
   choicesRequiredIfMultipleChoiceExercise,
   courseNameUnique,
   idBasedRulePopulated,
   ruleTypeSet,
-  subExerciseWeightAddsUp,
   tagBasedRulePopulated,
   tagBasedRuleSatisfied,
 } from "./validators";
@@ -77,14 +75,12 @@ export const baseExerciseValidation = {
     $each: helpers.forEach(exerciseChoiceValidation),
     choicesRequiredIfMultipleChoiceExercise,
     atLeastOneCorrectChoice,
-    choiceCorrectnessAddsUp,
   },
 };
 
 export const exerciseValidation = {
   ...baseExerciseValidation,
   sub_exercises: {
-    subExerciseWeightAddsUp,
     // $each: helpers.forEach(baseExerciseValidation as any),
   },
 };

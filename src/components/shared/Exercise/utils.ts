@@ -18,18 +18,16 @@ export const getCorrectChoices = (exercise: Exercise): string[] => {
   if (
     exercise.exercise_type === ExerciseType.MULTIPLE_CHOICE_MULTIPLE_POSSIBLE
   ) {
-    return choices
-      .filter((c) => (c.correctness_percentage ?? 0) >= 0)
-      .map((c) => c.id);
+    return choices.filter((c) => (c.correctness ?? 0) >= 0).map((c) => c.id);
   }
   if (exercise.exercise_type === ExerciseType.MULTIPLE_CHOICE_SINGLE_POSSIBLE) {
     const maxCorrectnessPercentage = Math.max(
-      ...choices.map((c) => c.correctness_percentage ?? 0)
+      ...choices.map((c) => c.correctness ?? 0)
     );
     console.log("mapped", maxCorrectnessPercentage, choices);
     return choices
       .filter(
-        (c) => (c.correctness_percentage ?? 0) == maxCorrectnessPercentage // TODO use === once api normalization is complete
+        (c) => (c.correctness ?? 0) == maxCorrectnessPercentage // TODO use === once api normalization is complete
       )
       .map((c) => c.id);
   }

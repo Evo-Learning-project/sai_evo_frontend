@@ -69,7 +69,7 @@ export interface Exercise extends Orderable, Lockable {
 export interface ExerciseChoice extends Orderable {
   id: string;
   text: string;
-  correctness_percentage?: number;
+  correctness?: number;
 }
 
 // TODO make orderable
@@ -132,7 +132,7 @@ export interface EventTemplateRule extends Orderable {
   clauses?: EventTemplateRuleClause[];
   amount: number;
   satisfying?: EventTemplateRuleSatisfying;
-  max_score: number;
+  weight: number;
 }
 
 export interface EventTemplateRuleClause {
@@ -202,7 +202,7 @@ export interface EventParticipationSlot
   answered_at?: string;
   is_first?: boolean;
   is_last?: boolean;
-  max_score?: number;
+  weight?: number;
 }
 
 export interface CodeExecutionResults {

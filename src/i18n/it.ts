@@ -451,7 +451,7 @@ export const it = {
     articles: "Articoli",
   },
   event_template_rule_editor: {
-    max_score: "Punteggio massimo esercizio",
+    weight: "Peso esercizio",
     reset_slot_settings: "Resetta slot",
     exercise_number: "Slot",
     choose_exercise: "Scegli esercizio",
@@ -584,7 +584,7 @@ export const it = {
     exercise_tags: "Tag",
     exercise_private_tags: "Tag privati",
     choice_text: "Testo",
-    choice_correctness_percentage: "Percentuale punteggio",
+    choice_correctness: "Punteggio",
     choice_score_checked: "Punteggio selez.",
     choice_score_unchecked: "Punteg. non selez.",
     testcase_type: "Visibilità",
@@ -763,12 +763,8 @@ export const it = {
         "choices-choicesRequiredIfMultipleChoiceExercise":
           "L'esercizio deve avere almeno una scelta selezionabile.",
         "choices-atLeastOneCorrectChoice":
-          "L'esercizio deve avere almeno una scelta corretta (con percentuale di punteggio 100%).",
-        "choices-choiceCorrectnessAddsUp":
-          "La somma delle percentuali di punteggio delle scelte corrette deve essere uguale al 100%.",
+          "L'esercizio deve avere almeno una scelta corretta (con punteggio maggiore di 0).",
         "choices-$each": "Alcune scelte non sono configurate correttamente.",
-        "sub_exercises-subExerciseWeightAddsUp":
-          "La somma dei pesi dei sotto-esercizi deve essere uguale al 100%.",
         "sub_exercises-$each":
           "Alcuni sotto-esercizi non sono configurati correttamente.",
       },
@@ -896,9 +892,9 @@ export const it = {
     exercise_editor: {
       label: "Il nome dell'esercizio non viene mai mostrato agli studenti",
       sub_exercise_weight:
-        "Percentuale con cui il punteggio ottenuto in questo sotto-esercizio incide sulla valutazione complessiva dell'esercizio.",
-      score_if_checked:
-        "100% indica risposta corretta. Puoi usare valori negativi per dare una penalità.",
+        "Peso con cui il punteggio ottenuto in questo sotto-esercizio incide sulla valutazione complessiva dell'esercizio.",
+      // score_if_checked:
+      //   "100% indica risposta corretta. Puoi usare valori negativi per dare una penalità.",
       //score_if_unchecked: "Punteggio se la risposta non viene selezionata",
       solution:
         "Se pubblichi questo esercizio, quando viene incluso in un'esercitazione creata da uno studente, la soluzione verrà mostrata al termine della stessa.",
@@ -908,6 +904,9 @@ export const it = {
         "Questi tag non verranno mai mostrati agli studenti e possono essere utilizzati per organizzare gli esercizi e aggiungerli agli esami",
       clozes:
         "Per aggiungere una sotto-domanda, posiziona il cursore nella posizione del testo dove vuoi aggiungerla e clicca Aggiungi domanda. Per modificare una sotto-domanda, clicca sul simbolo [[?]] corrispondente e clicca Modifica domanda.",
+    },
+    event_template_rule_editor: {
+      weight: "Punteggio massimo ottenibile per gli esercizi di questo slot",
     },
     copy_exam_link: "Copia link all'esame",
     stats: "Statistiche esame",

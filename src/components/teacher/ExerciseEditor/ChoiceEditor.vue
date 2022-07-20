@@ -22,7 +22,7 @@
     </div>
     <TextEditor
       v-if="!singleLine"
-      class="w-full md:w-9/12"
+      class="w-full md:w-10/12"
       :modelValue="modelValue.text"
       @update:modelValue="onUpdate('text', $event)"
       >{{ $t("exercise_editor.choice_text") }}
@@ -40,7 +40,7 @@
     >
     <TextInput
       v-else
-      class="w-full md:w-9/12"
+      class="w-full md:w-10/12"
       :modelValue="modelValue.text"
       @update:modelValue="onUpdate('text', $event)"
       >{{ $t("exercise_editor.choice_text") }}
@@ -57,15 +57,14 @@
       </template></TextInput
     >
 
-    <div class="md:w-3/12">
+    <div class="md:w-2/12">
       <NumberInput
         class="mb-auto"
         :iconFilled="true"
         :max="100"
         :min="-100"
-        :rightIcon="'percent'"
-        :modelValue="modelValue.correctness_percentage"
-        @update:modelValue="onUpdate('correctness_percentage', $event)"
+        :modelValue="modelValue.correctness"
+        @update:modelValue="onUpdate('correctness', $event)"
         :leftIcon="
           iconType === 'radio'
             ? 'radio_button_checked'
@@ -75,17 +74,15 @@
         "
       >
         <div class="flex w-full items-center space-x-0.5">
-          <p>{{ $t("exercise_editor.choice_correctness_percentage") }}</p>
-          <Tooltip
+          <p>{{ $t("exercise_editor.choice_correctness") }}</p>
+          <!-- <Tooltip
             :placement="'left'"
             class="-ml-1.5 -mb-1.25px transform scale-125"
             :textCode="'exercise_editor.score_if_checked'"
-          ></Tooltip>
+          ></Tooltip> -->
         </div>
         <!-- highlight in red if there's a score-related error -->
-        <template #errors v-if="invalidCorrectnessPercentage">
-          &nbsp;
-        </template>
+        <template #errors v-if="invalidCorrectness"> &nbsp; </template>
       </NumberInput>
     </div>
     <div class="my-auto">
@@ -135,7 +132,7 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
-    invalidCorrectnessPercentage: {
+    invalidCorrectness: {
       type: Boolean,
       default: false,
     },
@@ -153,7 +150,7 @@ export default defineComponent({
   components: {
     TextEditor,
     NumberInput,
-    Tooltip,
+    //Tooltip,
     TextInput,
     Btn,
   },

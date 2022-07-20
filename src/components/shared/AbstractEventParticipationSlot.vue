@@ -51,7 +51,7 @@
             @toggleExpanded="setAssessmentExpanded($event)"
             @save="onSaveAssessment($event)"
             @updateAssessment="onUpdateAssessment($event)"
-            :maxScore="modelValue.max_score"
+            :maxScore="modelValue.weight"
             :loading="assessmentLoading"
           >
             <template #scoreTitle>

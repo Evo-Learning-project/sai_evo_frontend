@@ -96,7 +96,6 @@
               :modelValue="modelValue.child_weight"
               @update:modelValue="onBaseExerciseChange('child_weight', $event)"
               class="w-full"
-              :rightIcon="'percentage'"
             >
               <div class="flex space-x-1">
                 <p>{{ $t("exercise_editor.sub_exercise_weight") }}</p>
@@ -1084,9 +1083,7 @@ export default defineComponent({
         this.modelValue.exercise_type ===
           ExerciseType.MULTIPLE_CHOICE_MULTIPLE_POSSIBLE &&
         !this.v$.$invalid &&
-        !(this.modelValue.choices ?? []).some(
-          (c) => (c.correctness_percentage ?? 0) < 0
-        )
+        !(this.modelValue.choices ?? []).some((c) => (c.correctness ?? 0) < 0)
       );
     },
     isMultipleChoice(): boolean {

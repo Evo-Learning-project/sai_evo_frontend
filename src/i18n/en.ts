@@ -112,6 +112,9 @@ export const en = {
     no_public_exercises:
       "Non puoi iniziare un'esercitazione perché i docenti del corso non hanno ancora aggiunto esercizi",
   },
+  exercise_preview: {
+    unnamed_exercise: "Unnamed exercise",
+  },
   exercise_editor: {
     exercise_tags: "Tags",
     exercise_editor_title: "Exercise editor",
@@ -127,11 +130,12 @@ export const en = {
     exercise_private_tags: "Private tags",
     choice_text: "Text",
     choice_score: "Score",
+    choice_correctness: "Correctness %",
     edit_non_draft_title: "Modifica di un esercizio non bozza",
     edit_non_draft_body:
       "Stai per modificare un esercizio non in stato di bozza. Potrebbe essere già presente in un esame o essere già stato visto dagli studenti. Sei sicuro di volerlo modificare?",
-    new_choice: "Nuova",
-    new_testcase: "Nuovo",
+    new_choice: "New choice",
+    new_testcase: "New test case",
     cannot_publish: "Non puoi ancora pubblicare questo esercizio",
     cannot_publish_body:
       "Per poter rimuovere lo stato di bozza, correggi i seguenti errori:",
@@ -162,6 +166,7 @@ export const en = {
     [ExerciseState.DRAFT]: "Draft",
   },
   misc: {
+    having_troubles_with_editor: "Having problems with the editor?",
     tags: "Tags",
     example: "Example",
     score: "Score",
@@ -174,7 +179,8 @@ export const en = {
   help_texts: {
     student_practice_rule_amount: "Quanti esercizi con questo tag vuoi vedere?",
     exercise_editor: {
-      score_if_checked: "Punteggio se la risposta viene selezionata",
+      score_if_checked:
+        "100% means correct answer. You can use negative values to apply a penalty",
       score_if_unchecked: "Punteggio se la risposta non viene selezionata",
       solution:
         "Se pubblichi questo esercizio, quando viene incluso in un'esercitazione creata da uno studente, la soluzione verrà mostrata al termine della stessa.",
