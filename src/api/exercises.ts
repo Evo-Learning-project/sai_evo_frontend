@@ -1,4 +1,7 @@
-import { normalizeIncomingExercise } from "./converters";
+import {
+  normalizeIncomingExercise,
+  normalizeIncomingExerciseChoice,
+} from "./converters";
 import { ExerciseTestCase } from "./../models/interfaces";
 /* eslint-disable no-constant-condition */
 import { CodeExecutionResults, Exercise, ExerciseChoice } from "@/models";
@@ -133,7 +136,7 @@ export async function createExerciseChoice(
     `/courses/${courseId}/exercises/${exerciseId}/choices/`,
     choice
   );
-  return response.data;
+  return normalizeIncomingExerciseChoice(response.data);
 }
 
 export async function updateExerciseChoice(
