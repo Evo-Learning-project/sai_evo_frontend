@@ -130,7 +130,7 @@ export const en = {
     exercise_private_tags: "Private tags",
     choice_text: "Text",
     choice_score: "Score",
-    choice_correctness: "Correctness %",
+    choice_correctness: "Score",
     edit_non_draft_title: "Modifica di un esercizio non bozza",
     edit_non_draft_body:
       "Stai per modificare un esercizio non in stato di bozza. Potrebbe essere già presente in un esame o essere già stato visto dagli studenti. Sei sicuro di volerlo modificare?",
