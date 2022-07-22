@@ -1,13 +1,25 @@
 <template>
   <div
-    class="flex flex-col py-3 my-3 space-y-4  md:space-x-4 md:space-y-0 md:flex-row"
+    class="flex flex-col py-3 my-3 space-y-4  group md:space-x-4 md:space-y-0 md:flex-row"
   >
     <div class="flex items-center">
       <span
-        class="mr-auto text-lg cursor-move  md:mr-2 drag-handle material-icons-outlined opacity-70"
+        class="mr-auto -ml-4 text-lg opacity-0 cursor-move  group-hover:opacity-50 md:mr-2 drag-handle material-icons-outlined"
         :class="{ 'my-auto': !singleLine, 'mt-1': singleLine }"
       >
         drag_indicator
+      </span>
+      <span
+        class="mr-auto text-2xl opacity-50 material-icons-outlined"
+        :class="{ 'my-auto': !singleLine, 'mt-1': singleLine }"
+      >
+        {{
+          iconType === "radio"
+            ? "radio_button_unchecked"
+            : iconType === "dropdown"
+            ? "expand_circle_down"
+            : "check_box_outline_blank"
+        }}
       </span>
       <Btn
         class="ml-auto md:hidden"
@@ -21,6 +33,7 @@
       >
     </div>
     <TextEditor
+      ref="textEditor"
       v-if="!singleLine"
       class="w-full md:w-10/12"
       :modelValue="modelValue.text"
@@ -65,14 +78,16 @@
         :min="-100"
         :modelValue="modelValue.correctness"
         @update:modelValue="onUpdate('correctness', $event)"
-        :leftIcon="
+      >
+        <!--
+         :leftIcon="
           iconType === 'radio'
             ? 'radio_button_checked'
             : iconType === 'dropdown'
             ? 'expand_circle_down'
             : 'check_box'
         "
-      >
+      -->
         <div class="flex w-full items-center space-x-0.5">
           <p>{{ $t("exercise_editor.choice_correctness") }}</p>
           <!-- <Tooltip
@@ -158,6 +173,10 @@ export default defineComponent({
     onUpdate(field: keyof ExerciseChoice, value: unknown) {
       console.log("choice update", field, value);
       this.$emit("choiceUpdate", { field, value });
+    },
+    focus() {
+      (this.$refs.textEditor as any).focus();
+      console.log("focused", this.modelValue.id);
     },
   },
   computed: {

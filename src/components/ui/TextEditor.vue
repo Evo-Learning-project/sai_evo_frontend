@@ -43,16 +43,24 @@
       <Btn
         @click="toggleBaseEditor()"
         :size="'xs'"
-        :class="[showBaseEditor ? 'ml-2' : 'ml-auto my-auto -mt-6']"
-        :variant="'primary-borderless'"
+        :class="[showBaseEditor ? 'ml-2' : 'ml-auto my-auto -mt-7.5 mr-2']"
+        :variant="showBaseEditor ? 'primary-borderless' : 'icon'"
+        :outline="showBaseEditor"
+        :tooltip="showBaseEditor ? '' : $t('misc.having_troubles_with_editor')"
       >
-        <p class="text-sm" style="font-weight: 400; font-size: 11px">
-          {{
-            showBaseEditor
-              ? $t("misc.show_full_editor")
-              : $t("misc.having_troubles_with_editor")
-          }}
-        </p></Btn
+        <p
+          v-if="showBaseEditor"
+          class="text-sm"
+          style="font-weight: 400; font-size: 11px"
+        >
+          {{ $t("misc.show_full_editor") }}
+        </p>
+        <span
+          v-else
+          class="material-icons-outlined opacity-80"
+          style="font-size: 20px !important"
+          >bug_report</span
+        ></Btn
       >
     </div>
     <div v-if="$slots.errors?.()" class="text-sm font-light text-danger-dark">
@@ -67,7 +75,20 @@ import { quillEditor } from "vue3-quill";
 import Btn from "./Btn.vue";
 export default defineComponent({
   name: "TextEditor",
-  props: ["modelValue", "disabled"],
+  props: {
+    modelValue: {
+      type: String,
+      required: true,
+    },
+    disabled: {
+      type: Boolean,
+      default: false,
+    },
+    // short: {
+    //   type: Boolean,
+    //   default: false,
+    // },
+  },
   components: {
     quillEditor,
     Btn,
@@ -110,6 +131,9 @@ export default defineComponent({
     };
   },
   methods: {
+    focus() {
+      this.instance.focus();
+    },
     toggleBaseEditor() {
       this.showBaseEditor = !this.showBaseEditor;
     },

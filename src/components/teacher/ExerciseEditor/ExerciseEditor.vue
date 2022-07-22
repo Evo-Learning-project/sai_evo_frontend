@@ -403,6 +403,7 @@
           >
             <template #item="{ element }">
               <ChoiceEditor
+                :ref="'choice-editor-' + element.id"
                 :singleLine="cloze"
                 :invalidCorrectness="!!choicesCorrectnessError"
                 :modelValue="element"
@@ -421,10 +422,63 @@
               ></ChoiceEditor>
             </template>
           </draggable>
-          <Btn @click="onAddChoice()" :size="'sm'" :variant="'secondary'"
+          <!-- fake first choice -->
+          <ChoiceEditor
+            v-if="modelValue.choices.length === 0"
+            :singleLine="cloze"
+            :invalidCorrectness="!!choicesCorrectnessError"
+            :modelValue="{}"
+            @choiceUpdate="onUpdateFakeChoice($event.field, $event.value)"
+            :icon-type="
+              cloze
+                ? 'dropdown'
+                : modelValue.exercise_type ===
+                  ExerciseType.MULTIPLE_CHOICE_SINGLE_POSSIBLE
+                ? 'radio'
+                : 'checkbox'
+            "
+          ></ChoiceEditor>
+          <!-- end fake first choice -->
+
+          <!-- add choice control -->
+          <div
+            @click="onAddChoice()"
+            class="flex flex-col items-center py-3 my-3 space-y-4  cursor-text w-max group md:space-x-4 md:space-y-0 md:flex-row"
+          >
+            <div class="flex items-center">
+              <span
+                class="mr-auto -ml-4 text-lg opacity-0  md:mr-2 material-icons-outlined"
+              >
+                drag_indicator
+              </span>
+              <span
+                class="mr-auto text-2xl opacity-50 cursor-pointer  material-icons-outlined"
+              >
+                {{
+                  modelValue.exercise_type ===
+                  ExerciseType.MULTIPLE_CHOICE_SINGLE_POSSIBLE
+                    ? "radio_button_unchecked"
+                    : "check_box_outline_blank"
+                }}
+              </span>
+            </div>
+            <p
+              class="border-b-2 border-gray-300 border-opacity-0 opacity-100  group-hover:border-opacity-100"
+            >
+              <span class="opacity-50">{{
+                $t("exercise_editor.new_choice")
+              }}</span>
+            </p>
+            <!-- <TextInput class="w-full md:w-10/12" :modelValue="''"
+              >{{ $t("exercise_editor.choice_text") }}
+            </TextInput> -->
+          </div>
+          <!-- end add choice control -->
+
+          <!-- <Btn @click="onAddChoice()" :size="'sm'" :variant="'secondary'"
             ><span class="mr-1 text-base material-icons-outlined"> add </span>
             {{ $t("exercise_editor.new_choice") }}</Btn
-          >
+          > -->
         </div>
 
         <!-- Aggregated exercise settings -->
@@ -795,6 +849,7 @@ export default defineComponent({
     ]),
     ...mapActions("shared", ["getTags"]),
     ...mapMutations(["setExercise", "setExerciseChild"]),
+    getBlankChoice,
     async onChoiceDragEnd(event: { oldIndex: number; newIndex: number }) {
       const draggedChoice = (this.modelValue.choices as ExerciseChoice[])[
         event.oldIndex
@@ -872,14 +927,22 @@ export default defineComponent({
     onExerciseTypeChange(newVal: ExerciseType) {
       this.onBaseExerciseChange("exercise_type", newVal);
     },
+    async onUpdateFakeChoice(key: keyof ExerciseChoice, value: unknown) {
+      const newChoice = await this.onAddChoice(getBlankChoice());
+      await this.onUpdateChoice(newChoice.id, key, value);
+    },
     /* CRUD on related objects */
-    async onAddChoice() {
+    async onAddChoice(choice: ExerciseChoice | undefined = undefined) {
       const newChoice: ExerciseChoice = await this.addExerciseChoice({
         courseId: this.courseId,
         exerciseId: this.modelValue.id,
-        choice: getBlankChoice(),
+        choice: choice ?? getBlankChoice(),
       });
       this.instantiateChoiceAutoSaveManager(newChoice);
+      this.$nextTick(() =>
+        (this.$refs["choice-editor-" + newChoice.id] as any).focus()
+      );
+      return newChoice;
     },
     async onUpdateChoice(
       choiceId: string,

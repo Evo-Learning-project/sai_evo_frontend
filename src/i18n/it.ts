@@ -599,7 +599,7 @@ export const it = {
     edit_non_draft_title: "Modifica di un esercizio non bozza",
     edit_non_draft_body:
       "Stai per modificare un esercizio non in stato di bozza. Potrebbe essere già presente in un esame o essere già stato visto dagli studenti. Sei sicuro di volerlo modificare?",
-    new_choice: "Nuova",
+    new_choice: "Aggiungi scelta",
     new_testcase: "Nuovo",
     new_sub_exercise: "Nuovo",
     new_cloze: "Aggiungi domanda",

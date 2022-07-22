@@ -29,8 +29,6 @@ export const getBlankChoice = (): ExerciseChoice => ({
   id: "",
   text: "",
   correctness: 0,
-  // score_selected: 0,
-  // score_unselected: 0,
 });
 
 export const getBlankTestCase = (): ExerciseTestCase => ({
