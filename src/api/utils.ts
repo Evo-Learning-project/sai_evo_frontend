@@ -8,8 +8,7 @@ import { EventTemplateRule, EventTemplateRuleType, Tag } from "@/models";
 import { filter } from "lodash";
 
 export const tagNamesToTags = (names: string[]): Tag[] =>
-  // converts a list of tag names to a list of their id's, as per
-  // the format used by the backend
+  // converts a list of tag names to a list of Tag objects
   names.map((n) => store.getters["shared/tagByName"](n));
 
 export const tagIdsToTags = (ids: string[]): Tag[] => {
