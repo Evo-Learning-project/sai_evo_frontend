@@ -7,6 +7,7 @@ import {
   EventTemplate,
   Exercise,
   ExerciseChoice,
+  EventTemplateRuleClause,
 } from "@/models";
 
 export const normalizeIncomingExercise = (exercise: Exercise): Exercise => ({
@@ -67,6 +68,14 @@ export const normalizeIncomingEventParticipationSlot = (
       }),
 });
 
+export const normalizeIncomingEventTemplateRuleClause = (
+  clause: EventTemplateRuleClause
+): EventTemplateRuleClause => ({
+  ...clause,
+  // clause tags are sent as id's - convert them to Tag objects
+  tags: tagIdsToTags(clause.tags as any), // TODO use interfaces for incoming data
+});
+
 export const normalizeIncomingEventTemplateRule = (
   rule: EventTemplateRule
 ): EventTemplateRule => ({
@@ -75,11 +84,9 @@ export const normalizeIncomingEventTemplateRule = (
   ...(typeof rule.clauses === "undefined"
     ? {}
     : {
-        clauses: rule.clauses.map((c) => ({
-          ...c,
-          // clause tags are sent as id's - convert them to Tag objects
-          tags: tagIdsToTags(c.tags as any), // TODO use interfaces for incoming data
-        })),
+        clauses: rule.clauses.map((c) =>
+          normalizeIncomingEventTemplateRuleClause(c)
+        ),
       }),
 });
 

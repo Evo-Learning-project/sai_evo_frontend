@@ -110,14 +110,14 @@
           {{ $t("event_template_editor.randomize_rule_order") }}
         </Toggle>
         <div class="mt-8 banner banner-light" v-if="usedRandomization">
-          <span
-            class="material-icons-two-tone"
-            style="
+          <!-- style="
               filter: invert(80%) sepia(67%) saturate(1803%) hue-rotate(348deg)
                 brightness(80%) contrast(96%);
-            "
-          >
-            tips_and_updates
+            "-->
+          <span class="text-yellow-400 material-icons-outlined">
+            <!-- material-icons-two-tone -->
+            lightbulb
+            <!-- tips_and_tricks -->
           </span>
           <div
             class="flex flex-col w-full space-y-2  md:items-center md:space-y-0 md:flex-row"

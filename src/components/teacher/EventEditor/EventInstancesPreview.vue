@@ -42,6 +42,7 @@
             >
               <div
                 class="my-12"
+                style="break-inside: avoid-page"
                 v-for="(__, slotIndex) in instances[instanceIndex]"
                 :key="'instance-' + instanceIndex + '-slot-' + slotIndex"
               >
@@ -119,6 +120,14 @@ export default defineComponent({
           await worker
             .set({
               filename: this.eventName + "_" + this.currentInstance + ".pdf",
+              html2canvas: {},
+              jsPDF: {
+                orientation: "p",
+                unit: "mm",
+                format: "a3",
+                putOnlyUsedFonts: true,
+                floatPrecision: 16, // or "smart", default is 16
+              },
             })
             .from(element)
             .save();

@@ -37,10 +37,11 @@ export async function getExercisesById(
   courseId: string,
   exerciseIds: string[]
 ): Promise<Exercise[]> {
-  let url = `/courses/${courseId}/exercises/`;
-  url += `bulk_get/?ids=${exerciseIds.join(",")}`;
+  const url = `/courses/${courseId}/exercises/bulk_get/?ids=${exerciseIds.join(
+    ","
+  )}`;
   const response = await axios.get(url);
-  return response.data;
+  return response.data.map((e: Exercise) => normalizeIncomingExercise(e));
 }
 
 export async function addTagToExercise(
@@ -71,7 +72,7 @@ export async function createExercise(
   exercise: Exercise
 ): Promise<Exercise> {
   const response = await axios.post(`courses/${courseId}/exercises/`, exercise);
-  return response.data;
+  return normalizeIncomingExercise(response.data);
 }
 
 export async function bulkCreateExercises(
@@ -82,7 +83,7 @@ export async function bulkCreateExercises(
     `courses/${courseId}/exercises/`,
     exercises
   );
-  return response.data;
+  return response.data.map((e: Exercise) => normalizeIncomingExercise(e));
 }
 
 export async function updateExercise(
@@ -94,7 +95,7 @@ export async function updateExercise(
     `courses/${courseId}/exercises/${exerciseId}/`,
     exercise
   );
-  return response.data;
+  return normalizeIncomingExercise(response.data);
 }
 
 export async function testProgrammingExerciseSolution(
@@ -124,7 +125,9 @@ export async function getExerciseChoices(
   const response = await axios.get(
     `/courses/${courseId}/exercises/${exerciseId}/choices/`
   );
-  return response.data;
+  return response.data.map((c: ExerciseChoice) =>
+    normalizeIncomingExerciseChoice(c)
+  );
 }
 
 export async function createExerciseChoice(
@@ -149,7 +152,7 @@ export async function updateExerciseChoice(
     `/courses/${courseId}/exercises/${exerciseId}/choices/${choiceId}/`,
     choice
   );
-  return response.data;
+  return normalizeIncomingExerciseChoice(response.data);
 }
 
 export async function deleteExerciseChoice(
@@ -181,7 +184,7 @@ export async function getExerciseSubExercises(
   const response = await axios.get(
     `/courses/${courseId}/exercises/${exerciseId}/sub_exercises/`
   );
-  return response.data;
+  return response.data.map((e: Exercise) => normalizeIncomingExercise(e));
 }
 
 export async function createExerciseSubExercise(
@@ -193,7 +196,7 @@ export async function createExerciseSubExercise(
     `/courses/${courseId}/exercises/${exerciseId}/sub_exercises/`,
     subExercise
   );
-  return response.data;
+  return normalizeIncomingExercise(response.data);
 }
 
 export async function updateExerciseSubExercise(
@@ -206,7 +209,7 @@ export async function updateExerciseSubExercise(
     `/courses/${courseId}/exercises/${exerciseId}/sub_exercises/${subExerciseId}/`,
     subExercise
   );
-  return response.data;
+  return normalizeIncomingExercise(response.data);
 }
 
 export async function deleteExerciseSubExercise(
