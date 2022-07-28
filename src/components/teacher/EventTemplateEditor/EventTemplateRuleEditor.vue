@@ -39,7 +39,7 @@
           <NumberInput
             :min="0"
             class="my-4 md:ml-auto md:my-0"
-            :class="{ 'md:w-1/4': !reduced, 'md:w-1/2': reduced }"
+            :class="{ 'md:w-1/4': !reduced, 'md:w-1/3': reduced }"
             :modelValue="modelValue.weight ?? 0"
             @update:modelValue="emitUpdate('weight', $event)"
           >
