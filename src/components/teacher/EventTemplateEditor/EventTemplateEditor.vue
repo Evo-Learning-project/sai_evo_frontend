@@ -7,6 +7,7 @@
         class="hidden ml-auto md:block"
         :options="viewModesAsOptions"
         v-model="viewMode"
+        v-if="modelValue.rules.length > 0"
       ></SegmentedControls>
     </div>
     <div class="mb-6">
