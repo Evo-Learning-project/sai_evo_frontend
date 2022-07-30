@@ -22,7 +22,7 @@ export default defineComponent({
   methods: {},
   computed: {
     authorName(): string {
-      return this.user.full_name ?? "Autore";
+      return this.user?.full_name ?? "Autore";
     },
   },
 });

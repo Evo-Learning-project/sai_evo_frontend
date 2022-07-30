@@ -34,7 +34,7 @@
     <!-- solutions -->
     <div
       class="mt-10"
-      v-if="showSolution && (exercise.solutions ?? []).length > 0"
+      v-if="false && showSolution && (exercise.solutions ?? []).length > 0"
     >
       <h4>Soluzioni proposte</h4>
       <ExerciseSolution
