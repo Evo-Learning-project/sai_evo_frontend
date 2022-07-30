@@ -63,7 +63,6 @@ export const getMoodleClozeQuestionsAsExercises = (
       child.choices?.push({
         text: answerText,
         id: "",
-        // TODO fix and use 1
         correctness: isCorrectAnswer ? 1 : parseFloat(answerScore) / 100 || 0,
       });
     }

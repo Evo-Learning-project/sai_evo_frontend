@@ -48,9 +48,7 @@ export const getBlankExercise = (): Exercise => ({
   text: "",
   exercise_type: ExerciseType.MULTIPLE_CHOICE_SINGLE_POSSIBLE,
   state: ExerciseState.DRAFT,
-  solution: "",
-  // FIXME remove default tags
-  //tags: [{ name: 'tag1' }, { name: 'tag2' }, { name: 'tag3' }],
+  // solution: "",
   choices: [],
 });
 
