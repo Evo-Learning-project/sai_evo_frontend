@@ -84,3 +84,15 @@ export enum CoursePrivilege {
   ASSESS_PARTICIPATIONS = "assess_participations",
   MANAGE_EVENTS = "manage_events",
 }
+
+export enum ExerciseSolutionState {
+  DRAFT,
+  SUBMITTED,
+  PUBLISHED,
+  REJECTED,
+}
+
+export enum VoteType {
+  UP_VOTE,
+  DOWN_VOTE,
+}

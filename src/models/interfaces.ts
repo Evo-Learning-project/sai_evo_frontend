@@ -1,7 +1,9 @@
 import {
   EventAccessRule,
   EventTimeLimitRule,
+  ExerciseSolutionState,
   ExerciseTestCaseType,
+  VoteType,
 } from "./types";
 import {
   EventState,
@@ -50,10 +52,36 @@ export interface Course {
   public_exercises_count?: number;
 }
 
+interface Vote {
+  id: string;
+  vote_type: VoteType;
+  user?: User;
+}
+
+interface Post {
+  id: string;
+  content: string;
+  user: User;
+}
+
+export interface ExerciseSolutionComment extends Post {}
+
+export interface ExerciseSolutionVote extends Vote {}
+
+export interface ExerciseSolution {
+  id: string;
+  user: User;
+  content: string;
+  state?: ExerciseSolutionState;
+  votes: ExerciseSolutionVote[];
+  comments: ExerciseSolutionComment[];
+}
+
 export interface Exercise extends Orderable, Lockable {
   id: string;
   text: string;
-  solution?: string;
+  // solution?: string;
+  solutions?: ExerciseSolution[];
   label?: string;
   child_weight?: number;
   exercise_type: ExerciseType | null; // TODO make non-nullable
