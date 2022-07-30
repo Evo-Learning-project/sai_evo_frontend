@@ -263,6 +263,11 @@ export const it = {
     delete: "Elimina",
     logout: "Logout",
   },
+  exercise_solution: {
+    no_solutions_call_to_action:
+      "Non ci sono ancora soluzioni. Sii il primo a proporne una!",
+    propose_solution: "Proponi soluzione",
+  },
   participation_downloader: {
     report_type: "Formato del report",
     download_results: "Scarica risultati",
