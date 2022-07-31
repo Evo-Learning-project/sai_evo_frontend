@@ -1,9 +1,24 @@
+import { ExerciseSolution } from "./../../models/interfaces";
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 
 import { getCourse, getCourses, getTags } from "@/api/courses";
+import {
+  updateExerciseChoice,
+  updateExerciseTestCase,
+  updateExerciseSubExercise,
+  getExerciseChoices,
+  updateExerciseSolution,
+  createExerciseSolution,
+} from "@/api/exercises";
 import { getMe, updateUser } from "@/api/users";
-import { User } from "@/models";
+import {
+  Exercise,
+  exerciseChildrenNames,
+  ExerciseChoice,
+  ExerciseTestCase,
+  User,
+} from "@/models";
 
 import axios from "axios";
 import { Commit } from "vuex";
@@ -68,5 +83,61 @@ export const actions = {
   ) => {
     const tags = await getTags(courseId, includeExerciseCount);
     commit("setTags", tags);
+  },
+  // createExerciseSolution: async  (
+  //   // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  //   { commit, state }: { commit: Commit; state:  },
+  //   {
+  //     courseId,
+  //     exerciseId,
+  //     payload,
+  //   }: {
+  //     courseId: string;
+  //     exerciseId: string;
+  //     payload: ExerciseSolution
+  //   }
+  // ) => {
+  //   const newSolution = await createExerciseSolution(courseId, exerciseId, payload)
+  //   state.
+
+  // },
+  updateExerciseChild: async (
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    { commit }: { commit: Commit },
+    {
+      courseId,
+      exerciseId,
+      childType,
+      payload,
+      reFetch = false,
+    }: {
+      courseId: string;
+      exerciseId: string;
+      childType: "testcase" | "sub_exercise" | "choice" | "solution";
+      payload: ExerciseChoice | Exercise | ExerciseTestCase;
+      reFetch: boolean;
+    }
+  ) => {
+    const apiCall = {
+      choice: updateExerciseChoice,
+      testcase: updateExerciseTestCase,
+      sub_exercise: updateExerciseSubExercise,
+      solution: updateExerciseSolution,
+    }[childType];
+
+    //const childrenName = exerciseChildrenNames[childType];
+
+    await apiCall(courseId, exerciseId, payload.id as string, payload as any);
+
+    if (reFetch) {
+      if (childType !== "choice") return;
+      // TODO fix!!
+      const choices = await getExerciseChoices(courseId, exerciseId);
+      commit("setExerciseChildren", {
+        exerciseId,
+        children: "choices",
+        payload: choices,
+      });
+    }
   },
 };

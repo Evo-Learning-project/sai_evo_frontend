@@ -267,6 +267,7 @@ export const it = {
     no_solutions_call_to_action:
       "Non ci sono ancora soluzioni. Sii il primo a proporne una!",
     propose_solution: "Proponi soluzione",
+    proposed_solutions_title: "Soluzioni proposte",
   },
   participation_downloader: {
     report_type: "Formato del report",

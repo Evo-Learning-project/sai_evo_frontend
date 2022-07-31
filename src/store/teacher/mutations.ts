@@ -138,7 +138,6 @@ export const mutations = {
         childType as "choice" | "sub_exercise" | "testcase"
       ];
     const children = (targetExercise as Exercise | undefined)?.[childrenName];
-    console.log("CALLING MUTATIN WITH PAYLOAD", payload, exerciseId);
     if (children) {
       const target = (
         children as (ExerciseChoice | Exercise | ExerciseTestCase)[]

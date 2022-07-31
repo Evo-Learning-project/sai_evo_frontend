@@ -1,10 +1,16 @@
+import { VoteType } from "./../models/types";
 import {
   normalizeIncomingExercise,
   normalizeIncomingExerciseChoice,
 } from "./converters";
-import { ExerciseTestCase } from "./../models/interfaces";
+import { ExerciseSolution, ExerciseTestCase } from "./../models/interfaces";
 /* eslint-disable no-constant-condition */
-import { CodeExecutionResults, Exercise, ExerciseChoice } from "@/models";
+import {
+  CodeExecutionResults,
+  Exercise,
+  ExerciseChoice,
+  ExerciseSolutionComment,
+} from "@/models";
 import axios from "axios";
 import { ExerciseSearchFilter } from "./interfaces";
 import { getExerciseUrlQueryParams } from "./utils";
@@ -244,6 +250,57 @@ export async function updateExerciseTestCase(
   const response = await axios.put(
     `/courses/${courseId}/exercises/${exerciseId}/testcases/${testcaseId}/`,
     testcase
+  );
+  return response.data;
+}
+
+export async function createExerciseSolution(
+  courseId: string,
+  exerciseId: string,
+  solution: ExerciseSolution
+): Promise<ExerciseSolution> {
+  const response = await axios.post(
+    `/courses/${courseId}/exercises/${exerciseId}/solutions/`,
+    solution
+  );
+  return response.data;
+}
+
+export async function updateExerciseSolution(
+  courseId: string,
+  exerciseId: string,
+  solutionId: string,
+  solution: ExerciseSolution
+): Promise<ExerciseSolution> {
+  const response = await axios.patch(
+    `/courses/${courseId}/exercises/${exerciseId}/solutions/${solutionId}/`,
+    solution
+  );
+  return response.data;
+}
+
+export async function createExerciseSolutionComment(
+  courseId: string,
+  exerciseId: string,
+  solutionId: string,
+  comment: ExerciseSolutionComment
+): Promise<ExerciseSolutionComment> {
+  const response = await axios.post(
+    `/courses/${courseId}/exercises/${exerciseId}/solutions/${solutionId}/comments/`,
+    comment
+  );
+  return response.data;
+}
+
+export async function voteExerciseSolution(
+  courseId: string,
+  exerciseId: string,
+  solutionId: string,
+  voteType: VoteType
+): Promise<void> {
+  const response = await axios.post(
+    `/courses/${courseId}/exercises/${exerciseId}/solutions/${solutionId}/vote/`,
+    voteType
   );
   return response.data;
 }
