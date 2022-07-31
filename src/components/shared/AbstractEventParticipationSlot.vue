@@ -128,35 +128,11 @@
       </div>
 
       <!-- solution -->
-      <div class="w-full mt-10" v-if="showSolutionAndScores">
-        <div class="flex items-center mb-2 space-x-4">
-          <h4 class="">Soluzioni proposte</h4>
-          <!-- <Btn :variant="'primary'" :size="'sm'" :outline="true">
-            <span class="mr-2 text-base material-icons">reviews</span>
-            {{ $t("exercise_solution.propose_solution") }}</Btn
-          > -->
-        </div>
-        <ExerciseSolution
-          class="w-full"
-          v-for="solution in exercise.solutions"
-          :key="'e-' + exercise.id + '-solution-' + solution.id"
-          :solution="solution"
-        />
-        <div
-          class="flex items-center space-x-4"
-          v-if="
-            showSolutionAndScores && (exercise.solutions ?? []).length === 0
-          "
-        >
-          <p class="text-muted">
-            {{ $t("exercise_solution.no_solutions_call_to_action") }}
-          </p>
-        </div>
-        <Btn :variant="'primary'" class="mt-4" :size="'sm'" :outline="true">
-          <span class="mr-2 text-base material-icons">reviews</span>
-          {{ $t("exercise_solution.propose_solution") }}</Btn
-        >
-      </div>
+      <ExerciseSolutionContainer
+        :exercise="exercise"
+        class="w-full mt-4"
+        v-if="showSolutionAndScores"
+      />
     </div>
   </div>
 </template>
@@ -178,9 +154,7 @@ import Exercise from "./Exercise/Exercise.vue";
 import ParticipationSlotAssessment from "./ParticipationSlotAssessment.vue";
 import { isOpenAnswerExercise, isProgrammingExercise } from "./Exercise/utils";
 import ClozeExercise from "./Exercise/ClozeExercise.vue";
-import ExerciseSolution from "./ExerciseSolution/ExerciseSolution.vue";
-import ProcessedTextFragment from "../ui/ProcessedTextFragment.vue";
-import Btn from "../ui/Btn.vue";
+import ExerciseSolutionContainer from "./ExerciseSolution/ExerciseSolutionContainer.vue";
 
 export default defineComponent({
   components: {
@@ -188,8 +162,7 @@ export default defineComponent({
     Exercise,
     ParticipationSlotAssessment,
     ClozeExercise,
-    ExerciseSolution,
-    Btn,
+    ExerciseSolutionContainer,
   },
   emits: {
     blur(slot: EventParticipationSlot) {

@@ -1,4 +1,4 @@
-import { ExerciseTestCase } from "./interfaces";
+import { ExerciseTestCase, User } from "./interfaces";
 import {
   Course,
   Event,
@@ -12,12 +12,25 @@ import {
   EventType,
   Exercise,
   ExerciseChoice,
+  ExerciseSolutionComment,
+  ExerciseSolutionVote,
   ExerciseState,
   ExerciseTestCaseType,
   ExerciseType,
   Tag,
 } from ".";
-import { EventAccessRule } from "./types";
+import { EventAccessRule, VoteType } from "./types";
+
+export const getBlankUser = (): User => ({
+  id: "",
+  email: "",
+  full_name: "",
+  first_name: "",
+  last_name: "",
+  is_teacher: false,
+  mat: "",
+  course: "",
+});
 
 export const getBlankCourse = (): Course => ({
   id: "",
@@ -127,4 +140,15 @@ export const getEmptySubmission = (): EventParticipationSlotSubmission => ({
   selected_choices: [],
   answer_text: "",
   attachment: undefined,
+});
+
+export const getVote = (voteType: VoteType): ExerciseSolutionVote => ({
+  id: "",
+  vote_type: voteType,
+});
+
+export const getComment = (content: string): ExerciseSolutionComment => ({
+  id: "",
+  user: getBlankUser(),
+  content,
 });

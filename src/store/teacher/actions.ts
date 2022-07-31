@@ -189,42 +189,42 @@ export const actions = {
       commit("setEvent", { eventId, payload: event });
     }
   },
-  updateExerciseChild: async (
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    { commit }: { commit: Commit },
-    {
-      courseId,
-      exerciseId,
-      childType,
-      payload,
-      reFetch = false,
-    }: {
-      courseId: string;
-      exerciseId: string;
-      childType: "testcase" | "sub_exercise" | "choice";
-      payload: ExerciseChoice | Exercise | ExerciseTestCase;
-      reFetch: boolean;
-    }
-  ) => {
-    const apiCall = {
-      choice: updateExerciseChoice,
-      testcase: updateExerciseTestCase,
-      sub_exercise: updateExerciseSubExercise,
-    }[childType];
-    const childrenName = exerciseChildrenNames[childType];
+  // updateExerciseChild: async (
+  //   // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  //   { commit }: { commit: Commit },
+  //   {
+  //     courseId,
+  //     exerciseId,
+  //     childType,
+  //     payload,
+  //     reFetch = false,
+  //   }: {
+  //     courseId: string;
+  //     exerciseId: string;
+  //     childType: "testcase" | "sub_exercise" | "choice";
+  //     payload: ExerciseChoice | Exercise | ExerciseTestCase;
+  //     reFetch: boolean;
+  //   }
+  // ) => {
+  //   const apiCall = {
+  //     choice: updateExerciseChoice,
+  //     testcase: updateExerciseTestCase,
+  //     sub_exercise: updateExerciseSubExercise,
+  //   }[childType];
+  //   const childrenName = exerciseChildrenNames[childType];
 
-    await apiCall(courseId, exerciseId, payload.id as string, payload as any);
-    if (reFetch) {
-      if (childType !== "choice") return;
-      // TODO fix!!
-      const choices = await getExerciseChoices(courseId, exerciseId);
-      commit("setExerciseChildren", {
-        exerciseId,
-        children: "choices",
-        payload: choices,
-      });
-    }
-  },
+  //   await apiCall(courseId, exerciseId, payload.id as string, payload as any);
+  //   if (reFetch) {
+  //     if (childType !== "choice") return;
+  //     // TODO fix!!
+  //     const choices = await getExerciseChoices(courseId, exerciseId);
+  //     commit("setExerciseChildren", {
+  //       exerciseId,
+  //       children: "choices",
+  //       payload: choices,
+  //     });
+  //   }
+  // },
   deleteExerciseChild: async (
     { commit }: { commit: Commit },
     {
@@ -318,6 +318,7 @@ export const actions = {
       });
     }
   },
+  // TODO use a single generic addExerciseChild action like for updating
   addExerciseChoice: async (
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     { commit, state, getters }: { commit: Commit; state: any; getters: any },

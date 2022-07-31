@@ -4,13 +4,14 @@
       <!-- main -->
       <div class="flex h-full">
         <!-- voting -->
-        <div class="h-full px-3 pt-4 -mt-4 -ml-5 rounded-tl-sm bg-gray-50">
-          <div class="sticky flex flex-col space-y-6 top-18">
+        <div class="h-full px-3 pt-4 pb-4 -mt-4 -ml-5 rounded-tl-sm bg-gray-50">
+          <div class="sticky flex flex-col items-center space-y-4 top-18">
             <Btn
               :variant="'icon'"
               :size="'lg'"
               :outline="true"
               class=""
+              @click="onVote(VoteType.UP_VOTE)"
               :tooltip="$t('exercise_solution.like')"
               ><span
                 class="material-icons-outlined"
@@ -19,10 +20,11 @@
                 thumb_up_alt</span
               ></Btn
             >
-
+            <p class="text-4xl text-muted">{{ score }}</p>
             <Btn
               :variant="'icon'"
               :size="'lg'"
+              @click="onVote(VoteType.DOWN_VOTE)"
               :outline="true"
               class=""
               :tooltip="$t('exercise_solution.dislike')"
@@ -35,10 +37,10 @@
             >
           </div>
         </div>
-
-        <div class="">
+        <!-- right-side pane -->
+        <div class="flex flex-col w-full h-full -mt-4 bg-black bg-opacity-0">
           <!-- content -->
-          <div class="w-full whitespace-pre">
+          <div class="w-full h-full pt-4 mb-auto whitespace-pre">
             <ProcessedTextFragment
               v-if="true"
               style="white-space: break-spaces"
@@ -47,7 +49,7 @@
             ></ProcessedTextFragment>
           </div>
 
-          <div class="flex w-full pb-2 mt-2 mb-4 border-b-2 border-gray-50">
+          <div class="flex w-full pb-2 mt-2 border-b-2 border-gray-50">
             <!-- actions -->
             <div class="flex ml-2">
               <Btn
@@ -103,7 +105,12 @@
             v-model="draftComment"
             :placeholder="'Aggiungi commento'"
           />
-          <Btn :variant="'secondary'">
+          <Btn
+            :loading="postingComment"
+            :variant="'secondary'"
+            :disabled="draftComment.trim().length === 0"
+            @click="onAddComment()"
+          >
             <span class="material-icons">send</span>
           </Btn>
         </div>
@@ -113,7 +120,13 @@
 </template>
 
 <script lang="ts">
-import { ExerciseSolution } from "@/models";
+import {
+  Exercise,
+  ExerciseSolution,
+  getComment,
+  getVote,
+  VoteType,
+} from "@/models";
 import { defineComponent, PropType } from "@vue/runtime-core";
 import Btn from "@/components/ui/Btn.vue";
 import TextInput from "@/components/ui/TextInput.vue";
@@ -121,10 +134,21 @@ import Avatar from "@/components/ui/Avatar.vue";
 import { mapState } from "vuex";
 import ExerciseSolutionComment from "./ExerciseSolutionComment.vue";
 import ProcessedTextFragment from "@/components/ui/ProcessedTextFragment.vue";
+import {
+  createExerciseSolutionComment,
+  voteExerciseSolution,
+} from "@/api/exercises";
+import { courseIdMixin } from "@/mixins";
+import { setErrorNotification } from "@/utils";
 //import { v4 as uuid4 } from "uuid";
 export default defineComponent({
   name: "ExerciseSolution",
+  mixins: [courseIdMixin],
   props: {
+    exercise: {
+      type: Object as PropType<Exercise>,
+      required: true,
+    },
     solution: {
       type: Object as PropType<ExerciseSolution>,
       required: true,
@@ -144,11 +168,53 @@ export default defineComponent({
   },
   data() {
     return {
+      voting: false,
+      postingComment: false,
       draftComment: "",
+      VoteType,
       //solutionId: uuid4(),
     };
   },
-  methods: {},
+  methods: {
+    async onVote(voteType: VoteType) {
+      this.voting = true;
+      try {
+        // TODO show animation/micro interaction
+        await voteExerciseSolution(
+          this.courseId,
+          this.exercise.id,
+          this.solution.id,
+          voteType
+        );
+        // TODO fix this with an action
+        // eslint-disable-next-line vue/no-mutating-props
+        this.solution.votes.push(getVote(voteType));
+      } catch (e) {
+        setErrorNotification(e);
+      } finally {
+        this.voting = false;
+      }
+    },
+    async onAddComment() {
+      this.postingComment = true;
+      try {
+        const newComment = await createExerciseSolutionComment(
+          this.courseId,
+          this.exercise.id,
+          this.solution.id,
+          getComment(this.draftComment)
+        );
+        // TODO fix this with an action
+        // eslint-disable-next-line vue/no-mutating-props
+        this.solution.comments.push(newComment);
+        this.draftComment = "";
+      } catch (e) {
+        setErrorNotification(e);
+      } finally {
+        this.postingComment = false;
+      }
+    },
+  },
   computed: {
     ...mapState("shared", ["user"]),
     authorName(): string {
@@ -156,6 +222,11 @@ export default defineComponent({
     },
     canEdit(): boolean {
       return true;
+    },
+    score(): number {
+      return this.solution.votes
+        .map((v) => (v.vote_type === VoteType.UP_VOTE ? 1 : -1))
+        .reduce((a, b) => a + b, 0);
     },
   },
   components: {
