@@ -607,6 +607,7 @@ import {
   CodeExecutionResults as ICodeExecutionResults,
   EventParticipationSlot,
   getFakeEventParticipationSlot,
+  ExerciseSolution,
 } from "@/models";
 import { multipleChoiceExerciseTypes } from "@/models";
 import Card from "@/components/ui/Card.vue";
@@ -756,6 +757,10 @@ export default defineComponent({
         string,
         AutoSaveManager<ExerciseTestCase>
       >,
+      solutionAutoSaveManagers: {} as Record<
+        string,
+        AutoSaveManager<ExerciseSolution>
+      >,
       elementId: uuid4(),
       showSaved: false,
       saving: false,
@@ -784,10 +789,11 @@ export default defineComponent({
   },
   methods: {
     ...mapActions("teacher", [
+      "addExerciseChild",
       "updateExercise",
-      "addExerciseChoice",
-      "addExerciseSubExercise",
-      "addExerciseTestCase",
+      // "addExerciseChoice",
+      // "addExerciseSubExercise",
+      // "addExerciseTestCase",
       "addExerciseTag",
       "removeExerciseTag",
       "deleteExerciseChild",
@@ -873,10 +879,11 @@ export default defineComponent({
     },
     /* CRUD on related objects */
     async onAddChoice() {
-      const newChoice: ExerciseChoice = await this.addExerciseChoice({
+      const newChoice: ExerciseChoice = await this.addExerciseChild({
         courseId: this.courseId,
         exerciseId: this.modelValue.id,
-        choice: getBlankChoice(),
+        childType: "choice",
+        payload: getBlankChoice(),
       });
       this.instantiateChoiceAutoSaveManager(newChoice);
     },
@@ -905,10 +912,11 @@ export default defineComponent({
       }
     },
     async onAddSubExercise() {
-      const newSubExercise: Exercise = await this.addExerciseSubExercise({
+      const newSubExercise: Exercise = await this.addExerciseChild({
         courseId: this.courseId,
         exerciseId: this.modelValue.id,
-        subExercise: getBlankExercise(),
+        childType: "sub_exercise",
+        payload: getBlankExercise(),
       });
       return newSubExercise;
     },
@@ -927,10 +935,11 @@ export default defineComponent({
       }
     },
     async onAddTestCase() {
-      const newTestcase: ExerciseTestCase = await this.addExerciseTestCase({
+      const newTestcase: ExerciseTestCase = await this.addExerciseChild({
         courseId: this.courseId,
         exerciseId: this.modelValue.id,
-        testCase: getBlankTestCase(),
+        childType: "testcase",
+        payload: getBlankTestCase(),
       });
       this.instantiateTestCaseAutoSaveManager(newTestcase);
     },
@@ -1051,6 +1060,34 @@ export default defineComponent({
           },
           EXERCISE_CHOICE_AUTO_SAVE_DEBOUNCED_FIELDS,
           EXERCISE_CHOICE_AUTO_SAVE_DEBOUNCE_TIME_MS,
+          undefined,
+          () => (this.savingError = true),
+          () => (this.saving = false)
+        );
+    },
+    instantiateSolutionAutoSaveManager(solution: ExerciseSolution) {
+      this.solutionAutoSaveManagers[solution.id] =
+        new AutoSaveManager<ExerciseSolution>(
+          solution,
+          async (changes) =>
+            await this.updateExerciseChild({
+              childType: "solution",
+              courseId: this.courseId,
+              exerciseId: this.modelValue.id,
+              payload: { ...solution, ...changes },
+              reFetch: false,
+            }),
+          (changes) => {
+            this.saving = true;
+            this.savingError = false;
+            this.setExerciseChild({
+              childType: "solution",
+              exerciseId: this.modelValue.id,
+              payload: { ...solution, ...changes },
+            });
+          },
+          [],
+          0,
           undefined,
           () => (this.savingError = true),
           () => (this.saving = false)

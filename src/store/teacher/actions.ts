@@ -1,4 +1,8 @@
-import { exerciseChildrenNames } from "./../../models/constants";
+import { ExerciseSolution } from "./../../models/interfaces";
+import {
+  exerciseChildName,
+  exerciseChildrenNames,
+} from "./../../models/constants";
 import { EventSearchFilter } from "./../../api/interfaces";
 /* eslint-disable no-unexpected-multiline */
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -29,6 +33,7 @@ import {
   bulkCreateExercises,
   createExercise,
   createExerciseChoice,
+  createExerciseSolution,
   createExerciseSubExercise,
   createExerciseTestCase,
   deleteExercise,
@@ -319,6 +324,48 @@ export const actions = {
     }
   },
   // TODO use a single generic addExerciseChild action like for updating
+  addExerciseChild: async (
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    { commit, state, getters }: { commit: Commit; state: any; getters: any },
+    {
+      courseId,
+      exerciseId,
+      childType,
+      payload,
+    }: {
+      courseId: string;
+      exerciseId: string;
+      childType: "choice" | "testcase" | "sub_exercise" | "solution";
+      payload: ExerciseChoice;
+    }
+  ) => {
+    const apiCalls: Record<
+      exerciseChildName,
+      (
+        courseId: string,
+        exerciseId: string,
+        payload: any
+      ) =>
+        | Promise<ExerciseChoice>
+        | Promise<Exercise>
+        | Promise<ExerciseTestCase>
+        | Promise<ExerciseSolution>
+    > = {
+      choice: createExerciseChoice,
+      testcase: createExerciseTestCase,
+      sub_exercise: createExerciseSubExercise,
+      solution: createExerciseSolution,
+    };
+    // get the correct api call to create the child
+    const apiCall = apiCalls[childType];
+    const newChild = await apiCall(courseId, exerciseId, payload);
+    commit("setExerciseChild", {
+      childType,
+      exerciseId: exerciseId,
+      payload: newChild,
+    });
+    return newChild;
+  },
   addExerciseChoice: async (
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     { commit, state, getters }: { commit: Commit; state: any; getters: any },

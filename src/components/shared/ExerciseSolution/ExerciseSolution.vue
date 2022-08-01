@@ -218,7 +218,7 @@ export default defineComponent({
   computed: {
     ...mapState("shared", ["user"]),
     authorName(): string {
-      return this.solution.user?.full_name ?? "Autore";
+      return this.solution.user?.full_name ?? "Autore"; // TODO change default
     },
     canEdit(): boolean {
       return true;

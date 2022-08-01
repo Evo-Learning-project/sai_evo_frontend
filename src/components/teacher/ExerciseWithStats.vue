@@ -132,6 +132,7 @@ import {
 } from "@/reports";
 import ExerciseTestCase from "../shared/ExerciseTestCase.vue";
 import { mediaQueryMixin } from "@/mixins";
+import { getCorrectChoices } from "../shared/Exercise/utils";
 
 ChartJS.register(
   Title,
@@ -164,7 +165,7 @@ export default defineComponent({
   },
   methods: {
     getCorrectChoices(exercise: Exercise): string[] {
-      return [];
+      return getCorrectChoices(exercise);
     },
   },
   computed: {

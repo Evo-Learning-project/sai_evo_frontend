@@ -8,8 +8,18 @@ export const multipleChoiceExerciseTypes = [
 
 export const programmingExerciseTypes = [ExerciseType.JS, ExerciseType.C];
 
+export type exerciseChildName =
+  | "choice"
+  | "testcase"
+  | "sub_exercise"
+  | "solution";
+
 export const exerciseChildrenNames = {
   sub_exercise: "sub_exercises",
   testcase: "testcases",
   choice: "choices",
-} as Record<string, "sub_exercises" | "testcases" | "choices">;
+  solution: "solutions",
+} as Record<
+  exerciseChildName,
+  "sub_exercises" | "testcases" | "choices" | "solutions"
+>;
