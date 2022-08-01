@@ -1,5 +1,8 @@
 import { exerciseChildrenNames } from "./../../models/constants";
-import { EventTemplateRuleClause } from "./../../models/interfaces";
+import {
+  EventTemplateRuleClause,
+  ExerciseSolution,
+} from "./../../models/interfaces";
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import {
@@ -130,17 +133,26 @@ export const mutations = {
       exerciseId,
       childType,
       payload,
-    }: MutationPayload<ExerciseChoice | Exercise | ExerciseTestCase>
+    }: MutationPayload<
+      ExerciseChoice | Exercise | ExerciseTestCase | ExerciseSolution
+    >
   ) => {
-    const targetExercise = getters.exercise(state)(exerciseId as string);
+    const targetExercise = getters.exercise(state)(
+      exerciseId as string
+    ) as Exercise;
     const childrenName =
       exerciseChildrenNames[
-        childType as "choice" | "sub_exercise" | "testcase"
+        childType as "choice" | "sub_exercise" | "testcase" | "solution"
       ];
     const children = (targetExercise as Exercise | undefined)?.[childrenName];
     if (children) {
       const target = (
-        children as (ExerciseChoice | Exercise | ExerciseTestCase)[]
+        children as (
+          | ExerciseChoice
+          | Exercise
+          | ExerciseTestCase
+          | ExerciseSolution
+        )[]
       ).find((c) => c.id == payload.id);
       if (target) {
         // update child
