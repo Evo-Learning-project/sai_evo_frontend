@@ -70,7 +70,7 @@ export interface ExerciseSolutionVote extends Vote {}
 
 export interface ExerciseSolution {
   id: string;
-  user: User;
+  user: User | null;
   content: string;
   state?: ExerciseSolutionState;
   votes: ExerciseSolutionVote[];

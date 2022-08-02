@@ -127,11 +127,13 @@
         </div>
       </template>
       <template v-slot:body>
-        <div v-if="!subExercise || !cloze" class="flex flex-col space-y-6">
+        <div v-if="!subExercise || !cloze" class="flex flex-col">
+          <!-- top row -->
           <div
             v-if="!subExercise || !cloze"
             class="flex flex-col items-start my-4 space-y-6  lg:space-x-8 lg:space-y-0 lg:flex-row"
           >
+            <!-- label input -->
             <div v-if="!subExercise" class="w-full mt-0.5 mr-auto lg:w-4/12">
               <TextInput
                 :modelValue="modelValue.label"
@@ -148,6 +150,7 @@
                 </div>
               </TextInput>
             </div>
+            <!-- state dropdown -->
             <div
               v-if="!subExercise"
               class="self-start w-full mr-auto lg:w-3/12"
@@ -162,6 +165,7 @@
                 {{ $t("exercise_editor.exercise_state") }}
               </Dropdown>
             </div>
+            <!-- exercise_type dropdown -->
             <div
               v-if="!cloze"
               :class="{ 'md:ml-auto': !subExercise }"
@@ -180,29 +184,34 @@
               @update:modelValue="onExerciseTypeChange($event)"-->
             </div>
           </div>
-          <TextEditor
-            v-if="!cloze"
-            :modelValue="modelValue.text"
-            @ready="textEditorInstance = $event"
-            @selectionChange="onTextSelectionChange($event)"
-            @update:modelValue="onBaseExerciseChange('text', $event)"
-            >{{ $t("exercise_editor.exercise_text") }}
-            <template
-              v-if="v$.modelValue.text.$errors.length > 0"
-              v-slot:errors
-            >
-              <div
-                class="input-errors"
-                v-for="error of v$.modelValue.text.$errors"
-                :key="error.$uid"
+
+          <!-- exercise text -->
+          <div class="my-6">
+            <TextEditor
+              v-if="!cloze"
+              :modelValue="modelValue.text"
+              @ready="textEditorInstance = $event"
+              @selectionChange="onTextSelectionChange($event)"
+              @update:modelValue="onBaseExerciseChange('text', $event)"
+              >{{ $t("exercise_editor.exercise_text") }}
+              <template
+                v-if="v$.modelValue.text.$errors.length > 0"
+                v-slot:errors
               >
-                <div class="error-msg">
-                  {{ $t("validation_errors.exercise." + error.$uid) }}
+                <div
+                  class="input-errors"
+                  v-for="error of v$.modelValue.text.$errors"
+                  :key="error.$uid"
+                >
+                  <div class="error-msg">
+                    {{ $t("validation_errors.exercise." + error.$uid) }}
+                  </div>
                 </div>
-              </div>
-            </template>
-          </TextEditor>
-          <!--<textarea :value="modelValue.text"></textarea>-->
+              </template>
+            </TextEditor>
+          </div>
+
+          <!-- cloze controls -->
           <div
             class="flex items-start w-full space-y-1 md:space-y-0"
             v-if="modelValue.exercise_type === ExerciseType.COMPLETION"
@@ -238,14 +247,44 @@
               </p>
             </div>
           </div>
-          <div v-if="!cloze">
-            <TextEditor
-              v-if="!cloze && !isProgrammingExercise"
-              :modelValue="modelValue.solution"
-              @update:modelValue="onBaseExerciseChange('solution', $event)"
-              >{{ $t("exercise_editor.exercise_solution") }}</TextEditor
+
+          <!-- solutions -->
+          <div v-if="!cloze" class="mb-12">
+            <h3 class="mb-4">{{ $t("exercise_editor.solutions_title") }}</h3>
+            <div
+              v-for="solution in modelValue.solutions"
+              :key="'e-' + modelValue.id + '-sol-' + solution.id"
             >
-            <div v-else-if="!cloze" class="relative">
+              <TextEditor
+                v-if="!cloze && !isProgrammingExercise"
+                :modelValue="solution.content"
+                class="my-2"
+                @update:modelValue="
+                  onUpdateSolution(solution.id, 'content', $event)
+                "
+              >
+                <!-- {{ $t("exercise_editor.exercise_solution") }} -->
+              </TextEditor>
+            </div>
+            <Btn
+              class="mt-2"
+              :variant="'secondary'"
+              :size="'sm'"
+              @click="onAddSolution()"
+            >
+              <span class="mr-1 text-base material-icons-outlined"> add </span
+              >{{ $t("exercise_editor.new_solution") }}</Btn
+            >
+            <!--
+            <Tooltip
+              v-if="!cloze"
+              class=""
+              :text-code="'exercise_editor.solution'"
+            ></Tooltip>
+             -->
+
+            <!-- TODO REWIRE -->
+            <div v-if="false && !cloze" class="relative">
               <CodeEditor
                 :modelValue="modelValue.solution"
                 @update:modelValue="onBaseExerciseChange('solution', $event)"
@@ -301,12 +340,6 @@
                 </template>
               </CodeEditor>
             </div>
-
-            <Tooltip
-              v-if="!cloze"
-              class=""
-              :text-code="'exercise_editor.solution'"
-            ></Tooltip>
           </div>
           <div v-if="modelValue.exercise_type === ExerciseType.JS" class="pb-4">
             <Toggle
@@ -329,7 +362,8 @@
             </Toggle>
           </div>
 
-          <div v-if="!subExercise">
+          <!-- tags -->
+          <div v-if="!subExercise" class="mb-6">
             <TagInput
               :choices="tags"
               :modelValue="modelValue.public_tags ?? []"
@@ -366,7 +400,7 @@
         </div>
         <!-- Multiple-choice exercise types settings -->
         <div :class="[cloze ? '-mt-6' : 'mt-8']" v-if="isMultipleChoice">
-          <h3 class="mb-8">{{ $t("exercise_editor.choices_title") }}</h3>
+          <h3 class="mb-6">{{ $t("exercise_editor.choices_title") }}</h3>
           <div
             class="mb-4 -mt-4"
             v-if="v$.modelValue.choices.$errors.length > 0"
@@ -608,6 +642,8 @@ import {
   EventParticipationSlot,
   getFakeEventParticipationSlot,
   ExerciseSolution,
+  getBlankExerciseSolution,
+  ExerciseSolutionState,
 } from "@/models";
 import { multipleChoiceExerciseTypes } from "@/models";
 import Card from "@/components/ui/Card.vue";
@@ -735,10 +771,14 @@ export default defineComponent({
     );
 
     this.modelValue.choices?.forEach((c) =>
+      // TODO extract auto-save manager instantiation to module
       this.instantiateChoiceAutoSaveManager(c)
     );
     this.modelValue.testcases?.forEach((t) =>
       this.instantiateTestCaseAutoSaveManager(t)
+    );
+    this.modelValue.solutions?.forEach((s) =>
+      this.instantiateSolutionAutoSaveManager(s)
     );
   },
   mounted() {
@@ -878,6 +918,25 @@ export default defineComponent({
       this.onBaseExerciseChange("exercise_type", newVal);
     },
     /* CRUD on related objects */
+    async onAddSolution() {
+      const newSolution: ExerciseSolution = await this.addExerciseChild({
+        courseId: this.courseId,
+        exerciseId: this.modelValue.id,
+        childType: "solution",
+        payload: getBlankExerciseSolution(ExerciseSolutionState.PUBLISHED),
+      });
+      this.instantiateSolutionAutoSaveManager(newSolution);
+    },
+    async onUpdateSolution(
+      solutionId: string,
+      key: keyof ExerciseSolution,
+      value: unknown
+    ) {
+      await this.solutionAutoSaveManagers[solutionId].onChange({
+        field: key,
+        value,
+      });
+    },
     async onAddChoice() {
       const newChoice: ExerciseChoice = await this.addExerciseChild({
         courseId: this.courseId,
