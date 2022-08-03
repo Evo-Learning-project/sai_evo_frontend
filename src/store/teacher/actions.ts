@@ -335,7 +335,7 @@ export const actions = {
     }: {
       courseId: string;
       exerciseId: string;
-      childType: "choice" | "testcase" | "sub_exercise" | "solution";
+      childType: exerciseChildName;
       payload: ExerciseChoice;
     }
   ) => {

@@ -21,34 +21,92 @@
       <p class="text-muted">
         {{ $t("exercise_solution.no_solutions_call_to_action") }}
       </p>
-      <Btn :variant="'primary'" class="" :size="'sm'" :outline="true">
+      <Btn
+        @click="onAddSolution()"
+        :variant="'primary'"
+        class=""
+        :size="'sm'"
+        :outline="true"
+      >
         <span class="mr-2 text-base material-icons">reviews</span>
         {{ $t("exercise_solution.propose_solution") }}</Btn
       >
     </div>
-    <Btn v-else :variant="'primary'" class="mt-4" :size="'sm'" :outline="true">
+    <Btn
+      @click="onAddSolution()"
+      v-else
+      :variant="'primary'"
+      class="mt-4"
+      :size="'sm'"
+      :outline="true"
+    >
       <span class="mr-2 text-base material-icons">reviews</span>
       {{ $t("exercise_solution.propose_solution") }}</Btn
     >
+    <div v-if="editingSolution && draftSolution">
+      <ExerciseSolutionEditor v-model="draftSolution" @close="onClose()">
+        <Exercise :exercise="exercise" :showSolution="true" :readOnly="true" />
+      </ExerciseSolutionEditor>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
-import { Exercise } from "@/models";
+import {
+  Exercise as IExercise,
+  ExerciseSolution as IExerciseSolution,
+  ExerciseSolutionState,
+  getBlankExerciseSolution,
+} from "@/models";
 import { defineComponent, PropType } from "@vue/runtime-core";
 import Btn from "@/components/ui/Btn.vue";
 import ExerciseSolution from "./ExerciseSolution.vue";
+import ExerciseSolutionEditor from "./ExerciseSolutionEditor.vue";
+import { createExerciseSolution } from "@/api/exercises";
+import { courseIdMixin } from "@/mixins";
+import { setErrorNotification } from "@/utils";
+import Exercise from "../Exercise/Exercise.vue";
 export default defineComponent({
   name: "ExerciseSolutionContainer",
   props: {
     exercise: {
-      type: Object as PropType<Exercise>,
+      type: Object as PropType<IExercise>,
       required: true,
     },
   },
-  methods: {},
+  mixins: [courseIdMixin],
+  methods: {
+    // onShowSolutionEditor() {
+
+    // },
+    onClose() {
+      this.editingSolution = false;
+    },
+    async onAddSolution() {
+      this.creatingSolution = true;
+      try {
+        this.draftSolution ??= await createExerciseSolution(
+          this.courseId,
+          this.exercise.id,
+          getBlankExerciseSolution(ExerciseSolutionState.DRAFT)
+        );
+        this.editingSolution = true;
+      } catch (e) {
+        setErrorNotification(e);
+      } finally {
+        this.creatingSolution = false;
+      }
+    },
+  },
+  data() {
+    return {
+      creatingSolution: false,
+      editingSolution: false,
+      draftSolution: null as IExerciseSolution | null,
+    };
+  },
   computed: {},
-  components: { Btn, ExerciseSolution },
+  components: { Btn, ExerciseSolution, ExerciseSolutionEditor, Exercise },
 });
 </script>
 

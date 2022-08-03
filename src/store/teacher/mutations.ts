@@ -1,4 +1,7 @@
-import { exerciseChildrenNames } from "./../../models/constants";
+import {
+  exerciseChildName,
+  exerciseChildrenNames,
+} from "./../../models/constants";
 import {
   EventTemplateRuleClause,
   ExerciseSolution,
@@ -140,10 +143,7 @@ export const mutations = {
     const targetExercise = getters.exercise(state)(
       exerciseId as string
     ) as Exercise;
-    const childrenName =
-      exerciseChildrenNames[
-        childType as "choice" | "sub_exercise" | "testcase" | "solution"
-      ];
+    const childrenName = exerciseChildrenNames[childType as exerciseChildName];
     const children = (targetExercise as Exercise | undefined)?.[childrenName];
     if (children) {
       const target = (
