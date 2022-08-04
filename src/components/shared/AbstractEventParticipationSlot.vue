@@ -131,7 +131,7 @@
       <ExerciseSolutionContainer
         :exercise="exercise"
         class="w-full mt-4"
-        v-if="showSolutionAndScores"
+        v-if="isExerciseWithSolutions(exercise) && showSolutionAndScores"
       />
     </div>
   </div>
@@ -142,7 +142,7 @@ import {
   EventParticipationSlot,
   EventParticipationSlotAssessment,
   EventParticipationSlotSubmission,
-  Exercise as IExercise,
+  // Exercise as IExercise,
   ExerciseType,
   programmingExerciseTypes,
 } from "@/models";
@@ -155,7 +155,10 @@ import ParticipationSlotAssessment from "./ParticipationSlotAssessment.vue";
 import { isOpenAnswerExercise, isProgrammingExercise } from "./Exercise/utils";
 import ClozeExercise from "./Exercise/ClozeExercise.vue";
 import ExerciseSolutionContainer from "./ExerciseSolution/ExerciseSolutionContainer.vue";
-
+import {
+  isExerciseWithSolutions,
+  Exercise as IExercise,
+} from "@/models/frontend/types";
 export default defineComponent({
   components: {
     Timestamp,
@@ -272,6 +275,7 @@ export default defineComponent({
     this.triggerTexRender();
   },
   methods: {
+    isExerciseWithSolutions,
     onUpdateSubmission(change: [keyof EventParticipationSlotSubmission, any]) {
       this.$emit("updateSubmission", {
         slot: this.modelValue,

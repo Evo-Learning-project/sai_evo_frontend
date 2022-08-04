@@ -57,12 +57,13 @@
 
 <script lang="ts">
 import {
-  Exercise as IExercise,
+  //Exercise as IExercise,
   ExerciseSolution as IExerciseSolution,
   ExerciseSolutionState,
   ExerciseType,
   getBlankExerciseSolution,
 } from "@/models";
+import { ExerciseWithSolutions } from "@/models/frontend/types";
 import { defineComponent, PropType } from "@vue/runtime-core";
 import Btn from "@/components/ui/Btn.vue";
 import ExerciseSolution from "./ExerciseSolution.vue";
@@ -81,7 +82,7 @@ export default defineComponent({
   name: "ExerciseSolutionContainer",
   props: {
     exercise: {
-      type: Object as PropType<IExercise>,
+      type: Object as PropType<ExerciseWithSolutions>,
       required: true,
     },
   },
