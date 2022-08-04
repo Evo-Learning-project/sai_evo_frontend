@@ -1,10 +1,10 @@
-import { ExerciseTestCase } from "./../models/interfaces";
 import {
   EventParticipation,
   Exercise,
   EventParticipationSlot,
   ExerciseChoice,
   CodeExecutionResults,
+  ExerciseTestCase,
 } from "@/models";
 import { getTranslatedString as _ } from "@/i18n";
 import { DataFrequency } from ".";

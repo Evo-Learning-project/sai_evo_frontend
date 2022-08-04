@@ -1,16 +1,13 @@
 import { DataFormat } from "./../integrations/types";
 import { ReportField } from "./../reports/types";
 import {
-  EventType,
-  ExerciseSolutionState,
-  ExerciseTestCaseType,
-} from "./../models/types";
-import {
   CoursePrivilege,
   EventParticipationState,
   EventState,
   EventTemplateRuleType,
-  // ExamValidationError,
+  EventType,
+  ExerciseSolutionState,
+  ExerciseTestCaseType,
   ExerciseState,
   ExerciseType,
   ExerciseValidationError,

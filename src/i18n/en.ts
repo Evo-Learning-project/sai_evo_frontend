@@ -1,5 +1,4 @@
-import { EventState } from "./../models/types";
-import { ExerciseState, ExerciseType } from "@/models";
+import { ExerciseState, ExerciseType, EventState } from "@/models";
 
 export const en = {
   dialog: {

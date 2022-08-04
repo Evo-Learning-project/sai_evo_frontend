@@ -1,5 +1,4 @@
-import { ExerciseTestCase } from "./models/interfaces";
-import { Exercise, ExerciseChoice } from "@/models";
+import { Exercise, ExerciseChoice, ExerciseTestCase } from "@/models";
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { debounce, DebouncedFunc } from "lodash";
@@ -64,12 +63,12 @@ export class AutoSaveManager<T> {
     this.state = AutoSaveManagerState.UP_TO_DATE;
   }
 
-  async onChange({
+  async onChange<K extends keyof T>({
     field,
     value,
   }: {
-    field: keyof T;
-    value: unknown;
+    field: K;
+    value: T[K];
   }): Promise<void> {
     this.state = AutoSaveManagerState.PENDING;
 

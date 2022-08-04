@@ -6,7 +6,6 @@ import {
   normalizeIncomingEventTemplateRule,
   normalizeIncomingEventTemplateRuleClause,
 } from "./converters";
-import { Exercise } from "./../models/interfaces";
 import { EventSearchFilter } from "./interfaces";
 import {
   Event,
@@ -16,6 +15,7 @@ import {
   EventTemplateRule,
   EventTemplateRuleClause,
   EventTemplateRuleType,
+  Exercise,
 } from "@/models";
 import { forceFileDownload } from "@/utils";
 import axios from "axios";
