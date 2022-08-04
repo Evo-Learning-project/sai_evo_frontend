@@ -16,7 +16,7 @@ import {
   ParticipationAssessmentProgress,
   AssessmentSlotState,
   AssessmentVisibility,
-} from ".";
+} from "@/models";
 
 interface Orderable {
   _ordering?: number;

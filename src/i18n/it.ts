@@ -10,7 +10,6 @@ import {
   ExerciseTestCaseType,
   ExerciseState,
   ExerciseType,
-  ExerciseValidationError,
 } from "@/models";
 import {
   ROUTE_TITLE_COURSE_NAME_TOKEN,
@@ -826,17 +825,17 @@ export const it = {
   //   [ExamValidationError.INVALID_TIMESTAMPS]:
   //     "Hai selezionato data e ora di inizio e fine non corrette per questo esame",
   // },
-  exercise_validation_errors: {
-    [ExerciseValidationError.BLANK_TEXT]: "Questo esercizio è senza testo",
-    [ExerciseValidationError.NO_CHOICES]:
-      "Questo esercizio a scelta multipla non ha scelte",
-    [ExerciseValidationError.BLANK_CHOICE]:
-      "Questo esercizio a scelta multipla contiene delle scelte senza testo",
-    [ExerciseValidationError.NO_TESTCASES]:
-      "Questo esercizio di programmazione non ha test case",
-    [ExerciseValidationError.NO_SUB_EXERCISES]:
-      "Questo esercizio composto non contiene sotto-esercizi",
-  },
+  // exercise_validation_errors: {
+  //   [ExerciseValidationError.BLANK_TEXT]: "Questo esercizio è senza testo",
+  //   [ExerciseValidationError.NO_CHOICES]:
+  //     "Questo esercizio a scelta multipla non ha scelte",
+  //   [ExerciseValidationError.BLANK_CHOICE]:
+  //     "Questo esercizio a scelta multipla contiene delle scelte senza testo",
+  //   [ExerciseValidationError.NO_TESTCASES]:
+  //     "Questo esercizio di programmazione non ha test case",
+  //   [ExerciseValidationError.NO_SUB_EXERCISES]:
+  //     "Questo esercizio composto non contiene sotto-esercizi",
+  // },
   course_privileges: {
     [CoursePrivilege.ACCESS_EXERCISES]:
       "Può accedere alla lista degli esercizi del corso.",

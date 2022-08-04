@@ -1,5 +1,4 @@
-import { Exercise } from "./interfaces";
-import { ExerciseType } from ".";
+import { ExerciseType, Exercise } from "@/models";
 
 export const multipleChoiceExerciseTypes = [
   ExerciseType.MULTIPLE_CHOICE_MULTIPLE_POSSIBLE,

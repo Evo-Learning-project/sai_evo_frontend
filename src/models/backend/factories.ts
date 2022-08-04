@@ -19,7 +19,7 @@ import {
   ExerciseTestCaseType,
   ExerciseType,
   Tag,
-} from ".";
+} from "@/models";
 import { EventAccessRule, ExerciseSolutionState, VoteType } from "./types";
 
 export const getBlankUser = (): User => ({
