@@ -1,6 +1,10 @@
 import { DataFormat } from "./../integrations/types";
 import { ReportField } from "./../reports/types";
-import { EventType, ExerciseTestCaseType } from "./../models/types";
+import {
+  EventType,
+  ExerciseSolutionState,
+  ExerciseTestCaseType,
+} from "./../models/types";
 import {
   CoursePrivilege,
   EventParticipationState,
@@ -268,6 +272,15 @@ export const it = {
       "Non ci sono ancora soluzioni. Sii il primo a proporne una!",
     propose_solution: "Proponi soluzione",
     proposed_solutions_title: "Soluzioni proposte",
+    propose_solution_title: "Proponi una soluzione per l'esercizio",
+    publish: "Pubblica",
+    your_solution_placeholder: "La tua soluzione",
+    states: {
+      [ExerciseSolutionState.DRAFT]: "Bozza",
+      [ExerciseSolutionState.PUBLISHED]: "Pubblicata",
+      [ExerciseSolutionState.SUBMITTED]: "Proposta",
+      [ExerciseSolutionState.REJECTED]: "Scartata",
+    },
   },
   participation_downloader: {
     report_type: "Formato del report",
@@ -578,6 +591,7 @@ export const it = {
     exercise_editor_title: "Editor esercizio",
     draft_notice: "Bozza",
     max_score: "Punteggio massimo",
+    solutions_title: "Soluzioni",
     choices_title: "Scelte",
     clozes_title: "Gruppi di scelte",
     testcases_title: "Test case",
@@ -606,6 +620,7 @@ export const it = {
     edit_non_draft_body:
       "Stai per modificare un esercizio non in stato di bozza. Potrebbe essere già presente in un esame o essere già stato visto dagli studenti. Sei sicuro di volerlo modificare?",
     new_choice: "Nuova",
+    new_solution: "Nuova",
     new_testcase: "Nuovo",
     new_sub_exercise: "Nuovo",
     new_cloze: "Aggiungi domanda",

@@ -12,6 +12,7 @@ import {
   EventType,
   Exercise,
   ExerciseChoice,
+  ExerciseSolution,
   ExerciseSolutionComment,
   ExerciseSolutionVote,
   ExerciseState,
@@ -19,7 +20,7 @@ import {
   ExerciseType,
   Tag,
 } from ".";
-import { EventAccessRule, VoteType } from "./types";
+import { EventAccessRule, ExerciseSolutionState, VoteType } from "./types";
 
 export const getBlankUser = (): User => ({
   id: "",
@@ -38,12 +39,21 @@ export const getBlankCourse = (): Course => ({
   privileges: [],
 });
 
+export const getBlankExerciseSolution = (
+  state: ExerciseSolutionState | undefined
+): ExerciseSolution => ({
+  id: "",
+  state,
+  comments: [],
+  votes: [],
+  content: "",
+  user: null,
+});
+
 export const getBlankChoice = (): ExerciseChoice => ({
   id: "",
   text: "",
   correctness: 0,
-  // score_selected: 0,
-  // score_unselected: 0,
 });
 
 export const getBlankTestCase = (): ExerciseTestCase => ({

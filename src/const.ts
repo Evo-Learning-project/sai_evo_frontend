@@ -1,4 +1,4 @@
-import { EventParticipation } from "./models/interfaces";
+import { EventParticipation, ExerciseSolution } from "./models/interfaces";
 import { FieldList } from "./autoSave";
 import { SelectableOption } from "./interfaces";
 import {
@@ -36,6 +36,10 @@ export const EXERCISE_AUTO_SAVE_DEBOUNCED_FIELDS: FieldList<Exercise> = [
   "label",
   "text",
 ];
+
+export const EXERCISE_SOLUTION_AUTO_SAVE_DEBOUNCE_TIME_MS = 3000;
+export const EXERCISE_SOLUTION_AUTO_SAVE_DEBOUNCE_FIELDS: FieldList<ExerciseSolution> =
+  ["content"];
 
 export const EXERCISE_CHOICE_AUTO_SAVE_DEBOUNCE_TIME_MS = 3000;
 export const EXERCISE_CHOICE_AUTO_SAVE_DEBOUNCED_FIELDS: FieldList<ExerciseChoice> =

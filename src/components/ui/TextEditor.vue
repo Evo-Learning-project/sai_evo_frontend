@@ -1,12 +1,12 @@
 <template>
-  <div>
+  <div :class="{ 'h-full': tall }">
     <div
-      class="relative z-10 rounded-t-sm light-input bg-light"
+      class="relative z-10 h-full rounded-t-sm light-input bg-light"
       :class="{ 'opacity-80': disabled }"
     >
       <!-- TODO! make this just a textarea for students-->
       <div
-        class="z-10 tex2jax_ignore ql-editor-container"
+        class="z-10 h-full tex2jax_ignore ql-editor-container"
         :class="[$slots.errors?.() ? 'ql-editor-container-error' : '']"
       >
         <quill-editor
@@ -67,7 +67,24 @@ import { quillEditor } from "vue3-quill";
 import Btn from "./Btn.vue";
 export default defineComponent({
   name: "TextEditor",
-  props: ["modelValue", "disabled"],
+  props: {
+    modelValue: {
+      type: String,
+      required: true,
+    },
+    disabled: {
+      type: Boolean,
+      default: false,
+    },
+    tall: {
+      type: Boolean,
+      default: false,
+    },
+    placeholder: {
+      type: String,
+      default: "",
+    },
+  },
   components: {
     quillEditor,
     Btn,
@@ -82,31 +99,6 @@ export default defineComponent({
       instance: null as any,
       content: "",
       internalDisabled: true,
-      editorOptions: {
-        theme: "snow",
-        placeholder: "",
-        modules: {
-          toolbar: [
-            ["bold", "italic", "underline", "strike"],
-            ["code-block"],
-            //[{ header: 1 }, { header: 2 }],
-            [{ list: "ordered" }, { list: "bullet" }],
-            //[{ script: 'sub' }, { script: 'super' }],
-            //[{ indent: '-1' }, { indent: '+1' }],
-            //[{ direction: 'rtl' }],
-            // [{ size: ['small', false, 'large', 'huge'] }],
-            // [{ header: [1, 2, 3, 4, 5, 6, false] }],
-            // [{ color: [] }, { background: [] }],
-            // [{ font: [] }],
-            // [{ align: [] }],
-            // ['clean'],
-            [
-              "image",
-              //'video'
-            ],
-          ],
-        },
-      },
     };
   },
   methods: {
@@ -131,6 +123,35 @@ export default defineComponent({
           range: event,
         });
       }
+    },
+  },
+  computed: {
+    editorOptions() {
+      return {
+        theme: "snow",
+        placeholder: this.placeholder,
+        modules: {
+          toolbar: [
+            ["bold", "italic", "underline", "strike"],
+            ["code-block"],
+            //[{ header: 1 }, { header: 2 }],
+            [{ list: "ordered" }, { list: "bullet" }],
+            //[{ script: 'sub' }, { script: 'super' }],
+            //[{ indent: '-1' }, { indent: '+1' }],
+            //[{ direction: 'rtl' }],
+            // [{ size: ['small', false, 'large', 'huge'] }],
+            // [{ header: [1, 2, 3, 4, 5, 6, false] }],
+            // [{ color: [] }, { background: [] }],
+            // [{ font: [] }],
+            // [{ align: [] }],
+            // ['clean'],
+            [
+              "image",
+              //'video'
+            ],
+          ],
+        },
+      };
     },
   },
 });
