@@ -1,4 +1,3 @@
-import { Exercise, ExerciseSolutionComment } from "./../../models/interfaces";
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
@@ -9,6 +8,8 @@ import {
   EventTemplateRule,
   EventTemplateRuleClause,
   ExerciseSolution,
+  Exercise,
+  ExerciseSolutionComment,
 } from "@/models";
 
 import { Commit } from "vuex";

@@ -1,5 +1,4 @@
-import { ExerciseTestCase } from "./models/interfaces";
-import { Exercise, ExerciseChoice } from "@/models";
+import { Exercise, ExerciseChoice, ExerciseTestCase } from "@/models";
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { debounce, DebouncedFunc } from "lodash";

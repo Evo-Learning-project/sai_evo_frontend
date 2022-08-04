@@ -1,4 +1,3 @@
-import { EventParticipationSlot } from "./../models/interfaces";
 import { normalizeOptionalStringContainingNumber, tagIdsToTags } from "./utils";
 import {
   Event,
@@ -8,6 +7,7 @@ import {
   Exercise,
   ExerciseChoice,
   EventTemplateRuleClause,
+  EventParticipationSlot,
 } from "@/models";
 
 export const normalizeIncomingExercise = (exercise: Exercise): Exercise => ({

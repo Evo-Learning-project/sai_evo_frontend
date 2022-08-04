@@ -1,7 +1,6 @@
 import { SharedState } from "./../store/types";
-import { Exercise } from "./../models/interfaces";
 import { convertEventTemplateRules } from "@/api/utils";
-import { Event } from "@/models";
+import { Event, Exercise } from "@/models";
 import store from "@/store";
 import { getWsRequestId, openAuthenticatedWsConnection } from "./utils";
 
