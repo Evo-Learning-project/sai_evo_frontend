@@ -1,6 +1,10 @@
 import { DataFormat } from "./../integrations/types";
 import { ReportField } from "./../reports/types";
-import { EventType, ExerciseTestCaseType } from "./../models/types";
+import {
+  EventType,
+  ExerciseSolutionState,
+  ExerciseTestCaseType,
+} from "./../models/types";
 import {
   CoursePrivilege,
   EventParticipationState,
@@ -269,6 +273,14 @@ export const it = {
     propose_solution: "Proponi soluzione",
     proposed_solutions_title: "Soluzioni proposte",
     propose_solution_title: "Proponi una soluzione per l'esercizio",
+    publish: "Pubblica",
+    your_solution_placeholder: "La tua soluzione",
+    states: {
+      [ExerciseSolutionState.DRAFT]: "Bozza",
+      [ExerciseSolutionState.PUBLISHED]: "Pubblicata",
+      [ExerciseSolutionState.SUBMITTED]: "Proposta",
+      [ExerciseSolutionState.REJECTED]: "Scartata",
+    },
   },
   participation_downloader: {
     report_type: "Formato del report",

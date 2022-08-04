@@ -44,7 +44,11 @@
       {{ $t("exercise_solution.propose_solution") }}</Btn
     >
     <div v-if="editingSolution && draftSolution">
-      <ExerciseSolutionEditor v-model="draftSolution" @close="onClose()">
+      <ExerciseSolutionEditor
+        v-model="draftSolution"
+        @close="onClose()"
+        :editorType="editorType"
+      >
         <Exercise :exercise="exercise" :showSolution="true" :readOnly="true" />
       </ExerciseSolutionEditor>
     </div>
@@ -56,6 +60,7 @@ import {
   Exercise as IExercise,
   ExerciseSolution as IExerciseSolution,
   ExerciseSolutionState,
+  ExerciseType,
   getBlankExerciseSolution,
 } from "@/models";
 import { defineComponent, PropType } from "@vue/runtime-core";
@@ -105,7 +110,17 @@ export default defineComponent({
       draftSolution: null as IExerciseSolution | null,
     };
   },
-  computed: {},
+  computed: {
+    editorType() {
+      if (this.exercise.exercise_type === ExerciseType.JS) {
+        return "typescript";
+      }
+      if (this.exercise.exercise_type === ExerciseType.C) {
+        return "c";
+      }
+      return "text";
+    },
+  },
   components: { Btn, ExerciseSolution, ExerciseSolutionEditor, Exercise },
 });
 </script>

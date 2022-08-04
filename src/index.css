@@ -700,6 +700,7 @@
      /* quill editor */
      .ql-container {
       font-size: inherit !important;
+      height: 100% !important;
     }
     
     .ql-editor-container:focus-within {
@@ -728,6 +729,17 @@
       font-family: "Source Sans Pro", "Helvetica Neue", "Helvetica", "Arial",
         sans-serif !important;
     }
+
+    .ql-editor.ql-blank::before {
+      color: rgba(0,0,0,0.45);
+      content: attr(data-placeholder);
+      font-style: normal !important;
+      left: 15px;
+      pointer-events: none;
+      position: absolute;
+      right: 15px;
+  }
+
     .ql-container.ql-snow {
       border: 0 !important; /*1px solid #ccc;*/
     }
