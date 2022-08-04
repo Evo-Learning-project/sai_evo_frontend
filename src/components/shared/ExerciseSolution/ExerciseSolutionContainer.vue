@@ -71,6 +71,12 @@ import { createExerciseSolution } from "@/api/exercises";
 import { courseIdMixin } from "@/mixins";
 import { setErrorNotification } from "@/utils";
 import Exercise from "../Exercise/Exercise.vue";
+import { AutoSaveManager } from "@/autoSave";
+import { mapActions } from "vuex";
+import {
+  EXERCISE_SOLUTION_AUTO_SAVE_DEBOUNCE_FIELDS,
+  EXERCISE_SOLUTION_AUTO_SAVE_DEBOUNCE_TIME_MS,
+} from "@/const";
 export default defineComponent({
   name: "ExerciseSolutionContainer",
   props: {
@@ -81,11 +87,30 @@ export default defineComponent({
   },
   mixins: [courseIdMixin],
   methods: {
-    // onShowSolutionEditor() {
-
-    // },
+    ...mapActions("shared", ["getTags", "updateExerciseChild"]),
     onClose() {
       this.editingSolution = false;
+    },
+    instantiateAutoSaveManager() {
+      this.autoSaveManager = new AutoSaveManager<IExerciseSolution>(
+        this.draftSolution as IExerciseSolution,
+        async (changes) =>
+          await this.updateExerciseChild({
+            childType: "solution",
+            courseId: this.courseId,
+            exerciseId: this.exercise.id,
+            payload: { ...this.draftSolution, ...changes },
+            reFetch: false,
+          }),
+        (changes) =>
+          (this.draftSolution = this.draftSolution
+            ? { ...this.draftSolution, ...changes }
+            : null),
+        EXERCISE_SOLUTION_AUTO_SAVE_DEBOUNCE_FIELDS,
+        EXERCISE_SOLUTION_AUTO_SAVE_DEBOUNCE_TIME_MS,
+        undefined, // success
+        undefined // error
+      );
     },
     async onAddSolution() {
       this.creatingSolution = true;
@@ -108,6 +133,7 @@ export default defineComponent({
       creatingSolution: false,
       editingSolution: false,
       draftSolution: null as IExerciseSolution | null,
+      autoSaveManager: null as AutoSaveManager<IExerciseSolution> | null,
     };
   },
   computed: {

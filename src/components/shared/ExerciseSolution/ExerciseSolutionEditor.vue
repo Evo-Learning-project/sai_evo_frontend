@@ -69,6 +69,7 @@ import Btn from "@/components/ui/Btn.vue";
 import CloudSaveStatus from "@/components/ui/CloudSaveStatus.vue";
 import { texMixin } from "@/mixins";
 import CodeEditor from "@/components/ui/CodeEditor.vue";
+import { AutoSaveManager } from "@/autoSave";
 export default defineComponent({
   name: "ExerciseSolutionEditor",
   mixins: [texMixin],
