@@ -327,11 +327,11 @@ export default defineComponent({
       this.editingMaxScore = true;
     },
     async onSaveMaxScore() {
-      await this.onChange("max_score", this.dirtyMaxScore);
+      await this.onChange("max_score", this.dirtyMaxScore as number);
       this.editingMaxScore = false;
       // TODO implement re-setting the rules' max_score
     },
-    async onChange(field: keyof Event, value: unknown) {
+    async onChange<K extends keyof Event>(field: K, value: Event[K]) {
       if (field === "randomize_rule_order") {
         this.invalidateExamples();
       }

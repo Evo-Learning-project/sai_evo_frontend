@@ -64,12 +64,12 @@ export class AutoSaveManager<T> {
     this.state = AutoSaveManagerState.UP_TO_DATE;
   }
 
-  async onChange({
+  async onChange<K extends keyof T>({
     field,
     value,
   }: {
-    field: keyof T;
-    value: unknown;
+    field: K;
+    value: T[K];
   }): Promise<void> {
     this.state = AutoSaveManagerState.PENDING;
 

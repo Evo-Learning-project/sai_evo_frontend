@@ -1,3 +1,4 @@
+import { Exercise, ExerciseSolutionComment } from "./../../models/interfaces";
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
@@ -7,6 +8,7 @@ import {
   EventParticipationSlot,
   EventTemplateRule,
   EventTemplateRuleClause,
+  ExerciseSolution,
 } from "@/models";
 
 import { Commit } from "vuex";
@@ -29,6 +31,7 @@ import {
   updateEventTemplateRuleClause,
 } from "@/api/events";
 import { StudentState } from "../types";
+import { createExerciseSolutionComment } from "@/api/exercises";
 
 export const actions = {
   participateInEvent: async (
@@ -293,5 +296,34 @@ export const actions = {
       clause
     );
     return updatedClause;
+  },
+  addExerciseSolutionComment: async (
+    {
+      commit,
+      state,
+      getters,
+    }: { commit: Commit; state: StudentState; getters: any },
+    {
+      courseId,
+      exerciseId,
+      solutionId,
+      comment,
+    }: {
+      courseId: string;
+      exerciseId: string;
+      solutionId: string;
+      comment: ExerciseSolutionComment;
+    }
+  ) => {
+    const newComment = await createExerciseSolutionComment(
+      courseId,
+      exerciseId,
+      solutionId,
+      comment
+    );
+    getters.exercises
+      .find((e: Exercise) => e.id == exerciseId)
+      .solutions?.find((s: ExerciseSolution) => s.id == solutionId)
+      ?.comments.push(newComment);
   },
 };
