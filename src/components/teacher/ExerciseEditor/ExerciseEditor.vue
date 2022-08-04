@@ -853,7 +853,10 @@ export default defineComponent({
         );
       }
     },
-    async onBaseExerciseChange(key: keyof Exercise, value: unknown) {
+    async onBaseExerciseChange<K extends keyof Exercise>(
+      key: K,
+      value: Exercise[K]
+    ) {
       await this.autoSaveManager?.onChange({ field: key, value });
     },
     onFocusNonDraft() {
@@ -927,10 +930,10 @@ export default defineComponent({
       });
       this.instantiateSolutionAutoSaveManager(newSolution);
     },
-    async onUpdateSolution(
+    async onUpdateSolution<K extends keyof ExerciseSolution>(
       solutionId: string,
-      key: keyof ExerciseSolution,
-      value: unknown
+      key: K,
+      value: ExerciseSolution[K]
     ) {
       await this.solutionAutoSaveManagers[solutionId].onChange({
         field: key,
@@ -946,10 +949,10 @@ export default defineComponent({
       });
       this.instantiateChoiceAutoSaveManager(newChoice);
     },
-    async onUpdateChoice(
+    async onUpdateChoice<K extends keyof ExerciseChoice>(
       choiceId: string,
-      key: keyof ExerciseChoice,
-      value: unknown
+      key: K,
+      value: ExerciseChoice[K]
     ) {
       await this.choiceAutoSaveManagers[choiceId].onChange({
         field: key,
@@ -1002,10 +1005,10 @@ export default defineComponent({
       });
       this.instantiateTestCaseAutoSaveManager(newTestcase);
     },
-    async onUpdateTestCase(
+    async onUpdateTestCase<K extends keyof ExerciseTestCase>(
       testCaseId: string,
-      key: keyof ExerciseTestCase,
-      value: unknown
+      key: K,
+      value: ExerciseTestCase[K]
     ) {
       await this.testCaseAutoSaveManagers[testCaseId].onChange({
         field: key,

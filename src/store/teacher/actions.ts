@@ -1,14 +1,11 @@
-import { ExerciseSolution } from "./../../models/interfaces";
-import {
-  exerciseChildName,
-  exerciseChildrenNames,
-} from "./../../models/constants";
 import { EventSearchFilter } from "./../../api/interfaces";
 /* eslint-disable no-unexpected-multiline */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import axios from "axios";
 import {
+  exerciseChildName,
+  exerciseChildrenNames,
   Course,
   CoursePrivilege,
   Event,
@@ -23,6 +20,7 @@ import {
   ExerciseTestCase,
   Tag,
   User,
+  ExerciseSolution,
 } from "@/models";
 import { createCourse, getCourses, getTags, updateCourse } from "@/api/courses";
 

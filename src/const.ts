@@ -1,4 +1,4 @@
-import { EventParticipation, ExerciseSolution } from "./models/interfaces";
+import { EventParticipation, ExerciseSolution } from "@/models";
 import { FieldList } from "./autoSave";
 import { SelectableOption } from "./interfaces";
 import {

@@ -1,15 +1,16 @@
-import { VoteType } from "./../models/types";
 import {
   normalizeIncomingExercise,
   normalizeIncomingExerciseChoice,
 } from "./converters";
-import { ExerciseSolution, ExerciseTestCase } from "./../models/interfaces";
 /* eslint-disable no-constant-condition */
 import {
   CodeExecutionResults,
   Exercise,
   ExerciseChoice,
   ExerciseSolutionComment,
+  VoteType,
+  ExerciseSolution,
+  ExerciseTestCase,
 } from "@/models";
 import axios from "axios";
 import { ExerciseSearchFilter } from "./interfaces";

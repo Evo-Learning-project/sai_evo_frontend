@@ -314,10 +314,10 @@ export default defineComponent({
         this.addRuleAmount = 2;
       }
     },
-    async onRuleUpdate(
+    async onRuleUpdate<K extends keyof EventTemplateRule>(
       rule: EventTemplateRule,
-      field: keyof EventTemplateRule,
-      value: unknown,
+      field: K,
+      value: EventTemplateRule[K],
       reFetch = false
     ) {
       this.$emit("saving");

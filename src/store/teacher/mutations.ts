@@ -1,14 +1,10 @@
-import {
-  exerciseChildName,
-  exerciseChildrenNames,
-} from "./../../models/constants";
-import {
-  EventTemplateRuleClause,
-  ExerciseSolution,
-} from "./../../models/interfaces";
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import {
+  EventTemplateRuleClause,
+  ExerciseSolution,
+  exerciseChildName,
+  exerciseChildrenNames,
   EventParticipationSlot,
   EventParticipation,
   Exercise,

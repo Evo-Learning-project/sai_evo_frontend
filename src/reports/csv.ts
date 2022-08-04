@@ -1,7 +1,6 @@
 import { ReportField, ReportSettings } from "./types";
-import { ExerciseTestCase } from "./../models/interfaces";
 import { getTranslatedString as _ } from "@/i18n";
-import { EventParticipation, ExerciseType } from "@/models";
+import { EventParticipation, ExerciseType, ExerciseTestCase } from "@/models";
 import { get } from "lodash";
 
 const getEventParticipationHeaders = (

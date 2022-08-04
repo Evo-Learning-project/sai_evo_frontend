@@ -1,5 +1,4 @@
 import { isMultipleChoiceExercise } from "./../components/shared/Exercise/utils";
-import { EventTemplateRule } from "./../models/interfaces";
 import {
   Course,
   EventTemplateRuleClause,
@@ -8,6 +7,7 @@ import {
   Exercise,
   ExerciseChoice,
   ExerciseType,
+  EventTemplateRule,
 } from "@/models";
 import store from "@/store";
 import { SharedState } from "@/store/types";

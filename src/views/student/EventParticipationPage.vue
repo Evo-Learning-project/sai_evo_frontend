@@ -401,10 +401,10 @@ export default defineComponent({
       );
       //await this.onChange(slot, "attachment", formData);
     },
-    async onChange(
+    async onChange<K extends keyof EventParticipationSlot>(
       slot: EventParticipationSlot,
-      field: keyof EventParticipationSlot,
-      value: unknown
+      field: K,
+      value: EventParticipationSlot[K]
     ) {
       // if a new slot has been changed, flush any pending slots
       if (this.lastSlotChanged != null && this.lastSlotChanged.id != slot.id) {

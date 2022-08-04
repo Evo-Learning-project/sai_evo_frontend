@@ -1,6 +1,5 @@
-import { EventParticipation } from "@/models";
+import { EventParticipation, Event, Exercise } from "@/models";
 import { getTranslatedString } from "./i18n/index";
-import { Event, Exercise } from "./models/interfaces";
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import debounce from "lodash/debounce";
 import moment from "moment";
