@@ -9,7 +9,7 @@
     </div>
     <ExerciseSolution
       class="w-full my-4"
-      v-for="solution in nonDraftSolutions"
+      v-for="solution in shownSolutions"
       :key="'e-' + exercise.id + '-solution-' + solution.id"
       :solution="solution"
       :exercise="exercise"
@@ -32,17 +32,31 @@
         {{ $t("exercise_solution.propose_solution") }}</Btn
       >
     </div>
-    <Btn
-      @click="onAddSolution()"
-      v-else
-      :variant="'primary'"
-      class="mt-4"
-      :size="'sm'"
-      :outline="true"
-    >
-      <span class="mr-2 text-base material-icons">reviews</span>
-      {{ $t("exercise_solution.propose_solution") }}</Btn
-    >
+    <div class="flex flex-col">
+      <Btn
+        @click="showAll = true"
+        :size="'xs'"
+        :variant="'primary-borderless'"
+        class="mr-auto -ml-1"
+        v-if="!showAll && nonDraftSolutions.length > SHOW_INITIALLY_COUNT"
+      >
+        {{ $t("exercise_solution.show_all") }} ({{
+          nonDraftSolutions.length
+        }})</Btn
+      >
+      <Btn
+        @click="onAddSolution()"
+        v-if="(exercise.solutions ?? []).length > 0"
+        :variant="'primary'"
+        class="mt-4 mr-auto"
+        :size="'sm'"
+        :outline="true"
+      >
+        <span class="mr-2 text-base material-icons">reviews</span>
+        {{ $t("exercise_solution.propose_solution") }}</Btn
+      >
+    </div>
+
     <div v-if="editingSolutionId !== null">
       <ExerciseSolutionEditor
         :saving="saving"
@@ -59,6 +73,8 @@
 </template>
 
 <script lang="ts">
+const SHOW_INITIALLY_COUNT = 1;
+
 import {
   Exercise as IExercise,
   ExerciseSolution as IExerciseSolution,
@@ -186,6 +202,8 @@ export default defineComponent({
       editingSolutionId: null as string | null,
       solutionBeingEdited: null as IExerciseSolution | null,
       autoSaveManager: null as AutoSaveManager<IExerciseSolution> | null,
+      showAll: false,
+      SHOW_INITIALLY_COUNT,
     };
   },
   computed: {
@@ -197,6 +215,11 @@ export default defineComponent({
         return "c";
       }
       return "text";
+    },
+    shownSolutions(): IExerciseSolution[] {
+      return this.nonDraftSolutions.filter(
+        (_, i) => this.showAll || i < SHOW_INITIALLY_COUNT
+      );
     },
     draftSolutions(): IExerciseSolution[] {
       return (this.exercise.solutions ?? []).filter(

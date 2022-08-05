@@ -40,13 +40,31 @@
         <!-- right-side pane -->
         <div class="flex flex-col w-full h-full -mt-4 bg-black bg-opacity-0">
           <!-- content -->
-          <div class="w-full h-full pt-4 mb-auto whitespace-pre">
+          <div
+            ref="content"
+            class="relative w-full pt-4 mb-auto whitespace-pre"
+            :class="{ 'h-full': !collapsed, 'overflow-hidden': collapsed }"
+            :style="
+              collapsed ? 'max-height: ' + MAX_CONTENT_HEIGHT_PX + 'px' : ''
+            "
+          >
             <ProcessedTextFragment
               v-if="true"
               style="white-space: break-spaces"
               class="w-full px-4 py-2 rounded"
               :value="solution.content"
             ></ProcessedTextFragment>
+            <div
+              v-if="collapsed"
+              class="absolute bottom-0 left-0 flex w-full h-40 hidden-content"
+            >
+              <Btn
+                @click="collapsed = false"
+                :variant="'primary-borderless'"
+                class="z-20 mx-auto mt-auto mb-2"
+                >{{ $t("exercise_solution.reveal_solution") }}</Btn
+              >
+            </div>
           </div>
 
           <div class="flex w-full pb-2 mt-2 border-b-2 border-gray-50">
@@ -120,6 +138,7 @@
 </template>
 
 <script lang="ts">
+const MAX_CONTENT_HEIGHT_PX = 300;
 import {
   Exercise,
   ExerciseSolution,
@@ -166,12 +185,20 @@ export default defineComponent({
       default: true,
     },
   },
+  mounted() {
+    const contentElement = this.$refs.content as HTMLElement;
+    if (contentElement.clientHeight > this.MAX_CONTENT_HEIGHT_PX) {
+      this.collapsed = true;
+    }
+  },
   data() {
     return {
       voting: false,
       postingComment: false,
       draftComment: "",
       VoteType,
+      MAX_CONTENT_HEIGHT_PX,
+      collapsed: false,
       //solutionId: uuid4(),
     };
   },
