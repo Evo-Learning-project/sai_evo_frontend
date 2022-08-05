@@ -274,7 +274,7 @@ export const it = {
     your_solution_placeholder: "La tua soluzione",
     states: {
       [ExerciseSolutionState.DRAFT]: "Bozza",
-      [ExerciseSolutionState.PUBLISHED]: "Pubblicata",
+      [ExerciseSolutionState.APPROVED]: "Pubblicata",
       [ExerciseSolutionState.SUBMITTED]: "Proposta",
       [ExerciseSolutionState.REJECTED]: "Scartata",
     },

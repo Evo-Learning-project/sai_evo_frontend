@@ -8,8 +8,8 @@
           > -->
     </div>
     <ExerciseSolution
-      class="w-full"
-      v-for="solution in exercise.solutions"
+      class="w-full my-4"
+      v-for="solution in nonDraftSolutions"
       :key="'e-' + exercise.id + '-solution-' + solution.id"
       :solution="solution"
       :exercise="exercise"
@@ -43,9 +43,12 @@
       <span class="mr-2 text-base material-icons">reviews</span>
       {{ $t("exercise_solution.propose_solution") }}</Btn
     >
-    <div v-if="editingSolution && draftSolution">
+    <div v-if="editingSolution && solutionBeingEdited">
       <ExerciseSolutionEditor
-        v-model="draftSolution"
+        :saving="saving"
+        :savingError="savingError"
+        :modelValue="solutionBeingEdited"
+        @updateSolution="onDraftSolutionChange($event.key, $event.value)"
         @close="onClose()"
         :editorType="editorType"
       >
@@ -91,48 +94,93 @@ export default defineComponent({
     onClose() {
       this.editingSolution = false;
     },
+    async onDraftSolutionChange<K extends keyof IExerciseSolution>(
+      key: K,
+      value: IExerciseSolution[K]
+    ) {
+      console.log("changes", { key, value });
+      await this.autoSaveManager?.onChange({ field: key, value });
+    },
     instantiateAutoSaveManager() {
-      this.autoSaveManager = new AutoSaveManager<IExerciseSolution>(
-        this.draftSolution as IExerciseSolution,
-        async (changes) =>
+      this.autoSaveManager ??= new AutoSaveManager<IExerciseSolution>(
+        this.solutionBeingEdited as IExerciseSolution,
+        async (changes) => {
           await this.updateExerciseChild({
             childType: "solution",
             courseId: this.courseId,
             exerciseId: this.exercise.id,
-            payload: { ...this.draftSolution, ...changes },
+            payload: { ...this.solutionBeingEdited, ...changes },
             reFetch: false,
-          }),
-        (changes) =>
-          (this.draftSolution = this.draftSolution
-            ? { ...this.draftSolution, ...changes }
-            : null),
+          });
+          if (changes.state === ExerciseSolutionState.SUBMITTED) {
+            this.onDraftSolutionSubmitted();
+          }
+        },
+        (changes) => {
+          this.saving = true;
+          this.savingError = false;
+          this.solutionBeingEdited = this.solutionBeingEdited
+            ? { ...this.solutionBeingEdited, ...changes }
+            : null;
+        },
         EXERCISE_SOLUTION_AUTO_SAVE_DEBOUNCE_FIELDS,
         EXERCISE_SOLUTION_AUTO_SAVE_DEBOUNCE_TIME_MS,
-        undefined, // success
-        undefined // error
+        undefined,
+        () => (this.savingError = true),
+        () => (this.saving = false)
       );
     },
     async onAddSolution() {
       this.creatingSolution = true;
       try {
-        this.draftSolution ??= await createExerciseSolution(
-          this.courseId,
-          this.exercise.id,
-          getBlankExerciseSolution(ExerciseSolutionState.DRAFT)
-        );
         this.editingSolution = true;
+        const changed = await this.editDraftSolution();
+        if (changed) {
+          this.instantiateAutoSaveManager();
+        }
       } catch (e) {
         setErrorNotification(e);
       } finally {
         this.creatingSolution = false;
       }
     },
+    async editDraftSolution(): Promise<boolean> {
+      /**
+       * Assigns an ExerciseSolution in DRAFT state to this.solutionBeingEdited,
+       * if it doesn't have a value assigned to it yet.
+       *
+       * If such a solution exists, it is retrieved locally, otherwise a new
+       * ExerciseSolution is created on the backend.
+       *
+       * Returns true iff a new value was assigned to this.solutionBeingEdited
+       */
+      if (this.solutionBeingEdited !== null) {
+        return false;
+      }
+      if (this.draftSolutions.length > 0) {
+        this.solutionBeingEdited = this.draftSolutions[0];
+      } else {
+        this.solutionBeingEdited = await createExerciseSolution(
+          this.courseId,
+          this.exercise.id,
+          getBlankExerciseSolution(ExerciseSolutionState.DRAFT)
+        );
+      }
+      return true;
+    },
+    onDraftSolutionSubmitted() {
+      this.solutionBeingEdited = null;
+      this.editingSolution = false;
+      this.$store.commit("shared/showSuccessFeedback");
+    },
   },
   data() {
     return {
+      saving: false,
+      savingError: false,
       creatingSolution: false,
       editingSolution: false,
-      draftSolution: null as IExerciseSolution | null,
+      solutionBeingEdited: null as IExerciseSolution | null,
       autoSaveManager: null as AutoSaveManager<IExerciseSolution> | null,
     };
   },
@@ -145,6 +193,16 @@ export default defineComponent({
         return "c";
       }
       return "text";
+    },
+    draftSolutions(): IExerciseSolution[] {
+      return (this.exercise.solutions ?? []).filter(
+        (s) => s.state === ExerciseSolutionState.DRAFT
+      );
+    },
+    nonDraftSolutions(): IExerciseSolution[] {
+      return (this.exercise.solutions ?? []).filter(
+        (s) => s.state !== ExerciseSolutionState.DRAFT
+      );
     },
   },
   components: { Btn, ExerciseSolution, ExerciseSolutionEditor, Exercise },

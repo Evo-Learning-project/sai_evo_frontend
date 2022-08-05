@@ -5,7 +5,7 @@
       <div class="flex h-full">
         <!-- voting -->
         <div class="h-full px-3 pt-4 pb-4 -mt-4 -ml-5 rounded-tl-sm bg-gray-50">
-          <div class="sticky flex flex-col items-center space-y-4 top-18">
+          <div class="sticky flex flex-col items-center pb-4 space-y-4 top-18">
             <Btn
               :variant="'icon'"
               :size="'lg'"
@@ -131,7 +131,7 @@ import { defineComponent, PropType } from "@vue/runtime-core";
 import Btn from "@/components/ui/Btn.vue";
 import TextInput from "@/components/ui/TextInput.vue";
 import Avatar from "@/components/ui/Avatar.vue";
-import { mapState } from "vuex";
+import { mapActions, mapState } from "vuex";
 import ExerciseSolutionComment from "./ExerciseSolutionComment.vue";
 import ProcessedTextFragment from "@/components/ui/ProcessedTextFragment.vue";
 import {
@@ -176,6 +176,7 @@ export default defineComponent({
     };
   },
   methods: {
+    ...mapActions("student", ["addExerciseSolutionComment"]),
     async onVote(voteType: VoteType) {
       this.voting = true;
       try {
@@ -198,15 +199,12 @@ export default defineComponent({
     async onAddComment() {
       this.postingComment = true;
       try {
-        const newComment = await createExerciseSolutionComment(
-          this.courseId,
-          this.exercise.id,
-          this.solution.id,
-          getComment(this.draftComment)
-        );
-        // TODO fix this with an action
-        // eslint-disable-next-line vue/no-mutating-props
-        this.solution.comments.push(newComment);
+        await this.addExerciseSolutionComment({
+          courseId: this.courseId,
+          exerciseId: this.exercise.id,
+          solutionId: this.solution.id,
+          comment: getComment(this.draftComment),
+        });
         this.draftComment = "";
       } catch (e) {
         setErrorNotification(e);

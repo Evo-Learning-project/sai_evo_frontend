@@ -299,11 +299,7 @@ export const actions = {
     return updatedClause;
   },
   addExerciseSolutionComment: async (
-    {
-      commit,
-      state,
-      getters,
-    }: { commit: Commit; state: StudentState; getters: any },
+    { getters }: { getters: any },
     {
       courseId,
       exerciseId,
@@ -322,9 +318,27 @@ export const actions = {
       solutionId,
       comment
     );
-    getters.exercises
-      .find((e: Exercise) => e.id == exerciseId)
-      .solutions?.find((s: ExerciseSolution) => s.id == solutionId)
-      ?.comments.push(newComment);
+    const exercise: Exercise | undefined = getters.exercises.find(
+      (e: Exercise) => e.id == exerciseId
+    );
+
+    if (!exercise) {
+      throw new Error(
+        "addExerciseSolutionComment couldn't find exercise with id " +
+          exerciseId
+      );
+    }
+
+    const solution: ExerciseSolution | undefined = exercise.solutions?.find(
+      (s: ExerciseSolution) => s.id == solutionId
+    );
+
+    if (!solution) {
+      throw new Error(
+        "addExerciseSolutionComment couldn't find solution with id " +
+          solutionId
+      );
+    }
+    solution.comments.push(newComment);
   },
 };
