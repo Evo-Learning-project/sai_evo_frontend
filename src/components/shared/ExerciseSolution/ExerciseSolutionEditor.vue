@@ -111,7 +111,6 @@ export default defineComponent({
     if (!bodyContainsOverflowHidden) {
       document.body.classList.add("overflow-y-hidden");
     }
-
     this.triggerTexRender();
   },
   methods: {

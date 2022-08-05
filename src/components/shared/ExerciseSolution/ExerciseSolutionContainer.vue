@@ -43,11 +43,11 @@
       <span class="mr-2 text-base material-icons">reviews</span>
       {{ $t("exercise_solution.propose_solution") }}</Btn
     >
-    <div v-if="editingSolution && solutionBeingEdited">
+    <div v-if="editingSolutionId !== null">
       <ExerciseSolutionEditor
         :saving="saving"
         :savingError="savingError"
-        :modelValue="solutionBeingEdited"
+        :modelValue="editingSolution"
         @updateSolution="onDraftSolutionChange($event.key, $event.value)"
         @close="onClose()"
         :editorType="editorType"
@@ -71,11 +71,11 @@ import Btn from "@/components/ui/Btn.vue";
 import ExerciseSolution from "./ExerciseSolution.vue";
 import ExerciseSolutionEditor from "./ExerciseSolutionEditor.vue";
 import { createExerciseSolution } from "@/api/exercises";
-import { courseIdMixin } from "@/mixins";
+import { courseIdMixin, savingMixin } from "@/mixins";
 import { setErrorNotification } from "@/utils";
 import Exercise from "../Exercise/Exercise.vue";
 import { AutoSaveManager } from "@/autoSave";
-import { mapActions } from "vuex";
+import { mapActions, mapMutations } from "vuex";
 import {
   EXERCISE_SOLUTION_AUTO_SAVE_DEBOUNCE_FIELDS,
   EXERCISE_SOLUTION_AUTO_SAVE_DEBOUNCE_TIME_MS,
@@ -88,28 +88,29 @@ export default defineComponent({
       required: true,
     },
   },
-  mixins: [courseIdMixin],
+  mixins: [courseIdMixin, savingMixin],
   methods: {
-    ...mapActions("shared", ["getTags", "updateExerciseChild"]),
+    ...mapActions("shared", ["updateExerciseChild"]),
+    ...mapActions("student", ["addExerciseSolution"]),
+    ...mapMutations("student", ["setExerciseSolution"]),
     onClose() {
-      this.editingSolution = false;
+      this.editingSolutionId = null;
     },
     async onDraftSolutionChange<K extends keyof IExerciseSolution>(
       key: K,
       value: IExerciseSolution[K]
     ) {
-      console.log("changes", { key, value });
       await this.autoSaveManager?.onChange({ field: key, value });
     },
     instantiateAutoSaveManager() {
       this.autoSaveManager ??= new AutoSaveManager<IExerciseSolution>(
-        this.solutionBeingEdited as IExerciseSolution,
+        this.editingSolution as IExerciseSolution,
         async (changes) => {
           await this.updateExerciseChild({
             childType: "solution",
             courseId: this.courseId,
             exerciseId: this.exercise.id,
-            payload: { ...this.solutionBeingEdited, ...changes },
+            payload: { ...this.editingSolution, ...changes },
             reFetch: false,
           });
           if (changes.state === ExerciseSolutionState.SUBMITTED) {
@@ -119,9 +120,13 @@ export default defineComponent({
         (changes) => {
           this.saving = true;
           this.savingError = false;
-          this.solutionBeingEdited = this.solutionBeingEdited
-            ? { ...this.solutionBeingEdited, ...changes }
-            : null;
+          this.setExerciseSolution({
+            exerciseId: this.exercise.id,
+            payload: {
+              ...this.editingSolution,
+              ...changes,
+            },
+          });
         },
         EXERCISE_SOLUTION_AUTO_SAVE_DEBOUNCE_FIELDS,
         EXERCISE_SOLUTION_AUTO_SAVE_DEBOUNCE_TIME_MS,
@@ -133,7 +138,6 @@ export default defineComponent({
     async onAddSolution() {
       this.creatingSolution = true;
       try {
-        this.editingSolution = true;
         const changed = await this.editDraftSolution();
         if (changed) {
           this.instantiateAutoSaveManager();
@@ -158,19 +162,19 @@ export default defineComponent({
         return false;
       }
       if (this.draftSolutions.length > 0) {
-        this.solutionBeingEdited = this.draftSolutions[0];
+        this.editingSolutionId = this.draftSolutions[0].id;
       } else {
-        this.solutionBeingEdited = await createExerciseSolution(
-          this.courseId,
-          this.exercise.id,
-          getBlankExerciseSolution(ExerciseSolutionState.DRAFT)
-        );
+        const newSolution: IExerciseSolution = await this.addExerciseSolution({
+          courseId: this.courseId,
+          exerciseId: this.exercise.id,
+          solution: getBlankExerciseSolution(ExerciseSolutionState.DRAFT),
+        });
+        this.editingSolutionId = newSolution.id;
       }
       return true;
     },
     onDraftSolutionSubmitted() {
-      this.solutionBeingEdited = null;
-      this.editingSolution = false;
+      this.editingSolutionId = null;
       this.$store.commit("shared/showSuccessFeedback");
     },
   },
@@ -179,7 +183,7 @@ export default defineComponent({
       saving: false,
       savingError: false,
       creatingSolution: false,
-      editingSolution: false,
+      editingSolutionId: null as string | null,
       solutionBeingEdited: null as IExerciseSolution | null,
       autoSaveManager: null as AutoSaveManager<IExerciseSolution> | null,
     };
@@ -202,6 +206,16 @@ export default defineComponent({
     nonDraftSolutions(): IExerciseSolution[] {
       return (this.exercise.solutions ?? []).filter(
         (s) => s.state !== ExerciseSolutionState.DRAFT
+      );
+    },
+    editingSolution(): IExerciseSolution | null {
+      if (this.editingSolutionId === null) {
+        return null;
+      }
+      return (
+        (this.exercise.solutions ?? []).find(
+          (s) => s.id == this.editingSolutionId
+        ) ?? null
       );
     },
   },

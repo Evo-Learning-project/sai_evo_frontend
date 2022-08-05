@@ -7,8 +7,10 @@ import {
   EventTemplateRule,
   Event,
   EventTemplateRuleClause,
+  ExerciseSolution,
 } from "@/models";
 import { MutationPayload, StudentState } from "../types";
+import { getters } from "./getters";
 
 export const mutations = {
   // update the slots of the current event participation
@@ -128,6 +130,32 @@ export const mutations = {
     } else {
       // pushing new clause
       targetRule.clauses?.push(payload);
+    }
+  },
+  /**
+   * Updates an existing solution for an exercises or pushes a new one
+   */
+  setExerciseSolution: (
+    state: StudentState,
+    { exerciseId, payload }: MutationPayload<ExerciseSolution>
+  ) => {
+    const exercise = getters.exercises(state).find((e) => e.id == exerciseId);
+    if (!exercise) {
+      throw new Error(
+        "setExerciseSolution didn't find exercise with id " + exerciseId
+      );
+    }
+    if (!exercise.solutions) {
+      throw new Error(
+        "setExerciseSolution didn't find solutions for exercise " +
+          JSON.stringify(exercise)
+      );
+    }
+    const target = exercise.solutions.find((s) => s.id == payload.id);
+    if (target) {
+      Object.assign(target, payload);
+    } else {
+      exercise.solutions.push(payload);
     }
   },
 };
