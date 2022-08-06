@@ -60,7 +60,6 @@ import * as monaco from "monaco-editor";
 
 import { defineComponent } from "@vue/runtime-core";
 import { PropType } from "vue";
-import { flattenDeep } from "lodash";
 import Btn from "./Btn.vue";
 import { v4 as uuid4 } from "uuid";
 
@@ -134,20 +133,6 @@ export default defineComponent({
   methods: {
     onChange(newVal: string) {
       this.$emit("update:modelValue", newVal);
-      // monaco.editor.setModelMarkers(
-      //   this.textModel as monaco.editor.ITextModel,
-      //   "eslint",
-      //   [
-      //     {
-      //       startLineNumber: 1,
-      //       startColumn: 5,
-      //       endLineNumber: 2,
-      //       endColumn: 7,
-      //       message: "Warning!",
-      //       severity: monaco.MarkerSeverity.Error,
-      //     },
-      //   ]
-      // );
     },
     // onWillMount(monaco: any) {
     //   console.log("WILL MOUNT", monaco);
