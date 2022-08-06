@@ -62,6 +62,10 @@
         </div>
       </div>
     </div>
+
+    <CodeEditor v-model="test" class="w-full h-full"/>
+
+    <!-- <div ref="prova" class="w-full h-full" /> -->
   </div>
 </template>
 
@@ -75,16 +79,21 @@ import { defineComponent } from "@vue/runtime-core";
 import { loadingMixin } from "@/mixins";
 import { redirectToMainView } from "@/utils";
 import { getTranslatedString } from "@/i18n";
+import CodeEditor from "@/components/ui/CodeEditor.vue"
+
+import * as monaco from "monaco-editor";
 
 export default defineComponent({
   name: "Login",
   components: {
     Btn,
     Spinner,
+    CodeEditor,
   },
   data() {
     return {
       user: "",
+      test: "",
       loadingLogin: true,
     };
   },
@@ -124,7 +133,39 @@ export default defineComponent({
     //this.$store.commit("shared/resetToken");
     if (this.$store.getters["shared/isAuthenticated"]) {
       this.redirectToMainView();
-    }
+    }   
+  },
+
+  mounted() {
+
+    const input = (this.$refs as any).prova as any;
+     monaco.editor.create(input, {
+
+        theme: "vs-dark",
+
+        fontSize: 14,
+        minimap: {
+          scale: 2,
+        },
+        quickSuggestions: {
+         "other": true,
+        "comments": true,
+        "strings": true
+        },
+        parameterHints: {
+            enabled: true
+        },
+    
+        suggestOnTriggerCharacters: true,
+        acceptSuggestionOnEnter: "on",
+        tabCompletion: "on",
+        wordBasedSuggestions: true,
+
+        language: "typescript",
+
+        
+      
+      });
   },
   computed: {
     googleOauthReady() {

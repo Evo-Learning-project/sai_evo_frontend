@@ -9,7 +9,7 @@
 
     <div class="flex w-full">
       <div
-        class="relative overflow-hidden rounded-sm"
+        class="relative rounded-sm"
         :class="$slots.sidePane ? 'w-7/12' : 'w-full'"
       >
         <div style="height: inherit" class="absolute flex w-full">
@@ -33,7 +33,7 @@
           theme="vs-dark"
           class="rounded-md"
           :options="monacoOptions"
-          :style="'height: ' + editorHeight + ';'"
+          :height="baseHeight"
           :language="language"
         />
         <slot name="bottom"></slot>
@@ -55,7 +55,7 @@
 </template>
 
 <script lang="ts">
-import MonacoEditor from "monaco-editor-vue3";
+import MonacoEditor from "@/components/ui/MonacoEditorCustom.vue";
 import * as monaco from "monaco-editor";
 
 import { defineComponent } from "@vue/runtime-core";
@@ -112,6 +112,20 @@ export default defineComponent({
         minimap: {
           scale: 2,
         },
+        quickSuggestions: {
+         "other": true,
+        "comments": true,
+        "strings": true
+        },
+        parameterHints: {
+            enabled: true
+        },
+
+        suggestOnTriggerCharacters: true,
+        acceptSuggestionOnEnter: "on",
+        tabCompletion: "on",
+        wordBasedSuggestions: true,
+        
       },
       elementId: uuid4(),
       sidePaneContentHeight: 0,
@@ -120,20 +134,20 @@ export default defineComponent({
   methods: {
     onChange(newVal: string) {
       this.$emit("update:modelValue", newVal);
-      monaco.editor.setModelMarkers(
-        this.textModel as monaco.editor.ITextModel,
-        "eslint",
-        [
-          {
-            startLineNumber: 1,
-            startColumn: 5,
-            endLineNumber: 2,
-            endColumn: 7,
-            message: "Warning!",
-            severity: monaco.MarkerSeverity.Error,
-          },
-        ]
-      );
+      // monaco.editor.setModelMarkers(
+      //   this.textModel as monaco.editor.ITextModel,
+      //   "eslint",
+      //   [
+      //     {
+      //       startLineNumber: 1,
+      //       startColumn: 5,
+      //       endLineNumber: 2,
+      //       endColumn: 7,
+      //       message: "Warning!",
+      //       severity: monaco.MarkerSeverity.Error,
+      //     },
+      //   ]
+      // );
     },
     // onWillMount(monaco: any) {
     //   console.log("WILL MOUNT", monaco);
