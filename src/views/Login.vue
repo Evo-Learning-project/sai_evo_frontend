@@ -76,6 +76,7 @@ import { loadingMixin } from "@/mixins";
 import { redirectToMainView } from "@/utils";
 import { getTranslatedString } from "@/i18n";
 
+
 export default defineComponent({
   name: "Login",
   components: {
