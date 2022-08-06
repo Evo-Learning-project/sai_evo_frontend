@@ -88,7 +88,7 @@ export enum CoursePrivilege {
 export enum ExerciseSolutionState {
   DRAFT,
   SUBMITTED,
-  PUBLISHED,
+  APPROVED,
   REJECTED,
 }
 

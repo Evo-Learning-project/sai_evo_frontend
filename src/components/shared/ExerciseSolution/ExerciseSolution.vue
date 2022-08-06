@@ -5,7 +5,7 @@
       <div class="flex h-full">
         <!-- voting -->
         <div class="h-full px-3 pt-4 pb-4 -mt-4 -ml-5 rounded-tl-sm bg-gray-50">
-          <div class="sticky flex flex-col items-center space-y-4 top-18">
+          <div class="sticky flex flex-col items-center pb-4 space-y-4 top-18">
             <Btn
               :variant="'icon'"
               :size="'lg'"
@@ -40,13 +40,31 @@
         <!-- right-side pane -->
         <div class="flex flex-col w-full h-full -mt-4 bg-black bg-opacity-0">
           <!-- content -->
-          <div class="w-full h-full pt-4 mb-auto whitespace-pre">
+          <div
+            ref="content"
+            class="relative w-full pt-4 mb-auto whitespace-pre"
+            :class="{ 'h-full': !collapsed, 'overflow-hidden': collapsed }"
+            :style="
+              collapsed ? 'max-height: ' + MAX_CONTENT_HEIGHT_PX + 'px' : ''
+            "
+          >
             <ProcessedTextFragment
               v-if="true"
               style="white-space: break-spaces"
               class="w-full px-4 py-2 rounded"
               :value="solution.content"
             ></ProcessedTextFragment>
+            <div
+              v-if="collapsed"
+              class="absolute bottom-0 left-0 flex w-full h-40 hidden-content"
+            >
+              <Btn
+                @click="collapsed = false"
+                :variant="'primary-borderless'"
+                class="z-20 mx-auto mt-auto mb-2"
+                >{{ $t("exercise_solution.reveal_solution") }}</Btn
+              >
+            </div>
           </div>
 
           <div class="flex w-full pb-2 mt-2 border-b-2 border-gray-50">
@@ -120,6 +138,7 @@
 </template>
 
 <script lang="ts">
+const MAX_CONTENT_HEIGHT_PX = 300;
 import {
   Exercise,
   ExerciseSolution,
@@ -131,7 +150,7 @@ import { defineComponent, PropType } from "@vue/runtime-core";
 import Btn from "@/components/ui/Btn.vue";
 import TextInput from "@/components/ui/TextInput.vue";
 import Avatar from "@/components/ui/Avatar.vue";
-import { mapState } from "vuex";
+import { mapActions, mapState } from "vuex";
 import ExerciseSolutionComment from "./ExerciseSolutionComment.vue";
 import ProcessedTextFragment from "@/components/ui/ProcessedTextFragment.vue";
 import {
@@ -166,16 +185,25 @@ export default defineComponent({
       default: true,
     },
   },
+  mounted() {
+    const contentElement = this.$refs.content as HTMLElement;
+    if (contentElement.clientHeight > this.MAX_CONTENT_HEIGHT_PX) {
+      this.collapsed = true;
+    }
+  },
   data() {
     return {
       voting: false,
       postingComment: false,
       draftComment: "",
       VoteType,
+      MAX_CONTENT_HEIGHT_PX,
+      collapsed: false,
       //solutionId: uuid4(),
     };
   },
   methods: {
+    ...mapActions("student", ["addExerciseSolutionComment"]),
     async onVote(voteType: VoteType) {
       this.voting = true;
       try {
@@ -198,15 +226,12 @@ export default defineComponent({
     async onAddComment() {
       this.postingComment = true;
       try {
-        const newComment = await createExerciseSolutionComment(
-          this.courseId,
-          this.exercise.id,
-          this.solution.id,
-          getComment(this.draftComment)
-        );
-        // TODO fix this with an action
-        // eslint-disable-next-line vue/no-mutating-props
-        this.solution.comments.push(newComment);
+        await this.addExerciseSolutionComment({
+          courseId: this.courseId,
+          exerciseId: this.exercise.id,
+          solutionId: this.solution.id,
+          comment: getComment(this.draftComment),
+        });
         this.draftComment = "";
       } catch (e) {
         setErrorNotification(e);

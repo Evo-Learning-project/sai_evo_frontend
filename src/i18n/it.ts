@@ -272,9 +272,11 @@ export const it = {
     propose_solution_title: "Proponi una soluzione per l'esercizio",
     publish: "Pubblica",
     your_solution_placeholder: "La tua soluzione",
+    show_all: "Mostra tutte",
+    reveal_solution: "Continua a leggere",
     states: {
       [ExerciseSolutionState.DRAFT]: "Bozza",
-      [ExerciseSolutionState.PUBLISHED]: "Pubblicata",
+      [ExerciseSolutionState.APPROVED]: "Pubblicata",
       [ExerciseSolutionState.SUBMITTED]: "Proposta",
       [ExerciseSolutionState.REJECTED]: "Scartata",
     },

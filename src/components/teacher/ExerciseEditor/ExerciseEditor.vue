@@ -926,7 +926,7 @@ export default defineComponent({
         courseId: this.courseId,
         exerciseId: this.modelValue.id,
         childType: "solution",
-        payload: getBlankExerciseSolution(ExerciseSolutionState.PUBLISHED),
+        payload: getBlankExerciseSolution(ExerciseSolutionState.APPROVED),
       });
       this.instantiateSolutionAutoSaveManager(newSolution);
     },

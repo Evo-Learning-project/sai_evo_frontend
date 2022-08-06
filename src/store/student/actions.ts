@@ -32,7 +32,10 @@ import {
   updateEventTemplateRuleClause,
 } from "@/api/events";
 import { StudentState } from "../types";
-import { createExerciseSolutionComment } from "@/api/exercises";
+import {
+  createExerciseSolution,
+  createExerciseSolutionComment,
+} from "@/api/exercises";
 
 export const actions = {
   participateInEvent: async (
@@ -298,12 +301,43 @@ export const actions = {
     );
     return updatedClause;
   },
-  addExerciseSolutionComment: async (
+  addExerciseSolution: async (
+    { getters }: { getters: any },
     {
-      commit,
-      state,
-      getters,
-    }: { commit: Commit; state: StudentState; getters: any },
+      courseId,
+      exerciseId,
+      solution,
+    }: {
+      courseId: string;
+      exerciseId: string;
+      solution: ExerciseSolution;
+    }
+  ) => {
+    const newSolution = await createExerciseSolution(
+      courseId,
+      exerciseId,
+      solution
+    );
+    const exercise: Exercise | undefined = getters.exercises.find(
+      (e: Exercise) => e.id == exerciseId
+    );
+
+    if (!exercise) {
+      throw new Error(
+        "addExerciseSolution couldn't find exercise with id " + exerciseId
+      );
+    }
+    if (!exercise.solutions) {
+      throw new Error(
+        "addExerciseSolution couldn't find field solutions for exercise " +
+          JSON.stringify(exercise)
+      );
+    }
+    exercise.solutions.push(newSolution);
+    return newSolution;
+  },
+  addExerciseSolutionComment: async (
+    { getters }: { getters: any },
     {
       courseId,
       exerciseId,
@@ -322,9 +356,27 @@ export const actions = {
       solutionId,
       comment
     );
-    getters.exercises
-      .find((e: Exercise) => e.id == exerciseId)
-      .solutions?.find((s: ExerciseSolution) => s.id == solutionId)
-      ?.comments.push(newComment);
+    const exercise: Exercise | undefined = getters.exercises.find(
+      (e: Exercise) => e.id == exerciseId
+    );
+
+    if (!exercise) {
+      throw new Error(
+        "addExerciseSolutionComment couldn't find exercise with id " +
+          exerciseId
+      );
+    }
+
+    const solution: ExerciseSolution | undefined = exercise.solutions?.find(
+      (s: ExerciseSolution) => s.id == solutionId
+    );
+
+    if (!solution) {
+      throw new Error(
+        "addExerciseSolutionComment couldn't find solution with id " +
+          solutionId
+      );
+    }
+    solution.comments.push(newComment);
   },
 };

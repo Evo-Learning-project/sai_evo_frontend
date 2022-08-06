@@ -48,14 +48,20 @@
       <div
         class="flex items-center px-10 py-3 -mx-10 -mb-6 shadow-popup bg-light"
       >
-        <Btn class="">{{ $t("exercise_solution.publish") }}</Btn>
+        <Btn @click="onSubmit()" class="">{{
+          $t("exercise_solution.publish")
+        }}</Btn>
         <p
           class="ml-6 text-muted"
           v-if="modelValue.state === ExerciseSolutionState.DRAFT"
         >
           ({{ $t("exercise_solution.states." + ExerciseSolutionState.DRAFT) }})
         </p>
-        <CloudSaveStatus class="ml-auto" :saving="saving" />
+        <CloudSaveStatus
+          class="ml-auto"
+          :saving="saving"
+          :hadError="savingError"
+        />
       </div>
     </div>
   </div>
@@ -82,6 +88,10 @@ export default defineComponent({
       type: Boolean,
       required: true,
     },
+    savingError: {
+      type: Boolean,
+      required: true,
+    },
     editorType: {
       type: String as PropType<"text" | "typescript" | "c">,
       required: true,
@@ -101,12 +111,17 @@ export default defineComponent({
     if (!bodyContainsOverflowHidden) {
       document.body.classList.add("overflow-y-hidden");
     }
-
     this.triggerTexRender();
   },
   methods: {
-    onUpdate(key: keyof ExerciseSolution, value: unknown) {
-      this.$emit("update:modelValue", { ...this.modelValue, [key]: value });
+    onUpdate<K extends keyof ExerciseSolution>(
+      key: K,
+      value: ExerciseSolution[K]
+    ) {
+      this.$emit("updateSolution", { key, value });
+    },
+    onSubmit() {
+      this.onUpdate("state", ExerciseSolutionState.SUBMITTED);
     },
   },
   data() {
