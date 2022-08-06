@@ -125,7 +125,7 @@ export default defineComponent({
     //this.$store.commit("shared/resetToken");
     if (this.$store.getters["shared/isAuthenticated"]) {
       this.redirectToMainView();
-    }   
+    }
   },
   computed: {
     googleOauthReady() {
