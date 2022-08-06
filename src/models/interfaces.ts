@@ -64,17 +64,20 @@ interface Post {
   user: User;
 }
 
-export interface ExerciseSolutionComment extends Post {}
+export interface ExerciseSolutionComment extends Post { }
 
-export interface ExerciseSolutionVote extends Vote {}
+export interface ExerciseSolutionVote extends Vote { }
 
 export interface ExerciseSolution {
   id: string;
   user: User | null;
   content: string;
   state?: ExerciseSolutionState;
-  votes: ExerciseSolutionVote[];
+  score: number;
+  //votes: ExerciseSolutionVote[];
   comments: ExerciseSolutionComment[];
+  has_upvote?: boolean;
+  has_downvote?: boolean;
 }
 
 export interface Exercise extends Orderable, Lockable {
@@ -196,18 +199,18 @@ export interface EventParticipationSlotSubmission {
   answer_text: string; // TODO make optional
   execution_results?: CodeExecutionResults;
   attachment?:
-    | {
-        name: string;
-        size: number;
-        // TODO find a better way to retrieve the attachment
-        // information needed to be able to make API call from
-        // AttachmentExercise and download the attached file
-        extras: {
-          slot_id: string;
-          participation_id: string;
-        };
-      } // download representation
-    | Blob; // upload representation
+  | {
+    name: string;
+    size: number;
+    // TODO find a better way to retrieve the attachment
+    // information needed to be able to make API call from
+    // AttachmentExercise and download the attached file
+    extras: {
+      slot_id: string;
+      participation_id: string;
+    };
+  } // download representation
+  | Blob; // upload representation
 }
 
 export interface EventParticipationSlotAssessment {
@@ -219,7 +222,7 @@ export interface EventParticipationSlotAssessment {
 
 export interface EventParticipationSlot
   extends EventParticipationSlotSubmission,
-    EventParticipationSlotAssessment {
+  EventParticipationSlotAssessment {
   id: string;
   slot_number?: number;
   exercise: Exercise; // TODO make optional

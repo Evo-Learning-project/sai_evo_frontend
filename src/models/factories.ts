@@ -45,9 +45,10 @@ export const getBlankExerciseSolution = (
   id: "",
   state,
   comments: [],
-  votes: [],
+ // votes: [],
   content: "",
   user: null,
+  score: 0,
 });
 
 export const getBlankChoice = (): ExerciseChoice => ({

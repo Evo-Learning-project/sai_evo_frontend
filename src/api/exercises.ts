@@ -11,6 +11,7 @@ import {
   VoteType,
   ExerciseSolution,
   ExerciseTestCase,
+  ExerciseSolutionVote,
 } from "@/models";
 import axios from "axios";
 import { ExerciseSearchFilter } from "./interfaces";
@@ -297,11 +298,18 @@ export async function voteExerciseSolution(
   courseId: string,
   exerciseId: string,
   solutionId: string,
-  voteType: VoteType
-): Promise<void> {
-  const response = await axios.post(
-    `/courses/${courseId}/exercises/${exerciseId}/solutions/${solutionId}/vote/`,
-    voteType
-  );
-  return response.data;
+  vote: ExerciseSolutionVote | undefined
+): Promise<ExerciseSolution> {
+  const url = `/courses/${courseId}/exercises/${exerciseId}/solutions/${solutionId}/vote/`
+  if (vote) {
+    const response = await axios.put(
+      url,
+      vote
+    );
+    return response.data;
+  }
+  // if no vote is spefied, remove existing vote
+  const response = await axios.delete(url)
+  return response.data
+
 }

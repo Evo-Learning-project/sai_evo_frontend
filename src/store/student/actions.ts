@@ -10,6 +10,7 @@ import {
   ExerciseSolution,
   Exercise,
   ExerciseSolutionComment,
+  ExerciseSolutionVote,
 } from "@/models";
 
 import { Commit } from "vuex";
@@ -35,6 +36,7 @@ import { StudentState } from "../types";
 import {
   createExerciseSolution,
   createExerciseSolutionComment,
+  voteExerciseSolution,
 } from "@/api/exercises";
 
 export const actions = {
@@ -118,9 +120,9 @@ export const actions = {
     const response = await partialUpdateEventParticipation(
       courseId,
       eventId ??
-        (state.currentEventParticipation as EventParticipation).event.id,
+      (state.currentEventParticipation as EventParticipation).event.id,
       participationId ??
-        (state.currentEventParticipation as EventParticipation).id,
+      (state.currentEventParticipation as EventParticipation).id,
       changes
     );
     if (!eventId && !participationId) {
@@ -330,7 +332,7 @@ export const actions = {
     if (!exercise.solutions) {
       throw new Error(
         "addExerciseSolution couldn't find field solutions for exercise " +
-          JSON.stringify(exercise)
+        JSON.stringify(exercise)
       );
     }
     exercise.solutions.push(newSolution);
@@ -363,7 +365,7 @@ export const actions = {
     if (!exercise) {
       throw new Error(
         "addExerciseSolutionComment couldn't find exercise with id " +
-          exerciseId
+        exerciseId
       );
     }
 
@@ -374,9 +376,55 @@ export const actions = {
     if (!solution) {
       throw new Error(
         "addExerciseSolutionComment couldn't find solution with id " +
-          solutionId
+        solutionId
       );
     }
     solution.comments.push(newComment);
+  },
+  /**
+   * Creates an ExerciseSolutionVote and re-fetches the voted solution
+   */
+  addExerciseSolutionVote: async (
+    { getters }: { getters: any },
+    {
+      courseId,
+      exerciseId,
+      solutionId,
+      vote,
+    }: {
+      courseId: string;
+      exerciseId: string;
+      solutionId: string;
+      vote: ExerciseSolutionVote | undefined;
+    }
+  ) => {
+    const updatedSolution = await voteExerciseSolution(
+      courseId,
+      exerciseId,
+      solutionId,
+      vote
+    );
+    const exercise: Exercise | undefined = getters.exercises.find(
+      (e: Exercise) => e.id == exerciseId
+    );
+
+    if (!exercise) {
+      throw new Error(
+        "addExerciseSolutionComment couldn't find exercise with id " +
+        exerciseId
+      );
+    }
+
+    const solution: ExerciseSolution | undefined = exercise.solutions?.find(
+      (s: ExerciseSolution) => s.id == solutionId
+    );
+
+    if (!solution) {
+      throw new Error(
+        "addExerciseSolutionComment couldn't find solution with id " +
+        solutionId
+      );
+    }
+    Object.assign(solution, updatedSolution)
   },
 };
