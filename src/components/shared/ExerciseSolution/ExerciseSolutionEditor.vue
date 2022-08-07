@@ -24,7 +24,7 @@
         </div>
       </div>
       <div class="flex items-center px-10 py-3 -mx-10 -mb-6 shadow-popup bg-light">
-        <Btn :disabled="publishing" @click="onSubmit()" class="">{{
+        <Btn :disabled="publishing" @click="onSubmit()">{{
             publishing ? $t('exercise_solution.publishing') : $t("exercise_solution.publish")
         }}</Btn>
         <p class="ml-6 text-muted" v-if="modelValue.state === ExerciseSolutionState.DRAFT">
