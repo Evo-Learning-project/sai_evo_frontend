@@ -6,14 +6,14 @@
         <!-- voting -->
         <div class="h-full px-3 pt-4 pb-4 -mt-4 -ml-5 rounded-tl-sm bg-gray-50">
           <div class="sticky flex flex-col items-center pb-4 space-y-4 top-18">
-            <Btn :disabled="voting" :variant="'icon'" :size="'lg'" :outline="true" class=""
-              @click="onVote(VoteType.UP_VOTE)" :tooltip="$t('exercise_solution.like')"><span
+            <Btn :disabled="isOwnSolution" :variant="'icon'" :size="'lg'" :outline="true" class=""
+              @click="onVote(VoteType.UP_VOTE)"><span
                 :class="[solution.has_upvote ? 'material-icons' : 'material-icons-outlined']"
                 style="font-size: 35px !important">
                 thumb_up_alt</span></Btn>
             <p class="text-4xl text-muted">{{ solution.score }}</p>
-            <Btn :disabled="voting" :variant="'icon'" :size="'lg'" @click="onVote(VoteType.DOWN_VOTE)" :outline="true"
-              class="" :tooltip="$t('exercise_solution.dislike')"><span
+            <Btn :disabled="isOwnSolution" :variant="'icon'" :size="'lg'" @click="onVote(VoteType.DOWN_VOTE)"
+              :outline="true" class=""><span
                 :class="[solution.has_downvote ? 'material-icons' : 'material-icons-outlined']"
                 style="font-size: 35px !important">
                 thumb_down_alt</span></Btn>
@@ -27,7 +27,7 @@
               collapsed ? 'max-height: ' + MAX_CONTENT_HEIGHT_PX + 'px' : ''
             ">
             <ProcessedTextFragment v-if="true" style="white-space: break-spaces" class="w-full px-4 py-2 rounded"
-              :value="solution.content"></ProcessedTextFragment>
+              :value="solution.content" />
             <div v-if="collapsed" class="absolute bottom-0 left-0 flex w-full h-40 hidden-content">
               <Btn @click="collapsed = false" :variant="'primary-borderless'" class="z-20 mx-auto mt-auto mb-2">{{
                   $t("exercise_solution.reveal_solution")
@@ -38,8 +38,8 @@
           <div class="flex w-full pb-2 mt-2 border-b-2 border-gray-50">
             <!-- actions -->
             <div class="flex ml-2">
-              <Btn v-if="canEdit" :variant="'icon'" :outline="true" :tooltip="$t('exercise_solution.edit')"><span
-                  class="material-icons">edit</span></Btn>
+              <Btn v-if="canEdit" :variant="'icon'" :outline="true" :tooltip="$t('exercise_solution.edit')"
+                @click="$emit('editSolution')"><span class="material-icons">edit</span></Btn>
               <Btn :variant="'icon'" :outline="true" :tooltip="$t('exercise_solution.share')"><span
                   class="material-icons">share</span></Btn>
               <Btn :variant="'icon'" :outline="true" :tooltip="$t('exercise_solution.bookmark')"><span
@@ -94,12 +94,12 @@ import Avatar from "@/components/ui/Avatar.vue";
 import { mapActions, mapState } from "vuex";
 import ExerciseSolutionComment from "./ExerciseSolutionComment.vue";
 import ProcessedTextFragment from "@/components/ui/ProcessedTextFragment.vue";
-import { courseIdMixin } from "@/mixins";
+import { courseIdMixin, coursePrivilegeMixin } from "@/mixins";
 import { setErrorNotification } from "@/utils";
 //import { v4 as uuid4 } from "uuid";
 export default defineComponent({
   name: "ExerciseSolution",
-  mixins: [courseIdMixin],
+  mixins: [courseIdMixin, coursePrivilegeMixin],
   props: {
     exercise: {
       type: Object as PropType<Exercise>,
@@ -142,6 +142,9 @@ export default defineComponent({
   methods: {
     ...mapActions("student", ["addExerciseSolutionComment", "addExerciseSolutionVote"]),
     async onVote(voteType: VoteType) {
+      if (this.voting) {
+        return;
+      }
       this.voting = true;
       try {
         const vote = (this.solution.has_upvote && voteType === VoteType.UP_VOTE ||
@@ -187,8 +190,11 @@ export default defineComponent({
     authorName(): string {
       return this.solution.user?.full_name ?? "Autore"; // TODO change default
     },
+    isOwnSolution(): boolean {
+      return (this.solution.user?.id ?? '') == this.user.id
+    },
     canEdit(): boolean {
-      return true;
+      return this.isOwnSolution || this.hasAnyPrivileges();
     },
     // score(): number {
     //   return this.solution.votes

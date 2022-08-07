@@ -271,6 +271,7 @@ export const it = {
     proposed_solutions_title: "Soluzioni proposte",
     propose_solution_title: "Proponi una soluzione per l'esercizio",
     publish: "Pubblica",
+    publishing: "Pubblicazione in corso...",
     your_solution_placeholder: "La tua soluzione",
     show_all: "Mostra tutte",
     reveal_solution: "Continua a leggere",
