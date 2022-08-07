@@ -36,6 +36,7 @@ import { StudentState } from "../types";
 import {
   createExerciseSolution,
   createExerciseSolutionComment,
+  setExerciseSolutionBookmark,
   voteExerciseSolution,
 } from "@/api/exercises";
 
@@ -422,6 +423,53 @@ export const actions = {
     if (!solution) {
       throw new Error(
         "addExerciseSolutionComment couldn't find solution with id " +
+        solutionId
+      );
+    }
+    Object.assign(solution, updatedSolution)
+  },
+  /**
+  * Toggles an ExerciseSolution bookmark status for 
+  * the user  and re-fetches the solution
+  */
+  setExerciseSolutionBookmark: async (
+    { getters }: { getters: any },
+    {
+      courseId,
+      exerciseId,
+      solutionId,
+      bookmarked,
+    }: {
+      courseId: string;
+      exerciseId: string;
+      solutionId: string;
+      bookmarked: boolean
+    }
+  ) => {
+    const updatedSolution = await setExerciseSolutionBookmark(
+      courseId,
+      exerciseId,
+      solutionId,
+      bookmarked
+    );
+    const exercise: Exercise | undefined = getters.exercises.find(
+      (e: Exercise) => e.id == exerciseId
+    );
+
+    if (!exercise) {
+      throw new Error(
+        "setExerciseSolutionBookmark couldn't find exercise with id " +
+        exerciseId
+      );
+    }
+
+    const solution: ExerciseSolution | undefined = exercise.solutions?.find(
+      (s: ExerciseSolution) => s.id == solutionId
+    );
+
+    if (!solution) {
+      throw new Error(
+        "setExerciseSolutionBookmark couldn't find solution with id " +
         solutionId
       );
     }

@@ -45,10 +45,11 @@ export const getBlankExerciseSolution = (
   id: "",
   state,
   comments: [],
- // votes: [],
+  // votes: [],
   content: "",
   user: null,
   score: 0,
+  is_bookmarked: false
 });
 
 export const getBlankChoice = (): ExerciseChoice => ({

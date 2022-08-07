@@ -78,6 +78,7 @@ export interface ExerciseSolution {
   comments: ExerciseSolutionComment[];
   has_upvote?: boolean;
   has_downvote?: boolean;
+  is_bookmarked: boolean;
 }
 
 export interface Exercise extends Orderable, Lockable {

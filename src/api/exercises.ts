@@ -313,3 +313,18 @@ export async function voteExerciseSolution(
   return response.data
 
 }
+
+export async function setExerciseSolutionBookmark(
+  courseId: string,
+  exerciseId: string,
+  solutionId: string,
+  bookmarked: boolean
+): Promise<ExerciseSolution> {
+  const url = `/courses/${courseId}/exercises/${exerciseId}/solutions/${solutionId}/bookmark/`
+  if (bookmarked) {
+    const response = await axios.put(url);
+    return response.data;
+  }
+  const response = await axios.delete(url);
+  return response.data;
+}

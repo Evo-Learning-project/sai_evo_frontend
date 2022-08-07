@@ -265,6 +265,9 @@ export const it = {
     logout: "Logout",
   },
   exercise_solution: {
+    share: "Condividi",
+    add_bookmark: "Aggiungi ai preferiti",
+    remove_bookmark: "Rimuovi dai preferiti",
     no_solutions_call_to_action:
       "Non ci sono ancora soluzioni. Sii il primo a proporne una!",
     propose_solution: "Proponi soluzione",

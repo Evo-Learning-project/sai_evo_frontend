@@ -42,8 +42,15 @@
                 @click="$emit('editSolution')"><span class="material-icons">edit</span></Btn>
               <Btn :variant="'icon'" :outline="true" :tooltip="$t('exercise_solution.share')"><span
                   class="material-icons">share</span></Btn>
-              <Btn :variant="'icon'" :outline="true" :tooltip="$t('exercise_solution.bookmark')"><span
-                  class="material-icons-outlined">bookmark_outline</span></Btn>
+              <Btn :variant="'icon'" :outline="true" :tooltip="
+                solution.is_bookmarked
+                  ? $t('exercise_solution.remove_bookmark')
+                  : $t('exercise_solution.add_bookmark')
+              "><span class="material-icons" :loading="bookmarking" @click="onToggleBookmark()">{{
+    solution.is_bookmarked ?
+      'bookmark' : 'bookmark_outline'
+}}</span>
+              </Btn>
             </div>
 
             <!-- author -->
@@ -132,6 +139,7 @@ export default defineComponent({
     return {
       voting: false,
       postingComment: false,
+      bookmarking: false,
       draftComment: "",
       VoteType,
       MAX_CONTENT_HEIGHT_PX,
@@ -140,7 +148,11 @@ export default defineComponent({
     };
   },
   methods: {
-    ...mapActions("student", ["addExerciseSolutionComment", "addExerciseSolutionVote"]),
+    ...mapActions("student", [
+      "addExerciseSolutionComment",
+      "addExerciseSolutionVote",
+      "setExerciseSolutionBookmark"
+    ]),
     async onVote(voteType: VoteType) {
       if (this.voting) {
         return;
@@ -182,6 +194,21 @@ export default defineComponent({
         setErrorNotification(e);
       } finally {
         this.postingComment = false;
+      }
+    },
+    async onToggleBookmark() {
+      this.bookmarking = true;
+      try {
+        await this.setExerciseSolutionBookmark({
+          courseId: this.courseId,
+          exerciseId: this.exercise.id,
+          solutionId: this.solution.id,
+          bookmarked: !this.solution.is_bookmarked
+        });
+      } catch (e) {
+        setErrorNotification(e);
+      } finally {
+        this.bookmarking = false;
       }
     },
   },
