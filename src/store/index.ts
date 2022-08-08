@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { createStore } from 'vuex';
-import { sharedStore } from './shared';
-import { teacherStore } from './teacher';
-import { studentStore } from './student';
+import { createStore } from "vuex";
+import { sharedStore } from "./shared";
+import { teacherStore } from "./teacher";
+import { studentStore } from "./student";
 
 // import VuexPersistence from 'vuex-persist';
 
@@ -17,9 +17,9 @@ import { studentStore } from './student';
 //   }),
 // });
 export default createStore({
-  modules: {
-    shared: sharedStore,
-    teacher: teacherStore,
-    student: studentStore,
-  },
+	modules: {
+		shared: sharedStore,
+		teacher: teacherStore,
+		student: studentStore,
+	},
 });

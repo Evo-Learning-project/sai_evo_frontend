@@ -3,14 +3,14 @@ import { it } from "./it";
 import { en } from "./en";
 
 export const messages = {
-  it,
-  en,
+	it,
+	en,
 };
 
 export const i18n = createI18n({
-  messages,
-  locale: "it",
-  silentFallbackWarn: true,
+	messages,
+	locale: "it",
+	silentFallbackWarn: true,
 });
 
 export const getTranslatedString = i18n.global.t;
