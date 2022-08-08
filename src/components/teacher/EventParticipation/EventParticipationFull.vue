@@ -1,12 +1,12 @@
 <template>
-  <div></div>
+	<div></div>
 </template>
 
 <script>
 export default {
-  name: 'EventParticipationFull',
-  components: {}
-}
+	name: "EventParticipationFull",
+	components: {},
+};
 </script>
 
 <style></style>

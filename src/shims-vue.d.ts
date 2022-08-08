@@ -7,7 +7,7 @@ declare module "vue3-tour";
 declare module "vue-3-sanitize";
 declare module "html2pdf.js";
 declare module "*.vue" {
-  import type { DefineComponent } from "vue";
-  const component: DefineComponent<{}, {}, any>;
-  export default component;
+	import type { DefineComponent } from "vue";
+	const component: DefineComponent<{}, {}, any>;
+	export default component;
 }

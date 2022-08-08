@@ -1,1 +1,1 @@
-declare module 'vue3-google-oauth2';
+declare module "vue3-google-oauth2";

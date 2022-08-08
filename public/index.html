@@ -1,93 +1,77 @@
 <!DOCTYPE html>
 <html lang="en" class="notranslate" translate="no">
-  <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-    <link rel="icon" href="<%= BASE_URL %>favicon.ico" />
-    <!--<link
+	<head>
+		<meta charset="utf-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width,initial-scale=1.0" />
+		<link rel="icon" href="<%= BASE_URL %>favicon.ico" />
+		<!--<link
       rel="stylesheet"
       href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"
       integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm"
       crossorigin="anonymous"
     />-->
-    <link
-      href="https://fonts.googleapis.com/icon?family=Material+Icons"
-      rel="stylesheet"
-    />
-    <link
-      href="https://fonts.googleapis.com/icon?family=Material+Icons+Two+Tone"
-      rel="stylesheet"
-    />
-    <link
-      href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined"
-      rel="stylesheet"
-    />
-    <link
-      href="https://fonts.googleapis.com/icon?family=Material+Icons+Sharp"
-      rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="https://fonts.sandbox.google.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
-    />
+		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+		<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Two+Tone" rel="stylesheet" />
+		<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet" />
+		<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Sharp" rel="stylesheet" />
+		<link
+			rel="stylesheet"
+			href="https://fonts.sandbox.google.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+		/>
 
-    <!--<style>
+		<!--<style>
       #app {
         height: 100%;
       }
     </style>-->
-    <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script
-      async
-      src="https://www.googletagmanager.com/gtag/js?id=G-0HXJX9TLD8"
-    ></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag() {
-        dataLayer.push(arguments);
-      }
-      gtag("js", new Date());
+		<!-- Global site tag (gtag.js) - Google Analytics -->
+		<script async src="https://www.googletagmanager.com/gtag/js?id=G-0HXJX9TLD8"></script>
+		<script>
+			window.dataLayer = window.dataLayer || [];
+			function gtag() {
+				dataLayer.push(arguments);
+			}
+			gtag("js", new Date());
 
-      gtag("config", "G-0HXJX9TLD8");
-    </script>
+			gtag("config", "G-0HXJX9TLD8");
+		</script>
 
-    <title>SAI Evo</title>
-  </head>
-  <body>
-    <noscript>
-      <strong
-        >We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work
-        properly without JavaScript enabled. Please enable it to
-        continue.</strong
-      >
-    </noscript>
-    <!-- h-screen -->
-    <div style="height: 100vh" id="app" class="flex flex-col"></div>
-    <!-- built files will be auto injected -->
+		<title>SAI Evo</title>
+	</head>
+	<body>
+		<noscript>
+			<strong
+				>We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work properly without JavaScript enabled. Please
+				enable it to continue.</strong
+			>
+		</noscript>
+		<!-- h-screen -->
+		<div style="height: 100vh" id="app" class="flex flex-col"></div>
+		<!-- built files will be auto injected -->
 
-    <script>
-      window.MathJax = {
-        options: {
-          ignoreHtmlClass: "tex2jax_ignore",
-        },
-        tex: {
-          inlineMath: [
-            ["$", "$"],
-            ["\\(", "\\)"],
-          ],
-        },
-        svg: {
-          fontCache: "global",
-        },
-        "HTML-CSS": { fonts: ["TeX"] },
-      };
-    </script>
-    <script
-      type="text/javascript"
-      id="MathJax-script"
-      async
-      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"
-    ></script>
-  </body>
+		<script>
+			window.MathJax = {
+				options: {
+					ignoreHtmlClass: "tex2jax_ignore",
+				},
+				tex: {
+					inlineMath: [
+						["$", "$"],
+						["\\(", "\\)"],
+					],
+				},
+				svg: {
+					fontCache: "global",
+				},
+				"HTML-CSS": { fonts: ["TeX"] },
+			};
+		</script>
+		<script
+			type="text/javascript"
+			id="MathJax-script"
+			async
+			src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"
+		></script>
+	</body>
 </html>

@@ -19,33 +19,33 @@ import { mutations } from "./mutations";
 // });
 
 export const sharedStore = {
-  namespaced: true,
-  //plugins: [vuexLocal.plugin],
-  state: (): SharedState => ({
-    user: {} as User,
-    courses: [] as Course[],
-    token: "",
-    refreshToken: "",
-    loading: false,
-    firstLoading: false,
-    localLoading: false,
-    pageWideErrorData: null as ErrorMessage | null,
-    errorNotificationData: null as ErrorMessage | null,
-    saving: false,
-    savingError: false,
-    showSuccessFeedback: false,
-    tags: [] as Tag[],
-    dirtyTex: false,
-    helpCenterOpen: false,
-    helpCenterSelectedArticleId: null,
-  }),
-  mutations: {
-    ...mutations,
-  },
-  actions: {
-    ...actions,
-  },
-  getters: {
-    ...getters,
-  },
+	namespaced: true,
+	//plugins: [vuexLocal.plugin],
+	state: (): SharedState => ({
+		user: {} as User,
+		courses: [] as Course[],
+		token: "",
+		refreshToken: "",
+		loading: false,
+		firstLoading: false,
+		localLoading: false,
+		pageWideErrorData: null as ErrorMessage | null,
+		errorNotificationData: null as ErrorMessage | null,
+		saving: false,
+		savingError: false,
+		showSuccessFeedback: false,
+		tags: [] as Tag[],
+		dirtyTex: false,
+		helpCenterOpen: false,
+		helpCenterSelectedArticleId: null,
+	}),
+	mutations: {
+		...mutations,
+	},
+	actions: {
+		...actions,
+	},
+	getters: {
+		...getters,
+	},
 };
