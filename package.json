@@ -10,9 +10,21 @@
 		"serve": "vue-cli-service serve",
 		"build": "vue-cli-service build",
 		"test:unit": "vue-cli-service test:unit",
-    "lint2": "eslint . --ext .ts,.tsx,.js,.jsx,.vue --fix",
+		"lint_new": "eslint . --ext .ts,.tsx,.js,.jsx,.vue,.json --fix",
 		"lint": "vue-cli-service lint",
-		"format": "prettier --write ."
+		"format": "prettier --write .",
+		"configure-husky": "npx husky install && npx husky add .husky/pre-commit \"npx --no-install lint-staged\""
+	},
+	"husky": {
+		"hooks": {
+			"pre-commit": "lint-staged"
+		}
+	},
+	"lint-staged": {
+		"**/*.{js,jsx,json,vue,ts,tsx}": [
+			"eslint . --fix",
+			"prettier --write ."
+		]
 	},
 	"dependencies": {
 		"@ag-grid-community/vue3": "^26.2.0",
@@ -86,6 +98,8 @@
 		"eslint-config-prettier": "^6.15.0",
 		"eslint-plugin-prettier": "^3.3.1",
 		"eslint-plugin-vue": "^7.0.0",
+		"husky": "^8.0.1",
+		"lint-staged": "^13.0.3",
 		"postcss": "^7.0.39",
 		"prettier": "^2.2.1",
 		"tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.2.17",
