@@ -7,6 +7,7 @@ module.exports = {
     "eslint:recommended",
     "plugin:vue/essential",
     "plugin:@typescript-eslint/eslint-recommended",
+    "prettier"
   ],
   globals: {
     Atomics: "readonly",
