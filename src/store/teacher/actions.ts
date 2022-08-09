@@ -36,6 +36,7 @@ import {
 	createExerciseTestCase,
 	deleteExercise,
 	deleteExerciseChoice,
+	deleteExerciseSolution,
 	deleteExerciseSubExercise,
 	deleteExerciseTestCase,
 	getExerciseChoices,
@@ -234,7 +235,7 @@ export const actions = {
 		}: {
 			courseId: string;
 			exerciseId: string;
-			childType: "testcase" | "sub_exercise" | "choice";
+			childType: exerciseChildName;
 			childId: string;
 		},
 	) => {
@@ -242,6 +243,7 @@ export const actions = {
 			choice: deleteExerciseChoice,
 			testcase: deleteExerciseTestCase,
 			sub_exercise: deleteExerciseSubExercise,
+			solution: deleteExerciseSolution,
 		}[childType];
 		const childrenName = exerciseChildrenNames[childType];
 

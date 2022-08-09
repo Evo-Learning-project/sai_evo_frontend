@@ -636,6 +636,7 @@ export const it = {
 		currently_locked_by: "È in corso una modifica a questo esercizio da parte di",
 		requires_typescript: "Richiedi l'utilizzo di TypeScript",
 		confirm_delete_choice: "Sei sicuro di voler eliminare questa scelta?",
+		confirm_delete_solution: "Sei sicuro di voler eliminare questa soluzione?",
 		confirm_delete_testcase: "Sei sicuro di voler eliminare questo test case?",
 		confirm_delete_sub_exercise: "Sei sicuro di voler eliminare questo sotto-esercizio?",
 		code_execution_will_appear_here:

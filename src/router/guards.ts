@@ -13,7 +13,6 @@ export const exerciseSolutionThreadBeforeGuard = async (
 	const params = to.params;
 	const course = await getCourse(params.courseId as string);
 	const privileges = course.privileges ?? [];
-	console.log("REDIRECTING", to, _);
 	next({ name: "ExerciseSolutionThread", params });
 	// if (privileges.length > 0) {
 	// 	next("TeacherSolutions");

@@ -90,7 +90,7 @@ export const mutations = {
 			childId,
 		}: {
 			exerciseId: string;
-			childType: "choice" | "sub_exercise" | "testcase";
+			childType: exerciseChildName;
 			childId: string;
 		},
 	) => {

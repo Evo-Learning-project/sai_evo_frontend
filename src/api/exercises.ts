@@ -269,6 +269,17 @@ export async function updateExerciseSolution(
 	return response.data;
 }
 
+export async function deleteExerciseSolution(
+	courseId: string,
+	exerciseId: string,
+	solutionId: string,
+): Promise<void> {
+	const response = await axios.delete(
+		`/courses/${courseId}/exercises/${exerciseId}/solutions/${solutionId}/`,
+	);
+	return response.data;
+}
+
 export async function createExerciseSolutionComment(
 	courseId: string,
 	exerciseId: string,
