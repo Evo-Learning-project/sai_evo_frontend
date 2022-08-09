@@ -38,7 +38,9 @@ const gAuthOptions = {
 
 const dev = process.env.NODE_ENV !== "production";
 
-axios.defaults.baseURL = dev ? "http://127.0.0.1:8000" : process.env.VUE_APP_AXIOS_BASE;
+axios.defaults.baseURL = dev
+	? process.env.VUE_APP_AXIOS_BASE ?? "http://127.0.0.1:8000"
+	: process.env.VUE_APP_AXIOS_BASE;
 
 axios.interceptors.response.use(
 	response => {
