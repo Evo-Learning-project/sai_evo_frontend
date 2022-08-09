@@ -1,14 +1,32 @@
 <template>
 	<div>
 		<div
-			class="h-full py-6 my-3 transition-shadow duration-75 ease-in-out card shadow-elevation hover-shadow-elevation-2"
+			class="
+				h-full
+				py-6
+				my-3
+				transition-shadow
+				duration-75
+				ease-in-out
+				card
+				shadow-elevation
+				hover-shadow-elevation-2
+			"
 		>
 			<div class="flex flex-col w-full md:items-center md:flex-row">
 				<div class="flex md:w-1/3 md:mr-auto">
 					<!-- drag handle -->
 					<span
 						v-if="!randomOrder"
-						class="my-auto mr-2 text-lg cursor-move drag-handle material-icons-outlined opacity-70"
+						class="
+							my-auto
+							mr-2
+							text-lg
+							cursor-move
+							drag-handle
+							material-icons-outlined
+							opacity-70
+						"
 					>
 						drag_indicator
 					</span>
@@ -26,12 +44,28 @@
 						:variant="'icon'"
 						:outline="true"
 						@click="$emit('deleteRule')"
-						class="ml-auto -mt-2 -mr-3 transition-opacity duration-100 opacity-50 md:hidden hover:opacity-100"
+						class="
+							ml-auto
+							-mt-2
+							-mr-3
+							transition-opacity
+							duration-100
+							opacity-50
+							md:hidden
+							hover:opacity-100
+						"
 						><span style="font-size: 17px" class="material-icons"> delete </span>
 					</Btn>
 				</div>
 
-				<div class="flex flex-col w-full my-auto md:space-x-2 md:items-center md:flex-row md:ml-auto">
+				<div
+					class="
+						flex flex-col
+						w-full
+						my-auto
+						md:space-x-2 md:items-center md:flex-row md:ml-auto
+					"
+				>
 					<NumberInput
 						:min="0"
 						class="my-4 md:ml-auto md:my-0"
@@ -52,7 +86,12 @@
 					</NumberInput>
 					<div class="flex items-center space-x-2">
 						<!-- settings button -->
-						<Btn :variant="'secondary'" @click="showRuleDialog()" :size="'sm'" class="w-full">
+						<Btn
+							:variant="'secondary'"
+							@click="showRuleDialog()"
+							:size="'sm'"
+							class="w-full"
+						>
 							<div class="flex items-center">
 								<span class="material-icons mr-1.5"> settings </span
 								>{{ $t("event_template_rule_editor.choose_exercise") }}
@@ -64,14 +103,24 @@
 							:variant="'icon'"
 							:outline="true"
 							@click="$emit('deleteRule')"
-							class="hidden transition-opacity duration-100 opacity-50 md:block hover:opacity-100"
+							class="
+								hidden
+								transition-opacity
+								duration-100
+								opacity-50
+								md:block
+								hover:opacity-100
+							"
 							><span style="font-size: 17px" class="material-icons"> delete </span>
 						</Btn>
 					</div>
 				</div>
 			</div>
 			<!-- exercises preview -->
-			<div v-if="isSlotPopulated && modelValue.rule_type == EventTemplateRuleType.ID_BASED" class="mt-4">
+			<div
+				v-if="isSlotPopulated && modelValue.rule_type == EventTemplateRuleType.ID_BASED"
+				class="mt-4"
+			>
 				<p class="mb-2 text-muted">
 					{{
 						ruleExercises.length == 1
@@ -84,11 +133,18 @@
 					<div
 						v-if="!loadingPreview"
 						:class="[
-							ruleExercises.length > 1 ? (reduced ? 'flex flex-wrap' : 'grid md:grid-cols-2 gap-2') : '',
+							ruleExercises.length > 1
+								? reduced
+									? 'flex flex-wrap'
+									: 'grid md:grid-cols-2 gap-2'
+								: '',
 							'overflow-x-auto md:overflow-visible',
 						]"
 					>
-						<div v-for="exercise in ruleExercises" :key="'r-' + modelValue.id + '-e-' + exercise.id">
+						<div
+							v-for="exercise in ruleExercises"
+							:key="'r-' + modelValue.id + '-e-' + exercise.id"
+						>
 							<MinimalExercisePreview
 								:reduced="reduced"
 								:exercise="exercise"
@@ -118,7 +174,9 @@
 			</div>
 			<!-- tags preview -->
 			<div
-				v-else-if="isSlotPopulated && modelValue.rule_type == EventTemplateRuleType.TAG_BASED"
+				v-else-if="
+					isSlotPopulated && modelValue.rule_type == EventTemplateRuleType.TAG_BASED
+				"
 				class="mt-4"
 				:class="{ 'opacity-40': v$.$errors.length > 0 }"
 			>
@@ -153,7 +211,11 @@
 					</div>
 				</div>
 			</div>
-			<p class="text-danger-dark" v-for="error in v$.$errors" :key="modelValue.id + '-' + error.$uid">
+			<p
+				class="text-danger-dark"
+				v-for="error in v$.$errors"
+				:key="modelValue.id + '-' + error.$uid"
+			>
 				{{ $t("validation_errors.eventTemplateRule." + error.$uid) }}
 			</p>
 		</div>
@@ -195,11 +257,18 @@
 						<Btn
 							@click="setRuleMode(EventTemplateRuleType.ID_BASED, true)"
 							:variant="'transparent'"
-							class="pb-4 border-b md:py-5 md:pl-4 md:border-r md:border-b-0 hoverable-with-two-tone-primary"
+							class="
+								pb-4
+								border-b
+								md:py-5 md:pl-4 md:border-r md:border-b-0
+								hoverable-with-two-tone-primary
+							"
 						>
 							<template v-slot:content>
 								<div class="flex items-center justify-center space-x-3">
-									<span class="opacity-50 material-icons-two-tone two-tone-light"> topic </span>
+									<span class="opacity-50 material-icons-two-tone two-tone-light">
+										topic
+									</span>
 									<h4 class="">
 										{{ $t("event_template_rule_editor.pick_single_exercise") }}
 									</h4>
@@ -212,7 +281,12 @@
 						<Btn
 							@click="setRuleMode(EventTemplateRuleType.ID_BASED, false)"
 							:variant="'transparent'"
-							class="py-4 border-b md:pl-4 md:pr-3 md:py-0 md:border-r md:border-b-0 hoverable-with-two-tone-primary"
+							class="
+								py-4
+								border-b
+								md:pl-4 md:pr-3 md:py-0 md:border-r md:border-b-0
+								hoverable-with-two-tone-primary
+							"
 						>
 							<template v-slot:content>
 								<div class="flex items-center justify-center space-x-3">
@@ -233,7 +307,9 @@
 						>
 							<template v-slot:content>
 								<div class="flex items-center justify-center space-x-3">
-									<span class="opacity-50 material-icons-two-tone two-tone-light"> label </span>
+									<span class="opacity-50 material-icons-two-tone two-tone-light">
+										label
+									</span>
 									<h4 class="">
 										{{ $t("event_template_rule_editor.pick_exercise_tag_based") }}
 									</h4>
@@ -355,10 +431,16 @@ export default defineComponent({
 	mixins: [courseIdMixin, loadingMixin],
 	async created() {
 		// fetch exercises related to this rule
-		if (this.modelValue.rule_type == EventTemplateRuleType.ID_BASED && (this.modelValue.exercises?.length ?? 0) > 0) {
+		if (
+			this.modelValue.rule_type == EventTemplateRuleType.ID_BASED &&
+			(this.modelValue.exercises?.length ?? 0) > 0
+		) {
 			this.loadingPreview = true;
 			try {
-				this.previewExercises = await getExercisesById(this.courseId, this.modelValue.exercises as string[]);
+				this.previewExercises = await getExercisesById(
+					this.courseId,
+					this.modelValue.exercises as string[],
+				);
 			} catch (e) {
 				this.setErrorNotification(e);
 			} finally {
@@ -392,7 +474,10 @@ export default defineComponent({
 			if (this.pickOneExerciseOnly) {
 				this.emitUpdate("exercises", [exercise.id]);
 			} else {
-				this.emitUpdate("exercises", [exercise.id, ...(this.modelValue?.exercises as string[])]);
+				this.emitUpdate("exercises", [
+					exercise.id,
+					...(this.modelValue?.exercises as string[]),
+				]);
 			}
 			// fetch exercise from server and add to local array for preview
 			const preview = await getExercisesById(this.courseId, [exercise.id]);
@@ -411,7 +496,10 @@ export default defineComponent({
 			this.showDialog = true;
 		},
 		setRuleMode(ruleType: EventTemplateRuleType, pickOne = false) {
-			if (ruleType === null && !confirm(_("event_template_rule_editor.unset_rule_type_confirmation"))) {
+			if (
+				ruleType === null &&
+				!confirm(_("event_template_rule_editor.unset_rule_type_confirmation"))
+			) {
 				return;
 			}
 			// TODO if ruleType === null reset slot (clear exercises and clauses)
@@ -455,7 +543,10 @@ export default defineComponent({
 			}
 			if (this.modelValue.rule_type == EventTemplateRuleType.TAG_BASED) {
 				// there's at least a non-empty clause
-				return (this.modelValue.clauses?.length ?? 0) > 0 && this.modelValue.clauses?.some(c => c.tags.length > 0);
+				return (
+					(this.modelValue.clauses?.length ?? 0) > 0 &&
+					this.modelValue.clauses?.some(c => c.tags.length > 0)
+				);
 			}
 			return false;
 		},

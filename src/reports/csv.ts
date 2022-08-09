@@ -10,7 +10,9 @@ const getEventParticipationHeaders = (
 	...(reportSettings.fields.includes(ReportField.STUDENT_EMAIL) ? ["user.email"] : []),
 	...(reportSettings.fields.includes(ReportField.STUDENT_MAT) ? ["user.mat"] : []),
 	...(reportSettings.fields.includes(ReportField.STUDENT_COURSE) ? ["user.course"] : []),
-	...(reportSettings.fields.includes(ReportField.STUDENT_FULL_NAME) ? ["user.last_name", "user.first_name"] : []),
+	...(reportSettings.fields.includes(ReportField.STUDENT_FULL_NAME)
+		? ["user.last_name", "user.first_name"]
+		: []),
 	// TODO explicit condition for timestamp fields
 	...(reportSettings.fields.includes(ReportField.EXERCISES_ANSWER) ||
 	reportSettings.fields.includes(ReportField.EXERCISES_SCORE) ||
@@ -26,12 +28,16 @@ const getEventParticipationHeaders = (
 					: []; // TODO! if exercise has no label, put text instead
 				// for each exercise type, check if any participation has that type in the
 				// slot with current number, in which case add relevant headers
-				const samePositionSlotTypes = participations.map(p => p.slots[i].exercise.exercise_type);
+				const samePositionSlotTypes = participations.map(
+					p => p.slots[i].exercise.exercise_type,
+				);
 				const samePositionExercises = participations.map(p => p.slots[i].exercise);
 				if (
 					reportSettings.fields.includes(ReportField.EXERCISES_ANSWER) &&
 					samePositionSlotTypes.some(t =>
-						[ExerciseType.OPEN_ANSWER, ExerciseType.JS, ExerciseType.C].includes(t as ExerciseType),
+						[ExerciseType.OPEN_ANSWER, ExerciseType.JS, ExerciseType.C].includes(
+							t as ExerciseType,
+						),
 					)
 				) {
 					ret.push(`slots[${i}].answer_text`);
@@ -39,24 +45,31 @@ const getEventParticipationHeaders = (
 				if (
 					reportSettings.fields.includes(ReportField.EXERCISES_ANSWER) &&
 					samePositionSlotTypes.some(t =>
-						[ExerciseType.MULTIPLE_CHOICE_MULTIPLE_POSSIBLE, ExerciseType.MULTIPLE_CHOICE_SINGLE_POSSIBLE].includes(
-							t as ExerciseType,
-						),
+						[
+							ExerciseType.MULTIPLE_CHOICE_MULTIPLE_POSSIBLE,
+							ExerciseType.MULTIPLE_CHOICE_SINGLE_POSSIBLE,
+						].includes(t as ExerciseType),
 					)
 				) {
 					ret.push(`slots[${i}].selected_choices`);
 				}
 				if (
 					reportSettings.fields.includes(ReportField.EXERCISES_SCORE) &&
-					samePositionSlotTypes.some(t => [ExerciseType.JS, ExerciseType.C].includes(t as ExerciseType))
+					samePositionSlotTypes.some(t =>
+						[ExerciseType.JS, ExerciseType.C].includes(t as ExerciseType),
+					)
 				) {
 					const otherProgrammingExercises = samePositionExercises.filter(e =>
 						[ExerciseType.JS, ExerciseType.C].includes(e.exercise_type as ExerciseType),
 					);
 					// add as many "testcase i passed" columns as the highest number
 					// of testcases in the exercises of the same slot
-					const maxTestcases = Math.max(...otherProgrammingExercises.map(e => e.testcases?.length ?? 0));
-					[...Array(maxTestcases)].forEach((_, j) => ret.push(`slots[${i}].passed_testcase_${j}`));
+					const maxTestcases = Math.max(
+						...otherProgrammingExercises.map(e => e.testcases?.length ?? 0),
+					);
+					[...Array(maxTestcases)].forEach((_, j) =>
+						ret.push(`slots[${i}].passed_testcase_${j}`),
+					);
 
 					ret.push(`slots[${i}].passed_testcases`, `slots[${i}].failed_testcases`);
 				} else if (reportSettings.fields.includes(ReportField.EXERCISES_SCORE)) {
@@ -109,9 +122,13 @@ const getCellValue = (participation: EventParticipation, field: string) => {
 			.map(cId => slot.exercise.choices?.find(c => c.id === cId)?.text) // TODO strip off html from text - write a general function that does that from any text and use for answers etc.
 			.join(" --- ");
 	} else if (matchFailedTestCases !== null || matchPassedTestCases !== null) {
-		const slot = participation.slots[parseInt(((matchFailedTestCases ?? matchPassedTestCases) as RegExpMatchArray)[1])];
+		const slot =
+			participation.slots[
+				parseInt(((matchFailedTestCases ?? matchPassedTestCases) as RegExpMatchArray)[1])
+			];
 		const results = slot.execution_results ?? { tests: [] };
-		const passedTests = results.tests?.filter((t: { passed: boolean }) => t.passed).length ?? 0;
+		const passedTests =
+			results.tests?.filter((t: { passed: boolean }) => t.passed).length ?? 0;
 		return matchPassedTestCases !== null
 			? passedTests
 			: (slot.exercise.testcases as ExerciseTestCase[]).length - passedTests;
@@ -166,7 +183,11 @@ export const getParticipationsAsCsv = (
 	const ret = [
 		headers.map(h => getHeaderString(h)).join(","),
 		...participations.map(p =>
-			headers.map(field => JSON.stringify(getCellValue(p, field), replacer).replace(/\\"/g, '"')).join(","),
+			headers
+				.map(field =>
+					JSON.stringify(getCellValue(p, field), replacer).replace(/\\"/g, '"'),
+				)
+				.join(","),
 		),
 	].join("\r\n");
 	return ret;

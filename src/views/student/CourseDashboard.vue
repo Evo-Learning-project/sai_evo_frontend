@@ -32,7 +32,10 @@
 							? $t('student_course_dashboard.show_all_practices')
 							: $t('student_course_dashboard.show_bookmarked')
 					"
-					><span :class="[showBookmarkedOnly ? 'material-icons' : 'material-icons-outlined']">bookmarks</span></Btn
+					><span
+						:class="[showBookmarkedOnly ? 'material-icons' : 'material-icons-outlined']"
+						>bookmarks</span
+					></Btn
 				>
 				<Btn
 					v-if="!firstLoading && practiceParticipations.length > 3"
@@ -40,17 +43,42 @@
 					:outline="true"
 					class=""
 					@click="showNotRecent = !showNotRecent"
-					:tooltip="showNotRecent ? $t('misc.show_recent') : $t('student_course_dashboard.show_all_practices')"
-					><span :class="[showNotRecent ? 'material-icons' : 'material-icons-outlined']">visibility</span></Btn
+					:tooltip="
+						showNotRecent
+							? $t('misc.show_recent')
+							: $t('student_course_dashboard.show_all_practices')
+					"
+					><span :class="[showNotRecent ? 'material-icons' : 'material-icons-outlined']"
+						>visibility</span
+					></Btn
 				>
 			</div>
 
-			<div class="grid grid-cols-1 gap-4 xl:gap-8 md:grid-cols-2 lg:grid-cols-4 2xl:grid-cols-5" v-if="!firstLoading">
+			<div
+				class="
+					grid grid-cols-1
+					gap-4
+					xl:gap-8
+					md:grid-cols-2
+					lg:grid-cols-4
+					2xl:grid-cols-5
+				"
+				v-if="!firstLoading"
+			>
 				<div v-if="(currentCourse.unstarted_practice_events?.length ?? 0) > 0">
 					<Card
 						:hoverable="false"
 						:margin-less="true"
-						class="relative h-40 overflow-hidden text-gray-600 cursor-pointer md:h-23rem elevate-when-pressed bg-light"
+						class="
+							relative
+							h-40
+							overflow-hidden
+							text-gray-600
+							cursor-pointer
+							md:h-23rem
+							elevate-when-pressed
+							bg-light
+						"
 						v-wave
 						@click="onResumePractice(currentCourse.unstarted_practice_events[0])"
 					>
@@ -63,7 +91,9 @@
 						</template>
 						<template v-slot:body>
 							<div class="flex flex-col h-full">
-								<h1 class="mx-auto my-auto text-7xl opacity-70 material-icons-outlined">redo</h1>
+								<h1 class="mx-auto my-auto text-7xl opacity-70 material-icons-outlined">
+									redo
+								</h1>
 							</div>
 						</template>
 					</Card>
@@ -74,7 +104,16 @@
 					:hoverable="false"
 					:filled="true"
 					:border-less="true"
-					class="relative h-40 overflow-hidden text-gray-600 cursor-pointer h-23rem elevate-when-pressed bg-light"
+					class="
+						relative
+						h-40
+						overflow-hidden
+						text-gray-600
+						cursor-pointer
+						h-23rem
+						elevate-when-pressed
+						bg-light
+					"
 					v-wave
 					@click="onCreatePractice()"
 				>
@@ -87,7 +126,9 @@
 					</template>
 					<template v-slot:body>
 						<div class="flex flex-col h-full">
-							<h1 class="mx-auto my-auto text-7xl opacity-70 material-icons-outlined">add</h1>
+							<h1 class="mx-auto my-auto text-7xl opacity-70 material-icons-outlined">
+								add
+							</h1>
 						</div>
 					</template>
 				</Card>
@@ -99,7 +140,17 @@
 					:loading="loadingParticipations.has(participation.id)"
 				></EventParticipationPreview>
 			</div>
-			<div class="grid grid-cols-1 gap-4 xl:gap-8 md:grid-cols-2 lg:grid-cols-4 2xl:grid-cols-5" v-else>
+			<div
+				class="
+					grid grid-cols-1
+					gap-4
+					xl:gap-8
+					md:grid-cols-2
+					lg:grid-cols-4
+					2xl:grid-cols-5
+				"
+				v-else
+			>
 				<SkeletonCard :full="true"></SkeletonCard>
 				<SkeletonCard :full="true"></SkeletonCard>
 				<SkeletonCard :full="true"></SkeletonCard>
@@ -112,7 +163,11 @@
 			:noText="$t('dialog.default_cancel_text')"
 			:yesText="$t('practice_template_editor.begin_practice')"
 			:large="(tags?.length ?? 0) > 0"
-			:disableOk="totalRuleAmount < 1 || totalRuleAmount > MAX_PRACTICE_EXERCISE_COUNT || isEditingRule"
+			:disableOk="
+				totalRuleAmount < 1 ||
+				totalRuleAmount > MAX_PRACTICE_EXERCISE_COUNT ||
+				isEditingRule
+			"
 			:showDialog="!!editingEvent"
 		>
 			<template v-slot:title>
@@ -136,8 +191,16 @@
 					@isEditingRule="isEditingRule = $event"
 					:modelValue="editingEvent.template"
 				></PracticeTemplateEditor>
-				<p v-if="totalRuleAmount > MAX_PRACTICE_EXERCISE_COUNT && !isEditingRule" class="text-danger-dark">
-					{{ $t("student_course_dashboard.too_many_exercises") + " " + MAX_PRACTICE_EXERCISE_COUNT + "." }}
+				<p
+					v-if="totalRuleAmount > MAX_PRACTICE_EXERCISE_COUNT && !isEditingRule"
+					class="text-danger-dark"
+				>
+					{{
+						$t("student_course_dashboard.too_many_exercises") +
+						" " +
+						MAX_PRACTICE_EXERCISE_COUNT +
+						"."
+					}}
 				</p>
 			</template>
 		</Dialog>
@@ -195,7 +258,11 @@ export default defineComponent({
 	},
 	methods: {
 		...mapActions("shared", ["getCourse", "getTags"]),
-		...mapActions("student", ["createEvent", "partialUpdateEventParticipation", "getPracticeEventParticipations"]),
+		...mapActions("student", [
+			"createEvent",
+			"partialUpdateEventParticipation",
+			"getPracticeEventParticipations",
+		]),
 		//...mapActions("teacher", ["partialUpdateEventParticipation"]),
 		...mapMutations("student", ["setEditingEvent"]),
 
@@ -233,7 +300,10 @@ export default defineComponent({
 				return;
 			}
 			if (this.currentCourse.public_exercises_count === 0) {
-				this.setErrorNotification(_("student_course_dashboard.no_public_exercises"), true);
+				this.setErrorNotification(
+					_("student_course_dashboard.no_public_exercises"),
+					true,
+				);
 				return;
 			}
 			await this.withLoading(async () => {
@@ -258,13 +328,17 @@ export default defineComponent({
 			);
 		},
 		isResumingUnstartedPractice(): boolean {
-			return this.editingEvent?.id === this.currentCourse.unstarted_practice_events?.[0]?.id;
+			return (
+				this.editingEvent?.id === this.currentCourse.unstarted_practice_events?.[0]?.id
+			);
 		},
 		totalRuleAmount(): number {
 			if (!this.editingEvent) {
 				return 0;
 			}
-			return sum((this.editingEvent as Event).template?.rules.map(r => parseInt(String(r.amount))));
+			return sum(
+				(this.editingEvent as Event).template?.rules.map(r => parseInt(String(r.amount))),
+			);
 		},
 	},
 });

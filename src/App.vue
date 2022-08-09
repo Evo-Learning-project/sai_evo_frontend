@@ -1,6 +1,10 @@
 <template>
 	<!-- <div> -->
-	<div v-if="loading" style="z-index: 999" class="fixed transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2">
+	<div
+		v-if="loading"
+		style="z-index: 999"
+		class="fixed transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
+	>
 		<Spinner :size="'xl'" :variant="'dark'" :fast="true"></Spinner>
 	</div>
 	<transition name="fade">
@@ -15,14 +19,23 @@
 		></Notification>
 	</transition>
 	<router-view class="" />
-	<footer class="flex items-center w-full h-12 px-6 py-3 mt-auto text-sm text-white bg-dark">
+	<footer
+		class="flex items-center w-full h-12 px-6 py-3 mt-auto text-sm text-white bg-dark"
+	>
 		<p>
 			Crafted with ❤️ by
-			<a target="_blank" class="font-semibold text-indigo-400 hover:underline" href="http://bsamu.it">Samuele Bonini</a>
+			<a
+				target="_blank"
+				class="font-semibold text-indigo-400 hover:underline"
+				href="http://bsamu.it"
+				>Samuele Bonini</a
+			>
 		</p>
 		<Tooltip :placement="'left'" class="ml-auto" :textCode="'telegram'">
 			<a href="https://t.me/sai_evo" target="_blank"
-				><img class="w-5 h-5 transition-opacity duration-75 opacity-70 hover:opacity-100" src="../public/telegram.jpg"
+				><img
+					class="w-5 h-5 transition-opacity duration-75 opacity-70 hover:opacity-100"
+					src="../public/telegram.jpg"
 			/></a>
 		</Tooltip>
 	</footer>
@@ -86,7 +99,10 @@ export default defineComponent({
 			(window as any).MathJax?.typeset?.();
 		},
 		beforeWindowUnload(e: { preventDefault: () => void; returnValue: string }) {
-			if (this.unsavedChanges && !window.confirm(_("misc.confirm_exiting_unsaved_changes"))) {
+			if (
+				this.unsavedChanges &&
+				!window.confirm(_("misc.confirm_exiting_unsaved_changes"))
+			) {
 				// Cancel the event
 				e.preventDefault();
 				// Chrome requires returnValue to be set
@@ -101,13 +117,17 @@ export default defineComponent({
 			if (this.$router.currentRoute.value.params.courseId) {
 				// check user has privileges for course currrently visited
 				const myPrivileges: CoursePrivilege[] =
-					this.courses.find((c: Course) => c.id == (this.$router.currentRoute.value.params.courseId ?? ""))
-						?.privileges ?? [];
+					this.courses.find(
+						(c: Course) =>
+							c.id == (this.$router.currentRoute.value.params.courseId ?? ""),
+					)?.privileges ?? [];
 
 				return myPrivileges.length > 0;
 			}
 			// check user has any privileges at all if not visiting a course (i.e. in course list)
-			return (this.courses as Course[]).map(c => c.privileges ?? []).some(p => p.length > 0);
+			return (this.courses as Course[])
+				.map(c => c.privileges ?? [])
+				.some(p => p.length > 0);
 		},
 		isTeacherRoute(): boolean {
 			return !!this.$route.meta.teacherRoute;

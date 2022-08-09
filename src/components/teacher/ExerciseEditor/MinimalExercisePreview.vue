@@ -8,7 +8,9 @@
 				:outline="true"
 				:tooltip="$t('misc.preview')"
 				@click="showPreview = true"
-				><span style="font-size: 25px !important" class="material-icons-outlined -mb-0.5"> fullscreen </span>
+				><span style="font-size: 25px !important" class="material-icons-outlined -mb-0.5">
+					fullscreen
+				</span>
 			</Btn>
 		</div>
 		<div
@@ -30,13 +32,21 @@
 					>
 						{{ previewTitle }}
 					</h4>
-					<Tooltip :noArrow="true" :placement="'bottom'" :textValue="$t('exercise_states.' + exercise.state)">
+					<Tooltip
+						:noArrow="true"
+						:placement="'bottom'"
+						:textValue="$t('exercise_states.' + exercise.state)"
+					>
 						<div class="my-auto cursor-default chip chip-sm">
 							<div class="flex items-center">
 								<MultiIcon class="-ml-1" :icons="exerciseStateIcons"></MultiIcon>
 							</div></div
 					></Tooltip>
-					<Tooltip :noArrow="true" :placement="'bottom'" :textValue="$t('exercise_types.' + exercise.exercise_type)">
+					<Tooltip
+						:noArrow="true"
+						:placement="'bottom'"
+						:textValue="$t('exercise_types.' + exercise.exercise_type)"
+					>
 						<div class="my-auto cursor-default chip chip-sm">
 							<div class="flex items-center">
 								<MultiIcon
@@ -50,7 +60,11 @@
 					></Tooltip>
 				</div>
 				<!-- <div class="overflow-hidden" :style="tagsDivStyle"> -->
-				<FadedEdgesScrollableFragment class="flex mb-2" :id="tagsDivId" :style="tagsDivStyle">
+				<FadedEdgesScrollableFragment
+					class="flex mb-2"
+					:id="tagsDivId"
+					:style="tagsDivStyle"
+				>
 					<Tag
 						class="mr-1"
 						:class="{ 'z-10': index === tags.length - 1 }"
@@ -64,7 +78,12 @@
 			</div>
 			<div class="relative overflow-y-hidden h-14">
 				<div
-					style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden"
+					style="
+						display: -webkit-box;
+						-webkit-line-clamp: 2;
+						-webkit-box-orient: vertical;
+						overflow: hidden;
+					"
 					class="w-11/12 overflow-x-hidden overflow-ellipsis text-muted"
 					v-html="previewText"
 				></div>
@@ -88,7 +107,12 @@
 					:outline="true"
 					:tooltip="$t('misc.preview')"
 					@click="showPreview = true"
-					><span style="font-size: 25px !important" class="material-icons-outlined -mb-0.5"> fullscreen </span>
+					><span
+						style="font-size: 25px !important"
+						class="material-icons-outlined -mb-0.5"
+					>
+						fullscreen
+					</span>
 				</Btn>
 
 				<!-- <Btn
@@ -136,7 +160,13 @@
 				</div>
 			</div>
 		</div>
-		<Dialog :showDialog="showPreview" @yes="showPreview = false" :confirmOnly="true" :large="true" :dismissible="true">
+		<Dialog
+			:showDialog="showPreview"
+			@yes="showPreview = false"
+			:confirmOnly="true"
+			:large="true"
+			:dismissible="true"
+		>
 			<template v-slot:title>{{ $t("misc.exercise_preview_title") }}</template>
 			<template v-slot:body>
 				<FullExercise :exercise="exercise"></FullExercise>
@@ -227,7 +257,9 @@ export default defineComponent({
 	},
 	mounted() {
 		setTimeout(
-			() => (this.tagsDivWidth = document.getElementById(this.tagsDivId)?.parentElement?.clientWidth ?? 0),
+			() =>
+				(this.tagsDivWidth =
+					document.getElementById(this.tagsDivId)?.parentElement?.clientWidth ?? 0),
 			10,
 		);
 	},
@@ -271,7 +303,10 @@ export default defineComponent({
 			return exerciseTypesIcons[this.exercise.exercise_type as ExerciseType];
 		},
 		tags() {
-			return [...(this.exercise.public_tags ?? []), ...(this.exercise.private_tags ?? [])];
+			return [
+				...(this.exercise.public_tags ?? []),
+				...(this.exercise.private_tags ?? []),
+			];
 		},
 	},
 });

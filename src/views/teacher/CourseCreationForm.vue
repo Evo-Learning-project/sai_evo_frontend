@@ -5,7 +5,11 @@
 				<TextInput v-model="course.name">
 					{{ $t("course_creation_form.course_name") }}
 					<template v-if="v$.course.name.$errors.length > 0" v-slot:errors>
-						<div class="input-errors" v-for="error of v$.course.name.$errors" :key="error.$uid">
+						<div
+							class="input-errors"
+							v-for="error of v$.course.name.$errors"
+							:key="error.$uid"
+						>
 							<div class="error-msg">
 								{{ $t("validation_errors." + error.$uid) }}
 							</div>
@@ -42,7 +46,8 @@
 				:variant="'success'"
 				:loading="localLoading"
 			>
-				<span class="mr-1 text-base material-icons-outlined">done</span>{{ $t("course_creation_form.create") }}</Btn
+				<span class="mr-1 text-base material-icons-outlined">done</span
+				>{{ $t("course_creation_form.create") }}</Btn
 			>
 		</div>
 	</div>

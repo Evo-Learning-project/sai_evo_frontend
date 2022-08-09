@@ -9,7 +9,12 @@
 </template>
 
 <script lang="ts">
-import { EventParticipationSlotSubmission, Exercise, ExerciseType, getEmptySubmission } from "@/models";
+import {
+	EventParticipationSlotSubmission,
+	Exercise,
+	ExerciseType,
+	getEmptySubmission,
+} from "@/models";
 import { defineComponent, PropType } from "@vue/runtime-core";
 import MultipleChoiceExercise from "./MultipleChoiceExercise.vue";
 import OpenAnswerExercise from "./OpenAnswerExercise.vue";
@@ -26,9 +31,15 @@ export default defineComponent({
 			/**
 			 * Emitted when the submission to this exercise changes
 			 */
-			const validators: Record<keyof EventParticipationSlotSubmission, (val: any) => boolean> = {
+			const validators: Record<
+				keyof EventParticipationSlotSubmission,
+				(val: any) => boolean
+			> = {
 				answer_text: val => typeof val === "string",
-				selected_choices: val => val && Array.isArray(val) && val.every(v => ["string", "number"].includes(typeof v)),
+				selected_choices: val =>
+					val &&
+					Array.isArray(val) &&
+					val.every(v => ["string", "number"].includes(typeof v)),
 				attachment: val => true,
 				execution_results: val => false, // meant to be read-only
 			};

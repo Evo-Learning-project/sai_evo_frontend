@@ -6,7 +6,9 @@
 			<p class="">{{ currentEventStateDescription }}</p>
 		</div>
 		<div class="my-4 banner banner-success" v-if="isPlanned">
-			<span class="ml-px text-success material-icons-outlined"> check_circle_outline </span>
+			<span class="ml-px text-success material-icons-outlined">
+				check_circle_outline
+			</span>
 			<p class="">{{ currentEventStateDescription }}</p>
 		</div>
 		<div class="">
@@ -21,15 +23,30 @@
 						{{ $t("event_editor.correct_errors_to_publish") }}
 					</p>
 					<ul class="mt-2 list-disc list-inside">
-						<li class="text-muted text-danger-dark" v-for="(error, index) in relevantErrors" :key="'err-' + index">
+						<li
+							class="text-muted text-danger-dark"
+							v-for="(error, index) in relevantErrors"
+							:key="'err-' + index"
+						>
 							{{ $t("validation_errors.event." + error.$uid) }}
 						</li>
 					</ul>
 				</div>
 			</div>
-			<div class="flex flex-col mt-2 space-y-2 md:items-center md:flex-row md:space-y-0 md:space-x-4">
+			<div
+				class="
+					flex flex-col
+					mt-2
+					space-y-2
+					md:items-center md:flex-row md:space-y-0 md:space-x-4
+				"
+			>
 				<h5 class="">
-					{{ isDraft || isPlanned ? $t("event_editor.current_state_is") : $t("event_editor.state_is") }}
+					{{
+						isDraft || isPlanned
+							? $t("event_editor.current_state_is")
+							: $t("event_editor.state_is")
+					}}
 					<strong>{{ currentEventStateName }}</strong
 					>.
 				</h5>
@@ -39,7 +56,9 @@
 					:variant="'primary'"
 					:loading="localLoading"
 					:disabled="false && isDraft && v$.$invalid && v$.$dirty"
-					@click="isDraft ? (v$.$invalid ? onInvalidSubmission() : publish()) : revertToDraft()"
+					@click="
+						isDraft ? (v$.$invalid ? onInvalidSubmission() : publish()) : revertToDraft()
+					"
 				>
 					{{ isDraft ? $t("event_editor.publish") : $t("event_editor.revert_to_draft") }}
 				</Btn>
@@ -47,7 +66,8 @@
 			<p v-if="isPlanned" class="mt-10 text-muted">
 				{{ $t("event_editor.event_planned_help_text") }}
 				<!-- <strong>{{ formattedTimestamp }}</strong> -->
-				<strong>&nbsp;<Timestamp :value="modelValue.begin_timestamp"></Timestamp></strong>.
+				<strong>&nbsp;<Timestamp :value="modelValue.begin_timestamp"></Timestamp></strong
+				>.
 			</p>
 			<div class="flex flex-col items-stretch mt-2 space-y-2" v-if="isPlanned || isOpen">
 				<p class="text-muted">
@@ -101,10 +121,18 @@ export default defineComponent({
 		},
 		onInvalidSubmission() {
 			(this.v$ as any).$touch();
-			window.scrollTo(0, document.body.scrollHeight || document.documentElement.scrollHeight);
+			window.scrollTo(
+				0,
+				document.body.scrollHeight || document.documentElement.scrollHeight,
+			);
 			// scroll to bottom of page to account for error messages appearing
 			// in order to keep error banner in view
-			this.$nextTick(() => window.scrollTo(0, document.body.scrollHeight || document.documentElement.scrollHeight));
+			this.$nextTick(() =>
+				window.scrollTo(
+					0,
+					document.body.scrollHeight || document.documentElement.scrollHeight,
+				),
+			);
 			this.shakeErrorBanner = true;
 		},
 		publish() {

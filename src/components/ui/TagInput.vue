@@ -12,7 +12,9 @@
 				@before-adding-tag="beforeAddingTag($event)"
 				@before-deleting-tag="beforeDeletingTag($event)"
 				:autocomplete-items="autoCompleteItems"
-				:autocomplete-min-length="alwaysShowAutocomplete ? 0 : allowAutocomplete ? 1 : 10000000000000"
+				:autocomplete-min-length="
+					alwaysShowAutocomplete ? 0 : allowAutocomplete ? 1 : 10000000000000
+				"
 				:autocomplete-filter-duplicates="false"
 			/>
 		</div>
@@ -93,8 +95,11 @@ export default defineComponent({
 		beforeAddingTag(event: any) {
 			console.log("before adding", event.tag.text);
 			if (
-				!this.processedModelValue.map((t: { text: string; classes?: string }) => t.text).includes(event.tag.text) &&
-				(!this.existingOnly || this.autoCompleteItems.map(i => i.text).includes(event.tag.text))
+				!this.processedModelValue
+					.map((t: { text: string; classes?: string }) => t.text)
+					.includes(event.tag.text) &&
+				(!this.existingOnly ||
+					this.autoCompleteItems.map(i => i.text).includes(event.tag.text))
 			) {
 				this.$emit("addTag", event.tag.text);
 
@@ -140,7 +145,8 @@ export default defineComponent({
 		},
 		autoCompleteItems(): { text: string; classes?: string }[] {
 			const ret = this.processedChoices.filter(
-				(c: { text: string }) => c.text.toLowerCase().indexOf(this.tag.toLowerCase()) !== -1,
+				(c: { text: string }) =>
+					c.text.toLowerCase().indexOf(this.tag.toLowerCase()) !== -1,
 			);
 			if (this.existingOnly || ret.length > 0) {
 				return ret;

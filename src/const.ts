@@ -39,15 +39,23 @@ export const EXERCISE_AUTO_SAVE_DEBOUNCE_TIME_MS = 3000;
 export const EXERCISE_AUTO_SAVE_DEBOUNCED_FIELDS: FieldList<Exercise> = ["label", "text"];
 
 export const EXERCISE_SOLUTION_AUTO_SAVE_DEBOUNCE_TIME_MS = 3000;
-export const EXERCISE_SOLUTION_AUTO_SAVE_DEBOUNCE_FIELDS: FieldList<ExerciseSolution> = ["content"];
+export const EXERCISE_SOLUTION_AUTO_SAVE_DEBOUNCE_FIELDS: FieldList<ExerciseSolution> = [
+	"content",
+];
 
 export const EXERCISE_CHOICE_AUTO_SAVE_DEBOUNCE_TIME_MS = 3000;
-export const EXERCISE_CHOICE_AUTO_SAVE_DEBOUNCED_FIELDS: FieldList<ExerciseChoice> = ["text", "correctness"];
+export const EXERCISE_CHOICE_AUTO_SAVE_DEBOUNCED_FIELDS: FieldList<ExerciseChoice> = [
+	"text",
+	"correctness",
+];
 
 export const EVENT_PARTICIPATION_SLOT_DEBOUNCE_TIME_MS = 10000;
-export const EVENT_PARTICIPATION_SLOT_DEBOUNCED_FIELDS: FieldList<EventParticipationSlot> = ["answer_text"];
+export const EVENT_PARTICIPATION_SLOT_DEBOUNCED_FIELDS: FieldList<EventParticipationSlot> =
+	["answer_text"];
 
-export const exerciseTypeOptions: SelectableOption[] = (Object.keys(ExerciseType) as unknown[] as ExerciseType[])
+export const exerciseTypeOptions: SelectableOption[] = (
+	Object.keys(ExerciseType) as unknown[] as ExerciseType[]
+)
 	.filter((key: string | number) => parseInt(key as string) == key)
 	.map(key => ({
 		icons: exerciseTypesIcons[key],
@@ -55,7 +63,9 @@ export const exerciseTypeOptions: SelectableOption[] = (Object.keys(ExerciseType
 		content: _("exercise_types." + key),
 	}));
 
-export const exerciseStateOptions: SelectableOption[] = (Object.keys(ExerciseState) as unknown[] as ExerciseState[])
+export const exerciseStateOptions: SelectableOption[] = (
+	Object.keys(ExerciseState) as unknown[] as ExerciseState[]
+)
 	.filter((key: string | number) => parseInt(key as string) == key)
 	.map(key => ({
 		icons: exerciseStatesIcons[key],
@@ -256,7 +266,9 @@ export const getEventParticipationMonitorHeaders = (
 						headerName: _("event_participation_headings.state"),
 						cellRenderer: (params: any) =>
 							`<span class="${
-								params.value == ParticipationAssessmentProgress.PARTIALLY_ASSESSED ? "text-yellow-900" : "text-success"
+								params.value == ParticipationAssessmentProgress.PARTIALLY_ASSESSED
+									? "text-yellow-900"
+									: "text-success"
 							} pt-2 ml-1 text-lg material-icons-outlined">${
 								assessmentStateIcons[params.value as ParticipationAssessmentProgress]
 							}</span>`,
@@ -270,9 +282,13 @@ export const getEventParticipationMonitorHeaders = (
 						width: 90,
 						headerName: _("event_participation_headings.participation_state"),
 						cellRenderer: (params: any) =>
-							`<div title="${_("event_participation_states." + params.value)}" class=" ag-selectable-cell">
+							`<div title="${_(
+								"event_participation_states." + params.value,
+							)}" class=" ag-selectable-cell">
                   <span  class="mx-auto ${
-										params.value == EventParticipationState.IN_PROGRESS ? "text-muted" : "text-success"
+										params.value == EventParticipationState.IN_PROGRESS
+											? "text-muted"
+											: "text-success"
 									} text-lg material-icons-outlined">${
 								participationStateIcons[params.value as EventParticipationState]
 							}</span></div>`,
@@ -296,7 +312,10 @@ export const getEventParticipationMonitorHeaders = (
 			width: 90,
 			type: "numericColumn",
 			field: "slot-" + ((s.slot_number as number) + 1),
-			headerName: _("event_participation_headings.exercise") + " " + ((s.slot_number as number) + 1),
+			headerName:
+				_("event_participation_headings.exercise") +
+				" " +
+				((s.slot_number as number) + 1),
 			cellRenderer: renderEventParticipationSlotCell(resultsMode),
 		}),
 	);
@@ -312,9 +331,16 @@ const renderEventParticipationSlotCell = (resultsMode: boolean) => (params: any)
 	`<span class="mx-auto ${
 		resultsMode
 			? params.value.score ?? "text-lg text-yellow-900 material-icons-outlined"
-			: "material-icons text-lg " + (params.value.has_answer ? "text-success opacity-80" : "text-muted opacity-50")
+			: "material-icons text-lg " +
+			  (params.value.has_answer ? "text-success opacity-80" : "text-muted opacity-50")
 	}">
-                  ${resultsMode ? params.value.score ?? "pending_actions" : params.value.has_answer ? "done" : "remove"}
+                  ${
+										resultsMode
+											? params.value.score ?? "pending_actions"
+											: params.value.has_answer
+											? "done"
+											: "remove"
+									}
                 </span>` +
 	`</div>`;
 

@@ -24,7 +24,10 @@
 					class="transition-colors duration-100 cursor-pointer card card-border"
 				>
 					<div class="flex">
-						<img class="mx-auto pointer-events-none select-none w-18" :src="format.description" />
+						<img
+							class="mx-auto pointer-events-none select-none w-18"
+							:src="format.description"
+						/>
 					</div>
 					<div class="flex mt-4">
 						<p class="mx-auto select-none">{{ format.content }}</p>
@@ -79,8 +82,15 @@
 				</div>
 
 				<div class="grid grid-cols-2 gap-4">
-					<div v-for="(exercise, index) in exercises" :key="'imported-exercise-' + index" class="">
-						<MinimalExercisePreview :selectable="false" :exercise="exercise"></MinimalExercisePreview>
+					<div
+						v-for="(exercise, index) in exercises"
+						:key="'imported-exercise-' + index"
+						class=""
+					>
+						<MinimalExercisePreview
+							:selectable="false"
+							:exercise="exercise"
+						></MinimalExercisePreview>
 					</div>
 				</div>
 			</div>
@@ -176,7 +186,9 @@ export default defineComponent({
 			return [
 				{
 					value: DataFormat.MOODLE_XML,
-					content: getTranslatedString("exercise_import.formats." + DataFormat.MOODLE_XML),
+					content: getTranslatedString(
+						"exercise_import.formats." + DataFormat.MOODLE_XML,
+					),
 					description: this.getImageUrl("icons/moodle.png"),
 				},
 				{

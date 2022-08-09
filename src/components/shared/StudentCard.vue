@@ -4,9 +4,19 @@
 			<div class="flex items-center w-full">
 				<span class="material-icons-outlined text-lg icon-light -ml-0.5">person</span>
 				<p class="ml-1.5">{{ user.full_name }}</p>
-				<Btn class="ml-auto" :outline="true" :variant="'icon'" @click="expanded = !expanded"
+				<Btn
+					class="ml-auto"
+					:outline="true"
+					:variant="'icon'"
+					@click="expanded = !expanded"
 					><span
-						class="transition-transform duration-200 ease-out transform material-icons-outlined"
+						class="
+							transition-transform
+							duration-200
+							ease-out
+							transform
+							material-icons-outlined
+						"
 						:class="{ 'rotate-180': expanded }"
 					>
 						{{ false && expanded ? "expand_less" : "expand_more" }}
@@ -28,7 +38,11 @@
 				}"
 			>
 				<SkeletonCard :border-less="true" class="-ml-4" v-if="fetching"></SkeletonCard>
-				<Timeline v-else :steps="processedHistory" v-slot="{ timestamp, eventType, data }">
+				<Timeline
+					v-else
+					:steps="processedHistory"
+					v-slot="{ timestamp, eventType, data }"
+				>
 					<div class="text-sm text-muted">
 						<Timestamp :value="timestamp"></Timestamp>
 					</div>
@@ -44,7 +58,9 @@
 							}"
 						>
 							<Btn :outline="true" :variant="'icon'"
-								><span style="font-size: 18px !important" class="material-icons-outlined">launch</span></Btn
+								><span style="font-size: 18px !important" class="material-icons-outlined"
+									>launch</span
+								></Btn
 							>
 						</router-link>
 					</div>
@@ -78,7 +94,10 @@ export default defineComponent({
 			if (newVal && this.participationHistory.length === 0) {
 				this.fetching = true;
 				try {
-					this.participationHistory = await getUserCourseParticipations(this.courseId, this.user.id);
+					this.participationHistory = await getUserCourseParticipations(
+						this.courseId,
+						this.user.id,
+					);
 				} catch (e) {
 					this.setErrorNotification(e);
 				} finally {
@@ -106,7 +125,8 @@ export default defineComponent({
 						id: p.id,
 						name: p.event.name,
 						examId: p.event.id,
-						class: p.event.event_type === EventType.SELF_SERVICE_PRACTICE ? "opacity-50" : "",
+						class:
+							p.event.event_type === EventType.SELF_SERVICE_PRACTICE ? "opacity-50" : "",
 					},
 				}))
 				.sort((a, b) => (new Date(a.timestamp) < new Date(b.timestamp) ? -1 : 1));

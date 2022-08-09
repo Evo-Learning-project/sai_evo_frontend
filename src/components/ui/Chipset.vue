@@ -3,7 +3,15 @@
 		<div v-for="(option, index) in options" :key="'chipset-' + id + '-option-' + index">
 			<Tooltip :textValue="option.description" :noArrow="true" :placement="'bottom'">
 				<div
-					class="font-normal transition-colors duration-75 ease-linear cursor-pointer chip hover:bg-gray-200"
+					class="
+						font-normal
+						transition-colors
+						duration-75
+						ease-linear
+						cursor-pointer
+						chip
+						hover:bg-gray-200
+					"
 					:class="{
 						'chip-primary': modelValue.includes(option.value),
 						'opacity-50 bg-gray-50': option.disabled,
@@ -19,8 +27,15 @@
 						:id="'chipset-' + id + '-option-' + index"
 						:value="option.value"
 					/>
-					<label class="flex items-center cursor-pointer" :for="'chipset-' + id + '-option-' + index">
-						<MultiIcon v-if="option.icons" class="w-6 mr-2 -ml-1" :icons="option.icons"></MultiIcon>
+					<label
+						class="flex items-center cursor-pointer"
+						:for="'chipset-' + id + '-option-' + index"
+					>
+						<MultiIcon
+							v-if="option.icons"
+							class="w-6 mr-2 -ml-1"
+							:icons="option.icons"
+						></MultiIcon>
 						<p v-html="option.content"></p>
 						<div class="" v-if="$slots.default">
 							<slot v-bind:optionValue="option.value"></slot>
@@ -68,7 +83,10 @@ export default defineComponent({
 				return this.modelValue;
 			},
 			set(val: unknown) {
-				this.$emit("update:modelValue", this.allowMultiple ? val : val === this.modelValue?.[0] ? [] : [val]);
+				this.$emit(
+					"update:modelValue",
+					this.allowMultiple ? val : val === this.modelValue?.[0] ? [] : [val],
+				);
 			},
 		},
 	},

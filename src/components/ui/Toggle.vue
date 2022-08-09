@@ -90,7 +90,15 @@
 			<label
 				style="z-index: 2"
 				:for="overrideId || id"
-				class="relative block overflow-hidden bg-gray-400 rounded-full cursor-pointer toggle-rail toggle-label"
+				class="
+					relative
+					block
+					overflow-hidden
+					bg-gray-400
+					rounded-full
+					cursor-pointer
+					toggle-rail toggle-label
+				"
 			></label>
 		</div>
 		<label :for="id" v-if="$slots.default">

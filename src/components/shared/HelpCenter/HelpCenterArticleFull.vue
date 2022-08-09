@@ -1,7 +1,11 @@
 <template>
 	<div>
 		<div class="flex items-center space-x-2">
-			<Btn @click="$emit('back')" :outline="true" :variant="'icon'" :tooltip="$t('misc.back')"
+			<Btn
+				@click="$emit('back')"
+				:outline="true"
+				:variant="'icon'"
+				:tooltip="$t('misc.back')"
 				><span class="material-icons-outlined"> arrow_back </span></Btn
 			>
 			<h3 class="mb-0">{{ article.title }}</h3>

@@ -1,4 +1,10 @@
-import { EventAccessRule, EventTimeLimitRule, ExerciseSolutionState, ExerciseTestCaseType, VoteType } from "./types";
+import {
+	EventAccessRule,
+	EventTimeLimitRule,
+	ExerciseSolutionState,
+	ExerciseTestCaseType,
+	VoteType,
+} from "./types";
 import {
 	EventState,
 	EventType,
@@ -215,7 +221,9 @@ export interface EventParticipationSlotAssessment {
 	assessment_state?: AssessmentSlotState;
 }
 
-export interface EventParticipationSlot extends EventParticipationSlotSubmission, EventParticipationSlotAssessment {
+export interface EventParticipationSlot
+	extends EventParticipationSlotSubmission,
+		EventParticipationSlotAssessment {
 	id: string;
 	slot_number?: number;
 	exercise: Exercise; // TODO make optional

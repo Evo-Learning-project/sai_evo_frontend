@@ -1,6 +1,10 @@
 <template>
 	<div class="items-center user-content">
-		<span v-for="(unit, index) in clozeUnits" :key="exercise.id + '-unit-' + index" class="">
+		<span
+			v-for="(unit, index) in clozeUnits"
+			:key="exercise.id + '-unit-' + index"
+			class=""
+		>
 			<span v-html="unit.text" class=""></span>
 			<select
 				:disabled="showScores"
@@ -22,7 +26,11 @@
 			<span
 				v-if="showScores && slot.sub_slots[index]"
 				class="ml-2 text-base material-icons-outlined"
-				:class="[false && slot.sub_slots[index]?.selected_choices[0] ? 'text-success' : 'text-danger-dark']"
+				:class="[
+					false && slot.sub_slots[index]?.selected_choices[0]
+						? 'text-success'
+						: 'text-danger-dark',
+				]"
 			>
 				{{ false && slot.sub_slots[index]?.selected_choices[0] ? "done" : "close" }}
 			</span>
@@ -87,7 +95,8 @@ export default defineComponent({
 			return tokens.map((t, i) => ({
 				subSlot: this.slot.sub_slots[i],
 				text: this.transformUnitText(t),
-				choices: (this.exercise.sub_exercises as Exercise[])[i]?.choices as ExerciseChoice[],
+				choices: (this.exercise.sub_exercises as Exercise[])[i]
+					?.choices as ExerciseChoice[],
 			}));
 		},
 	},

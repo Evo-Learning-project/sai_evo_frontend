@@ -20,7 +20,9 @@
 					</div>
 					<div class="flex items-center mt-8 space-x-3">
 						<span class="opacity-0 material-icons-outlined"> school </span>
-						<NumberInput class="w-96 text-darkText" v-model="dirtyMat">{{ $t("student_data.your_mat") }} </NumberInput>
+						<NumberInput class="w-96 text-darkText" v-model="dirtyMat"
+							>{{ $t("student_data.your_mat") }}
+						</NumberInput>
 						<Btn
 							:variant="'primary'"
 							:loading="localLoading"
@@ -50,16 +52,25 @@
 			<CourseListItemSkeleton></CourseListItemSkeleton>
 			<CourseListItemSkeleton></CourseListItemSkeleton>
 		</div>
-		<div class="flex flex-col w-full text-center select-none mt-28" v-if="!firstLoading && courses.length === 0">
-			<span style="font-size: 5rem" class="mr-auto material-icons-outlined opacity-10"> west </span>
-			<p style="font-size: 10rem" class="-mt-12 material-icons-outlined opacity-10">book</p>
+		<div
+			class="flex flex-col w-full text-center select-none mt-28"
+			v-if="!firstLoading && courses.length === 0"
+		>
+			<span style="font-size: 5rem" class="mr-auto material-icons-outlined opacity-10">
+				west
+			</span>
+			<p style="font-size: 10rem" class="-mt-12 material-icons-outlined opacity-10">
+				book
+			</p>
 			<h2 class="opacity-40">{{ $t("course_list.no_courses") }}</h2>
 		</div>
 		<div
 			class="flex flex-col w-full text-center select-none mt-28"
 			v-if="!firstLoading && courses.length > 0 && coursesFiltered.length === 0"
 		>
-			<p style="font-size: 10rem" class="-mt-12 material-icons-outlined opacity-10">search_off</p>
+			<p style="font-size: 10rem" class="-mt-12 material-icons-outlined opacity-10">
+				search_off
+			</p>
 			<h2 class="opacity-40">
 				{{ $t("course_list.no_courses_with_filters") }}
 			</h2>
@@ -126,7 +137,8 @@ export default defineComponent({
 			const filters = this.searchFilters;
 			return this.coursesSorted.filter(
 				c =>
-					(filters.name.length === 0 || c.name.toLowerCase().includes(filters.name.toLowerCase())) &&
+					(filters.name.length === 0 ||
+						c.name.toLowerCase().includes(filters.name.toLowerCase())) &&
 					(!filters.withPrivileges || (c.privileges?.length ?? 0) > 0) &&
 					(filters.hidden || !c.hidden),
 			);

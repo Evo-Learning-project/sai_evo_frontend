@@ -46,7 +46,11 @@ export const getDebouncedForFilter = (callback: any) =>
 		maxWait: SEARCH_DEBOUNCE_MAX_WAIT_MS,
 	});
 
-export const getFormattedTimestamp = (timestamp: string, dateOnly = false, reduced = false): string => {
+export const getFormattedTimestamp = (
+	timestamp: string,
+	dateOnly = false,
+	reduced = false,
+): string => {
 	moment().locale("it");
 	return (
 		moment(timestamp)
@@ -116,7 +120,9 @@ export const formatExerciseText = (text: string): string => {
 };
 
 export const getExerciseTitle = (exercise: Exercise): string =>
-	(exercise?.label ?? "").trim().length > 0 ? (exercise.label as string) : _("exercise_preview.unnamed_exercise");
+	(exercise?.label ?? "").trim().length > 0
+		? (exercise.label as string)
+		: _("exercise_preview.unnamed_exercise");
 
 export const getClonedExercise = (exercise: Exercise): Exercise => ({
 	...exercise,
@@ -124,7 +130,10 @@ export const getClonedExercise = (exercise: Exercise): Exercise => ({
 	state: ExerciseState.DRAFT,
 });
 
-export const csvToArray = (str: string, headerLineBeginning: string): Record<string, any>[] => {
+export const csvToArray = (
+	str: string,
+	headerLineBeginning: string,
+): Record<string, any>[] => {
 	const delimiter = ";"; // TODO find delimiter in string
 
 	// remove part of the string that comes before the header line
@@ -156,7 +165,10 @@ export const csvToArray = (str: string, headerLineBeginning: string): Record<str
 	return arr;
 };
 
-export const getParticipationRemainingTime = (participation: EventParticipation, event: Event): number | null => {
+export const getParticipationRemainingTime = (
+	participation: EventParticipation,
+	event: Event,
+): number | null => {
 	if (event.time_limit_seconds === null) {
 		return null;
 	}
@@ -201,4 +213,5 @@ export const clickOutsideDirective = {
 	},
 };
 
-export const roundToTwoDecimals = (num: number) => Math.round((num + Number.EPSILON) * 100) / 100;
+export const roundToTwoDecimals = (num: number) =>
+	Math.round((num + Number.EPSILON) * 100) / 100;

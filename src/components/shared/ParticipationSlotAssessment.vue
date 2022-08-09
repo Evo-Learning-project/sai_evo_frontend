@@ -20,7 +20,8 @@
 					<span class="mr-1"><slot name="scoreTitle"></slot></span>
 					<strong class="text-lg">{{ assessment.score }}</strong>
 					<span v-if="maxScore"
-						>&nbsp;{{ $t("misc.out_of") }} <strong class="text-lg"> {{ maxScore ?? 0 }}</strong></span
+						>&nbsp;{{ $t("misc.out_of") }}
+						<strong class="text-lg"> {{ maxScore ?? 0 }}</strong></span
 					>
 				</p>
 				<p class="text-muted" v-else>
@@ -52,7 +53,11 @@
 			<!-- teacher comment -->
 			<div class="transition-opacity duration-100">
 				<p v-if="(assessment.comment?.length ?? 0) > 0" class="mt-2 text-muted">
-					{{ !readOnly ? $t("event_assessment.comment_for_student") : $t("misc.teacher_comment") }}:
+					{{
+						!readOnly
+							? $t("event_assessment.comment_for_student")
+							: $t("misc.teacher_comment")
+					}}:
 				</p>
 				<p v-html="assessment.comment"></p>
 			</div>
@@ -65,7 +70,13 @@
 				'max-h-0': !expanded,
 				'max-h-96': expanded,
 			}"
-			class="flex flex-col overflow-y-hidden duration-200 ease-in-out transition-max-height"
+			class="
+				flex flex-col
+				overflow-y-hidden
+				duration-200
+				ease-in-out
+				transition-max-height
+			"
 		>
 			<div
 				:class="{
@@ -84,7 +95,9 @@
 					>{{ $t("event_assessment.assigned_score") }}
 					<template #rightHint>/{{ maxScore ?? 0 }}</template>
 				</NumberInput>
-				<TextEditor class="w-full" v-model="commentProxy">{{ $t("event_assessment.comment_for_student") }}</TextEditor>
+				<TextEditor class="w-full" v-model="commentProxy">{{
+					$t("event_assessment.comment_for_student")
+				}}</TextEditor>
 			</div>
 
 			<!-- buttons to save or discard changes -->
@@ -99,7 +112,12 @@
 				>
 					{{ $t("event_assessment.confirm_assessment") }}
 				</Btn>
-				<Btn :outline="true" :disabled="loading" :variant="'primary'" @click="onHideAssessmentControls()">
+				<Btn
+					:outline="true"
+					:disabled="loading"
+					:variant="'primary'"
+					@click="onHideAssessmentControls()"
+				>
 					{{ $t("dialog.default_cancel_text") }}
 				</Btn>
 			</div>

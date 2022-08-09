@@ -27,8 +27,12 @@ export default defineComponent({
 	setup(props) {
 		const { width, height } = toRefs(props);
 		const style = computed(() => {
-			const fixedWidth = width.value.toString().includes("%") ? width.value : `${width.value}px`;
-			const fixedHeight = height.value.toString().includes("%") ? height.value : `${height.value}px`;
+			const fixedWidth = width.value.toString().includes("%")
+				? width.value
+				: `${width.value}px`;
+			const fixedHeight = height.value.toString().includes("%")
+				? height.value
+				: `${height.value}px`;
 			return {
 				width: fixedWidth,
 				height: fixedHeight,
@@ -49,12 +53,15 @@ export default defineComponent({
 		initMonaco() {
 			this.$emit("editorWillMount", this.monaco);
 			const { value, language, theme, options } = this;
-			this.editor = monaco.editor[this.diffEditor ? "createDiffEditor" : "create"](this.$el, {
-				value: value,
-				language: language,
-				theme: theme,
-				...options,
-			});
+			this.editor = monaco.editor[this.diffEditor ? "createDiffEditor" : "create"](
+				this.$el,
+				{
+					value: value,
+					language: language,
+					theme: theme,
+					...options,
+				},
+			);
 			this.diffEditor && this._setModel(this.value, this.original);
 			// @event `change`
 			const editor = this._getEditor();

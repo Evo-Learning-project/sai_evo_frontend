@@ -19,10 +19,12 @@ import { MutationPayload, TeacherState } from "../types";
 import { getters } from "./getters";
 
 export const mutations = {
-	setExercises: (state: TeacherState, exercises: Exercise[]) => (state.exercises = exercises),
+	setExercises: (state: TeacherState, exercises: Exercise[]) =>
+		(state.exercises = exercises),
 	deleteBaseExercise: (state: TeacherState, exerciseId: string) =>
 		(state.exercises = state.exercises.filter(e => e.id != exerciseId)),
-	setCurrentExercisePage: (state: TeacherState, pageNumber: number) => (state.currentExercisePage = pageNumber),
+	setCurrentExercisePage: (state: TeacherState, pageNumber: number) =>
+		(state.currentExercisePage = pageNumber),
 	setEvents: (state: TeacherState, events: Event[]) => (state.events = events),
 	// sets the array of participations to the event currently being watched
 	setEventParticipations: (state: TeacherState, participations: EventParticipation[]) =>
@@ -53,7 +55,9 @@ export const mutations = {
 	// updates the in-memory participation that has the same id as the
 	// one in the payload with the given payload
 	setEventParticipation: (state: TeacherState, participation: EventParticipation) => {
-		const target = state.eventParticipations.find((p: EventParticipation) => p.id == participation.id);
+		const target = state.eventParticipations.find(
+			(p: EventParticipation) => p.id == participation.id,
+		);
 		if (target) {
 			Object.assign(target, participation);
 		} else {
@@ -94,9 +98,9 @@ export const mutations = {
 		const childrenName = exerciseChildrenNames[childType];
 		const children = (targetExercise as Exercise | undefined)?.[childrenName];
 		if (children) {
-			const targetChildIndex = (children as (ExerciseChoice | Exercise | ExerciseTestCase)[]).findIndex(
-				c => c.id == childId,
-			);
+			const targetChildIndex = (
+				children as (ExerciseChoice | Exercise | ExerciseTestCase)[]
+			).findIndex(c => c.id == childId);
 			children.splice(targetChildIndex, 1);
 		} else {
 			console.error("removeExerciseChild didn't find", exerciseId, childType, childId);
@@ -115,9 +119,9 @@ export const mutations = {
 		const childrenName = exerciseChildrenNames[childType as exerciseChildName];
 		const children = (targetExercise as Exercise | undefined)?.[childrenName];
 		if (children) {
-			const target = (children as (ExerciseChoice | Exercise | ExerciseTestCase | ExerciseSolution)[]).find(
-				c => c.id == payload.id,
-			);
+			const target = (
+				children as (ExerciseChoice | Exercise | ExerciseTestCase | ExerciseSolution)[]
+			).find(c => c.id == payload.id);
 			if (target) {
 				// update child
 				Object.assign(target, payload);
@@ -132,7 +136,11 @@ export const mutations = {
 	// updates the list of elements related to an exercise (choices, sub-exercises, etc.)
 	setExerciseChildren: (
 		state: TeacherState,
-		{ exerciseId, children, payload }: MutationPayload<ExerciseChoice[] | Exercise[] | ExerciseTestCase[]>,
+		{
+			exerciseId,
+			children,
+			payload,
+		}: MutationPayload<ExerciseChoice[] | Exercise[] | ExerciseTestCase[]>,
 	) => {
 		const target = getters.exercise(state)(exerciseId as string) as Exercise | undefined;
 		if (target && children) {
@@ -147,7 +155,9 @@ export const mutations = {
 	) => {
 		const targetTemplate = state.events.find(e => e.template?.id == templateId);
 		if (targetTemplate) {
-			const targetRule = (targetTemplate.template as EventTemplate).rules.find(r => r.id == ruleId);
+			const targetRule = (targetTemplate.template as EventTemplate).rules.find(
+				r => r.id == ruleId,
+			);
 			Object.assign(targetRule, { ...targetRule, ...payload });
 		} else {
 			console.error("patchEventTemplateRule didn't find", ruleId);
@@ -155,7 +165,12 @@ export const mutations = {
 	},
 	patchEventTemplateRuleClause: (
 		state: TeacherState,
-		{ templateId, ruleId, clauseId, payload }: MutationPayload<Partial<EventTemplateRuleClause>>,
+		{
+			templateId,
+			ruleId,
+			clauseId,
+			payload,
+		}: MutationPayload<Partial<EventTemplateRuleClause>>,
 	) => {
 		const target = state.events
 			.find((e: Event) => e.template?.id == templateId)
@@ -164,10 +179,18 @@ export const mutations = {
 		if (target) {
 			Object.assign(target, { ...target, ...payload });
 		} else {
-			console.error("patchEventTemplateRuleClause didn't find", templateId, ruleId, clauseId);
+			console.error(
+				"patchEventTemplateRuleClause didn't find",
+				templateId,
+				ruleId,
+				clauseId,
+			);
 		}
 	},
-	setEventTemplateRules: (state: TeacherState, { templateId, payload }: MutationPayload<EventTemplateRule[]>) => {
+	setEventTemplateRules: (
+		state: TeacherState,
+		{ templateId, payload }: MutationPayload<EventTemplateRule[]>,
+	) => {
 		const target = state.events.find(e => e.template?.id == templateId);
 		if (target) {
 			(target.template as EventTemplate).rules = payload;
@@ -175,17 +198,26 @@ export const mutations = {
 			console.error("setEventTemplateRules didn't find", payload);
 		}
 	},
-	removeEventTemplateRule: (state: TeacherState, { templateId, ruleId }: { templateId: string; ruleId: string }) => {
+	removeEventTemplateRule: (
+		state: TeacherState,
+		{ templateId, ruleId }: { templateId: string; ruleId: string },
+	) => {
 		const target = state.events.find(e => e.template?.id == templateId);
 		if (target) {
-			(target.template as EventTemplate).rules = (target.template as EventTemplate).rules.filter(r => r.id != ruleId);
+			(target.template as EventTemplate).rules = (
+				target.template as EventTemplate
+			).rules.filter(r => r.id != ruleId);
 		} else {
 			console.error("removeEventTemplateRule didn't find", templateId);
 		}
 	},
 	removeEventTemplateRuleClause: (
 		state: TeacherState,
-		{ templateId, ruleId, clauseId }: { templateId: string; ruleId: string; clauseId: string },
+		{
+			templateId,
+			ruleId,
+			clauseId,
+		}: { templateId: string; ruleId: string; clauseId: string },
 	) => {
 		const event = state.events.find(e => e.template?.id == templateId);
 		const target = event?.template?.rules.find(r => r.id == ruleId);

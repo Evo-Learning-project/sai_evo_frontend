@@ -6,7 +6,11 @@
 			</div>
 			<!-- exercise text pane -->
 			<div class="relative">
-				<DraggablePopup @close="showPopup = false" v-show="showPopup" :title="$t('programming_exercise.tab_text')">
+				<DraggablePopup
+					@close="showPopup = false"
+					v-show="showPopup"
+					:title="$t('programming_exercise.tab_text')"
+				>
 					<div class="user-content" v-html="exercise.text"></div>
 				</DraggablePopup>
 
@@ -24,7 +28,10 @@
 						:tooltip="$t('programming_exercise.open_text_popup')"
 					>
 						<svg style="width: 26px; height: 26px" viewBox="0 0 24 24">
-							<path fill="currentColor" d="M4,8H8V4H20V16H16V20H4V8M16,8V14H18V6H10V8H16M6,12V18H14V12H6Z" />
+							<path
+								fill="currentColor"
+								d="M4,8H8V4H20V16H16V20H4V8M16,8V14H18V6H10V8H16M6,12V18H14V12H6Z"
+							/>
 						</svg>
 					</Btn>
 				</div>
@@ -33,7 +40,11 @@
 
 			<!-- test cases pane -->
 			<div v-show="currentTab === ProgrammingExerciseTabs.TEST_CASES">
-				<div class="my-8" v-for="(testcase, index) in exercise.testcases" :key="'t-' + testcase.id">
+				<div
+					class="my-8"
+					v-for="(testcase, index) in exercise.testcases"
+					:key="'t-' + testcase.id"
+				>
 					<h4 class="mb-1">
 						{{ $t("programming_exercise.testcase") }} {{ index + 1 }}
 						<span
@@ -67,7 +78,9 @@
 					<template v-slot:runButton
 						><span class="ml-1 mr-1 text-base material-icons"> play_arrow </span
 						>{{ $t("programming_exercise.run_code") }}
-						<span class="opacity-50" v-if="runCoolDown > 0">&nbsp;({{ runCoolDown }})</span>
+						<span class="opacity-50" v-if="runCoolDown > 0"
+							>&nbsp;({{ runCoolDown }})</span
+						>
 						<span v-if="runCoolDown < 10" class="opacity-0">0</span></template
 					>
 					<template v-slot:sidePaneTitle
@@ -85,7 +98,9 @@
 							:testCases="exercise.testcases"
 						></CodeExecutionResults>
 						<div class="flex flex-col" v-else>
-							<span class="mx-auto mt-24 opacity-30 text-8xl material-icons-outlined"> code </span>
+							<span class="mx-auto mt-24 opacity-30 text-8xl material-icons-outlined">
+								code
+							</span>
 							<p class="px-4 mx-auto select-none text-muted">
 								{{ $t("programming_exercise.code_execution_will_appear_here") }}
 							</p>
@@ -158,7 +173,12 @@
 const RUN_COOL_DOWN = 3;
 
 import { programmingExerciseTabsOptions, ProgrammingExerciseTabs } from "@/const";
-import { EventParticipationSlotSubmission, Exercise, ExerciseType, getEmptySubmission } from "@/models";
+import {
+	EventParticipationSlotSubmission,
+	Exercise,
+	ExerciseType,
+	getEmptySubmission,
+} from "@/models";
 import { defineComponent, PropType } from "@vue/runtime-core";
 import { loadingMixin, texMixin } from "@/mixins";
 import { SelectableOption } from "@/interfaces";

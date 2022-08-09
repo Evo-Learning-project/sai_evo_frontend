@@ -57,9 +57,11 @@ export default defineComponent({
 			const el = this.element as HTMLElement;
 
 			const isScrollable =
-				el.scrollWidth > el.clientWidth && ["scroll", "auto"].indexOf(getComputedStyle(el).overflowX) >= 0;
+				el.scrollWidth > el.clientWidth &&
+				["scroll", "auto"].indexOf(getComputedStyle(el).overflowX) >= 0;
 
-			this.toEndX = !isScrollable || -(el.scrollLeft + el.clientWidth) + el.scrollWidth <= 1;
+			this.toEndX =
+				!isScrollable || -(el.scrollLeft + el.clientWidth) + el.scrollWidth <= 1;
 			this.toBeginX = el.scrollLeft === 0;
 		},
 	},
@@ -69,7 +71,11 @@ export default defineComponent({
 
 <style>
 .faded-right:after {
-	background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1) 90%);
+	background: linear-gradient(
+		to right,
+		rgba(255, 255, 255, 0),
+		rgba(255, 255, 255, 1) 90%
+	);
 	content: "";
 	position: absolute;
 	z-index: 11;
@@ -81,7 +87,11 @@ export default defineComponent({
 }
 
 .faded-left:before {
-	background: linear-gradient(to left, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1) 90%);
+	background: linear-gradient(
+		to left,
+		rgba(255, 255, 255, 0),
+		rgba(255, 255, 255, 1) 90%
+	);
 	content: "";
 	position: absolute;
 	top: 0;
@@ -93,9 +103,17 @@ export default defineComponent({
 }
 
 .card-filled .faded-right:after {
-	background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(243, 244, 246, 1) 90%);
+	background: linear-gradient(
+		to right,
+		rgba(255, 255, 255, 0),
+		rgba(243, 244, 246, 1) 90%
+	);
 }
 .card-filled .faded-left:before {
-	background: linear-gradient(to left, rgba(255, 255, 255, 0), rgba(243, 244, 246, 1) 90%);
+	background: linear-gradient(
+		to left,
+		rgba(255, 255, 255, 0),
+		rgba(243, 244, 246, 1) 90%
+	);
 }
 </style>

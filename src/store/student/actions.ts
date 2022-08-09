@@ -36,6 +36,7 @@ import { StudentState } from "../types";
 import {
 	createExerciseSolution,
 	createExerciseSolutionComment,
+	getExercisesById,
 	setExerciseSolutionBookmark,
 	voteExerciseSolution,
 } from "@/api/exercises";
@@ -72,7 +73,10 @@ export const actions = {
 		);
 		commit("setEventParticipationSlots", [slot]);
 	},
-	getEvent: async ({ commit }: { commit: Commit }, { courseId, eventId }: { courseId: string; eventId: string }) => {
+	getEvent: async (
+		{ commit }: { commit: Commit },
+		{ courseId, eventId }: { courseId: string; eventId: string },
+	) => {
 		/**
 		 * Gets an event in detail mode
 		 *
@@ -130,12 +134,19 @@ export const actions = {
 	},
 	getEventParticipation: async (
 		{ commit }: { commit: Commit },
-		{ courseId, eventId, participationId }: { courseId: string; eventId: string; participationId: string },
+		{
+			courseId,
+			eventId,
+			participationId,
+		}: { courseId: string; eventId: string; participationId: string },
 	) => {
 		const participation = await getEventParticipation(courseId, eventId, participationId);
 		commit("setCurrentEventParticipation", participation);
 	},
-	getPracticeEventParticipations: async ({ commit }: { commit: Commit }, { courseId }: { courseId: string }) => {
+	getPracticeEventParticipations: async (
+		{ commit }: { commit: Commit },
+		{ courseId }: { courseId: string },
+	) => {
 		const participations = await getCourseEventParticipations(courseId, true, true);
 		commit("setEventParticipations", participations);
 	},
@@ -185,7 +196,12 @@ export const actions = {
 			slotId: string;
 		},
 	) => {
-		const response = await runEventParticipationSlotCode(courseId, eventId, participationId, slotId);
+		const response = await runEventParticipationSlotCode(
+			courseId,
+			eventId,
+			participationId,
+			slotId,
+		);
 		commit("setCurrentEventParticipationSlot", response);
 		//    commit("patchCurrentEventParticipationSlot", { slotId, changes: response });
 		return response;
@@ -223,7 +239,12 @@ export const actions = {
 			changes: Partial<EventTemplateRule>;
 		},
 	) => {
-		const updatedRule = await partialUpdateEventTemplateRule(courseId, templateId, ruleId, changes);
+		const updatedRule = await partialUpdateEventTemplateRule(
+			courseId,
+			templateId,
+			ruleId,
+			changes,
+		);
 		return updatedRule;
 	},
 	addEventTemplateRuleClause: async (
@@ -240,7 +261,12 @@ export const actions = {
 			clause: EventTemplateRuleClause;
 		},
 	) => {
-		const newClause = await createEventTemplateRuleClause(courseId, templateId, ruleId, clause);
+		const newClause = await createEventTemplateRuleClause(
+			courseId,
+			templateId,
+			ruleId,
+			clause,
+		);
 		commit("setEditingEventTemplateRuleClause", {
 			ruleId,
 			payload: newClause,
@@ -261,7 +287,12 @@ export const actions = {
 			clause: EventTemplateRuleClause;
 		},
 	) => {
-		const updatedClause = await updateEventTemplateRuleClause(courseId, templateId, ruleId, clause);
+		const updatedClause = await updateEventTemplateRuleClause(
+			courseId,
+			templateId,
+			ruleId,
+			clause,
+		);
 		return updatedClause;
 	},
 	addExerciseSolution: async (
@@ -277,13 +308,18 @@ export const actions = {
 		},
 	) => {
 		const newSolution = await createExerciseSolution(courseId, exerciseId, solution);
-		const exercise: Exercise | undefined = getters.exercises.find((e: Exercise) => e.id == exerciseId);
+		const exercise: Exercise | undefined = getters.exercises.find(
+			(e: Exercise) => e.id == exerciseId,
+		);
 
 		if (!exercise) {
 			throw new Error("addExerciseSolution couldn't find exercise with id " + exerciseId);
 		}
 		if (!exercise.solutions) {
-			throw new Error("addExerciseSolution couldn't find field solutions for exercise " + JSON.stringify(exercise));
+			throw new Error(
+				"addExerciseSolution couldn't find field solutions for exercise " +
+					JSON.stringify(exercise),
+			);
 		}
 		exercise.solutions.push(newSolution);
 		return newSolution;
@@ -302,11 +338,20 @@ export const actions = {
 			comment: ExerciseSolutionComment;
 		},
 	) => {
-		const newComment = await createExerciseSolutionComment(courseId, exerciseId, solutionId, comment);
-		const exercise: Exercise | undefined = getters.exercises.find((e: Exercise) => e.id == exerciseId);
+		const newComment = await createExerciseSolutionComment(
+			courseId,
+			exerciseId,
+			solutionId,
+			comment,
+		);
+		const exercise: Exercise | undefined = getters.exercises.find(
+			(e: Exercise) => e.id == exerciseId,
+		);
 
 		if (!exercise) {
-			throw new Error("addExerciseSolutionComment couldn't find exercise with id " + exerciseId);
+			throw new Error(
+				"addExerciseSolutionComment couldn't find exercise with id " + exerciseId,
+			);
 		}
 
 		const solution: ExerciseSolution | undefined = exercise.solutions?.find(
@@ -314,7 +359,9 @@ export const actions = {
 		);
 
 		if (!solution) {
-			throw new Error("addExerciseSolutionComment couldn't find solution with id " + solutionId);
+			throw new Error(
+				"addExerciseSolutionComment couldn't find solution with id " + solutionId,
+			);
 		}
 		solution.comments.push(newComment);
 	},
@@ -335,11 +382,20 @@ export const actions = {
 			vote: ExerciseSolutionVote | undefined;
 		},
 	) => {
-		const updatedSolution = await voteExerciseSolution(courseId, exerciseId, solutionId, vote);
-		const exercise: Exercise | undefined = getters.exercises.find((e: Exercise) => e.id == exerciseId);
+		const updatedSolution = await voteExerciseSolution(
+			courseId,
+			exerciseId,
+			solutionId,
+			vote,
+		);
+		const exercise: Exercise | undefined = getters.exercises.find(
+			(e: Exercise) => e.id == exerciseId,
+		);
 
 		if (!exercise) {
-			throw new Error("addExerciseSolutionComment couldn't find exercise with id " + exerciseId);
+			throw new Error(
+				"addExerciseSolutionComment couldn't find exercise with id " + exerciseId,
+			);
 		}
 
 		const solution: ExerciseSolution | undefined = exercise.solutions?.find(
@@ -347,7 +403,9 @@ export const actions = {
 		);
 
 		if (!solution) {
-			throw new Error("addExerciseSolutionComment couldn't find solution with id " + solutionId);
+			throw new Error(
+				"addExerciseSolutionComment couldn't find solution with id " + solutionId,
+			);
 		}
 		Object.assign(solution, updatedSolution);
 	},
@@ -369,11 +427,20 @@ export const actions = {
 			bookmarked: boolean;
 		},
 	) => {
-		const updatedSolution = await setExerciseSolutionBookmark(courseId, exerciseId, solutionId, bookmarked);
-		const exercise: Exercise | undefined = getters.exercises.find((e: Exercise) => e.id == exerciseId);
+		const updatedSolution = await setExerciseSolutionBookmark(
+			courseId,
+			exerciseId,
+			solutionId,
+			bookmarked,
+		);
+		const exercise: Exercise | undefined = getters.exercises.find(
+			(e: Exercise) => e.id == exerciseId,
+		);
 
 		if (!exercise) {
-			throw new Error("setExerciseSolutionBookmark couldn't find exercise with id " + exerciseId);
+			throw new Error(
+				"setExerciseSolutionBookmark couldn't find exercise with id " + exerciseId,
+			);
 		}
 
 		const solution: ExerciseSolution | undefined = exercise.solutions?.find(
@@ -381,8 +448,23 @@ export const actions = {
 		);
 
 		if (!solution) {
-			throw new Error("setExerciseSolutionBookmark couldn't find solution with id " + solutionId);
+			throw new Error(
+				"setExerciseSolutionBookmark couldn't find solution with id " + solutionId,
+			);
 		}
 		Object.assign(solution, updatedSolution);
+	},
+	getExercises: async (
+		{ state }: { state: StudentState },
+		{
+			courseId,
+			exerciseIds,
+		}: {
+			courseId: string;
+			exerciseIds: string[];
+		},
+	) => {
+		const exercises = await getExercisesById(courseId, exerciseIds);
+		state.exerciseThreads = exercises;
 	},
 };

@@ -8,16 +8,20 @@ export enum ExerciseValidationError {
 	NO_SUB_EXERCISES,
 }
 
-export const getExerciseValidationErrors = (exercise: Exercise): ExerciseValidationError[] => {
+export const getExerciseValidationErrors = (
+	exercise: Exercise,
+): ExerciseValidationError[] => {
 	const errors = [] as ExerciseValidationError[];
 
 	const et = ExerciseType;
 	const err = ExerciseValidationError;
 
 	if (
-		[et.OPEN_ANSWER, et.MULTIPLE_CHOICE_MULTIPLE_POSSIBLE, et.MULTIPLE_CHOICE_SINGLE_POSSIBLE].includes(
-			exercise.exercise_type as ExerciseType,
-		) &&
+		[
+			et.OPEN_ANSWER,
+			et.MULTIPLE_CHOICE_MULTIPLE_POSSIBLE,
+			et.MULTIPLE_CHOICE_SINGLE_POSSIBLE,
+		].includes(exercise.exercise_type as ExerciseType) &&
 		exercise.text.length == 0
 	) {
 		errors.push(err.BLANK_TEXT);

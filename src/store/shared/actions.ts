@@ -11,7 +11,14 @@ import {
 	createExerciseSolution,
 } from "@/api/exercises";
 import { getMe, updateUser } from "@/api/users";
-import { Exercise, exerciseChildrenNames, ExerciseChoice, ExerciseTestCase, User, ExerciseSolution } from "@/models";
+import {
+	Exercise,
+	exerciseChildrenNames,
+	ExerciseChoice,
+	ExerciseTestCase,
+	User,
+	ExerciseSolution,
+} from "@/models";
 
 import axios from "axios";
 import { Commit } from "vuex";
@@ -49,7 +56,10 @@ export const actions = {
 		const response = await updateUser(userId, changes);
 		commit("setUser", { user: response });
 	},
-	getCourse: async ({ commit }: { commit: Commit }, { courseId }: { courseId: string }) => {
+	getCourse: async (
+		{ commit }: { commit: Commit },
+		{ courseId }: { courseId: string },
+	) => {
 		const { participations, ...course } = await getCourse(courseId);
 		commit("setCourse", course);
 
@@ -66,7 +76,10 @@ export const actions = {
 	},
 	getTags: async (
 		{ commit }: { commit: Commit },
-		{ courseId, includeExerciseCount = false }: { courseId: string; includeExerciseCount: boolean },
+		{
+			courseId,
+			includeExerciseCount = false,
+		}: { courseId: string; includeExerciseCount: boolean },
 	) => {
 		const tags = await getTags(courseId, includeExerciseCount);
 		commit("setTags", tags);

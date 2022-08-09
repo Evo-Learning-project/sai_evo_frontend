@@ -13,12 +13,15 @@
 				'px-3.5 .5': size === 'sm' && variant !== 'icon',
 				'px-1': size === 'xs' && variant !== 'icon',
 				'px-14 py-2 text-lg font-medium': size === 'lg' && variant !== 'icon',
-				'text-lightText bg-primary hover:bg-primary-dark shadow-btn': !outline && variant === 'primary',
-				'text-lightText bg-secondary hover:bg-secondary-dark shadow-btn': !outline && variant === 'secondary',
+				'text-lightText bg-primary hover:bg-primary-dark shadow-btn':
+					!outline && variant === 'primary',
+				'text-lightText bg-secondary hover:bg-secondary-dark shadow-btn':
+					!outline && variant === 'secondary',
 				'text-danger-dark bg-danger shadow-btn': !outline && variant === 'danger',
 				'text-danger-dark border-danger-dark bg-white border hover:bg-danger-dark hover:bg-opacity-5':
 					outline && variant === 'danger',
-				'text-success-dark bg-success-light shadow-btn': !outline && variant === 'success',
+				'text-success-dark bg-success-light shadow-btn':
+					!outline && variant === 'success',
 				'transition-colors duration-100': outline,
 				'focus:outline-primary': false && variant === 'primary',
 				'focus:outline-danger-dark': variant === 'danger',
@@ -36,7 +39,8 @@
 				'border-gray-300 bg-white hover:bg-primary hover:bg-opacity-10 hover:text-primary transition-colors duration-100':
 					variant === 'transparent',
 				rounded: variant !== 'transparent',
-				'rounded-full bg-transparent hover:bg-gray-200 text-gray-600 icon-btn': variant === 'icon',
+				'rounded-full bg-transparent hover:bg-gray-200 text-gray-600 icon-btn':
+					variant === 'icon',
 				'icon-btn icon-btn-sm': variant === 'icon' && size === 'sm',
 				'icon-btn icon-btn-base': variant === 'icon' && size === 'base',
 				'icon-btn icon-btn-lg': variant === 'icon' && size === 'lg',
@@ -48,8 +52,14 @@
 					<slot></slot>
 				</p>
 			</div>
-			<p v-if="loading" class="absolute transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2">
-				<spinner :size="'md'" :variant="variant === 'primary' ? 'primary' : 'gray'"></spinner>
+			<p
+				v-if="loading"
+				class="absolute transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
+			>
+				<spinner
+					:size="'md'"
+					:variant="variant === 'primary' ? 'primary' : 'gray'"
+				></spinner>
 			</p>
 			<slot name="content"></slot>
 		</button>
@@ -68,8 +78,10 @@
 			'px-3.5 py-1.5': size === 'sm' && variant !== 'icon',
 			'px-1': size === 'xs' && variant !== 'icon',
 			'px-14 py-2 text-lg font-medium': size === 'lg' && variant !== 'icon',
-			'text-lightText bg-primary hover:bg-primary-dark shadow-btn': !outline && variant === 'primary',
-			'text-lightText bg-secondary hover:bg-secondary-dark shadow-btn': !outline && variant === 'secondary',
+			'text-lightText bg-primary hover:bg-primary-dark shadow-btn':
+				!outline && variant === 'primary',
+			'text-lightText bg-secondary hover:bg-secondary-dark shadow-btn':
+				!outline && variant === 'secondary',
 			'text-danger-dark bg-danger shadow-btn': !outline && variant === 'danger',
 			'text-danger-dark border-danger-dark bg-white border hover:bg-danger-dark hover:bg-opacity-5':
 				outline && variant === 'danger',
@@ -91,7 +103,8 @@
 			'border-gray-300 bg-white hover:bg-primary hover:bg-opacity-10 hover:text-primary transition-colors duration-100':
 				variant === 'transparent',
 			rounded: variant !== 'transparent',
-			'rounded-full bg-transparent hover:bg-gray-200 text-gray-600 icon-btn': variant === 'icon',
+			'rounded-full bg-transparent hover:bg-gray-200 text-gray-600 icon-btn':
+				variant === 'icon',
 			'icon-btn icon-btn-sm': variant === 'icon' && size === 'sm',
 			'icon-btn icon-btn-base': variant === 'icon' && size === 'base',
 			'icon-btn icon-btn-lg': variant === 'icon' && size === 'lg',
@@ -103,8 +116,14 @@
 				<slot></slot>
 			</p>
 		</div>
-		<p v-if="loading" class="absolute transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2">
-			<spinner :size="'md'" :variant="variant === 'primary' ? 'primary' : 'gray'"></spinner>
+		<p
+			v-if="loading"
+			class="absolute transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
+		>
+			<spinner
+				:size="'md'"
+				:variant="variant === 'primary' ? 'primary' : 'gray'"
+			></spinner>
 		</p>
 		<slot name="content"></slot>
 	</button>

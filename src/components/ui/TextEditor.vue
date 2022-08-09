@@ -1,6 +1,9 @@
 <template>
 	<div :class="{ 'h-full': tall }">
-		<div class="relative z-10 h-full rounded-t-sm light-input bg-light" :class="{ 'opacity-80': disabled }">
+		<div
+			class="relative z-10 h-full rounded-t-sm light-input bg-light"
+			:class="{ 'opacity-80': disabled }"
+		>
 			<!-- TODO! make this just a textarea for students-->
 			<div
 				class="z-10 h-full tex2jax_ignore ql-editor-container"
@@ -40,7 +43,11 @@
 				:variant="'primary-borderless'"
 			>
 				<p class="text-sm" style="font-weight: 400; font-size: 11px">
-					{{ showBaseEditor ? $t("misc.show_full_editor") : $t("misc.having_troubles_with_editor") }}
+					{{
+						showBaseEditor
+							? $t("misc.show_full_editor")
+							: $t("misc.having_troubles_with_editor")
+					}}
 				</p></Btn
 			>
 		</div>

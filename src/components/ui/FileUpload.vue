@@ -1,7 +1,10 @@
 <template>
 	<div class="w-full">
 		<div class="w-full relative">
-			<div v-if="disabled" class="absolute top-0 w-full h-44 z-10 bg-red-500 bg-opacity-0"></div>
+			<div
+				v-if="disabled"
+				class="absolute top-0 w-full h-44 z-10 bg-red-500 bg-opacity-0"
+			></div>
 			<VueUploadComponent
 				class="w-full"
 				@input-filter="inputFilter"
@@ -12,7 +15,18 @@
 				:custom-action="emitUpload"
 				:input-id="elementId"
 			>
-				<div class="relative flex border-2 border-gray-200 border-dashed rounded cursor-pointer w-full h-44 bg-light">
+				<div
+					class="
+						relative
+						flex
+						border-2 border-gray-200 border-dashed
+						rounded
+						cursor-pointer
+						w-full
+						h-44
+						bg-light
+					"
+				>
 					<div :class="{ invisible: files.length > 0 }" class="p-4 mx-auto my-auto">
 						<p class="opacity-30 material-icons-outlined text-5xl">
 							{{ disabled ? "file_download_off" : "cloud_upload" }}
@@ -23,7 +37,18 @@
 					</div>
 					<div v-if="files.length > 0" class="absolute flex w-full">
 						<div
-							class="relative flex flex-col items-center mx-auto space-x-2 align-middle z-20 w-max p-8 pt-0"
+							class="
+								relative
+								flex flex-col
+								items-center
+								mx-auto
+								space-x-2
+								align-middle
+								z-20
+								w-max
+								p-8
+								pt-0
+							"
 							v-for="(file, index) in files"
 							:key="'file-' + index + '-' + file.id"
 						>
@@ -47,11 +72,18 @@
 									w-full
 								"
 							>
-								<span class="material-icons-outlined opacity-100 text-gray-50 text-5xl"> cloud_download </span>
+								<span class="material-icons-outlined opacity-100 text-gray-50 text-5xl">
+									cloud_download
+								</span>
 							</div>
-							<AnimatedIcon class="absolute top-0 right-0 mt-2 mr-3" v-if="file.success"></AnimatedIcon>
+							<AnimatedIcon
+								class="absolute top-0 right-0 mt-2 mr-3"
+								v-if="file.success"
+							></AnimatedIcon>
 							<img class="mt-7 w-28 h-28" v-if="file.thumb" :src="file.thumb" />
-							<span v-else class="mt-12 material-icons-outlined text-gray-400 text-5xl"> insert_drive_file </span>
+							<span v-else class="mt-12 material-icons-outlined text-gray-400 text-5xl">
+								insert_drive_file
+							</span>
 							<!-- <img class="mt-4 w-28 h-28" v-else src="../../../public/pdf_thmb.png" /> -->
 							<p class="text-base text-muted">{{ file.name }}</p>
 						</div>
@@ -164,7 +196,12 @@ export default defineComponent({
 					return prevent();
 				}
 			}
-			if (newFile && newFile.error === "" && newFile.file && (!oldFile || newFile.file !== oldFile.file)) {
+			if (
+				newFile &&
+				newFile.error === "" &&
+				newFile.file &&
+				(!oldFile || newFile.file !== oldFile.file)
+			) {
 				newFile.blob = newFile.file;
 				newFile.thumb = "";
 				if (newFile.blob && isImage) {
@@ -175,7 +212,13 @@ export default defineComponent({
 				}
 			}
 			// image size
-			if (newFile && newFile.error === "" && isImage && newFile.blob && (!oldFile || newFile.blob !== oldFile.blob)) {
+			if (
+				newFile &&
+				newFile.error === "" &&
+				isImage &&
+				newFile.blob &&
+				(!oldFile || newFile.blob !== oldFile.blob)
+			) {
 				newFile.error = "image parsing";
 				let img = new Image();
 				img.onload = () => {

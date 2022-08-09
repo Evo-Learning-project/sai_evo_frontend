@@ -69,7 +69,11 @@ import {
 	updateEventTemplateRuleClause,
 } from "@/api/events";
 import { ExerciseSearchFilter } from "@/api/interfaces";
-import { getActiveUsersForCourse, getUsers, updateUserCoursePrivileges } from "@/api/users";
+import {
+	getActiveUsersForCourse,
+	getUsers,
+	updateUserCoursePrivileges,
+} from "@/api/users";
 
 export const actions = {
 	createCourse: async ({ commit }: { commit: Commit }, course: Course) => {
@@ -128,7 +132,12 @@ export const actions = {
 			mutate: boolean;
 		},
 	) => {
-		const participations = await getEventParticipations(courseId, eventId, includeDetails, forCsv);
+		const participations = await getEventParticipations(
+			courseId,
+			eventId,
+			includeDetails,
+			forCsv,
+		);
 		if (mutate) {
 			commit("setEventParticipations", participations);
 		}
@@ -136,7 +145,11 @@ export const actions = {
 	},
 	getEventParticipation: async (
 		{ commit }: { commit: Commit },
-		{ courseId, eventId, participationId }: { courseId: string; eventId: string; participationId: string },
+		{
+			courseId,
+			eventId,
+			participationId,
+		}: { courseId: string; eventId: string; participationId: string },
 	) => {
 		const participation = await getEventParticipation(courseId, eventId, participationId);
 		commit("setEventParticipation", participation);
@@ -149,7 +162,10 @@ export const actions = {
 		await updateExercise(courseId, exercise.id, exercise);
 	},
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	updateEvent: async ({ commit }: { commit: Commit }, { courseId, event }: { courseId: string; event: Event }) => {
+	updateEvent: async (
+		{ commit }: { commit: Commit },
+		{ courseId, event }: { courseId: string; event: Event },
+	) => {
 		await updateEvent(courseId, event.id, event);
 	},
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -323,7 +339,11 @@ export const actions = {
 				courseId: string,
 				exerciseId: string,
 				payload: any,
-			) => Promise<ExerciseChoice> | Promise<Exercise> | Promise<ExerciseTestCase> | Promise<ExerciseSolution>
+			) =>
+				| Promise<ExerciseChoice>
+				| Promise<Exercise>
+				| Promise<ExerciseTestCase>
+				| Promise<ExerciseSolution>
 		> = {
 			choice: createExerciseChoice,
 			testcase: createExerciseTestCase,
@@ -374,7 +394,11 @@ export const actions = {
 			subExercise: Exercise;
 		},
 	) => {
-		const newSubExercise = await createExerciseSubExercise(courseId, exerciseId, subExercise);
+		const newSubExercise = await createExerciseSubExercise(
+			courseId,
+			exerciseId,
+			subExercise,
+		);
 		commit("setExerciseChild", {
 			childType: "sub_exercise",
 			exerciseId: exerciseId,
@@ -436,7 +460,9 @@ export const actions = {
 		},
 	) => {
 		const newRule = await createEventTemplateRule(courseId, templateId, rule);
-		state.events.find((e: Event) => e.template?.id === templateId)?.template?.rules?.push(newRule);
+		state.events
+			.find((e: Event) => e.template?.id === templateId)
+			?.template?.rules?.push(newRule);
 		return newRule;
 	},
 	addEventTemplateRuleClause: async (
@@ -453,7 +479,12 @@ export const actions = {
 			clause: EventTemplateRuleClause;
 		},
 	) => {
-		const newClause = await createEventTemplateRuleClause(courseId, templateId, ruleId, clause);
+		const newClause = await createEventTemplateRuleClause(
+			courseId,
+			templateId,
+			ruleId,
+			clause,
+		);
 		state.events
 			.find((e: Event) => e.template?.id === templateId)
 			?.template?.rules?.find((r: EventTemplateRule) => r.id === ruleId)
@@ -474,7 +505,12 @@ export const actions = {
 			clause: EventTemplateRuleClause;
 		},
 	) => {
-		const updatedClause = await updateEventTemplateRuleClause(courseId, templateId, ruleId, clause);
+		const updatedClause = await updateEventTemplateRuleClause(
+			courseId,
+			templateId,
+			ruleId,
+			clause,
+		);
 		return updatedClause;
 		//const target = state.events
 		//   .find((e: Event) => e.template?.id === templateId)
@@ -498,8 +534,15 @@ export const actions = {
 		if (fromFirstPage) {
 			commit("setCurrentExercisePage", 1);
 		}
-		const { exercises, moreResults } = await getExercises(courseId, state.currentExercisePage, filters);
-		commit("setExercises", fromFirstPage ? exercises : [...state.exercises, ...exercises]);
+		const { exercises, moreResults } = await getExercises(
+			courseId,
+			state.currentExercisePage,
+			filters,
+		);
+		commit(
+			"setExercises",
+			fromFirstPage ? exercises : [...state.exercises, ...exercises],
+		);
 		//commit('setActiveCourseId', courseId);
 		if (exercises.length > 0) {
 			commit("setCurrentExercisePage", state.currentExercisePage + 1);
@@ -551,9 +594,9 @@ export const actions = {
 	) => {
 		await removeTagFromExercise(courseId, exerciseId, tag, isPublic);
 		const target = state.exercises.find((e: Exercise) => e.id === exerciseId) as Exercise;
-		target[isPublic ? "public_tags" : "private_tags"] = target[isPublic ? "public_tags" : "private_tags"]?.filter(
-			t => t.name != tag,
-		);
+		target[isPublic ? "public_tags" : "private_tags"] = target[
+			isPublic ? "public_tags" : "private_tags"
+		]?.filter(t => t.name != tag);
 	},
 	getEvents: async (
 		{ commit }: { commit: Commit },
@@ -614,7 +657,12 @@ export const actions = {
 			participationIds: string[];
 		},
 	) => {
-		const response = await bulkPartialUpdateEventParticipation(courseId, eventId, participationIds, changes);
+		const response = await bulkPartialUpdateEventParticipation(
+			courseId,
+			eventId,
+			participationIds,
+			changes,
+		);
 		response.forEach(p => commit("setEventParticipation", p));
 	},
 	getEventParticipationSlot: async (
@@ -631,7 +679,12 @@ export const actions = {
 			slotId: string;
 		},
 	) => {
-		const response = await getEventParticipationSlot(courseId, eventId, participationId, slotId);
+		const response = await getEventParticipationSlot(
+			courseId,
+			eventId,
+			participationId,
+			slotId,
+		);
 		commit("setEventParticipationSlot", {
 			slotId,
 			payload: response,

@@ -27,7 +27,10 @@
 						md:ml-14
 					"
 				>
-					<p style="font-size: 10rem" class="opacity-50 material-icons-outlined text-lightText">
+					<p
+						style="font-size: 10rem"
+						class="opacity-50 material-icons-outlined text-lightText"
+					>
 						{{ examLocked ? "lock" : "lock_open" }}
 					</p>
 					<h3
@@ -50,7 +53,11 @@
 		</transition>
 		<div class="flex w-full">
 			<h2 class="mb-0">{{ $t("event_editor.editor_title") }}</h2>
-			<CloudSaveStatus class="ml-auto" :saving="saving" :hadError="savingError"></CloudSaveStatus>
+			<CloudSaveStatus
+				class="ml-auto"
+				:saving="saving"
+				:hadError="savingError"
+			></CloudSaveStatus>
 		</div>
 		<div class="flex flex-col">
 			<EventMetaEditor
@@ -65,24 +72,40 @@
 					:randomRuleOrder="modelValue.randomize_rule_order"
 					v-if="!loading"
 					:modelValue="modelValueTemplate"
-					:showEditWarning="modelValue.state === EventState.OPEN || modelValue.state === EventState.RESTRICTED"
+					:showEditWarning="
+						modelValue.state === EventState.OPEN ||
+						modelValue.state === EventState.RESTRICTED
+					"
 					@templateChanged="invalidateExamples()"
 					@saving="saving = true"
 					@doneSaving="saving = false"
 					><template #afterRules>
 						<h4>{{ $t("event_editor.max_grade") }}</h4>
 						<div class="ml-2">
-							<span v-if="!editingMaxScore" class="text-lg text-muted">{{ computedMaxScore }}</span>
-							<NumberInput v-else v-model="dirtyMaxScore">{{ $t("event_editor.max_grade") }}</NumberInput>
+							<span v-if="!editingMaxScore" class="text-lg text-muted">{{
+								computedMaxScore
+							}}</span>
+							<NumberInput v-else v-model="dirtyMaxScore">{{
+								$t("event_editor.max_grade")
+							}}</NumberInput>
 						</div>
-						<Btn v-if="!editingMaxScore" :variant="'icon'" :outline="true" class="hidden ml-2" @click="onEditMaxScore"
+						<Btn
+							v-if="!editingMaxScore"
+							:variant="'icon'"
+							:outline="true"
+							class="hidden ml-2"
+							@click="onEditMaxScore"
 							><span class="material-icons">edit</span></Btn
 						>
 						<div v-else>
 							<Btn :variant="'icon'" :outline="true" class="ml-2" @click="onSaveMaxScore"
 								><span class="material-icons">done</span></Btn
 							>
-							<Btn :variant="'icon'" :outline="true" class="" @click="editingMaxScore = false"
+							<Btn
+								:variant="'icon'"
+								:outline="true"
+								class=""
+								@click="editingMaxScore = false"
 								><span class="material-icons">close</span></Btn
 							>
 						</div></template
@@ -106,7 +129,14 @@
 						lightbulb
 						<!-- tips_and_tricks -->
 					</span>
-					<div class="flex flex-col w-full space-y-2 md:items-center md:space-y-0 md:flex-row">
+					<div
+						class="
+							flex flex-col
+							w-full
+							space-y-2
+							md:items-center md:space-y-0 md:flex-row
+						"
+					>
 						<p class="mr-2 lg:mr-0">
 							{{ $t("event_editor.tip_you_used_randomization") }}
 						</p>
@@ -116,7 +146,11 @@
 							@click="getInstances"
 							:disabled="loadingExamples"
 						>
-							{{ loadingExamples ? $t("event_editor.generating_examples") : $t("event_editor.generate_examples") }}
+							{{
+								loadingExamples
+									? $t("event_editor.generating_examples")
+									: $t("event_editor.generate_examples")
+							}}
 						</Btn>
 					</div>
 					<EventInstancesPreview
@@ -158,14 +192,23 @@ import EventStateEditor from "@/components/teacher/EventEditor/EventStateEditor.
 import EventTemplateEditor from "@/components/teacher/EventTemplateEditor/EventTemplateEditor.vue";
 import CloudSaveStatus from "@/components/ui/CloudSaveStatus.vue";
 import { defineComponent, provide } from "@vue/runtime-core";
-import { Event, EventState, EventTemplate, EventTemplateRuleType, Exercise } from "@/models";
+import {
+	Event,
+	EventState,
+	EventTemplate,
+	EventTemplateRuleType,
+	Exercise,
+} from "@/models";
 import { courseIdMixin, eventIdMixin, loadingMixin, savingMixin } from "@/mixins";
 import Dialog from "@/components/ui/Dialog.vue";
 import { getTranslatedString as _ } from "@/i18n";
 
 import { createNamespacedHelpers, mapActions, mapState } from "vuex";
 import { AutoSaveManager } from "@/autoSave";
-import { EVENT_AUTO_SAVE_DEBOUNCED_FIELDS, EVENT_AUTO_SAVE_DEBOUNCE_TIME_MS } from "@/const";
+import {
+	EVENT_AUTO_SAVE_DEBOUNCED_FIELDS,
+	EVENT_AUTO_SAVE_DEBOUNCE_TIME_MS,
+} from "@/const";
 
 import { subscribeToEventChanges } from "@/ws/modelSubscription";
 import Toggle from "@/components/ui/Toggle.vue";
@@ -279,7 +322,12 @@ export default defineComponent({
 	},
 	methods: {
 		...mapActions("shared", ["getTags"]),
-		...mapActions("teacher", ["getEvent", "getExercises", "partialUpdateEvent", "updateEvent"]),
+		...mapActions("teacher", [
+			"getEvent",
+			"getExercises",
+			"partialUpdateEvent",
+			"updateEvent",
+		]),
 		...mapMutations(["setEvent"]),
 		invalidateExamples() {
 			this.instances = [];
@@ -330,7 +378,9 @@ export default defineComponent({
 		},
 		computedMaxScore(): number {
 			return roundToTwoDecimals(
-				(this.modelValue.template?.rules ?? []).map(r => r.weight * r.amount).reduce((a, b) => a + b, 0),
+				(this.modelValue.template?.rules ?? [])
+					.map(r => r.weight * r.amount)
+					.reduce((a, b) => a + b, 0),
 			);
 		},
 		modelValueTemplate(): EventTemplate {
@@ -343,7 +393,8 @@ export default defineComponent({
 					this.modelValue.template?.rules.some(
 						r =>
 							r.rule_type === EventTemplateRuleType.TAG_BASED ||
-							(r.rule_type === EventTemplateRuleType.ID_BASED && (r.exercises?.length ?? 0) > 1),
+							(r.rule_type === EventTemplateRuleType.ID_BASED &&
+								(r.exercises?.length ?? 0) > 1),
 					)) ??
 				false
 			);

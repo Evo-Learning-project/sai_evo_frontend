@@ -6,7 +6,16 @@
 				'max-h-20 relative hover:shadow-md': !expanded,
 				'max-h-screen z-50 absolute shadow-popup bg-white': expanded,
 			}"
-			class="flex w-full overflow-y-hidden transition-all duration-300 ease-in-out border border-gray-300 rounded-md"
+			class="
+				flex
+				w-full
+				overflow-y-hidden
+				transition-all
+				duration-300
+				ease-in-out
+				border border-gray-300
+				rounded-md
+			"
 		>
 			<div class="w-full">
 				<label
@@ -19,9 +28,11 @@
 						'text-primary-dark bg-primary-light bg-opacity-25':
 							option.value == modelValue && (expanded || showFeedback),
 						'rounded-none px-2.5 py-2.5': option.value == modelValue,
-						'h-0 py-0 overflow-hidden opacity-0': modelValue != null && option.value != modelValue && !expanded,
+						'h-0 py-0 overflow-hidden opacity-0':
+							modelValue != null && option.value != modelValue && !expanded,
 						'px-2.5 py-2.5': modelValue == null || expanded,
-						'hover:bg-gray-200': modelValue != option.value || (!expanded && !showFeedback),
+						'hover:bg-gray-200':
+							modelValue != option.value || (!expanded && !showFeedback),
 					}"
 					class="relative flex items-center max-h-screen overflow-hidden cursor-pointer"
 					v-for="(option, index) in options"
@@ -43,7 +54,8 @@
 							<p
 								v-html="option.content"
 								:class="{
-									'font-semibold': option.value == modelValue && (expanded || showFeedback),
+									'font-semibold':
+										option.value == modelValue && (expanded || showFeedback),
 								}"
 							></p>
 							<p
@@ -51,13 +63,19 @@
 								v-if="option.description && expanded"
 								v-html="option.description"
 								:class="[
-									option.value == modelValue ? 'text-primary-dark' : 'text-muted text-description',
+									option.value == modelValue
+										? 'text-primary-dark'
+										: 'text-muted text-description',
 									'text-sm my-1',
 								]"
 							></p>
 						</div>
 					</div>
-					<span v-if="index == 0 || !expanded" class="mb-auto ml-auto material-icons-outlined">expand_more</span>
+					<span
+						v-if="index == 0 || !expanded"
+						class="mb-auto ml-auto material-icons-outlined"
+						>expand_more</span
+					>
 				</label>
 			</div>
 		</div>

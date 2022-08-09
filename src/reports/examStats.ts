@@ -11,8 +11,14 @@ import { DataFrequency } from ".";
 
 // returns an array of pairs <s, f> where s is a score and f is the
 // frequency with which that score appears among the given participations
-export const getScoreFrequencyFromParticipations = (participations: EventParticipation[]): DataFrequency<string>[] =>
-	(participations.filter(p => typeof p.score !== "undefined" && p.score !== null).map(p => p.score) as string[])
+export const getScoreFrequencyFromParticipations = (
+	participations: EventParticipation[],
+): DataFrequency<string>[] =>
+	(
+		participations
+			.filter(p => typeof p.score !== "undefined" && p.score !== null)
+			.map(p => p.score) as string[]
+	)
 		.reduce((a, s) => {
 			const normalizedDatum = String(isNaN(parseFloat(s)) ? s : parseFloat(s));
 			const record = a.find(r => r.datum == normalizedDatum);
@@ -68,7 +74,9 @@ export const getTestCasePassingFrequencyFor = (
 		// for each test case in the exercise, get slots
 		// whose submission passed the test case
 		d[t.id] = slots.filter(s => {
-			const testCaseResults = (s.execution_results?.tests ?? []).find(rt => String(rt.id) === String(t.id));
+			const testCaseResults = (s.execution_results?.tests ?? []).find(
+				rt => String(rt.id) === String(t.id),
+			);
 			return testCaseResults && testCaseResults.passed;
 		}).length;
 		return d;
@@ -192,7 +200,10 @@ export const makeLabelText = (text: string): string | string[] => {
 	}
 	// try to break at a point that makes the lines balanced in length
 	// and break when encountering a space to avoid warping mid-word
-	const breakPivot = processedText.length > MAX_LINE_LENGTH * 2 ? LINE_LENGTH : Math.floor(processedText.length / 2);
+	const breakPivot =
+		processedText.length > MAX_LINE_LENGTH * 2
+			? LINE_LENGTH
+			: Math.floor(processedText.length / 2);
 	const breakFirstLineAt = findNearestSpace(processedText, breakPivot);
 
 	const remaining = processedText.slice(breakFirstLineAt);

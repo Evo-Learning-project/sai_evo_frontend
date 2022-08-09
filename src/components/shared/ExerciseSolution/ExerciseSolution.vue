@@ -14,7 +14,9 @@
 							class=""
 							@click="onVote(VoteType.UP_VOTE)"
 							><span
-								:class="[solution.has_upvote ? 'material-icons' : 'material-icons-outlined']"
+								:class="[
+									solution.has_upvote ? 'material-icons' : 'material-icons-outlined',
+								]"
 								style="font-size: 35px !important"
 							>
 								thumb_up_alt</span
@@ -29,7 +31,9 @@
 							:outline="true"
 							class=""
 							><span
-								:class="[solution.has_downvote ? 'material-icons' : 'material-icons-outlined']"
+								:class="[
+									solution.has_downvote ? 'material-icons' : 'material-icons-outlined',
+								]"
 								style="font-size: 35px !important"
 							>
 								thumb_down_alt</span
@@ -52,10 +56,16 @@
 							class="w-full px-4 py-2 rounded"
 							:value="solution.content"
 						/>
-						<div v-if="collapsed" class="absolute bottom-0 left-0 flex w-full h-40 hidden-content">
-							<Btn @click="collapsed = false" :variant="'primary-borderless'" class="z-20 mx-auto mt-auto mb-2">{{
-								$t("exercise_solution.reveal_solution")
-							}}</Btn>
+						<div
+							v-if="collapsed"
+							class="absolute bottom-0 left-0 flex w-full h-40 hidden-content"
+						>
+							<Btn
+								@click="collapsed = false"
+								:variant="'primary-borderless'"
+								class="z-20 mx-auto mt-auto mb-2"
+								>{{ $t("exercise_solution.reveal_solution") }}</Btn
+							>
 						</div>
 					</div>
 
@@ -70,9 +80,11 @@
 								@click="$emit('editSolution')"
 								><span class="material-icons">edit</span></Btn
 							>
-							<Btn :variant="'icon'" :outline="true" :tooltip="$t('exercise_solution.share')"
-								><span class="material-icons">share</span></Btn
-							>
+							<CopyToClipboard
+								:icon-only="true"
+								:tooltip="$t('exercise_solution.share')"
+								:value="permalink"
+							/>
 							<Btn
 								:variant="'icon'"
 								:outline="true"
@@ -81,9 +93,12 @@
 										? $t('exercise_solution.remove_bookmark')
 										: $t('exercise_solution.add_bookmark')
 								"
-								><span class="material-icons" :loading="bookmarking" @click="onToggleBookmark()">{{
-									solution.is_bookmarked ? "bookmark" : "bookmark_outline"
-								}}</span>
+								><span
+									class="material-icons"
+									:loading="bookmarking"
+									@click="onToggleBookmark()"
+									>{{ solution.is_bookmarked ? "bookmark" : "bookmark_outline" }}</span
+								>
 							</Btn>
 						</div>
 
@@ -100,7 +115,11 @@
 			<div class="w-full">
 				<h5 class="mb-2">Commenti</h5>
 				<div>
-					<div v-for="comment in solution.comments" :key="'comment-' + comment.id" class="my-1.5">
+					<div
+						v-for="comment in solution.comments"
+						:key="'comment-' + comment.id"
+						class="my-1.5"
+					>
 						<ExerciseSolutionComment :comment="comment" />
 					</div>
 				</div>
@@ -108,7 +127,11 @@
 				<!-- add comment -->
 				<div class="flex items-center w-full mt-4 space-x-2">
 					<Avatar class="px-3 my-auto" :user="user" />
-					<TextInput class="w-full" v-model="draftComment" :placeholder="'Aggiungi commento'" />
+					<TextInput
+						class="w-full"
+						v-model="draftComment"
+						:placeholder="'Aggiungi commento'"
+					/>
 					<Btn
 						:loading="postingComment"
 						:variant="'secondary'"
@@ -135,6 +158,9 @@ import ExerciseSolutionComment from "./ExerciseSolutionComment.vue";
 import ProcessedTextFragment from "@/components/ui/ProcessedTextFragment.vue";
 import { courseIdMixin, coursePrivilegeMixin } from "@/mixins";
 import { setErrorNotification } from "@/utils";
+import CopyToClipboard from "@/components/ui/CopyToClipboard.vue";
+import { getExerciseSolutionThreadRoute } from "./utils";
+import { getTranslatedString as _ } from "@/i18n";
 //import { v4 as uuid4 } from "uuid";
 export default defineComponent({
 	name: "ExerciseSolution",
@@ -160,10 +186,14 @@ export default defineComponent({
 			type: Boolean,
 			default: true,
 		},
+		forceExpanded: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	mounted() {
 		const contentElement = this.$refs.content as HTMLElement;
-		if (contentElement.clientHeight > this.MAX_CONTENT_HEIGHT_PX) {
+		if (contentElement.clientHeight > this.MAX_CONTENT_HEIGHT_PX && !this.forceExpanded) {
 			this.collapsed = true;
 		}
 	},
@@ -180,7 +210,11 @@ export default defineComponent({
 		};
 	},
 	methods: {
-		...mapActions("student", ["addExerciseSolutionComment", "addExerciseSolutionVote", "setExerciseSolutionBookmark"]),
+		...mapActions("student", [
+			"addExerciseSolutionComment",
+			"addExerciseSolutionVote",
+			"setExerciseSolutionBookmark",
+		]),
 		async onVote(voteType: VoteType) {
 			if (this.voting) {
 				return;
@@ -244,7 +278,7 @@ export default defineComponent({
 	computed: {
 		...mapState("shared", ["user"]),
 		authorName(): string {
-			return this.solution.user?.full_name ?? "Autore"; // TODO change default
+			return this.solution.user?.full_name ?? _("exercise_solution.default_author");
 		},
 		isOwnSolution(): boolean {
 			return (this.solution.user?.id ?? "") == this.user.id;
@@ -252,11 +286,18 @@ export default defineComponent({
 		canEdit(): boolean {
 			return this.isOwnSolution || this.hasAnyPrivileges();
 		},
-		// score(): number {
-		//   return this.solution.votes
-		//     .map((v) => (v.vote_type === VoteType.UP_VOTE ? 1 : -1))
-		//     .reduce((a, b) => a + b, 0);
-		// },
+		permalink(): string {
+			return (
+				window.location.origin +
+				this.$router.resolve(
+					getExerciseSolutionThreadRoute(
+						this.courseId,
+						this.exercise.id,
+						this.solution.id,
+					),
+				).fullPath
+			);
+		},
 	},
 	components: {
 		Btn,
@@ -264,6 +305,7 @@ export default defineComponent({
 		Avatar,
 		ExerciseSolutionComment,
 		ProcessedTextFragment,
+		CopyToClipboard,
 	},
 });
 </script>

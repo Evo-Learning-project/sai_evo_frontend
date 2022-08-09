@@ -1,6 +1,8 @@
 <template>
 	<div class="flex flex-col items-center w-full mx-auto mt-16">
-		<p style="font-size: 10rem" class="material-icons-outlined opacity-10">error_outline</p>
+		<p style="font-size: 10rem" class="material-icons-outlined opacity-10">
+			error_outline
+		</p>
 		<h2 class="opacity-40">{{ $t("errors.404") }}</h2>
 		<Btn class="mt-2" @click="$router.go(-1)">{{ $t("errors.back") }}</Btn>
 	</div>

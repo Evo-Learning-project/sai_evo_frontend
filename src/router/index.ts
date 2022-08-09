@@ -13,12 +13,16 @@ import EventEditor from "../components/teacher/EventEditor/EventEditor.vue";
 import EventParticipationPage from "../views/student/EventParticipationPage.vue";
 import EventParticipationFull from "../views/shared/EventParticipationFull.vue";
 import ExamPreview from "../views/student/ExamPreview.vue";
+import ExerciseSolutionThread from "../views/student/ExerciseSolutionThread.vue";
 import EventParticipationsMonitor from "../views/teacher/EventParticipationsMonitor.vue";
 import EventStats from "../views/teacher/EventStats.vue";
 import Login from "../views/Login.vue";
 import PageNotFound from "../views/shared/PageNotFound.vue";
 import CourseCreationForm from "../views/teacher/CourseCreationForm.vue";
-import { courseDashboardSidebarOptions, courseListSidebarOptions } from "@/navigation/sidebar";
+import {
+	courseDashboardSidebarOptions,
+	courseListSidebarOptions,
+} from "@/navigation/sidebar";
 import { getTranslatedString as _ } from "@/i18n";
 import store from "@/store";
 import { SharedState } from "@/store/types";
@@ -27,10 +31,13 @@ import {
 	courseListBreadCrumbs,
 	examAssessmentBreadCrumbs,
 	examParticipationBreadCrumbs,
+	exerciseSolutionThreadBreadCrumbs,
 	practiceParticipationBreadCrumbs,
 	practiceReviewBreadCrumbs,
 	submissionReviewBreadCrumbs,
 } from "@/navigation/breadcrumbs";
+import { getCourse } from "@/api/courses";
+import { exerciseSolutionThreadBeforeGuard } from "./guards";
 
 const routes: Array<RouteRecordRaw> = [
 	{
@@ -49,6 +56,12 @@ const routes: Array<RouteRecordRaw> = [
 				component: Login,
 			},
 		],
+	},
+	{
+		path: "/threads/:courseId/:exerciseId/:solutionId",
+		name: "ExerciseSolutionThreadDispatcher",
+		component: MainStudent,
+		beforeEnter: exerciseSolutionThreadBeforeGuard,
 	},
 	{
 		path: "/teacher",
@@ -216,6 +229,15 @@ const routes: Array<RouteRecordRaw> = [
 				},
 			},
 			{
+				path: "courses/:courseId/threads/:exerciseId/:solutionId",
+				name: "ExerciseSolutionThread",
+				component: ExerciseSolutionThread,
+				meta: {
+					routeTitle: _("headings.student_exercise_solution_threads"),
+					breadcrumbs: exerciseSolutionThreadBreadCrumbs,
+				},
+			},
+			{
 				path: "courses/:courseId/exams/:examId",
 				component: ExamPreview,
 				name: "ExamParticipationPreview",
@@ -308,7 +330,10 @@ router.beforeEach((to, from, next) => {
 	}
 	if (!store.getters["shared/isAuthenticated"] && to.name !== "Login") {
 		next({ name: "Login", query: { redirect: to.fullPath } });
-	} else if (to.meta.teachersOnly && !(store.state as { shared: SharedState }).shared.user.is_teacher) {
+	} else if (
+		to.meta.teachersOnly &&
+		!(store.state as { shared: SharedState }).shared.user.is_teacher
+	) {
 		next({ name: "StudentCourseList" });
 	} else {
 		next();

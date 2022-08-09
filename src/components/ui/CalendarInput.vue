@@ -23,7 +23,9 @@
 				<template v-slot:icon-calendar
 					><span class="text-base material-icons-outlined"> calendar_today </span>
 				</template>
-				<template v-slot:icon-clear><span class="text-base material-icons-outlined"> close </span> </template>
+				<template v-slot:icon-clear
+					><span class="text-base material-icons-outlined"> close </span>
+				</template>
 			</date-picker>
 			<!-- </div> -->
 			<label

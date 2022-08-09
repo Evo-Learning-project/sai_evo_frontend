@@ -5,7 +5,16 @@
 		<div class="w-full">
 			<label
 				:for="id + '-input-' + index"
-				class="relative flex my-0.5 max-h-screen space-x-1.5 cursor-pointer items-start radio-item"
+				class="
+					relative
+					flex
+					my-0.5
+					max-h-screen
+					space-x-1.5
+					cursor-pointer
+					items-start
+					radio-item
+				"
 				:class="{ 'radio-container': !disabled }"
 				v-for="(option, index) in options"
 				:key="id + '-option-' + index"

@@ -9,15 +9,23 @@
 						</div>
 					</div>
 					<div class="">
-						<div v-if="$store.getters['shared/isAuthenticated']" class="flex items-center ml-4 space-x-2 md:ml-6">
+						<div
+							v-if="$store.getters['shared/isAuthenticated']"
+							class="flex items-center ml-4 space-x-2 md:ml-6"
+						>
 							<p class="text-xs text-lightText md:text-base">
 								{{ $store.getters["shared/email"] }}
 							</p>
-							<p @click="onShowMatEdit" class="hidden text-xs cursor-pointer md:block text-lightText md:text-sm">
+							<p
+								@click="onShowMatEdit"
+								class="hidden text-xs cursor-pointer md:block text-lightText md:text-sm"
+							>
 								{{ $store.state.shared.user?.mat }}
 							</p>
 							<Btn @click="logOut()" :variant="'icon'" :outline="true"
-								><span class="text-lg text-lightText material-icons-outlined"> logout </span></Btn
+								><span class="text-lg text-lightText material-icons-outlined">
+									logout
+								</span></Btn
 							>
 						</div>
 					</div>
@@ -41,7 +49,11 @@
 					<h2 class="mb-0 text-lg md:mr-6 md:text-2xl">
 						{{ routeTitle }}
 					</h2>
-					<BreadCrumbs v-if="!$route.meta.hideBreadcrumbs" :route="$route" class="mt-1 ml-2 md:ml-0"></BreadCrumbs>
+					<BreadCrumbs
+						v-if="!$route.meta.hideBreadcrumbs"
+						:route="$route"
+						class="mt-1 ml-2 md:ml-0"
+					></BreadCrumbs>
 				</div>
 				<div class="flex ml-auto md:w-80">
 					<div class="ml-auto" id="main-student-header-right"></div>
@@ -72,7 +84,9 @@
 			<!-- TODO add course selection -->
 			<template v-slot:title>{{ $t("student_data.edit_mat_title") }}</template>
 			<template v-slot:body>
-				<NumberInput v-model="dirtyMat" class="mt-8">{{ $t("student_data.your_mat") }}</NumberInput>
+				<NumberInput v-model="dirtyMat" class="mt-8">{{
+					$t("student_data.your_mat")
+				}}</NumberInput>
 			</template>
 		</Dialog>
 	</div>
@@ -80,7 +94,10 @@
 
 <script lang="ts">
 import { courseIdMixin, eventIdMixin, loadingMixin } from "@/mixins";
-import { ROUTE_TITLE_COURSE_NAME_TOKEN, ROUTE_TITLE_EVENT_NAME_TOKEN } from "@/navigation/const";
+import {
+	ROUTE_TITLE_COURSE_NAME_TOKEN,
+	ROUTE_TITLE_EVENT_NAME_TOKEN,
+} from "@/navigation/const";
 import { SidebarOption } from "@/navigation/sidebar";
 import { defineComponent } from "@vue/runtime-core";
 import ErrorView from "../shared/ErrorView.vue";

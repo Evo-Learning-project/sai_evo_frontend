@@ -12,7 +12,11 @@
 			<template v-slot:body>
 				<div class="relative">
 					<div class="sticky top-0 z-50 px-2 pt-4 pb-4 bg-white shadow-sm md:px-8">
-						<SegmentedControls :options="instancesAsSelectableOptions" v-model="currentInstance"> </SegmentedControls>
+						<SegmentedControls
+							:options="instancesAsSelectableOptions"
+							v-model="currentInstance"
+						>
+						</SegmentedControls>
 					</div>
 					<div>
 						<div class="flex items-center w-full">
@@ -61,7 +65,12 @@
 <script lang="ts">
 import { defineComponent, PropType } from "@vue/runtime-core";
 import Dialog from "@/components/ui/Dialog.vue";
-import { Event, EventParticipationSlot, Exercise, getFakeEventParticipationSlot } from "@/models";
+import {
+	Event,
+	EventParticipationSlot,
+	Exercise,
+	getFakeEventParticipationSlot,
+} from "@/models";
 import { SelectableOption } from "@/interfaces";
 import SegmentedControls from "@/components/ui/SegmentedControls.vue";
 import AbstractEventParticipationSlot from "@/components/shared/AbstractEventParticipationSlot.vue";
@@ -99,7 +108,9 @@ export default defineComponent({
 	},
 	methods: {
 		async onPrint() {
-			const element = document.getElementById("printable-preview-" + this.currentInstance);
+			const element = document.getElementById(
+				"printable-preview-" + this.currentInstance,
+			);
 			const worker = html2pdf();
 			this.saving = true;
 			setTimeout(async () => {

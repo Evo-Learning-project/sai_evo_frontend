@@ -12,7 +12,9 @@ import { DataFormat } from "./types";
 // TODO actually implement
 const importExercisesFromEvoJson = (data: string) => JSON.parse(data);
 
-const importExercisesFromMoodleXml = async (data: string): Promise<ImportedExerciseData> => {
+const importExercisesFromMoodleXml = async (
+	data: string,
+): Promise<ImportedExerciseData> => {
 	let moodleExercises;
 	// eslint-disable-next-line no-useless-catch
 	try {
@@ -64,10 +66,15 @@ const importExercisesFromMoodleXml = async (data: string): Promise<ImportedExerc
 	return ret;
 };
 
-const importFunctions: Record<DataFormat, (data: string) => Promise<ImportedExerciseData>> = {
+const importFunctions: Record<
+	DataFormat,
+	(data: string) => Promise<ImportedExerciseData>
+> = {
 	[DataFormat.MOODLE_XML]: importExercisesFromMoodleXml,
 	[DataFormat.EVO_JSON]: importExercisesFromEvoJson,
 };
 
-export const getImportedData = async (data: string, fromFormat: DataFormat): Promise<ImportedExerciseData> =>
-	await importFunctions[fromFormat](data);
+export const getImportedData = async (
+	data: string,
+	fromFormat: DataFormat,
+): Promise<ImportedExerciseData> => await importFunctions[fromFormat](data);

@@ -9,7 +9,9 @@
 					:variant="'icon'"
 					class="-mt-8 transition-transform duration-200 transform icon-btn-primary"
 				>
-					<span id="insights-btn" class="transition-opacity duration-75 rounded-full material-icons-outlined"
+					<span
+						id="insights-btn"
+						class="transition-opacity duration-75 rounded-full material-icons-outlined"
 						>insights</span
 					>
 				</Btn>
@@ -31,8 +33,15 @@
 				<p>
 					{{ $t("event_monitor.some_exams_still_open") }}
 				</p>
-				<Btn :outline="true" :size="'xs'" :variant="'icon'" @click="showRestrictedModeBanner = false">
-					<span class="material-icons-outlined" style="font-size: 17px !important; margin-right: 0 !important"
+				<Btn
+					:outline="true"
+					:size="'xs'"
+					:variant="'icon'"
+					@click="showRestrictedModeBanner = false"
+				>
+					<span
+						class="material-icons-outlined"
+						style="font-size: 17px !important; margin-right: 0 !important"
 						>close</span
 					></Btn
 				>
@@ -48,15 +57,26 @@
 					'opacity-100 max-h-96 mb-3': showThereArePendingAssessmentsBanner,
 				}"
 			>
-				<span class="ml-px text-yellow-900 material-icons-outlined"> pending_actions </span>
+				<span class="ml-px text-yellow-900 material-icons-outlined">
+					pending_actions
+				</span>
 				<p class="">
 					{{ $t("event_assessment.some_exams_require_manual_assessment") }}
 
 					{{ $t("event_assessment.exams_awaiting_assessment_are_marked") }}
-					<span class="text-base text-yellow-900 inline-icon material-icons-outlined">pending_actions</span>.
+					<span class="text-base text-yellow-900 inline-icon material-icons-outlined"
+						>pending_actions</span
+					>.
 				</p>
-				<Btn :outline="true" :size="'xs'" :variant="'icon'" @click="showThereArePendingAssessmentsBanner = false">
-					<span class="material-icons-outlined" style="font-size: 17px !important; margin-right: 3px !important"
+				<Btn
+					:outline="true"
+					:size="'xs'"
+					:variant="'icon'"
+					@click="showThereArePendingAssessmentsBanner = false"
+				>
+					<span
+						class="material-icons-outlined"
+						style="font-size: 17px !important; margin-right: 3px !important"
 						>close</span
 					></Btn
 				>
@@ -83,7 +103,9 @@
 					style="margin-left: auto !important"
 					@click="showThereAreUnpublishedResultsBanner = false"
 				>
-					<span class="material-icons-outlined" style="font-size: 17px !important; margin-right: 0 !important"
+					<span
+						class="material-icons-outlined"
+						style="font-size: 17px !important; margin-right: 0 !important"
 						>close</span
 					></Btn
 				>
@@ -108,7 +130,9 @@
 					style="margin-left: auto !important"
 					@click="showAllAssessmentsPublishedBanner = false"
 				>
-					<span class="material-icons-outlined" style="font-size: 17px !important; margin-right: 0 !important"
+					<span
+						class="material-icons-outlined"
+						style="font-size: 17px !important; margin-right: 0 !important"
 						>close</span
 					></Btn
 				>
@@ -129,7 +153,9 @@
 				</div>
 				<div class="flex items-center w-1/3 mr-4 card shadow-elevation">
 					<div class="flex items-center mx-auto">
-						<span class="mr-1 material-icons-two-tone two-tone-success">assignment_turned_in</span>
+						<span class="mr-1 material-icons-two-tone two-tone-success"
+							>assignment_turned_in</span
+						>
 						<p>{{ turnedInCount }}</p>
 						<p class="ml-2 text-sm text-muted">
 							{{ $t("event_monitor.stats_turned_in") }}
@@ -152,7 +178,9 @@
 						<span class="text-lg inline-icon text-success material-icons-outlined">{{
 							participationStateIcons[EventParticipationState.TURNED_IN][0]
 						}}</span>
-						<span style="margin-left: -1px">{{ $t("event_monitor.in_column_state") }}</span>
+						<span style="margin-left: -1px">{{
+							$t("event_monitor.in_column_state")
+						}}</span>
 					</p>
 				</div>
 			</div>
@@ -180,7 +208,11 @@
 
 		<!-- buttons to publish results and download participations -->
 		<div v-if="!firstLoading && resultsMode" class="flex mt-4">
-			<Btn :variant="'success'" @click="onPublish" :disabled="selectedParticipations.length == 0">
+			<Btn
+				:variant="'success'"
+				@click="onPublish"
+				:disabled="selectedParticipations.length == 0"
+			>
 				<span class="mr-1 text-base material-icons-outlined"> done </span>
 				{{ $t("event_results.publish_results") }}</Btn
 			>
@@ -224,7 +256,8 @@
 			:footerBorder="dialogData.footerBorder"
 			:disableOk="
 				dialogData.disableOk ||
-				(editingSlotDirty && (editingSlotDirty.score == null || editingSlotDirty.score.length == 0))
+				(editingSlotDirty &&
+					(editingSlotDirty.score == null || editingSlotDirty.score.length == 0))
 			"
 		>
 			<template v-if="editingSlot" v-slot:title>
@@ -234,7 +267,9 @@
 				{{ $t("misc.for") }}
 				{{ editingFullName }}
 			</template>
-			<template v-else-if="dialogData.title?.length > 0" v-slot:title>{{ dialogData.title }}</template>
+			<template v-else-if="dialogData.title?.length > 0" v-slot:title>{{
+				dialogData.title
+			}}</template>
 			<template v-slot:body>
 				<!-- editing an assessment slot -->
 				<div class="text-darkText" v-if="editingSlot">
@@ -265,7 +300,11 @@
 
 				<!-- re-opening a turned in participation-->
 				<div v-else-if="!!editingParticipationId">
-					{{ $t("event_monitor.un_turn_in_text") + selectedParticipation?.user?.full_name + "?" }}
+					{{
+						$t("event_monitor.un_turn_in_text") +
+						selectedParticipation?.user?.full_name +
+						"?"
+					}}
 				</div>
 
 				<!-- closing exam for selected participants -->
@@ -273,7 +312,11 @@
 					<p>
 						{{ $t("event_monitor.close_for_selected_text_1") }}
 						<strong>{{ selectedCloseableParticipations.length }}</strong>
-						{{ selectedCloseableParticipations.length === 1 ? $t("misc.participant") : $t("misc.participants") }}.
+						{{
+							selectedCloseableParticipations.length === 1
+								? $t("misc.participant")
+								: $t("misc.participants")
+						}}.
 					</p>
 				</div>
 				<!-- re-opening closed exams -->
@@ -281,7 +324,11 @@
 					<p>
 						{{ $t("event_monitor.open_for_selected_text") }}
 						<strong>{{ selectedOpenableParticipations.length }}</strong>
-						{{ selectedOpenableParticipations.length === 1 ? $t("misc.participant") : $t("misc.participants") }}.
+						{{
+							selectedOpenableParticipations.length === 1
+								? $t("misc.participant")
+								: $t("misc.participants")
+						}}.
 					</p>
 				</div>
 			</template>
@@ -294,7 +341,11 @@
 			class="absolute transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
 			v-if="firstLoading"
 		></Spinner>
-		<v-tour name="examInsightsTour" :steps="examInsightsPageTourSteps" :options="tourOptions"></v-tour>
+		<v-tour
+			name="examInsightsTour"
+			:steps="examInsightsPageTourSteps"
+			:options="tourOptions"
+		></v-tour>
 	</div>
 </template>
 
@@ -330,10 +381,17 @@ import { DialogData } from "@/interfaces";
 import Btn from "@/components/ui/Btn.vue";
 import CsvParticipationDownloader from "@/components/teacher/CsvParticipationDownloader.vue";
 import SkeletonCard from "@/components/ui/SkeletonCard.vue";
-import { examInsightsPageTourSteps, getEventParticipationMonitorHeaders, tourOptions } from "@/const";
+import {
+	examInsightsPageTourSteps,
+	getEventParticipationMonitorHeaders,
+	tourOptions,
+} from "@/const";
 
 import Spinner from "@/components/ui/Spinner.vue";
-import { areAllParticipationsFullyAssessed, getParticipationsAverageProgress } from "@/reports";
+import {
+	areAllParticipationsFullyAssessed,
+	getParticipationsAverageProgress,
+} from "@/reports";
 
 export default defineComponent({
 	components: {
@@ -478,13 +536,17 @@ export default defineComponent({
 					!this.resultsMode &&
 					this.event.state === EventState.RESTRICTED &&
 					!this.event.users_allowed_past_closure?.includes(
-						this.eventParticipations.find((p: EventParticipation) => p.id === params.data.id)?.user?.id,
+						this.eventParticipations.find(
+							(p: EventParticipation) => p.id === params.data.id,
+						)?.user?.id,
 					),
 			};
 		},
 		onSelectionChanged() {
 			// copy the id's of the selected participations
-			this.selectedParticipations = this.gridApi?.getSelectedNodes().map((n: any) => n.data.id);
+			this.selectedParticipations = this.gridApi
+				?.getSelectedNodes()
+				.map((n: any) => n.data.id);
 		},
 		deselectAllRows() {
 			this.gridApi.deselectAll();
@@ -541,9 +603,9 @@ export default defineComponent({
 			// list of the exam and setting the exam state to RESTRICTED
 
 			// these are the ones the exam will stay open for
-			const unselectedParticipations = (this.eventParticipations as EventParticipation[]).filter(
-				p => !this.selectedParticipations.includes(p.id),
-			);
+			const unselectedParticipations = (
+				this.eventParticipations as EventParticipation[]
+			).filter(p => !this.selectedParticipations.includes(p.id));
 			const unselectedUserIds = unselectedParticipations.map(p => p.user.id);
 
 			await this.withLoading(
@@ -557,12 +619,15 @@ export default defineComponent({
 							users_allowed_past_closure: [
 								// users that were already allowed and haven't been selected now
 								...(this.event.users_allowed_past_closure ?? []).filter(
-									i => !this.selectedCloseableParticipations.map(p => p.user.id).includes(i),
+									i =>
+										!this.selectedCloseableParticipations.map(p => p.user.id).includes(i),
 								),
 								// unselected id's that were already allowed (unless it's the
 								// first time the exam gets restricted)
 								...unselectedUserIds.filter(
-									i => this.event.state !== EventState.RESTRICTED || this.event.users_allowed_past_closure?.includes(i),
+									i =>
+										this.event.state !== EventState.RESTRICTED ||
+										this.event.users_allowed_past_closure?.includes(i),
 								),
 							],
 						},
@@ -580,9 +645,9 @@ export default defineComponent({
 			// participants to the `users_allowed_past_closure` list for the exam
 
 			// these are the ones the exam will stay open for
-			const selectedParticipations = (this.eventParticipations as EventParticipation[]).filter(p =>
-				this.selectedParticipations.includes(p.id),
-			);
+			const selectedParticipations = (
+				this.eventParticipations as EventParticipation[]
+			).filter(p => this.selectedParticipations.includes(p.id));
 			const selectedUserIds = selectedParticipations.map(p => p.user.id);
 
 			await this.withLoading(
@@ -602,7 +667,10 @@ export default defineComponent({
 			);
 			this.showFeedbackAndCleanup();
 		},
-		async dispatchParticipationsUpdate(participationIds: string[], changes: Partial<EventParticipation>) {
+		async dispatchParticipationsUpdate(
+			participationIds: string[],
+			changes: Partial<EventParticipation>,
+		) {
 			// generic method to update multiple participations at once and show feedback/error
 			await this.withLoading(
 				async () =>
@@ -725,7 +793,9 @@ export default defineComponent({
 						" " +
 						this.selectedCloseableParticipations.length +
 						" " +
-						(this.selectedCloseableParticipations.length === 1 ? _("misc.exam") : _("misc.exams")),
+						(this.selectedCloseableParticipations.length === 1
+							? _("misc.exam")
+							: _("misc.exams")),
 					noText: _("dialog.default_cancel_text"),
 					onYes: this.closeExams,
 				};
@@ -739,7 +809,9 @@ export default defineComponent({
 						" " +
 						this.selectedOpenableParticipations.length +
 						" " +
-						(this.selectedOpenableParticipations.length === 1 ? _("misc.exam") : _("misc.exams")),
+						(this.selectedOpenableParticipations.length === 1
+							? _("misc.exam")
+							: _("misc.exams")),
 					noText: _("dialog.default_cancel_text"),
 					onYes: this.openExams,
 				};
@@ -753,7 +825,9 @@ export default defineComponent({
 			return { ...defaultData, ...ret };
 		},
 		selectedParticipation() {
-			return this.eventParticipations.find((p: EventParticipation) => p.id == this.editingParticipationId);
+			return this.eventParticipations.find(
+				(p: EventParticipation) => p.id == this.editingParticipationId,
+			);
 		},
 		event(): Event {
 			return this.$store.getters["teacher/event"](this.eventId);
@@ -766,18 +840,24 @@ export default defineComponent({
 		},
 		turnedInCount() {
 			return (
-				this.eventParticipations?.filter((p: EventParticipation) => p.state === EventParticipationState.TURNED_IN)
-					.length ?? 0
+				this.eventParticipations?.filter(
+					(p: EventParticipation) => p.state === EventParticipationState.TURNED_IN,
+				).length ?? 0
 			);
 		},
 		averageProgress() {
 			return getParticipationsAverageProgress(this.eventParticipations, this.event);
 		},
 		thereAreUnpublishedAssessments() {
-			return this.eventParticipations.some((p: EventParticipation) => p.visibility != AssessmentVisibility.PUBLISHED);
+			return this.eventParticipations.some(
+				(p: EventParticipation) => p.visibility != AssessmentVisibility.PUBLISHED,
+			);
 		},
 		participationPreviewColumns() {
-			return getEventParticipationMonitorHeaders(this.resultsMode, this.eventParticipations);
+			return getEventParticipationMonitorHeaders(
+				this.resultsMode,
+				this.eventParticipations,
+			);
 		},
 		participationsData() {
 			if (!this.eventParticipations) {

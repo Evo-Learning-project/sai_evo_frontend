@@ -3,7 +3,20 @@
 		<spinner v-if="loading"></spinner>
 		<div class="flex flex-col h-full">
 			<h1 class="mx-auto text-4xl text-center text-primary">SAI Evolution</h1>
-			<div class="w-11/12 pb-12 mx-auto my-auto text-center rounded bg-gray-50 pt-11 lg:px-52 lg:w-max login-card">
+			<div
+				class="
+					w-11/12
+					pb-12
+					mx-auto
+					my-auto
+					text-center
+					rounded
+					bg-gray-50
+					pt-11
+					lg:px-52 lg:w-max
+					login-card
+				"
+			>
 				<h1 class="mx-auto mb-12 text-4xl text-center">
 					{{ $t("headings.login") }}
 				</h1>
@@ -14,10 +27,18 @@
 					<!-- <span class="text-gray-300 text-8xl material-symbols-outlined">
             account_circle
           </span> -->
-					<span style="font-size: 145px" class="opacity-100 material-icons text-light"> person </span>
+					<span style="font-size: 145px" class="opacity-100 material-icons text-light">
+						person
+					</span>
 				</div>
-				<div v-if="googleOauthHadError" class="-mx-48 space-x-1.5 banner banner-danger mt-6">
-					<div style="width: 30px; height: 30px" class="pl-1 pt-0.5 rounded-full bg-danger bg-opacity-50">
+				<div
+					v-if="googleOauthHadError"
+					class="-mx-48 space-x-1.5 banner banner-danger mt-6"
+				>
+					<div
+						style="width: 30px; height: 30px"
+						class="pl-1 pt-0.5 rounded-full bg-danger bg-opacity-50"
+					>
 						<span class="mr-2 opacity-100 text-danger-dark">
 							<svg style="width: 22px; height: 22px" viewBox="0 0 24 24">
 								<path

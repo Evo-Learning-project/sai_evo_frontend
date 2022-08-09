@@ -27,14 +27,21 @@ export async function getExercises(
 	filter: ExerciseSearchFilter | null,
 ): Promise<{ exercises: Exercise[]; moreResults: boolean }> {
 	const filterUrlQuery = getExerciseUrlQueryParams(filter);
-	const response = await axios.get(`/courses/${courseId}/exercises/?page=${pageNumber}${filterUrlQuery}`);
+	const response = await axios.get(
+		`/courses/${courseId}/exercises/?page=${pageNumber}${filterUrlQuery}`,
+	);
 	return {
-		exercises: (response.data.results as Exercise[]).map(e => normalizeIncomingExercise(e)),
+		exercises: (response.data.results as Exercise[]).map(e =>
+			normalizeIncomingExercise(e),
+		),
 		moreResults: !!response.data.next,
 	};
 }
 
-export async function getExercisesById(courseId: string, exerciseIds: string[]): Promise<Exercise[]> {
+export async function getExercisesById(
+	courseId: string,
+	exerciseIds: string[],
+): Promise<Exercise[]> {
 	const url = `/courses/${courseId}/exercises/bulk_get/?ids=${exerciseIds.join(",")}`;
 	const response = await axios.get(url);
 	return response.data.map((e: Exercise) => normalizeIncomingExercise(e));
@@ -63,18 +70,31 @@ export async function removeTagFromExercise(
 	});
 }
 
-export async function createExercise(courseId: string, exercise: Exercise): Promise<Exercise> {
+export async function createExercise(
+	courseId: string,
+	exercise: Exercise,
+): Promise<Exercise> {
 	const response = await axios.post(`courses/${courseId}/exercises/`, exercise);
 	return normalizeIncomingExercise(response.data);
 }
 
-export async function bulkCreateExercises(courseId: string, exercises: Exercise[]): Promise<Exercise[]> {
+export async function bulkCreateExercises(
+	courseId: string,
+	exercises: Exercise[],
+): Promise<Exercise[]> {
 	const response = await axios.post(`courses/${courseId}/exercises/`, exercises);
 	return response.data.map((e: Exercise) => normalizeIncomingExercise(e));
 }
 
-export async function updateExercise(courseId: string, exerciseId: string, exercise: Exercise): Promise<Exercise> {
-	const response = await axios.put(`courses/${courseId}/exercises/${exerciseId}/`, exercise);
+export async function updateExercise(
+	courseId: string,
+	exerciseId: string,
+	exercise: Exercise,
+): Promise<Exercise> {
+	const response = await axios.put(
+		`courses/${courseId}/exercises/${exerciseId}/`,
+		exercise,
+	);
 	return normalizeIncomingExercise(response.data);
 }
 
@@ -82,17 +102,27 @@ export async function testProgrammingExerciseSolution(
 	courseId: string,
 	exerciseId: string,
 ): Promise<CodeExecutionResults> {
-	const response = await axios.post(`courses/${courseId}/exercises/${exerciseId}/solution_execution_results/`);
+	const response = await axios.post(
+		`courses/${courseId}/exercises/${exerciseId}/solution_execution_results/`,
+	);
 	return response.data;
 }
 
-export async function deleteExercise(courseId: string, exerciseId: string): Promise<void> {
+export async function deleteExercise(
+	courseId: string,
+	exerciseId: string,
+): Promise<void> {
 	const response = await axios.delete(`/courses/${courseId}/exercises/${exerciseId}/`);
 	return response.data;
 }
 
-export async function getExerciseChoices(courseId: string, exerciseId: string): Promise<ExerciseChoice[]> {
-	const response = await axios.get(`/courses/${courseId}/exercises/${exerciseId}/choices/`);
+export async function getExerciseChoices(
+	courseId: string,
+	exerciseId: string,
+): Promise<ExerciseChoice[]> {
+	const response = await axios.get(
+		`/courses/${courseId}/exercises/${exerciseId}/choices/`,
+	);
 	return response.data.map((c: ExerciseChoice) => normalizeIncomingExerciseChoice(c));
 }
 
@@ -101,7 +131,10 @@ export async function createExerciseChoice(
 	exerciseId: string,
 	choice: ExerciseChoice,
 ): Promise<ExerciseChoice> {
-	const response = await axios.post(`/courses/${courseId}/exercises/${exerciseId}/choices/`, choice);
+	const response = await axios.post(
+		`/courses/${courseId}/exercises/${exerciseId}/choices/`,
+		choice,
+	);
 	return normalizeIncomingExerciseChoice(response.data);
 }
 
@@ -111,7 +144,10 @@ export async function updateExerciseChoice(
 	choiceId: string,
 	choice: ExerciseChoice,
 ): Promise<ExerciseChoice> {
-	const response = await axios.put(`/courses/${courseId}/exercises/${exerciseId}/choices/${choiceId}/`, choice);
+	const response = await axios.put(
+		`/courses/${courseId}/exercises/${exerciseId}/choices/${choiceId}/`,
+		choice,
+	);
 	return normalizeIncomingExerciseChoice(response.data);
 }
 
@@ -120,7 +156,9 @@ export async function deleteExerciseChoice(
 	exerciseId: string,
 	choiceId: string,
 ): Promise<ExerciseChoice> {
-	const response = await axios.delete(`/courses/${courseId}/exercises/${exerciseId}/choices/${choiceId}/`);
+	const response = await axios.delete(
+		`/courses/${courseId}/exercises/${exerciseId}/choices/${choiceId}/`,
+	);
 	return response.data;
 }
 
@@ -129,12 +167,19 @@ export async function deleteExerciseTestCase(
 	exerciseId: string,
 	testcaseId: string,
 ): Promise<ExerciseChoice> {
-	const response = await axios.delete(`/courses/${courseId}/exercises/${exerciseId}/testcases/${testcaseId}/`);
+	const response = await axios.delete(
+		`/courses/${courseId}/exercises/${exerciseId}/testcases/${testcaseId}/`,
+	);
 	return response.data;
 }
 
-export async function getExerciseSubExercises(courseId: string, exerciseId: string): Promise<Exercise[]> {
-	const response = await axios.get(`/courses/${courseId}/exercises/${exerciseId}/sub_exercises/`);
+export async function getExerciseSubExercises(
+	courseId: string,
+	exerciseId: string,
+): Promise<Exercise[]> {
+	const response = await axios.get(
+		`/courses/${courseId}/exercises/${exerciseId}/sub_exercises/`,
+	);
 	return response.data.map((e: Exercise) => normalizeIncomingExercise(e));
 }
 
@@ -143,7 +188,10 @@ export async function createExerciseSubExercise(
 	exerciseId: string,
 	subExercise: Exercise,
 ): Promise<Exercise> {
-	const response = await axios.post(`/courses/${courseId}/exercises/${exerciseId}/sub_exercises/`, subExercise);
+	const response = await axios.post(
+		`/courses/${courseId}/exercises/${exerciseId}/sub_exercises/`,
+		subExercise,
+	);
 	return normalizeIncomingExercise(response.data);
 }
 
@@ -165,7 +213,9 @@ export async function deleteExerciseSubExercise(
 	exerciseId: string,
 	subExerciseId: string,
 ): Promise<void> {
-	const response = await axios.delete(`/courses/${courseId}/exercises/${exerciseId}/sub_exercises/${subExerciseId}/`);
+	const response = await axios.delete(
+		`/courses/${courseId}/exercises/${exerciseId}/sub_exercises/${subExerciseId}/`,
+	);
 	return response.data;
 }
 
@@ -174,7 +224,10 @@ export async function createExerciseTestCase(
 	exerciseId: string,
 	testcase: ExerciseTestCase,
 ): Promise<ExerciseTestCase> {
-	const response = await axios.post(`/courses/${courseId}/exercises/${exerciseId}/testcases/`, testcase);
+	const response = await axios.post(
+		`/courses/${courseId}/exercises/${exerciseId}/testcases/`,
+		testcase,
+	);
 	return response.data;
 }
 
@@ -184,7 +237,10 @@ export async function updateExerciseTestCase(
 	testcaseId: string,
 	testcase: ExerciseTestCase,
 ): Promise<ExerciseTestCase> {
-	const response = await axios.put(`/courses/${courseId}/exercises/${exerciseId}/testcases/${testcaseId}/`, testcase);
+	const response = await axios.put(
+		`/courses/${courseId}/exercises/${exerciseId}/testcases/${testcaseId}/`,
+		testcase,
+	);
 	return response.data;
 }
 
@@ -193,7 +249,10 @@ export async function createExerciseSolution(
 	exerciseId: string,
 	solution: ExerciseSolution,
 ): Promise<ExerciseSolution> {
-	const response = await axios.post(`/courses/${courseId}/exercises/${exerciseId}/solutions/`, solution);
+	const response = await axios.post(
+		`/courses/${courseId}/exercises/${exerciseId}/solutions/`,
+		solution,
+	);
 	return response.data;
 }
 
@@ -203,7 +262,10 @@ export async function updateExerciseSolution(
 	solutionId: string,
 	solution: ExerciseSolution,
 ): Promise<ExerciseSolution> {
-	const response = await axios.patch(`/courses/${courseId}/exercises/${exerciseId}/solutions/${solutionId}/`, solution);
+	const response = await axios.patch(
+		`/courses/${courseId}/exercises/${exerciseId}/solutions/${solutionId}/`,
+		solution,
+	);
 	return response.data;
 }
 

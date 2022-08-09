@@ -2,7 +2,10 @@
 	<div class="-mt-6">
 		<div class="flex items-center mb-4 space-x-2">
 			<router-link class="" :to="{ name: 'ExamResults' }">
-				<Btn :outline="true" :variant="'icon'" :tooltip="$t('event_stats.back_to_results')"
+				<Btn
+					:outline="true"
+					:variant="'icon'"
+					:tooltip="$t('event_stats.back_to_results')"
 					><span class="material-icons-outlined">arrow_back</span></Btn
 				></router-link
 			>
@@ -30,7 +33,9 @@
 					<div class="flex flex-col items-center w-1/3 mr-4 card shadow-elevation">
 						<div class="flex space-x-0.5 text-2xl items-center">
 							<p>{{ turnedInCount }}</p>
-							<span class="text-3xl material-icons-two-tone two-tone-success">assignment_turned_in</span>
+							<span class="text-3xl material-icons-two-tone two-tone-success"
+								>assignment_turned_in</span
+							>
 						</div>
 						<p class="text-sm text-muted">
 							{{ $t("event_monitor.stats_turned_in") }}
@@ -52,7 +57,9 @@
 							<span class="text-lg inline-icon text-success material-icons-outlined">{{
 								participationStateIcons[EventParticipationState.TURNED_IN][0]
 							}}</span>
-							<span style="margin-left: -1px">{{ $t("event_monitor.in_column_state") }}</span>
+							<span style="margin-left: -1px">{{
+								$t("event_monitor.in_column_state")
+							}}</span>
 						</p>
 					</div>
 				</div>
@@ -63,7 +70,9 @@
 					v-if="!areAllParticipationsFullyAssessed(eventParticipations)"
 					class="flex my-4 transition-all duration-200 banner banner-danger"
 				>
-					<span class="ml-px text-yellow-900 material-icons-outlined"> pending_actions </span>
+					<span class="ml-px text-yellow-900 material-icons-outlined">
+						pending_actions
+					</span>
 					<p class="">{{ $t("event_stats.incomplete_scores") }}.</p>
 				</div>
 				<div class="w-full h-96">
@@ -77,7 +86,11 @@
 
 			<div v-if="!localLoading" v-show="currentTab === ExamStatsTabs.EXERCISES">
 				<h2>{{ $t("event_stats.per_exercise_stats") }}</h2>
-				<div v-for="(exercise, index) in exercises" :key="'e-stats-' + exercise?.id + '-' + index" class="my-8">
+				<div
+					v-for="(exercise, index) in exercises"
+					:key="'e-stats-' + exercise?.id + '-' + index"
+					class="my-8"
+				>
 					<!-- TODO find a better way to check exercises have been loaded 
         than v-if="exercise" -->
 					<ExerciseWithStats
@@ -87,7 +100,11 @@
 					></ExerciseWithStats>
 				</div>
 			</div>
-			<div class="flex flex-col space-y-8" v-show="currentTab === ExamStatsTabs.EXERCISES" v-else>
+			<div
+				class="flex flex-col space-y-8"
+				v-show="currentTab === ExamStatsTabs.EXERCISES"
+				v-else
+			>
 				<MinimalExercisePreviewSkeleton></MinimalExercisePreviewSkeleton>
 				<MinimalExercisePreviewSkeleton></MinimalExercisePreviewSkeleton>
 				<MinimalExercisePreviewSkeleton></MinimalExercisePreviewSkeleton>
@@ -99,7 +116,13 @@
 
 <script lang="ts">
 import { courseIdMixin, eventIdMixin, loadingMixin, mediaQueryMixin } from "@/mixins";
-import { Event, EventParticipation, EventParticipationState, EventTemplateRule, Exercise } from "@/models";
+import {
+	Event,
+	EventParticipation,
+	EventParticipationState,
+	EventTemplateRule,
+	Exercise,
+} from "@/models";
 import { defineComponent, PropType } from "@vue/runtime-core";
 import { createNamespacedHelpers } from "vuex";
 import { icons as participationStateIcons } from "@/assets/participationStateIcons";
@@ -107,7 +130,15 @@ import { icons as participationStateIcons } from "@/assets/participationStateIco
 const { mapState, mapActions, mapGetters } = createNamespacedHelpers("teacher");
 import { Bar } from "vue-chartjs";
 import { TChartData } from "vue-chartjs/dist/types";
-import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale } from "chart.js";
+import {
+	Chart as ChartJS,
+	Title,
+	Tooltip,
+	Legend,
+	BarElement,
+	CategoryScale,
+	LinearScale,
+} from "chart.js";
 import { _DeepPartialObject } from "chart.js/types/utils";
 import { getTranslatedString as _ } from "@/i18n";
 import Btn from "@/components/ui/Btn.vue";
@@ -226,8 +257,9 @@ export default defineComponent({
 		},
 		turnedInCount() {
 			return (
-				this.eventParticipations?.filter((p: EventParticipation) => p.state === EventParticipationState.TURNED_IN)
-					.length ?? 0
+				this.eventParticipations?.filter(
+					(p: EventParticipation) => p.state === EventParticipationState.TURNED_IN,
+				).length ?? 0
 			);
 		},
 		averageProgress() {
@@ -244,7 +276,11 @@ export default defineComponent({
 			const perc =
 				(100 *
 					participations
-						.map(p => (p.state === EventParticipationState.TURNED_IN ? p.slots.length : p.current_slot_cursor ?? 0))
+						.map(p =>
+							p.state === EventParticipationState.TURNED_IN
+								? p.slots.length
+								: p.current_slot_cursor ?? 0,
+						)
 						.reduce((a, b) => a + b)) /
 				divisor;
 			return Math.round(perc * 100) / 100;

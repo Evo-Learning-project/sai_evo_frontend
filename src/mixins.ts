@@ -24,10 +24,15 @@ export const eventIdMixin = {
 			return router.currentRoute.value.params.examId as string;
 		},
 		currentEvent(): string {
-			return (store.state as { student: StudentState }).student.currentEventParticipation?.event?.name ?? "";
+			return (
+				(store.state as { student: StudentState }).student.currentEventParticipation
+					?.event?.name ?? ""
+			);
 		},
 		previewingEvent(): string {
-			return (store.state as { student: StudentState }).student.previewingEvent?.name ?? "";
+			return (
+				(store.state as { student: StudentState }).student.previewingEvent?.name ?? ""
+			);
 		},
 	},
 };
@@ -52,7 +57,11 @@ export const mediaQueryMixin = {
 
 export const loadingMixin = {
 	methods: {
-		async withLoading(callback: () => unknown, onError?: (e?: unknown) => unknown, onSuccess?: () => void) {
+		async withLoading(
+			callback: () => unknown,
+			onError?: (e?: unknown) => unknown,
+			onSuccess?: () => void,
+		) {
 			const sharedState = (store.state as { shared: SharedState }).shared;
 
 			sharedState.loading = true;

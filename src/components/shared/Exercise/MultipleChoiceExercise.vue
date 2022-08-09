@@ -36,7 +36,9 @@
 			>
 
 			<RadioGroup
-				v-else-if="exercise.exercise_type === ExerciseType.MULTIPLE_CHOICE_SINGLE_POSSIBLE"
+				v-else-if="
+					exercise.exercise_type === ExerciseType.MULTIPLE_CHOICE_SINGLE_POSSIBLE
+				"
 				:options="exerciseChoicesAsOptions"
 				v-model="selectedChoicesProxy"
 				:disabled="readOnly"
@@ -77,7 +79,13 @@
 </template>
 
 <script lang="ts">
-import { EventParticipationSlotSubmission, Exercise, ExerciseChoice, ExerciseType, getEmptySubmission } from "@/models";
+import {
+	EventParticipationSlotSubmission,
+	Exercise,
+	ExerciseChoice,
+	ExerciseType,
+	getEmptySubmission,
+} from "@/models";
 import { defineComponent, PropType } from "@vue/runtime-core";
 import AbstractExercise from "./AbstractExercise.vue";
 import CheckboxGroup from "@/components/ui/CheckboxGroup.vue";
@@ -103,7 +111,10 @@ export default defineComponent({
 				return this.submission.selected_choices;
 			},
 			set(val: string | string[]) {
-				this.$emit("updateSubmission", ["selected_choices", typeof val === "object" ? val : [val]]);
+				this.$emit("updateSubmission", [
+					"selected_choices",
+					typeof val === "object" ? val : [val],
+				]);
 			},
 		},
 		correctChoices(): string[] {
@@ -120,7 +131,11 @@ export default defineComponent({
 			return (this.exercise.choices as ExerciseChoice[]).map(c => ({
 				value: c.id,
 				content: formatExerciseText(c.text),
-				description: this.showSolution ? (this.correctChoices.includes(c.id) ? "done" : "close") : "", // TODO instead of putting it in the description, there should be an `extras` parameter
+				description: this.showSolution
+					? this.correctChoices.includes(c.id)
+						? "done"
+						: "close"
+					: "", // TODO instead of putting it in the description, there should be an `extras` parameter
 			}));
 		},
 	},

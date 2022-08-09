@@ -9,10 +9,17 @@
 					{{ $t("programming_exercise.results_ok_but_no_testcases") }}
 				</p>
 			</div>
-			<div v-for="(test, index) in filteredExecutionResultsTests" :key="'details-' + test.id" class="px-6 py-6 -mx-2">
+			<div
+				v-for="(test, index) in filteredExecutionResultsTests"
+				:key="'details-' + test.id"
+				class="px-6 py-6 -mx-2"
+			>
 				<div v-if="!onlyErrors" class="flex items-center mb-2 space-x-3">
 					<h5 class="">{{ $t("programming_exercise.testcase") }} {{ index + 1 }}</h5>
-					<div v-if="test.passed" class="flex items-center font-semibold text-success-dark">
+					<div
+						v-if="test.passed"
+						class="flex items-center font-semibold text-success-dark"
+					>
 						<span class="mr-1 text-base material-icons-outlined"> done </span>
 						<span>{{ $t("programming_exercise.passed") }}</span>
 					</div>
@@ -22,22 +29,36 @@
 					</div>
 				</div>
 
-				<ExerciseTestCase :small="true" v-if="!onlyErrors" :test-case="exerciseTestCase(test.id)"></ExerciseTestCase>
+				<ExerciseTestCase
+					:small="true"
+					v-if="!onlyErrors"
+					:test-case="exerciseTestCase(test.id)"
+				></ExerciseTestCase>
 				<div v-if="!test.passed && test.stdout" class="mt-3">
-					<p class="mb-1 text-muted">{{ $t("programming_exercise.test_failed_stdout") }}:</p>
+					<p class="mb-1 text-muted">
+						{{ $t("programming_exercise.test_failed_stdout") }}:
+					</p>
 					<CodeFragment :value="test.stdout" :small="true"></CodeFragment>
 				</div>
 				<div v-if="!test.passed && test.error" class="mt-3">
-					<p class="mb-1 text-muted">{{ $t("programming_exercise.test_failed_with_error") }}:</p>
+					<p class="mb-1 text-muted">
+						{{ $t("programming_exercise.test_failed_with_error") }}:
+					</p>
 					<CodeFragment :value="test.stderr || test.error" :small="true"></CodeFragment>
 				</div>
 			</div>
 		</div>
-		<div class="px-4 pt-1" v-else-if="!!executionResults && executionResults.execution_error">
+		<div
+			class="px-4 pt-1"
+			v-else-if="!!executionResults && executionResults.execution_error"
+		>
 			<p class="mb-1 text-muted">{{ $t("programming_exercise.code_errored") }}:</p>
 			<CodeFragment :value="executionResults?.execution_error"></CodeFragment>
 		</div>
-		<div class="px-4 pt-1" v-else-if="!!executionResults && executionResults.compilation_errors">
+		<div
+			class="px-4 pt-1"
+			v-else-if="!!executionResults && executionResults.compilation_errors"
+		>
 			<p class="mb-1 text-muted">{{ $t("programming_exercise.compilation_errored") }}:</p>
 			<CodeFragment :value="String(executionResults?.compilation_errors)"></CodeFragment>
 		</div>
@@ -45,7 +66,11 @@
 </template>
 
 <script lang="ts">
-import { CodeExecutionResults, EventParticipationSlot, ExerciseTestCase as IExerciseTestCase } from "@/models";
+import {
+	CodeExecutionResults,
+	EventParticipationSlot,
+	ExerciseTestCase as IExerciseTestCase,
+} from "@/models";
 import { defineComponent, PropType } from "@vue/runtime-core";
 import ExerciseTestCase from "./ExerciseTestCase.vue";
 import CodeFragment from "../ui/CodeFragment.vue";
@@ -80,7 +105,9 @@ export default defineComponent({
 		},
 		filteredExecutionResultsTests() {
 			return this.executionResults?.tests?.filter(
-				t => this.showTestIds.length === 0 || this.showTestIds.map(i => String(i)).includes(String(t.id)),
+				t =>
+					this.showTestIds.length === 0 ||
+					this.showTestIds.map(i => String(i)).includes(String(t.id)),
 			);
 		},
 	},

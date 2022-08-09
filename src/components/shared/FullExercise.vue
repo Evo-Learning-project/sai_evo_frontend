@@ -8,7 +8,11 @@
 </template>
 
 <script lang="ts">
-import { EventParticipationSlot, Exercise as IExercise, getFakeEventParticipationSlot } from "@/models";
+import {
+	EventParticipationSlot,
+	Exercise as IExercise,
+	getFakeEventParticipationSlot,
+} from "@/models";
 import { defineComponent, PropType } from "@vue/runtime-core";
 import Exercise from "./Exercise/Exercise.vue";
 import AbstractEventParticipationSlot from "./AbstractEventParticipationSlot.vue"; // A read-only fake EventParticipationSlot as a wrapper to show an exercise

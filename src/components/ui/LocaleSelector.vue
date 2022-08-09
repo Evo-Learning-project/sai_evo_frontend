@@ -10,7 +10,9 @@
 						tabindex="0"
 						v-wave
 						:class="[
-							locale === $i18n.locale ? 'bg-primary bg-opacity-20 text-primary font-semibold' : 'hover:bg-light',
+							locale === $i18n.locale
+								? 'bg-primary bg-opacity-20 text-primary font-semibold'
+								: 'hover:bg-light',
 						]"
 						class="flex px-8 py-2 transition-colors cursor-pointer items-top duration75"
 						v-for="locale in $i18n.availableLocales"

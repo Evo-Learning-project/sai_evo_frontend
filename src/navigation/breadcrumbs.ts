@@ -19,7 +19,10 @@ const courseDashBoardBreadCrumb: BreadCrumb = {
 
 export const courseListBreadCrumbs: BreadCrumb[] = [courseListBreadCrumb];
 
-export const courseDashBoardBreadCrumbs: BreadCrumb[] = [courseListBreadCrumb, courseDashBoardBreadCrumb];
+export const courseDashBoardBreadCrumbs: BreadCrumb[] = [
+	courseListBreadCrumb,
+	courseDashBoardBreadCrumb,
+];
 
 export const examParticipationBreadCrumbs: BreadCrumb[] = [
 	courseListBreadCrumb,
@@ -62,5 +65,14 @@ export const examAssessmentBreadCrumbs: BreadCrumb[] = [
 	{
 		title: _("breadcrumbs.exam_assessment"),
 		routeName: "AssessmentReviewPage",
+	},
+];
+
+export const exerciseSolutionThreadBreadCrumbs: BreadCrumb[] = [
+	courseListBreadCrumb,
+	courseDashBoardBreadCrumb,
+	{
+		title: _("breadcrumbs.exercise_solution_thread"),
+		routeName: "ExerciseSolutionThread",
 	},
 ];

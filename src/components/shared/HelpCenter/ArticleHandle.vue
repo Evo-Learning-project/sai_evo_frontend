@@ -1,5 +1,8 @@
 <template>
-	<span class="underline cursor-pointer text-primary hover:text-primary-dark" @click="onClick">
+	<span
+		class="underline cursor-pointer text-primary hover:text-primary-dark"
+		@click="onClick"
+	>
 		<slot></slot>
 		<span>{{ text }}</span>
 	</span>

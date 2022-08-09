@@ -73,19 +73,29 @@
 				v-if="allowEditAssessment && (modelValue.seen_at || modelValue.answered_at)"
 			>
 				<div class="flex items-center" v-if="modelValue.seen_at">
-					<span class="mr-1 text-sm material-icons-outlined text-muted"> visibility </span>
-					<span class="text-muted">{{ $t("event_assessment.exercise_seen_at") }}&nbsp;</span>
+					<span class="mr-1 text-sm material-icons-outlined text-muted">
+						visibility
+					</span>
+					<span class="text-muted"
+						>{{ $t("event_assessment.exercise_seen_at") }}&nbsp;</span
+					>
 					<Timestamp :value="modelValue.seen_at"></Timestamp>
 				</div>
 				<div class="flex items-center" v-if="modelValue.answered_at">
-					<span class="mr-1 text-sm material-icons-outlined text-muted"> question_answer </span>
-					<span class="text-muted">{{ $t("event_assessment.exercise_answered_at") }}&nbsp;</span
+					<span class="mr-1 text-sm material-icons-outlined text-muted">
+						question_answer
+					</span>
+					<span class="text-muted"
+						>{{ $t("event_assessment.exercise_answered_at") }}&nbsp;</span
 					><Timestamp :value="modelValue.answered_at"></Timestamp>
 				</div>
 			</div>
 
 			<!-- sub-slots -->
-			<div class="mt-8 sub-slot-container" v-if="exercise.exercise_type === ExerciseType.AGGREGATED">
+			<div
+				class="mt-8 sub-slot-container"
+				v-if="exercise.exercise_type === ExerciseType.AGGREGATED"
+			>
 				<!-- aggregated exercise -->
 				<div
 					v-for="(subSlot, index) in modelValue.sub_slots"
@@ -116,7 +126,11 @@
 			</div>
 
 			<!-- solution -->
-			<ExerciseSolutionContainer :exercise="exercise" class="w-full mt-4" v-if="showSolutionAndScores" />
+			<ExerciseSolutionContainer
+				:exercise="exercise"
+				class="w-full mt-4"
+				v-if="showSolutionAndScores"
+			/>
 		</div>
 	</div>
 </template>
@@ -152,7 +166,10 @@ export default defineComponent({
 		blur(slot: EventParticipationSlot) {
 			return true;
 		},
-		saveAssessment(payload: { slot: EventParticipationSlot; changes: { score: number | null; comment: string } }) {
+		saveAssessment(payload: {
+			slot: EventParticipationSlot;
+			changes: { score: number | null; comment: string };
+		}) {
 			return true;
 		},
 		updateSubmission(payload: {
@@ -294,7 +311,8 @@ export default defineComponent({
 			};
 		},
 		submission(): EventParticipationSlotSubmission {
-			const { selected_choices, answer_text, execution_results, attachment } = this.modelValue;
+			const { selected_choices, answer_text, execution_results, attachment } =
+				this.modelValue;
 			return {
 				selected_choices,
 				answer_text,
@@ -309,7 +327,10 @@ export default defineComponent({
 			return isOpenAnswerExercise(this.exercise);
 		},
 		assessmentExpanded(): boolean {
-			return this.assessmentWriteOnly || (this.assessmentControlsVisibility?.[this.modelValue.id] ?? false);
+			return (
+				this.assessmentWriteOnly ||
+				(this.assessmentControlsVisibility?.[this.modelValue.id] ?? false)
+			);
 		},
 		someSubSlotsPending(): boolean {
 			return this.modelValue.sub_slots.some(s => s.score === null);

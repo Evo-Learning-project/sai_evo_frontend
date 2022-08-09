@@ -1,6 +1,10 @@
 <template>
 	<div class="relative flex flex-col flex-grow">
-		<HelpCenter @startTour="startTour()" @close="setHelpCenterVisibility(false)" v-if="helpCenterOpen"></HelpCenter>
+		<HelpCenter
+			@startTour="startTour()"
+			@close="setHelpCenterVisibility(false)"
+			v-if="helpCenterOpen"
+		></HelpCenter>
 		<nav
 			style="z-index: 100"
 			class="
@@ -29,14 +33,19 @@
 						@click="toggleFixSideBar()"
 						class="hidden lg:block"
 					>
-						<span class="text-gray-200 material-icons-outlined">{{ fixSideBar ? "menu_open" : "menu" }}</span>
+						<span class="text-gray-200 material-icons-outlined">{{
+							fixSideBar ? "menu_open" : "menu"
+						}}</span>
 					</Btn>
 				</div>
 				<div class="flex items-center mr-auto lg:ml-10">
 					<img class="w-32 -ml-1" src="../../../public/unipi-logo.svg" />
 				</div>
 				<div class="">
-					<div v-if="$store.getters['shared/isAuthenticated']" class="flex items-center ml-4 md:ml-6">
+					<div
+						v-if="$store.getters['shared/isAuthenticated']"
+						class="flex items-center ml-4 md:ml-6"
+					>
 						<LocaleSelector v-if="false"></LocaleSelector>
 						<Btn
 							:tooltip="$t('help.help_guide_label')"
@@ -44,16 +53,27 @@
 							id="help-center"
 							:variant="'icon'"
 							:outline="true"
-							><span class="text-lg text-lightText material-icons-outlined"> help_outline </span></Btn
+							><span class="text-lg text-lightText material-icons-outlined">
+								help_outline
+							</span></Btn
 						>
 						<p class="ml-4 mr-1 text-xs text-lightText md:text-base">
 							{{ $store.getters["shared/email"] }}
 						</p>
-						<p @click="onShowMatEdit" class="hidden text-xs cursor-pointer md:block text-lightText md:text-sm">
+						<p
+							@click="onShowMatEdit"
+							class="hidden text-xs cursor-pointer md:block text-lightText md:text-sm"
+						>
 							{{ $store.state.shared.user?.mat }}
 						</p>
-						<Btn :tooltip="$t('misc.logout')" @click="logOut()" :variant="'icon'" :outline="true"
-							><span class="text-lg text-lightText material-icons-outlined"> logout </span></Btn
+						<Btn
+							:tooltip="$t('misc.logout')"
+							@click="logOut()"
+							:variant="'icon'"
+							:outline="true"
+							><span class="text-lg text-lightText material-icons-outlined">
+								logout
+							</span></Btn
 						>
 					</div>
 				</div>
@@ -70,17 +90,37 @@
 			<!-- bg-gray-500 -->
 			<nav
 				style="z-index: 999"
-				class="sticky top-0 flex items-center w-full px-3 py-2 shadow-elevation-2 md:hidden bg-primary"
+				class="
+					sticky
+					top-0
+					flex
+					items-center
+					w-full
+					px-3
+					py-2
+					shadow-elevation-2
+					md:hidden
+					bg-primary
+				"
 			>
 				<img class="w-32" src="../../../public/unipi-logo.svg" />
-				<Btn :variant="'icon'" :outline="true" class="ml-auto" @click="showMobileSidebar = true"
+				<Btn
+					:variant="'icon'"
+					:outline="true"
+					class="ml-auto"
+					@click="showMobileSidebar = true"
 					><span class="material-icons-outlined text-lightText"> menu </span></Btn
 				>
 			</nav>
 			<!-- Sidebar starts -->
 			<!-- FIXME review shadow here and in the other two spots in this file -->
 			<div
-				:style="'' + (hoveringSidebar && !fixSideBar ? 'box-shadow: 2px 5px 5px rgba(0, 0, 0, 0.3); z-index: 50' : '')"
+				:style="
+					'' +
+					(hoveringSidebar && !fixSideBar
+						? 'box-shadow: 2px 5px 5px rgba(0, 0, 0, 0.3); z-index: 50'
+						: '')
+				"
 				class="flex-col hidden h-full md:block bg-light"
 				:class="{
 					'absolute top-0': true || !fixSideBar,
@@ -91,11 +131,25 @@
 				id="desktop-nav"
 			>
 				<div class="fixed h-full pr-2" style="width: inherit; z-index: 100">
-					<div class="h-full" @mouseover="onSideBarHover($event)" @mouseleave="onSideBarLeave()">
+					<div
+						class="h-full"
+						@mouseover="onSideBarHover($event)"
+						@mouseleave="onSideBarLeave()"
+					>
 						<transition name="fade-quick">
 							<div
 								:class="[hoveringSidebar || fixSideBar ? 'opacity-100' : 'opacity-0']"
-								class="flex items-center hidden w-full pl-10 pr-8 mt-4 overflow-visible whitespace-pre"
+								class="
+									flex
+									items-center
+									hidden
+									w-full
+									pl-10
+									pr-8
+									mt-4
+									overflow-visible
+									whitespace-pre
+								"
 							>
 								<img class="w-36" src="../../../public/unipi-logo.svg" /></div
 						></transition>
@@ -121,7 +175,9 @@
 							>
 								<p>{{ $store.getters["shared/email"] }}</p>
 								<Btn @click="logOut()" :variant="'icon'" :outline="true"
-									><span class="text-lg text-lightText material-icons-outlined"> logout </span></Btn
+									><span class="text-lg text-lightText material-icons-outlined">
+										logout
+									</span></Btn
 								>
 							</div></transition
 						>
@@ -158,14 +214,17 @@
 										'md:w-11/12': false && fixSideBar,
 										'rounded-r-full pl-5 -ml-1.25px': hoveringSidebar || fixSideBar,
 										'rounded-full ml-1': !hoveringSidebar && !fixSideBar,
-										'bg-primary-light bg-opacity-30 pointer-events-none': isRouteActive(option),
+										'bg-primary-light bg-opacity-30 pointer-events-none':
+											isRouteActive(option),
 									}"
 								>
 									<div class="flex items-center space-x-2.5">
 										<span
 											:class="[
 												'text-2xl  material-icons-outlined',
-												isRouteActive(option) ? 'text-primary' : 'opacity-60 text-darkText',
+												isRouteActive(option)
+													? 'text-primary'
+													: 'opacity-60 text-darkText',
 											]"
 										>
 											{{ option.icon }}
@@ -219,11 +278,23 @@
 					</div>
 					<div
 						v-if="$store.getters['shared/isAuthenticated']"
-						class="flex items-center justify-center w-full mx-auto mt-8 mb-4 space-x-1 text-sm text-light"
+						class="
+							flex
+							items-center
+							justify-center
+							w-full
+							mx-auto
+							mt-8
+							mb-4
+							space-x-1
+							text-sm text-light
+						"
 					>
 						<p>{{ $store.getters["shared/email"] }}</p>
 						<Btn @click="logOut()" :variant="'icon'" :outline="true"
-							><span class="text-lg text-lightText material-icons-outlined"> logout </span></Btn
+							><span class="text-lg text-lightText material-icons-outlined">
+								logout
+							</span></Btn
 						>
 					</div>
 					<ul class="flex flex-col w-full h-full mt-6">
@@ -274,10 +345,15 @@
 				class="flex flex-col py-6"
 				:style="
 					!fixSideBar && mediaQueryMd
-						? 'width: 97%; padding-left: ' + Math.max(routerViewPaddingLeft + 30, 100) + 'px; padding-right: 30px'
+						? 'width: 97%; padding-left: ' +
+						  Math.max(routerViewPaddingLeft + 30, 100) +
+						  'px; padding-right: 30px'
 						: (fixSideBar && mediaQueryMd
 								? 'padding-left: calc(16.66667% + 30px); width: 100%; padding-right: 30px'
-								: '') + (!mediaQueryMd ? 'width: 100%; padding-left: 12px; padding-right: 12px' : '')
+								: '') +
+						  (!mediaQueryMd
+								? 'width: 100%; padding-left: 12px; padding-right: 12px'
+								: '')
 				"
 				:class="{
 					// TODO REMOVE
@@ -300,15 +376,26 @@
 				></transition>
 			</div>
 		</div>
-		<v-tour name="helpCenterTour" :steps="teacherTourSteps" :options="tourOptions"></v-tour>
-		<v-tour name="newSideBarTour" :steps="newSidebarHelpCenterTourSteps" :options="tourOptions"></v-tour>
+		<v-tour
+			name="helpCenterTour"
+			:steps="teacherTourSteps"
+			:options="tourOptions"
+		></v-tour>
+		<v-tour
+			name="newSideBarTour"
+			:steps="newSidebarHelpCenterTourSteps"
+			:options="tourOptions"
+		></v-tour>
 	</div>
 </template>
 
 <script lang="ts">
 import { courseIdMixin, coursePrivilegeMixin, eventIdMixin } from "@/mixins";
 import { Course, Event } from "@/models";
-import { ROUTE_TITLE_COURSE_NAME_TOKEN, ROUTE_TITLE_EVENT_NAME_TOKEN } from "@/navigation/const";
+import {
+	ROUTE_TITLE_COURSE_NAME_TOKEN,
+	ROUTE_TITLE_EVENT_NAME_TOKEN,
+} from "@/navigation/const";
 import { SidebarOption } from "@/navigation/sidebar";
 import { logOut } from "@/utils";
 import { defineComponent } from "@vue/runtime-core";
@@ -334,14 +421,21 @@ export default defineComponent({
 	},
 	mounted() {
 		setTimeout(() => {
-			this.routerViewPaddingLeft = document.getElementById("desktop-nav")?.clientWidth ?? 0;
-			const fixSideBar = JSON.parse(localStorage.getItem(LOCAL_STORAGE_FIX_SIDEBAR_KEY) ?? "false");
+			this.routerViewPaddingLeft =
+				document.getElementById("desktop-nav")?.clientWidth ?? 0;
+			const fixSideBar = JSON.parse(
+				localStorage.getItem(LOCAL_STORAGE_FIX_SIDEBAR_KEY) ?? "false",
+			);
 			this.unfixingSideBar = true;
 			this.fixSideBar = fixSideBar;
 			this.$nextTick(() => (this.unfixingSideBar = false));
 		}, 1);
 
-		if (!JSON.parse(localStorage.getItem(LOCAL_STORAGE_HAS_TAKEN_SIDEBAR_TOUR_KEY) ?? "false")) {
+		if (
+			!JSON.parse(
+				localStorage.getItem(LOCAL_STORAGE_HAS_TAKEN_SIDEBAR_TOUR_KEY) ?? "false",
+			)
+		) {
 			setTimeout(() => {
 				(this.$tours["newSideBarTour"] as any).start();
 				localStorage.setItem(LOCAL_STORAGE_HAS_TAKEN_SIDEBAR_TOUR_KEY, "true");
@@ -375,10 +469,16 @@ export default defineComponent({
 			(this.$tours["helpCenterTour"] as any).start();
 		},
 		isRouteActive(option: SidebarOption) {
-			return option.routeName === this.$route.name || option.children?.includes(this.$route.name as string);
+			return (
+				option.routeName === this.$route.name ||
+				option.children?.includes(this.$route.name as string)
+			);
 		},
 		onSideBarHover(event: MouseEvent) {
-			if (this.sideBarHoverHandle == null && !(event.target as any).className.split(" ").includes("no-hover-sidebar")) {
+			if (
+				this.sideBarHoverHandle == null &&
+				!(event.target as any).className.split(" ").includes("no-hover-sidebar")
+			) {
 				this.sideBarHoverHandle = setTimeout(() => (this.hoveringSidebar = true), 300);
 			}
 		},
@@ -418,7 +518,11 @@ export default defineComponent({
 		routerViewStyle() {
 			const unfixedSidebarOnMdScreen = !this.fixSideBar && this.mediaQueryMd;
 			return {
-				...(unfixedSidebarOnMdScreen ? { width: "97%" } : !this.mediaQueryMd ? { width: "100%" } : {}),
+				...(unfixedSidebarOnMdScreen
+					? { width: "97%" }
+					: !this.mediaQueryMd
+					? { width: "100%" }
+					: {}),
 				...(unfixedSidebarOnMdScreen
 					? {
 							"padding-left": this.routerViewPaddingLeft + "30" + "px",
