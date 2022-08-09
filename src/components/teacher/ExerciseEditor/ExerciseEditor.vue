@@ -269,6 +269,7 @@
 							:key="'e-' + modelValue.id + '-sol-' + solution.id"
 							class="my-2 flex space-x-2"
 						>
+							<!-- plain text solution -->
 							<TextEditor
 								class="w-full"
 								v-if="!cloze && !isProgrammingExercise"
@@ -277,6 +278,7 @@
 							>
 								<!-- {{ $t("exercise_editor.exercise_solution") }} -->
 							</TextEditor>
+							<!-- code solution -->
 							<div v-else-if="!cloze" class="relative w-full">
 								<CodeEditor
 									:modelValue="solution.content"
@@ -871,7 +873,6 @@ export default defineComponent({
 			const clozeSeparatorPositions = [...event.fullText.matchAll(/\[\[\?\]\]/g)].map(
 				m => m.index as number,
 			);
-			console.log(event);
 			if (event.range.length === 0 && event.text.includes(CLOZE_SEPARATOR)) {
 				let i = 0;
 				for (const p of clozeSeparatorPositions) {
@@ -1151,6 +1152,7 @@ export default defineComponent({
 						payload: { ...testcase, ...changes },
 						reFetch,
 					});
+					// TODO run all solutions
 					//await this.onTestSolution();
 				},
 				changes => {

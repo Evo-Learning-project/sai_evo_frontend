@@ -244,7 +244,7 @@ export const it = {
 		edit: "Modifica",
 		at: "alle",
 		copy: "Copia",
-		copied: "Copiato",
+		copied: "Copiato negli appunti",
 		confirm_exiting_unsaved_changes:
 			"Hai effettuato delle modifiche non ancora salvate. Se esci, perderai le ultime modifiche. Vuoi uscire?",
 		full_name: "Nome e cognome",
@@ -401,7 +401,7 @@ export const it = {
 		reopen: "Riapri",
 		still_open_for_some: "L'esame è ancora aperto per alcuni studenti.",
 		copy_link: "Copia link per gli studenti",
-		copied_link: "Copiato link per gli studenti",
+		copied_link: "Copiato link per gli studenti negli appunti",
 	},
 	event_monitor: {
 		stats_turned_in: "Consegnati",
