@@ -7,6 +7,7 @@ export interface StudentState {
 	eventParticipations: EventParticipation[];
 	editingEvent: Event | null;
 	previewingEvent: Event | null;
+	exerciseThreads: Exercise[];
 }
 export interface TeacherState {
 	exercises: Exercise[];

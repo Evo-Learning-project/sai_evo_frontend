@@ -2,6 +2,7 @@
 	<div v-if="!firstLoading">
 		<AbstractEventParticipationSlot :modelValue="slot" />
 		<ExerciseSolutionContainer
+			class="mt-8"
 			:exercise="exercise"
 			:showFirst="solutionId"
 		></ExerciseSolutionContainer>
@@ -15,7 +16,7 @@ import { defineComponent, PropType } from "@vue/runtime-core";
 import AbstractEventParticipationSlot from "@/components/shared/AbstractEventParticipationSlot.vue";
 import { courseIdMixin, loadingMixin } from "@/mixins";
 import ExerciseSolutionContainer from "@/components/shared/ExerciseSolution/ExerciseSolutionContainer.vue";
-import { getExercisesById } from "@/api/exercises";
+import { mapActions, mapGetters } from "vuex";
 export default defineComponent({
 	name: "ExerciseSolutionThread",
 	props: {},
@@ -23,16 +24,27 @@ export default defineComponent({
 	async created() {
 		await this.withFirstLoading(
 			async () =>
-				(this.exercise = (await getExercisesById(this.courseId, [this.exerciseId]))[0]),
+				await this.getExercises({
+					courseId: this.courseId,
+					exerciseIds: [this.exerciseId],
+				}),
 		);
 	},
-	data() {
-		return {
-			exercise: null as Exercise | null,
-		};
+	// data() {
+	// 	return {
+	// 		exercise: null as Exercise | null,
+	// 	};
+	// },
+	methods: {
+		...mapActions("student", ["getExercises"]),
 	},
-	methods: {},
 	computed: {
+		...mapGetters("student", ["exercises"]),
+		exercise() {
+			return (this.exercises as Exercise[]).find(
+				e => e.id == this.exerciseId,
+			) as Exercise;
+		},
 		solutionId() {
 			return this.$route.params.solutionId as string;
 		},

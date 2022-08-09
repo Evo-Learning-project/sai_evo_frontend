@@ -103,6 +103,10 @@ export default defineComponent({
 			type: Object as PropType<IExercise>,
 			required: true,
 		},
+		showFirst: {
+			type: String,
+			required: false,
+		},
 	},
 	mixins: [courseIdMixin, savingMixin],
 	methods: {
@@ -228,9 +232,11 @@ export default defineComponent({
 			return "text";
 		},
 		shownSolutions(): IExerciseSolution[] {
-			return this.nonDraftSolutions.filter(
-				(_, i) => this.showAll || i < SHOW_INITIALLY_COUNT,
-			);
+			const ret = [...this.nonDraftSolutions];
+			if (this.showFirst) {
+				ret.sort((a, _) => (a.id == this.showFirst ? -1 : 0));
+			}
+			return ret.filter((_, i) => this.showAll || i < SHOW_INITIALLY_COUNT);
 		},
 		draftSolutions(): IExerciseSolution[] {
 			return (this.exercise.solutions ?? []).filter(

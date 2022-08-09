@@ -13,6 +13,7 @@ import EventEditor from "../components/teacher/EventEditor/EventEditor.vue";
 import EventParticipationPage from "../views/student/EventParticipationPage.vue";
 import EventParticipationFull from "../views/shared/EventParticipationFull.vue";
 import ExamPreview from "../views/student/ExamPreview.vue";
+import ExerciseSolutionThread from "../views/student/ExerciseSolutionThread.vue";
 import EventParticipationsMonitor from "../views/teacher/EventParticipationsMonitor.vue";
 import EventStats from "../views/teacher/EventStats.vue";
 import Login from "../views/Login.vue";
@@ -237,6 +238,15 @@ const routes: Array<RouteRecordRaw> = [
 				component: StudentCourseDashboard,
 				meta: {
 					routeTitle: _("headings.course_title"),
+					breadcrumbs: courseDashBoardBreadCrumbs,
+				},
+			},
+			{
+				path: "courses/:courseId/threads/:exerciseId/:solutionId",
+				name: "ExerciseSolutionThread",
+				component: ExerciseSolutionThread,
+				meta: {
+					routeTitle: _("headings.student_exercise_solution_threads"),
 					breadcrumbs: courseDashBoardBreadCrumbs,
 				},
 			},

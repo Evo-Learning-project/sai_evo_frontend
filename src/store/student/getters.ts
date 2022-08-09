@@ -17,6 +17,8 @@ export const getters = {
 		].sort((p1, p2) =>
 			new Date(p1.begin_timestamp) < new Date(p2.begin_timestamp) ? 1 : -1,
 		),
-	exercises: (state: StudentState): Exercise[] =>
-		state.currentEventParticipation?.slots.map(s => s.exercise) ?? [],
+	exercises: (state: StudentState): Exercise[] => [
+		...(state.currentEventParticipation?.slots.map(s => s.exercise) ?? []),
+		...state.exerciseThreads,
+	],
 };

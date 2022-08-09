@@ -36,6 +36,7 @@ import { StudentState } from "../types";
 import {
 	createExerciseSolution,
 	createExerciseSolutionComment,
+	getExercisesById,
 	setExerciseSolutionBookmark,
 	voteExerciseSolution,
 } from "@/api/exercises";
@@ -452,5 +453,18 @@ export const actions = {
 			);
 		}
 		Object.assign(solution, updatedSolution);
+	},
+	getExercises: async (
+		{ state }: { state: StudentState },
+		{
+			courseId,
+			exerciseIds,
+		}: {
+			courseId: string;
+			exerciseIds: string[];
+		},
+	) => {
+		const exercises = await getExercisesById(courseId, exerciseIds);
+		state.exerciseThreads = exercises;
 	},
 };
