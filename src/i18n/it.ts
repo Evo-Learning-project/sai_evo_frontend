@@ -65,6 +65,7 @@ export const it = {
 		review_submission: "Revisione risposte",
 		review_assessment: "Correzione risposte",
 		practice_summary: "Riepilogo esercitazione",
+		student_exercise_solution_threads: "Discussione esercizio",
 	},
 	event_participation_page: {
 		times_up: "Tempo scaduto",
@@ -263,7 +264,12 @@ export const it = {
 		delete: "Elimina",
 		logout: "Logout",
 	},
+	exercise_solution_thread: {
+		thread_title: "Discussione esercizio",
+	},
 	exercise_solution: {
+		default_author: "Docenti del corso",
+		edit: "Modifica",
 		share: "Condividi",
 		add_bookmark: "Aggiungi ai preferiti",
 		remove_bookmark: "Rimuovi dai preferiti",
@@ -879,6 +885,7 @@ export const it = {
 		submission_review: "Revisione " + ROUTE_TITLE_EVENT_NAME_TOKEN,
 		practice_review: "Riepilogo esercitazione",
 		exam_assessment: "Valutazione " + ROUTE_TITLE_EVENT_NAME_TOKEN,
+		exercise_solution_thread: "Discussione esercizio",
 	},
 	course_list: {
 		filter_courses: "Cerca corsi",

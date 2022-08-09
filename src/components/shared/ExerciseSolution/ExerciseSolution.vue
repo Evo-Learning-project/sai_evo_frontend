@@ -80,12 +80,11 @@
 								@click="$emit('editSolution')"
 								><span class="material-icons">edit</span></Btn
 							>
-							<Btn
-								:variant="'icon'"
-								:outline="true"
+							<CopyToClipboard
+								:icon-only="true"
 								:tooltip="$t('exercise_solution.share')"
-								><span class="material-icons">share</span></Btn
-							>
+								:value="permalink"
+							/>
 							<Btn
 								:variant="'icon'"
 								:outline="true"
@@ -159,6 +158,9 @@ import ExerciseSolutionComment from "./ExerciseSolutionComment.vue";
 import ProcessedTextFragment from "@/components/ui/ProcessedTextFragment.vue";
 import { courseIdMixin, coursePrivilegeMixin } from "@/mixins";
 import { setErrorNotification } from "@/utils";
+import CopyToClipboard from "@/components/ui/CopyToClipboard.vue";
+import { getExerciseSolutionThreadRoute } from "./utils";
+import { getTranslatedString as _ } from "@/i18n";
 //import { v4 as uuid4 } from "uuid";
 export default defineComponent({
 	name: "ExerciseSolution",
@@ -184,10 +186,14 @@ export default defineComponent({
 			type: Boolean,
 			default: true,
 		},
+		forceExpanded: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	mounted() {
 		const contentElement = this.$refs.content as HTMLElement;
-		if (contentElement.clientHeight > this.MAX_CONTENT_HEIGHT_PX) {
+		if (contentElement.clientHeight > this.MAX_CONTENT_HEIGHT_PX && !this.forceExpanded) {
 			this.collapsed = true;
 		}
 	},
@@ -272,7 +278,7 @@ export default defineComponent({
 	computed: {
 		...mapState("shared", ["user"]),
 		authorName(): string {
-			return this.solution.user?.full_name ?? "Autore"; // TODO change default
+			return this.solution.user?.full_name ?? _("exercise_solution.default_author");
 		},
 		isOwnSolution(): boolean {
 			return (this.solution.user?.id ?? "") == this.user.id;
@@ -280,11 +286,18 @@ export default defineComponent({
 		canEdit(): boolean {
 			return this.isOwnSolution || this.hasAnyPrivileges();
 		},
-		// score(): number {
-		//   return this.solution.votes
-		//     .map((v) => (v.vote_type === VoteType.UP_VOTE ? 1 : -1))
-		//     .reduce((a, b) => a + b, 0);
-		// },
+		permalink(): string {
+			return (
+				window.location.origin +
+				this.$router.resolve(
+					getExerciseSolutionThreadRoute(
+						this.courseId,
+						this.exercise.id,
+						this.solution.id,
+					),
+				).fullPath
+			);
+		},
 	},
 	components: {
 		Btn,
@@ -292,6 +305,7 @@ export default defineComponent({
 		Avatar,
 		ExerciseSolutionComment,
 		ProcessedTextFragment,
+		CopyToClipboard,
 	},
 });
 </script>

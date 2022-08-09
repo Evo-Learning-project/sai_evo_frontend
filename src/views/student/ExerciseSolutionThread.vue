@@ -1,10 +1,12 @@
 <template>
-	<div v-if="!firstLoading">
+	<!-- <h2>{{ $t("exercise_solution_thread.thread_title") }}</h2> -->
+	<div class="mt-4" v-if="!firstLoading">
 		<AbstractEventParticipationSlot :modelValue="slot" />
 		<ExerciseSolutionContainer
 			class="mt-8"
 			:exercise="exercise"
 			:showFirst="solutionId"
+			:standalone="true"
 		></ExerciseSolutionContainer>
 	</div>
 	<SkeletonCard v-else />
@@ -17,6 +19,7 @@ import AbstractEventParticipationSlot from "@/components/shared/AbstractEventPar
 import { courseIdMixin, loadingMixin } from "@/mixins";
 import ExerciseSolutionContainer from "@/components/shared/ExerciseSolution/ExerciseSolutionContainer.vue";
 import { mapActions, mapGetters } from "vuex";
+import SkeletonCard from "@/components/ui/SkeletonCard.vue";
 export default defineComponent({
 	name: "ExerciseSolutionThread",
 	props: {},
@@ -58,7 +61,7 @@ export default defineComponent({
 			return getFakeEventParticipationSlot(this.exercise);
 		},
 	},
-	components: { AbstractEventParticipationSlot, ExerciseSolutionContainer },
+	components: { AbstractEventParticipationSlot, ExerciseSolutionContainer, SkeletonCard },
 });
 </script>
 

@@ -13,6 +13,7 @@
 			:key="'e-' + exercise.id + '-solution-' + solution.id"
 			:solution="solution"
 			:exercise="exercise"
+			:forceExpanded="standalone"
 			@editSolution="onEditSolution(solution)"
 		/>
 		<div
@@ -106,6 +107,10 @@ export default defineComponent({
 		showFirst: {
 			type: String,
 			required: false,
+		},
+		standalone: {
+			type: Boolean,
+			default: false,
 		},
 	},
 	mixins: [courseIdMixin, savingMixin],

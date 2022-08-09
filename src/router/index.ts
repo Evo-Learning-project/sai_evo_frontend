@@ -31,13 +31,13 @@ import {
 	courseListBreadCrumbs,
 	examAssessmentBreadCrumbs,
 	examParticipationBreadCrumbs,
+	exerciseSolutionThreadBreadCrumbs,
 	practiceParticipationBreadCrumbs,
 	practiceReviewBreadCrumbs,
 	submissionReviewBreadCrumbs,
 } from "@/navigation/breadcrumbs";
 import { getCourse } from "@/api/courses";
-
-const dispatchSolutionView = () => true;
+import { exerciseSolutionThreadBeforeGuard } from "./guards";
 
 const routes: Array<RouteRecordRaw> = [
 	{
@@ -59,22 +59,9 @@ const routes: Array<RouteRecordRaw> = [
 	},
 	{
 		path: "/threads/:courseId/:exerciseId/:solutionId",
-		name: "SolutionDispatcher",
-		component: Login,
-		//redirect: { name: "Login" },
-		beforeEnter: async (to, _, next) => {
-			const course = await getCourse(to.params.courseId as string);
-			const privileges = course.privileges ?? [];
-			if (privileges.length > 0) {
-				next("TeacherSolutions");
-			} else {
-				next("StudentSolutions");
-			}
-		},
-		// meta: {
-		// 	routeTitle: _("headings.login"),
-		// 	hideBreadcrumbs: true,
-		// },
+		name: "ExerciseSolutionThreadDispatcher",
+		component: MainStudent,
+		beforeEnter: exerciseSolutionThreadBeforeGuard,
 	},
 	{
 		path: "/teacher",
@@ -247,7 +234,7 @@ const routes: Array<RouteRecordRaw> = [
 				component: ExerciseSolutionThread,
 				meta: {
 					routeTitle: _("headings.student_exercise_solution_threads"),
-					breadcrumbs: courseDashBoardBreadCrumbs,
+					breadcrumbs: exerciseSolutionThreadBreadCrumbs,
 				},
 			},
 			{
