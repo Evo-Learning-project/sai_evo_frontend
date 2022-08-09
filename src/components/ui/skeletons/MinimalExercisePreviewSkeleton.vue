@@ -28,7 +28,12 @@
 				</div>
 				<div class="relative h-12 overflow-y-hidden opacity-0">
 					<div
-						style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden"
+						style="
+							display: -webkit-box;
+							-webkit-line-clamp: 2;
+							-webkit-box-orient: vertical;
+							overflow: hidden;
+						"
 						class="w-11/12 overflow-x-hidden overflow-ellipsis text-muted"
 					>
 						&nbsp;

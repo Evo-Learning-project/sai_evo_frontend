@@ -93,13 +93,26 @@
 				:tooltip="$t('event_template_editor.add_more_rules')"
 			>
 				<div class="w-max">
-					<div class="flex flex-col w-full space-y-2 md:space-y-0 md:items-center md:flex-row">
+					<div
+						class="
+							flex flex-col
+							w-full
+							space-y-2
+							md:space-y-0 md:items-center md:flex-row
+						"
+					>
 						<div class="flex items-center">
 							<p>{{ $t("misc.add") }}</p>
-							<NumberInput v-model="addRuleAmount" class="w-16 mx-2" :min="2"></NumberInput>
+							<NumberInput
+								v-model="addRuleAmount"
+								class="w-16 mx-2"
+								:min="2"
+							></NumberInput>
 							<p>{{ $t("misc.slots") }}</p>
 						</div>
-						<Btn :size="'sm'" class="md:ml-12" @click="onAddRule(addRuleAmount)">{{ $t("misc.add") }}</Btn>
+						<Btn :size="'sm'" class="md:ml-12" @click="onAddRule(addRuleAmount)">{{
+							$t("misc.add")
+						}}</Btn>
 					</div>
 					<!-- <p class="mt-2 text-sm text-muted">
             Tutti gli slot aggiunti avranno le stesse impostazioni.
@@ -187,7 +200,10 @@ export default defineComponent({
 		return {
 			elementId: uuid4(),
 			rulesAutoSaveInstances: {} as Record<string, AutoSaveManager<EventTemplateRule>>,
-			ruleClausesAutoSaveInstances: {} as Record<string, AutoSaveManager<EventTemplateRuleClause>>,
+			ruleClausesAutoSaveInstances: {} as Record<
+				string,
+				AutoSaveManager<EventTemplateRuleClause>
+			>,
 			addRuleAmount: 2,
 			addMultipleRulesExpanded: false,
 			viewMode: "list" as "grid" | "list" | "compact_list",
@@ -236,31 +252,35 @@ export default defineComponent({
 				.reduce((a, b) => a + b, 0);
 			//return this.modelValue.rules[index]._ordering ?? 0;
 		},
-		instantiateRuleClauseAutoSaveManager(ruleId: string, clause: EventTemplateRuleClause) {
-			this.ruleClausesAutoSaveInstances[clause.id] = new AutoSaveManager<EventTemplateRuleClause>(
-				clause,
-				async changes =>
-					await this.updateEventTemplateRuleClause({
-						courseId: this.courseId,
-						templateId: this.modelValue.id,
-						ruleId,
-						clause: { ...clause, ...changes },
-					}),
-				changes =>
-					this.patchEventTemplateRuleClause({
-						ruleId,
-						templateId: this.modelValue.id,
-						clauseId: clause.id,
-						payload: changes,
-					}),
-				[],
-				0,
-				undefined,
-				this.setErrorNotification,
-				undefined,
-				true,
-				false,
-			);
+		instantiateRuleClauseAutoSaveManager(
+			ruleId: string,
+			clause: EventTemplateRuleClause,
+		) {
+			this.ruleClausesAutoSaveInstances[clause.id] =
+				new AutoSaveManager<EventTemplateRuleClause>(
+					clause,
+					async changes =>
+						await this.updateEventTemplateRuleClause({
+							courseId: this.courseId,
+							templateId: this.modelValue.id,
+							ruleId,
+							clause: { ...clause, ...changes },
+						}),
+					changes =>
+						this.patchEventTemplateRuleClause({
+							ruleId,
+							templateId: this.modelValue.id,
+							clauseId: clause.id,
+							payload: changes,
+						}),
+					[],
+					0,
+					undefined,
+					this.setErrorNotification,
+					undefined,
+					true,
+					false,
+				);
 		},
 
 		async onRuleDragEnd(event: { oldIndex: number; newIndex: number }) {
@@ -274,7 +294,10 @@ export default defineComponent({
 				const newRule = await this.addEventTemplateRule({
 					courseId: this.courseId,
 					templateId: this.modelValue.id,
-					rule: getBlankEventTemplateRule(amount === 1 ? undefined : EventTemplateRuleType.TAG_BASED, amount),
+					rule: getBlankEventTemplateRule(
+						amount === 1 ? undefined : EventTemplateRuleType.TAG_BASED,
+						amount,
+					),
 				});
 				this.instantiateRuleAutoSaveManager(newRule);
 			});

@@ -1,10 +1,16 @@
 <template>
 	<div>
-		<div v-if="$route.params.showSubmissionConfirmationMessage" class="banner banner-success">
+		<div
+			v-if="$route.params.showSubmissionConfirmationMessage"
+			class="banner banner-success"
+		>
 			<span class="material-icons-outlined"> check </span>
 			<p class="">{{ $t("event_participation_page.turned_in_text") }}</p>
 		</div>
-		<div class="mb-4 items-center flex space-x-0.5 md:space-x-2" v-if="!firstLoading && allowEditAssessment">
+		<div
+			class="mb-4 items-center flex space-x-0.5 md:space-x-2"
+			v-if="!firstLoading && allowEditAssessment"
+		>
 			<!-- <router-link :to="{ name: 'ExamProgress' }"
         ><Btn :outline="true" :variant="'icon'"
           ><span class="material-icons-outlined">arrow_back</span></Btn
@@ -29,18 +35,32 @@
 					<div class="flex space-x-1">
 						<span class="my-auto text-sm material-icons-outlined"> timer </span>
 						<p class="">{{ $t("event_participation_page.begin_timestamp") }}:</p>
-						<Timestamp :value="participation.begin_timestamp" class="text-muted"></Timestamp>
+						<Timestamp
+							:value="participation.begin_timestamp"
+							class="text-muted"
+						></Timestamp>
 					</div>
 					<div class="flex space-x-1" v-if="participation.end_timestamp">
-						<span class="my-auto text-sm material-icons-outlined"> assignment_turned_in </span>
+						<span class="my-auto text-sm material-icons-outlined">
+							assignment_turned_in
+						</span>
 
 						<p class="">{{ $t("event_participation_page.turn_in_timestamp") }}:</p>
-						<Timestamp class="text-muted" :value="participation.end_timestamp"></Timestamp>
+						<Timestamp
+							class="text-muted"
+							:value="participation.end_timestamp"
+						></Timestamp>
 					</div>
 				</div>
 				<div class="flex flex-col space-y-2">
 					<div
-						class="flex flex-col items-center mb-2 space-y-2 md:flex-row md:space-x-8 md:space-y-0"
+						class="
+							flex flex-col
+							items-center
+							mb-2
+							space-y-2
+							md:flex-row md:space-x-8 md:space-y-0
+						"
 						v-if="showAssessmentCard && !firstLoading"
 					>
 						<div class="card card-filled shadow-elevation md:w-5/12">
@@ -67,7 +87,9 @@
 									:disabled="showEditScore"
 									:tooltip="$t('event_assessment.undo_score_edit_tooltip')"
 									@click="onUndoScoreEdit()"
-									><span class="text-lg text-gray-600 material-icons-outlined">undo</span></Btn
+									><span class="text-lg text-gray-600 material-icons-outlined"
+										>undo</span
+									></Btn
 								>
 							</div>
 							<div
@@ -89,7 +111,9 @@
 								<p class="my-4 text-muted">
 									{{ $t("event_assessment.overall_score_instructions") }}
 								</p>
-								<TextInput v-model="dirtyScore">{{ $t("event_assessment.overall_score") }}</TextInput>
+								<TextInput v-model="dirtyScore">{{
+									$t("event_assessment.overall_score")
+								}}</TextInput>
 								<div class="flex">
 									<Btn
 										class="ml-auto mr-2"
@@ -112,13 +136,19 @@
 							</div>
 						</div>
 					</div>
-					<div class="banner banner-light" v-if="allowEditAssessment && !participation.score_edited">
+					<div
+						class="banner banner-light"
+						v-if="allowEditAssessment && !participation.score_edited"
+					>
 						<span class="material-icons-outlined icon-light">info</span>
 						<p class="text-muted">
 							{{ $t("event_assessment.default_score") }}
 						</p>
 					</div>
-					<div class="banner banner-light" v-else-if="allowEditAssessment && participation.score_edited">
+					<div
+						class="banner banner-light"
+						v-else-if="allowEditAssessment && participation.score_edited"
+					>
 						<span class="material-icons-outlined icon-light">sync_disabled</span>
 						<span class="text-muted">
 							{{ $t("event_assessment.you_overrode_score") }}
@@ -128,7 +158,9 @@
 						class="banner banner-danger"
 						v-if="allowEditAssessment && someSlotsPending && !participation.score_edited"
 					>
-						<span class="mr-1 text-base text-2xl text-yellow-900 material-icons-outlined">pending_actions</span>
+						<span class="mr-1 text-base text-2xl text-yellow-900 material-icons-outlined"
+							>pending_actions</span
+						>
 						<span class="text-muted text-danger-dark">
 							{{ $t("event_assessment.some_slots_pending") }}
 						</span>
@@ -153,7 +185,9 @@
 					:showSolutionAndScores="showSolutionAndScores"
 					:showAssessmentCard="showAssessmentCard"
 					:assessmentControlsVisibility="slotsAssessmentControlsVisibility"
-					@setAssessmentExpanded="slotsAssessmentControlsVisibility[$event.slot.id] = $event.payload"
+					@setAssessmentExpanded="
+						slotsAssessmentControlsVisibility[$event.slot.id] = $event.payload
+					"
 					:assessmentLoading="slotsAssessmentLoading[slot.id] ?? false"
 				>
 					<h3 class="mb-1">
@@ -253,7 +287,10 @@ export default defineComponent({
 		};
 	},
 	methods: {
-		...mapActions("student", ["getEventParticipation", "partialUpdateEventParticipation"]),
+		...mapActions("student", [
+			"getEventParticipation",
+			"partialUpdateEventParticipation",
+		]),
 		...mapActions("teacher", ["partialUpdateEventParticipationSlot"]),
 		...mapMutations(["setCurrentEventParticipationSlot"]),
 		onShowEditScore() {
@@ -284,7 +321,10 @@ export default defineComponent({
 			this.assessmentLoading = false;
 			this.showEditScore = false;
 		},
-		async onSlotSaveAssessment(slot: EventParticipationSlot, changes: { score: number | null; comment: string }) {
+		async onSlotSaveAssessment(
+			slot: EventParticipationSlot,
+			changes: { score: number | null; comment: string },
+		) {
 			this.slotsAssessmentLoading[slot.id] = true;
 			try {
 				await this.partialUpdateEventParticipationSlot({

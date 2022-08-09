@@ -1,8 +1,19 @@
 <template>
 	<div class="relative my-4" :id="'editor-' + modelValue.id">
-		<div style="z-index: 50" class="absolute bottom-0 right-0 hidden mr-1 -mb-2" v-show="showEditor">
-			<Btn class="mb-4" :outline="true" :size="'lg'" :variant="'icon'" @click="$emit('delete')"
-				><span class="text-xl text-danger-dark material-icons-outlined"> delete </span></Btn
+		<div
+			style="z-index: 50"
+			class="absolute bottom-0 right-0 hidden mr-1 -mb-2"
+			v-show="showEditor"
+		>
+			<Btn
+				class="mb-4"
+				:outline="true"
+				:size="'lg'"
+				:variant="'icon'"
+				@click="$emit('delete')"
+				><span class="text-xl text-danger-dark material-icons-outlined">
+					delete
+				</span></Btn
 			>
 		</div>
 
@@ -73,7 +84,12 @@ export default defineComponent({
 		},
 		onClone() {
 			if (
-				confirm(getTranslatedString("exercise_editor.clone_confirm") + " " + getExerciseTitle(this.modelValue) + "?")
+				confirm(
+					getTranslatedString("exercise_editor.clone_confirm") +
+						" " +
+						getExerciseTitle(this.modelValue) +
+						"?",
+				)
 			) {
 				this.$emit("cloneExercise");
 			}

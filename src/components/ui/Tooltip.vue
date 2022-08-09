@@ -12,7 +12,14 @@
 				:class="{
 					'hover:bg-gray-200 hover:bg-opacity-80 rounded-md px-1.5 transition-colors duration-100 tooltip-handle': true,
 				}"
-				class="text-base cursor-default select-none opacity-80 material-icons-outlined hover:text-primary-dark"
+				class="
+					text-base
+					cursor-default
+					select-none
+					opacity-80
+					material-icons-outlined
+					hover:text-primary-dark
+				"
 			>
 				help_outline
 			</span>
@@ -24,7 +31,9 @@
 			>
 				<slot> </slot>
 			</div>
-			<transition :name="noArrow ? 'tooltip-fade-bounce' : 'tooltip-fade'" v-if="textCode || textValue"
+			<transition
+				:name="noArrow ? 'tooltip-fade-bounce' : 'tooltip-fade'"
+				v-if="textCode || textValue"
 				><div
 					v-if="show"
 					class="z-20 max-w-xs md:max-w-max tooltip-text"

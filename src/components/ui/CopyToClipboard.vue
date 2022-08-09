@@ -13,11 +13,27 @@
 			<span class="text-xl material-icons" v-if="!$slots.default"> share </span>
 			<slot></slot>
 		</Btn>
-		<span v-if="showFeedback" class="tooltip-text tooltip-bottom" :class="{ 'tooltip-text-force': showFeedback }">{{
-			confirmationMessage || $t("misc.copied")
-		}}</span>
+		<span
+			v-if="showFeedback"
+			class="tooltip-text tooltip-bottom"
+			:class="{ 'tooltip-text-force': showFeedback }"
+			>{{ confirmationMessage || $t("misc.copied") }}</span
+		>
 	</div>
-	<div v-else class="flex items-center max-w-full px-2 py-1 border border-gray-300 rounded-md shadow-inner w-max">
+	<div
+		v-else
+		class="
+			flex
+			items-center
+			max-w-full
+			px-2
+			py-1
+			border border-gray-300
+			rounded-md
+			shadow-inner
+			w-max
+		"
+	>
 		<div
 			:title="$t('misc.copy')"
 			class="cursor-pointer hover:bg-light px-1 py-0.5 rounded-sm overflow-x-auto"
@@ -37,9 +53,12 @@
 				>
 					<span class="text-base material-icons-outlined"> content_copy </span>
 				</Btn>
-				<span v-if="showFeedback" class="tooltip-text tooltip-bottom" :class="{ 'tooltip-text-force': showFeedback }">{{
-					$t("misc.copied")
-				}}</span>
+				<span
+					v-if="showFeedback"
+					class="tooltip-text tooltip-bottom"
+					:class="{ 'tooltip-text-force': showFeedback }"
+					>{{ $t("misc.copied") }}</span
+				>
 			</div>
 		</div>
 	</div>

@@ -12,6 +12,8 @@ export const getters = {
 		(courseId: string): Course =>
 			state.courses.find((c: Course) => c.id == courseId) ?? getBlankCourse(),
 	unsavedChanges: (state: SharedState): boolean => state.saving || state.savingError,
-	tagById: (state: SharedState) => (tagId: string) => state.tags.find(t => t.id == tagId) ?? getBlankTag(),
-	tagByName: (state: SharedState) => (tagName: string) => state.tags.find(t => t.name == tagName) ?? getBlankTag(),
+	tagById: (state: SharedState) => (tagId: string) =>
+		state.tags.find(t => t.id == tagId) ?? getBlankTag(),
+	tagByName: (state: SharedState) => (tagName: string) =>
+		state.tags.find(t => t.name == tagName) ?? getBlankTag(),
 };

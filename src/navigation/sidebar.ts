@@ -35,7 +35,13 @@ export const courseDashboardSidebarOptions: SidebarOption[] = [
 		label: _("sidebar_labels.course_dashboard_exams"),
 		icon: "assignment", //'quiz',
 		routeName: "CourseExams",
-		children: ["ExamEditor", "ExamResults", "ExamProgress", "ExamStats", "ExamParticipationFull"],
+		children: [
+			"ExamEditor",
+			"ExamResults",
+			"ExamProgress",
+			"ExamStats",
+			"ExamParticipationFull",
+		],
 		requiredPrivileges: [],
 	},
 	// {

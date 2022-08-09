@@ -1,7 +1,13 @@
 <template>
 	<div class="overflow-hidden pointer-events-none select-none">
-		<div style="filter: blur(0px)" class="relative w-full overflow-hidden h-8.5rem md:h-15rem">
-			<div class="absolute top-0 bottom-0 w-full bg-transparent" style="height: 100%; z-index: 999999"></div>
+		<div
+			style="filter: blur(0px)"
+			class="relative w-full overflow-hidden h-8.5rem md:h-15rem"
+		>
+			<div
+				class="absolute top-0 bottom-0 w-full bg-transparent"
+				style="height: 100%; z-index: 999999"
+			></div>
 			<AbstractEventParticipationSlot
 				v-if="participation.slots[0]"
 				:model-value="participation.slots[0]"

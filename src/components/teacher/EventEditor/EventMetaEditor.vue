@@ -10,10 +10,17 @@
 					: 'mb-6',
 			]"
 		>
-			<TextInput class="w-full md:mr-auto" :modelValue="modelValue.name" @update:modelValue="emitUpdate('name', $event)"
+			<TextInput
+				class="w-full md:mr-auto"
+				:modelValue="modelValue.name"
+				@update:modelValue="emitUpdate('name', $event)"
 				>{{ $t("event_editor.name") }}
 				<template v-if="v$.modelValue.name.$errors.length > 0" v-slot:errors>
-					<div class="input-errors" v-for="error of v$.modelValue.name.$errors" :key="error.$uid">
+					<div
+						class="input-errors"
+						v-for="error of v$.modelValue.name.$errors"
+						:key="error.$uid"
+					>
 						<div class="error-msg">
 							{{ $t("validation_errors.event." + error.$uid) }}
 						</div>
@@ -28,7 +35,11 @@
 				@update:modelValue="isDraft ? emitUpdate('begin_timestamp', $event) : () => null"
 				>{{ $t("event_editor.begin_timestamp") }}
 				<template v-if="v$.modelValue.begin_timestamp.$errors.length > 0" v-slot:errors>
-					<div class="input-errors" v-for="error of v$.modelValue.begin_timestamp.$errors" :key="error.$uid">
+					<div
+						class="input-errors"
+						v-for="error of v$.modelValue.begin_timestamp.$errors"
+						:key="error.$uid"
+					>
 						<div class="error-msg">
 							{{ $t("validation_errors.event." + error.$uid) }}
 						</div>
@@ -41,7 +52,11 @@
 				@update:modelValue="emitUpdate('end_timestamp', $event)"
 				>{{ $t("event_editor.end_timestamp") }}
 				<template v-if="v$.modelValue.end_timestamp.$errors.length > 0" v-slot:errors>
-					<div class="input-errors" v-for="error of v$.modelValue.end_timestamp.$errors" :key="error.$uid">
+					<div
+						class="input-errors"
+						v-for="error of v$.modelValue.end_timestamp.$errors"
+						:key="error.$uid"
+					>
 						<div class="error-msg">
 							{{ $t("validation_errors.event." + error.$uid) }}
 						</div>
@@ -49,7 +64,10 @@
 				</template></CalendarInput
 			>
 		</div>
-		<TextEditor :modelValue="modelValue.instructions" @update:modelValue="emitUpdate('instructions', $event)">
+		<TextEditor
+			:modelValue="modelValue.instructions"
+			@update:modelValue="emitUpdate('instructions', $event)"
+		>
 			{{ $t("event_editor.instructions") }}</TextEditor
 		>
 		<div class="flex flex-col mt-10">
@@ -80,10 +98,14 @@
 				:options="accessRulesOptions"
 				@update:modelValue="onAccessRuleChange($event)"
 			></RadioGroup>
-			<div class="flex md:flex-row flex-col md:space-y-0 space-y-2 md:items-center -ml-0.5">
+			<div
+				class="flex md:flex-row flex-col md:space-y-0 space-y-2 md:items-center -ml-0.5"
+			>
 				<div class="flex items-center">
 					<span class="mr-2 text-xl material-icons text-primary">
-						{{ modelValue.access_rule === EventAccessRule.ALLOW_ACCESS ? "public" : "lock" }}</span
+						{{
+							modelValue.access_rule === EventAccessRule.ALLOW_ACCESS ? "public" : "lock"
+						}}</span
 					>
 					<p class="text-muted">
 						{{
@@ -96,16 +118,21 @@
 				<Btn
 					@click="showAccessRuleDialog = true"
 					:class="[
-						modelValue.access_rule === EventAccessRule.DENY_ACCESS ? 'visible' : 'hidden md:block invisible',
+						modelValue.access_rule === EventAccessRule.DENY_ACCESS
+							? 'visible'
+							: 'hidden md:block invisible',
 						'md:ml-8',
 					]"
 					:size="'sm'"
 					:variant="'secondary'"
-					><span class="mr-2 material-icons"> people </span> {{ $t("event_editor.choose_allowed") }}</Btn
+					><span class="mr-2 material-icons"> people </span>
+					{{ $t("event_editor.choose_allowed") }}</Btn
 				>
 				<p
 					:class="[
-						modelValue.access_rule === EventAccessRule.DENY_ACCESS ? 'visible' : 'hidden md:block invisible',
+						modelValue.access_rule === EventAccessRule.DENY_ACCESS
+							? 'visible'
+							: 'hidden md:block invisible',
 						'md:ml-4',
 					]"
 				>
@@ -117,13 +144,18 @@
 
 		<div class="flex flex-col mt-10">
 			<h4 class="mb-3">{{ $t("event_editor.time_limit_rules") }}</h4>
-			<div class="flex flex-col mb-2 -mt-2 space-y-4 lg:flex-row lg:space-x-8 lg:space-y-0">
-				<Toggle :labelOnLeft="true" v-model="timeLimitRuleProxy">{{ $t("event_editor.time_limit_label") }}</Toggle>
+			<div
+				class="flex flex-col mb-2 -mt-2 space-y-4 lg:flex-row lg:space-x-8 lg:space-y-0"
+			>
+				<Toggle :labelOnLeft="true" v-model="timeLimitRuleProxy">{{
+					$t("event_editor.time_limit_label")
+				}}</Toggle>
 
 				<div
 					class="flex flex-col space-y-2 md:items-center md:flex-row md:space-y-0"
 					:class="{
-						'opacity-0 hidden lg:flex': modelValue.time_limit_rule !== EventTimeLimitRule.TIME_LIMIT,
+						'opacity-0 hidden lg:flex':
+							modelValue.time_limit_rule !== EventTimeLimitRule.TIME_LIMIT,
 					}"
 				>
 					<div class="flex items-center space-x-1">
@@ -139,7 +171,12 @@
 							{{ $t("misc.minutes") }}
 						</p>
 					</div>
-					<Btn @click="showTimeLimitDialog = true" class="md:ml-10" :size="'sm'" :variant="'secondary'">
+					<Btn
+						@click="showTimeLimitDialog = true"
+						class="md:ml-10"
+						:size="'sm'"
+						:variant="'secondary'"
+					>
 						<span class="mr-2 text-sm">
 							<svg style="width: 20px; height: 20px" viewBox="0 0 24 24">
 								<path
@@ -151,7 +188,12 @@
 						{{ $t("event_editor.manage_time_limit_exceptions") }}</Btn
 					>
 					<p
-						:class="[modelValue.time_limit_rule === EventTimeLimitRule.TIME_LIMIT ? 'visible' : 'invisible', 'md:ml-4']"
+						:class="[
+							modelValue.time_limit_rule === EventTimeLimitRule.TIME_LIMIT
+								? 'visible'
+								: 'invisible',
+							'md:ml-4',
+						]"
 					>
 						<strong>{{ modelValue.time_limit_exceptions?.length ?? 0 }}</strong>
 						{{ $t("event_editor.time_limit_exceptions") }}
@@ -167,7 +209,12 @@
 			</p>
 		</div>
 
-		<Dialog :showDialog="showAccessRuleDialog" @yes="showAccessRuleDialog = false" :confirmOnly="true" :large="true">
+		<Dialog
+			:showDialog="showAccessRuleDialog"
+			@yes="showAccessRuleDialog = false"
+			:confirmOnly="true"
+			:large="true"
+		>
 			<template v-slot:title>
 				{{ $t("event_editor.choose_allowed") }}
 			</template>
@@ -186,7 +233,14 @@
 					<h3 class="text-darkText">
 						{{ $t("event_editor.import_from_valutami") }}
 					</h3>
-					<div class="flex flex-col items-start space-y-2 md:space-y-0 md:space-x-2 md:flex-row md:space-x-6">
+					<div
+						class="
+							flex flex-col
+							items-start
+							space-y-2
+							md:space-y-0 md:space-x-2 md:flex-row md:space-x-6
+						"
+					>
 						<div class="mlw-32 mt-1.5 overflow-hidden rounded-sm shadow-elevation">
 							<img class="w-32" src="../../../../public/valutami.png" />
 						</div>
@@ -194,7 +248,9 @@
 							<p>
 								{{ $t("event_editor.manage_allowed_import_from_valutami_1") }}
 
-								<strong>{{ $t("event_editor.manage_allowed_import_from_valutami_2") }}</strong
+								<strong>{{
+									$t("event_editor.manage_allowed_import_from_valutami_2")
+								}}</strong
 								>.
 								{{ $t("event_editor.manage_allowed_import_from_valutami_3") }}
 							</p>
@@ -207,7 +263,12 @@
 			</template>
 		</Dialog>
 
-		<Dialog @yes="showTimeLimitDialog = false" :showDialog="showTimeLimitDialog" :confirmOnly="true" :large="true">
+		<Dialog
+			@yes="showTimeLimitDialog = false"
+			:showDialog="showTimeLimitDialog"
+			:confirmOnly="true"
+			:large="true"
+		>
 			<template v-slot:title>
 				{{ $t("event_editor.exceptions_to_time_limit") }}
 			</template>
@@ -229,7 +290,9 @@
 								:modelValue="parseFloat(exception[1]) / 60"
 								@update:modelValue="exception[1] = parseFloat($event) * 60"
 								:leftIcon="'timer'"
-								>{{ mediaQueryMdMatches ? $t("misc.time_limit") : $t("misc.limit") }}</NumberInput
+								>{{
+									mediaQueryMdMatches ? $t("misc.time_limit") : $t("misc.limit")
+								}}</NumberInput
 							>
 							<p class="text-sm select-none text-muted">
 								{{ $t("misc.minutes") }}
@@ -360,14 +423,20 @@ export default defineComponent({
 			// TODO investigate
 			setTimeout(
 				// have to delay in order to prevent issues with tag input component, which uses nextTick
-				() => this.emitUpdate("access_rule_exceptions", [...(this.modelValue.access_rule_exceptions ?? []), value]),
+				() =>
+					this.emitUpdate("access_rule_exceptions", [
+						...(this.modelValue.access_rule_exceptions ?? []),
+						value,
+					]),
 				10,
 			);
 		},
 		onRemoveAllowedAccess(value: string) {
 			this.emitUpdate(
 				"access_rule_exceptions",
-				this.modelValue.access_rule_exceptions?.filter(e => e.toLowerCase() !== value.toLowerCase()) ?? [],
+				this.modelValue.access_rule_exceptions?.filter(
+					e => e.toLowerCase() !== value.toLowerCase(),
+				) ?? [],
 			);
 		},
 		async onFileInputChange(event: { target: HTMLInputElement }) {
@@ -424,7 +493,10 @@ export default defineComponent({
 				return this.modelValue.time_limit_rule === EventTimeLimitRule.TIME_LIMIT;
 			},
 			set(val: boolean) {
-				this.emitUpdate("time_limit_rule", val ? EventTimeLimitRule.TIME_LIMIT : EventTimeLimitRule.NO_TIME_LIMIT);
+				this.emitUpdate(
+					"time_limit_rule",
+					val ? EventTimeLimitRule.TIME_LIMIT : EventTimeLimitRule.NO_TIME_LIMIT,
+				);
 			},
 		},
 		allowedAccessAsTags(): Tag[] {

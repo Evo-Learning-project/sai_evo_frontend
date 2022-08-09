@@ -6,8 +6,17 @@
 			v-if="!!testCase.text && showDescription"
 			v-html="testCase.text"
 		></div>
-		<CodeFragment :small="small" class="w-full" v-if="!!testCase.code" :value="testCase.code"></CodeFragment>
-		<div v-if="!!testCase.stdin" :class="[!!testCase.text ? 'md:w-1/2 w-full' : 'w-full']" class="flex flex-col">
+		<CodeFragment
+			:small="small"
+			class="w-full"
+			v-if="!!testCase.code"
+			:value="testCase.code"
+		></CodeFragment>
+		<div
+			v-if="!!testCase.stdin"
+			:class="[!!testCase.text ? 'md:w-1/2 w-full' : 'w-full']"
+			class="flex flex-col"
+		>
 			<div class="text-xs text-muted">
 				{{ $t("programming_exercise.testcase_stdin") }}
 			</div>

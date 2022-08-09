@@ -36,7 +36,13 @@
 		<div class="flex items-center w-full px-4 pt-3">
 			<h2 class="mb-0">{{ title }}</h2>
 
-			<Btn :tooltip="$t('misc.close')" :variant="'icon'" :outline="true" @click="$emit('close')" class="z-30 ml-auto">
+			<Btn
+				:tooltip="$t('misc.close')"
+				:variant="'icon'"
+				:outline="true"
+				@click="$emit('close')"
+				class="z-30 ml-auto"
+			>
 				<span class="material-icons-outlined">close</span>
 			</Btn>
 		</div>
@@ -83,7 +89,9 @@ export default defineComponent({
 	mounted() {
 		// keep draggable area in sync with actual scroll width and height of the popup
 		setInterval(() => {
-			const container = document.getElementById(this.containerId + "-draggable-container");
+			const container = document.getElementById(
+				this.containerId + "-draggable-container",
+			);
 			if (container) {
 				this.overlayHeight = container.scrollHeight - 10;
 				this.overlayWidth = container.scrollWidth - 10;
@@ -121,8 +129,14 @@ export default defineComponent({
 			const maxX = window.innerWidth;
 			const maxY = window.innerHeight;
 			// prevent scrolling past the top or left of the parent element
-			const resX = Math.max((this.$refs.draggableContainer as any).offsetLeft - this.positions.movementX, -100);
-			const resY = Math.max((this.$refs.draggableContainer as any).offsetTop - this.positions.movementY, -200);
+			const resX = Math.max(
+				(this.$refs.draggableContainer as any).offsetLeft - this.positions.movementX,
+				-100,
+			);
+			const resY = Math.max(
+				(this.$refs.draggableContainer as any).offsetTop - this.positions.movementY,
+				-200,
+			);
 			const popup = document.getElementById(this.containerId + "-draggable-container");
 			const popupW = popup?.offsetWidth ?? 0;
 			const popupH = popup?.offsetHeight ?? 0;

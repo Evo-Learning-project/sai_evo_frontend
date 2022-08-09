@@ -7,11 +7,20 @@
 			:tooltip="$t('misc.copy')"
 			class="absolute top-0 right-0 z-20 semi-transparent"
 		>
-			<span style="font-size: 16px !important" class="material-icons-outlined text-lightText"> content_copy </span>
+			<span
+				style="font-size: 16px !important"
+				class="material-icons-outlined text-lightText"
+			>
+				content_copy
+			</span>
 		</CopyToClipboard>
-		<SshPre v-if="show" :language="'js'" :dark="true" :class="{ 'ssh-pre-small': small }">{{
-			useDefault ? defaultValue : processedValue
-		}}</SshPre>
+		<SshPre
+			v-if="show"
+			:language="'js'"
+			:dark="true"
+			:class="{ 'ssh-pre-small': small }"
+			>{{ useDefault ? defaultValue : processedValue }}</SshPre
+		>
 	</div>
 </template>
 

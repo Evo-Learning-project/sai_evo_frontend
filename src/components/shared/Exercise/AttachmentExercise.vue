@@ -1,7 +1,11 @@
 <template>
 	<AbstractExercise v-bind="$props">
 		<template #submissionControls>
-			<FileUpload :disabled="readOnly" v-model="attachmentProxy" @download="onDownloadAttachment"></FileUpload>
+			<FileUpload
+				:disabled="readOnly"
+				v-model="attachmentProxy"
+				@download="onDownloadAttachment"
+			></FileUpload>
 		</template>
 	</AbstractExercise>
 </template>

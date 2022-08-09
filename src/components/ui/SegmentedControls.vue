@@ -26,7 +26,8 @@
 					'py-0.5 px-1': small,
 					'rounded-r-none': index < options.length - 1,
 					'rounded-l-none': index !== 0,
-					'border border-primary bg-primary bg-opacity-20 text-primary ': option.value == modelValue,
+					'border border-primary bg-primary bg-opacity-20 text-primary ':
+						option.value == modelValue,
 					'border hover:text-gray-800 hover:bg-light': option.value != modelValue,
 				}"
 				v-for="(option, index) in options"

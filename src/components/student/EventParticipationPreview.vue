@@ -3,7 +3,8 @@
 		<Card
 			:class="{
 				'bg-primary-light bg-opacity-0': isParticipable,
-				'md:h-23rem h-64': participation.event.event_type === EventType.SELF_SERVICE_PRACTICE,
+				'md:h-23rem h-64':
+					participation.event.event_type === EventType.SELF_SERVICE_PRACTICE,
 				'h-44': participation.event.event_type !== EventType.SELF_SERVICE_PRACTICE,
 			}"
 		>
@@ -14,8 +15,13 @@
 				</h3>
 				<div class="flex mx-auto font-medium text-muted">
 					<p class="mx-auto space-x-1">
-						<span class="hidden inline-icon material-icons-outlined light-icon"> event </span>
-						<Timestamp :value="participation.begin_timestamp" :date-only="true"></Timestamp>
+						<span class="hidden inline-icon material-icons-outlined light-icon">
+							event
+						</span>
+						<Timestamp
+							:value="participation.begin_timestamp"
+							:date-only="true"
+						></Timestamp>
 					</p>
 					<div v-if="isParticipable" class="hidden chip mx-auto chip-primary mb-0 pt-0.5">
 						<span class="material-icons-outlined text-base mr-1 mt-1.25px"> update </span>
@@ -28,8 +34,13 @@
 					<img class="hidden my-4" src="../../../public/thumb.png" />
 
 					<!-- thumbnail -->
-					<div class="" v-if="participation.event.event_type === EventType.SELF_SERVICE_PRACTICE">
-						<ParticipationThumbnail :participation="participation"></ParticipationThumbnail>
+					<div
+						class=""
+						v-if="participation.event.event_type === EventType.SELF_SERVICE_PRACTICE"
+					>
+						<ParticipationThumbnail
+							:participation="participation"
+						></ParticipationThumbnail>
 					</div>
 					<!-- separator border -->
 					<div
@@ -112,7 +123,9 @@
 							:variant="'icon'"
 							:outline="true"
 							class="my-0 ml-auto"
-							><span class="material-icons">{{ participation.bookmarked ? "bookmark" : "bookmark_outline" }}</span></Btn
+							><span class="material-icons">{{
+								participation.bookmarked ? "bookmark" : "bookmark_outline"
+							}}</span></Btn
 						>
 					</div>
 				</div>
@@ -122,7 +135,12 @@
 </template>
 
 <script lang="ts">
-import { EventParticipation, EventParticipationState, EventState, EventType } from "@/models";
+import {
+	EventParticipation,
+	EventParticipationState,
+	EventState,
+	EventType,
+} from "@/models";
 import { defineComponent, PropType } from "@vue/runtime-core";
 import Card from "../ui/Card.vue";
 import Timestamp from "../ui/Timestamp.vue";

@@ -62,9 +62,12 @@
 					id="remove-filters-btn"
 					><span class="text-xl material-icons-outlined"> filter_alt_off </span>
 				</Btn>
-				<label v-if="!emptyFilters" class="cursor-pointer text-muted" for="remove-filters-btn">{{
-					$t("filter_results.remove_filters")
-				}}</label>
+				<label
+					v-if="!emptyFilters"
+					class="cursor-pointer text-muted"
+					for="remove-filters-btn"
+					>{{ $t("filter_results.remove_filters") }}</label
+				>
 
 				<Btn
 					v-if="!full"
@@ -74,13 +77,21 @@
 					class="ml-auto mr-0.5"
 					id="more-filters-btn"
 					><span
-						class="transition-transform duration-200 ease-out transform material-icons-outlined"
+						class="
+							transition-transform
+							duration-200
+							ease-out
+							transform
+							material-icons-outlined
+						"
 						:class="{ 'rotate-180': expanded }"
 					>
 						{{ false && expanded ? "expand_less" : "expand_more" }}
 					</span>
 				</Btn>
-				<label class="cursor-pointer text-muted" for="more-filters-btn">{{ $t("filter_results.more_filters") }}</label>
+				<label class="cursor-pointer text-muted" for="more-filters-btn">{{
+					$t("filter_results.more_filters")
+				}}</label>
 			</div>
 		</div>
 	</div>

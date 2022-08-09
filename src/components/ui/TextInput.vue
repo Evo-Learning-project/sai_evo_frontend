@@ -29,7 +29,10 @@
 				}"
 				class="z-10 block w-full bg-transparent appearance-none focus:outline-none"
 			/>
-			<label :class="{ 'top-2 left-1.5 origin-0 fixed-label': fixedLabel }" class="absolute bottom-1.5 origin-0 -z-1">
+			<label
+				:class="{ 'top-2 left-1.5 origin-0 fixed-label': fixedLabel }"
+				class="absolute bottom-1.5 origin-0 -z-1"
+			>
 				<slot></slot>
 			</label>
 			<div v-if="rightIcon.length > 0" class="absolute bottom-0.5 right-1.5 -z-1">

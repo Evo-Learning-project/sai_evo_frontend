@@ -2,8 +2,14 @@
 	<div>
 		<div class="">
 			<div class="relative">
-				<div v-show="editingRule" class="absolute z-50 w-full h-full opacity-0 -top-1"></div>
-				<div v-if="tagsAsSelectableOptions.length === 0" v-show="modelValue.rules.length !== 0">
+				<div
+					v-show="editingRule"
+					class="absolute z-50 w-full h-full opacity-0 -top-1"
+				></div>
+				<div
+					v-if="tagsAsSelectableOptions.length === 0"
+					v-show="modelValue.rules.length !== 0"
+				>
 					<NumberInput
 						:min="0"
 						class="w-full mt-12"
@@ -16,7 +22,9 @@
 						"
 					>
 						{{ $t("practice_template_editor.exercise_amount") }}
-						<template v-slot:rightHint> /{{ currentCourse?.public_exercises_count ?? "" }}</template>
+						<template v-slot:rightHint>
+							/{{ currentCourse?.public_exercises_count ?? "" }}</template
+						>
 					</NumberInput>
 				</div>
 
@@ -28,16 +36,28 @@
 					v-slot="{ optionValue }"
 					:class="{ 'opacity-20': editingRule }"
 				>
-					<div v-if="tagsToRules[optionValue] && selectedTags.includes(String(optionValue))">
+					<div
+						v-if="tagsToRules[optionValue] && selectedTags.includes(String(optionValue))"
+					>
 						<span
 							v-if="parseInt(tagsToRules[optionValue]?.amount ?? 0) > 0"
-							class="px-2 ml-2 font-semibold rounded-full bg-primary bg-opacity-20 text-primary"
+							class="
+								px-2
+								ml-2
+								font-semibold
+								rounded-full
+								bg-primary bg-opacity-20
+								text-primary
+							"
 							>{{ tagsToRules[optionValue].amount }}</span
 						>
 					</div>
 				</Chipset>
 			</div>
-			<div v-if="editingRuleTagSeenExercises > 0" :class="[editingRule ? 'visible' : 'invisible', 'mt-8']">
+			<div
+				v-if="editingRuleTagSeenExercises > 0"
+				:class="[editingRule ? 'visible' : 'invisible', 'mt-8']"
+			>
 				<p>
 					{{ $t("practice_template_editor.seen_exercises_wont_be_selected") + " " }}
 					<strong>{{ editingRuleTagSeenExercises }}</strong>
@@ -60,12 +80,19 @@
 						:min="0"
 						:max="editingRuleTag?.public_exercises_not_seen ?? 100000000"
 					>
-						<template v-slot:rightHint> /{{ editingRuleTag?.public_exercises_not_seen ?? "" }}</template></NumberInput
+						<template v-slot:rightHint>
+							/{{ editingRuleTag?.public_exercises_not_seen ?? "" }}</template
+						></NumberInput
 					>
-					<Btn class="my-auto ml-2" :disabled="editingRuleDirtyAmount < 1" @click="saveRule">{{
-						$t("dialog.default_ok_text")
+					<Btn
+						class="my-auto ml-2"
+						:disabled="editingRuleDirtyAmount < 1"
+						@click="saveRule"
+						>{{ $t("dialog.default_ok_text") }}</Btn
+					>
+					<Btn class="my-auto ml-2" :outline="true" @click="discardRule">{{
+						$t("dialog.default_cancel_text")
 					}}</Btn>
-					<Btn class="my-auto ml-2" :outline="true" @click="discardRule">{{ $t("dialog.default_cancel_text") }}</Btn>
 				</div>
 			</div>
 		</div>
@@ -138,7 +165,10 @@ export default defineComponent({
 			editingRuleDirtyAmount: 1,
 			editingRule: null as string | null,
 			rulesAutoSaveInstances: {} as Record<string, AutoSaveManager<EventTemplateRule>>,
-			ruleClausesAutoSaveInstances: {} as Record<string, AutoSaveManager<EventTemplateRuleClause>>,
+			ruleClausesAutoSaveInstances: {} as Record<
+				string,
+				AutoSaveManager<EventTemplateRuleClause>
+			>,
 		};
 	},
 	methods: {
@@ -187,7 +217,9 @@ export default defineComponent({
 				courseId: this.courseId,
 				templateId: this.modelValue.id,
 				ruleId: rule.id,
-				clause: getBlankTagBasedEventTemplateRuleClause((this.tags as ITag[]).find(t => t.id == tagId)),
+				clause: getBlankTagBasedEventTemplateRuleClause(
+					(this.tags as ITag[]).find(t => t.id == tagId),
+				),
 			});
 			console.log("added clause to ", rule, tagId);
 		},
@@ -241,7 +273,9 @@ export default defineComponent({
 					description:
 						(t.public_exercises_not_seen ?? 0) === 0
 							? _("practice_template_editor.all_exercises_seen_with_this_tag")
-							: String(t.public_exercises ?? 0) + " " + _("student_course_dashboard.available_exercises_tooltip"),
+							: String(t.public_exercises ?? 0) +
+							  " " +
+							  _("student_course_dashboard.available_exercises_tooltip"),
 					disabled: (t.public_exercises_not_seen ?? 0) === 0,
 				}));
 		},
@@ -253,7 +287,8 @@ export default defineComponent({
 				if (val.length > this.selectedTags.length) {
 					const newlyAdded = val[val.length - 1];
 					// get rule containing this tag or create it if it doesn't exist
-					const tagRule = this.tagsToRules[newlyAdded] ?? (await this.onAddRule(newlyAdded));
+					const tagRule =
+						this.tagsToRules[newlyAdded] ?? (await this.onAddRule(newlyAdded));
 
 					this.editingRule = tagRule.id;
 					this.editingRuleDirtyAmount = tagRule.amount || 1;
@@ -262,7 +297,10 @@ export default defineComponent({
 				} else {
 					// TODO get rule for removed tag and set its amount to 0
 					const removedTag = this.selectedTags.filter(t => !val.includes(t))[0];
-					await this.rulesAutoSaveInstances[this.tagsToRules[removedTag].id].onChange({ field: "amount", value: 0 });
+					await this.rulesAutoSaveInstances[this.tagsToRules[removedTag].id].onChange({
+						field: "amount",
+						value: 0,
+					});
 					this.selectedTags = val;
 				}
 			},
@@ -279,14 +317,20 @@ export default defineComponent({
 		},
 		editingRuleTag(): ITag | undefined {
 			return (this.tags as ITag[]).find(
-				t => t.id == this.modelValue.rules.find(r => r.id == this.editingRule)?.clauses?.[0].tags[0].id,
+				t =>
+					t.id ==
+					this.modelValue.rules.find(r => r.id == this.editingRule)?.clauses?.[0].tags[0]
+						.id,
 			);
 		},
 		editingRuleTagSeenExercises(): number {
 			if (!this.editingRuleTag) {
 				return 0;
 			}
-			return (this.editingRuleTag.public_exercises ?? 0) - (this.editingRuleTag.public_exercises_not_seen ?? 0);
+			return (
+				(this.editingRuleTag.public_exercises ?? 0) -
+				(this.editingRuleTag.public_exercises_not_seen ?? 0)
+			);
 		},
 		firstRule(): EventTemplateRule | undefined {
 			return this.modelValue.rules?.[0];

@@ -10,7 +10,9 @@
 		<div v-if="!firstLoading" class="grid gap-5 md:grid-cols-2">
 			<MinimalExercisePreview
 				:selectable="true"
-				:selectionDisabled="isExerciseDraft(exercise) || isSelectedInAnotherRule(exercise)"
+				:selectionDisabled="
+					isExerciseDraft(exercise) || isSelectedInAnotherRule(exercise)
+				"
 				:selectButtonTitle="
 					isExerciseDraft(exercise)
 						? $t('exercise_picker.cannot_pick_draft')
@@ -33,19 +35,31 @@
 			<MinimalExercisePreviewSkeleton></MinimalExercisePreviewSkeleton>
 			<MinimalExercisePreviewSkeleton></MinimalExercisePreviewSkeleton>
 		</div>
-		<div v-if="!firstLoading && exercises.length === 0 && emptyFilter" class="flex flex-col space-y-4">
+		<div
+			v-if="!firstLoading && exercises.length === 0 && emptyFilter"
+			class="flex flex-col space-y-4"
+		>
 			<!-- TODO make nicer empty state -->
 			<p class="text-muted">
 				{{ $t("exercise_picker.no_available_exercises") }}
 			</p>
 			<router-link class="mx-auto link" :to="{ name: 'CourseExercises' }"
-				><Btn :variant="'primary-borderless'">{{ $t("exercise_picker.go_to_exercises") }}</Btn></router-link
+				><Btn :variant="'primary-borderless'">{{
+					$t("exercise_picker.go_to_exercises")
+				}}</Btn></router-link
 			>
 		</div>
-		<div v-else-if="!firstLoading && exercises.length === 0" class="flex flex-col space-y-4">
-			<p class="mx-auto text-muted">{{ $t("course_exercises.no_matching_exercises") }}.</p>
+		<div
+			v-else-if="!firstLoading && exercises.length === 0"
+			class="flex flex-col space-y-4"
+		>
+			<p class="mx-auto text-muted">
+				{{ $t("course_exercises.no_matching_exercises") }}.
+			</p>
 			<router-link class="mx-auto link" :to="{ name: 'CourseExercises' }"
-				><Btn :variant="'primary-borderless'">{{ $t("exercise_picker.go_to_exercises") }}</Btn></router-link
+				><Btn :variant="'primary-borderless'">{{
+					$t("exercise_picker.go_to_exercises")
+				}}</Btn></router-link
 			>
 		</div>
 		<VueEternalLoading :load="onLoadMore" v-model:is-initial="isInitialInfiniteLoad">

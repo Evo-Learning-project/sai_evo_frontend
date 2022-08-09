@@ -22,7 +22,10 @@
 				</div>
 			</div>
 			<div class="mt-auto">
-				<div class="w-full mb-4 banner banner-danger" v-if="!user.is_teacher && (!user.mat || !user.course)">
+				<div
+					class="w-full mb-4 banner banner-danger"
+					v-if="!user.is_teacher && (!user.mat || !user.course)"
+				>
 					<div class="w-full">
 						<div class="flex items-center space-x-3">
 							<span class="material-icons-outlined text-danger-dark"> school </span>
@@ -31,7 +34,9 @@
 									{{ $t("student_data.you_havent_yet") }}
 
 									<span v-if="!user.mat">{{ $t("student_data.missing_mat") }}</span>
-									<span v-if="!user.mat && !user.course">&nbsp;{{ $t("student_data.and") }}&nbsp;</span>
+									<span v-if="!user.mat && !user.course"
+										>&nbsp;{{ $t("student_data.and") }}&nbsp;</span
+									>
 									<span v-if="!user.course">{{ $t("student_data.missing_course") }}</span>
 								</p>
 								<p class="text-danger-dark">
@@ -45,9 +50,12 @@
 								<NumberInput class="mb-8 w-96 text-darkText" v-model="dirtyMat"
 									>{{ $t("student_data.your_mat") }}
 								</NumberInput>
-								<RadioGroup :options="courseSelectionOptions" v-model="dirtyCourse" class="text-darkText">{{
-									$t("student_data.your_course")
-								}}</RadioGroup>
+								<RadioGroup
+									:options="courseSelectionOptions"
+									v-model="dirtyCourse"
+									class="text-darkText"
+									>{{ $t("student_data.your_course") }}</RadioGroup
+								>
 								<Btn
 									:variant="'primary'"
 									:loading="localLoading"
@@ -61,10 +69,16 @@
 						</div>
 					</div>
 				</div>
-				<p class="mb-1 mr-auto text-muted text-danger-dark" v-if="previewingEvent.state === EventState.PLANNED">
+				<p
+					class="mb-1 mr-auto text-muted text-danger-dark"
+					v-if="previewingEvent.state === EventState.PLANNED"
+				>
 					{{ $t("event_participation_page.exam_not_yet_begun") }}
 				</p>
-				<p class="mb-1 mr-auto text-muted text-danger-dark" v-else-if="previewingEvent.state === EventState.CLOSED">
+				<p
+					class="mb-1 mr-auto text-muted text-danger-dark"
+					v-else-if="previewingEvent.state === EventState.CLOSED"
+				>
 					{{ $t("event_participation_page.exam_is_over") }}
 				</p>
 				<router-link
@@ -157,7 +171,10 @@ export default defineComponent({
 		...mapState("student", ["previewingEvent"]),
 		...mapState("shared", ["user"]),
 		canParticipate(): boolean {
-			return this.previewingEvent.state !== EventState.PLANNED && this.previewingEvent.state !== EventState.CLOSED;
+			return (
+				this.previewingEvent.state !== EventState.PLANNED &&
+				this.previewingEvent.state !== EventState.CLOSED
+			);
 		},
 	},
 });

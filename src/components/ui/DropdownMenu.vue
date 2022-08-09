@@ -1,5 +1,8 @@
 <template>
-	<div class="relative" v-click-outside="() => (expanded ? $emit('toggleExpanded') : undefined)">
+	<div
+		class="relative"
+		v-click-outside="() => (expanded ? $emit('toggleExpanded') : undefined)"
+	>
 		<Btn :variant="'icon'" :outline="true" @click="$emit('toggleExpanded')">
 			<!-- :tooltip="!expanded ? tooltip : ''" -->
 			<slot name="icon"></slot>

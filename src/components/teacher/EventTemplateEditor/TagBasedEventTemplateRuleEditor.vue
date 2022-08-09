@@ -3,13 +3,18 @@
 		<p class="mb-6 text-muted" v-if="showTeacherIntroductionText">
 			{{ $t("event_template_rule_editor.tag_based_introduction") }}
 		</p>
-		<div class="flex flex-col mb-12" v-if="showTeacherIntroductionText && tags.length === 0">
+		<div
+			class="flex flex-col mb-12"
+			v-if="showTeacherIntroductionText && tags.length === 0"
+		>
 			<!-- TODO make nicer empty state -->
 			<p class="mb-2 text-muted text-danger-dark">
 				{{ $t("event_template_rule_editor.no_tags") }}
 			</p>
 			<router-link class="mx-auto link" :to="{ name: 'CourseExercises' }"
-				><Btn :variant="'primary-borderless'">{{ $t("exercise_picker.go_to_exercises") }}</Btn></router-link
+				><Btn :variant="'primary-borderless'">{{
+					$t("exercise_picker.go_to_exercises")
+				}}</Btn></router-link
 			>
 		</div>
 		<div class="flex flex-col" v-if="!showTeacherIntroductionText && tags.length === 0">
@@ -23,8 +28,15 @@
 			}"
 			class="flex flex-col items-start space-y-4 md:flex-row md:space-y-0"
 		>
-			<div v-if="showTeacherIntroductionText || tags.length > 0" class="flex flex-col w-full">
-				<div v-for="(clause, index) in modelValue" :key="'clause-' + clause.id" class="my-2">
+			<div
+				v-if="showTeacherIntroductionText || tags.length > 0"
+				class="flex flex-col w-full"
+			>
+				<div
+					v-for="(clause, index) in modelValue"
+					:key="'clause-' + clause.id"
+					class="my-2"
+				>
 					<p v-if="index === 0" class="mb-2">
 						{{ $t("event_template_rule_editor.tag_based_select_exercises") }}
 						<strong>{{ $t("event_template_rule_editor.tag_based_at_least_one") }}</strong>
@@ -62,7 +74,14 @@
 				<div
 					v-if="allowCreateMoreClauses"
 					@click="onAddClause"
-					class="mt-2 transition-opacity duration-75 opacity-50 cursor-pointer hover:opacity-100"
+					class="
+						mt-2
+						transition-opacity
+						duration-75
+						opacity-50
+						cursor-pointer
+						hover:opacity-100
+					"
 				>
 					<p>
 						{{ $t("event_template_rule_editor.tag_based_and") }}
@@ -86,7 +105,15 @@
 			<!-- preview card -->
 			<div
 				v-if="showPreview"
-				class="relative flex mb-auto card shadow-elevation md:w-9/12 md:ml-16 md:max-h-96 card-filled"
+				class="
+					relative
+					flex
+					mb-auto
+					card
+					shadow-elevation
+					md:w-9/12 md:ml-16 md:max-h-96
+					card-filled
+				"
 			>
 				<Spinner
 					:size="'xl'"
@@ -94,7 +121,10 @@
 					class="absolute transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
 					v-if="localLoading"
 				></Spinner>
-				<div class="flex flex-col flex-grow" :class="{ 'opacity-50 pointer-events-none': localLoading }">
+				<div
+					class="flex flex-col flex-grow"
+					:class="{ 'opacity-50 pointer-events-none': localLoading }"
+				>
 					<p class="mb-8 text-lg text-muted">
 						{{ $t("event_template_rule_editor.eligible_exercises") }}
 						<strong>{{ satisfying.count }}</strong>
@@ -110,7 +140,9 @@
 						:exercise="satisfying.example"
 					></MinimalExercisePreview>
 					<div v-else class="flex flex-col items-center mt-2 mb-auto opacity-70">
-						<span class="mb-4 opacity-50 material-icons-outlined" style="font-size: 5rem">error_outline</span>
+						<span class="mb-4 opacity-50 material-icons-outlined" style="font-size: 5rem"
+							>error_outline</span
+						>
 						<p class="mb-4 select-none">
 							{{ $t("event_template_rule_editor.unsatisfiable_tag_rule") }}
 						</p>

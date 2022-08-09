@@ -2,7 +2,9 @@
 	<div
 		class="flex items-center w-max text-muted"
 		:class="{
-			shake: (littleTimeRemaining && !hasShakenLittleTime) || (lessThanHalfTimeRemaining && !hasShakenHalfTime),
+			shake:
+				(littleTimeRemaining && !hasShakenLittleTime) ||
+				(lessThanHalfTimeRemaining && !hasShakenHalfTime),
 			'opacity-0': !isInitialTimeValid,
 		}"
 		@animationend="onShakeEnd()"
@@ -17,9 +19,8 @@
 			</svg>
 		</span>
 		<p class="ml-1" :class="{ 'text-danger-dark': littleTimeRemaining }">
-			<span v-if="initialSeconds >= 3600">{{ formattedTime.hours }}:</span>{{ formattedTime.minutes }}:{{
-				formattedTime.seconds
-			}}
+			<span v-if="initialSeconds >= 3600">{{ formattedTime.hours }}:</span
+			>{{ formattedTime.minutes }}:{{ formattedTime.seconds }}
 		</p>
 	</div>
 </template>

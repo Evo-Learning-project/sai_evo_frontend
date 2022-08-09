@@ -2,7 +2,15 @@
 	<div class="flex flex-col py-3 my-3 space-y-4 md:space-x-4 md:space-y-0 md:flex-row">
 		<div class="flex items-center">
 			<span
-				class="mr-auto text-lg cursor-move md:mr-2 drag-handle material-icons-outlined opacity-70"
+				class="
+					mr-auto
+					text-lg
+					cursor-move
+					md:mr-2
+					drag-handle
+					material-icons-outlined
+					opacity-70
+				"
 				:class="{ 'my-auto': !singleLine, 'mt-1': singleLine }"
 			>
 				drag_indicator
@@ -13,7 +21,9 @@
 				:variant="'icon'"
 				:tooltip="$t('exercise_editor.delete_choice')"
 				@click="$emit('delete')"
-				><span class="text-base text-danger-dark material-icons-outlined"> close </span></Btn
+				><span class="text-base text-danger-dark material-icons-outlined">
+					close
+				</span></Btn
 			>
 		</div>
 		<TextEditor
@@ -23,7 +33,11 @@
 			@update:modelValue="onUpdate('text', $event)"
 			>{{ $t("exercise_editor.choice_text") }}
 			<template v-if="v$.choice.text.$errors.length > 0" v-slot:errors>
-				<div class="input-errors" v-for="error of v$.choice.text.$errors" :key="error.$uid">
+				<div
+					class="input-errors"
+					v-for="error of v$.choice.text.$errors"
+					:key="error.$uid"
+				>
 					<div class="error-msg">
 						{{ $t("validation_errors.exercise.choice." + error.$uid) }}
 					</div>
@@ -37,7 +51,11 @@
 			@update:modelValue="onUpdate('text', $event)"
 			>{{ $t("exercise_editor.choice_text") }}
 			<template v-if="v$.choice.text.$errors.length > 0" v-slot:errors>
-				<div class="input-errors" v-for="error of v$.choice.text.$errors" :key="error.$uid">
+				<div
+					class="input-errors"
+					v-for="error of v$.choice.text.$errors"
+					:key="error.$uid"
+				>
 					<div class="error-msg">
 						{{ $t("validation_errors.exercise.choice." + error.$uid) }}
 					</div>
@@ -54,7 +72,11 @@
 				:modelValue="modelValue.correctness"
 				@update:modelValue="onUpdate('correctness', $event)"
 				:leftIcon="
-					iconType === 'radio' ? 'radio_button_checked' : iconType === 'dropdown' ? 'expand_circle_down' : 'check_box'
+					iconType === 'radio'
+						? 'radio_button_checked'
+						: iconType === 'dropdown'
+						? 'expand_circle_down'
+						: 'check_box'
 				"
 			>
 				<div class="flex w-full items-center space-x-0.5">
@@ -71,7 +93,15 @@
 		</div>
 		<div class="my-auto">
 			<Btn
-				class="hidden -ml-3.5 transition-opacity duration-100 opacity-50 md:mr-1 md:-ml-3 md:block hover:opacity-100"
+				class="
+					hidden
+					-ml-3.5
+					transition-opacity
+					duration-100
+					opacity-50
+					md:mr-1 md:-ml-3 md:block
+					hover:opacity-100
+				"
 				:outline="true"
 				:variant="'icon'"
 				:tooltip="$t('exercise_editor.delete_choice')"

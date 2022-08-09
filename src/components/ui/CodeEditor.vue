@@ -1,12 +1,18 @@
 <template>
 	<div class="relative floating-label" :style="'height: ' + containerHeight + ';'">
-		<label class="absolute top-2 left-1.5 origin-0 fixed-label w-full"><slot></slot></label>
+		<label class="absolute top-2 left-1.5 origin-0 fixed-label w-full"
+			><slot></slot
+		></label>
 
 		<div class="flex w-full">
 			<div class="relative rounded-sm" :class="$slots.sidePane ? 'w-7/12' : 'w-full'">
 				<div style="height: inherit" class="absolute flex w-full">
 					<div v-if="showRunButton" class="top-0 ml-auto h-full z-40 right-0 mt-0.5 mr-4">
-						<Btn :disabled="running || runCoolDown > 0" :variant="'success'" @click="$emit('run')">
+						<Btn
+							:disabled="running || runCoolDown > 0"
+							:variant="'success'"
+							@click="$emit('run')"
+						>
 							<slot name="runButton"></slot>
 						</Btn>
 					</div>
@@ -28,7 +34,10 @@
 					<slot name="sidePaneTitle"></slot>
 				</div>
 				<div
-					class="overflow-x-hidden overflow-y-auto rounded-sm rounded-t-none rounded-l-none"
+					class="
+						overflow-x-hidden overflow-y-auto
+						rounded-sm rounded-t-none rounded-l-none
+					"
 					:style="'height:' + sidePaneContentHeight + 'px'"
 				>
 					<slot name="sidePane"></slot>
@@ -82,7 +91,8 @@ export default defineComponent({
 	},
 	mounted() {
 		this.sidePaneContentHeight =
-			this.baseHeight - (document.getElementById(this.elementId + "sidePaneTitle")?.clientHeight ?? 0);
+			this.baseHeight -
+			(document.getElementById(this.elementId + "sidePaneTitle")?.clientHeight ?? 0);
 	},
 	data() {
 		return {

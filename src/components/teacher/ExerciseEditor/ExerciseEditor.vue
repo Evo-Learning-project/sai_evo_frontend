@@ -1,13 +1,42 @@
 <template>
 	<div class="relative">
 		<transition name="fade-delay">
-			<div style="z-index: 59" v-show="exerciseLocked" class="absolute top-0 left-0 items-center w-full h-full">
+			<div
+				style="z-index: 59"
+				v-show="exerciseLocked"
+				class="absolute top-0 left-0 items-center w-full h-full"
+			>
 				<div
 					style="width: 100% !important; height: 100% !important"
-					class="absolute z-10 flex w-full h-full transition-none bg-gray-900 rounded opacity-40"
+					class="
+						absolute
+						z-10
+						flex
+						w-full
+						h-full
+						transition-none
+						bg-gray-900
+						rounded
+						opacity-40
+					"
 				></div>
-				<div class="sticky z-50 mx-auto mt-40 mb-40 text-center rounded -translate-y-3/4 md:top-1/4 md:w-max">
-					<p style="font-size: 10rem" class="opacity-50 material-icons-outlined text-lightText">
+				<div
+					class="
+						sticky
+						z-50
+						mx-auto
+						mt-40
+						mb-40
+						text-center
+						rounded
+						-translate-y-3/4
+						md:top-1/4 md:w-max
+					"
+				>
+					<p
+						style="font-size: 10rem"
+						class="opacity-50 material-icons-outlined text-lightText"
+					>
 						{{ exerciseLocked ? "lock" : "lock_open" }}
 					</p>
 					<h3
@@ -54,10 +83,24 @@
 							>({{ $t("exercise_editor.draft_notice") }})</span
 						>
 					</h3>
-					<CloudSaveStatus class="mt-1 ml-auto mr-1" :saving="saving" :hadError="savingError"></CloudSaveStatus>
-					<Btn :size="'lg'" :variant="'icon'" :tooltip="$t('misc.close')" @click="$emit('close')"
+					<CloudSaveStatus
+						class="mt-1 ml-auto mr-1"
+						:saving="saving"
+						:hadError="savingError"
+					></CloudSaveStatus>
+					<Btn
+						:size="'lg'"
+						:variant="'icon'"
+						:tooltip="$t('misc.close')"
+						@click="$emit('close')"
 						><span
-							class="transition-transform duration-200 ease-out transform material-icons-outlined"
+							class="
+								transition-transform
+								duration-200
+								ease-out
+								transform
+								material-icons-outlined
+							"
 							:class="{ 'rotate-180': false && showEditor }"
 						>
 							close
@@ -75,7 +118,10 @@
 						>
 							<div class="flex space-x-1">
 								<p>{{ $t("exercise_editor.sub_exercise_weight") }}</p>
-								<Tooltip class="transform scale-125" :text-code="'exercise_editor.sub_exercise_weight'"></Tooltip>
+								<Tooltip
+									class="transform scale-125"
+									:text-code="'exercise_editor.sub_exercise_weight'"
+								></Tooltip>
 							</div>
 							<template #errors v-if="invalidChildWeight"> &nbsp; </template>
 						</NumberInput>
@@ -86,7 +132,15 @@
 						:variant="'icon'"
 						:tooltip="$t('exercise_editor.delete_sub_exercise')"
 						@click="$emit('delete')"
-						class="ml-auto -mt-1 -mr-2.5 transition-opacity duration-100 opacity-50 hover:opacity-100"
+						class="
+							ml-auto
+							-mt-1
+							-mr-2.5
+							transition-opacity
+							duration-100
+							opacity-50
+							hover:opacity-100
+						"
 						><span class="text-base material-icons"> delete </span></Btn
 					>
 				</div>
@@ -96,7 +150,13 @@
 					<!-- top row -->
 					<div
 						v-if="!subExercise || !cloze"
-						class="flex flex-col items-start my-4 space-y-6 lg:space-x-8 lg:space-y-0 lg:flex-row"
+						class="
+							flex flex-col
+							items-start
+							my-4
+							space-y-6
+							lg:space-x-8 lg:space-y-0 lg:flex-row
+						"
 					>
 						<!-- label input -->
 						<div v-if="!subExercise" class="w-full mt-0.5 mr-auto lg:w-4/12">
@@ -108,7 +168,10 @@
 							>
 								<div class="flex space-x-1">
 									<p>{{ $t("exercise_editor.exercise_label") }}</p>
-									<Tooltip class="transform scale-125" :text-code="'exercise_editor.label'"></Tooltip>
+									<Tooltip
+										class="transform scale-125"
+										:text-code="'exercise_editor.label'"
+									></Tooltip>
 								</div>
 							</TextInput>
 						</div>
@@ -154,7 +217,11 @@
 							@update:modelValue="onBaseExerciseChange('text', $event)"
 							>{{ $t("exercise_editor.exercise_text") }}
 							<template v-if="v$.modelValue.text.$errors.length > 0" v-slot:errors>
-								<div class="input-errors" v-for="error of v$.modelValue.text.$errors" :key="error.$uid">
+								<div
+									class="input-errors"
+									v-for="error of v$.modelValue.text.$errors"
+									:key="error.$uid"
+								>
 									<div class="error-msg">
 										{{ $t("validation_errors.exercise." + error.$uid) }}
 									</div>
@@ -185,7 +252,9 @@
               :text-code="'exercise_editor.clozes'"
             ></Tooltip> -->
 						<div class="flex items-start ml-4">
-							<span class="mt-1.25px material-icons-outlined inline-icon text-muted">info</span>
+							<span class="mt-1.25px material-icons-outlined inline-icon text-muted"
+								>info</span
+							>
 							<p class="ml-1.5 text-sm text-muted">
 								{{ $t("help_texts.exercise_editor.clozes") }}
 							</p>
@@ -195,7 +264,10 @@
 					<!-- solutions -->
 					<div v-if="!cloze" class="mb-12">
 						<h3 class="mb-4">{{ $t("exercise_editor.solutions_title") }}</h3>
-						<div v-for="solution in modelValue.solutions" :key="'e-' + modelValue.id + '-sol-' + solution.id">
+						<div
+							v-for="solution in modelValue.solutions"
+							:key="'e-' + modelValue.id + '-sol-' + solution.id"
+						>
 							<TextEditor
 								v-if="!cloze && !isProgrammingExercise"
 								:modelValue="solution.content"
@@ -205,7 +277,12 @@
 								<!-- {{ $t("exercise_editor.exercise_solution") }} -->
 							</TextEditor>
 						</div>
-						<Btn class="mt-2" :variant="'secondary'" :size="'sm'" @click="onAddSolution()">
+						<Btn
+							class="mt-2"
+							:variant="'secondary'"
+							:size="'sm'"
+							@click="onAddSolution()"
+						>
 							<span class="mr-1 text-base material-icons-outlined"> add </span
 							>{{ $t("exercise_editor.new_solution") }}</Btn
 						>
@@ -224,18 +301,25 @@
 								@update:modelValue="onBaseExerciseChange('solution', $event)"
 								:size="'lg'"
 								:showRunButton="true"
-								:language="modelValue.exercise_type === ExerciseType.JS ? 'typescript' : 'c'"
+								:language="
+									modelValue.exercise_type === ExerciseType.JS ? 'typescript' : 'c'
+								"
 								@run="onTestSolution"
 								:running="testingSolution"
 								>{{ $t("exercise_editor.exercise_solution") }}
 								<template v-slot:runButton
-									><span class="ml-1 mr-1 text-base material-icons-outlined"> science </span
+									><span class="ml-1 mr-1 text-base material-icons-outlined">
+										science </span
 									>{{
-										testingSolution ? $t("exercise_editor.testing_solution") : $t("exercise_editor.test_solution")
+										testingSolution
+											? $t("exercise_editor.testing_solution")
+											: $t("exercise_editor.test_solution")
 									}}</template
 								>
 								<template v-slot:sidePaneTitle
-									><div class="flex items-center p-3 pl-4 space-x-2 rounded-tr-sm bg-light">
+									><div
+										class="flex items-center p-3 pl-4 space-x-2 rounded-tr-sm bg-light"
+									>
 										<span class="my-auto material-icons-outlined icon-light"> code </span>
 										<h3>
 											{{ $t("programming_exercise.execution_results") }}
@@ -249,7 +333,11 @@
 										:testCases="modelValue.testcases"
 									></CodeExecutionResults>
 									<div class="flex flex-col" v-else>
-										<span class="mx-auto mt-24 opacity-30 text-8xl material-icons-outlined"> code </span>
+										<span
+											class="mx-auto mt-24 opacity-30 text-8xl material-icons-outlined"
+										>
+											code
+										</span>
 										<p class="px-4 mx-auto text-muted">
 											{{ $t("exercise_editor.code_execution_will_appear_here") }}
 										</p>
@@ -288,7 +376,10 @@
 							@removeTag="onRemoveTag($event, true)"
 							><div class="flex space-x-1">
 								<p>{{ $t("exercise_editor.exercise_public_tags") }}</p>
-								<Tooltip class="transform scale-125" :text-code="'exercise_editor.public_tags'"></Tooltip></div
+								<Tooltip
+									class="transform scale-125"
+									:text-code="'exercise_editor.public_tags'"
+								></Tooltip></div
 						></TagInput>
 					</div>
 
@@ -303,7 +394,10 @@
 						>
 							<div class="flex space-x-1">
 								<p>{{ $t("exercise_editor.exercise_private_tags") }}</p>
-								<Tooltip class="transform scale-125" :text-code="'exercise_editor.private_tags'"></Tooltip></div
+								<Tooltip
+									class="transform scale-125"
+									:text-code="'exercise_editor.private_tags'"
+								></Tooltip></div
 						></TagInput>
 					</div>
 				</div>
@@ -311,7 +405,11 @@
 				<div :class="[cloze ? '-mt-6' : 'mt-8']" v-if="isMultipleChoice">
 					<h3 class="mb-6">{{ $t("exercise_editor.choices_title") }}</h3>
 					<div class="mb-4 -mt-4" v-if="v$.modelValue.choices.$errors.length > 0">
-						<div class="input-errors" v-for="error of v$.modelValue.choices.$errors" :key="error.$uid">
+						<div
+							class="input-errors"
+							v-for="error of v$.modelValue.choices.$errors"
+							:key="error.$uid"
+						>
 							<div class="error-msg">
 								{{ $t("validation_errors.exercise." + error.$uid) }}
 							</div>
@@ -341,7 +439,8 @@
 								:icon-type="
 									cloze
 										? 'dropdown'
-										: modelValue.exercise_type === ExerciseType.MULTIPLE_CHOICE_SINGLE_POSSIBLE
+										: modelValue.exercise_type ===
+										  ExerciseType.MULTIPLE_CHOICE_SINGLE_POSSIBLE
 										? 'radio'
 										: 'checkbox'
 								"
@@ -358,7 +457,11 @@
 				<div class="mt-8" v-if="modelValue.exercise_type === ExerciseType.AGGREGATED">
 					<h3 class="mb-8">{{ $t("exercise_editor.sub_exercises_title") }}</h3>
 					<div class="mb-4 -mt-4" v-if="v$.modelValue.sub_exercises.$errors.length > 0">
-						<div class="input-errors" v-for="error of v$.modelValue.sub_exercises.$errors" :key="error.$uid">
+						<div
+							class="input-errors"
+							v-for="error of v$.modelValue.sub_exercises.$errors"
+							:key="error.$uid"
+						>
 							<div class="error-msg">
 								{{ $t("validation_errors.exercise." + error.$uid) }}
 							</div>
@@ -390,7 +493,12 @@
 				<div class="mt-8" v-if="isProgrammingExercise">
 					<h3 class="mb-8">{{ $t("exercise_editor.testcases_title") }}</h3>
 
-					<draggable :modelValue="modelValue.testcases" ghost-class="drag-ghost" handle=".drag-handle" item-key="id">
+					<draggable
+						:modelValue="modelValue.testcases"
+						ghost-class="drag-ghost"
+						handle=".drag-handle"
+						item-key="id"
+					>
 						<template #item="{ element }">
 							<TestCaseEditor
 								:executingSolution="testCaseAutoSaveManagers[element.id].isPending()"
@@ -443,7 +551,11 @@
 						>{{ dialogData.text }}
 						<div class="mt-2" v-if="v$.modelValue.$errors">
 							<ul class="list-disc list-inside">
-								<li class="text-muted text-danger-dark" v-for="(error, index) in v$.$errors" :key="'err-' + index">
+								<li
+									class="text-muted text-danger-dark"
+									v-for="(error, index) in v$.$errors"
+									:key="'err-' + index"
+								>
 									{{ $t("validation_errors.exercise." + error.$uid) }}
 								</li>
 							</ul>
@@ -469,7 +581,9 @@
 						:variant="'icon'"
 						@click="$emit('cloneExercise')"
 						:tooltip="$t('exercise_editor.clone')"
-						><span class="text-2xl icon-light material-icons-outlined"> copy_all </span></Btn
+						><span class="text-2xl icon-light material-icons-outlined">
+							copy_all
+						</span></Btn
 					>
 					<Btn
 						v-if="!subExercise"
@@ -479,7 +593,9 @@
 						:variant="'icon'"
 						:tooltip="$t('exercise_editor.delete')"
 						@click="$emit('delete')"
-						><span class="text-2xl text-danger-dark material-icons-outlined"> delete </span></Btn
+						><span class="text-2xl text-danger-dark material-icons-outlined">
+							delete
+						</span></Btn
 					>
 				</div>
 			</template>
@@ -549,7 +665,11 @@ import CodeExecutionResults from "@/components/shared/CodeExecutionResults.vue";
 import NumberInput from "@/components/ui/NumberInput.vue";
 import { exerciseValidation } from "@/validation/models";
 import ArticleHandle from "@/components/shared/HelpCenter/ArticleHandle.vue";
-import { getMaxScore, isMultipleChoiceExercise, isProgrammingExercise } from "@/components/shared/Exercise/utils";
+import {
+	getMaxScore,
+	isMultipleChoiceExercise,
+	isProgrammingExercise,
+} from "@/components/shared/Exercise/utils";
 const { mapMutations } = createNamespacedHelpers("teacher");
 const { mapState } = createNamespacedHelpers("shared");
 
@@ -718,7 +838,10 @@ export default defineComponent({
 			try {
 				await this.autoSaveManager?.flush();
 				const fakeSlot = getFakeEventParticipationSlot(this.modelValue);
-				fakeSlot.execution_results = await testProgrammingExerciseSolution(this.courseId, this.modelValue.id);
+				fakeSlot.execution_results = await testProgrammingExerciseSolution(
+					this.courseId,
+					this.modelValue.id,
+				);
 				this.solutionTestSlot = fakeSlot;
 			} catch (e) {
 				this.setErrorNotification(e);
@@ -726,17 +849,26 @@ export default defineComponent({
 				this.testingSolution = false;
 			}
 		},
-		onTextSelectionChange(event: { fullText: string; text: string; range: { index: number; length: number } }) {
+		onTextSelectionChange(event: {
+			fullText: string;
+			text: string;
+			range: { index: number; length: number };
+		}) {
 			if (this.modelValue.exercise_type !== ExerciseType.COMPLETION) {
 				return;
 			}
-			const clozeSeparatorPositions = [...event.fullText.matchAll(/\[\[\?\]\]/g)].map(m => m.index as number);
+			const clozeSeparatorPositions = [...event.fullText.matchAll(/\[\[\?\]\]/g)].map(
+				m => m.index as number,
+			);
 			console.log(event);
 			if (event.range.length === 0 && event.text.includes(CLOZE_SEPARATOR)) {
 				let i = 0;
 				for (const p of clozeSeparatorPositions) {
 					console.log(p);
-					if (event.range.index >= p && event.range.index + event.range.length <= p + CLOZE_SEPARATOR.length) {
+					if (
+						event.range.index >= p &&
+						event.range.index + event.range.length <= p + CLOZE_SEPARATOR.length
+					) {
 						this.editableClozePosition = i;
 						return;
 					}
@@ -758,7 +890,11 @@ export default defineComponent({
 			});
 			this.instantiateSolutionAutoSaveManager(newSolution);
 		},
-		async onUpdateSolution<K extends keyof ExerciseSolution>(solutionId: string, key: K, value: ExerciseSolution[K]) {
+		async onUpdateSolution<K extends keyof ExerciseSolution>(
+			solutionId: string,
+			key: K,
+			value: ExerciseSolution[K],
+		) {
 			await this.solutionAutoSaveManagers[solutionId].onChange({
 				field: key,
 				value,
@@ -773,7 +909,11 @@ export default defineComponent({
 			});
 			this.instantiateChoiceAutoSaveManager(newChoice);
 		},
-		async onUpdateChoice<K extends keyof ExerciseChoice>(choiceId: string, key: K, value: ExerciseChoice[K]) {
+		async onUpdateChoice<K extends keyof ExerciseChoice>(
+			choiceId: string,
+			key: K,
+			value: ExerciseChoice[K],
+		) {
 			await this.choiceAutoSaveManagers[choiceId].onChange({
 				field: key,
 				value,
@@ -825,7 +965,11 @@ export default defineComponent({
 			});
 			this.instantiateTestCaseAutoSaveManager(newTestcase);
 		},
-		async onUpdateTestCase<K extends keyof ExerciseTestCase>(testCaseId: string, key: K, value: ExerciseTestCase[K]) {
+		async onUpdateTestCase<K extends keyof ExerciseTestCase>(
+			testCaseId: string,
+			key: K,
+			value: ExerciseTestCase[K],
+		) {
 			await this.testCaseAutoSaveManagers[testCaseId].onChange({
 				field: key,
 				value,
@@ -869,7 +1013,8 @@ export default defineComponent({
 			this.textEditorInstance.insertText(insertionIndex, CLOZE_SEPARATOR);
 			await this.onAddSubExercise();
 			// focus on most recently added cloze
-			this.editingClozePosition = (this.modelValue.sub_exercises as Exercise[]).length - 1;
+			this.editingClozePosition =
+				(this.modelValue.sub_exercises as Exercise[]).length - 1;
 		},
 		/* end CRUD on related objects */
 		onExerciseStateChange(newState: ExerciseState) {
@@ -1004,7 +1149,8 @@ export default defineComponent({
 		...mapState(["tags", "user"]),
 		showNoChoicePenaltyWarning(): boolean {
 			return (
-				this.modelValue.exercise_type === ExerciseType.MULTIPLE_CHOICE_MULTIPLE_POSSIBLE &&
+				this.modelValue.exercise_type ===
+					ExerciseType.MULTIPLE_CHOICE_MULTIPLE_POSSIBLE &&
 				!this.v$.$invalid &&
 				!(this.modelValue.choices ?? []).some(c => (c.correctness ?? 0) < 0)
 			);
@@ -1019,7 +1165,9 @@ export default defineComponent({
 			return getMaxScore(this.modelValue);
 		},
 		exerciseTypeOptions() {
-			return exerciseTypeOptions.filter(o => !this.subExercise || o.value !== ExerciseType.AGGREGATED);
+			return exerciseTypeOptions.filter(
+				o => !this.subExercise || o.value !== ExerciseType.AGGREGATED,
+			);
 		},
 		exerciseLocked(): boolean {
 			console.log("locked", this.modelValue.locked_by);

@@ -7,7 +7,8 @@
 				:loading="localLoading"
 				class="ml-auto"
 				:disabled="firstLoading"
-				><span class="mr-1 text-base material-icons-outlined"> add </span> {{ $t("course_events.new_exam") }}</Btn
+				><span class="mr-1 text-base material-icons-outlined"> add </span>
+				{{ $t("course_events.new_exam") }}</Btn
 			>
 		</div>
 		<div v-if="!firstLoading" class="grid grid-cols-1 gap-4 mt-4 lg:grid-cols-2">
@@ -27,8 +28,13 @@
 			<EventEditorPreviewSkeleton></EventEditorPreviewSkeleton>
 			<EventEditorPreviewSkeleton></EventEditorPreviewSkeleton>
 		</div>
-		<div class="flex flex-col w-full text-center select-none mt-9" v-if="!firstLoading && exams.length === 0">
-			<p style="font-size: 10rem" class="material-icons-outlined opacity-10">assignment</p>
+		<div
+			class="flex flex-col w-full text-center select-none mt-9"
+			v-if="!firstLoading && exams.length === 0"
+		>
+			<p style="font-size: 10rem" class="material-icons-outlined opacity-10">
+				assignment
+			</p>
 			<h2 class="opacity-40">{{ $t("course_events.no_exams") }}</h2>
 		</div>
 		<Dialog

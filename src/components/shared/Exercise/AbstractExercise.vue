@@ -4,8 +4,16 @@
 			<h3>{{ exerciseTitle }}</h3>
 		</div>
 
-		<div class="flex flex-wrap items-center mt-1 mb-2.5" v-if="showPrivateTags || showPublicTags">
-			<Tag v-for="tag in tags" :key="'tag-' + tag.id + '-slot-' + exercise.id" :tag="tag" class="mb-0.5 mr-2" />
+		<div
+			class="flex flex-wrap items-center mt-1 mb-2.5"
+			v-if="showPrivateTags || showPublicTags"
+		>
+			<Tag
+				v-for="tag in tags"
+				:key="'tag-' + tag.id + '-slot-' + exercise.id"
+				:tag="tag"
+				class="mb-0.5 mr-2"
+			/>
 		</div>
 
 		<slot name="exerciseText">
@@ -21,7 +29,10 @@
 		<slot v-else name="readOnlyAnswer"></slot>
 
 		<!-- solutions -->
-		<div class="mt-10" v-if="false && showSolution && (exercise.solutions ?? []).length > 0">
+		<div
+			class="mt-10"
+			v-if="false && showSolution && (exercise.solutions ?? []).length > 0"
+		>
 			<h4>Soluzioni proposte</h4>
 			<ExerciseSolution
 				v-for="solution in exercise.solutions"

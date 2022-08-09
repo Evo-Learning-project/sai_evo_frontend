@@ -12,7 +12,9 @@ export const xmlToJson = async (xml: string): Promise<any> =>
 export const getTagsFromMoodleCategory = (category: MoodleCategory): string[] =>
 	category[0].text[0].split("$course$/")[1].split("/");
 
-export const getExerciseTypeFromMoodleQuestion = (q: MoodleQuestion): ExerciseType | undefined => {
+export const getExerciseTypeFromMoodleQuestion = (
+	q: MoodleQuestion,
+): ExerciseType | undefined => {
 	const questionType = q.$.type;
 	if (questionType === "truefalse") {
 		return ExerciseType.MULTIPLE_CHOICE_SINGLE_POSSIBLE;
@@ -28,7 +30,8 @@ export const getExerciseTypeFromMoodleQuestion = (q: MoodleQuestion): ExerciseTy
 	return undefined;
 };
 
-const clozeSubQuestionRegex = /\{(\d*\s*):(MULTICHOICE|MC):(=?([^#}]*)\s*#?\s*([^~}]*\s*)?)+\}/g;
+const clozeSubQuestionRegex =
+	/\{(\d*\s*):(MULTICHOICE|MC):(=?([^#}]*)\s*#?\s*([^~}]*\s*)?)+\}/g;
 
 export const getMoodleClozeQuestionsAsExercises = (q: MoodleQuestion): Exercise[] => {
 	const answerRegex = /(=?)\s*(%[-\d]+%)?([^~]+)/;
@@ -81,7 +84,9 @@ export const processMoodleQuestionText = (q: MoodleQuestion): string => {
 				img.replace(
 					src,
 					`data:image/jpeg;base64,${
-						fileNamesAndContents.find(f => f.name === src.substring("@@PLUGINFILE@@/".length))?.content ?? ""
+						fileNamesAndContents.find(
+							f => f.name === src.substring("@@PLUGINFILE@@/".length),
+						)?.content ?? ""
 					}`,
 				),
 			)

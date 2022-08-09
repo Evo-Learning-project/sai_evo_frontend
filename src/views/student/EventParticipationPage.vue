@@ -21,7 +21,12 @@
 					left-1/2
 				"
 			>
-				<p style="font-size: 10rem" class="opacity-50 material-icons-outlined text-lightText">timer_off</p>
+				<p
+					style="font-size: 10rem"
+					class="opacity-50 material-icons-outlined text-lightText"
+				>
+					timer_off
+				</p>
 				<h3
 					class="pt-1 mx-auto rounded-t md:bg-transparent text-lightText md:px-2"
 					style="text-shadow: 0.5px 0.5px 4px rgb(0 0 0 / 50%)"
@@ -74,7 +79,9 @@
 				:allowEditSubmission="true"
 				:saving="saving"
 				:running="running"
-				:showTags="currentEventParticipation.event.event_type === EventType.SELF_SERVICE_PRACTICE"
+				:showTags="
+					currentEventParticipation.event.event_type === EventType.SELF_SERVICE_PRACTICE
+				"
 			>
 				<h4 class="mb-0">
 					{{ $t("event_participation_page.exercise") }}
@@ -87,8 +94,16 @@
 			><!---@updateAttachment="onChange(slot, 'attachment', $event)"-->
 		</div>
 		<div class="flex items-center w-full mt-8">
-			<Btn class="" @click="onGoBack" v-if="goingBackAllowed" :disabled="!canGoBack" :loading="loading">
-				<span class="material-icons-outlined mt-0.5 mr-0.5 text-base"> chevron_left </span>
+			<Btn
+				class=""
+				@click="onGoBack"
+				v-if="goingBackAllowed"
+				:disabled="!canGoBack"
+				:loading="loading"
+			>
+				<span class="material-icons-outlined mt-0.5 mr-0.5 text-base">
+					chevron_left
+				</span>
 				{{ $t("event_participation_page.previous_exercise") }}</Btn
 			>
 			<Btn
@@ -97,9 +112,16 @@
 				v-if="canGoForward"
 				:loading="loading"
 				>{{ $t("event_participation_page.next_exercise") }}
-				<span class="material-icons-outlined mt-0.5 ml-0.5 text-base"> chevron_right </span></Btn
+				<span class="material-icons-outlined mt-0.5 ml-0.5 text-base">
+					chevron_right
+				</span></Btn
 			>
-			<Btn class="ml-auto" @click="confirmTurnIn" v-else-if="canTurnIn" :variant="'success'">
+			<Btn
+				class="ml-auto"
+				@click="confirmTurnIn"
+				v-else-if="canTurnIn"
+				:variant="'success'"
+			>
 				<span class="material-icons-outlined mt-0.5 text-base mr-1"> check </span
 				>{{ $t("event_participation_page.turn_in") }}
 			</Btn>
@@ -141,7 +163,10 @@ import { DialogData } from "@/interfaces";
 
 import { createNamespacedHelpers, mapState } from "vuex";
 import { AutoSaveManager } from "@/autoSave";
-import { EVENT_PARTICIPATION_SLOT_DEBOUNCED_FIELDS, EVENT_PARTICIPATION_SLOT_DEBOUNCE_TIME_MS } from "@/const";
+import {
+	EVENT_PARTICIPATION_SLOT_DEBOUNCED_FIELDS,
+	EVENT_PARTICIPATION_SLOT_DEBOUNCE_TIME_MS,
+} from "@/const";
 import { partialUpdateEventParticipationSlot } from "@/api/events";
 import SlotSkeleton from "@/components/ui/skeletons/SlotSkeleton.vue";
 import { subscribeToSubmissionSlotChanges } from "@/ws/modelSubscription";
@@ -233,7 +258,10 @@ export default defineComponent({
 			"runEventParticipationSlotCode",
 		]),
 		...mapMutations(["setCurrentEventParticipationSlot"]),
-		async onUpdateSubmission(slot: EventParticipationSlot, change: [keyof EventParticipationSlotSubmission, any]) {
+		async onUpdateSubmission(
+			slot: EventParticipationSlot,
+			change: [keyof EventParticipationSlotSubmission, any],
+		) {
 			if (change[0] !== "attachment") {
 				await this.onChange(slot, change[0], change[1]);
 			} else {
@@ -447,12 +475,15 @@ export default defineComponent({
 			return (
 				!this.firstLoading &&
 				(!this.oneExerciseAtATime ||
-					((this.proxyModelValue.slots?.length ?? 0) > 0 && (this.proxyModelValue.slots[0].is_last ?? false))) &&
+					((this.proxyModelValue.slots?.length ?? 0) > 0 &&
+						(this.proxyModelValue.slots[0].is_last ?? false))) &&
 				this.proxyModelValue.state !== EventParticipationState.TURNED_IN
 			);
 		},
 		goingBackAllowed(): boolean {
-			return this.oneExerciseAtATime && (this.proxyModelValue.event?.allow_going_back ?? false);
+			return (
+				this.oneExerciseAtATime && (this.proxyModelValue.event?.allow_going_back ?? false)
+			);
 		},
 	},
 });

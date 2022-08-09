@@ -1,6 +1,10 @@
 <template>
 	<div v-if="icons?.length > 0" :class="['-mb-5px']">
-		<img class="transform scale-125 ml-1.5 my-0" v-if="isRawIcon" src="../../../public/c.svg" />
+		<img
+			class="transform scale-125 ml-1.5 my-0"
+			v-if="isRawIcon"
+			src="../../../public/c.svg"
+		/>
 		<span
 			v-else
 			:style="'font-size:' + fontSize"
@@ -70,7 +74,11 @@ export default defineComponent({
 		},
 		parsedIcons() {
 			return this.icons?.map(i =>
-				i.slice(-3) === "-lg" || i.slice(-3) === "-sm" ? i.slice(0, -3) : i.slice(0, 4) === "raw-" ? i.slice(4) : i,
+				i.slice(-3) === "-lg" || i.slice(-3) === "-sm"
+					? i.slice(0, -3)
+					: i.slice(0, 4) === "raw-"
+					? i.slice(4)
+					: i,
 			);
 		},
 	},

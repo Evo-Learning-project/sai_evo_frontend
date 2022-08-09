@@ -10,7 +10,9 @@
 		></DataTable>
 		<Dialog :showDialog="showDialog" :confirmOnly="true" @yes="hideDialog()">
 			<template v-slot:title>
-				{{ $t("course_privileges_page.edit_permissions_title") }}&nbsp;{{ editingUser?.full_name }}
+				{{ $t("course_privileges_page.edit_permissions_title") }}&nbsp;{{
+					editingUser?.full_name
+				}}
 			</template>
 			<template v-slot:body>
 				<div class="text-darkText">
@@ -22,9 +24,12 @@
 						:useToggles="true"
 					>
 						<template v-slot="{ icons }">
-							<span style="font-size: 1.3rem" v-if="icons?.length > 0" class="ml-1 mr-2 material-icons-outlined">{{
-								icons[0]
-							}}</span></template
+							<span
+								style="font-size: 1.3rem"
+								v-if="icons?.length > 0"
+								class="ml-1 mr-2 material-icons-outlined"
+								>{{ icons[0] }}</span
+							></template
 						>
 						<template v-slot:item="{ description }">
 							<p class="ml-1 mt-0.5 text-sm text-muted">{{ description }}</p>
@@ -79,7 +84,10 @@ export default defineComponent({
 	methods: {
 		...mapActions(["getUsersForCourse", "updateUserCoursePrivileges"]),
 		onCellClicked(event: CellClickedEvent) {
-			if (event.data.id !== this.user.id && event.data.id != this.currentCourse?.creator?.id) {
+			if (
+				event.data.id !== this.user.id &&
+				event.data.id != this.currentCourse?.creator?.id
+			) {
 				this.showDialog = true;
 				this.editingUserId = event.data.id;
 			}
@@ -143,7 +151,11 @@ export default defineComponent({
 				},
 				{
 					field: "coursePrivileges",
-					headerName: _("course_privileges_page.course_privileges") + " (" + _("misc.click_to_edit") + ")",
+					headerName:
+						_("course_privileges_page.course_privileges") +
+						" (" +
+						_("misc.click_to_edit") +
+						")",
 					minWidth: 685,
 					cellRenderer: (params: any) =>
 						'<div class="flex mt-2 space-x-4 cursor-pointer">' +

@@ -7,13 +7,17 @@ export async function getCourses(): Promise<Course[]> {
 	return response?.data ?? [];
 }
 
-export async function getCourseUnstartedPracticeEvents(courseId: string): Promise<Event[]> {
+export async function getCourseUnstartedPracticeEvents(
+	courseId: string,
+): Promise<Event[]> {
 	// TODO make action for this
 	const response = await axios.get(`/courses/${courseId}/unstarted_practice_events/`);
 
 	if (response.data.length > 0) {
 		const event = response.data[0] as Event; // currently can only have one unstarted event
-		const processedRules = convertEventTemplateRules(event.template?.rules as EventTemplateRule[]);
+		const processedRules = convertEventTemplateRules(
+			event.template?.rules as EventTemplateRule[],
+		);
 
 		const convertedEvent = {
 			...event,
@@ -35,7 +39,9 @@ export async function getCourse(courseId: string): Promise<Course> {
 
 	if (unstarted_practice_events && unstarted_practice_events.length > 0) {
 		const event = unstarted_practice_events[0] as Event; // currently can only have one unstarted event
-		const processedRules = convertEventTemplateRules(event.template?.rules as EventTemplateRule[]);
+		const processedRules = convertEventTemplateRules(
+			event.template?.rules as EventTemplateRule[],
+		);
 
 		const convertedEvent = {
 			...event,
@@ -56,8 +62,13 @@ export async function createCourse(course: Course): Promise<Course> {
 	return response.data;
 }
 
-export async function getUserCourseParticipations(courseId: string, userId: string): Promise<EventParticipation[]> {
-	const response = await axios.get(`/courses/${courseId}/participations/?user_id=${userId}&include_event=true`);
+export async function getUserCourseParticipations(
+	courseId: string,
+	userId: string,
+): Promise<EventParticipation[]> {
+	const response = await axios.get(
+		`/courses/${courseId}/participations/?user_id=${userId}&include_event=true`,
+	);
 	return response.data;
 }
 
@@ -71,9 +82,14 @@ export async function deleteCourse(courseId: string): Promise<void> {
 	return response.data;
 }
 
-export async function getTags(courseId: string, includeExerciseCount: boolean): Promise<Tag[]> {
+export async function getTags(
+	courseId: string,
+	includeExerciseCount: boolean,
+): Promise<Tag[]> {
 	const response = await axios.get(
-		`/courses/${courseId}/tags/${includeExerciseCount ? "?include_exercise_count=1" : ""}`,
+		`/courses/${courseId}/tags/${
+			includeExerciseCount ? "?include_exercise_count=1" : ""
+		}`,
 	);
 	return response.data;
 }

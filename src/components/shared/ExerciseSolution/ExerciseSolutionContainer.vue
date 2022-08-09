@@ -15,11 +15,20 @@
 			:exercise="exercise"
 			@editSolution="onEditSolution(solution)"
 		/>
-		<div class="flex items-center space-x-4" v-if="(exercise.solutions ?? []).length === 0">
+		<div
+			class="flex items-center space-x-4"
+			v-if="(exercise.solutions ?? []).length === 0"
+		>
 			<p class="text-muted">
 				{{ $t("exercise_solution.no_solutions_call_to_action") }}
 			</p>
-			<Btn @click="onAddSolution()" :variant="'primary'" class="" :size="'sm'" :outline="true">
+			<Btn
+				@click="onAddSolution()"
+				:variant="'primary'"
+				class=""
+				:size="'sm'"
+				:outline="true"
+			>
 				<span class="mr-2 text-base material-icons">reviews</span>
 				{{ $t("exercise_solution.propose_solution") }}
 			</Btn>
@@ -83,7 +92,10 @@ import { setErrorNotification } from "@/utils";
 import Exercise from "../Exercise/Exercise.vue";
 import { AutoSaveManager } from "@/autoSave";
 import { mapActions, mapMutations } from "vuex";
-import { EXERCISE_SOLUTION_AUTO_SAVE_DEBOUNCE_FIELDS, EXERCISE_SOLUTION_AUTO_SAVE_DEBOUNCE_TIME_MS } from "@/const";
+import {
+	EXERCISE_SOLUTION_AUTO_SAVE_DEBOUNCE_FIELDS,
+	EXERCISE_SOLUTION_AUTO_SAVE_DEBOUNCE_TIME_MS,
+} from "@/const";
 export default defineComponent({
 	name: "ExerciseSolutionContainer",
 	props: {
@@ -100,7 +112,10 @@ export default defineComponent({
 		onClose() {
 			this.editingSolutionId = null;
 		},
-		async onDraftSolutionChange<K extends keyof IExerciseSolution>(key: K, value: IExerciseSolution[K]) {
+		async onDraftSolutionChange<K extends keyof IExerciseSolution>(
+			key: K,
+			value: IExerciseSolution[K],
+		) {
 			await this.autoSaveManager?.onChange({ field: key, value });
 		},
 		instantiateAutoSaveManager() {
@@ -213,19 +228,27 @@ export default defineComponent({
 			return "text";
 		},
 		shownSolutions(): IExerciseSolution[] {
-			return this.nonDraftSolutions.filter((_, i) => this.showAll || i < SHOW_INITIALLY_COUNT);
+			return this.nonDraftSolutions.filter(
+				(_, i) => this.showAll || i < SHOW_INITIALLY_COUNT,
+			);
 		},
 		draftSolutions(): IExerciseSolution[] {
-			return (this.exercise.solutions ?? []).filter(s => s.state === ExerciseSolutionState.DRAFT);
+			return (this.exercise.solutions ?? []).filter(
+				s => s.state === ExerciseSolutionState.DRAFT,
+			);
 		},
 		nonDraftSolutions(): IExerciseSolution[] {
-			return (this.exercise.solutions ?? []).filter(s => s.state !== ExerciseSolutionState.DRAFT);
+			return (this.exercise.solutions ?? []).filter(
+				s => s.state !== ExerciseSolutionState.DRAFT,
+			);
 		},
 		editingSolution(): IExerciseSolution | null {
 			if (this.editingSolutionId === null) {
 				return null;
 			}
-			return (this.exercise.solutions ?? []).find(s => s.id == this.editingSolutionId) ?? null;
+			return (
+				(this.exercise.solutions ?? []).find(s => s.id == this.editingSolutionId) ?? null
+			);
 		},
 	},
 	components: { Btn, ExerciseSolution, ExerciseSolutionEditor, Exercise },

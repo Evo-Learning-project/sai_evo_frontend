@@ -1,6 +1,9 @@
 <template>
 	<transition name="fade" v-show="showDialog" appear>
-		<div style="z-index: 1000" class="fixed top-0 left-0 flex items-center justify-center w-full h-full">
+		<div
+			style="z-index: 1000"
+			class="fixed top-0 left-0 flex items-center justify-center w-full h-full"
+		>
 			<div
 				@click="dismiss()"
 				style="width: 100vw !important; height: 100vh !important"
@@ -9,14 +12,28 @@
 			<transition name="bounce">
 				<div
 					v-if="showDialog"
-					class="z-20 max-h-full overflow-y-auto mx-1.5 bg-white rounded-md shadow-all-around md:mx-0 flex flex-col"
+					class="
+						z-20
+						max-h-full
+						overflow-y-auto
+						mx-1.5
+						bg-white
+						rounded-md
+						shadow-all-around
+						md:mx-0
+						flex flex-col
+					"
 					:class="{
 						'md:max-w-4xl md:min-w-md': !large,
 						'md:w-full md:mx-4': large,
 					}"
 					:style="fullHeight ? 'height: calc(100vh - 10px)' : ''"
 				>
-					<div style="" class="w-full overflow-y-auto" :class="{ 'px-4 md:px-8': !noPadding }">
+					<div
+						style=""
+						class="w-full overflow-y-auto"
+						:class="{ 'px-4 md:px-8': !noPadding }"
+					>
 						<!-- header-->
 						<div
 							v-if="$slots.title"
@@ -53,7 +70,9 @@
 						<!-- body-->
 						<div
 							class="pb-3 text-gray-600"
-							:class="[!$slots.title ? 'pt-6' : error || warning || success ? 'pt-4' : 'pt-3']"
+							:class="[
+								!$slots.title ? 'pt-6' : error || warning || success ? 'pt-4' : 'pt-3',
+							]"
 						>
 							<slot name="body"></slot>
 						</div>
@@ -68,10 +87,23 @@
 					>
 						<div class="mt-auto"><slot name="footerButtons"></slot></div>
 						<div class="flex ml-auto">
-							<Btn @click="emitChoice('yes')" :variant="'primary-borderless'" :disabled="disableOk">
-								{{ yesText || (confirmOnly ? $t("dialog.default_ok_text") : $t("dialog.default_yes_text")) }}
+							<Btn
+								@click="emitChoice('yes')"
+								:variant="'primary-borderless'"
+								:disabled="disableOk"
+							>
+								{{
+									yesText ||
+									(confirmOnly
+										? $t("dialog.default_ok_text")
+										: $t("dialog.default_yes_text"))
+								}}
 							</Btn>
-							<Btn v-if="!confirmOnly" @click="emitChoice('no')" :variant="'primary-borderless'">
+							<Btn
+								v-if="!confirmOnly"
+								@click="emitChoice('no')"
+								:variant="'primary-borderless'"
+							>
 								{{ noText || $t("dialog.default_no_text") }}
 							</Btn>
 						</div>
@@ -152,7 +184,8 @@ export default defineComponent({
 		Btn,
 	},
 	beforeUnmount() {
-		const bodyContainsOverflowHidden = document.body.classList.contains("overflow-y-hidden");
+		const bodyContainsOverflowHidden =
+			document.body.classList.contains("overflow-y-hidden");
 		if (bodyContainsOverflowHidden) {
 			document.body.classList.remove("overflow-y-hidden");
 		}
@@ -160,7 +193,8 @@ export default defineComponent({
 	watch: {
 		showDialog(newVal) {
 			// prevent scrolling of the underlying page when dialog is open
-			const bodyContainsOverflowHidden = document.body.classList.contains("overflow-y-hidden");
+			const bodyContainsOverflowHidden =
+				document.body.classList.contains("overflow-y-hidden");
 
 			if (newVal && !bodyContainsOverflowHidden) {
 				document.body.classList.add("overflow-y-hidden");

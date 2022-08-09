@@ -6,7 +6,16 @@
 			'py-0.5 px-1 w-20': small,
 			'bg-light': filled,
 		}"
-		class="relative z-10 duration-300 border-b-2 rounded-t-sm light-input transition-border focus-within:border-primary"
+		class="
+			relative
+			z-10
+			duration-300
+			border-b-2
+			rounded-t-sm
+			light-input
+			transition-border
+			focus-within:border-primary
+		"
 	>
 		<input
 			type="number"
@@ -15,7 +24,15 @@
 			:disabled="disabled"
 			placeholder=" "
 			v-model.number="proxyModelValue"
-			class="z-10 block w-full bg-transparent appearance-none floating-label focus:outline-none"
+			class="
+				z-10
+				block
+				w-full
+				bg-transparent
+				appearance-none
+				floating-label
+				focus:outline-none
+			"
 			:class="{
 				'pl-5': leftIcon.length > 0,
 				'floating-label-error': $slots.errors?.(),
@@ -25,15 +42,24 @@
 			<slot></slot>
 		</label>
 		<div v-if="rightIcon.length > 0" class="absolute bottom-0.5 right-1.5 -z-1">
-			<span class="text-base text-muted" :class="[iconFilled ? 'material-icons' : 'material-icons-outlined']">
+			<span
+				class="text-base text-muted"
+				:class="[iconFilled ? 'material-icons' : 'material-icons-outlined']"
+			>
 				{{ rightIcon }}
 			</span>
 		</div>
-		<div v-if="$slots.rightHint" class="absolute z-10 -mb-1.25px opacity-70 bottom-2 text-muted right-7">
+		<div
+			v-if="$slots.rightHint"
+			class="absolute z-10 -mb-1.25px opacity-70 bottom-2 text-muted right-7"
+		>
 			<slot name="rightHint"></slot>
 		</div>
 		<div v-if="leftIcon.length > 0" style="bottom: 3.2px" class="absolute left-1.5 -z-1">
-			<span class="text-base text-muted" :class="[iconFilled ? 'material-icons' : 'material-icons-outlined']">
+			<span
+				class="text-base text-muted"
+				:class="[iconFilled ? 'material-icons' : 'material-icons-outlined']"
+			>
 				{{ leftIcon }}
 			</span>
 		</div>

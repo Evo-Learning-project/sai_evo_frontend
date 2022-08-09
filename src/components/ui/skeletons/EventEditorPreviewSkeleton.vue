@@ -9,7 +9,12 @@
 				<div class="flex items-start w-full opacity-0">
 					<h3
 						class="flex-grow"
-						style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden"
+						style="
+							display: -webkit-box;
+							-webkit-line-clamp: 2;
+							-webkit-box-orient: vertical;
+							overflow: hidden;
+						"
 					>
 						&nbsp;
 					</h3>

@@ -26,7 +26,9 @@
 					<div class="w-full h-5 skeleton-unit"></div>
 					<div class="w-full h-5 skeleton-unit"></div>
 				</div>
-				<div class="overflow-x-hidden overflow-y-auto opacity-0 overflow-ellipsis max-h-20">
+				<div
+					class="overflow-x-hidden overflow-y-auto opacity-0 overflow-ellipsis max-h-20"
+				>
 					<div>&nbsp;</div>
 				</div>
 			</div>

@@ -1,7 +1,11 @@
 <template>
 	<div>
 		<label
-			:class="[disabled ? '' : 'checkbox-container', 'relative  flex space-x-1.5 items-start ', optionClass]"
+			:class="[
+				disabled ? '' : 'checkbox-container',
+				'relative  flex space-x-1.5 items-start ',
+				optionClass,
+			]"
 			v-for="(option, index) in options"
 			:key="id + '-option-' + index"
 			:for="id + '-option-' + index"

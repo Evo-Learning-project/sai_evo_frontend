@@ -5,7 +5,12 @@
 				<h4
 					class="mt-1.25px mr-4"
 					:class="{ 'text-muted': event.name.length === 0 }"
-					style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden"
+					style="
+						display: -webkit-box;
+						-webkit-line-clamp: 2;
+						-webkit-box-orient: vertical;
+						overflow: hidden;
+					"
 				>
 					{{ previewTitle }}
 				</h4>
@@ -13,7 +18,8 @@
 					<div
 						class="mr-0 chip"
 						:class="{
-							'chip-primary': event.state === EventState.OPEN || event.state === EventState.RESTRICTED,
+							'chip-primary':
+								event.state === EventState.OPEN || event.state === EventState.RESTRICTED,
 							'chip-light': event.state === EventState.CLOSED,
 							'chip-success': event.state === EventState.PLANNED,
 						}"
@@ -38,11 +44,17 @@
 				<div class="mt-1 space-y-1 text-sm mb-7">
 					<div class="flex space-x-1" v-if="event.begin_timestamp">
 						<p class="text-muted">{{ $t("event_editor.begin_timestamp") }}:</p>
-						<Timestamp :reduced="buttonIconsOnly" :value="event.begin_timestamp"></Timestamp>
+						<Timestamp
+							:reduced="buttonIconsOnly"
+							:value="event.begin_timestamp"
+						></Timestamp>
 					</div>
 					<div class="flex space-x-1" v-if="event.end_timestamp">
 						<p class="text-muted">{{ $t("event_editor.end_timestamp") }}:</p>
-						<Timestamp :reduced="buttonIconsOnly" :value="event.end_timestamp"></Timestamp>
+						<Timestamp
+							:reduced="buttonIconsOnly"
+							:value="event.end_timestamp"
+						></Timestamp>
 					</div>
 				</div>
 				<div class="flex items-center mt-auto">
@@ -51,22 +63,33 @@
 						:size="'sm'"
 						:variant="'danger'"
 						:outline="true"
-						v-if="allowClose && hasBegun && hasPrivileges([CoursePrivilege.MANAGE_EVENTS])"
+						v-if="
+							allowClose && hasBegun && hasPrivileges([CoursePrivilege.MANAGE_EVENTS])
+						"
 						@click="$emit('close')"
 						><span class="text-base material-icons-outlined"> block </span>
-						<span class="ml-1" v-if="true || !buttonIconsOnly">{{ $t("event_preview.close") }}</span></Btn
+						<span class="ml-1" v-if="true || !buttonIconsOnly">{{
+							$t("event_preview.close")
+						}}</span></Btn
 					>
 					<Btn
 						class=""
 						:size="'sm'"
 						:outline="true"
-						v-if="canReopen && allowClose && hasPrivileges([CoursePrivilege.MANAGE_EVENTS])"
+						v-if="
+							canReopen && allowClose && hasPrivileges([CoursePrivilege.MANAGE_EVENTS])
+						"
 						@click="$emit('reopen')"
 						><span class="text-base material-icons-outlined"> undo </span>
-						<span class="ml-1" v-if="true || !buttonIconsOnly">{{ $t("event_preview.reopen") }}</span></Btn
+						<span class="ml-1" v-if="true || !buttonIconsOnly">{{
+							$t("event_preview.reopen")
+						}}</span></Btn
 					>
 					<div class="flex items-center ml-auto">
-						<router-link class="m-auto" :to="{ name: 'ExamEditor', params: { examId: event.id } }">
+						<router-link
+							class="m-auto"
+							:to="{ name: 'ExamEditor', params: { examId: event.id } }"
+						>
 							<Btn
 								:tooltip="buttonIconsOnly ? $t('misc.edit') : ''"
 								:outline="buttonIconsOnly"
@@ -74,17 +97,31 @@
 								:variant="buttonIconsOnly ? 'icon' : 'secondary'"
 								v-if="hasPrivileges([CoursePrivilege.MANAGE_EVENTS])"
 							>
-								<span :class="[buttonIconsOnly ? 'text-xl' : 'text-base', 'material-icons']"> edit </span>
-								<span class="ml-1.5" v-if="!buttonIconsOnly">{{ $t("event_preview.editor") }}</span></Btn
+								<span
+									:class="[buttonIconsOnly ? 'text-xl' : 'text-base', 'material-icons']"
+								>
+									edit
+								</span>
+								<span class="ml-1.5" v-if="!buttonIconsOnly">{{
+									$t("event_preview.editor")
+								}}</span></Btn
 							></router-link
 						>
-						<router-link v-if="hasBegun" :to="{ name: 'ExamProgress', params: { examId: event.id } }"
+						<router-link
+							v-if="hasBegun"
+							:to="{ name: 'ExamProgress', params: { examId: event.id } }"
 							><Btn
 								:variant="buttonIconsOnly ? 'icon' : 'primary'"
 								:outline="true"
 								:tooltip="buttonIconsOnly ? $t('event_preview.monitor') : ''"
 								v-if="hasPrivileges([CoursePrivilege.MANAGE_EVENTS])"
-								><span :class="[buttonIconsOnly ? 'text-xl material-icons' : 'text-base material-icons-outlined']">
+								><span
+									:class="[
+										buttonIconsOnly
+											? 'text-xl material-icons'
+											: 'text-base material-icons-outlined',
+									]"
+								>
 									visibility
 								</span>
 								<span class="ml-1.5 hidden md:inline" v-if="!buttonIconsOnly">{{
@@ -94,13 +131,19 @@
 						>
 						<router-link
 							:to="{ name: 'ExamResults', params: { examId: event.id } }"
-							v-else-if="hasEnded && hasPrivileges([CoursePrivilege.ASSESS_PARTICIPATIONS])"
+							v-else-if="
+								hasEnded && hasPrivileges([CoursePrivilege.ASSESS_PARTICIPATIONS])
+							"
 							><Btn
 								:tooltip="buttonIconsOnly ? $t('event_preview.results') : ''"
 								:outline="true"
 								:variant="buttonIconsOnly ? 'icon' : 'primary'"
-								><span style="font-size: 28px !important" class="material-icons-outlined"> bar_chart </span>
-								<span class="ml-1.5" v-if="!buttonIconsOnly">{{ $t("event_preview.results") }}</span></Btn
+								><span style="font-size: 28px !important" class="material-icons-outlined">
+									bar_chart
+								</span>
+								<span class="ml-1.5" v-if="!buttonIconsOnly">{{
+									$t("event_preview.results")
+								}}</span></Btn
 							></router-link
 						>
 						<CopyToClipboard
@@ -176,12 +219,18 @@ export default defineComponent({
 			return eventStatesIcons[this.event.state as EventState];
 		},
 		hasBegun() {
-			return this.event.state === EventState.OPEN || this.event.state === EventState.RESTRICTED;
+			return (
+				this.event.state === EventState.OPEN || this.event.state === EventState.RESTRICTED
+			);
 		},
 		canReopen() {
 			return (
 				this.hasEnded &&
-				Math.abs(new Date().getTime() - new Date(this.event.begin_timestamp ?? "").getTime()) / 3600000 < 24
+				Math.abs(
+					new Date().getTime() - new Date(this.event.begin_timestamp ?? "").getTime(),
+				) /
+					3600000 <
+					24
 			);
 		},
 		hasEnded() {

@@ -4,7 +4,9 @@
 		<div class="h-8">
 			<div v-if="saving" class="flex items-center ml-auto space-x-1.5 text-muted">
 				<!-- <Spinner :size="'sm'"></Spinner> -->
-				<span class="text-xl opacity-80 material-icons-outlined animate-spin"> sync </span>
+				<span class="text-xl opacity-80 material-icons-outlined animate-spin">
+					sync
+				</span>
 				<p class="text-base">{{ $t("cloud.saving") }}</p>
 			</div>
 			<div v-else-if="!hadError" class="flex items-center ml-auto space-x-1.5 text-muted">
@@ -14,7 +16,14 @@
 							'tooltip-handle hover:bg-light hover:bg-opacity-100 rounded px-1.5  transition-colors duration-100':
 								!showSaved,
 						}"
-						class="text-xl cursor-default select-none opacity-80 material-icons-outlined hover:text-primary"
+						class="
+							text-xl
+							cursor-default
+							select-none
+							opacity-80
+							material-icons-outlined
+							hover:text-primary
+						"
 					>
 						cloud_done
 					</span>
@@ -36,21 +45,39 @@
 
 		<!-- out of view version -->
 		<transition name="fade-autosave">
-			<div v-if="showOutOfViewFeedback" class="fixed rounded-full bg-opacity-90 top-18 right-8 z-999 bg-gray-50">
+			<div
+				v-if="showOutOfViewFeedback"
+				class="fixed rounded-full bg-opacity-90 top-18 right-8 z-999 bg-gray-50"
+			>
 				<div class="opacity-70 shadow-all-around px-3 pt-1.5 pb-1 pr-3 rounded-full">
 					<div v-if="saving" class="flex items-center ml-auto space-x-1.5 text-muted">
 						<!-- <Spinner :size="'sm'"></Spinner> -->
-						<span class="text-xl opacity-80 material-icons-outlined animate-spin"> sync </span>
+						<span class="text-xl opacity-80 material-icons-outlined animate-spin">
+							sync
+						</span>
 						<p class="text-base">{{ $t("cloud.saving") }}</p>
 					</div>
-					<div v-else-if="!hadError" class="flex items-center ml-auto space-x-1.5 text-muted">
-						<Tooltip :placement="'left'" :text-value="$t('cloud.changes_saved_to_server')">
+					<div
+						v-else-if="!hadError"
+						class="flex items-center ml-auto space-x-1.5 text-muted"
+					>
+						<Tooltip
+							:placement="'left'"
+							:text-value="$t('cloud.changes_saved_to_server')"
+						>
 							<span
 								:class="{
 									'tooltip-handle hover:bg-light hover:bg-opacity-100 rounded px-1.5  transition-colors duration-100':
 										!showSaved,
 								}"
-								class="text-xl cursor-default select-none opacity-80 material-icons-outlined hover:text-primary"
+								class="
+									text-xl
+									cursor-default
+									select-none
+									opacity-80
+									material-icons-outlined
+									hover:text-primary
+								"
 							>
 								cloud_done
 							</span>
@@ -106,7 +133,10 @@ export default defineComponent({
 					this.showOutOfViewFeedback = true;
 				}
 				this.showSavedHandle = setTimeout(() => (this.showSaved = false), 5000);
-				this.showOutOfViewFeedbackHandle = setTimeout(() => (this.showOutOfViewFeedback = false), 1000);
+				this.showOutOfViewFeedbackHandle = setTimeout(
+					() => (this.showOutOfViewFeedback = false),
+					1000,
+				);
 			}
 			if (newVal && !this.isElementInViewPort()) {
 				setTimeout(() => {
@@ -134,7 +164,9 @@ export default defineComponent({
 			return (
 				rect.top >= 0 &&
 				rect.left >= 0 &&
-				rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) /* or $(window).height() */ &&
+				rect.bottom <=
+					(window.innerHeight ||
+						document.documentElement.clientHeight) /* or $(window).height() */ &&
 				rect.right <= (window.innerWidth || document.documentElement.clientWidth)
 			); /* or $(window).width() */
 		},

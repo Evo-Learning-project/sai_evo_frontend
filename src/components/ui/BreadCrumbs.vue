@@ -7,9 +7,11 @@
 			:key="'breadcrumb-' + index"
 			class="flex items-center bg-black bg-opacity-0"
 		>
-			<span class="font-semibold opacity-80 breadcrumb-item" v-if="breadcrumb.routeName === $route.name">{{
-				breadcrumb.title
-			}}</span>
+			<span
+				class="font-semibold opacity-80 breadcrumb-item"
+				v-if="breadcrumb.routeName === $route.name"
+				>{{ breadcrumb.title }}</span
+			>
 			<router-link
 				v-else
 				:to="{
@@ -19,7 +21,9 @@
 			>
 				<span class="">{{ breadcrumb.title }} </span>
 			</router-link>
-			<span v-if="index !== breadcrumbs.length - 1" class="text-base material-icons-outlined opacity-60"
+			<span
+				v-if="index !== breadcrumbs.length - 1"
+				class="text-base material-icons-outlined opacity-60"
 				>navigate_next</span
 			>
 		</div>
@@ -29,7 +33,10 @@
 <script lang="ts">
 import { courseIdMixin, eventIdMixin } from "@/mixins";
 import { BreadCrumb } from "@/navigation/breadcrumbs";
-import { ROUTE_TITLE_COURSE_NAME_TOKEN, ROUTE_TITLE_EVENT_NAME_TOKEN } from "@/navigation/const";
+import {
+	ROUTE_TITLE_COURSE_NAME_TOKEN,
+	ROUTE_TITLE_EVENT_NAME_TOKEN,
+} from "@/navigation/const";
 import { defineComponent, PropType } from "@vue/runtime-core";
 import { RouteLocationNormalizedLoaded } from "vue-router";
 
@@ -46,7 +53,10 @@ export default defineComponent({
 		replaceTitleTokens(str: string) {
 			return str
 				?.replace(ROUTE_TITLE_COURSE_NAME_TOKEN, this.currentCourse.name)
-				?.replace(ROUTE_TITLE_EVENT_NAME_TOKEN, this.currentEvent || this.previewingEvent);
+				?.replace(
+					ROUTE_TITLE_EVENT_NAME_TOKEN,
+					this.currentEvent || this.previewingEvent,
+				);
 		},
 	},
 	computed: {

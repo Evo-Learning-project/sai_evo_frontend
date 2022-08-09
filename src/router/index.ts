@@ -18,7 +18,10 @@ import EventStats from "../views/teacher/EventStats.vue";
 import Login from "../views/Login.vue";
 import PageNotFound from "../views/shared/PageNotFound.vue";
 import CourseCreationForm from "../views/teacher/CourseCreationForm.vue";
-import { courseDashboardSidebarOptions, courseListSidebarOptions } from "@/navigation/sidebar";
+import {
+	courseDashboardSidebarOptions,
+	courseListSidebarOptions,
+} from "@/navigation/sidebar";
 import { getTranslatedString as _ } from "@/i18n";
 import store from "@/store";
 import { SharedState } from "@/store/types";
@@ -31,6 +34,9 @@ import {
 	practiceReviewBreadCrumbs,
 	submissionReviewBreadCrumbs,
 } from "@/navigation/breadcrumbs";
+import { getCourse } from "@/api/courses";
+
+const dispatchSolutionView = () => true;
 
 const routes: Array<RouteRecordRaw> = [
 	{
@@ -49,6 +55,25 @@ const routes: Array<RouteRecordRaw> = [
 				component: Login,
 			},
 		],
+	},
+	{
+		path: "/threads/:courseId/:exerciseId/:solutionId",
+		name: "SolutionDispatcher",
+		component: Login,
+		//redirect: { name: "Login" },
+		beforeEnter: async (to, _, next) => {
+			const course = await getCourse(to.params.courseId as string);
+			const privileges = course.privileges ?? [];
+			if (privileges.length > 0) {
+				next("TeacherSolutions");
+			} else {
+				next("StudentSolutions");
+			}
+		},
+		// meta: {
+		// 	routeTitle: _("headings.login"),
+		// 	hideBreadcrumbs: true,
+		// },
 	},
 	{
 		path: "/teacher",
@@ -308,7 +333,10 @@ router.beforeEach((to, from, next) => {
 	}
 	if (!store.getters["shared/isAuthenticated"] && to.name !== "Login") {
 		next({ name: "Login", query: { redirect: to.fullPath } });
-	} else if (to.meta.teachersOnly && !(store.state as { shared: SharedState }).shared.user.is_teacher) {
+	} else if (
+		to.meta.teachersOnly &&
+		!(store.state as { shared: SharedState }).shared.user.is_teacher
+	) {
 		next({ name: "StudentCourseList" });
 	} else {
 		next();

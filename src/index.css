@@ -273,15 +273,18 @@
 		transition-duration: 280ms;
 		transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 		transition-delay: 0s;
-		box-shadow: 0px 3px 1px -2px rgb(0 0 0 / 20%), 0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 1px 5px 0px rgb(0 0 0 / 12%);
+		box-shadow: 0px 3px 1px -2px rgb(0 0 0 / 20%), 0px 2px 2px 0px rgb(0 0 0 / 14%),
+			0px 1px 5px 0px rgb(0 0 0 / 12%);
 	}
 	.elevate-when-pressed:active,
 	.shadow-btn:active {
-		box-shadow: 0px 5px 5px -3px rgb(0 0 0 / 20%), 0px 8px 10px 1px rgb(0 0 0 / 14%), 0px 3px 14px 2px rgb(0 0 0 / 12%);
+		box-shadow: 0px 5px 5px -3px rgb(0 0 0 / 20%), 0px 8px 10px 1px rgb(0 0 0 / 14%),
+			0px 3px 14px 2px rgb(0 0 0 / 12%);
 	}
 
 	.shadow-popup {
-		box-shadow: 0 2px 6px -1px rgb(0 0 0 / 20%), 0 4px 6px 0 rgb(0 0 0 / 14%), 0 1px 12px 0 rgb(0 0 0 / 12%);
+		box-shadow: 0 2px 6px -1px rgb(0 0 0 / 20%), 0 4px 6px 0 rgb(0 0 0 / 14%),
+			0 1px 12px 0 rgb(0 0 0 / 12%);
 	}
 	/* .shadow-elevation {
       @apply transition-shadow duration-1000 ease-in-out;
@@ -311,7 +314,8 @@
 
 	.shadow-t-elevation-2 {
 		/* DARK box-shadow: rgba(0,0,0, .3) 0 1px 2px 0, rgba(0,0,0, .15) 0 2px 6px 2px; */
-		box-shadow: rgba(60, 64, 67, 0.3) 0 -2.5px 2px 0, rgba(60, 64, 67, 0.15) 0 -3px 6px 2px !important;
+		box-shadow: rgba(60, 64, 67, 0.3) 0 -2.5px 2px 0,
+			rgba(60, 64, 67, 0.15) 0 -3px 6px 2px !important;
 	}
 
 	.card {
@@ -332,7 +336,8 @@
 	}
 
 	.card-hoverable {
-		transition: box-shadow 0.1s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+		transition: box-shadow 0.1s cubic-bezier(0.4, 0, 0.2, 1),
+			border-color 0.1s cubic-bezier(0.4, 0, 0.2, 1);
 	}
 
 	.card-border {
@@ -483,33 +488,40 @@
 
 	.two-tone-primary {
 		/*filter: invert(31%) sepia(65%) saturate(1500%) hue-rotate(212deg) brightness(90%) contrast(87%);*/
-		filter: invert(20%) sepia(48%) saturate(2779%) hue-rotate(220deg) brightness(96%) contrast(93%);
+		filter: invert(20%) sepia(48%) saturate(2779%) hue-rotate(220deg) brightness(96%)
+			contrast(93%);
 	}
 
 	.two-tone-secondary {
-		filter: invert(17%) sepia(72%) saturate(2874%) hue-rotate(250deg) brightness(91%) contrast(95%);
+		filter: invert(17%) sepia(72%) saturate(2874%) hue-rotate(250deg) brightness(91%)
+			contrast(95%);
 	}
 
 	.two-tone-light {
-		filter: invert(32%) sepia(17%) saturate(495%) hue-rotate(175deg) brightness(93%) contrast(89%);
+		filter: invert(32%) sepia(17%) saturate(495%) hue-rotate(175deg) brightness(93%)
+			contrast(89%);
 	}
 
 	.two-tone-dark {
-		filter: invert(0%) sepia(100%) saturate(7500%) hue-rotate(347deg) brightness(89%) contrast(111%);
+		filter: invert(0%) sepia(100%) saturate(7500%) hue-rotate(347deg) brightness(89%)
+			contrast(111%);
 	}
 
 	.two-tone-secondary {
-		filter: invert(18%) sepia(65%) saturate(6206%) hue-rotate(262deg) brightness(87%) contrast(95%);
+		filter: invert(18%) sepia(65%) saturate(6206%) hue-rotate(262deg) brightness(87%)
+			contrast(95%);
 	}
 
 	.two-tone-success {
-		filter: invert(37%) sepia(10%) saturate(4619%) hue-rotate(94deg) brightness(97%) contrast(84%);
+		filter: invert(37%) sepia(10%) saturate(4619%) hue-rotate(94deg) brightness(97%)
+			contrast(84%);
 		/* filter: invert(49%) sepia(61%) saturate(634%) hue-rotate(89deg) brightness(89%) contrast(87%);      */
 		/* filter: invert(21%) sepia(13%) saturate(4214%) hue-rotate(124deg) brightness(99%) contrast(95%); */
 	}
 
 	.two-tone-danger {
-		filter: invert(15%) sepia(54%) saturate(3614%) hue-rotate(345deg) brightness(93%) contrast(93%);
+		filter: invert(15%) sepia(54%) saturate(3614%) hue-rotate(345deg) brightness(93%)
+			contrast(93%);
 		/* filter: invert(15%) sepia(39%) saturate(5980%) hue-rotate(347deg) brightness(87%) contrast(96%); */
 	}
 
@@ -960,8 +972,8 @@
 	}
 	.ag-row:hover {
 		@apply bg-gray-50 border-b-0 !important;
-		box-shadow: inset 1px 0 0 #dadce0, inset -1px 0 0 #dadce0, 0 1px 2px 0 rgb(60 64 67 / 30%),
-			0 1px 3px 1px rgb(60 64 67 / 15%);
+		box-shadow: inset 1px 0 0 #dadce0, inset -1px 0 0 #dadce0,
+			0 1px 2px 0 rgb(60 64 67 / 30%), 0 1px 3px 1px rgb(60 64 67 / 15%);
 	}
 	.ag-theme-material .ag-checkbox-input-wrapper.ag-checked::after {
 		@apply text-primary !important;
@@ -1104,7 +1116,8 @@
 
 	/* custom inputs styles */
 	.toggle-handle {
-		box-shadow: 0px 1px 3px 0px rgb(0 0 0 / 20%), 0px 1px 1px 0px rgb(0 0 0 / 14%), 0px 1px 3px 0px rgb(0 0 0 / 12%) !important;
+		box-shadow: 0px 1px 3px 0px rgb(0 0 0 / 20%), 0px 1px 1px 0px rgb(0 0 0 / 14%),
+			0px 1px 3px 0px rgb(0 0 0 / 12%) !important;
 		top: -0.25em;
 		width: 22px;
 		height: 22px;

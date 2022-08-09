@@ -1,10 +1,17 @@
 <template>
 	<div class="relative">
 		<div class="mx-auto md:w-2/5" v-if="showTabs">
-			<SegmentedControls v-model="currentTab" :options="filteredTabsOptions"></SegmentedControls>
+			<SegmentedControls
+				v-model="currentTab"
+				:options="filteredTabsOptions"
+			></SegmentedControls>
 		</div>
 		<!-- <transition name="bounce"> -->
-		<DraggablePopup @close="showPopup = false" v-show="showPopup" :title="$t('programming_exercise.tab_text')">
+		<DraggablePopup
+			@close="showPopup = false"
+			v-show="showPopup"
+			:title="$t('programming_exercise.tab_text')"
+		>
 			<div class="user-content" v-html="exercise.text"></div>
 		</DraggablePopup>
 		<!-- </transition> -->
@@ -25,7 +32,10 @@
               >open_in_full</span
             > -->
 						<svg style="width: 26px; height: 26px" viewBox="0 0 24 24">
-							<path fill="currentColor" d="M4,8H8V4H20V16H16V20H4V8M16,8V14H18V6H10V8H16M6,12V18H14V12H6Z" />
+							<path
+								fill="currentColor"
+								d="M4,8H8V4H20V16H16V20H4V8M16,8V14H18V6H10V8H16M6,12V18H14V12H6Z"
+							/>
 						</svg>
 					</Btn>
 				</div>
@@ -45,7 +55,9 @@
 					<template v-slot:runButton
 						><span class="ml-1 mr-1 text-base material-icons"> play_arrow </span
 						>{{ $t("programming_exercise.run_code") }}
-						<span class="opacity-50" v-if="runCoolDown > 0">&nbsp;({{ runCoolDown }})</span>
+						<span class="opacity-50" v-if="runCoolDown > 0"
+							>&nbsp;({{ runCoolDown }})</span
+						>
 						<span v-if="runCoolDown < 10" class="opacity-0">0</span></template
 					>
 					<template v-slot:sidePaneTitle
@@ -57,9 +69,14 @@
 						</div>
 					</template>
 					<template v-slot:sidePane>
-						<CodeExecutionResults v-if="slot.execution_results" :slot="slot"></CodeExecutionResults>
+						<CodeExecutionResults
+							v-if="slot.execution_results"
+							:slot="slot"
+						></CodeExecutionResults>
 						<div class="flex flex-col" v-else>
-							<span class="mx-auto mt-24 opacity-30 text-8xl material-icons-outlined"> code </span>
+							<span class="mx-auto mt-24 opacity-30 text-8xl material-icons-outlined">
+								code
+							</span>
 							<p class="px-4 mx-auto text-muted">
 								{{ $t("programming_exercise.code_execution_will_appear_here") }}
 							</p>
@@ -96,7 +113,11 @@
 				</CodeEditor>
 			</div>
 			<div v-show="currentTab === ProgrammingExerciseTabs.TEST_CASES">
-				<div class="my-8" v-for="(testcase, index) in exercise.testcases" :key="'t-' + testcase.id">
+				<div
+					class="my-8"
+					v-for="(testcase, index) in exercise.testcases"
+					:key="'t-' + testcase.id"
+				>
 					<h4 class="mb-1">
 						{{ $t("programming_exercise.testcase") }} {{ index + 1 }}
 						<span

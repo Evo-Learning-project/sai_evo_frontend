@@ -12,7 +12,10 @@ import {
 	ExerciseType,
 	ExerciseValidationError,
 } from "@/models";
-import { ROUTE_TITLE_COURSE_NAME_TOKEN, ROUTE_TITLE_EVENT_NAME_TOKEN } from "@/navigation/const";
+import {
+	ROUTE_TITLE_COURSE_NAME_TOKEN,
+	ROUTE_TITLE_EVENT_NAME_TOKEN,
+} from "@/navigation/const";
 
 export const it = {
 	dialog: {
@@ -73,13 +76,15 @@ export const it = {
 		skip_exercise: "Salta esercizio",
 		turn_in: "Consegna",
 		turn_in_dialog_title: "Sei sicuro di voler consegnare?",
-		turn_in_dialog_text: "Una volta consegnato, non potrai più modificare le tue risposte.",
+		turn_in_dialog_text:
+			"Una volta consegnato, non potrai più modificare le tue risposte.",
 		turn_in_confirm_button: "Consegna",
 		turned_in_text:
 			"Fatto! Hai consegnato con successo. Qui sotto puoi rivedere le tue risposte. Quando vuoi, puoi chiudere questa pagina.",
 		review_answers: "Revisione risposte",
 		next_dialog_title: "Sei sicuro di voler passare al prossimo esercizio?",
-		next_dialog_text: "Se vai avanti, non potrai più tornare indietro a questo esercizio.",
+		next_dialog_text:
+			"Se vai avanti, non potrai più tornare indietro a questo esercizio.",
 		next_dialog_confirm_button: "Vai avanti",
 		participate: "Partecipa",
 		exam_not_yet_begun: "L'esame non è ancora iniziato.",
@@ -108,20 +113,26 @@ export const it = {
 			"Hai assegnato manualmente un voto all'esame." +
 			" Se modifichi il punteggio di un esercizio adesso, il voto complessivo non verrà aggiornato.",
 		// " Se vuoi che il voto si aggiorni automaticamente in base ai punteggi degli esercizi, ripristina il voto di default.",
-		all_participations_assesses: "Tutti gli esami sono stati corretti. Puoi pubblicare i risultati.",
+		all_participations_assesses:
+			"Tutti gli esami sono stati corretti. Puoi pubblicare i risultati.",
 		some_exams_require_manual_assessment:
 			"Alcuni esercizi richiedono una correzione manuale. Prima di poter pubblicare i risultati, devi assegnare un punteggio agli esercizi che ancora non lo hanno.",
 		exams_awaiting_assessment_are_marked:
 			"Per assegnare un punteggio alle risposte non ancora valutate, clicca sull'icona",
 		ready_to_publish_1:
 			"I risultati sono pronti per essere pubblicati. Seleziona le righe che vuoi pubblicare e clicca su",
-		ready_to_publish_2: "Le righe evidenziate in verde corrispondono a risultati già pubblicati.",
-		all_published: "Tutti i risultati sono stati pubblicati e sono ora visibili agli studenti.",
+		ready_to_publish_2:
+			"Le righe evidenziate in verde corrispondono a risultati già pubblicati.",
+		all_published:
+			"Tutti i risultati sono stati pubblicati e sono ora visibili agli studenti.",
 		publish_results: "Pubblica i risultati",
-		this_comment_is_private: "Questo commento verrà visualizzato dagli insegnanti ma non dallo studente",
+		this_comment_is_private:
+			"Questo commento verrà visualizzato dagli insegnanti ma non dallo studente",
 		comment_for_student: "Commento per lo studente",
-		student_will_see_this_comment: "Questo commento sarà visibile allo studente quando pubblicherai i risultati",
-		this_exercise_requires_manual_assessment: "Devi assegnare un punteggio a questa risposta.",
+		student_will_see_this_comment:
+			"Questo commento sarà visibile allo studente quando pubblicherai i risultati",
+		this_exercise_requires_manual_assessment:
+			"Devi assegnare un punteggio a questa risposta.",
 		some_sub_slots_pending:
 			"Il punteggio mostrato è incompleto perché alcuni sotto-esercizi non hanno ancora ricevuto una valutazione.",
 		some_slots_pending:
@@ -143,11 +154,13 @@ export const it = {
 		viewing_practice_of: "Stai visualizzando un'esercitazione di",
 		sub_slot_assessment_unavailable_open_full_1: "Apri la",
 		sub_slot_assessment_unavailable_open_full_2: "partecipazione completa",
-		sub_slot_assessment_unavailable_open_full_3: "all'esame per assegnare un punteggio a questo sotto-esercizio.",
+		sub_slot_assessment_unavailable_open_full_3:
+			"all'esame per assegnare un punteggio a questo sotto-esercizio.",
 		undo_overall_score_edit: "Vuoi ripristinare il voto originale?",
 		undo_score_edit: "Vuoi ripristinare il punteggio originale per questo esercizio?",
 		overall_score_instructions:
-			"Puoi assegnare manualmente un voto allo studente. Il voto può essere numerico" + " oppure una stringa.",
+			"Puoi assegnare manualmente un voto allo studente. Il voto può essere numerico" +
+			" oppure una stringa.",
 	},
 	course_insights: {
 		practice_sessions: "Esercitazioni",
@@ -254,7 +267,8 @@ export const it = {
 		share: "Condividi",
 		add_bookmark: "Aggiungi ai preferiti",
 		remove_bookmark: "Rimuovi dai preferiti",
-		no_solutions_call_to_action: "Non ci sono ancora soluzioni. Sii il primo a proporne una!",
+		no_solutions_call_to_action:
+			"Non ci sono ancora soluzioni. Sii il primo a proporne una!",
 		propose_solution: "Proponi soluzione",
 		proposed_solutions_title: "Soluzioni proposte",
 		propose_solution_title: "Proponi una soluzione per l'esercizio",
@@ -276,10 +290,12 @@ export const it = {
 		mat_and_scores_title: "Matricola e voto",
 		full_name_and_scores_title: "Nome, cognome e voto",
 		all_fields_title: "Tutte le informazioni",
-		all_fields_description: "Nome, cognome, matricola, corso, voto e, per ogni esercizio, risposta data e punteggio",
+		all_fields_description:
+			"Nome, cognome, matricola, corso, voto e, per ogni esercizio, risposta data e punteggio",
 		custom_title: "Personalizzato",
 		custom_description: "Scegli quali campi includere",
-		introduction: "Scegli quali informazioni vuoi includere nel report. Per ciascuno studente, includi:",
+		introduction:
+			"Scegli quali informazioni vuoi includere nel report. Per ciascuno studente, includi:",
 	},
 	report_fields: {
 		[ReportField.EXERCISES_ANSWER]: "Risposte dello studente",
@@ -345,7 +361,8 @@ export const it = {
 		create_exam_from_selected_exercises: "Crea esame con questi esercizi",
 		cannot_delete_nondraft:
 			"Questo esercizio non è in stato di bozza. Per eliminarlo, imposta prima il suo stato a Bozza.",
-		confirm_delete_exercise: "Sei sicuro di voler eliminare questo esercizio? Quest'azione è irreversibile.",
+		confirm_delete_exercise:
+			"Sei sicuro di voler eliminare questo esercizio? Quest'azione è irreversibile.",
 		confirm_delete_exercise_title: "Conferma eliminazione",
 	},
 	exercise: {
@@ -363,7 +380,8 @@ export const it = {
 		close_for_everyone: "Chiudi per tutti",
 		close_exam_for_everyone_body_1: "Stai per chiudere l'esame",
 		close_exam_for_everyone_body_2: "per tutti i partecipanti.",
-		close_exam_for_everyone_body_3: "Se vuoi chiudere l'esame solo per alcuni studenti, selezionali dalla pagina",
+		close_exam_for_everyone_body_3:
+			"Se vuoi chiudere l'esame solo per alcuni studenti, selezionali dalla pagina",
 	},
 	exercise_preview: {
 		unnamed_exercise: "Esercizio senza nome",
@@ -392,7 +410,8 @@ export const it = {
 			"L'esame è stato chiuso per alcuni partecipanti. Ricorda di chiudere l'esame per tutti al termine. Le righe evidenziate in rosso corrispondono a esami già chiusi.",
 		un_turn_in_text:
 			"Questo studente ha già consegnato. Puoi annullare la sua consegna per permettergli di modificare le sue risposte. Vuoi annullare la consegna di ",
-		un_turn_in_instructions: "Per riaprire l'esame di uno studente che ha già consegnato, clicca sull'icona",
+		un_turn_in_instructions:
+			"Per riaprire l'esame di uno studente che ha già consegnato, clicca sull'icona",
 		in_column_state: "nella colonna Consegna.",
 	},
 	event_stats: {
@@ -407,8 +426,10 @@ export const it = {
 		back_to_results: "Torna ai risultati",
 		testcase_passed_in: "Superato in",
 		submissions: "sottomissioni",
-		no_stats_available_for_exercise: "Nessuna statistica disponibile per questo esercizio",
-		incomplete_scores: "Le statistiche visualizzate sono incomplete perché non hai ancora corretto tutti gli esami",
+		no_stats_available_for_exercise:
+			"Nessuna statistica disponibile per questo esercizio",
+		incomplete_scores:
+			"Le statistiche visualizzate sono incomplete perché non hai ancora corretto tutti gli esami",
 	},
 	event_results: {
 		publish_results: "Pubblica risultati",
@@ -426,8 +447,10 @@ export const it = {
 		add_rule: "Aggiungi slot",
 		confirm_delete_rule: "Sei sicuro di voler eliminare questo slot?",
 		randomize_rule_order: "Randomizza ordine degli slot",
-		rule_order_randomization_off: "Gli slot verranno assegnati agli studenti nell'ordine in cui sono disposti qui",
-		rule_order_randomization_on: "Gli slot verranno assegnati agli studenti in ordine casuale",
+		rule_order_randomization_off:
+			"Gli slot verranno assegnati agli studenti nell'ordine in cui sono disposti qui",
+		rule_order_randomization_on:
+			"Gli slot verranno assegnati agli studenti in ordine casuale",
 	},
 	exercise_picker: {
 		cannot_pick_draft: "Non puoi usare un esercizio in stato di bozza in un esame",
@@ -457,13 +480,18 @@ export const it = {
 		pick_exercise_from_pool: "Seleziona esercizio da un insieme",
 		pick_exercise_tag_based: "Seleziona esercizio in base ai tag",
 		pick_single_exercise_help_text: "Tutti gli studenti vedranno lo stesso esercizio",
-		pick_exercise_from_pool_help_text: "Ogni studente vedrà un esercizio scelto a caso dall'insieme selezionato",
-		pick_exercise_tag_based_help_text: "Ogni studente vedrà un esercizio scelto a caso con i tag selezionati",
-		one_exercise_from_set_description: "Ogni studente vedrà un esercizio scelto a caso tra questi:",
-		tag_based_description: "Ogni studente vedrà un esercizio scelto a caso che tra i tag ha:",
+		pick_exercise_from_pool_help_text:
+			"Ogni studente vedrà un esercizio scelto a caso dall'insieme selezionato",
+		pick_exercise_tag_based_help_text:
+			"Ogni studente vedrà un esercizio scelto a caso con i tag selezionati",
+		one_exercise_from_set_description:
+			"Ogni studente vedrà un esercizio scelto a caso tra questi:",
+		tag_based_description:
+			"Ogni studente vedrà un esercizio scelto a caso che tra i tag ha:",
 		tag_based_description_multiple_1: "Ogni studente vedrà",
 		tag_based_description_multiple_2: "esercizi scelti a caso che tra i tag hanno:",
-		same_exercise_for_everyone_description: "Tutti gli studenti vedranno questo esercizio:",
+		same_exercise_for_everyone_description:
+			"Tutti gli studenti vedranno questo esercizio:",
 		tag_based_introduction:
 			"Ogni studente vedrà un esercizio scelto a caso che rispetta le condizioni definite qui. Un esercizio è idoneo se, per ogni gruppo di tag definito, contiene almeno un tag di quel gruppo.",
 		tag_based_select_exercises: "Verranno scelti solo esercizi che hanno",
@@ -476,8 +504,10 @@ export const it = {
 			"I docenti del corso non hanno ancora inserito tag, quindi la ricerca per tag non è abilitata. Verranno scelti esercizi in maniera casuale.",
 		no_tags:
 			"Non puoi utilizzare questa funzionalità in quanto non hai ancora creato tag per questo corso. Dalla pagina degli esercizi, puoi aggiungere tag agli esercizi già esistenti, o crearne di nuovi.",
-		unsatisfiable_tag_rule: "Non ci sono esercizi con i tag richiesti: modifica le condizioni",
-		unset_rule_type_confirmation: "Sei sicuro di voler resettare le impostazioni per questo slot?",
+		unsatisfiable_tag_rule:
+			"Non ci sono esercizi con i tag richiesti: modifica le condizioni",
+		unset_rule_type_confirmation:
+			"Sei sicuro di voler resettare le impostazioni per questo slot?",
 	},
 	event_editor: {
 		name: "Nome",
@@ -500,23 +530,30 @@ export const it = {
 		exceptions_to_time_limit: "Eccezioni al limite di tempo",
 		time_limit_description: "Al termine del tempo, l'esame si chiude automaticamente.",
 		add_exception: "Aggiungi eccezione",
-		remove_time_limit_exception_confirmation: "Sei sicuro di voler rimuovere questa eccezione al limite di tempo?",
+		remove_time_limit_exception_confirmation:
+			"Sei sicuro di voler rimuovere questa eccezione al limite di tempo?",
 		delete_exception: "Rimuovi eccezione",
 		exercises_shown_at_a_time_label: "Numero di esercizi da mostrare per pagina",
-		allow_everyone_access_label: "Permetti di partecipare a tutti quelli che hanno il link all'esame",
-		deny_access_by_default_label: "Permetti di partecipare solo agli studenti da te indicati",
-		allow_going_back_label: "Permetti agli studenti di tornare indietro a un esercizio già visto",
+		allow_everyone_access_label:
+			"Permetti di partecipare a tutti quelli che hanno il link all'esame",
+		deny_access_by_default_label:
+			"Permetti di partecipare solo agli studenti da te indicati",
+		allow_going_back_label:
+			"Permetti agli studenti di tornare indietro a un esercizio già visto",
 		show_all_exercises_at_once: "Mostra tutti gli esercizi insieme",
 		show_one_exercise_at_once: "Mostra solo un esercizio alla volta",
 		publish: "Pubblica",
 		revert_to_draft: "Torna a stato di bozza",
 		event_planned_help_text: "L'esame verrà aperto agli studenti automaticamente in data",
 		editing_open_event_title: "Modifica di un esame in corso",
-		editing_open_event_body: "Stai modificando un esame già iniziato. Sei sicuro di volerlo modificare?",
-		correct_errors_to_publish: "Prima di poter pubblicare l'esame, correggi i seguenti errori:",
+		editing_open_event_body:
+			"Stai modificando un esame già iniziato. Sei sicuro di volerlo modificare?",
+		correct_errors_to_publish:
+			"Prima di poter pubblicare l'esame, correggi i seguenti errori:",
 		cannot_change_timestamp:
 			"Non puoi modificare la data e ora di inizio dell'esame una volta pianificato. Per modificare questo campo, metti l'esame in stato di bozza.",
-		this_is_the_link_to_the_event: "Ecco il link per accedere all'esame. Comunicalo agli studenti che parteciperanno.",
+		this_is_the_link_to_the_event:
+			"Ecco il link per accedere all'esame. Comunicalo agli studenti che parteciperanno.",
 		edit_template_in_progress_warning:
 			"Modificare il modello dell'esame quando questo è già iniziato può avere conseguenze imprevedibili. Gli studenti che hanno già iniziato l'esame non saranno interessati dalle modifiche. Procedi solo se sai cosa stai facendo.",
 		currently_locked_by: "È in corso una modifica a questo esame da parte di",
@@ -525,13 +562,16 @@ export const it = {
 			"Hai utilizzato alcune delle funzionalità di randomizzazione. Verifica che gli esami generati siano corretti.",
 		generate_examples: "Genera esempi",
 		generating_examples: "Generazione esempi...",
-		allow_access_description: "Tutti coloro che hanno il link potranno partecipare all'esame una volta aperto.",
-		deny_access_description: "Solo gli studenti da te indicati potranno partecipare all'esame una volta aperto.",
+		allow_access_description:
+			"Tutti coloro che hanno il link potranno partecipare all'esame una volta aperto.",
+		deny_access_description:
+			"Solo gli studenti da te indicati potranno partecipare all'esame una volta aperto.",
 		choose_allowed: "Gestisci ammessi",
 		import_from_valutami: "Importa da Valutami",
 		manage_allowed_description:
 			"Inserisci gli indirizzi email degli studenti che possono partecipare all'esame. Solo gli studenti il cui indirizzo email è in questa lista potranno accedere all'esame quando viene aperto.",
-		manage_allowed_import_from_valutami_1: "Puoi importare la lista degli iscritti all'esame dal portale",
+		manage_allowed_import_from_valutami_1:
+			"Puoi importare la lista degli iscritti all'esame dal portale",
 		manage_allowed_import_from_valutami_2: "Valutami",
 		manage_allowed_import_from_valutami_3:
 			"Questo permetterà solo agli studenti che si sono iscritti all'appello sul portale di accedere a questo esame.",
@@ -581,8 +621,10 @@ export const it = {
 		sub_exercises_title: "Sotto-esercizi",
 		sub_exercise_weight: "Peso sotto-esercizio",
 		cannot_publish: "Non puoi ancora pubblicare questo esercizio",
-		cannot_publish_body: "Per poter rimuovere lo stato di bozza, correggi i seguenti errori:",
-		make_public_confirmation_title: "Sei sicuro di voler rendere questo esercizio pubblico?",
+		cannot_publish_body:
+			"Per poter rimuovere lo stato di bozza, correggi i seguenti errori:",
+		make_public_confirmation_title:
+			"Sei sicuro di voler rendere questo esercizio pubblico?",
 		make_public_confirmation_body:
 			"Se rendi questo esercizio pubblico, tutti gli studenti potranno visualizzarlo in qualsiasi momento. Se vuoi utilizzare questo esercizio in un esame, rendilo privato.",
 		currently_locked_by: "È in corso una modifica a questo esercizio da parte di",
@@ -590,7 +632,8 @@ export const it = {
 		confirm_delete_choice: "Sei sicuro di voler eliminare questa scelta?",
 		confirm_delete_testcase: "Sei sicuro di voler eliminare questo test case?",
 		confirm_delete_sub_exercise: "Sei sicuro di voler eliminare questo sotto-esercizio?",
-		code_execution_will_appear_here: "I risultati dell'esecuzione del codice della soluzione appariranno qui.",
+		code_execution_will_appear_here:
+			"I risultati dell'esecuzione del codice della soluzione appariranno qui.",
 		clone: "Clona esercizio",
 		delete: "Elimina esercizio",
 		delete_sub_exercise: "Elimina sotto-esercizio",
@@ -633,7 +676,8 @@ export const it = {
 		rule_amount_1: "Quanti esercizi col tag",
 		rule_amount_2: "vuoi vedere?",
 		exercise_amount: "Numero di esercizi",
-		seen_exercises_wont_be_selected: "Non verranno selezionati esercizi che hai già visto. Hai già incontrato",
+		seen_exercises_wont_be_selected:
+			"Non verranno selezionati esercizi che hai già visto. Hai già incontrato",
 		exercises_with_this_tag: "esercizi con questo tag.",
 		all_exercises_seen_with_this_tag: "Hai già visto tutti gli esercizi per questo tag",
 	},
@@ -650,20 +694,25 @@ export const it = {
 		testcase_expected_stdout: "Output atteso",
 		passed: "Superato",
 		not_passed: "Non superato",
-		test_failed_with_error: "L'esecuzione del programma si è interrotta producendo il seguente errore",
+		test_failed_with_error:
+			"L'esecuzione del programma si è interrotta producendo il seguente errore",
 		test_failed_stdout: "Il programma ha prodotto il seguente output",
 		code_errored: "L'esecuzione del codice ha prodotto il seguente errore",
 		compilation_errored: "La fase di compilazione ha prodotto i seguenti errori",
-		no_testcases: "Questo esercizio non contiene test case. Prova a chiedere al docente di inserirne qualcuno.",
+		no_testcases:
+			"Questo esercizio non contiene test case. Prova a chiedere al docente di inserirne qualcuno.",
 		results_ok_but_no_testcases:
 			"L'esecuzione del tuo codice non ha prodotto errori. Purtroppo questo esercizio non ha test case, quindi questo è tutto ciò che sappiamo.",
 		internal_error:
 			"Si è verificato un errore interno durante l'esecuzione del codice. Per favore, segnala questo errore ai docenti.",
-		code_execution_will_appear_here: "I risultati dell'esecuzione del tuo codice appariranno qui.",
+		code_execution_will_appear_here:
+			"I risultati dell'esecuzione del tuo codice appariranno qui.",
 	},
 	exercise_types: {
-		[ExerciseType.MULTIPLE_CHOICE_SINGLE_POSSIBLE]: "Scelta multipla con selezione singola",
-		[ExerciseType.MULTIPLE_CHOICE_MULTIPLE_POSSIBLE]: "Scelta multipla con selezione multipla",
+		[ExerciseType.MULTIPLE_CHOICE_SINGLE_POSSIBLE]:
+			"Scelta multipla con selezione singola",
+		[ExerciseType.MULTIPLE_CHOICE_MULTIPLE_POSSIBLE]:
+			"Scelta multipla con selezione multipla",
 		[ExerciseType.OPEN_ANSWER]: "Risposta aperta",
 		[ExerciseType.JS]: "Esercizio JavaScript",
 		[ExerciseType.C]: "Esercizio C",
@@ -692,12 +741,14 @@ export const it = {
 			"Sarà visibile agli studenti e potrà essere inserito negli esami o comparire nelle esercitazioni.",
 		[ExerciseState.PRIVATE]:
 			"Non comparirà nelle esercitazioni iniziate dagli studenti, ma potrà essere inserito negli esami dagli insegnanti.",
-		[ExerciseState.DRAFT]: "Non potrà essere inserito negli esami e non comparirà nelle esercitazioni.",
+		[ExerciseState.DRAFT]:
+			"Non potrà essere inserito negli esami e non comparirà nelle esercitazioni.",
 	},
 	event_states_descriptions: {
 		[EventState.PLANNED]:
 			"È tutto pronto! L'anteprima dell'esame è visibile agli studenti, ma questi non potranno accedervi fino alla data e ora di inizio.",
-		[EventState.DRAFT]: "L'esame non è visibile agli studenti e non sarà accessibile fino a quando viene pubblicato.",
+		[EventState.DRAFT]:
+			"L'esame non è visibile agli studenti e non sarà accessibile fino a quando viene pubblicato.",
 		[EventState.OPEN]: "",
 		[EventState.CLOSED]: "",
 	},
@@ -716,11 +767,13 @@ export const it = {
 		exercise: {
 			modelValue: {
 				"text-required": "Il testo dell'esercizio non può essere vuoto.",
-				"choices-choicesRequiredIfMultipleChoiceExercise": "L'esercizio deve avere almeno una scelta selezionabile.",
+				"choices-choicesRequiredIfMultipleChoiceExercise":
+					"L'esercizio deve avere almeno una scelta selezionabile.",
 				"choices-atLeastOneCorrectChoice":
 					"L'esercizio deve avere almeno una scelta corretta (con punteggio maggiore di 0).",
 				"choices-$each": "Alcune scelte non sono configurate correttamente.",
-				"sub_exercises-$each": "Alcuni sotto-esercizi non sono configurati correttamente.",
+				"sub_exercises-$each":
+					"Alcuni sotto-esercizi non sono configurati correttamente.",
 			},
 			choice: {
 				choice: {
@@ -742,7 +795,8 @@ export const it = {
 				"rule_type-ruleTypeSet": "Non hai impostato un criterio per popolare questo slot",
 				"exercises-idBasedRulePopulated": "Questo slot non contiene esercizi",
 				"clauses-tagBasedRulePopulated": "Questo slot non contiene tag",
-				"satisfying-tagBasedRuleSatisfied": "Non ci sono abbastanza esercizi che soddisfano le condizioni scelte",
+				"satisfying-tagBasedRuleSatisfied":
+					"Non ci sono abbastanza esercizi che soddisfano le condizioni scelte",
 				// not_satisfied_by_enough:
 				//   "Non ci sono abbastanza esercizi che soddisfano le condizioni scelte",
 			},
@@ -761,14 +815,20 @@ export const it = {
 	// },
 	exercise_validation_errors: {
 		[ExerciseValidationError.BLANK_TEXT]: "Questo esercizio è senza testo",
-		[ExerciseValidationError.NO_CHOICES]: "Questo esercizio a scelta multipla non ha scelte",
-		[ExerciseValidationError.BLANK_CHOICE]: "Questo esercizio a scelta multipla contiene delle scelte senza testo",
-		[ExerciseValidationError.NO_TESTCASES]: "Questo esercizio di programmazione non ha test case",
-		[ExerciseValidationError.NO_SUB_EXERCISES]: "Questo esercizio composto non contiene sotto-esercizi",
+		[ExerciseValidationError.NO_CHOICES]:
+			"Questo esercizio a scelta multipla non ha scelte",
+		[ExerciseValidationError.BLANK_CHOICE]:
+			"Questo esercizio a scelta multipla contiene delle scelte senza testo",
+		[ExerciseValidationError.NO_TESTCASES]:
+			"Questo esercizio di programmazione non ha test case",
+		[ExerciseValidationError.NO_SUB_EXERCISES]:
+			"Questo esercizio composto non contiene sotto-esercizi",
 	},
 	course_privileges: {
-		[CoursePrivilege.ACCESS_EXERCISES]: "Può accedere alla lista degli esercizi del corso.",
-		[CoursePrivilege.ASSESS_PARTICIPATIONS]: "Può vedere le partecipazioni agli esami e assegnare voti.",
+		[CoursePrivilege.ACCESS_EXERCISES]:
+			"Può accedere alla lista degli esercizi del corso.",
+		[CoursePrivilege.ASSESS_PARTICIPATIONS]:
+			"Può vedere le partecipazioni agli esami e assegnare voti.",
 		[CoursePrivilege.MANAGE_EVENTS]: "Può creare e modificare gli esami del corso.",
 		[CoursePrivilege.MANAGE_EXERCISES]: "Può creare e modificare esercizi.",
 		[CoursePrivilege.UPDATE_COURSE]:
@@ -873,12 +933,14 @@ export const it = {
 		add_exercises_content:
 			"Per prima cosa, aggiungi esercizi al corso. Gli esercizi che crei potranno essere usati per comporre esami oppure resi disponibili agli studenti per esercitarsi.",
 		add_exams_header: "Creazione esami",
-		add_exams_content: "Dopo aver creato gli esercizi, puoi utilizzarli per comporre esami.",
+		add_exams_content:
+			"Dopo aver creato gli esercizi, puoi utilizzarli per comporre esami.",
 		permissions_header: "Aggiungi docenti",
 		permissions_content:
 			"Dalla pagina dei permessi puoi consentire l'accesso alle funzionalità di gestione del corso ad altri docenti o figure di rilievo, come i tutor.",
 		exam_insights_header: "Statistiche esame",
-		exam_insights_content: "Visita la pagina delle statistiche per vedere approfondimenti sull'andamento dell'esame.",
+		exam_insights_content:
+			"Visita la pagina delle statistiche per vedere approfondimenti sull'andamento dell'esame.",
 	},
 	reports: {
 		csv_headers: {

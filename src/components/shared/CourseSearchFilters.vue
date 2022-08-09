@@ -60,7 +60,10 @@ export default defineComponent({
 	computed: {
 		...mapState("shared", ["courses", "user"]),
 		anyCourseHasPrivileges(): boolean {
-			return this.user.is_teacher || (this.courses as Course[]).some(c => (c.privileges?.length ?? 0) > 0);
+			return (
+				this.user.is_teacher ||
+				(this.courses as Course[]).some(c => (c.privileges?.length ?? 0) > 0)
+			);
 		},
 	},
 	components: { TextInput, Toggle },

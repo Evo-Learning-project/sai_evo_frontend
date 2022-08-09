@@ -1,4 +1,8 @@
-import { CourseSearchFilter, EventSearchFilter, ExerciseSearchFilter } from "./interfaces";
+import {
+	CourseSearchFilter,
+	EventSearchFilter,
+	ExerciseSearchFilter,
+} from "./interfaces";
 import store from "@/store";
 import { EventTemplateRule, EventTemplateRuleType, Tag } from "@/models";
 import { filter } from "lodash";
@@ -43,7 +47,9 @@ export const isEmptyFilter = (filter: ExerciseSearchFilter): boolean =>
 	filter.states.length === 0 &&
 	filter.tags.length === 0;
 
-export const getExerciseUrlQueryParams = (filters: ExerciseSearchFilter | null): string => {
+export const getExerciseUrlQueryParams = (
+	filters: ExerciseSearchFilter | null,
+): string => {
 	if (!filters) {
 		return "";
 	}
@@ -58,7 +64,9 @@ export const getExerciseUrlQueryParams = (filters: ExerciseSearchFilter | null):
 		ret += "&";
 	}
 	if (filters.label || filters.text) {
-		ret += `search=${encodeURIComponent(filters.label ?? "")} ${encodeURIComponent(filters.text ?? "")}&`;
+		ret += `search=${encodeURIComponent(filters.label ?? "")} ${encodeURIComponent(
+			filters.text ?? "",
+		)}&`;
 	}
 
 	if (filters.exercise_types && filters.exercise_types.length > 0) {
@@ -76,7 +84,9 @@ export const getExerciseUrlQueryParams = (filters: ExerciseSearchFilter | null):
 	return ret;
 };
 
-export const convertEventTemplateRules = (rules?: EventTemplateRule[]): EventTemplateRule[] | undefined => {
+export const convertEventTemplateRules = (
+	rules?: EventTemplateRule[],
+): EventTemplateRule[] | undefined => {
 	// convert tag-based template rules from backend's format (which uses a list of
 	//ids to represent the field `tags` on EventTemplateRuleClause) to the
 	// frontend's format, which uses Tag[] for that field
@@ -100,7 +110,8 @@ export const convertEventTemplateRules = (rules?: EventTemplateRule[]): EventTem
 };
 
 const isNumeric = (num: any) =>
-	(typeof num === "number" || (typeof num === "string" && num.trim() !== "")) && !isNaN(num as number);
+	(typeof num === "number" || (typeof num === "string" && num.trim() !== "")) &&
+	!isNaN(num as number);
 
 export const normalizeOptionalStringContainingNumber = (
 	val: undefined | null | string | number,

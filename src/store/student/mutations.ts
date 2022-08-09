@@ -29,9 +29,14 @@ export const mutations = {
 			Object.assign(target, participation);
 		}
 	},
-	setCurrentEventParticipation: (state: StudentState, participation: EventParticipation) =>
-		(state.currentEventParticipation = participation),
-	setCurrentEventParticipationSlot: (state: StudentState, slot: EventParticipationSlot) => {
+	setCurrentEventParticipation: (
+		state: StudentState,
+		participation: EventParticipation,
+	) => (state.currentEventParticipation = participation),
+	setCurrentEventParticipationSlot: (
+		state: StudentState,
+		slot: EventParticipationSlot,
+	) => {
 		console.log("inside set mutation", slot);
 
 		// look for both slots and sub-slots
@@ -55,11 +60,15 @@ export const mutations = {
 	},
 
 	// updates the event currently being previewed
-	setPreviewingEvent: (state: StudentState, event: Event | null) => (state.previewingEvent = event),
+	setPreviewingEvent: (state: StudentState, event: Event | null) =>
+		(state.previewingEvent = event),
 	// updates the event template currently being edited
-	setEditingEvent: (state: StudentState, event: Event | null) => (state.editingEvent = event),
+	setEditingEvent: (state: StudentState, event: Event | null) =>
+		(state.editingEvent = event),
 	setEditingEventTemplateRule: (state: StudentState, rule: EventTemplateRule) => {
-		const target = state.editingEvent?.template?.rules.find((r: EventTemplateRule) => r.id == rule.id);
+		const target = state.editingEvent?.template?.rules.find(
+			(r: EventTemplateRule) => r.id == rule.id,
+		);
 		if (target) {
 			// update existing rule
 			Object.assign(target, rule);
@@ -72,7 +81,9 @@ export const mutations = {
 		state: StudentState,
 		{ ruleId, changes }: { ruleId: string; changes: Partial<EventTemplateRule> },
 	) => {
-		const target = state.editingEvent?.template?.rules.find((r: EventTemplateRule) => r.id == ruleId);
+		const target = state.editingEvent?.template?.rules.find(
+			(r: EventTemplateRule) => r.id == ruleId,
+		);
 		if (target) {
 			// update existing rule
 			Object.assign(target, { ...target, ...changes });
@@ -97,13 +108,19 @@ export const mutations = {
 	/**
 	 * Updates an existing solution for an exercises or pushes a new one
 	 */
-	setExerciseSolution: (state: StudentState, { exerciseId, payload }: MutationPayload<ExerciseSolution>) => {
+	setExerciseSolution: (
+		state: StudentState,
+		{ exerciseId, payload }: MutationPayload<ExerciseSolution>,
+	) => {
 		const exercise = getters.exercises(state).find(e => e.id == exerciseId);
 		if (!exercise) {
 			throw new Error("setExerciseSolution didn't find exercise with id " + exerciseId);
 		}
 		if (!exercise.solutions) {
-			throw new Error("setExerciseSolution didn't find solutions for exercise " + JSON.stringify(exercise));
+			throw new Error(
+				"setExerciseSolution didn't find solutions for exercise " +
+					JSON.stringify(exercise),
+			);
 		}
 		const target = exercise.solutions.find(s => s.id == payload.id);
 		if (target) {

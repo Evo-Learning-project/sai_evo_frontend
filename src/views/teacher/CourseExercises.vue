@@ -21,7 +21,12 @@
 				:placement="'right'"
 			>
 				<div class="-mx-5 -my-2.5">
-					<Btn :outline="true" class="px-8 pt-2 pb-2" :variant="'transparent'" @click="showExerciseImporter = true">
+					<Btn
+						:outline="true"
+						class="px-8 pt-2 pb-2"
+						:variant="'transparent'"
+						@click="showExerciseImporter = true"
+					>
 						<div class="flex items-center align-top">
 							<span class="mr-2 material-icons-outlined"> file_upload </span>
 							{{ $t("course_exercises.import_exercises") }}
@@ -60,7 +65,9 @@
 			class="flex flex-col w-full mt-12 mb-12 text-center select-none"
 			v-else-if="!firstLoading && exercises.length === 0"
 		>
-			<p style="font-size: 10rem" class="material-icons-outlined opacity-10">search_off</p>
+			<p style="font-size: 10rem" class="material-icons-outlined opacity-10">
+				search_off
+			</p>
 			<h2 class="opacity-40">
 				{{ $t("course_exercises.no_matching_exercises") }}
 			</h2>
@@ -89,7 +96,9 @@
 		<Dialog
 			:show-dialog="showExerciseImporter"
 			@no="showExerciseImporter = false"
-			@yes="importedExercises.length === 0 ? (showExerciseImporter = false) : onImportDone()"
+			@yes="
+				importedExercises.length === 0 ? (showExerciseImporter = false) : onImportDone()
+			"
 			:dismissible="false"
 			:footerBorder="true"
 			:confirmOnly="importedExercises.length === 0"
@@ -104,9 +113,14 @@
 			"
 			:large="true"
 		>
-			<template v-slot:title> {{ $t("course_exercises.import_exercises_title") }}</template>
+			<template v-slot:title>
+				{{ $t("course_exercises.import_exercises_title") }}</template
+			>
 			<template v-slot:body>
-				<ExerciseImporter @updateExercises="importedExercises = $event" class="mt-4 text-darkText"></ExerciseImporter>
+				<ExerciseImporter
+					@updateExercises="importedExercises = $event"
+					class="mt-4 text-darkText"
+				></ExerciseImporter>
 			</template>
 		</Dialog>
 	</div>
@@ -183,7 +197,9 @@ export default defineComponent({
 			if (this.$route.hash) {
 				// TODO refactor and also handle possibility of editing exercises that are not in view
 				const expandId = this.$route.hash.split(/#editor-(.*)/)[1];
-				const editorRef = this.$refs["course-" + this.courseId + "-exercise-" + expandId] as {
+				const editorRef = this.$refs[
+					"course-" + this.courseId + "-exercise-" + expandId
+				] as {
 					showEditor: boolean;
 				};
 				if (editorRef) {
@@ -206,7 +222,12 @@ export default defineComponent({
 		};
 	},
 	methods: {
-		...mapActions("teacher", ["getExercises", "createExercise", "bulkCreateExercises", "deleteExercise"]),
+		...mapActions("teacher", [
+			"getExercises",
+			"createExercise",
+			"bulkCreateExercises",
+			"deleteExercise",
+		]),
 		...mapActions("shared", ["getTags"]),
 		getBlankExerciseSearchFilters,
 		async onFilterChange() {
@@ -391,7 +412,9 @@ export default defineComponent({
 			// show notification
 			this.$store.commit("shared/showSuccessFeedback");
 			// open new editor
-			document.getElementById("course-" + this.courseId + "-exercise-" + newExercise.id)?.scrollIntoView();
+			document
+				.getElementById("course-" + this.courseId + "-exercise-" + newExercise.id)
+				?.scrollIntoView();
 		},
 		async onAddExercise(cloned?: Exercise): Promise<Exercise> {
 			const wrapperFunc = cloned ? this.withLoading : this.withLocalLoading;

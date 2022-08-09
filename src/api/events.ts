@@ -19,10 +19,20 @@ import {
 } from "@/models";
 import { forceFileDownload } from "@/utils";
 import axios from "axios";
-import { convertEventTemplateRules, getEventUrlQueryParams, tagIdsToTags, tagNamesToTags } from "./utils";
+import {
+	convertEventTemplateRules,
+	getEventUrlQueryParams,
+	tagIdsToTags,
+	tagNamesToTags,
+} from "./utils";
 
-export async function getEvents(courseId: string, filters?: EventSearchFilter): Promise<Event[]> {
-	const response = await axios.get(`/courses/${courseId}/events/${getEventUrlQueryParams(filters ?? null)}`);
+export async function getEvents(
+	courseId: string,
+	filters?: EventSearchFilter,
+): Promise<Event[]> {
+	const response = await axios.get(
+		`/courses/${courseId}/events/${getEventUrlQueryParams(filters ?? null)}`,
+	);
 	return (response.data as Event[]).map(e => normalizeIncomingEvent(e));
 }
 
@@ -31,7 +41,10 @@ export async function getEvent(courseId: string, eventId: string): Promise<Event
 	return normalizeIncomingEvent(response.data);
 }
 
-export async function getEventTemplate(courseId: string, templateId: string): Promise<EventTemplate> {
+export async function getEventTemplate(
+	courseId: string,
+	templateId: string,
+): Promise<EventTemplate> {
 	const response = await axios.get(`/courses/${courseId}/templates/${templateId}/`);
 	// const template = response.data as EventTemplate;
 	// const processedRules = convertEventTemplateRules(template.rules);
@@ -44,7 +57,9 @@ export async function getEventTemplateRule(
 	templateId: string,
 	ruleId: string,
 ): Promise<EventTemplateRule> {
-	const response = await axios.get(`/courses/${courseId}/templates/${templateId}/rules/${ruleId}/`);
+	const response = await axios.get(
+		`/courses/${courseId}/templates/${templateId}/rules/${ruleId}/`,
+	);
 	// const rule = response.data as EventTemplateRule;
 	// const processedRule = convertEventTemplateRules([
 	//   rule,
@@ -58,13 +73,23 @@ export async function createEvent(courseId: string, event: Event): Promise<Event
 	return normalizeIncomingEvent(response.data);
 }
 
-export async function updateEvent(courseId: string, eventId: string, event: Event): Promise<Event> {
+export async function updateEvent(
+	courseId: string,
+	eventId: string,
+	event: Event,
+): Promise<Event> {
 	const response = await axios.put(`courses/${courseId}/events/${eventId}/`, event);
 	return normalizeIncomingEvent(response.data);
 }
 
-export async function getEventInstances(courseId: string, eventId: string, amount: number): Promise<Exercise[][]> {
-	const response = await axios.get(`courses/${courseId}/events/${eventId}/instances/?amount=${amount}`);
+export async function getEventInstances(
+	courseId: string,
+	eventId: string,
+	amount: number,
+): Promise<Exercise[][]> {
+	const response = await axios.get(
+		`courses/${courseId}/events/${eventId}/instances/?amount=${amount}`,
+	);
 	return response.data;
 }
 
@@ -89,11 +114,13 @@ export async function getCourseEventParticipations(
 	includeEvent?: boolean,
 ): Promise<EventParticipation[]> {
 	const response = await axios.get(
-		`/courses/${courseId}/participations/${includeDetails ? "?include_details=" + includeDetails : ""}${
-			includeEvent ? "&include_event=" + includeEvent : ""
-		}`,
+		`/courses/${courseId}/participations/${
+			includeDetails ? "?include_details=" + includeDetails : ""
+		}${includeEvent ? "&include_event=" + includeEvent : ""}`,
 	);
-	return response.data.map((p: EventParticipation) => normalizeIncomingEventParticipation(p));
+	return response.data.map((p: EventParticipation) =>
+		normalizeIncomingEventParticipation(p),
+	);
 }
 
 export async function getEventParticipations(
@@ -107,7 +134,9 @@ export async function getEventParticipations(
 			includeDetails ? "?include_details=" + includeDetails : ""
 		}${forCsv ? "&for_csv=" + forCsv : ""}`,
 	);
-	return response.data.map((p: EventParticipation) => normalizeIncomingEventParticipation(p));
+	return response.data.map((p: EventParticipation) =>
+		normalizeIncomingEventParticipation(p),
+	);
 }
 
 export async function getEventParticipation(
@@ -115,7 +144,9 @@ export async function getEventParticipation(
 	eventId: string,
 	participationId: string,
 ): Promise<EventParticipation> {
-	const response = await axios.get(`/courses/${courseId}/events/${eventId}/participations/${participationId}/`);
+	const response = await axios.get(
+		`/courses/${courseId}/events/${eventId}/participations/${participationId}/`,
+	);
 	return normalizeIncomingEventParticipation(response.data);
 }
 
@@ -124,7 +155,10 @@ export async function createEventTemplateRule(
 	templateId: string,
 	rule: EventTemplateRule,
 ): Promise<EventTemplateRule> {
-	const response = await axios.post(`courses/${courseId}/templates/${templateId}/rules/`, rule);
+	const response = await axios.post(
+		`courses/${courseId}/templates/${templateId}/rules/`,
+		rule,
+	);
 	return normalizeIncomingEventTemplateRule(response.data);
 }
 
@@ -134,7 +168,10 @@ export async function updateEventTemplateRule(
 	ruleId: string,
 	rule: EventTemplateRule,
 ): Promise<EventTemplateRule> {
-	const response = await axios.put(`/courses/${courseId}/templates/${templateId}/rules/${ruleId}/`, rule);
+	const response = await axios.put(
+		`/courses/${courseId}/templates/${templateId}/rules/${ruleId}/`,
+		rule,
+	);
 	return normalizeIncomingEventTemplateRule(response.data);
 }
 
@@ -144,12 +181,21 @@ export async function partialUpdateEventTemplateRule(
 	ruleId: string,
 	changes: Partial<EventTemplateRule>,
 ): Promise<EventTemplateRule> {
-	const response = await axios.put(`/courses/${courseId}/templates/${templateId}/rules/${ruleId}/`, changes);
+	const response = await axios.put(
+		`/courses/${courseId}/templates/${templateId}/rules/${ruleId}/`,
+		changes,
+	);
 	return normalizeIncomingEventTemplateRule(response.data);
 }
 
-export async function deleteEventTemplateRule(courseId: string, templateId: string, ruleId: string): Promise<void> {
-	const response = await axios.delete(`/courses/${courseId}/templates/${templateId}/rules/${ruleId}/`);
+export async function deleteEventTemplateRule(
+	courseId: string,
+	templateId: string,
+	ruleId: string,
+): Promise<void> {
+	const response = await axios.delete(
+		`/courses/${courseId}/templates/${templateId}/rules/${ruleId}/`,
+	);
 	return response.data;
 }
 
@@ -164,7 +210,10 @@ export async function createEventTemplateRuleClause(
 		...clause,
 		tags: tagNamesToTags(clause.tags.map(t => t.name)).map(t => t.id),
 	};
-	const response = await axios.post(`courses/${courseId}/templates/${templateId}/rules/${ruleId}/clauses/`, payload);
+	const response = await axios.post(
+		`courses/${courseId}/templates/${templateId}/rules/${ruleId}/clauses/`,
+		payload,
+	);
 	return normalizeIncomingEventTemplateRuleClause(response.data);
 }
 
@@ -197,8 +246,13 @@ export async function deleteEventTemplateRuleClause(
 	return response.data;
 }
 
-export async function participateInEvent(courseId: string, eventId: string): Promise<EventParticipation> {
-	const response = await axios.post(`/courses/${courseId}/events/${eventId}/participations/`);
+export async function participateInEvent(
+	courseId: string,
+	eventId: string,
+): Promise<EventParticipation> {
+	const response = await axios.post(
+		`/courses/${courseId}/events/${eventId}/participations/`,
+	);
 	return normalizeIncomingEventParticipation(response.data);
 }
 
@@ -221,9 +275,13 @@ export async function bulkPartialUpdateEventParticipation(
 	participationIds: string[],
 	changes: Record<keyof EventParticipation, unknown>,
 ): Promise<EventParticipation[]> {
-	const url = `/courses/${courseId}/events/${eventId}/participations/bulk_patch/?ids=${participationIds.join(",")}`;
+	const url = `/courses/${courseId}/events/${eventId}/participations/bulk_patch/?ids=${participationIds.join(
+		",",
+	)}`;
 	const response = await axios.patch(url, changes);
-	return response.data.map((p: EventParticipation) => normalizeIncomingEventParticipation(p));
+	return response.data.map((p: EventParticipation) =>
+		normalizeIncomingEventParticipation(p),
+	);
 }
 
 export async function partialUpdateEventParticipationSlot(
@@ -268,7 +326,9 @@ export async function downloadEventParticipationSlotAttachment(
 		`/courses/${courseId}/events/${eventId}/participations/${participationId}/slots/${slotId}/attachment/`,
 		{ responseType: "arraybuffer" },
 	);
-	const fileName = response.headers["content-disposition"].split(/.*filename=(.*)/)[1].replace(/"/g, "");
+	const fileName = response.headers["content-disposition"]
+		.split(/.*filename=(.*)/)[1]
+		.replace(/"/g, "");
 	forceFileDownload(response, fileName);
 }
 

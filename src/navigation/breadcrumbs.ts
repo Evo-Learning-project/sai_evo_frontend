@@ -19,7 +19,10 @@ const courseDashBoardBreadCrumb: BreadCrumb = {
 
 export const courseListBreadCrumbs: BreadCrumb[] = [courseListBreadCrumb];
 
-export const courseDashBoardBreadCrumbs: BreadCrumb[] = [courseListBreadCrumb, courseDashBoardBreadCrumb];
+export const courseDashBoardBreadCrumbs: BreadCrumb[] = [
+	courseListBreadCrumb,
+	courseDashBoardBreadCrumb,
+];
 
 export const examParticipationBreadCrumbs: BreadCrumb[] = [
 	courseListBreadCrumb,

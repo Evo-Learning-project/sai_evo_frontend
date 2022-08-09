@@ -30,7 +30,11 @@
 							<TextInput class="mr-2 w-96" v-model="dirtyCourseName">
 								{{ $t("course_creation_form.course_name") }}
 								<template v-if="v$.dirtyCourse.name.$errors.length > 0" v-slot:errors>
-									<div class="input-errors" v-for="error of v$.dirtyCourse.name.$errors" :key="error.$uid">
+									<div
+										class="input-errors"
+										v-for="error of v$.dirtyCourse.name.$errors"
+										:key="error.$uid"
+									>
 										<div class="error-msg">
 											{{ $t("validation_errors." + error.$uid) }}
 										</div>
@@ -45,7 +49,12 @@
 							>
 								<span class="text-xl material-icons-outlined"> done </span>
 							</Btn>
-							<Btn :outline="true" class="" :variant="'icon'" @click="onDoneEditingName(true)">
+							<Btn
+								:outline="true"
+								class=""
+								:variant="'icon'"
+								@click="onDoneEditingName(true)"
+							>
 								<span class="text-xl material-icons-outlined"> close </span>
 							</Btn>
 						</div>
@@ -69,10 +78,20 @@
 							<TextEditor class="w-full mr-2" v-model="dirtyCourseDescription">
 								{{ $t("course_creation_form.course_description") }}
 							</TextEditor>
-							<Btn :outline="true" :variant="'icon'" :loading="localLoading" @click="onDoneEditingDescription()">
+							<Btn
+								:outline="true"
+								:variant="'icon'"
+								:loading="localLoading"
+								@click="onDoneEditingDescription()"
+							>
 								<span class="text-xl material-icons-outlined"> done </span>
 							</Btn>
-							<Btn :outline="true" class="" :variant="'icon'" @click="onDoneEditingDescription(true)">
+							<Btn
+								:outline="true"
+								class=""
+								:variant="'icon'"
+								@click="onDoneEditingDescription(true)"
+							>
 								<span class="text-xl material-icons-outlined"> close </span>
 							</Btn>
 						</div>
@@ -99,7 +118,10 @@
 							{{ $t("course_creation_form.hide_course") }}
 						</Toggle>
 						<p class="mr-auto text-muted" v-if="currentCourse.hidden">
-							<span class="mr-1 text-lg inline-icon text-danger-dark material-icons-outlined">error_outline</span>
+							<span
+								class="mr-1 text-lg inline-icon text-danger-dark material-icons-outlined"
+								>error_outline</span
+							>
 							{{ $t("course_creation_form.hidden_description") }}
 						</p>
 						<p class="mr-auto text-muted" v-else>
@@ -112,7 +134,10 @@
 		<div class="mt-8">
 			<h3>{{ $t("teacher_course_dashboard.recent_exams") }}</h3>
 			<div>
-				<div v-if="!loadingEvents" class="grid grid-cols-1 gap-4 mt-4 lg:grid-cols-2 xl:grid-cols-3">
+				<div
+					v-if="!loadingEvents"
+					class="grid grid-cols-1 gap-4 mt-4 lg:grid-cols-2 xl:grid-cols-3"
+				>
 					<EventEditorPreview
 						v-for="(exam, index) in recentExams"
 						:key="exam + '-' + index"
@@ -130,12 +155,16 @@
 					class="flex flex-col w-full mt-6 mb-16 text-center select-none"
 					v-if="!loadingEvents && exams.length === 0"
 				>
-					<p style="font-size: 6rem" class="material-icons-outlined opacity-10">assignment</p>
+					<p style="font-size: 6rem" class="material-icons-outlined opacity-10">
+						assignment
+					</p>
 					<h2 class="opacity-40">{{ $t("course_events.no_exams") }}</h2>
 				</div>
 				<div v-else-if="!loadingEvents" class="flex w-full mt-4">
 					<router-link class="mx-auto link" :to="{ name: 'CourseExams' }"
-						><Btn :variant="'primary-borderless'">{{ $t("teacher_course_dashboard.see_all") }}</Btn></router-link
+						><Btn :variant="'primary-borderless'">{{
+							$t("teacher_course_dashboard.see_all")
+						}}</Btn></router-link
 					>
 				</div>
 			</div>
@@ -173,7 +202,9 @@
 			</div>
 			<div v-else-if="!loadingExercises" class="flex w-full mt-4">
 				<router-link class="mx-auto link" :to="{ name: 'CourseExercises' }"
-					><Btn :variant="'primary-borderless'">{{ $t("teacher_course_dashboard.see_all") }}</Btn></router-link
+					><Btn :variant="'primary-borderless'">{{
+						$t("teacher_course_dashboard.see_all")
+					}}</Btn></router-link
 				>
 			</div>
 		</div>

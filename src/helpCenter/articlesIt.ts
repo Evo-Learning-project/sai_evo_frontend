@@ -1,4 +1,7 @@
-import { courseListSidebarOptions, courseDashboardSidebarOptions } from "./../navigation/sidebar";
+import {
+	courseListSidebarOptions,
+	courseDashboardSidebarOptions,
+} from "./../navigation/sidebar";
 import { getTranslatedString } from "./../i18n/index";
 import { ArticleTag, HelpCenterArticle } from "./index";
 
@@ -53,7 +56,9 @@ export const articles: HelpCenterArticle[] = [
         <p class="mt-4">Dalla pagina di monitoraggio, seleziona gli studenti per i quali vuoi chiudere l'esame cliccando sulla checkbox vicino all'indirizzo
         <strong>email</strong> dello studente.</p>
         <p class="mt-4">Clicca su <span class="material-icons-outlined text-danger-dark inline-icon">block</span>
-        <span class="text-danger-dark">${getTranslatedString("event_monitor.close_for_selected")}</span> e conferma.</p>
+        <span class="text-danger-dark">${getTranslatedString(
+					"event_monitor.close_for_selected",
+				)}</span> e conferma.</p>
         
         <div class="article-separator"></div>
         <p class="">Se vuoi riaprire l'esame per alcuni studenti per i quali lo avevi precedentemente chiuso, selezionali
@@ -150,13 +155,17 @@ export const articles: HelpCenterArticle[] = [
 
     <h4 class="mt-4">Se vuoi inserire lo stesso esercizio per tutti</h4>
     <p>Clicca su <span class="opacity-50 inline-icon material-icons-two-tone two-tone-light">topic</span>
-    <span class="text-muted">${getTranslatedString("event_template_rule_editor.pick_single_exercise")}</span>.</p>
+    <span class="text-muted">${getTranslatedString(
+			"event_template_rule_editor.pick_single_exercise",
+		)}</span>.</p>
     <p>Trova l'esercizio che vuoi aggiungere, poi clicca sulla sua icona 
     <span class="inline-icon text-success material-icons-outlined"> done </span>.</p>
 
     <h4 class="mt-4">Se vuoi randomizzare gli esercizi</h4>
     <p>Clicca su <span class="opacity-50 inline-icon material-icons-two-tone two-tone-light">shuffle</span>
-    <span class="text-muted">${getTranslatedString("event_template_rule_editor.pick_exercise_from_pool")}</span>.</p>
+    <span class="text-muted">${getTranslatedString(
+			"event_template_rule_editor.pick_exercise_from_pool",
+		)}</span>.</p>
     <p>Trova gli esercizi che vuoi aggiungere, poi clicca sull'icona 
     <span class="inline-icon text-success material-icons-outlined"> done </span> di ciascuno di essi.</p>
     <p>Ogni studente che parteciperà all'esame vedrà un esercizio tra quelli che hai scelto nella posizione dello slot.</p>
@@ -196,7 +205,9 @@ export const articles: HelpCenterArticle[] = [
 		tags: ["permissions", "general"],
 		related: [],
 		content: `
-      <p>Accedi alla pagina ${getSidebarOptionHtml("CoursePermissions")} del tuo corso.</p>
+      <p>Accedi alla pagina ${getSidebarOptionHtml(
+				"CoursePermissions",
+			)} del tuo corso.</p>
       <p class="mt-4">Dalla tabella degli utenti, trova l'utente al quale vuoi aggiungere i permessi. Puoi aiutarti cliccando sull'icona <span class="icon-light material-icons-outlined inline-icon">filter_list</span> 
       (accanto alle intestazioni nella tabella) per cercare
       gli utenti per email o nome e cognome.</p>

@@ -17,16 +17,22 @@ export const normalizeIncomingExercise = (exercise: Exercise): Exercise => ({
 	choices: (exercise.choices ?? []).map(c => normalizeIncomingExerciseChoice(c)),
 });
 
-export const normalizeIncomingExerciseChoice = (choice: ExerciseChoice): ExerciseChoice => ({
+export const normalizeIncomingExerciseChoice = (
+	choice: ExerciseChoice,
+): ExerciseChoice => ({
 	...choice,
 	...(typeof choice.correctness === "undefined"
 		? {}
 		: {
-				correctness: normalizeOptionalStringContainingNumber(choice.correctness) as number,
+				correctness: normalizeOptionalStringContainingNumber(
+					choice.correctness,
+				) as number,
 		  }),
 });
 
-export const normalizeIncomingEventParticipation = (participation: EventParticipation): EventParticipation => ({
+export const normalizeIncomingEventParticipation = (
+	participation: EventParticipation,
+): EventParticipation => ({
 	...participation,
 	...(typeof participation.score === "undefined"
 		? {}
@@ -40,7 +46,9 @@ export const normalizeIncomingEventParticipation = (participation: EventParticip
 	slots: (participation.slots ?? []).map(s => normalizeIncomingEventParticipationSlot(s)),
 });
 
-export const normalizeIncomingEventParticipationSlot = (slot: EventParticipationSlot): EventParticipationSlot => ({
+export const normalizeIncomingEventParticipationSlot = (
+	slot: EventParticipationSlot,
+): EventParticipationSlot => ({
 	...slot,
 	weight: normalizeOptionalStringContainingNumber(slot.weight) as number,
 	...(typeof slot.score === "undefined"
@@ -50,13 +58,17 @@ export const normalizeIncomingEventParticipationSlot = (slot: EventParticipation
 		  }),
 });
 
-export const normalizeIncomingEventTemplateRuleClause = (clause: EventTemplateRuleClause): EventTemplateRuleClause => ({
+export const normalizeIncomingEventTemplateRuleClause = (
+	clause: EventTemplateRuleClause,
+): EventTemplateRuleClause => ({
 	...clause,
 	// clause tags are sent as id's - convert them to Tag objects
 	tags: tagIdsToTags(clause.tags as any), // TODO use interfaces for incoming data
 });
 
-export const normalizeIncomingEventTemplateRule = (rule: EventTemplateRule): EventTemplateRule => ({
+export const normalizeIncomingEventTemplateRule = (
+	rule: EventTemplateRule,
+): EventTemplateRule => ({
 	...rule,
 	weight: normalizeOptionalStringContainingNumber(rule.weight) as number,
 	...(typeof rule.clauses === "undefined"
@@ -66,13 +78,19 @@ export const normalizeIncomingEventTemplateRule = (rule: EventTemplateRule): Eve
 		  }),
 });
 
-export const normalizeIncomingEventTemplate = (template: EventTemplate): EventTemplate => ({
+export const normalizeIncomingEventTemplate = (
+	template: EventTemplate,
+): EventTemplate => ({
 	...template,
 	rules: template.rules.map(r => normalizeIncomingEventTemplateRule(r)),
 });
 
 export const normalizeIncomingEvent = (event: Event): Event => ({
 	...event,
-	time_limit_seconds: normalizeOptionalStringContainingNumber(event.time_limit_seconds) as number | null,
-	...(typeof event.template === "undefined" ? {} : { template: normalizeIncomingEventTemplate(event.template) }),
+	time_limit_seconds: normalizeOptionalStringContainingNumber(
+		event.time_limit_seconds,
+	) as number | null,
+	...(typeof event.template === "undefined"
+		? {}
+		: { template: normalizeIncomingEventTemplate(event.template) }),
 });

@@ -23,7 +23,9 @@
 			<!-- test case details -->
 			<div>
 				<div
-					v-for="record in Object.entries(programmingExerciseScoresFrequency.testCasePassingRate)"
+					v-for="record in Object.entries(
+						programmingExerciseScoresFrequency.testCasePassingRate,
+					)"
 					:key="record[0] + '-passed-data'"
 					class="flex items-center my-6 space-x-12"
 				>
@@ -39,7 +41,9 @@
 
 						{{ $t("misc.out_of") }}
 						{{ slots.length }}
-						<strong class="ml-4">({{ Math.floor((record[1] / slots.length) * 1000) / 10 }}%)</strong>
+						<strong class="ml-4"
+							>({{ Math.floor((record[1] / slots.length) * 1000) / 10 }}%)</strong
+						>
 					</div>
 				</div>
 			</div>
@@ -152,10 +156,14 @@ export default defineComponent({
 	computed: {
 		// TODO import and use the functions in utils
 		isMultipleChoice(): boolean {
-			return multipleChoiceExerciseTypes.includes(this.exercise.exercise_type as ExerciseType);
+			return multipleChoiceExerciseTypes.includes(
+				this.exercise.exercise_type as ExerciseType,
+			);
 		},
 		isProgrammingExercise(): boolean {
-			return programmingExerciseTypes.includes(this.exercise.exercise_type as ExerciseType);
+			return programmingExerciseTypes.includes(
+				this.exercise.exercise_type as ExerciseType,
+			);
 		},
 		isOpenAnswerExercise(): boolean {
 			return this.exercise.exercise_type === ExerciseType.OPEN_ANSWER;
@@ -187,7 +195,9 @@ export default defineComponent({
 						data: this.selectedChoicesFrequency.map(r => r.frequency),
 						...exerciseChoiceDatasetSettings,
 						backgroundColor: this.selectedChoicesFrequency.map(r =>
-							this.getCorrectChoices(this.exercise).includes(r.datum.id) ? "#10B981b3" : "#e5e7ebb3",
+							this.getCorrectChoices(this.exercise).includes(r.datum.id)
+								? "#10B981b3"
+								: "#e5e7ebb3",
 						),
 					},
 				],
@@ -198,7 +208,9 @@ export default defineComponent({
 				labels: this.programmingExerciseScoresFrequency.scoreFrequency.map(r => r.datum),
 				datasets: [
 					{
-						data: this.programmingExerciseScoresFrequency.scoreFrequency.map(r => r.frequency),
+						data: this.programmingExerciseScoresFrequency.scoreFrequency.map(
+							r => r.frequency,
+						),
 						...scoreChartDatasetSettings,
 						maxBarThickness: 100,
 					},

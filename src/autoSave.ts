@@ -2,7 +2,10 @@ import { Exercise, ExerciseChoice, ExerciseTestCase } from "@/models";
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { debounce, DebouncedFunc } from "lodash";
-import { EXERCISE_CHOICE_AUTO_SAVE_DEBOUNCED_FIELDS, EXERCISE_CHOICE_AUTO_SAVE_DEBOUNCE_TIME_MS } from "./const";
+import {
+	EXERCISE_CHOICE_AUTO_SAVE_DEBOUNCED_FIELDS,
+	EXERCISE_CHOICE_AUTO_SAVE_DEBOUNCE_TIME_MS,
+} from "./const";
 
 type RemotePatchFunction<T> = (changes: FieldValuesObject<T>) => Promise<void>;
 type PatchFunction<T> = (changes: FieldValuesObject<T>, reverting?: boolean) => void;
@@ -42,7 +45,10 @@ export class AutoSaveManager<T> {
 	) {
 		this.instance = instance;
 		this.localPatchFunction = localPatchFunction;
-		this.remotePatchFunction = debounce(this.wrapRemotePatchFunction(remotePatchFunction), debounceTime);
+		this.remotePatchFunction = debounce(
+			this.wrapRemotePatchFunction(remotePatchFunction),
+			debounceTime,
+		);
 		this.debouncedFields = debouncedFields;
 		this.unsavedChanges = {};
 		this.beforeChanges = {};
@@ -54,7 +60,13 @@ export class AutoSaveManager<T> {
 		this.state = AutoSaveManagerState.UP_TO_DATE;
 	}
 
-	async onChange<K extends keyof T>({ field, value }: { field: K; value: T[K] }): Promise<void> {
+	async onChange<K extends keyof T>({
+		field,
+		value,
+	}: {
+		field: K;
+		value: T[K];
+	}): Promise<void> {
 		this.state = AutoSaveManagerState.PENDING;
 
 		// record new change to field
@@ -90,7 +102,9 @@ export class AutoSaveManager<T> {
 		return this.state === AutoSaveManagerState.PENDING;
 	}
 
-	private wrapRemotePatchFunction(callback: RemotePatchFunction<T>): RemotePatchFunction<T> {
+	private wrapRemotePatchFunction(
+		callback: RemotePatchFunction<T>,
+	): RemotePatchFunction<T> {
 		/**
 		 * Wraps the callback into a function that awaits the callback first, and
 		 * if it is successful, then empties the unsaved changes object

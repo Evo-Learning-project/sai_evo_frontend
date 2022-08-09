@@ -14,7 +14,9 @@
 				:options="ruleTypeOptions"
 				@update:modelValue="$emit('partialUpdate', { field: 'rule_type', value: $event })"
 			></SegmentedControls>
-			<span class="ml-auto text-base material-icons-outlined text-danger-dark"> close </span>
+			<span class="ml-auto text-base material-icons-outlined text-danger-dark">
+				close
+			</span>
 		</div>
 
 		<TagBasedEventTemplateRuleEditor

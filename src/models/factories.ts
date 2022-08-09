@@ -39,7 +39,9 @@ export const getBlankCourse = (): Course => ({
 	privileges: [],
 });
 
-export const getBlankExerciseSolution = (state: ExerciseSolutionState | undefined): ExerciseSolution => ({
+export const getBlankExerciseSolution = (
+	state: ExerciseSolutionState | undefined,
+): ExerciseSolution => ({
 	id: "",
 	state,
 	comments: [],
@@ -126,17 +128,23 @@ export const getBlankTag = (): Tag => ({
 	name: "",
 });
 
-export const getBlankTagBasedEventTemplateRuleClause = (tag?: Tag): EventTemplateRuleClause => ({
+export const getBlankTagBasedEventTemplateRuleClause = (
+	tag?: Tag,
+): EventTemplateRuleClause => ({
 	id: "",
 	tags: tag ? [tag] : [],
 });
 
-export const getFakeEventParticipationSlot = (exercise: Exercise): EventParticipationSlot => ({
+export const getFakeEventParticipationSlot = (
+	exercise: Exercise,
+): EventParticipationSlot => ({
 	id: "",
 	exercise,
 	answer_text: "",
 	selected_choices: [],
-	sub_slots: [...(exercise.sub_exercises?.map(e => getFakeEventParticipationSlot(e)) ?? [])],
+	sub_slots: [
+		...(exercise.sub_exercises?.map(e => getFakeEventParticipationSlot(e)) ?? []),
+	],
 });
 
 export const getEmptySubmission = (): EventParticipationSlotSubmission => ({

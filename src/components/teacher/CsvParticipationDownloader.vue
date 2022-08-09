@@ -1,7 +1,11 @@
 <template>
 	<div>
-		<Btn @click="showDialog = true" :outline="true" :disabled="(eventParticipations?.length ?? 0) === 0"
-			><span class="mr-1 material-icons-outlined"> file_download </span>{{ $t("misc.download_results") }}</Btn
+		<Btn
+			@click="showDialog = true"
+			:outline="true"
+			:disabled="(eventParticipations?.length ?? 0) === 0"
+			><span class="mr-1 material-icons-outlined"> file_download </span
+			>{{ $t("misc.download_results") }}</Btn
 		>
 		<Dialog
 			:showDialog="showDialog"
@@ -47,7 +51,11 @@
 						></CheckboxGroup>
 					</div>
 					<div class="flex items-center mt-12 ml-1.5 space-x-2 w-44 hidden">
-						<SegmentedControls class="w-full" :options="formatsAsOptions" v-model="reportType">
+						<SegmentedControls
+							class="w-full"
+							:options="formatsAsOptions"
+							v-model="reportType"
+						>
 							<p>{{ $t("participation_downloader.report_type") }}</p>
 						</SegmentedControls>
 					</div>
@@ -62,7 +70,13 @@
 import { getTranslatedString as _ } from "@/i18n";
 import { SelectableOption } from "@/interfaces";
 import { courseIdMixin, eventIdMixin, loadingMixin } from "@/mixins";
-import { getPresets, ReportField, ReportSettings, ReportSettingsPreset, ReportType } from "@/reports";
+import {
+	getPresets,
+	ReportField,
+	ReportSettings,
+	ReportSettingsPreset,
+	ReportType,
+} from "@/reports";
 import { getParticipationsAsCsv } from "@/reports/csv";
 import { forceFileDownload } from "@/utils";
 import { defineComponent, PropType } from "@vue/runtime-core";
@@ -93,9 +107,12 @@ export default defineComponent({
 	created() {
 		// restore last used settings
 		if (LOCAL_STORAGE_SETTINGS_KEY in localStorage) {
-			const settings = JSON.parse(localStorage.getItem(LOCAL_STORAGE_SETTINGS_KEY) as string);
+			const settings = JSON.parse(
+				localStorage.getItem(LOCAL_STORAGE_SETTINGS_KEY) as string,
+			);
 			this.reportType = settings.reportType ?? ReportType.CSV;
-			this.selectedDownloadPreset = settings.selectedDownloadPreset ?? ReportSettingsPreset.MAT_AND_SCORES;
+			this.selectedDownloadPreset =
+				settings.selectedDownloadPreset ?? ReportSettingsPreset.MAT_AND_SCORES;
 			if (CUSTOM_SETTINGS_KEY in settings) {
 				Object.assign(this.availablePresets[ReportSettingsPreset.CUSTOM], {
 					...this.availablePresets[ReportSettingsPreset.CUSTOM],
@@ -106,7 +123,8 @@ export default defineComponent({
 
 		// pre-fetch data and save returned Promise so it can be awaited
 		// when user actually tries to download participations
-		this.apiCallPromise = (async () => (this.participations = await this.getReportData()))();
+		this.apiCallPromise = (async () =>
+			(this.participations = await this.getReportData()))();
 	},
 	data() {
 		return {
@@ -130,7 +148,8 @@ export default defineComponent({
 				const fileContents = this.formatDataForReportType(participations);
 				this.downloadReportFile(
 					fileContents,
-					this.event(this.eventId).name + (this.reportType === ReportType.CSV ? ".csv" : ".pdf"),
+					this.event(this.eventId).name +
+						(this.reportType === ReportType.CSV ? ".csv" : ".pdf"),
 				);
 			} finally {
 				setTimeout(() => (this.loadingReport = false), 1500);
@@ -153,7 +172,10 @@ export default defineComponent({
 		},
 		formatDataForReportType(data: any) {
 			if (this.reportType === ReportType.CSV) {
-				return getParticipationsAsCsv(data, this.downloadSettingsProxy).replace(/(\\r)?\\n/g, "\n");
+				return getParticipationsAsCsv(data, this.downloadSettingsProxy).replace(
+					/(\\r)?\\n/g,
+					"\n",
+				);
 			}
 			// TODO implement PDF
 			throw new Error("pdf unimplemented");

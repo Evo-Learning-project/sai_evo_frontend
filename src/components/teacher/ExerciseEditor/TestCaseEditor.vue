@@ -5,7 +5,11 @@
 				<Spinner class="mb-2 ml-0.5" v-if="executingSolution"></Spinner>
 				<Tooltip
 					:textCode="'testcase_passes'"
-					v-else-if="executionResults && testCaseExecutionResults && testCaseExecutionResults?.passed"
+					v-else-if="
+						executionResults &&
+						testCaseExecutionResults &&
+						testCaseExecutionResults?.passed
+					"
 				>
 					<span class="material-icons-outlined text-success-dark">check_circle</span>
 				</Tooltip>
@@ -15,7 +19,9 @@
 					:textCode="'testcase_fails'"
 					v-else-if="
 						executionResults &&
-						(testCaseExecutionResults || executionResults.compilation_errors || executionResults.execution_error)
+						(testCaseExecutionResults ||
+							executionResults.compilation_errors ||
+							executionResults.execution_error)
 					"
 				>
 					<span class="material-icons-outlined text-danger-dark">warning</span>
@@ -43,7 +49,15 @@
 			</div>
 		</div>
 
-		<div class="flex flex-col py-3 mb-12 space-y-2 md:flex-row md:space-x-4 md:space-y-0 md:items-start">
+		<div
+			class="
+				flex flex-col
+				py-3
+				mb-12
+				space-y-2
+				md:flex-row md:space-x-4 md:space-y-0 md:items-start
+			"
+		>
 			<!-- <span
       class="row-span-2 my-auto text-lg cursor-move material-icons-outlined opacity-70"
     >
@@ -98,7 +112,8 @@
 								"
 								class="flex items-center ml-2 ml-4 space-x-2 text-danger-dark"
 							>
-								<span class="mr-2 text-sm material-icons-outlined">visibility_off</span>{{ $t("misc.hidden") }}
+								<span class="mr-2 text-sm material-icons-outlined">visibility_off</span
+								>{{ $t("misc.hidden") }}
 							</div>
 						</div></CodeEditor
 					>
@@ -118,7 +133,8 @@
 								"
 								class="flex items-center ml-3 space-x-2 text-danger-dark"
 							>
-								<span class="mr-2 text-sm material-icons-outlined">visibility_off</span>{{ $t("misc.hidden") }}
+								<span class="mr-2 text-sm material-icons-outlined">visibility_off</span
+								>{{ $t("misc.hidden") }}
 							</div>
 						</div></CodeEditor
 					>

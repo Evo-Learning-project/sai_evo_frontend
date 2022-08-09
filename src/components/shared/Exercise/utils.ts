@@ -7,9 +7,10 @@ export const isOpenAnswerExercise = (exercise: Exercise): boolean =>
 	exercise.exercise_type === ExerciseType.OPEN_ANSWER;
 
 export const isMultipleChoiceExercise = (exercise: Exercise): boolean =>
-	[ExerciseType.MULTIPLE_CHOICE_MULTIPLE_POSSIBLE, ExerciseType.MULTIPLE_CHOICE_SINGLE_POSSIBLE].includes(
-		exercise.exercise_type as ExerciseType,
-	);
+	[
+		ExerciseType.MULTIPLE_CHOICE_MULTIPLE_POSSIBLE,
+		ExerciseType.MULTIPLE_CHOICE_SINGLE_POSSIBLE,
+	].includes(exercise.exercise_type as ExerciseType);
 
 export const getMaxScore = (exercise: Exercise): number | null => {
 	const exType = exercise.exercise_type as ExerciseType;

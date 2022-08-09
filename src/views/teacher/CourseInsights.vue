@@ -36,7 +36,12 @@
 			<h2 class="opacity-40">{{ $t("course_insights.no_active_students") }}</h2>
 		</div>
 		<div class="grid grid-cols-1 gap-3 mt-4 md:grid-cols-3">
-			<StudentCard class="mb-auto" v-for="user in users" :key="'active-user-' + user.id" :user="user"></StudentCard>
+			<StudentCard
+				class="mb-auto"
+				v-for="user in users"
+				:key="'active-user-' + user.id"
+				:user="user"
+			></StudentCard>
 		</div>
 	</div>
 </template>
@@ -53,7 +58,9 @@ export default defineComponent({
 	mixins: [courseIdMixin, loadingMixin],
 	props: {},
 	async created() {
-		await this.withLoading(async () => await this.getCourseActiveUsers({ courseId: this.courseId }));
+		await this.withLoading(
+			async () => await this.getCourseActiveUsers({ courseId: this.courseId }),
+		);
 	},
 	methods: {
 		...mapActions(["getCourseActiveUsers"]),
