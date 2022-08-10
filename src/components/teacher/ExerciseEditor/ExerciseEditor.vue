@@ -267,15 +267,78 @@
 						<div
 							v-for="solution in modelValue.solutions"
 							:key="'e-' + modelValue.id + '-sol-' + solution.id"
+							class="my-2 flex space-x-2"
 						>
+							<!-- plain text solution -->
 							<TextEditor
+								class="w-full"
 								v-if="!cloze && !isProgrammingExercise"
 								:modelValue="solution.content"
-								class="my-2"
 								@update:modelValue="onUpdateSolution(solution.id, 'content', $event)"
 							>
 								<!-- {{ $t("exercise_editor.exercise_solution") }} -->
 							</TextEditor>
+							<!-- code solution -->
+							<div v-else-if="!cloze" class="relative w-full">
+								<CodeEditor
+									:modelValue="solution.content"
+									@update:modelValue="onUpdateSolution(solution.id, 'content', $event)"
+									:size="'lg'"
+									:showRunButton="true"
+									:language="
+										modelValue.exercise_type === ExerciseType.JS ? 'typescript' : 'c'
+									"
+									@run="onTestSolution(solution.id)"
+									:running="testingSolution"
+								>
+									<template v-slot:runButton
+										><span class="ml-1 mr-1 text-base material-icons-outlined">
+											science </span
+										>{{
+											testingSolution
+												? $t("exercise_editor.testing_solution")
+												: $t("exercise_editor.test_solution")
+										}}</template
+									>
+									<template v-slot:sidePaneTitle
+										><div
+											class="flex items-center p-3 pl-4 space-x-2 rounded-tr-sm bg-light"
+										>
+											<span class="my-auto material-icons-outlined icon-light">
+												code
+											</span>
+											<h3>
+												{{ $t("programming_exercise.execution_results") }}
+											</h3>
+										</div>
+									</template>
+									<template v-slot:sidePane>
+										<CodeExecutionResults
+											v-if="solutionTestSlots[solution.id]?.execution_results"
+											:executionResults="solutionTestSlots[solution.id].execution_results"
+											:testCases="modelValue.testcases"
+										></CodeExecutionResults>
+										<div class="flex flex-col" v-else>
+											<span
+												class="mx-auto mt-24 opacity-30 text-8xl material-icons-outlined"
+											>
+												code
+											</span>
+											<p class="px-4 mx-auto text-muted">
+												{{ $t("exercise_editor.code_execution_will_appear_here") }}
+											</p>
+										</div>
+									</template>
+								</CodeEditor>
+							</div>
+							<!-- solution delete button -->
+							<Btn
+								:outline="true"
+								:variant="'icon'"
+								class="transition-opacity duration-100 opacity-50 hover:opacity-100"
+								@click="onDeleteSolution(solution.id)"
+								><span class="material-icons">delete</span></Btn
+							>
 						</div>
 						<Btn
 							class="mt-2"
@@ -293,58 +356,6 @@
               :text-code="'exercise_editor.solution'"
             ></Tooltip>
              -->
-
-						<!-- TODO REWIRE -->
-						<div v-if="false && !cloze" class="relative">
-							<CodeEditor
-								:modelValue="modelValue.solution"
-								@update:modelValue="onBaseExerciseChange('solution', $event)"
-								:size="'lg'"
-								:showRunButton="true"
-								:language="
-									modelValue.exercise_type === ExerciseType.JS ? 'typescript' : 'c'
-								"
-								@run="onTestSolution"
-								:running="testingSolution"
-								>{{ $t("exercise_editor.exercise_solution") }}
-								<template v-slot:runButton
-									><span class="ml-1 mr-1 text-base material-icons-outlined">
-										science </span
-									>{{
-										testingSolution
-											? $t("exercise_editor.testing_solution")
-											: $t("exercise_editor.test_solution")
-									}}</template
-								>
-								<template v-slot:sidePaneTitle
-									><div
-										class="flex items-center p-3 pl-4 space-x-2 rounded-tr-sm bg-light"
-									>
-										<span class="my-auto material-icons-outlined icon-light"> code </span>
-										<h3>
-											{{ $t("programming_exercise.execution_results") }}
-										</h3>
-									</div>
-								</template>
-								<template v-slot:sidePane>
-									<CodeExecutionResults
-										v-if="solutionTestSlot?.execution_results"
-										:executionResults="solutionTestSlot.execution_results"
-										:testCases="modelValue.testcases"
-									></CodeExecutionResults>
-									<div class="flex flex-col" v-else>
-										<span
-											class="mx-auto mt-24 opacity-30 text-8xl material-icons-outlined"
-										>
-											code
-										</span>
-										<p class="px-4 mx-auto text-muted">
-											{{ $t("exercise_editor.code_execution_will_appear_here") }}
-										</p>
-									</div>
-								</template>
-							</CodeEditor>
-						</div>
 					</div>
 					<div v-if="modelValue.exercise_type === ExerciseType.JS" class="pb-4">
 						<Toggle
@@ -792,7 +803,7 @@ export default defineComponent({
 			textEditorInstance: null as any,
 			editingClozePosition: null as number | null,
 			editableClozePosition: null as number | null,
-			solutionTestSlot: null as EventParticipationSlot | null,
+			solutionTestSlots: {} as Record<string, EventParticipationSlot>,
 			testingSolution: false,
 		};
 	},
@@ -833,16 +844,18 @@ export default defineComponent({
 				},
 			};
 		},
-		async onTestSolution() {
+		async onTestSolution(solutionId: string) {
 			this.testingSolution = true;
 			try {
-				await this.autoSaveManager?.flush();
-				const fakeSlot = getFakeEventParticipationSlot(this.modelValue);
+				await this.solutionAutoSaveManagers[solutionId]?.flush();
+				//await this.autoSaveManager?.flush();
+				const fakeSlot = (this.solutionTestSlots[solutionId] ??=
+					getFakeEventParticipationSlot(this.modelValue));
 				fakeSlot.execution_results = await testProgrammingExerciseSolution(
 					this.courseId,
 					this.modelValue.id,
 				);
-				this.solutionTestSlot = fakeSlot;
+				//this.solutionTestSlots[solutionId] = fakeSlot;
 			} catch (e) {
 				this.setErrorNotification(e);
 			} finally {
@@ -860,7 +873,6 @@ export default defineComponent({
 			const clozeSeparatorPositions = [...event.fullText.matchAll(/\[\[\?\]\]/g)].map(
 				m => m.index as number,
 			);
-			console.log(event);
 			if (event.range.length === 0 && event.text.includes(CLOZE_SEPARATOR)) {
 				let i = 0;
 				for (const p of clozeSeparatorPositions) {
@@ -928,6 +940,20 @@ export default defineComponent({
 							exerciseId: this.modelValue.id,
 							childType: "choice",
 							childId: choiceId,
+						}),
+					this.setErrorNotification,
+				);
+			}
+		},
+		async onDeleteSolution(solutionId: string) {
+			if (confirm(_("exercise_editor.confirm_delete_solution"))) {
+				await this.withLoading(
+					async () =>
+						await this.deleteExerciseChild({
+							courseId: this.courseId,
+							exerciseId: this.modelValue.id,
+							childType: "solution",
+							childId: solutionId,
 						}),
 					this.setErrorNotification,
 				);
@@ -1126,7 +1152,8 @@ export default defineComponent({
 						payload: { ...testcase, ...changes },
 						reFetch,
 					});
-					await this.onTestSolution();
+					// TODO run all solutions
+					//await this.onTestSolution();
 				},
 				changes => {
 					this.saving = true;

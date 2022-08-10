@@ -65,7 +65,7 @@
 				:modelValue="editingSolution"
 				@updateSolution="onDraftSolutionChange($event.key, $event.value)"
 				@close="onClose()"
-				:editorType="editorType"
+				:editorType="solutionType"
 			>
 				<Exercise :exercise="exercise" :showSolution="true" :readOnly="true" />
 			</ExerciseSolutionEditor>
@@ -227,7 +227,8 @@ export default defineComponent({
 		};
 	},
 	computed: {
-		editorType() {
+		// TODO extract to utils
+		solutionType() {
 			if (this.exercise.exercise_type === ExerciseType.JS) {
 				return "typescript";
 			}

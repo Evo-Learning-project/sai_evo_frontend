@@ -51,10 +51,16 @@
 						:style="collapsed ? 'max-height: ' + MAX_CONTENT_HEIGHT_PX + 'px' : ''"
 					>
 						<ProcessedTextFragment
-							v-if="true"
+							v-if="solutionType === 'text'"
 							style="white-space: break-spaces"
 							class="w-full px-4 py-2 rounded"
 							:value="solution.content"
+						/>
+						<CodeFragment
+							v-else
+							:language="solutionType"
+							:value="solution.content"
+							class="-mt-4 -mr-5 rounded-tr rounded-none"
 						/>
 						<div
 							v-if="collapsed"
@@ -148,7 +154,14 @@
 
 <script lang="ts">
 const MAX_CONTENT_HEIGHT_PX = 300;
-import { Exercise, ExerciseSolution, getComment, getVote, VoteType } from "@/models";
+import {
+	Exercise,
+	ExerciseSolution,
+	ExerciseType,
+	getComment,
+	getVote,
+	VoteType,
+} from "@/models";
 import { defineComponent, PropType } from "@vue/runtime-core";
 import Btn from "@/components/ui/Btn.vue";
 import TextInput from "@/components/ui/TextInput.vue";
@@ -161,6 +174,7 @@ import { setErrorNotification } from "@/utils";
 import CopyToClipboard from "@/components/ui/CopyToClipboard.vue";
 import { getExerciseSolutionThreadRoute } from "./utils";
 import { getTranslatedString as _ } from "@/i18n";
+import CodeFragment from "@/components/ui/CodeFragment.vue";
 //import { v4 as uuid4 } from "uuid";
 export default defineComponent({
 	name: "ExerciseSolution",
@@ -277,6 +291,16 @@ export default defineComponent({
 	},
 	computed: {
 		...mapState("shared", ["user"]),
+		// TODO extract to utils
+		solutionType() {
+			if (this.exercise.exercise_type === ExerciseType.JS) {
+				return "typescript";
+			}
+			if (this.exercise.exercise_type === ExerciseType.C) {
+				return "c";
+			}
+			return "text";
+		},
 		authorName(): string {
 			return this.solution.user?.full_name ?? _("exercise_solution.default_author");
 		},
@@ -306,6 +330,7 @@ export default defineComponent({
 		ExerciseSolutionComment,
 		ProcessedTextFragment,
 		CopyToClipboard,
+		CodeFragment,
 	},
 });
 </script>
