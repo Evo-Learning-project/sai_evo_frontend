@@ -66,6 +66,7 @@ export const it = {
 		review_assessment: "Correzione risposte",
 		practice_summary: "Riepilogo esercitazione",
 		student_exercise_solution_threads: "Discussione esercizio",
+		exercise_solution_threads: "Discussioni esercizi",
 	},
 	event_participation_page: {
 		times_up: "Tempo scaduto",
@@ -266,8 +267,16 @@ export const it = {
 	},
 	exercise_solution_thread: {
 		thread_title: "Discussione esercizio",
+		teacher_description:
+			"In questa pagina sono visulizzate le soluzioni agli esercizi proposte dagli studenti. Puoi rendere ufficiali quelle corrette e scartare quelle errate.",
 	},
 	exercise_solution: {
+		verified: "Soluzione verificata",
+		comments: "Commenti",
+		add_comment: "Aggiungi commento",
+		teacher_is_this_solution_correct: "Questa soluzione è corretta?",
+		approve: "Approva",
+		reject: "Scarta",
 		default_author: "Docenti del corso",
 		edit: "Modifica",
 		share: "Condividi",
@@ -326,6 +335,7 @@ export const it = {
 		course_dashboard_exams: "Esami",
 		course_dashboard_practices: "Esercitazioni",
 		course_dashboard_exercises: "Esercizi",
+		exercise_solution_threads: "Discussioni",
 		course_insights: "Statistiche",
 		course_dashboard_back_to_courses: "Torna ai corsi",
 		course_list_courses: "Corsi",

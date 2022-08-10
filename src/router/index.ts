@@ -15,6 +15,7 @@ import EventParticipationFull from "../views/shared/EventParticipationFull.vue";
 import ExamPreview from "../views/student/ExamPreview.vue";
 import ExerciseSolutionThread from "../views/student/ExerciseSolutionThread.vue";
 import EventParticipationsMonitor from "../views/teacher/EventParticipationsMonitor.vue";
+import CourseExerciseSolutionThreads from "../views/teacher/CourseExerciseSolutionThreads.vue";
 import EventStats from "../views/teacher/EventStats.vue";
 import Login from "../views/Login.vue";
 import PageNotFound from "../views/shared/PageNotFound.vue";
@@ -200,6 +201,16 @@ const routes: Array<RouteRecordRaw> = [
 				props: {
 					showAssessmentCard: true,
 					allowEditAssessment: true,
+				},
+			},
+			{
+				path: "courses/:courseId/threads/",
+				component: CourseExerciseSolutionThreads,
+				name: "TeacherCourseExerciseSolutionThreads",
+				meta: {
+					sidebarOptions: courseDashboardSidebarOptions,
+					routeTitle: _("headings.exercise_solution_threads"),
+					tags: ["exercises", "threads"],
 				},
 			},
 		],

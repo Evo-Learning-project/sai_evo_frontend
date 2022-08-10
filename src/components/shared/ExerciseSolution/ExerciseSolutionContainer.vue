@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<div class="flex items-center space-x-4">
-			<h4 class="">{{ $t("exercise_solution.proposed_solutions_title") }}</h4>
+			<h4 v-if="showTitle">{{ $t("exercise_solution.proposed_solutions_title") }}</h4>
 			<!-- <Btn :variant="'primary'" :size="'sm'" :outline="true">
             <span class="mr-2 text-base material-icons">reviews</span>
             {{ $t("exercise_solution.propose_solution") }}</Btn
@@ -10,10 +10,13 @@
 		<ExerciseSolution
 			class="w-full my-4"
 			v-for="solution in shownSolutions"
+			:publishing="publishing"
 			:key="'e-' + exercise.id + '-solution-' + solution.id"
 			:solution="solution"
 			:exercise="exercise"
 			:forceExpanded="standalone"
+			:showTeacherControls="showTeacherControls"
+			@updateState="onSolutionStateUpdate(solution, $event)"
 			@editSolution="onEditSolution(solution)"
 		/>
 		<div
@@ -40,13 +43,15 @@
 				:size="'xs'"
 				:variant="'primary-borderless'"
 				class="mr-auto -ml-1"
-				v-if="!showAll && nonDraftSolutions.length > SHOW_INITIALLY_COUNT"
+				v-if="
+					!showAll && nonDraftSolutions.length > SHOW_INITIALLY_COUNT && allowAddSolution
+				"
 			>
 				{{ $t("exercise_solution.show_all") }} ({{ nonDraftSolutions.length }})</Btn
 			>
 			<Btn
 				@click="onAddSolution()"
-				v-if="(exercise.solutions ?? []).length > 0"
+				v-if="(exercise.solutions ?? []).length > 0 && allowAddSolution"
 				:variant="'primary'"
 				class="mt-4 mr-auto"
 				:size="'sm'"
@@ -105,12 +110,24 @@ export default defineComponent({
 			required: true,
 		},
 		showFirst: {
-			type: String,
+			type: Array as PropType<string[]>,
 			required: false,
 		},
 		standalone: {
 			type: Boolean,
 			default: false,
+		},
+		showTeacherControls: {
+			type: Boolean,
+			default: false,
+		},
+		showTitle: {
+			type: Boolean,
+			default: true,
+		},
+		allowAddSolution: {
+			type: Boolean,
+			default: true,
 		},
 	},
 	mixins: [courseIdMixin, savingMixin],
@@ -129,6 +146,21 @@ export default defineComponent({
 		) {
 			await this.autoSaveManager?.onChange({ field: key, value });
 		},
+		async onSolutionStateUpdate(
+			solution: IExerciseSolution,
+			newState: ExerciseSolutionState,
+		) {
+			this.instantiateAutoSaveManager(solution);
+			this.publishing = true;
+			try {
+				await this.autoSaveManager?.onChange({ field: "state", value: newState });
+			} catch (e) {
+				setErrorNotification(e);
+			} finally {
+				this.autoSaveManager = null;
+				this.publishing = false;
+			}
+		},
 		instantiateLocalOnlyAutoSaveManager() {
 			this.autoSaveManager = new AutoSaveManager<IExerciseSolution>(
 				this.editingSolutionDeepCopy as IExerciseSolution,
@@ -136,16 +168,6 @@ export default defineComponent({
 					if (changes.state === ExerciseSolutionState.SUBMITTED) {
 						await this.onDoneEditing();
 					}
-					// await this.updateExerciseChild({
-					// 	childType: "solution",
-					// 	courseId: this.courseId,
-					// 	exerciseId: this.exercise.id,
-					// 	payload: { ...this.editingSolution, ...changes },
-					// 	reFetch: false,
-					// });
-					// if (changes.state === ExerciseSolutionState.SUBMITTED) {
-					// 	this.onDraftSolutionSubmitted();
-					// }
 				},
 				changes => {
 					if (this.editingSolutionDeepCopy !== null) {
@@ -154,15 +176,6 @@ export default defineComponent({
 							...changes,
 						};
 					}
-					// this.saving = true;
-					// this.savingError = false;
-					// this.setExerciseSolution({
-					// 	exerciseId: this.exercise.id,
-					// 	payload: {
-					// 		...this.editingSolution,
-					// 		...changes,
-					// 	},
-					// });
 				},
 				EXERCISE_SOLUTION_AUTO_SAVE_DEBOUNCE_FIELDS,
 				EXERCISE_SOLUTION_AUTO_SAVE_DEBOUNCE_TIME_MS,
@@ -174,9 +187,9 @@ export default defineComponent({
 				},
 			);
 		},
-		instantiateAutoSaveManager() {
-			this.autoSaveManager ??= new AutoSaveManager<IExerciseSolution>(
-				this.editingSolution as IExerciseSolution,
+		instantiateAutoSaveManager(solution?: IExerciseSolution) {
+			this.autoSaveManager = new AutoSaveManager<IExerciseSolution>(
+				solution ?? (this.editingSolution as IExerciseSolution),
 				async changes => {
 					if (changes.state === ExerciseSolutionState.SUBMITTED) {
 						this.publishing = true;
@@ -185,7 +198,7 @@ export default defineComponent({
 						childType: "solution",
 						courseId: this.courseId,
 						exerciseId: this.exercise.id,
-						payload: { ...this.editingSolution, ...changes },
+						payload: { ...(solution ?? this.editingSolution), ...changes },
 						reFetch: false,
 					});
 					if (changes.state === ExerciseSolutionState.SUBMITTED) {
@@ -305,7 +318,9 @@ export default defineComponent({
 		shownSolutions(): IExerciseSolution[] {
 			const ret = [...this.nonDraftSolutions];
 			if (this.showFirst) {
-				ret.sort((a, _) => (a.id == this.showFirst ? -1 : 0));
+				ret.sort((a, _) =>
+					(this.showFirst ?? []).map(s => String(s)).includes(String(a.id)) ? -1 : 0,
+				);
 			}
 			return ret.filter((_, i) => this.showAll || i < SHOW_INITIALLY_COUNT);
 		},

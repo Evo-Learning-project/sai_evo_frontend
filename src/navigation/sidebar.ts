@@ -62,6 +62,15 @@ export const courseDashboardSidebarOptions: SidebarOption[] = [
 		requiredPrivileges: [CoursePrivilege.UPDATE_COURSE],
 	},
 	{
+		label: _("sidebar_labels.exercise_solution_threads"),
+		icon: "forum",
+		routeName: "TeacherCourseExerciseSolutionThreads",
+		requiredPrivileges: [
+			CoursePrivilege.ACCESS_EXERCISES,
+			CoursePrivilege.MANAGE_EXERCISES,
+		],
+	},
+	{
 		label: _("sidebar_labels.course_insights"),
 		icon: "insights",
 		routeName: "CourseInsights",
