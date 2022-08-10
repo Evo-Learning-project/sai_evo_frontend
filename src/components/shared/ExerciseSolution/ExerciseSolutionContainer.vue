@@ -187,9 +187,10 @@ export default defineComponent({
 				},
 			);
 		},
-		instantiateAutoSaveManager(solution?: IExerciseSolution) {
+		instantiateAutoSaveManager(forSolution?: IExerciseSolution) {
+			const solution = forSolution ?? (this.editingSolution as IExerciseSolution);
 			this.autoSaveManager = new AutoSaveManager<IExerciseSolution>(
-				solution ?? (this.editingSolution as IExerciseSolution),
+				solution,
 				async changes => {
 					if (changes.state === ExerciseSolutionState.SUBMITTED) {
 						this.publishing = true;
@@ -198,7 +199,7 @@ export default defineComponent({
 						childType: "solution",
 						courseId: this.courseId,
 						exerciseId: this.exercise.id,
-						payload: { ...(solution ?? this.editingSolution), ...changes },
+						payload: { ...solution, ...changes },
 						reFetch: false,
 					});
 					if (changes.state === ExerciseSolutionState.SUBMITTED) {
@@ -211,7 +212,7 @@ export default defineComponent({
 					this.setExerciseSolution({
 						exerciseId: this.exercise.id,
 						payload: {
-							...this.editingSolution,
+							...solution,
 							...changes,
 						},
 					});
@@ -297,7 +298,6 @@ export default defineComponent({
 			creatingSolution: false,
 			publishing: false,
 			editingSolutionId: null as string | null,
-			solutionBeingEdited: null as IExerciseSolution | null,
 			autoSaveManager: null as AutoSaveManager<IExerciseSolution> | null,
 			showAll: false,
 			editingSolutionDeepCopy: null as IExerciseSolution | null,
