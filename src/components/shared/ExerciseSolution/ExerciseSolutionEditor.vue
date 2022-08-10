@@ -46,6 +46,7 @@
 					/>
 					<CodeEditor
 						v-else
+						:size="'lg'"
 						:modelValue="modelValue.content"
 						@update:modelValue="onUpdate('content', $event)"
 						:language="editorType"
@@ -57,11 +58,15 @@
 				</div>
 			</div>
 			<div class="flex items-center px-10 py-3 -mx-10 -mb-6 shadow-popup bg-light">
-				<Btn :disabled="publishing" @click="onSubmit()">{{
-					publishing
-						? $t("exercise_solution.publishing")
-						: $t("exercise_solution.publish")
-				}}</Btn>
+				<Btn
+					:disabled="publishing || modelValue.content.trim().length === 0"
+					@click="onSubmit()"
+					>{{
+						publishing
+							? $t("exercise_solution.publishing")
+							: $t("exercise_solution.publish")
+					}}</Btn
+				>
 				<p
 					class="ml-6 text-muted"
 					v-if="modelValue.state === ExerciseSolutionState.DRAFT"

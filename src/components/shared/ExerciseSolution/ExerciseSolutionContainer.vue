@@ -57,12 +57,12 @@
 			</Btn>
 		</div>
 
-		<div v-if="editingSolutionId !== null">
+		<div v-if="editingSolutionId !== null || editingSolutionDeepCopy !== null">
 			<ExerciseSolutionEditor
 				:publishing="publishing"
 				:saving="saving"
 				:savingError="savingError"
-				:modelValue="editingSolution"
+				:modelValue="editingSolution ?? editingSolutionDeepCopy"
 				@updateSolution="onDraftSolutionChange($event.key, $event.value)"
 				@close="onClose()"
 				:editorType="solutionType"
@@ -120,12 +120,59 @@ export default defineComponent({
 		...mapMutations("student", ["setExerciseSolution"]),
 		onClose() {
 			this.editingSolutionId = null;
+			this.editingSolutionDeepCopy = null;
+			this.autoSaveManager = null;
 		},
 		async onDraftSolutionChange<K extends keyof IExerciseSolution>(
 			key: K,
 			value: IExerciseSolution[K],
 		) {
 			await this.autoSaveManager?.onChange({ field: key, value });
+		},
+		instantiateLocalOnlyAutoSaveManager() {
+			this.autoSaveManager = new AutoSaveManager<IExerciseSolution>(
+				this.editingSolutionDeepCopy as IExerciseSolution,
+				async changes => {
+					if (changes.state === ExerciseSolutionState.SUBMITTED) {
+						await this.onDoneEditing();
+					}
+					// await this.updateExerciseChild({
+					// 	childType: "solution",
+					// 	courseId: this.courseId,
+					// 	exerciseId: this.exercise.id,
+					// 	payload: { ...this.editingSolution, ...changes },
+					// 	reFetch: false,
+					// });
+					// if (changes.state === ExerciseSolutionState.SUBMITTED) {
+					// 	this.onDraftSolutionSubmitted();
+					// }
+				},
+				changes => {
+					if (this.editingSolutionDeepCopy !== null) {
+						this.editingSolutionDeepCopy = {
+							...this.editingSolutionDeepCopy,
+							...changes,
+						};
+					}
+					// this.saving = true;
+					// this.savingError = false;
+					// this.setExerciseSolution({
+					// 	exerciseId: this.exercise.id,
+					// 	payload: {
+					// 		...this.editingSolution,
+					// 		...changes,
+					// 	},
+					// });
+				},
+				EXERCISE_SOLUTION_AUTO_SAVE_DEBOUNCE_FIELDS,
+				EXERCISE_SOLUTION_AUTO_SAVE_DEBOUNCE_TIME_MS,
+				undefined,
+				() => (this.savingError = true),
+				() => {
+					this.saving = false;
+					this.publishing = false;
+				},
+			);
 		},
 		instantiateAutoSaveManager() {
 			this.autoSaveManager ??= new AutoSaveManager<IExerciseSolution>(
@@ -180,20 +227,12 @@ export default defineComponent({
 			}
 		},
 		onEditSolution(solution: IExerciseSolution) {
-			this.editingSolutionId = solution.id;
-			this.instantiateAutoSaveManager();
+			//this.editingSolutionId = solution.id;
+			this.editingSolutionDeepCopy = JSON.parse(JSON.stringify(solution));
+			this.instantiateLocalOnlyAutoSaveManager();
 		},
 		async editDraftSolution(): Promise<boolean> {
-			/**
-			 * Assigns an ExerciseSolution in DRAFT state to this.solutionBeingEdited,
-			 * if it doesn't have a value assigned to it yet.
-			 *
-			 * If such a solution exists, it is retrieved locally, otherwise a new
-			 * ExerciseSolution is created on the backend.
-			 *
-			 * Returns true iff a new value was assigned to this.solutionBeingEdited
-			 */
-			if (this.solutionBeingEdited !== null) {
+			if (this.editingSolution !== null) {
 				return false;
 			}
 			if (this.draftSolutions.length > 0) {
@@ -210,7 +249,32 @@ export default defineComponent({
 		},
 		onDraftSolutionSubmitted() {
 			this.editingSolutionId = null;
+			this.autoSaveManager = null;
 			this.$store.commit("shared/showSuccessFeedback");
+		},
+		async onDoneEditing() {
+			this.publishing = true;
+			try {
+				await this.updateExerciseChild({
+					childType: "solution",
+					courseId: this.courseId,
+					exerciseId: this.exercise.id,
+					payload: this.editingSolutionDeepCopy,
+					reFetch: false,
+				});
+				this.setExerciseSolution({
+					exerciseId: this.exercise.id,
+					payload: this.editingSolutionDeepCopy,
+				});
+				this.editingSolutionId = null;
+				this.editingSolutionDeepCopy = null;
+				this.autoSaveManager = null;
+				this.$store.commit("shared/showSuccessFeedback");
+			} catch (e) {
+				setErrorNotification(e);
+			} finally {
+				this.publishing = false;
+			}
 		},
 	},
 	data() {
@@ -223,6 +287,7 @@ export default defineComponent({
 			solutionBeingEdited: null as IExerciseSolution | null,
 			autoSaveManager: null as AutoSaveManager<IExerciseSolution> | null,
 			showAll: false,
+			editingSolutionDeepCopy: null as IExerciseSolution | null,
 			SHOW_INITIALLY_COUNT,
 		};
 	},

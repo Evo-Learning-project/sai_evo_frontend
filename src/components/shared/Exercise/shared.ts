@@ -2,6 +2,7 @@ import { Exercise, EventParticipationSlotSubmission, getEmptySubmission } from "
 import { PropType } from "@vue/runtime-core";
 
 export const exerciseProps = {
+	// TODO add prop to hide readOnlyAnswer slot, for example in exercise solution threads
 	exercise: {
 		type: Object as PropType<Exercise>,
 		required: true as const,
