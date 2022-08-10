@@ -143,7 +143,10 @@
 				<p class="ml-2 text-sm text-muted">
 					{{ $t("event_assessment.text_answer_label") }}
 				</p>
-				<CodeFragment :value="submission.answer_text"></CodeFragment>
+				<CodeFragment
+					:value="submission.answer_text"
+					:defaultValue="$t('misc.no_answer')"
+				></CodeFragment>
 
 				<div class="mt-4 card card-filled" v-if="submission.execution_results">
 					<h4 class="ml-2 text-sm text-muted">

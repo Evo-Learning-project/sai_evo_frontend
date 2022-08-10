@@ -7,7 +7,7 @@
 	},
 	"private": true,
 	"scripts": {
-		"serve": "vue-cli-service serve",
+		"serve": "vue-cli-service serve --host localhost",
 		"build": "vue-cli-service build",
 		"test:unit": "vue-cli-service test:unit",
 		"lint_new": "eslint . --ext .ts,.tsx,.js,.jsx,.vue,.json --fix",
@@ -57,6 +57,7 @@
 		"vue-axios": "^3.4.0",
 		"vue-chartjs": "^4.1.1",
 		"vue-class-component": "^8.0.0-rc.1",
+		"vue-confetti-explosion": "^1.0.1",
 		"vue-datepicker-next": "^1.0.2",
 		"vue-i18n": "^9.2.0-beta.22",
 		"vue-lodash": "^2.1.2",

@@ -5,7 +5,7 @@
 		<ExerciseSolutionContainer
 			class="mt-8"
 			:exercise="exercise"
-			:showFirst="solutionId"
+			:showFirst="[solutionId]"
 			:standalone="true"
 		></ExerciseSolutionContainer>
 	</div>

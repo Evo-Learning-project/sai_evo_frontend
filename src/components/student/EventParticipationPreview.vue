@@ -123,9 +123,11 @@
 							:variant="'icon'"
 							:outline="true"
 							class="my-0 ml-auto"
-							><span class="material-icons">{{
-								participation.bookmarked ? "bookmark" : "bookmark_outline"
-							}}</span></Btn
+							><span
+								class="material-icons"
+								:class="{ 'text-primary': participation.bookmarked }"
+								>{{ participation.bookmarked ? "bookmark" : "bookmark_outline" }}</span
+							></Btn
 						>
 					</div>
 				</div>

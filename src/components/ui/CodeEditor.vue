@@ -131,7 +131,7 @@ export default defineComponent({
 		//   this.monacoModule = monaco;
 		// },
 		onDidMount(event: monaco.editor.IStandaloneCodeEditor) {
-			console.log("DID MOUNT", event, event.getModel());
+			//console.log("DID MOUNT", event, event.getModel());
 			this.editorInstance = event;
 			this.textModel = event.getModel();
 		},

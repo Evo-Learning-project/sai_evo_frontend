@@ -142,13 +142,11 @@ import ExerciseEditorWrapper from "@/components/teacher/ExerciseEditor/ExerciseE
 import { defineComponent } from "@vue/runtime-core";
 import Spinner from "@/components/ui/Spinner.vue";
 import ExerciseSearchFilters from "@/components/teacher/ExerciseSearchFilters.vue";
-import { ExerciseSearchFilter } from "@/api/interfaces";
 import { getClonedExercise, getDebouncedForFilter } from "@/utils";
 import { courseIdMixin, loadingMixin } from "@/mixins";
 import ExerciseEditorWrapperSkeleton from "@/components/ui/skeletons/ExerciseEditorWrapperSkeleton.vue";
 import { getBlankExerciseSearchFilters, isEmptyFilter } from "@/api/utils";
 import Dialog from "@/components/ui/Dialog.vue";
-import { DataFormat, getImportedData } from "@/integrations";
 import ExerciseImporter from "@/components/teacher/ExerciseImporter.vue";
 import DropdownMenu from "@/components/ui/DropdownMenu.vue";
 export default defineComponent({
@@ -238,138 +236,6 @@ export default defineComponent({
 						fromFirstPage: true,
 						filters: this.searchFilter,
 					}),
-			);
-		},
-		async onImport() {
-			// TODO implement
-			await getImportedData(
-				`
-      <?xml version="1.0" encoding="UTF-8"?>
-<quiz>
-<!-- question: 0  -->
-  <question type="category">
-    <category>
-      <text>$course$/top/Default per Reti2020//21/Livello applicativo  - Email</text>
-    </category>
-    <info format="moodle_auto_format">
-      <text></text>
-    </info>
-    <idnumber></idnumber>
-  </question>
-
-<!-- question: 745783  -->
-  <question type="multichoice">
-    <name>
-      <text>Email</text>
-    </name>
-    <questiontext format="html">
-      <text><![CDATA[<p>Considera le seguenti azioni legate alla mail:</p><p>a1: uno user agent&nbsp;invia una mail ad un mail server;</p><p>a2: uno user agent recupera una mail da un mail server;</p><p>a3: un utente controlla le email con un browser web.</p><p>Quale protocollo di livello applicativo viene usato per ciascuna attività?<br></p>]]></text>
-    </questiontext>
-    <generalfeedback format="html">
-      <text></text>
-    </generalfeedback>
-    <defaultgrade>1.5000000</defaultgrade>
-    <penalty>0.3333333</penalty>
-    <hidden>0</hidden>
-    <idnumber></idnumber>
-    <single>true</single>
-    <shuffleanswers>true</shuffleanswers>
-    <answernumbering>abc</answernumbering>
-    <showstandardinstruction>1</showstandardinstruction>
-    <correctfeedback format="html">
-      <text>Risposta corretta.</text>
-    </correctfeedback>
-    <partiallycorrectfeedback format="html">
-      <text>Risposta parzialmente esatta.</text>
-    </partiallycorrectfeedback>
-    <incorrectfeedback format="html">
-      <text>Risposta errata.</text>
-    </incorrectfeedback>
-    <shownumcorrect/>
-    <answer fraction="0" format="html">
-      <text><![CDATA[<p>a1: HTTP&nbsp; a2: SMTP&nbsp; a3: POP3</p>]]></text>
-      <feedback format="html">
-        <text></text>
-      </feedback>
-    </answer>
-    <answer fraction="0" format="html">
-      <text><![CDATA[<p>a1: SMTP&nbsp; a2: FTP&nbsp; a3: HTTP</p>]]></text>
-      <feedback format="html">
-        <text></text>
-      </feedback>
-    </answer>
-    <answer fraction="100" format="html">
-      <text><![CDATA[<p><span style="font-size: 0.9375rem;">a1: SMTP&nbsp; a2: POP3&nbsp; a3: HTTP</span><br></p>]]></text>
-      <feedback format="html">
-        <text></text>
-      </feedback>
-    </answer>
-    <answer fraction="0" format="html">
-      <text><![CDATA[<p>a1: POP3&nbsp; a2: SMTP&nbsp; a3: IMAP<br></p>]]></text>
-      <feedback format="html">
-        <text></text>
-      </feedback>
-    </answer>
-  </question>
-
-<!-- question: 745784  -->
-  <question type="multichoice">
-    <name>
-      <text>email e protocollo di trasporto</text>
-    </name>
-    <questiontext format="html">
-      <text><![CDATA[<p>Quale protocollo di trasporto è usato per la mail elettronica?</p>]]></text>
-    </questiontext>
-    <generalfeedback format="html">
-      <text></text>
-    </generalfeedback>
-    <defaultgrade>1.0000000</defaultgrade>
-    <penalty>0.3333333</penalty>
-    <hidden>0</hidden>
-    <idnumber></idnumber>
-    <single>true</single>
-    <shuffleanswers>true</shuffleanswers>
-    <answernumbering>abc</answernumbering>
-    <showstandardinstruction>1</showstandardinstruction>
-    <correctfeedback format="html">
-      <text>Risposta corretta.</text>
-    </correctfeedback>
-    <partiallycorrectfeedback format="html">
-      <text>Risposta parzialmente esatta.</text>
-    </partiallycorrectfeedback>
-    <incorrectfeedback format="html">
-      <text>Risposta errata.</text>
-    </incorrectfeedback>
-    <shownumcorrect/>
-    <answer fraction="0" format="html">
-      <text><![CDATA[<p>SMTP</p>]]></text>
-      <feedback format="html">
-        <text></text>
-      </feedback>
-    </answer>
-    <answer fraction="0" format="html">
-      <text><![CDATA[<p>IP</p>]]></text>
-      <feedback format="html">
-        <text></text>
-      </feedback>
-    </answer>
-    <answer fraction="100" format="html">
-      <text><![CDATA[<p>TCP</p>]]></text>
-      <feedback format="html">
-        <text></text>
-      </feedback>
-    </answer>
-    <answer fraction="0" format="html">
-      <text><![CDATA[<p>UDP</p>]]></text>
-      <feedback format="html">
-        <text></text>
-      </feedback>
-    </answer>
-  </question>
-
-</quiz>
-      `,
-				DataFormat.MOODLE_XML,
 			);
 		},
 		async onImportDone() {
