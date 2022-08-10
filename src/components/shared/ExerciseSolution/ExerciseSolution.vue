@@ -6,22 +6,74 @@
 				<!-- voting -->
 				<div class="h-full px-3 pt-4 pb-4 -mt-4 -ml-5 rounded-tl-sm bg-gray-50">
 					<div class="sticky flex flex-col items-center pb-4 space-y-4 top-18">
-						<Btn
+						<!--<Btn
 							:disabled="isOwnSolution"
 							:variant="'icon'"
 							:size="'lg'"
 							:outline="true"
-							class=""
+							class="relative"
 							@click="onVote(VoteType.UP_VOTE)"
-							><span
-								:class="[
-									solution.has_upvote ? 'material-icons' : 'material-icons-outlined',
-								]"
-								style="font-size: 35px !important"
-							>
-								thumb_up_alt</span
-							></Btn
 						>
+							<div class="VueStar relative">
+								<div class="VueStar__ground">
+									<div
+										class="VueStar__icon"
+										:class="{ 'animated bounce-in': showAnimation }"
+									>
+										<span
+											:class="[
+												solution.has_upvote
+													? 'material-icons'
+													: 'material-icons-outlined',
+											]"
+											style="font-size: 35px !important"
+										>
+											thumb_up_alt</span
+										>
+									</div>
+									<div
+										class="VueStar__decoration"
+										:class="{ 'VueStar__decoration--active': showAnimation }"
+									></div>
+								</div>
+							</div>
+						</Btn>-->
+						<div class="VueStar relative">
+							<div class="VueStar__ground">
+								<div
+									class="VueStar__icon"
+									:class="{ 'animated bounce-in': showAnimation }"
+								>
+									<Btn
+										:disabled="isOwnSolution"
+										:variant="'icon'"
+										:size="'lg'"
+										:outline="true"
+										class="relative z-10"
+										@click="onVote(VoteType.UP_VOTE)"
+									>
+										<span
+											:class="[
+												solution.has_upvote
+													? 'material-icons'
+													: 'material-icons-outlined',
+											]"
+											style="font-size: 35px !important"
+										>
+											thumb_up_alt</span
+										>
+									</Btn>
+								</div>
+							</div>
+							<div
+								class="VueStar__decoration"
+								:class="{
+									'VueStar__decoration--active': showAnimation,
+									hidden: false && !showAnimation,
+								}"
+							></div>
+						</div>
+
 						<p class="text-4xl text-muted">{{ solution.score }}</p>
 						<Btn
 							:disabled="isOwnSolution"
@@ -220,6 +272,7 @@ export default defineComponent({
 			VoteType,
 			MAX_CONTENT_HEIGHT_PX,
 			collapsed: false,
+			showAnimation: false,
 			//solutionId: uuid4(),
 		};
 	},
@@ -241,13 +294,16 @@ export default defineComponent({
 						? undefined // removing vote
 						: getVote(voteType); // adding/updating vote
 
-				// TODO show animation/micro interaction
 				await this.addExerciseSolutionVote({
 					courseId: this.courseId,
 					exerciseId: this.exercise.id,
 					solutionId: this.solution.id,
 					vote,
 				});
+				if (typeof vote !== "undefined") {
+					// TODO refactor animation
+					this.showAnimation = true;
+				}
 				// TODO fix this with an action
 				// eslint-disable-next-line vue/no-mutating-props
 				// this.solution.votes.push(getVote(voteType));
