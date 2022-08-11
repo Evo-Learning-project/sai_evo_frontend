@@ -1,4 +1,8 @@
-import { normalizeIncomingExercise, normalizeIncomingExerciseChoice } from "./converters";
+import {
+	aggregateExerciseSolutionThreads,
+	normalizeIncomingExercise,
+	normalizeIncomingExerciseChoice,
+} from "./converters";
 /* eslint-disable no-constant-condition */
 import {
 	CodeExecutionResults,
@@ -322,4 +326,20 @@ export async function setExerciseSolutionBookmark(
 	}
 	const response = await axios.delete(url);
 	return response.data;
+}
+
+export async function getPopularExerciseSolutionThreads(
+	courseId: string,
+): Promise<Exercise[]> {
+	const response = await axios.get(`/courses/${courseId}/solutions/popular/`);
+	const threads = response.data as (ExerciseSolution & { exercise: Exercise })[];
+	return aggregateExerciseSolutionThreads(threads);
+}
+
+export async function getSubmittedExerciseSolutionThreads(
+	courseId: string,
+): Promise<Exercise[]> {
+	const response = await axios.get(`/courses/${courseId}/solutions/submitted/`);
+	const threads = response.data as (ExerciseSolution & { exercise: Exercise })[];
+	return aggregateExerciseSolutionThreads(threads);
 }

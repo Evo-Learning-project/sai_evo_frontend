@@ -27,6 +27,7 @@ export default defineComponent({
 	async created() {
 		await this.withFirstLoading(
 			async () =>
+				// TODO get solution instead and have it embed the exercise
 				await this.getExercises({
 					courseId: this.courseId,
 					exerciseIds: [this.exerciseId],

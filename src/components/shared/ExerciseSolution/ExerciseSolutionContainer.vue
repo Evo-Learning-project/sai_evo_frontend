@@ -129,6 +129,10 @@ export default defineComponent({
 			type: Boolean,
 			default: true,
 		},
+		forceShowAll: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	mixins: [courseIdMixin, savingMixin],
 	methods: {
@@ -192,7 +196,7 @@ export default defineComponent({
 			this.autoSaveManager = new AutoSaveManager<IExerciseSolution>(
 				solution,
 				async changes => {
-					if (changes.state === ExerciseSolutionState.SUBMITTED) {
+					if ("state" in changes) {
 						this.publishing = true;
 					}
 					await this.updateExerciseChild({
@@ -202,7 +206,7 @@ export default defineComponent({
 						payload: { ...solution, ...changes },
 						reFetch: false,
 					});
-					if (changes.state === ExerciseSolutionState.SUBMITTED) {
+					if ("state" in changes) {
 						this.onDraftSolutionSubmitted();
 					}
 				},
@@ -322,7 +326,9 @@ export default defineComponent({
 					(this.showFirst ?? []).map(s => String(s)).includes(String(a.id)) ? -1 : 0,
 				);
 			}
-			return ret.filter((_, i) => this.showAll || i < SHOW_INITIALLY_COUNT);
+			return ret.filter(
+				(_, i) => this.showAll || this.forceShowAll || i < SHOW_INITIALLY_COUNT,
+			);
 		},
 		draftSolutions(): IExerciseSolution[] {
 			return (this.exercise.solutions ?? []).filter(

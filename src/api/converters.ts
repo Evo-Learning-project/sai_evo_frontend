@@ -8,6 +8,7 @@ import {
 	ExerciseChoice,
 	EventTemplateRuleClause,
 	EventParticipationSlot,
+	ExerciseSolution,
 } from "@/models";
 
 export const normalizeIncomingExercise = (exercise: Exercise): Exercise => ({
@@ -94,3 +95,18 @@ export const normalizeIncomingEvent = (event: Event): Event => ({
 		? {}
 		: { template: normalizeIncomingEventTemplate(event.template) }),
 });
+
+export const aggregateExerciseSolutionThreads = (
+	solutions: (ExerciseSolution & { exercise: Exercise })[],
+): Exercise[] => {
+	const exercises = solutions
+		.map(s => s.exercise)
+		.filter((e, i, a) => a.findIndex(ex => ex.id == e.id) === i);
+	solutions.forEach(s => {
+		const solutionExercise = exercises.find(e => e.id == s.exercise.id) as Exercise;
+		solutionExercise.solutions ??= [];
+		const { exercise, ...solution } = s;
+		solutionExercise.solutions.push(solution);
+	});
+	return exercises;
+};

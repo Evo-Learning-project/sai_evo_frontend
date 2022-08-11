@@ -3,7 +3,7 @@
 		<p class="text-muted">{{ $t("exercise_solution_thread.teacher_description") }}</p>
 
 		<div
-			class="mt-6"
+			class="my-6"
 			v-for="{ slot, highlightedSolutionIds } in processedExercises"
 			:key="'thread-e-' + slot.exercise.id"
 		>
@@ -16,8 +16,8 @@
 				:showTeacherControls="true"
 				:exercise="slot.exercise"
 				:showFirst="highlightedSolutionIds"
-			>
-			</ExerciseSolutionContainer>
+				:forceShowAll="true"
+			/>
 		</div>
 	</div>
 </template>
@@ -43,15 +43,14 @@ export default defineComponent({
 	props: {},
 	async created() {
 		this.withFirstLoading(async () => {
-			await this.getExercises({
+			await this.getExerciseSolutionThreads({
 				courseId: this.courseId,
-				fromFirstPage: true,
 			});
 			//await this.getTags({ courseId: this.courseId });
 		});
 	},
 	methods: {
-		...mapActions(["getExercises"]),
+		...mapActions(["getExercises", "getExerciseSolutionThreads"]),
 		getExerciseTitle(exercise: Exercise): string {
 			return (exercise?.label ?? "").trim().length > 0
 				? (exercise.label as string)

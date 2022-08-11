@@ -2,7 +2,6 @@ import { EventSearchFilter } from "./../../api/interfaces";
 /* eslint-disable no-unexpected-multiline */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import axios from "axios";
 import {
 	exerciseChildName,
 	exerciseChildrenNames,
@@ -11,18 +10,15 @@ import {
 	Event,
 	EventParticipation,
 	EventParticipationSlot,
-	EventTemplate,
 	EventTemplateRule,
 	EventTemplateRuleClause,
-	EventType,
 	Exercise,
 	ExerciseChoice,
 	ExerciseTestCase,
 	Tag,
-	User,
 	ExerciseSolution,
 } from "@/models";
-import { createCourse, getCourses, getTags, updateCourse } from "@/api/courses";
+import { createCourse, updateCourse } from "@/api/courses";
 
 import { Commit } from "vuex";
 
@@ -39,13 +35,11 @@ import {
 	deleteExerciseSolution,
 	deleteExerciseSubExercise,
 	deleteExerciseTestCase,
-	getExerciseChoices,
 	getExercises,
+	getPopularExerciseSolutionThreads,
+	getSubmittedExerciseSolutionThreads,
 	removeTagFromExercise,
 	updateExercise,
-	updateExerciseChoice,
-	updateExerciseSubExercise,
-	updateExerciseTestCase,
 } from "@/api/exercises";
 
 import {
@@ -66,7 +60,6 @@ import {
 	partialUpdateEventParticipationSlot,
 	partialUpdateEventTemplateRule,
 	updateEvent,
-	updateEventTemplateRule,
 	updateEventTemplateRuleClause,
 } from "@/api/events";
 import { ExerciseSearchFilter } from "@/api/interfaces";
@@ -189,42 +182,6 @@ export const actions = {
 			commit("setEvent", { eventId, payload: event });
 		}
 	},
-	// updateExerciseChild: async (
-	//   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-	//   { commit }: { commit: Commit },
-	//   {
-	//     courseId,
-	//     exerciseId,
-	//     childType,
-	//     payload,
-	//     reFetch = false,
-	//   }: {
-	//     courseId: string;
-	//     exerciseId: string;
-	//     childType: "testcase" | "sub_exercise" | "choice";
-	//     payload: ExerciseChoice | Exercise | ExerciseTestCase;
-	//     reFetch: boolean;
-	//   }
-	// ) => {
-	//   const apiCall = {
-	//     choice: updateExerciseChoice,
-	//     testcase: updateExerciseTestCase,
-	//     sub_exercise: updateExerciseSubExercise,
-	//   }[childType];
-	//   const childrenName = exerciseChildrenNames[childType];
-
-	//   await apiCall(courseId, exerciseId, payload.id as string, payload as any);
-	//   if (reFetch) {
-	//     if (childType !== "choice") return;
-	//     // TODO fix!!
-	//     const choices = await getExerciseChoices(courseId, exerciseId);
-	//     commit("setExerciseChildren", {
-	//       exerciseId,
-	//       children: "choices",
-	//       payload: choices,
-	//     });
-	//   }
-	// },
 	deleteExerciseChild: async (
 		{ commit }: { commit: Commit },
 		{
@@ -545,20 +502,25 @@ export const actions = {
 			"setExercises",
 			fromFirstPage ? exercises : [...state.exercises, ...exercises],
 		);
-		//commit('setActiveCourseId', courseId);
 		if (exercises.length > 0) {
 			commit("setCurrentExercisePage", state.currentExercisePage + 1);
 		}
 
 		return moreResults;
 	},
-	// getTags: async (
-	//   { commit }: { commit: Commit },
-	//   courseId: string
-	// ) => {
-	//   const tags = await getTags(courseId);
-	//   commit('setTags', tags);
-	// },
+	getExerciseSolutionThreads: async (
+		{ commit }: { commit: Commit },
+		{
+			courseId,
+		}: {
+			courseId: string;
+		},
+	) => {
+		const exercises = await getSubmittedExerciseSolutionThreads(courseId);
+		commit("setExercises", exercises);
+
+		return exercises;
+	},
 	addExerciseTag: async (
 		{ commit, state }: { commit: Commit; state: any },
 		{

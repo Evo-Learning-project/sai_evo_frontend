@@ -188,6 +188,8 @@ export const it = {
 			"L'inserimento del numero di matricola e la selezione del corso sono necessari per poter partecipare agli esami. Fallo ora e non pensarci più!",
 	},
 	misc: {
+		undo: "Annulla",
+		redo: "Ripeti",
 		correct_answers: "Risposte corrette",
 		wait: "Attendi...",
 		limit: "Limite",
@@ -271,6 +273,7 @@ export const it = {
 			"In questa pagina sono visulizzate le soluzioni agli esercizi proposte dagli studenti. Puoi rendere ufficiali quelle corrette e scartare quelle errate.",
 	},
 	exercise_solution: {
+		you_rejected_this_solution: "Hai scartato questa soluzione",
 		verified: "Soluzione verificata",
 		comments: "Commenti",
 		add_comment: "Aggiungi commento",
