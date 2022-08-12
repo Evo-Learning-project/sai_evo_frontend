@@ -68,6 +68,7 @@ import {
 	getUsers,
 	updateUserCoursePrivileges,
 } from "@/api/users";
+import { TeacherState } from "../types";
 
 export const actions = {
 	createCourse: async ({ commit }: { commit: Commit }, course: Course) => {
@@ -80,27 +81,36 @@ export const actions = {
 		return updatedCourse;
 	},
 	createExercise: async (
-		{ commit, state }: { commit: Commit; state: any },
+		{ commit, state }: { commit: Commit; state: TeacherState },
 		{ courseId, exercise }: { courseId: string; exercise: Exercise },
 	) => {
 		const newExercise = await createExercise(courseId, exercise);
-		commit("setExercises", [newExercise, ...state.exercises]);
+		state.paginatedExercises = {
+			...state.paginatedExercises,
+			data: [...state.paginatedExercises.data, newExercise],
+		};
 		return newExercise;
 	},
 	bulkCreateExercises: async (
-		{ commit, state }: { commit: Commit; state: any },
+		{ commit, state }: { commit: Commit; state: TeacherState },
 		{ courseId, exercises }: { courseId: string; exercises: Exercise[] },
 	) => {
 		const newExercises = await bulkCreateExercises(courseId, exercises);
-		commit("setExercises", [...newExercises, ...state.exercises]);
+		state.paginatedExercises = {
+			...state.paginatedExercises,
+			data: [...state.paginatedExercises.data, ...newExercises],
+		};
 		return newExercises;
 	},
 	deleteExercise: async (
-		{ commit, state }: { commit: Commit; state: any },
+		{ commit, state }: { commit: Commit; state: TeacherState },
 		{ courseId, exerciseId }: { courseId: string; exerciseId: string },
 	) => {
 		await deleteExercise(courseId, exerciseId);
-		commit("deleteBaseExercise", exerciseId);
+		state.paginatedExercises = {
+			...state.paginatedExercises,
+			data: state.paginatedExercises.data.filter(e => e.id != exerciseId),
+		};
 	},
 	createEvent: async (
 		{ commit, state }: { commit: Commit; state: any },
@@ -479,7 +489,7 @@ export const actions = {
 		// Object.assign(target, newClause);
 	},
 	getExercises: async (
-		{ commit, state }: { commit: Commit; state: any },
+		{ commit, state }: { commit: Commit; state: TeacherState },
 		{
 			courseId,
 			fromFirstPage = true,
@@ -490,23 +500,22 @@ export const actions = {
 			filters: ExerciseSearchFilter | null;
 		},
 	) => {
-		if (fromFirstPage) {
-			commit("setCurrentExercisePage", 1);
-		}
-		const { exercises, moreResults } = await getExercises(
+		const paginatedExercises = await getExercises(
 			courseId,
-			state.currentExercisePage,
+			fromFirstPage ? 1 : (state.paginatedExercises.pageNumber ?? 0) + 1, // TODO refactor
 			filters,
 		);
-		commit(
-			"setExercises",
-			fromFirstPage ? exercises : [...state.exercises, ...exercises],
-		);
-		if (exercises.length > 0) {
-			commit("setCurrentExercisePage", state.currentExercisePage + 1);
+
+		if (fromFirstPage) {
+			state.paginatedExercises = paginatedExercises;
+		} else {
+			state.paginatedExercises = {
+				...paginatedExercises,
+				data: [...state.paginatedExercises.data, ...paginatedExercises.data],
+			};
 		}
 
-		return moreResults;
+		return !state.paginatedExercises.isLastPage;
 	},
 	getExerciseSolutionThreads: async (
 		{ commit }: { commit: Commit },
@@ -517,12 +526,13 @@ export const actions = {
 		},
 	) => {
 		const exercises = await getSubmittedExerciseSolutionThreads(courseId);
-		commit("setExercises", exercises);
+		// TODO set exercises
+		//commit("setExercises", exercises);
 
 		return exercises;
 	},
 	addExerciseTag: async (
-		{ commit, state }: { commit: Commit; state: any },
+		{ commit, state }: { commit: Commit; state: TeacherState },
 		{
 			courseId,
 			exerciseId,
@@ -536,14 +546,15 @@ export const actions = {
 		},
 	) => {
 		await addTagToExercise(courseId, exerciseId, tag, isPublic);
-		const target = state.exercises.find((e: Exercise) => e.id === exerciseId) as Exercise;
-
+		const target = state.paginatedExercises.data.find(
+			(e: Exercise) => e.id === exerciseId,
+		) as Exercise;
 		target[isPublic ? "public_tags" : "private_tags"]?.push({
 			name: tag,
 		} as Tag);
 	},
 	removeExerciseTag: async (
-		{ commit, state }: { commit: Commit; state: any },
+		{ commit, state }: { commit: Commit; state: TeacherState },
 		{
 			courseId,
 			exerciseId,
@@ -557,7 +568,9 @@ export const actions = {
 		},
 	) => {
 		await removeTagFromExercise(courseId, exerciseId, tag, isPublic);
-		const target = state.exercises.find((e: Exercise) => e.id === exerciseId) as Exercise;
+		const target = state.paginatedExercises.data.find(
+			(e: Exercise) => e.id === exerciseId,
+		) as Exercise;
 		target[isPublic ? "public_tags" : "private_tags"] = target[
 			isPublic ? "public_tags" : "private_tags"
 		]?.filter(t => t.name != tag);

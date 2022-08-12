@@ -1,5 +1,6 @@
 import {
 	aggregateExerciseSolutionThreads,
+	convertPaginatedResponseToLocalPaginatedData,
 	normalizeIncomingExercise,
 	normalizeIncomingExerciseChoice,
 } from "./converters";
@@ -15,7 +16,11 @@ import {
 	ExerciseSolutionVote,
 } from "@/models";
 import axios from "axios";
-import { ExerciseSearchFilter } from "./interfaces";
+import {
+	BackendPaginatedResponse,
+	ExerciseSearchFilter,
+	PaginatedData,
+} from "./interfaces";
 import { getExerciseUrlQueryParams } from "./utils";
 
 // export async function getExercises(
@@ -29,17 +34,18 @@ export async function getExercises(
 	courseId: string,
 	pageNumber: number,
 	filter: ExerciseSearchFilter | null,
-): Promise<{ exercises: Exercise[]; moreResults: boolean }> {
+): Promise<PaginatedData<Exercise>> {
 	const filterUrlQuery = getExerciseUrlQueryParams(filter);
 	const response = await axios.get(
 		`/courses/${courseId}/exercises/?page=${pageNumber}${filterUrlQuery}`,
 	);
-	return {
-		exercises: (response.data.results as Exercise[]).map(e =>
-			normalizeIncomingExercise(e),
-		),
-		moreResults: !!response.data.next,
+	console.log("ASKED FOR PAGE", pageNumber);
+	const normalizedResponseData = {
+		...(response.data as BackendPaginatedResponse<Exercise>),
+		results: (response.data.results as Exercise[]).map(e => normalizeIncomingExercise(e)),
 	};
+
+	return convertPaginatedResponseToLocalPaginatedData(normalizedResponseData, pageNumber);
 }
 
 export async function getExercisesById(

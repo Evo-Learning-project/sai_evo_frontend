@@ -19,10 +19,10 @@ import { MutationPayload, TeacherState } from "../types";
 import { getters } from "./getters";
 
 export const mutations = {
-	setExercises: (state: TeacherState, exercises: Exercise[]) =>
-		(state.exercises = exercises),
-	deleteBaseExercise: (state: TeacherState, exerciseId: string) =>
-		(state.exercises = state.exercises.filter(e => e.id != exerciseId)),
+	// setExercises: (state: TeacherState, exercises: Exercise[]) =>
+	// 	(state.exercises = exercises),
+	// deleteBaseExercise: (state: TeacherState, exerciseId: string) =>
+	// 	(state.exercises = state.exercises.filter(e => e.id != exerciseId)),
 	setCurrentExercisePage: (state: TeacherState, pageNumber: number) =>
 		(state.currentExercisePage = pageNumber),
 	setEvents: (state: TeacherState, events: Event[]) => (state.events = events),

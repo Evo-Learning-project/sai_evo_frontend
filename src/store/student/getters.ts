@@ -30,7 +30,7 @@ export const getters = {
 		return [
 			...(state.currentEventParticipation?.slots.map(s => s.exercise) ?? []),
 			...state.exerciseThreads,
-			...rootState.teacher.exercises,
+			...rootState.teacher.paginatedExercises.data,
 		];
 	},
 };

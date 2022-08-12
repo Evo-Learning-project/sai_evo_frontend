@@ -10,6 +10,7 @@ import {
 	EventParticipationSlot,
 	ExerciseSolution,
 } from "@/models";
+import { BackendPaginatedResponse, PaginatedData } from "./interfaces";
 
 export const normalizeIncomingExercise = (exercise: Exercise): Exercise => ({
 	...exercise,
@@ -110,3 +111,13 @@ export const aggregateExerciseSolutionThreads = (
 	});
 	return exercises;
 };
+
+export const convertPaginatedResponseToLocalPaginatedData = <T>(
+	response: BackendPaginatedResponse<T>,
+	pageNumber: number,
+): PaginatedData<T> => ({
+	data: response.results,
+	count: response.count,
+	isLastPage: response.next === null,
+	pageNumber,
+});

@@ -1,4 +1,4 @@
-import { ExerciseSearchFilter } from "@/api/interfaces";
+import { ExerciseSearchFilter, PaginatedData } from "@/api/interfaces";
 import { ErrorMessage } from "@/interfaces";
 import { Course, EventParticipation, Exercise, Tag, Event, User } from "@/models";
 
@@ -10,7 +10,7 @@ export interface StudentState {
 	exerciseThreads: Exercise[];
 }
 export interface TeacherState {
-	exercises: Exercise[];
+	paginatedExercises: PaginatedData<Exercise>;
 	events: Event[];
 	eventParticipations: EventParticipation[];
 	currentExercisePage: number;

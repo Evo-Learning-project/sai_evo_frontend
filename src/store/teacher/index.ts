@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+import { PaginatedData } from "@/api/interfaces";
 import { EventParticipation, Exercise, Tag, User } from "@/models";
 import { actions } from "./actions";
 import { getters } from "./getters";
@@ -7,7 +8,7 @@ import { mutations } from "./mutations";
 export const teacherStore = {
 	namespaced: true,
 	state: () => ({
-		exercises: [] as Exercise[],
+		paginatedExercises: {} as PaginatedData<Exercise>,
 		events: [] as Event[],
 		eventParticipations: [] as EventParticipation[], // participations to current event
 		currentExercisePage: 1, // for server-side pagination

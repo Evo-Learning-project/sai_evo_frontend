@@ -128,7 +128,7 @@
 
 <script lang="ts">
 import { createNamespacedHelpers, mapActions } from "vuex";
-const { mapState } = createNamespacedHelpers("teacher");
+const { mapState, mapGetters } = createNamespacedHelpers("teacher");
 import { getTranslatedString as _ } from "@/i18n";
 import { icons as exerciseTypesIcons } from "@/assets/exerciseTypesIcons";
 import { icons as exerciseStatesIcons } from "@/assets/exerciseStatesIcons";
@@ -353,7 +353,8 @@ export default defineComponent({
 					description: _("exercise_states_descriptions." + key),
 				}));
 		},
-		...mapState(["exercises", "tags"]),
+		...mapState(["tags"]),
+		...mapGetters(["exercises"]),
 	},
 });
 </script>

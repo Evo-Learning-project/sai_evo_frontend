@@ -17,3 +17,18 @@ export interface CourseSearchFilter {
 export interface EventSearchFilter {
 	event_type?: EventType;
 }
+
+export interface BackendPaginatedResponse<T> {
+	results: T[];
+	previous: null | string;
+	next: null | string;
+	count: number;
+}
+
+export interface PaginatedData<T> {
+	data: T[];
+	isLastPage: boolean;
+	pageNumber: number;
+	count: number;
+}
+// TODO define operations on paginated data (insert, reset, delete from...)
