@@ -273,6 +273,9 @@ export const it = {
 			"In questa pagina sono visulizzate le soluzioni agli esercizi proposte dagli studenti. Puoi rendere ufficiali quelle corrette e scartare quelle errate.",
 	},
 	exercise_solution: {
+		there_are_pending_solutions_1: "Ci sono",
+		there_are_pending_solutions_2: "soluzioni da visionare.",
+		no_solutions_to_review: "Non ci sono soluzioni da visionare",
 		you_rejected_this_solution: "Hai scartato questa soluzione",
 		verified: "Soluzione verificata",
 		comments: "Commenti",

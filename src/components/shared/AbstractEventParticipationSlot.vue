@@ -19,6 +19,7 @@
 				<!-- exercise -->
 				<Exercise
 					:exercise="exercise"
+					:showReadOnlyAnswer="showAnswer"
 					:submission="submission"
 					:readOnly="!allowEditSubmission"
 					:showLabel="showExerciseLabel"
@@ -223,6 +224,11 @@ export default defineComponent({
 			// to be used when reviewing a participation to a practice event
 			type: Boolean,
 			default: false,
+		},
+		showAnswer: {
+			// whether the exercise's readOnlyAnswer prop should be shown, if enabled
+			type: Boolean,
+			default: true,
 		},
 		showAssessmentCard: {
 			// whether the card with teacher assessment fields (scores and comments) should be displayed.

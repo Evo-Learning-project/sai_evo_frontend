@@ -97,6 +97,11 @@ export const normalizeIncomingEvent = (event: Event): Event => ({
 		: { template: normalizeIncomingEventTemplate(event.template) }),
 });
 
+/**
+ * Takes in an array of ExerciseSolution objects that also have a
+ * reference to an Exercise; returns an array of Exercise objects
+ * where each one contains all the solutions that referenced it
+ */
 export const aggregateExerciseSolutionThreads = (
 	solutions: (ExerciseSolution & { exercise: Exercise })[],
 ): Exercise[] => {

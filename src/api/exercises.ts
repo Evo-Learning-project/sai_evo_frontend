@@ -14,6 +14,7 @@ import {
 	ExerciseSolution,
 	ExerciseTestCase,
 	ExerciseSolutionVote,
+	ExerciseSolutionState,
 } from "@/models";
 import axios from "axios";
 import {
@@ -336,16 +337,39 @@ export async function setExerciseSolutionBookmark(
 
 export async function getPopularExerciseSolutionThreads(
 	courseId: string,
-): Promise<Exercise[]> {
-	const response = await axios.get(`/courses/${courseId}/solutions/popular/`);
-	const threads = response.data as (ExerciseSolution & { exercise: Exercise })[];
-	return aggregateExerciseSolutionThreads(threads);
+	pageNumber: number,
+): Promise<PaginatedData<Exercise>> {
+	const response = await axios.get(`/courses/${courseId}/solutions/?by_popularity=1`);
+	const threads = response.data as BackendPaginatedResponse<
+		ExerciseSolution & { exercise: Exercise }
+	>;
+	const aggregatedThreads = aggregateExerciseSolutionThreads(threads.results);
+	return convertPaginatedResponseToLocalPaginatedData(
+		{
+			...response.data,
+			data: aggregatedThreads,
+		},
+		pageNumber,
+	);
 }
 
 export async function getSubmittedExerciseSolutionThreads(
 	courseId: string,
-): Promise<Exercise[]> {
-	const response = await axios.get(`/courses/${courseId}/solutions/submitted/`);
-	const threads = response.data as (ExerciseSolution & { exercise: Exercise })[];
-	return aggregateExerciseSolutionThreads(threads);
+	pageNumber: number,
+): Promise<PaginatedData<Exercise>> {
+	const response = await axios.get(
+		`/courses/${courseId}/solutions/?page=${pageNumber}&state=${ExerciseSolutionState.SUBMITTED}`,
+	);
+	const threads = response.data as BackendPaginatedResponse<
+		ExerciseSolution & { exercise: Exercise }
+	>;
+	const aggregatedThreads = aggregateExerciseSolutionThreads(threads.results);
+	console.log("AGGTH", aggregatedThreads);
+	return convertPaginatedResponseToLocalPaginatedData(
+		{
+			...response.data,
+			results: aggregatedThreads,
+		},
+		pageNumber,
+	);
 }

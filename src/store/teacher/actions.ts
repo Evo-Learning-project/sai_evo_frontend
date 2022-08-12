@@ -36,7 +36,6 @@ import {
 	deleteExerciseSubExercise,
 	deleteExerciseTestCase,
 	getExercises,
-	getPopularExerciseSolutionThreads,
 	getSubmittedExerciseSolutionThreads,
 	removeTagFromExercise,
 	updateExercise,
@@ -518,18 +517,32 @@ export const actions = {
 		return !state.paginatedExercises.isLastPage;
 	},
 	getExerciseSolutionThreads: async (
-		{ commit }: { commit: Commit },
+		{ commit, state }: { commit: Commit; state: TeacherState },
 		{
 			courseId,
+			fromFirstPage,
 		}: {
 			courseId: string;
+			fromFirstPage: boolean;
 		},
 	) => {
-		const exercises = await getSubmittedExerciseSolutionThreads(courseId);
-		// TODO set exercises
-		//commit("setExercises", exercises);
+		const paginatedExercises = await getSubmittedExerciseSolutionThreads(
+			courseId,
+			fromFirstPage ? 1 : (state.paginatedExercises.pageNumber ?? 0) + 1, // TODO refactor
+		);
 
-		return exercises;
+		console.log("exer", paginatedExercises);
+
+		if (fromFirstPage) {
+			state.paginatedExercises = paginatedExercises;
+		} else {
+			state.paginatedExercises = {
+				...paginatedExercises,
+				data: [...state.paginatedExercises.data, ...paginatedExercises.data],
+			};
+		}
+
+		return !state.paginatedExercises.isLastPage;
 	},
 	addExerciseTag: async (
 		{ commit, state }: { commit: Commit; state: TeacherState },

@@ -26,8 +26,7 @@
 
 		<!-- representation of a read-only answer given to
     the exercise (e.g. a code fragment for a programming exercise) -->
-		<!-- TODO create a prop to conditionally hide this, for example in exercise solution threads-->
-		<slot v-else name="readOnlyAnswer"></slot>
+		<slot v-else-if="showReadOnlyAnswer" name="readOnlyAnswer"></slot>
 
 		<!-- solutions -->
 		<div

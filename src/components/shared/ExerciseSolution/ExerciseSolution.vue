@@ -127,7 +127,7 @@
 								v-else
 								:language="solutionType"
 								:value="solution.content"
-								class="-mt-4 -mr-5 rounded-tr rounded-none"
+								class="-mt-4 rounded-tr rounded-none"
 							/>
 							<div
 								v-if="collapsed"
@@ -287,10 +287,15 @@ export default defineComponent({
 		},
 	},
 	mounted() {
-		const contentElement = this.$refs.content as HTMLElement;
-		if (contentElement.clientHeight > this.MAX_CONTENT_HEIGHT_PX && !this.forceExpanded) {
-			this.collapsed = true;
-		}
+		setTimeout(() => {
+			const contentElement = this.$refs.content as HTMLElement;
+			if (
+				contentElement.clientHeight > this.MAX_CONTENT_HEIGHT_PX &&
+				!this.forceExpanded
+			) {
+				this.collapsed = true;
+			}
+		}, 50);
 	},
 	data() {
 		return {
