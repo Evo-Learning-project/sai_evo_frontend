@@ -364,7 +364,6 @@ export async function getSubmittedExerciseSolutionThreads(
 		ExerciseSolution & { exercise: Exercise }
 	>;
 	const aggregatedThreads = aggregateExerciseSolutionThreads(threads.results);
-	console.log("AGGTH", aggregatedThreads);
 	return convertPaginatedResponseToLocalPaginatedData(
 		{
 			...response.data,

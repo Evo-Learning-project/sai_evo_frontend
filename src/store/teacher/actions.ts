@@ -86,7 +86,7 @@ export const actions = {
 		const newExercise = await createExercise(courseId, exercise);
 		state.paginatedExercises = {
 			...state.paginatedExercises,
-			data: [...state.paginatedExercises.data, newExercise],
+			data: [newExercise, ...state.paginatedExercises.data],
 		};
 		return newExercise;
 	},

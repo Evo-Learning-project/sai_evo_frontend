@@ -33,6 +33,7 @@ export interface SharedState {
 	dirtyTex: boolean;
 	helpCenterOpen: boolean;
 	helpCenterSelectedArticleId: string | null;
+	paginatedSolutionsByExerciseId: Record<string, PaginatedData<Exercise>>; // string = exercise id,
 }
 
 interface StoreOperationParameters<T> {
