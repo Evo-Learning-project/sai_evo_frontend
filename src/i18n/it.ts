@@ -274,7 +274,7 @@ export const it = {
 	},
 	exercise_solution: {
 		there_are_pending_solutions_1: "Ci sono",
-		there_are_pending_solutions_2: "soluzioni da visionare.",
+		there_are_pending_solutions_2: "esercizi con soluzioni da visionare.",
 		no_solutions_to_review: "Non ci sono soluzioni da visionare",
 		you_rejected_this_solution: "Hai scartato questa soluzione",
 		verified: "Soluzione verificata",

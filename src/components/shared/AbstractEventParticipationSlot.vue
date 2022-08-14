@@ -129,6 +129,7 @@
 			<!-- solution -->
 			<ExerciseSolutionContainer
 				:exercise="exercise"
+				:solutions="exercise.solutions ?? []"
 				class="w-full mt-4"
 				v-if="showSolutionAndScores"
 			/>

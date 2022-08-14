@@ -26,6 +26,7 @@
 						:allowAddSolution="false"
 						:showTeacherControls="true"
 						:exercise="slot.exercise"
+						:solutions="slot.exercise.solutions ?? []"
 						:showFirst="highlightedSolutionIds"
 						:forceShowAll="true"
 					/></div
@@ -74,7 +75,7 @@ import AbstractEventParticipationSlot from "@/components/shared/AbstractEventPar
 import { VueEternalLoading, LoadAction } from "@ts-pro/vue-eternal-loading";
 import Spinner from "@/components/ui/Spinner.vue";
 import ExerciseEditorWrapperSkeleton from "@/components/ui/skeletons/ExerciseEditorWrapperSkeleton.vue";
-import { PaginatedData } from "@/api/interfaces";
+import { ExerciseSearchFilter, PaginatedData } from "@/api/interfaces";
 const { mapState, mapActions, mapGetters } = createNamespacedHelpers("teacher");
 export default defineComponent({
 	name: "CourseExerciseSolutionThreads",
@@ -82,9 +83,10 @@ export default defineComponent({
 	props: {},
 	async created() {
 		this.withFirstLoading(async () => {
-			await this.getExerciseSolutionThreads({
+			await this.getExercises({
 				courseId: this.courseId,
 				fromFirstPage: true,
+				filters: { with_submitted_solutions: true } as ExerciseSearchFilter,
 			});
 			//await this.getTags({ courseId: this.courseId });
 		});
@@ -95,7 +97,7 @@ export default defineComponent({
 		};
 	},
 	methods: {
-		...mapActions(["getExerciseSolutionThreads"]),
+		...mapActions(["getExercises"]),
 		getExerciseTitle(exercise: Exercise): string {
 			return (exercise?.label ?? "").trim().length > 0
 				? (exercise.label as string)
@@ -103,10 +105,10 @@ export default defineComponent({
 		},
 		async onLoadMore({ loaded, noMore, error }: LoadAction) {
 			try {
-				const moreResults = await this.getExerciseSolutionThreads({
+				const moreResults = await this.getExercises({
 					courseId: this.courseId,
 					fromFirstPage: false,
-					//filters: this.searchFilter,
+					filters: { with_submitted_solutions: true } as ExerciseSearchFilter,
 				});
 				if (!moreResults) {
 					noMore();
@@ -132,8 +134,6 @@ export default defineComponent({
 			}));
 		},
 		remainingCount(): number {
-			// GOTCHA: the count property here refers to the amount of solutions, NOT exercises
-			// TODO refactor
 			return (this.paginatedExercises as PaginatedData<Exercise>).count;
 		},
 	},

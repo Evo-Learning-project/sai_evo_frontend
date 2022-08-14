@@ -5,6 +5,7 @@
 		<ExerciseSolutionContainer
 			class="mt-8"
 			:exercise="exercise"
+			:solutions="exercise.solutions ?? []"
 			:showFirst="[solutionId]"
 			:standalone="true"
 		></ExerciseSolutionContainer>

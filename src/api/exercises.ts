@@ -40,7 +40,6 @@ export async function getExercises(
 	const response = await axios.get(
 		`/courses/${courseId}/exercises/?page=${pageNumber}${filterUrlQuery}`,
 	);
-	console.log("ASKED FOR PAGE", pageNumber);
 	const normalizedResponseData = {
 		...(response.data as BackendPaginatedResponse<Exercise>),
 		results: (response.data.results as Exercise[]).map(e => normalizeIncomingExercise(e)),
@@ -255,6 +254,20 @@ export async function updateExerciseTestCase(
 	return response.data;
 }
 
+export async function getExerciseSolutionsByExercise(
+	courseId: string,
+	exerciseId: string,
+	pageNumber: number,
+): Promise<PaginatedData<ExerciseSolution>> {
+	const response = await axios.get(
+		`/courses/${courseId}/exercises/${exerciseId}/solutions/?page=${pageNumber}`,
+	);
+	return convertPaginatedResponseToLocalPaginatedData(
+		response.data as BackendPaginatedResponse<ExerciseSolution>,
+		pageNumber,
+	);
+}
+
 export async function createExerciseSolution(
 	courseId: string,
 	exerciseId: string,
@@ -353,22 +366,22 @@ export async function getPopularExerciseSolutionThreads(
 	);
 }
 
-export async function getSubmittedExerciseSolutionThreads(
-	courseId: string,
-	pageNumber: number,
-): Promise<PaginatedData<Exercise>> {
-	const response = await axios.get(
-		`/courses/${courseId}/solutions/?page=${pageNumber}&state=${ExerciseSolutionState.SUBMITTED}`,
-	);
-	const threads = response.data as BackendPaginatedResponse<
-		ExerciseSolution & { exercise: Exercise }
-	>;
-	const aggregatedThreads = aggregateExerciseSolutionThreads(threads.results);
-	return convertPaginatedResponseToLocalPaginatedData(
-		{
-			...response.data,
-			results: aggregatedThreads,
-		},
-		pageNumber,
-	);
-}
+// export async function getSubmittedExerciseSolutionThreads(
+// 	courseId: string,
+// 	pageNumber: number,
+// ): Promise<PaginatedData<Exercise>> {
+// 	const response = await axios.get(
+// 		`/courses/${courseId}/solutions/?page=${pageNumber}&state=${ExerciseSolutionState.SUBMITTED}`,
+// 	);
+// 	const threads = response.data as BackendPaginatedResponse<
+// 		ExerciseSolution & { exercise: Exercise }
+// 	>;
+// 	const aggregatedThreads = aggregateExerciseSolutionThreads(threads.results);
+// 	return convertPaginatedResponseToLocalPaginatedData(
+// 		{
+// 			...response.data,
+// 			results: aggregatedThreads,
+// 		},
+// 		pageNumber,
+// 	);
+// }

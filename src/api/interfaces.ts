@@ -6,6 +6,7 @@ export interface ExerciseSearchFilter {
 	tags: string[];
 	exercise_types: ExerciseType[];
 	states: ExerciseState[];
+	with_submitted_solutions?: boolean;
 }
 
 export interface CourseSearchFilter {

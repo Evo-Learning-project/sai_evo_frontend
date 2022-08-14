@@ -19,10 +19,7 @@
 			@updateState="onSolutionStateUpdate(solution, $event)"
 			@editSolution="onEditSolution(solution)"
 		/>
-		<div
-			class="flex items-center space-x-4"
-			v-if="(exercise.solutions ?? []).length === 0"
-		>
+		<div class="flex items-center space-x-4" v-if="solutions.length === 0">
 			<p class="text-muted">
 				{{ $t("exercise_solution.no_solutions_call_to_action") }}
 			</p>
@@ -51,7 +48,7 @@
 			>
 			<Btn
 				@click="onAddSolution()"
-				v-if="(exercise.solutions ?? []).length > 0 && allowAddSolution"
+				v-if="solutions.length > 0 && allowAddSolution"
 				:variant="'primary'"
 				class="mt-4 mr-auto"
 				:size="'sm'"
@@ -107,6 +104,10 @@ export default defineComponent({
 	props: {
 		exercise: {
 			type: Object as PropType<IExercise>,
+			required: true,
+		},
+		solutions: {
+			type: Array as PropType<IExerciseSolution[]>,
 			required: true,
 		},
 		showFirst: {
@@ -331,22 +332,16 @@ export default defineComponent({
 			);
 		},
 		draftSolutions(): IExerciseSolution[] {
-			return (this.exercise.solutions ?? []).filter(
-				s => s.state === ExerciseSolutionState.DRAFT,
-			);
+			return this.solutions.filter(s => s.state === ExerciseSolutionState.DRAFT);
 		},
 		nonDraftSolutions(): IExerciseSolution[] {
-			return (this.exercise.solutions ?? []).filter(
-				s => s.state !== ExerciseSolutionState.DRAFT,
-			);
+			return (this.solutions ?? []).filter(s => s.state !== ExerciseSolutionState.DRAFT);
 		},
 		editingSolution(): IExerciseSolution | null {
 			if (this.editingSolutionId === null) {
 				return null;
 			}
-			return (
-				(this.exercise.solutions ?? []).find(s => s.id == this.editingSolutionId) ?? null
-			);
+			return (this.solutions ?? []).find(s => s.id == this.editingSolutionId) ?? null;
 		},
 	},
 	components: { Btn, ExerciseSolution, ExerciseSolutionEditor, Exercise },

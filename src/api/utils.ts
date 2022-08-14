@@ -59,7 +59,8 @@ export const getExerciseUrlQueryParams = (
 		(filters.exercise_types?.length ?? 0) > 0 ||
 		(filters.states?.length ?? 0) > 0 ||
 		(filters.tags?.length ?? 0) > 0 ||
-		(filters.text?.length ?? 0) > 0
+		(filters.text?.length ?? 0) > 0 ||
+		typeof filters.with_submitted_solutions !== "undefined"
 	) {
 		ret += "&";
 	}
@@ -79,6 +80,12 @@ export const getExerciseUrlQueryParams = (
 
 	if (filters.tags && filters.tags.length > 0) {
 		ret += `tags=${filters.tags.join("&tags=")}&`;
+	}
+
+	if (typeof filters.with_submitted_solutions !== "undefined") {
+		ret += `with_submitted_solutions=${JSON.stringify(
+			filters.with_submitted_solutions,
+		)}&`;
 	}
 
 	return ret;

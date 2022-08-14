@@ -36,7 +36,7 @@ import {
 	deleteExerciseSubExercise,
 	deleteExerciseTestCase,
 	getExercises,
-	getSubmittedExerciseSolutionThreads,
+	getExercisesById,
 	removeTagFromExercise,
 	updateExercise,
 } from "@/api/exercises";
@@ -487,8 +487,35 @@ export const actions = {
 
 		// Object.assign(target, newClause);
 	},
+	getExercisesById: async (
+		{ state }: { state: TeacherState },
+		{
+			courseId,
+			exerciseIds,
+			replace = true,
+		}: {
+			courseId: string;
+			exerciseIds: string[];
+			replace: boolean;
+		},
+	) => {
+		const exercises = await getExercisesById(courseId, exerciseIds);
+		if (replace) {
+			state.paginatedExercises = {
+				data: exercises,
+				isLastPage: true,
+				count: exercises.length,
+				pageNumber: 1,
+			};
+		} else {
+			state.paginatedExercises = {
+				...state.paginatedExercises,
+				data: [...exercises, ...state.paginatedExercises.data],
+			};
+		}
+	},
 	getExercises: async (
-		{ commit, state }: { commit: Commit; state: TeacherState },
+		{ state }: { state: TeacherState },
 		{
 			courseId,
 			fromFirstPage = true,
@@ -516,7 +543,7 @@ export const actions = {
 
 		return !state.paginatedExercises.isLastPage;
 	},
-	getExerciseSolutionThreads: async (
+	/*getExerciseSolutionThreads: async (
 		{ commit, state }: { commit: Commit; state: TeacherState },
 		{
 			courseId,
@@ -543,7 +570,7 @@ export const actions = {
 		}
 
 		return !state.paginatedExercises.isLastPage;
-	},
+	},*/
 	addExerciseTag: async (
 		{ commit, state }: { commit: Commit; state: TeacherState },
 		{

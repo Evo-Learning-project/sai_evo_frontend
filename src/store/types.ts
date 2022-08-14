@@ -1,6 +1,14 @@
 import { ExerciseSearchFilter, PaginatedData } from "@/api/interfaces";
 import { ErrorMessage } from "@/interfaces";
-import { Course, EventParticipation, Exercise, Tag, Event, User } from "@/models";
+import {
+	Course,
+	EventParticipation,
+	Exercise,
+	Tag,
+	Event,
+	User,
+	ExerciseSolution,
+} from "@/models";
 
 export interface StudentState {
 	currentEventParticipation: EventParticipation | null;
@@ -33,7 +41,7 @@ export interface SharedState {
 	dirtyTex: boolean;
 	helpCenterOpen: boolean;
 	helpCenterSelectedArticleId: string | null;
-	paginatedSolutionsByExerciseId: Record<string, PaginatedData<Exercise>>; // string = exercise id,
+	paginatedSolutionsByExerciseId: Record<string, PaginatedData<ExerciseSolution>>; // string = exercise id,
 }
 
 interface StoreOperationParameters<T> {
