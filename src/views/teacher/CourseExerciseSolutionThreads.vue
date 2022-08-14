@@ -21,16 +21,20 @@
 					<h4>{{ getExerciseTitle(slot.exercise) }}</h4>
 					<AbstractEventParticipationSlot :modelValue="slot" :showAnswer="false" />
 					<ExerciseSolutionContainer
+						v-if="!loadingSolutionsByExercise[slot.exercise.id]"
 						class=""
 						:showTitle="false"
 						:allowAddSolution="false"
 						:showTeacherControls="true"
 						:exercise="slot.exercise"
-						:solutions="slot.exercise.solutions ?? []"
+						:solutions="getSolutionsForExercise(slot.exercise)"
 						:showFirst="highlightedSolutionIds"
 						:forceShowAll="true"
-					/></div
-			></transition-group>
+					/>
+					<SlotSkeleton class="mt-4" v-else />
+					<MinimalExercisePreviewSkeleton v-if="false" />
+				</div>
+			</transition-group>
 		</div>
 		<div class="flex-col flex space-y-4" v-else>
 			<ExerciseEditorWrapperSkeleton />
@@ -64,19 +68,22 @@ import { courseIdMixin, loadingMixin } from "@/mixins";
 import {
 	EventParticipationSlot,
 	Exercise,
+	ExerciseSolution,
 	getFakeEventParticipationSlot,
 } from "@/models";
 import { defineComponent } from "@vue/runtime-core";
 import ExerciseSolutionContainer from "@/components/shared/ExerciseSolution/ExerciseSolutionContainer.vue";
 import { getTranslatedString as _ } from "@/i18n";
 
-import { createNamespacedHelpers } from "vuex";
+import { createNamespacedHelpers, mapState, mapActions } from "vuex";
 import AbstractEventParticipationSlot from "@/components/shared/AbstractEventParticipationSlot.vue";
 import { VueEternalLoading, LoadAction } from "@ts-pro/vue-eternal-loading";
 import Spinner from "@/components/ui/Spinner.vue";
 import ExerciseEditorWrapperSkeleton from "@/components/ui/skeletons/ExerciseEditorWrapperSkeleton.vue";
 import { ExerciseSearchFilter, PaginatedData } from "@/api/interfaces";
-const { mapState, mapActions, mapGetters } = createNamespacedHelpers("teacher");
+import MinimalExercisePreviewSkeleton from "@/components/ui/skeletons/MinimalExercisePreviewSkeleton.vue";
+import SlotSkeleton from "@/components/ui/skeletons/SlotSkeleton.vue";
+const { mapGetters } = createNamespacedHelpers("teacher");
 export default defineComponent({
 	name: "CourseExerciseSolutionThreads",
 	mixins: [loadingMixin, courseIdMixin],
@@ -88,20 +95,43 @@ export default defineComponent({
 				fromFirstPage: true,
 				filters: { with_submitted_solutions: true } as ExerciseSearchFilter,
 			});
+			this.fetchSolutionsForNewExercises();
 			//await this.getTags({ courseId: this.courseId });
 		});
 	},
 	data() {
 		return {
 			isInitialInfiniteLoad: false,
+			loadingSolutionsByExercise: {} as Record<string, boolean>,
 		};
 	},
 	methods: {
-		...mapActions(["getExercises"]),
+		...mapActions("teacher", ["getExercises"]),
+		...mapActions("shared", ["getSolutionsByExercise"]),
+		getSolutionsForExercise(exercise: Exercise): ExerciseSolution[] {
+			return this.paginatedSolutionsByExerciseId[exercise.id]?.data ?? [];
+		},
 		getExerciseTitle(exercise: Exercise): string {
 			return (exercise?.label ?? "").trim().length > 0
 				? (exercise.label as string)
 				: _("exercise_preview.unnamed_exercise");
+		},
+		fetchSolutionsForNewExercises() {
+			(this.exercises as Exercise[])
+				.filter(e => typeof this.paginatedSolutionsByExerciseId[e.id] === "undefined")
+				.forEach(async e => {
+					this.loadingSolutionsByExercise[e.id] = true;
+					try {
+						await this.getSolutionsByExercise({
+							courseId: this.courseId,
+							exerciseId: e.id,
+						});
+					} catch (e) {
+						this.setErrorNotification(e);
+					} finally {
+						this.loadingSolutionsByExercise[e.id] = false;
+					}
+				});
 		},
 		async onLoadMore({ loaded, noMore, error }: LoadAction) {
 			try {
@@ -115,6 +145,7 @@ export default defineComponent({
 				} else {
 					loaded();
 				}
+				this.fetchSolutionsForNewExercises();
 			} catch {
 				error();
 			}
@@ -122,7 +153,8 @@ export default defineComponent({
 	},
 	computed: {
 		...mapGetters(["exercises"]),
-		...mapState(["paginatedExercises"]),
+		...mapState("teacher", ["paginatedExercises"]),
+		...mapState("shared", ["paginatedSolutionsByExerciseId"]),
 		processedExercises(): {
 			slot: EventParticipationSlot;
 			highlightedSolutionIds: string[];
@@ -143,6 +175,8 @@ export default defineComponent({
 		VueEternalLoading,
 		Spinner,
 		ExerciseEditorWrapperSkeleton,
+		MinimalExercisePreviewSkeleton,
+		SlotSkeleton,
 	},
 });
 </script>

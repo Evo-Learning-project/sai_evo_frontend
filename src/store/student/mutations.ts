@@ -117,28 +117,24 @@ export const mutations = {
 		const exercise = (store.getters["student/exercises"] as Exercise[]).find(
 			e => e.id == exerciseId,
 		);
-		if (!exercise) {
-			throw new Error("setExerciseSolution didn't find exercise with id " + exerciseId);
-		}
-		if (!exercise.solutions) {
-			throw new Error(
-				"setExerciseSolution didn't find solutions for exercise " +
-					JSON.stringify(exercise),
-			);
-		}
-		const target = exercise.solutions.find(s => s.id == payload.id);
-		console.log(
-			"EXERCISES",
-			store.getters["student/exercises"] as Exercise[],
-			"EXERCISE",
-			exercise,
-			"PAYLOAD",
-			payload,
-		);
+		// if (!exercise) {
+		// 	throw new Error("setExerciseSolution didn't find exercise with id " + exerciseId);
+		// }
+		// if (!exercise.solutions) {
+		// 	throw new Error(
+		// 		"setExerciseSolution didn't find solutions for exercise " +
+		// 			JSON.stringify(exercise),
+		// 	);
+		// }
+
+		const solutions = store.getters["shared/exerciseSolutions"] as ExerciseSolution[];
+		const target = solutions.find(s => s.id == payload.id);
+
 		if (target) {
 			Object.assign(target, payload);
 		} else {
-			exercise.solutions.push(payload);
+			// TODO refactor
+			exercise?.solutions?.push(payload);
 		}
 	},
 };
