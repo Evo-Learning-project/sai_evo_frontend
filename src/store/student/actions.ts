@@ -295,6 +295,7 @@ export const actions = {
 		);
 		return updatedClause;
 	},
+	// ! TODO check if necessary
 	addExerciseSolution: async (
 		{ getters }: { getters: any },
 		{
@@ -325,7 +326,7 @@ export const actions = {
 		return newSolution;
 	},
 	addExerciseSolutionComment: async (
-		{ getters }: { getters: any },
+		{ rootGetters }: { rootGetters: any },
 		{
 			courseId,
 			exerciseId,
@@ -344,19 +345,10 @@ export const actions = {
 			solutionId,
 			comment,
 		);
-		const exercise: Exercise | undefined = getters.exercises.find(
-			(e: Exercise) => e.id == exerciseId,
-		);
 
-		if (!exercise) {
-			throw new Error(
-				"addExerciseSolutionComment couldn't find exercise with id " + exerciseId,
-			);
-		}
-
-		const solution: ExerciseSolution | undefined = exercise.solutions?.find(
-			(s: ExerciseSolution) => s.id == solutionId,
-		);
+		const solution: ExerciseSolution | undefined = (
+			rootGetters["shared/exerciseSolutions"] as ExerciseSolution[]
+		).find((s: ExerciseSolution) => s.id == solutionId);
 
 		if (!solution) {
 			throw new Error(

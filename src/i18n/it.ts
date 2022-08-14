@@ -51,6 +51,7 @@ export const it = {
 		login: "Login",
 		course_title: ROUTE_TITLE_COURSE_NAME_TOKEN,
 		new_course: "Nuovo corso",
+		exercise_solution_thread_detail: "Discussione esercizio",
 		course_dashboard: "Dashboard " + ROUTE_TITLE_COURSE_NAME_TOKEN,
 		course_exercises: "Esercizi corso " + ROUTE_TITLE_COURSE_NAME_TOKEN,
 		course_exams: "Esami corso " + ROUTE_TITLE_COURSE_NAME_TOKEN,
