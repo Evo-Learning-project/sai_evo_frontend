@@ -5,7 +5,7 @@
 		<ExerciseSolutionContainer
 			class="mt-8"
 			:exercise="exercise"
-			:solutions="exercise.solutions ?? []"
+			:solutions="exerciseSolutions"
 			:showFirst="[solutionId]"
 			:standalone="true"
 		></ExerciseSolutionContainer>
@@ -14,12 +14,12 @@
 </template>
 
 <script lang="ts">
-import { Exercise, getFakeEventParticipationSlot } from "@/models";
+import { Exercise, ExerciseSolution, getFakeEventParticipationSlot } from "@/models";
 import { defineComponent, PropType } from "@vue/runtime-core";
 import AbstractEventParticipationSlot from "@/components/shared/AbstractEventParticipationSlot.vue";
 import { courseIdMixin, loadingMixin } from "@/mixins";
 import ExerciseSolutionContainer from "@/components/shared/ExerciseSolution/ExerciseSolutionContainer.vue";
-import { mapActions, mapGetters } from "vuex";
+import { mapActions, mapGetters, mapState } from "vuex";
 import SkeletonCard from "@/components/ui/SkeletonCard.vue";
 export default defineComponent({
 	name: "ExerciseSolutionThread",
@@ -42,14 +42,20 @@ export default defineComponent({
 	// },
 	methods: {
 		...mapActions("student", ["getExercises"]),
+		...mapActions("shared", ["getSolutionsByExercise"]),
 	},
 	computed: {
 		...mapGetters("student", ["exercises"]),
-		exercise() {
+		...mapState("shared", ["paginatedSolutionsByExerciseId"]),
+		exercise(): Exercise | undefined {
 			return (this.exercises as Exercise[]).find(
-				e => e.id == this.exerciseId,
-			) as Exercise;
+				e => e.id == (this.exerciseId as string),
+			);
 		},
+		exerciseSolutions(): ExerciseSolution[] {
+			return this.paginatedSolutionsByExerciseId[this.exerciseId]?.data ?? [];
+		},
+
 		solutionId() {
 			return this.$route.params.solutionId as string;
 		},
@@ -57,7 +63,7 @@ export default defineComponent({
 			return this.$route.params.exerciseId as string;
 		},
 		slot() {
-			if (this.exercise === null) {
+			if (typeof this.exercise === "undefined") {
 				return null;
 			}
 			return getFakeEventParticipationSlot(this.exercise);

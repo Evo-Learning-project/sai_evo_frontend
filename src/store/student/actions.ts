@@ -32,10 +32,11 @@ import {
 	updateEventTemplateRule,
 	updateEventTemplateRuleClause,
 } from "@/api/events";
-import { StudentState } from "../types";
+import { SharedState, StudentState } from "../types";
 import {
 	createExerciseSolution,
 	createExerciseSolutionComment,
+	deleteExerciseSolution,
 	getExercisesById,
 	setExerciseSolutionBookmark,
 	voteExerciseSolution,
@@ -297,7 +298,7 @@ export const actions = {
 	},
 	// ! TODO check if necessary
 	addExerciseSolution: async (
-		{ getters }: { getters: any },
+		{ getters, rootState }: { getters: any; rootState: { shared: SharedState } },
 		{
 			courseId,
 			exerciseId,
@@ -309,21 +310,38 @@ export const actions = {
 		},
 	) => {
 		const newSolution = await createExerciseSolution(courseId, exerciseId, solution);
-		const exercise: Exercise | undefined = getters.exercises.find(
-			(e: Exercise) => e.id == exerciseId,
-		);
+		const exerciseSolutions =
+			rootState.shared.paginatedSolutionsByExerciseId[exerciseId]?.data;
 
-		if (!exercise) {
-			throw new Error("addExerciseSolution couldn't find exercise with id " + exerciseId);
-		}
-		if (!exercise.solutions) {
+		if (!exerciseSolutions) {
 			throw new Error(
-				"addExerciseSolution couldn't find field solutions for exercise " +
-					JSON.stringify(exercise),
+				"addExerciseSolution couldn't find field solutions for exercise " + exerciseId,
 			);
 		}
-		exercise.solutions.push(newSolution);
+		exerciseSolutions.push(newSolution);
 		return newSolution;
+	},
+	deleteExerciseSolution: async (
+		{ getters, rootState }: { getters: any; rootState: { shared: SharedState } },
+		{
+			courseId,
+			exerciseId,
+			solutionId,
+		}: {
+			courseId: string;
+			exerciseId: string;
+			solutionId: string;
+		},
+	) => {
+		await deleteExerciseSolution(courseId, exerciseId, solutionId);
+		const exerciseSolutions = rootState.shared.paginatedSolutionsByExerciseId[exerciseId];
+
+		if (!exerciseSolutions) {
+			throw new Error(
+				"addExerciseSolution couldn't find field solutions for exercise " + exerciseId,
+			);
+		}
+		exerciseSolutions.data = exerciseSolutions.data.filter(s => s.id != solutionId);
 	},
 	addExerciseSolutionComment: async (
 		{ rootGetters }: { rootGetters: any },

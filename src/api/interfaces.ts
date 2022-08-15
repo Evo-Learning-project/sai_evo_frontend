@@ -1,4 +1,4 @@
-import { ExerciseState, ExerciseType, EventType } from "@/models";
+import { ExerciseState, ExerciseType, EventType, ExerciseSolutionState } from "@/models";
 
 export interface ExerciseSearchFilter {
 	label: string;
@@ -7,6 +7,10 @@ export interface ExerciseSearchFilter {
 	exercise_types: ExerciseType[];
 	states: ExerciseState[];
 	with_submitted_solutions?: boolean;
+}
+
+export interface ExerciseSolutionSearchFilter {
+	states: ExerciseSolutionState[];
 }
 
 export interface CourseSearchFilter {

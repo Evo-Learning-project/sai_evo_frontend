@@ -264,82 +264,102 @@
 					<!-- solutions -->
 					<div v-if="!cloze" class="mb-12">
 						<h3 class="mb-4">{{ $t("exercise_editor.solutions_title") }}</h3>
-						<div
-							v-for="solution in modelValue.solutions"
-							:key="'e-' + modelValue.id + '-sol-' + solution.id"
-							class="my-2 flex space-x-2"
-						>
-							<!-- plain text solution -->
-							<TextEditor
-								class="w-full"
-								v-if="!cloze && !isProgrammingExercise"
-								:modelValue="solution.content"
-								@update:modelValue="onUpdateSolution(solution.id, 'content', $event)"
+						<div v-if="!firstLoading">
+							<div
+								v-for="solution in solutions"
+								:key="'e-' + modelValue.id + '-sol-' + solution.id"
+								class="my-2 flex space-x-2"
 							>
-								<!-- {{ $t("exercise_editor.exercise_solution") }} -->
-							</TextEditor>
-							<!-- code solution -->
-							<div v-else-if="!cloze" class="relative w-full">
-								<CodeEditor
+								<!-- plain text solution -->
+								<TextEditor
+									class="w-full"
+									v-if="!cloze && !isProgrammingExercise"
 									:modelValue="solution.content"
 									@update:modelValue="onUpdateSolution(solution.id, 'content', $event)"
-									:size="'lg'"
-									:showRunButton="true"
-									:language="
-										modelValue.exercise_type === ExerciseType.JS ? 'typescript' : 'c'
-									"
-									@run="onTestSolution(solution.id)"
-									:running="testingSolution"
 								>
-									<template v-slot:runButton
-										><span class="ml-1 mr-1 text-base material-icons-outlined">
-											science </span
-										>{{
-											testingSolution
-												? $t("exercise_editor.testing_solution")
-												: $t("exercise_editor.test_solution")
-										}}</template
+									<!-- {{ $t("exercise_editor.exercise_solution") }} -->
+								</TextEditor>
+								<!-- code solution -->
+								<div v-else-if="!cloze" class="relative w-full">
+									<CodeEditor
+										:modelValue="solution.content"
+										@update:modelValue="onUpdateSolution(solution.id, 'content', $event)"
+										:size="'lg'"
+										:showRunButton="true"
+										:language="
+											modelValue.exercise_type === ExerciseType.JS ? 'typescript' : 'c'
+										"
+										@run="onTestSolution(solution.id)"
+										:running="testingSolution"
 									>
-									<template v-slot:sidePaneTitle
-										><div
-											class="flex items-center p-3 pl-4 space-x-2 rounded-tr-sm bg-light"
+										<template v-slot:runButton
+											><span class="ml-1 mr-1 text-base material-icons-outlined">
+												science </span
+											>{{
+												testingSolution
+													? $t("exercise_editor.testing_solution")
+													: $t("exercise_editor.test_solution")
+											}}</template
 										>
-											<span class="my-auto material-icons-outlined icon-light">
-												code
-											</span>
-											<h3>
-												{{ $t("programming_exercise.execution_results") }}
-											</h3>
-										</div>
-									</template>
-									<template v-slot:sidePane>
-										<CodeExecutionResults
-											v-if="solutionTestSlots[solution.id]?.execution_results"
-											:executionResults="solutionTestSlots[solution.id].execution_results"
-											:testCases="modelValue.testcases"
-										></CodeExecutionResults>
-										<div class="flex flex-col" v-else>
-											<span
-												class="mx-auto mt-24 opacity-30 text-8xl material-icons-outlined"
+										<template v-slot:sidePaneTitle
+											><div
+												class="
+													flex
+													items-center
+													p-3
+													pl-4
+													space-x-2
+													rounded-tr-sm
+													bg-light
+												"
 											>
-												code
-											</span>
-											<p class="px-4 mx-auto text-muted">
-												{{ $t("exercise_editor.code_execution_will_appear_here") }}
-											</p>
-										</div>
-									</template>
-								</CodeEditor>
+												<span class="my-auto material-icons-outlined icon-light">
+													code
+												</span>
+												<h3>
+													{{ $t("programming_exercise.execution_results") }}
+												</h3>
+											</div>
+										</template>
+										<template v-slot:sidePane>
+											<CodeExecutionResults
+												v-if="solutionTestSlots[solution.id]?.execution_results"
+												:executionResults="
+													solutionTestSlots[solution.id].execution_results
+												"
+												:testCases="modelValue.testcases"
+											></CodeExecutionResults>
+											<div class="flex flex-col" v-else>
+												<span
+													class="
+														mx-auto
+														mt-24
+														opacity-30
+														text-8xl
+														material-icons-outlined
+													"
+												>
+													code
+												</span>
+												<p class="px-4 mx-auto text-muted">
+													{{ $t("exercise_editor.code_execution_will_appear_here") }}
+												</p>
+											</div>
+										</template>
+									</CodeEditor>
+								</div>
+								<!-- solution delete button -->
+								<Btn
+									:outline="true"
+									:variant="'icon'"
+									class="transition-opacity duration-100 opacity-50 hover:opacity-100"
+									@click="onDeleteSolution(solution.id)"
+									><span class="material-icons">delete</span></Btn
+								>
 							</div>
-							<!-- solution delete button -->
-							<Btn
-								:outline="true"
-								:variant="'icon'"
-								class="transition-opacity duration-100 opacity-50 hover:opacity-100"
-								@click="onDeleteSolution(solution.id)"
-								><span class="material-icons">delete</span></Btn
-							>
 						</div>
+						<SlotSkeleton v-else />
+
 						<Btn
 							class="mt-2"
 							:variant="'secondary'"
@@ -357,7 +377,7 @@
             ></Tooltip>
              -->
 					</div>
-					<div v-if="modelValue.exercise_type === ExerciseType.JS" class="pb-4">
+					<div v-if="modelValue.exercise_type === ExerciseType.JS" class="pb-4 mb-6">
 						<Toggle
 							class=""
 							:modelValue="modelValue.requires_typescript"
@@ -653,7 +673,7 @@ import CloudSaveStatus from "@/components/ui/CloudSaveStatus.vue";
 import { courseIdMixin, loadingMixin, savingMixin } from "@/mixins";
 import { DialogData } from "@/interfaces";
 
-import { createNamespacedHelpers, mapActions } from "vuex";
+import { createNamespacedHelpers, mapActions, mapMutations } from "vuex";
 import { AutoSaveManager } from "@/autoSave";
 import {
 	exerciseStateOptions,
@@ -681,7 +701,8 @@ import {
 	isMultipleChoiceExercise,
 	isProgrammingExercise,
 } from "@/components/shared/Exercise/utils";
-const { mapMutations } = createNamespacedHelpers("teacher");
+import { ExerciseSolutionSearchFilter } from "@/api/interfaces";
+import SlotSkeleton from "@/components/ui/skeletons/SlotSkeleton.vue";
 const { mapState } = createNamespacedHelpers("shared");
 
 export default defineComponent({
@@ -704,6 +725,7 @@ export default defineComponent({
 		CodeExecutionResults,
 		NumberInput,
 		ArticleHandle,
+		SlotSkeleton,
 	},
 	props: {
 		modelValue: {
@@ -768,6 +790,22 @@ export default defineComponent({
 			this.instantiateChoiceAutoSaveManager(c),
 		);
 		this.modelValue.testcases?.forEach(t => this.instantiateTestCaseAutoSaveManager(t));
+
+		this.loadingSolutions = true;
+		try {
+			this.getSolutionsByExercise({
+				courseId: this.courseId,
+				exerciseId: this.modelValue.id,
+				filter: {
+					states: [ExerciseSolutionState.APPROVED],
+				} as ExerciseSolutionSearchFilter,
+			});
+		} catch (e) {
+			this.setErrorNotification(e);
+		} finally {
+			this.loadingSolutions = false;
+		}
+
 		this.modelValue.solutions?.forEach(s => this.instantiateSolutionAutoSaveManager(s));
 	},
 	mounted() {
@@ -777,6 +815,7 @@ export default defineComponent({
 	},
 	data() {
 		return {
+			loadingSolutions: false,
 			autoSaveManager: null as AutoSaveManager<Exercise> | null,
 			choiceAutoSaveManagers: {} as Record<string, AutoSaveManager<ExerciseChoice>>,
 			testCaseAutoSaveManagers: {} as Record<string, AutoSaveManager<ExerciseTestCase>>,
@@ -811,15 +850,14 @@ export default defineComponent({
 		...mapActions("teacher", [
 			"addExerciseChild",
 			"updateExercise",
-			// "addExerciseChoice",
-			// "addExerciseSubExercise",
-			// "addExerciseTestCase",
 			"addExerciseTag",
 			"removeExerciseTag",
 			"deleteExerciseChild",
 		]),
-		...mapActions("shared", ["getTags", "updateExerciseChild"]),
-		...mapMutations(["setExercise", "setExerciseChild"]),
+		...mapActions("student", ["addExerciseSolution", "deleteExerciseSolution"]),
+		...mapActions("shared", ["getTags", "updateExerciseChild", "getSolutionsByExercise"]),
+		...mapMutations("teacher", ["setExercise", "setExerciseChild"]),
+		...mapMutations("shared", ["setExerciseSolution"]),
 		async onChoiceDragEnd(event: { oldIndex: number; newIndex: number }) {
 			const draggedChoice = (this.modelValue.choices as ExerciseChoice[])[event.oldIndex];
 
@@ -894,11 +932,10 @@ export default defineComponent({
 		},
 		/* CRUD on related objects */
 		async onAddSolution() {
-			const newSolution: ExerciseSolution = await this.addExerciseChild({
+			const newSolution: ExerciseSolution = await this.addExerciseSolution({
 				courseId: this.courseId,
 				exerciseId: this.modelValue.id,
-				childType: "solution",
-				payload: getBlankExerciseSolution(ExerciseSolutionState.APPROVED),
+				solution: getBlankExerciseSolution(ExerciseSolutionState.APPROVED),
 			});
 			this.instantiateSolutionAutoSaveManager(newSolution);
 		},
@@ -949,11 +986,10 @@ export default defineComponent({
 			if (confirm(_("exercise_editor.confirm_delete_solution"))) {
 				await this.withLoading(
 					async () =>
-						await this.deleteExerciseChild({
+						await this.deleteExerciseSolution({
 							courseId: this.courseId,
 							exerciseId: this.modelValue.id,
-							childType: "solution",
-							childId: solutionId,
+							solutionId,
 						}),
 					this.setErrorNotification,
 				);
@@ -1126,8 +1162,7 @@ export default defineComponent({
 				changes => {
 					this.saving = true;
 					this.savingError = false;
-					this.setExerciseChild({
-						childType: "solution",
+					this.setExerciseSolution({
 						exerciseId: this.modelValue.id,
 						payload: { ...solution, ...changes },
 					});
@@ -1173,7 +1208,10 @@ export default defineComponent({
 		},
 	},
 	computed: {
-		...mapState(["tags", "user"]),
+		...mapState(["tags", "user", "paginatedSolutionsByExerciseId"]),
+		solutions(): ExerciseSolution[] {
+			return this.paginatedSolutionsByExerciseId[this.modelValue.id]?.data ?? [];
+		},
 		showNoChoicePenaltyWarning(): boolean {
 			return (
 				this.modelValue.exercise_type ===

@@ -11,6 +11,7 @@ import {
 	createExerciseSolution,
 	getExerciseSolutionsByExercise,
 } from "@/api/exercises";
+import { ExerciseSolutionSearchFilter } from "@/api/interfaces";
 import { getMe, updateUser } from "@/api/users";
 import {
 	Exercise,
@@ -92,10 +93,12 @@ export const actions = {
 			courseId,
 			exerciseId,
 			fromFirstPage = true,
+			filter = null,
 		}: {
 			courseId: string;
 			exerciseId: string;
 			fromFirstPage: boolean;
+			filter: ExerciseSolutionSearchFilter | null;
 		},
 	) => {
 		const paginatedSolutionsForExercise =
@@ -104,6 +107,7 @@ export const actions = {
 			courseId,
 			exerciseId,
 			fromFirstPage ? 1 : (paginatedSolutionsForExercise?.pageNumber ?? 0) + 1, // TODO refactor
+			filter,
 		);
 
 		if (fromFirstPage) {

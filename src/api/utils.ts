@@ -2,6 +2,7 @@ import {
 	CourseSearchFilter,
 	EventSearchFilter,
 	ExerciseSearchFilter,
+	ExerciseSolutionSearchFilter,
 } from "./interfaces";
 import store from "@/store";
 import { EventTemplateRule, EventTemplateRuleType, Tag } from "@/models";
@@ -46,6 +47,20 @@ export const isEmptyFilter = (filter: ExerciseSearchFilter): boolean =>
 	filter.exercise_types.length === 0 &&
 	filter.states.length === 0 &&
 	filter.tags.length === 0;
+
+export const getExerciseSolutionUrlQueryParams = (
+	filters: ExerciseSolutionSearchFilter | null,
+): string => {
+	if (!filters) {
+		return "";
+	}
+	let ret = "";
+
+	if (filters.states && filters.states.length > 0) {
+		ret += `&state=${filters.states.join(",")}&`;
+	}
+	return ret;
+};
 
 export const getExerciseUrlQueryParams = (
 	filters: ExerciseSearchFilter | null,

@@ -20,9 +20,10 @@ import axios from "axios";
 import {
 	BackendPaginatedResponse,
 	ExerciseSearchFilter,
+	ExerciseSolutionSearchFilter,
 	PaginatedData,
 } from "./interfaces";
-import { getExerciseUrlQueryParams } from "./utils";
+import { getExerciseSolutionUrlQueryParams, getExerciseUrlQueryParams } from "./utils";
 
 // export async function getExercises(
 //   courseId: string
@@ -258,9 +259,12 @@ export async function getExerciseSolutionsByExercise(
 	courseId: string,
 	exerciseId: string,
 	pageNumber: number,
+	filter: ExerciseSolutionSearchFilter | null,
 ): Promise<PaginatedData<ExerciseSolution>> {
+	const filterUrlQuery = getExerciseSolutionUrlQueryParams(filter);
+
 	const response = await axios.get(
-		`/courses/${courseId}/exercises/${exerciseId}/solutions/?page=${pageNumber}`,
+		`/courses/${courseId}/exercises/${exerciseId}/solutions/?page=${pageNumber}${filterUrlQuery}`,
 	);
 	return convertPaginatedResponseToLocalPaginatedData(
 		response.data as BackendPaginatedResponse<ExerciseSolution>,
