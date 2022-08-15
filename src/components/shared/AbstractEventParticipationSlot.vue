@@ -129,9 +129,9 @@
 			<!-- solution -->
 			<ExerciseSolutionContainer
 				:exercise="exercise"
-				:solutions="exercise.solutions ?? []"
+				:solutions="[]"
 				class="w-full mt-4"
-				v-if="showSolutionAndScores"
+				v-if="false && showSolutionAndScores"
 			/>
 		</div>
 	</div>
@@ -143,6 +143,7 @@ import {
 	EventParticipationSlotAssessment,
 	EventParticipationSlotSubmission,
 	Exercise as IExercise,
+	ExerciseSolution,
 	ExerciseType,
 	programmingExerciseTypes,
 } from "@/models";

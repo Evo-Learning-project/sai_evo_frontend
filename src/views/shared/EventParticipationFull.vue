@@ -195,13 +195,19 @@
 						{{ slot.slot_number + 1 }}
 					</h3>
 				</AbstractEventParticipationSlot>
+				<ExerciseSolutionContainer
+					v-if="showSolutionAndScores && !slotsLoadingSolution[slot.id]"
+					:exercise="slot.exercise"
+					:solutions="getSolutionsForExercise(slot.exercise)"
+				/>
+				<SlotSkeleton v-else-if="slotsLoadingSolution[slot.id]" />
 			</div>
 		</div>
 		<div class="py-6" v-else>
-			<SlotSkeleton></SlotSkeleton>
-			<SlotSkeleton></SlotSkeleton>
-			<SlotSkeleton></SlotSkeleton>
-			<SlotSkeleton></SlotSkeleton>
+			<SlotSkeleton />
+			<SlotSkeleton />
+			<SlotSkeleton />
+			<SlotSkeleton />
 		</div>
 	</div>
 </template>
@@ -211,7 +217,7 @@ import { courseIdMixin, eventIdMixin, loadingMixin } from "@/mixins";
 import { defineComponent } from "@vue/runtime-core";
 import AbstractEventParticipationSlot from "@/components/shared/AbstractEventParticipationSlot.vue";
 
-import { createNamespacedHelpers, mapActions } from "vuex";
+import { createNamespacedHelpers, mapActions, mapState } from "vuex";
 import {
 	EventParticipation,
 	EventParticipationSlot,
@@ -219,13 +225,15 @@ import {
 	EventParticipationState,
 	EventState,
 	EventType,
+	Exercise,
 } from "@/models";
 import Timestamp from "@/components/ui/Timestamp.vue";
 import SlotSkeleton from "@/components/ui/skeletons/SlotSkeleton.vue";
 import Btn from "@/components/ui/Btn.vue";
 import TextInput from "@/components/ui/TextInput.vue";
 import { getTranslatedString } from "@/i18n";
-const { mapState, mapMutations } = createNamespacedHelpers("student");
+import ExerciseSolutionContainer from "@/components/shared/ExerciseSolution/ExerciseSolutionContainer.vue";
+const { mapMutations } = createNamespacedHelpers("student");
 
 export default defineComponent({
 	name: "EventParticipationFull",
@@ -249,8 +257,8 @@ export default defineComponent({
 		Timestamp,
 		SlotSkeleton,
 		Btn,
-		//NumberInput,
 		TextInput,
+		ExerciseSolutionContainer,
 	},
 	async created() {
 		await this.withFirstLoading(async () => {
@@ -275,9 +283,26 @@ export default defineComponent({
 				},
 			});
 		}
+
+		if (this.showSolutionAndScores) {
+			(this.participation as EventParticipation).slots.forEach(async s => {
+				this.slotsLoadingSolution[s.id] = true;
+				try {
+					await this.getSolutionsByExercise({
+						courseId: this.courseId,
+						exerciseId: s.exercise.id,
+					});
+				} catch (e) {
+					this.setErrorNotification(e);
+				} finally {
+					this.slotsLoadingSolution[s.id] = false;
+				}
+			});
+		}
 	},
 	data() {
 		return {
+			slotsLoadingSolution: {} as Record<string, boolean>,
 			slotsAssessmentControlsVisibility: {} as Record<string, boolean>,
 			slotsAssessmentLoading: {} as Record<string, boolean>,
 			showEditScore: false,
@@ -291,8 +316,12 @@ export default defineComponent({
 			"getEventParticipation",
 			"partialUpdateEventParticipation",
 		]),
+		...mapActions("shared", ["getSolutionsByExercise"]),
 		...mapActions("teacher", ["partialUpdateEventParticipationSlot"]),
 		...mapMutations(["setCurrentEventParticipationSlot"]),
+		getSolutionsForExercise(exercise: Exercise) {
+			return this.paginatedSolutionsByExerciseId[exercise.id]?.data ?? [];
+		},
 		onShowEditScore() {
 			this.dirtyScore = this.participation.score;
 			this.showEditScore = true;
@@ -350,7 +379,8 @@ export default defineComponent({
 		},
 	},
 	computed: {
-		...mapState({ participation: "currentEventParticipation" }),
+		...mapState("student", { participation: "currentEventParticipation" }),
+		...mapState("shared", ["paginatedSolutionsByExerciseId"]),
 		participationId(): string {
 			return this.$router.currentRoute.value.params.participationId as string;
 		},
