@@ -26,20 +26,17 @@ export default defineComponent({
 	props: {},
 	mixins: [courseIdMixin, loadingMixin],
 	async created() {
-		await this.withFirstLoading(
-			async () =>
-				// TODO get solution instead and have it embed the exercise
-				await this.getExercises({
-					courseId: this.courseId,
-					exerciseIds: [this.exerciseId],
-				}),
-		);
+		await this.withFirstLoading(async () => {
+			await this.getExercises({
+				courseId: this.courseId,
+				exerciseIds: [this.exerciseId],
+			});
+			await this.getSolutionsByExercise({
+				courseId: this.courseId,
+				exerciseId: this.exerciseId,
+			});
+		});
 	},
-	// data() {
-	// 	return {
-	// 		exercise: null as Exercise | null,
-	// 	};
-	// },
 	methods: {
 		...mapActions("student", ["getExercises"]),
 		...mapActions("shared", ["getSolutionsByExercise"]),

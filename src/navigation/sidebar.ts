@@ -65,6 +65,7 @@ export const courseDashboardSidebarOptions: SidebarOption[] = [
 		label: _("sidebar_labels.exercise_solution_threads"),
 		icon: "forum",
 		routeName: "TeacherCourseExerciseSolutionThreads",
+		children: ["TeacherDetailExerciseSolutionThreads"],
 		requiredPrivileges: [
 			CoursePrivilege.ACCESS_EXERCISES,
 			CoursePrivilege.MANAGE_EXERCISES,

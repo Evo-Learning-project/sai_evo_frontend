@@ -214,6 +214,7 @@ export default defineComponent({
 				changes => {
 					this.saving = true;
 					this.savingError = false;
+					console.log("manager");
 					this.setExerciseSolution({
 						exerciseId: this.exercise.id,
 						payload: {
