@@ -75,7 +75,8 @@ export const getExerciseUrlQueryParams = (
 		(filters.states?.length ?? 0) > 0 ||
 		(filters.tags?.length ?? 0) > 0 ||
 		(filters.text?.length ?? 0) > 0 ||
-		typeof filters.with_submitted_solutions !== "undefined"
+		typeof filters.with_submitted_solutions !== "undefined" ||
+		typeof filters.by_popularity !== "undefined"
 	) {
 		ret += "&";
 	}
@@ -101,6 +102,10 @@ export const getExerciseUrlQueryParams = (
 		ret += `with_submitted_solutions=${JSON.stringify(
 			filters.with_submitted_solutions,
 		)}&`;
+	}
+
+	if (typeof filters.by_popularity !== "undefined") {
+		ret += `by_popularity=${JSON.stringify(filters.by_popularity)}&`;
 	}
 
 	return ret;

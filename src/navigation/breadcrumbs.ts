@@ -76,3 +76,12 @@ export const exerciseSolutionThreadBreadCrumbs: BreadCrumb[] = [
 		routeName: "ExerciseSolutionThread",
 	},
 ];
+
+export const exerciseThreadsBreadCrumbs: BreadCrumb[] = [
+	courseListBreadCrumb,
+	courseDashBoardBreadCrumb,
+	{
+		title: _("breadcrumbs.exercise_solution_thread"),
+		routeName: "StudentCourseExerciseThreads",
+	},
+];

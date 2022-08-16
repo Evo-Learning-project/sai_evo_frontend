@@ -23,8 +23,13 @@ import AggregatedExercise from "./AggregatedExercise.vue";
 import ClozeExercise from "./ClozeExercise.vue";
 import ProgrammingExercise from "./ProgrammingExercise.vue";
 import { exerciseProps } from "./shared";
+import { texMixin } from "@/mixins";
 export default defineComponent({
 	name: "Exercise",
+	mixins: [texMixin],
+	created() {
+		this.triggerTexRender();
+	},
 	emits: {
 		blur: null,
 		updateSubmission: (payload: [keyof EventParticipationSlotSubmission, any]) => {

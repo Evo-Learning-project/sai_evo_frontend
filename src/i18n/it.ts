@@ -66,8 +66,8 @@ export const it = {
 		review_submission: "Revisione risposte",
 		review_assessment: "Correzione risposte",
 		practice_summary: "Riepilogo esercitazione",
-		student_exercise_solution_threads: "Discussione esercizio",
-		exercise_solution_threads: "Discussioni esercizi",
+		student_exercise_solution_thread: "Discussione esercizio",
+		student_exercise_solution_threads: "Esercizi popolari",
 	},
 	event_participation_page: {
 		times_up: "Tempo scaduto",
@@ -274,6 +274,9 @@ export const it = {
 			"In questa pagina sono visulizzate le soluzioni agli esercizi proposte dagli studenti. Puoi rendere ufficiali quelle corrette e scartare quelle errate.",
 	},
 	exercise_solution: {
+		reveal_solutions_1: "Mostra",
+		reveal_solutions_2_singular: "soluzione proposta",
+		reveal_solutions_2_plural: "soluzioni proposte",
 		there_are_pending_solutions_1: "Ci sono",
 		there_are_pending_solutions_2: "esercizi con soluzioni da visionare.",
 		no_solutions_to_review: "Non ci sono soluzioni da visionare",

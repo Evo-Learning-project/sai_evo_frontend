@@ -6,7 +6,7 @@
 			class="mt-8"
 			:exercise="exercise"
 			:solutions="exerciseSolutions"
-			:showFirst="[solutionId]"
+			:showFirst="solutiondId ? [solutionId] : []"
 			:standalone="true"
 		></ExerciseSolutionContainer>
 	</div>

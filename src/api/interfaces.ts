@@ -7,6 +7,7 @@ export interface ExerciseSearchFilter {
 	exercise_types: ExerciseType[];
 	states: ExerciseState[];
 	with_submitted_solutions?: boolean;
+	by_popularity?: boolean;
 }
 
 export interface ExerciseSolutionSearchFilter {

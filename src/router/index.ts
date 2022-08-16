@@ -16,6 +16,7 @@ import ExamPreview from "../views/student/ExamPreview.vue";
 import ExerciseSolutionThread from "../views/student/ExerciseSolutionThread.vue";
 import EventParticipationsMonitor from "../views/teacher/EventParticipationsMonitor.vue";
 import CourseExerciseSolutionThreads from "../views/teacher/CourseExerciseSolutionThreads.vue";
+import StudentCourseExerciseThreads from "../views/student/CourseExerciseThreads.vue";
 import DetailExerciseSolutionThreads from "../views/teacher/DetailExerciseSolutionThreads.vue";
 import EventStats from "../views/teacher/EventStats.vue";
 import Login from "../views/Login.vue";
@@ -34,6 +35,7 @@ import {
 	examAssessmentBreadCrumbs,
 	examParticipationBreadCrumbs,
 	exerciseSolutionThreadBreadCrumbs,
+	exerciseThreadsBreadCrumbs,
 	practiceParticipationBreadCrumbs,
 	practiceReviewBreadCrumbs,
 	submissionReviewBreadCrumbs,
@@ -251,11 +253,20 @@ const routes: Array<RouteRecordRaw> = [
 				},
 			},
 			{
-				path: "courses/:courseId/threads/:exerciseId/:solutionId",
+				path: "courses/:courseId/threads",
+				name: "StudentCourseExerciseThreads",
+				component: StudentCourseExerciseThreads,
+				meta: {
+					routeTitle: _("headings.student_exercise_solution_threads"),
+					breadcrumbs: exerciseThreadsBreadCrumbs,
+				},
+			},
+			{
+				path: "courses/:courseId/threads/:exerciseId/:solutionId?",
 				name: "ExerciseSolutionThread",
 				component: ExerciseSolutionThread,
 				meta: {
-					routeTitle: _("headings.student_exercise_solution_threads"),
+					routeTitle: _("headings.student_exercise_solution_thread"),
 					breadcrumbs: exerciseSolutionThreadBreadCrumbs,
 				},
 			},
