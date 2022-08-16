@@ -112,14 +112,14 @@ export const studentDashboardSidebarOptions: SidebarOption[] = [
 		requiredPrivileges: [],
 		children: [],
 		icon: "leaderboard",
-		routeName: "",
+		routeName: "StudentCourseLeaderboard",
 	},
 	{
 		label: _("student_dashboard_options.my_favorites"),
 		requiredPrivileges: [],
 		children: [],
 		icon: "bookmark",
-		routeName: "",
+		routeName: "StudentFavorites",
 	},
 	{
 		label: _("sidebar_labels.course_dashboard_back_to_courses"),

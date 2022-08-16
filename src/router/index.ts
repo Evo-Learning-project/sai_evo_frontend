@@ -294,6 +294,26 @@ const routes: Array<RouteRecordRaw> = [
 							breadcrumbs: exerciseThreadsBreadCrumbs,
 						},
 					},
+					// TODO
+					{
+						path: "leaderboard",
+						name: "StudentCourseLeaderboard",
+						component: CourseDashBoardExerciseThreadList,
+						meta: {
+							routeTitle: _("headings.student_exercise_solution_threads"),
+							breadcrumbs: exerciseThreadsBreadCrumbs,
+						},
+					},
+					// TODO
+					{
+						path: "favorites",
+						name: "StudentFavorites",
+						component: CourseDashBoardExerciseThreadList,
+						meta: {
+							routeTitle: _("headings.student_exercise_solution_threads"),
+							breadcrumbs: exerciseThreadsBreadCrumbs,
+						},
+					},
 				],
 			},
 

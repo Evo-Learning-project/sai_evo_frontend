@@ -1,9 +1,9 @@
 <template>
 	<div class="mb-4">
 		<div class="w-full">
-			<div class="flex items-center mb-4">
+			<div class="flex items-center mb-4 -mt-12">
 				<Btn
-					v-if="!firstLoading && practiceParticipations.length > 3"
+					:class="{ 'opacity-0': firstLoading || practiceParticipations.length <= 3 }"
 					:variant="'icon'"
 					:outline="true"
 					class="ml-auto"
@@ -19,7 +19,7 @@
 					></Btn
 				>
 				<Btn
-					v-if="!firstLoading && practiceParticipations.length > 3"
+					:class="{ 'opacity-0': firstLoading || practiceParticipations.length <= 3 }"
 					:variant="'icon'"
 					:outline="true"
 					class=""
@@ -123,6 +123,7 @@
 			</div>
 			<div
 				class="
+					mt-4
 					w-full
 					grid grid-cols-1
 					gap-4

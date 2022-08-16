@@ -2,9 +2,15 @@
 	<div class="h-full">
 		<div></div>
 		<!-- main -->
-		<div class="flex h-full space-x-10">
+		<div class="flex h-full bg-red space-x-10">
 			<!-- sidebar -->
-			<section class="h-full relative bg-light lg:-ml-20 -mt-6 w-1/5">
+			<SidebarMenu
+				class="lg:-ml-20"
+				:width="'250px'"
+				:menu="sidebarOptions"
+				:relative="true"
+			/>
+			<!-- <section class="h-full relative bg-light lg:-ml-20 -mt-6 w-1/5">
 				<div class="sticky top-10 py-4 rounded pr-4">
 					<div class="h-full">
 						<ul class="flex flex-col w-full h-full mt-6">
@@ -69,10 +75,10 @@
 						</ul>
 					</div>
 				</div>
-			</section>
+			</section> -->
 			<!-- main -->
 			<section class="w-full">
-				<div class="mb-8">
+				<div class="mb-8 mt-4">
 					<h2 class="mb-0">{{ routeTitle }}</h2>
 					<BreadCrumbs :route="$route" />
 				</div>
@@ -91,6 +97,9 @@ import {
 	ROUTE_TITLE_EVENT_NAME_TOKEN,
 } from "@/navigation/const";
 import { courseIdMixin, eventIdMixin } from "@/mixins";
+import { SidebarMenu } from "vue-sidebar-menu";
+import "vue-sidebar-menu/dist/vue-sidebar-menu.css";
+import { internalSidebarOptionsToSidebarMenuOptions } from "@/navigation/utils";
 export default defineComponent({
 	name: "Main",
 	props: {},
@@ -110,15 +119,18 @@ export default defineComponent({
 	},
 	data() {
 		return {
-			sidebarOptions: studentDashboardSidebarOptions,
+			//sidebarOptions: studentDashboardSidebarOptions,
 		};
 	},
 	computed: {
 		routeTitle(): string {
 			return this.replaceTitleTokens(this.$route.meta.routeTitle as string);
 		},
+		sidebarOptions() {
+			return internalSidebarOptionsToSidebarMenuOptions(studentDashboardSidebarOptions);
+		},
 	},
-	components: { BreadCrumbs },
+	components: { BreadCrumbs, SidebarMenu },
 });
 </script>
 
