@@ -4,7 +4,11 @@ import MainTeacher from "../views/teacher/MainTeacher.vue";
 import MainStudent from "../views/student/MainStudent.vue";
 import CourseList from "../views/shared/CourseList.vue";
 import TeacherCourseDashboard from "../views/teacher/CourseDashboard.vue";
-import StudentCourseDashboard from "../views/student/CourseDashboard.vue";
+import StudentCourseDashboard from "../views/student/CourseDashboard/Main.vue";
+import CourseDashBoardExamList from "../views/student/CourseDashboard/ExamsList.vue";
+import CourseDashBoardPracticeSessionList from "../views/student/CourseDashboard/PracticeList.vue";
+//TODO import CourseDashBoardExerciseThreads from "../views/student/CourseDashboard/Main.vue";
+//import StudentCourseDashboard from "../views/student/CourseDashboard.vue";
 import CourseExercises from "../views/teacher/CourseExercises.vue";
 import CourseExams from "../views/teacher/CourseExams.vue";
 import CourseInsights from "../views/teacher/CourseInsights.vue";
@@ -243,6 +247,15 @@ const routes: Array<RouteRecordRaw> = [
 					breadcrumbs: courseListBreadCrumbs,
 				},
 			},
+			// {
+			// 	path: "courses/:courseId",
+			// 	name: "StudentCourseDashboard",
+			// 	component: StudentCourseDashboard,
+			// 	meta: {
+			// 		routeTitle: _("headings.course_title"),
+			// 		breadcrumbs: courseDashBoardBreadCrumbs,
+			// 	},
+			// },
 			{
 				path: "courses/:courseId",
 				name: "StudentCourseDashboard",
@@ -251,6 +264,26 @@ const routes: Array<RouteRecordRaw> = [
 					routeTitle: _("headings.course_title"),
 					breadcrumbs: courseDashBoardBreadCrumbs,
 				},
+				children: [
+					{
+						path: "courses/:courseId/exams",
+						name: "CourseDashBoardExamList",
+						component: CourseDashBoardExamList,
+						meta: {
+							routeTitle: _("headings.student_exercise_solution_threads"),
+							breadcrumbs: exerciseThreadsBreadCrumbs,
+						},
+					},
+					{
+						path: "courses/:courseId/practices",
+						name: "CourseDashBoardPracticeSessionList",
+						component: CourseDashBoardPracticeSessionList,
+						meta: {
+							routeTitle: _("headings.student_exercise_solution_threads"),
+							breadcrumbs: exerciseThreadsBreadCrumbs,
+						},
+					},
+				],
 			},
 			{
 				path: "courses/:courseId/threads",

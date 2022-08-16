@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<ExerciseSearchFilters
-			class="bg-light lg:-mx-20 md:-mx-8 md:px-8 lg:px-20 -mt-6 mb-8 py-4"
+			class="bg-light lg:-mx-20 md:-mx-8 md:px-8 lg:px-20 -mt-6 mb-8 pb-3 pt-6"
 			:allowFilterByState="false"
 			:allowFilterByType="false"
 			:full="false"

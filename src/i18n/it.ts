@@ -273,6 +273,13 @@ export const it = {
 		teacher_description:
 			"In questa pagina sono visulizzate le soluzioni agli esercizi proposte dagli studenti. Puoi rendere ufficiali quelle corrette e scartare quelle errate.",
 	},
+	student_dashboard_options: {
+		my_exams: "I miei esami",
+		my_practice_sessions: "Le mie esercitazioni",
+		popular_exercises: "Esercizi popolari",
+		leaderboard: "Classifica",
+		my_favorites: "Contenuti preferiti",
+	},
 	exercise_solution: {
 		reveal_solutions_1: "Mostra",
 		reveal_solutions_2_singular: "soluzione proposta",
