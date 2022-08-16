@@ -1,6 +1,9 @@
 <template>
 	<div class="flex flex-col flex-grow">
-		<nav class="relative py-0.5 z-50 md:px-2 lg:px-12 bg-primary">
+		<nav
+			class="shadow-elevation py-0.5 md:px-2 sticky top-0 lg:px-12 bg-primary"
+			style="z-index: 51"
+		>
 			<div class="px-4 mx-auto sm:px-6 lg:px-8">
 				<div class="flex items-center justify-between h-14">
 					<div class="flex items-center">
@@ -33,19 +36,22 @@
 			</div>
 		</nav>
 		<header
+			v-if="showSecondaryHeader"
 			class="
-				sticky
 				top-0
+				-mx-12
 				z-50
-				shadow
-				bg-primary-light bg-opacity-20 bg-fallback-firefox
+				shadow-none
+				bg-primary-light bg-opacity-0 bg-fallback-firefox
 				md:px-2
 				lg:px-12
 				backdrop-blur-sm backdrop-filter
 			"
 		>
-			<div class="flex w-full px-4 py-4 mx-auto md:items-center sm:px-6 lg:px-8">
-				<div class="flex flex-wrap md:items-center md:flex-row">
+			<div
+				class="flex bg-light w-full px-4 py-4 mx-auto md:items-center sm:px-18 lg:px-20"
+			>
+				<div class="md:items-center md:flex-row">
 					<h2 class="mb-0 text-lg md:mr-6 md:text-2xl">
 						{{ routeTitle }}
 					</h2>
@@ -149,6 +155,10 @@ export default defineComponent({
 		},
 		routeTitle(): string {
 			return this.replaceTitleTokens(this.$route.meta.routeTitle as string);
+		},
+		showSecondaryHeader(): boolean {
+			// hide header in routes that have a sidebar
+			return !this.$route.matched.map(m => m.name).includes("StudentCourseDashboard");
 		},
 	},
 	components: { ErrorView, SnackBar, BreadCrumbs, Btn, Dialog, NumberInput },

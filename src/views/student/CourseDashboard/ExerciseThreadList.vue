@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<ExerciseSearchFilters
-			class="bg-light lg:-mx-20 md:-mx-8 md:px-8 lg:px-20 -mt-6 mb-8 pb-3 pt-6"
+			class="bg-light px-8 mb-8 pb-3 pt-6"
 			:allowFilterByState="false"
 			:allowFilterByType="false"
 			:full="false"
@@ -93,7 +93,7 @@ import { getBlankExerciseSearchFilters } from "@/api/utils";
 import ExerciseSearchFilters from "@/components/teacher/ExerciseSearchFilters.vue";
 import Btn from "@/components/ui/Btn.vue";
 export default defineComponent({
-	name: "CourseExerciseThreads",
+	name: "ExerciseThreadList",
 	mixins: [courseIdMixin, loadingMixin],
 	props: {},
 	async created() {

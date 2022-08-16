@@ -1,7 +1,7 @@
 <template>
 	<div class="flex items-center max-w-xs overflow-x-auto text-xs md:max-w-max text-muted">
-		<span class="text-base material-icons-outlined"> home </span>
-		<span class="text-base material-icons-outlined opacity-60">navigate_next</span>
+		<!-- <span class="text-base material-icons-outlined"> home </span> -->
+		<!-- <span class="text-base material-icons-outlined opacity-60">navigate_next</span> -->
 		<div
 			v-for="(breadcrumb, index) in breadcrumbs"
 			:key="'breadcrumb-' + index"
@@ -21,11 +21,12 @@
 			>
 				<span class="">{{ breadcrumb.title }} </span>
 			</router-link>
-			<span
+			<!-- <span
 				v-if="index !== breadcrumbs.length - 1"
 				class="text-base material-icons-outlined opacity-60"
 				>navigate_next</span
-			>
+			> -->
+			<span v-if="index !== breadcrumbs.length - 1" class="mx-2 opacity-60">/</span>
 		</div>
 	</div>
 </template>

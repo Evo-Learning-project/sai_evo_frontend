@@ -2,9 +2,6 @@
 	<div class="mb-4">
 		<div class="w-full">
 			<div class="flex items-center mb-4">
-				<h2 class="mb-0">
-					{{ $t("student_course_dashboard.your_practice_events") }}
-				</h2>
 				<Btn
 					v-if="!firstLoading && practiceParticipations.length > 3"
 					:variant="'icon'"
@@ -229,6 +226,7 @@ export default defineComponent({
 				includeExerciseCount: true,
 			});
 			await this.getCourse({ courseId: this.courseId });
+			// TODO filter to get practice
 			await this.getPracticeEventParticipations({ courseId: this.courseId });
 		});
 	},

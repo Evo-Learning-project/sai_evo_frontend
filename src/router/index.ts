@@ -7,7 +7,7 @@ import TeacherCourseDashboard from "../views/teacher/CourseDashboard.vue";
 import StudentCourseDashboard from "../views/student/CourseDashboard/Main.vue";
 import CourseDashBoardExamList from "../views/student/CourseDashboard/ExamsList.vue";
 import CourseDashBoardPracticeSessionList from "../views/student/CourseDashboard/PracticeList.vue";
-//TODO import CourseDashBoardExerciseThreads from "../views/student/CourseDashboard/Main.vue";
+import CourseDashBoardExerciseThreadList from "../views/student/CourseDashboard/ExerciseThreadList.vue";
 //import StudentCourseDashboard from "../views/student/CourseDashboard.vue";
 import CourseExercises from "../views/teacher/CourseExercises.vue";
 import CourseExams from "../views/teacher/CourseExams.vue";
@@ -20,7 +20,6 @@ import ExamPreview from "../views/student/ExamPreview.vue";
 import ExerciseSolutionThread from "../views/student/ExerciseSolutionThread.vue";
 import EventParticipationsMonitor from "../views/teacher/EventParticipationsMonitor.vue";
 import CourseExerciseSolutionThreads from "../views/teacher/CourseExerciseSolutionThreads.vue";
-import StudentCourseExerciseThreads from "../views/student/CourseExerciseThreads.vue";
 import DetailExerciseSolutionThreads from "../views/teacher/DetailExerciseSolutionThreads.vue";
 import EventStats from "../views/teacher/EventStats.vue";
 import Login from "../views/Login.vue";
@@ -38,10 +37,12 @@ import {
 	courseListBreadCrumbs,
 	examAssessmentBreadCrumbs,
 	examParticipationBreadCrumbs,
+	examsListBreadCrumbs,
 	exerciseSolutionThreadBreadCrumbs,
 	exerciseThreadsBreadCrumbs,
 	practiceParticipationBreadCrumbs,
 	practiceReviewBreadCrumbs,
+	practicesListBreadCrumbs,
 	submissionReviewBreadCrumbs,
 } from "@/navigation/breadcrumbs";
 import { getCourse } from "@/api/courses";
@@ -244,7 +245,7 @@ const routes: Array<RouteRecordRaw> = [
 				component: CourseList,
 				meta: {
 					routeTitle: _("headings.course_list"),
-					breadcrumbs: courseListBreadCrumbs,
+					hideBreadcrumbs: true,
 				},
 			},
 			// {
@@ -264,20 +265,30 @@ const routes: Array<RouteRecordRaw> = [
 					routeTitle: _("headings.course_title"),
 					breadcrumbs: courseDashBoardBreadCrumbs,
 				},
+				redirect: { name: "CourseDashBoardPracticeSessionList" },
 				children: [
 					{
-						path: "courses/:courseId/exams",
+						path: "exams",
 						name: "CourseDashBoardExamList",
 						component: CourseDashBoardExamList,
 						meta: {
-							routeTitle: _("headings.student_exercise_solution_threads"),
-							breadcrumbs: exerciseThreadsBreadCrumbs,
+							routeTitle: _("student_course_dashboard.exams_you_participated_in"),
+							breadcrumbs: examsListBreadCrumbs,
 						},
 					},
 					{
-						path: "courses/:courseId/practices",
+						path: "practices",
 						name: "CourseDashBoardPracticeSessionList",
 						component: CourseDashBoardPracticeSessionList,
+						meta: {
+							routeTitle: _("student_course_dashboard.your_practice_events"),
+							breadcrumbs: practicesListBreadCrumbs,
+						},
+					},
+					{
+						path: "threads",
+						name: "CourseDashBoardExerciseThreadList",
+						component: CourseDashBoardExerciseThreadList,
 						meta: {
 							routeTitle: _("headings.student_exercise_solution_threads"),
 							breadcrumbs: exerciseThreadsBreadCrumbs,
@@ -285,15 +296,7 @@ const routes: Array<RouteRecordRaw> = [
 					},
 				],
 			},
-			{
-				path: "courses/:courseId/threads",
-				name: "StudentCourseExerciseThreads",
-				component: StudentCourseExerciseThreads,
-				meta: {
-					routeTitle: _("headings.student_exercise_solution_threads"),
-					breadcrumbs: exerciseThreadsBreadCrumbs,
-				},
-			},
+
 			{
 				path: "courses/:courseId/threads/:exerciseId/:solutionId?",
 				name: "ExerciseSolutionThread",
