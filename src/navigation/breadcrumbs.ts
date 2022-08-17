@@ -3,18 +3,21 @@ import { getTranslatedString as _ } from "@/i18n";
 export interface BreadCrumb {
 	title: string;
 	routeName?: string;
-	routeParams?: string[];
+	routeParams?: Record<string, PropertyKey>;
 }
 
 const courseListBreadCrumb: BreadCrumb = {
 	title: _("breadcrumbs.course_list"),
 	routeName: "StudentCourseList",
+	routeParams: {
+		courseId: -1, // !
+	},
 };
 
 const courseDashBoardBreadCrumb: BreadCrumb = {
 	title: _("breadcrumbs.course_dashboard"),
 	routeName: "StudentCourseDashboard",
-	routeParams: ["courseId"],
+	// routeParams: ["courseId"],
 };
 
 export const courseListBreadCrumbs: BreadCrumb[] = [courseListBreadCrumb];

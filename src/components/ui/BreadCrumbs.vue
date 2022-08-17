@@ -16,6 +16,7 @@
 				v-else
 				:to="{
 					name: breadcrumb.routeName,
+					params: breadcrumb.routeParams ?? {},
 				}"
 				class="link breadcrumb-item"
 			>
