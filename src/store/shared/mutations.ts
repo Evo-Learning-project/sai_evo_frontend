@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import { ErrorMessage } from "@/interfaces";
-import { Course, Tag, User } from "@/models";
+import { Course, ExerciseSolution, Tag, User } from "@/models";
 import axios from "axios";
 import { SharedState } from "../types";
 
@@ -73,6 +73,25 @@ export const mutations = {
 		state.errorNotificationData = data;
 		if (data) {
 			setTimeout(() => (state.errorNotificationData = null), hideTimeout);
+		}
+	},
+	setExerciseSolution: (
+		state: SharedState,
+		{ exerciseId, payload }: { exerciseId: string; payload: ExerciseSolution },
+	) => {
+		const solutions = state.paginatedSolutionsByExerciseId[exerciseId]?.data;
+		if (!solutions) {
+			throw new Error(
+				"setExerciseSolution: exercise with id " +
+					exerciseId +
+					" doesn't have a solutions data object",
+			);
+		}
+		const target = solutions.find(s => s.id == payload.id);
+		if (target) {
+			Object.assign(target, payload);
+		} else {
+			solutions.push(payload);
 		}
 	},
 };

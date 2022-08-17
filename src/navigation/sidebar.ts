@@ -65,6 +65,7 @@ export const courseDashboardSidebarOptions: SidebarOption[] = [
 		label: _("sidebar_labels.exercise_solution_threads"),
 		icon: "forum",
 		routeName: "TeacherCourseExerciseSolutionThreads",
+		children: ["TeacherDetailExerciseSolutionThreads"],
 		requiredPrivileges: [
 			CoursePrivilege.ACCESS_EXERCISES,
 			CoursePrivilege.MANAGE_EXERCISES,
@@ -80,6 +81,50 @@ export const courseDashboardSidebarOptions: SidebarOption[] = [
 		label: _("sidebar_labels.course_dashboard_back_to_courses"),
 		icon: "chevron_left",
 		routeName: "TeacherCourseList",
+		requiredPrivileges: [],
+	},
+];
+
+export const studentDashboardSidebarOptions: SidebarOption[] = [
+	{
+		label: _("student_dashboard_options.my_practice_sessions"),
+		requiredPrivileges: [],
+		children: [],
+		icon: "fitness_center",
+		routeName: "CourseDashBoardPracticeSessionList",
+	},
+	{
+		label: _("student_dashboard_options.my_exams"),
+		requiredPrivileges: [],
+		children: [],
+		icon: "assignment",
+		routeName: "CourseDashBoardExamList",
+	},
+	{
+		label: _("student_dashboard_options.popular_exercises"),
+		requiredPrivileges: [],
+		children: [],
+		icon: "topic",
+		routeName: "CourseDashBoardExerciseThreadList",
+	},
+	{
+		label: _("student_dashboard_options.leaderboard"),
+		requiredPrivileges: [],
+		children: [],
+		icon: "leaderboard",
+		routeName: "StudentCourseLeaderboard",
+	},
+	{
+		label: _("student_dashboard_options.my_favorites"),
+		requiredPrivileges: [],
+		children: [],
+		icon: "bookmark",
+		routeName: "StudentFavorites",
+	},
+	{
+		label: _("sidebar_labels.course_dashboard_back_to_courses"),
+		icon: "chevron_left",
+		routeName: "StudentCourseList",
 		requiredPrivileges: [],
 	},
 ];

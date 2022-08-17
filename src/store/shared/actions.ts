@@ -9,7 +9,9 @@ import {
 	getExerciseChoices,
 	updateExerciseSolution,
 	createExerciseSolution,
+	getExerciseSolutionsByExercise,
 } from "@/api/exercises";
+import { ExerciseSolutionSearchFilter } from "@/api/interfaces";
 import { getMe, updateUser } from "@/api/users";
 import {
 	Exercise,
@@ -22,6 +24,7 @@ import {
 
 import axios from "axios";
 import { Commit } from "vuex";
+import { SharedState } from "../types";
 
 export const actions = {
 	// converts a token issued by Google to a token usable to authenticate requests to the backend
@@ -83,6 +86,44 @@ export const actions = {
 	) => {
 		const tags = await getTags(courseId, includeExerciseCount);
 		commit("setTags", tags);
+	},
+	getSolutionsByExercise: async (
+		{ state }: { state: SharedState },
+		{
+			courseId,
+			exerciseId,
+			fromFirstPage = true,
+			filter = null,
+		}: {
+			courseId: string;
+			exerciseId: string;
+			fromFirstPage: boolean;
+			filter: ExerciseSolutionSearchFilter | null;
+		},
+	) => {
+		const paginatedSolutionsForExercise =
+			state.paginatedSolutionsByExerciseId[exerciseId];
+		const paginatedSolutions = await getExerciseSolutionsByExercise(
+			courseId,
+			exerciseId,
+			fromFirstPage ? 1 : (paginatedSolutionsForExercise?.pageNumber ?? 0) + 1, // TODO refactor
+			filter,
+		);
+
+		if (fromFirstPage) {
+			state.paginatedSolutionsByExerciseId[exerciseId] = paginatedSolutions;
+		} else {
+			// TODO make function to update PaginatedData
+			state.paginatedSolutionsByExerciseId[exerciseId] = {
+				...state.paginatedSolutionsByExerciseId[exerciseId],
+				data: [
+					...state.paginatedSolutionsByExerciseId[exerciseId].data,
+					...paginatedSolutionsForExercise.data,
+				],
+			};
+		}
+
+		return !state.paginatedSolutionsByExerciseId[exerciseId].isLastPage;
 	},
 	// createExerciseSolution: async  (
 	//   // eslint-disable-next-line @typescript-eslint/no-unused-vars

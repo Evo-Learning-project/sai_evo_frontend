@@ -2,7 +2,6 @@ import { EventSearchFilter } from "./../../api/interfaces";
 /* eslint-disable no-unexpected-multiline */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import axios from "axios";
 import {
 	exerciseChildName,
 	exerciseChildrenNames,
@@ -11,18 +10,15 @@ import {
 	Event,
 	EventParticipation,
 	EventParticipationSlot,
-	EventTemplate,
 	EventTemplateRule,
 	EventTemplateRuleClause,
-	EventType,
 	Exercise,
 	ExerciseChoice,
 	ExerciseTestCase,
 	Tag,
-	User,
 	ExerciseSolution,
 } from "@/models";
-import { createCourse, getCourses, getTags, updateCourse } from "@/api/courses";
+import { createCourse, updateCourse } from "@/api/courses";
 
 import { Commit } from "vuex";
 
@@ -39,13 +35,10 @@ import {
 	deleteExerciseSolution,
 	deleteExerciseSubExercise,
 	deleteExerciseTestCase,
-	getExerciseChoices,
 	getExercises,
+	getExercisesById,
 	removeTagFromExercise,
 	updateExercise,
-	updateExerciseChoice,
-	updateExerciseSubExercise,
-	updateExerciseTestCase,
 } from "@/api/exercises";
 
 import {
@@ -66,7 +59,6 @@ import {
 	partialUpdateEventParticipationSlot,
 	partialUpdateEventTemplateRule,
 	updateEvent,
-	updateEventTemplateRule,
 	updateEventTemplateRuleClause,
 } from "@/api/events";
 import { ExerciseSearchFilter } from "@/api/interfaces";
@@ -75,6 +67,7 @@ import {
 	getUsers,
 	updateUserCoursePrivileges,
 } from "@/api/users";
+import { TeacherState } from "../types";
 
 export const actions = {
 	createCourse: async ({ commit }: { commit: Commit }, course: Course) => {
@@ -87,27 +80,36 @@ export const actions = {
 		return updatedCourse;
 	},
 	createExercise: async (
-		{ commit, state }: { commit: Commit; state: any },
+		{ commit, state }: { commit: Commit; state: TeacherState },
 		{ courseId, exercise }: { courseId: string; exercise: Exercise },
 	) => {
 		const newExercise = await createExercise(courseId, exercise);
-		commit("setExercises", [newExercise, ...state.exercises]);
+		state.paginatedExercises = {
+			...state.paginatedExercises,
+			data: [newExercise, ...state.paginatedExercises.data],
+		};
 		return newExercise;
 	},
 	bulkCreateExercises: async (
-		{ commit, state }: { commit: Commit; state: any },
+		{ commit, state }: { commit: Commit; state: TeacherState },
 		{ courseId, exercises }: { courseId: string; exercises: Exercise[] },
 	) => {
 		const newExercises = await bulkCreateExercises(courseId, exercises);
-		commit("setExercises", [...newExercises, ...state.exercises]);
+		state.paginatedExercises = {
+			...state.paginatedExercises,
+			data: [...state.paginatedExercises.data, ...newExercises],
+		};
 		return newExercises;
 	},
 	deleteExercise: async (
-		{ commit, state }: { commit: Commit; state: any },
+		{ commit, state }: { commit: Commit; state: TeacherState },
 		{ courseId, exerciseId }: { courseId: string; exerciseId: string },
 	) => {
 		await deleteExercise(courseId, exerciseId);
-		commit("deleteBaseExercise", exerciseId);
+		state.paginatedExercises = {
+			...state.paginatedExercises,
+			data: state.paginatedExercises.data.filter(e => e.id != exerciseId),
+		};
 	},
 	createEvent: async (
 		{ commit, state }: { commit: Commit; state: any },
@@ -189,42 +191,6 @@ export const actions = {
 			commit("setEvent", { eventId, payload: event });
 		}
 	},
-	// updateExerciseChild: async (
-	//   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-	//   { commit }: { commit: Commit },
-	//   {
-	//     courseId,
-	//     exerciseId,
-	//     childType,
-	//     payload,
-	//     reFetch = false,
-	//   }: {
-	//     courseId: string;
-	//     exerciseId: string;
-	//     childType: "testcase" | "sub_exercise" | "choice";
-	//     payload: ExerciseChoice | Exercise | ExerciseTestCase;
-	//     reFetch: boolean;
-	//   }
-	// ) => {
-	//   const apiCall = {
-	//     choice: updateExerciseChoice,
-	//     testcase: updateExerciseTestCase,
-	//     sub_exercise: updateExerciseSubExercise,
-	//   }[childType];
-	//   const childrenName = exerciseChildrenNames[childType];
-
-	//   await apiCall(courseId, exerciseId, payload.id as string, payload as any);
-	//   if (reFetch) {
-	//     if (childType !== "choice") return;
-	//     // TODO fix!!
-	//     const choices = await getExerciseChoices(courseId, exerciseId);
-	//     commit("setExerciseChildren", {
-	//       exerciseId,
-	//       children: "choices",
-	//       payload: choices,
-	//     });
-	//   }
-	// },
 	deleteExerciseChild: async (
 		{ commit }: { commit: Commit },
 		{
@@ -521,8 +487,35 @@ export const actions = {
 
 		// Object.assign(target, newClause);
 	},
+	getExercisesById: async (
+		{ state }: { state: TeacherState },
+		{
+			courseId,
+			exerciseIds,
+			replace = true,
+		}: {
+			courseId: string;
+			exerciseIds: string[];
+			replace: boolean;
+		},
+	) => {
+		const exercises = await getExercisesById(courseId, exerciseIds);
+		if (replace) {
+			state.paginatedExercises = {
+				data: exercises,
+				isLastPage: true,
+				count: exercises.length,
+				pageNumber: 1,
+			};
+		} else {
+			state.paginatedExercises = {
+				...state.paginatedExercises,
+				data: [...exercises, ...state.paginatedExercises.data],
+			};
+		}
+	},
 	getExercises: async (
-		{ commit, state }: { commit: Commit; state: any },
+		{ state }: { state: TeacherState },
 		{
 			courseId,
 			fromFirstPage = true,
@@ -533,34 +526,53 @@ export const actions = {
 			filters: ExerciseSearchFilter | null;
 		},
 	) => {
-		if (fromFirstPage) {
-			commit("setCurrentExercisePage", 1);
-		}
-		const { exercises, moreResults } = await getExercises(
+		const paginatedExercises = await getExercises(
 			courseId,
-			state.currentExercisePage,
+			fromFirstPage ? 1 : (state.paginatedExercises.pageNumber ?? 0) + 1, // TODO refactor
 			filters,
 		);
-		commit(
-			"setExercises",
-			fromFirstPage ? exercises : [...state.exercises, ...exercises],
-		);
-		//commit('setActiveCourseId', courseId);
-		if (exercises.length > 0) {
-			commit("setCurrentExercisePage", state.currentExercisePage + 1);
+
+		if (fromFirstPage) {
+			state.paginatedExercises = paginatedExercises;
+		} else {
+			state.paginatedExercises = {
+				...paginatedExercises,
+				data: [...state.paginatedExercises.data, ...paginatedExercises.data],
+			};
 		}
 
-		return moreResults;
+		return !state.paginatedExercises.isLastPage;
 	},
-	// getTags: async (
-	//   { commit }: { commit: Commit },
-	//   courseId: string
-	// ) => {
-	//   const tags = await getTags(courseId);
-	//   commit('setTags', tags);
-	// },
+	/*getExerciseSolutionThreads: async (
+		{ commit, state }: { commit: Commit; state: TeacherState },
+		{
+			courseId,
+			fromFirstPage,
+		}: {
+			courseId: string;
+			fromFirstPage: boolean;
+		},
+	) => {
+		const paginatedExercises = await getSubmittedExerciseSolutionThreads(
+			courseId,
+			fromFirstPage ? 1 : (state.paginatedExercises.pageNumber ?? 0) + 1, // TODO refactor
+		);
+
+		console.log("exer", paginatedExercises);
+
+		if (fromFirstPage) {
+			state.paginatedExercises = paginatedExercises;
+		} else {
+			state.paginatedExercises = {
+				...paginatedExercises,
+				data: [...state.paginatedExercises.data, ...paginatedExercises.data],
+			};
+		}
+
+		return !state.paginatedExercises.isLastPage;
+	},*/
 	addExerciseTag: async (
-		{ commit, state }: { commit: Commit; state: any },
+		{ commit, state }: { commit: Commit; state: TeacherState },
 		{
 			courseId,
 			exerciseId,
@@ -574,14 +586,15 @@ export const actions = {
 		},
 	) => {
 		await addTagToExercise(courseId, exerciseId, tag, isPublic);
-		const target = state.exercises.find((e: Exercise) => e.id === exerciseId) as Exercise;
-
+		const target = state.paginatedExercises.data.find(
+			(e: Exercise) => e.id === exerciseId,
+		) as Exercise;
 		target[isPublic ? "public_tags" : "private_tags"]?.push({
 			name: tag,
 		} as Tag);
 	},
 	removeExerciseTag: async (
-		{ commit, state }: { commit: Commit; state: any },
+		{ commit, state }: { commit: Commit; state: TeacherState },
 		{
 			courseId,
 			exerciseId,
@@ -595,7 +608,9 @@ export const actions = {
 		},
 	) => {
 		await removeTagFromExercise(courseId, exerciseId, tag, isPublic);
-		const target = state.exercises.find((e: Exercise) => e.id === exerciseId) as Exercise;
+		const target = state.paginatedExercises.data.find(
+			(e: Exercise) => e.id === exerciseId,
+		) as Exercise;
 		target[isPublic ? "public_tags" : "private_tags"] = target[
 			isPublic ? "public_tags" : "private_tags"
 		]?.filter(t => t.name != tag);

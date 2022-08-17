@@ -19,10 +19,7 @@
 			@updateState="onSolutionStateUpdate(solution, $event)"
 			@editSolution="onEditSolution(solution)"
 		/>
-		<div
-			class="flex items-center space-x-4"
-			v-if="(exercise.solutions ?? []).length === 0"
-		>
+		<div class="flex items-center space-x-4" v-if="solutions.length === 0">
 			<p class="text-muted">
 				{{ $t("exercise_solution.no_solutions_call_to_action") }}
 			</p>
@@ -51,7 +48,7 @@
 			>
 			<Btn
 				@click="onAddSolution()"
-				v-if="(exercise.solutions ?? []).length > 0 && allowAddSolution"
+				v-if="solutions.length > 0 && allowAddSolution"
 				:variant="'primary'"
 				class="mt-4 mr-auto"
 				:size="'sm'"
@@ -109,6 +106,10 @@ export default defineComponent({
 			type: Object as PropType<IExercise>,
 			required: true,
 		},
+		solutions: {
+			type: Array as PropType<IExerciseSolution[]>,
+			required: true,
+		},
 		showFirst: {
 			type: Array as PropType<string[]>,
 			required: false,
@@ -128,6 +129,10 @@ export default defineComponent({
 		allowAddSolution: {
 			type: Boolean,
 			default: true,
+		},
+		forceShowAll: {
+			type: Boolean,
+			default: false,
 		},
 	},
 	mixins: [courseIdMixin, savingMixin],
@@ -187,31 +192,33 @@ export default defineComponent({
 				},
 			);
 		},
-		instantiateAutoSaveManager(solution?: IExerciseSolution) {
+		instantiateAutoSaveManager(forSolution?: IExerciseSolution) {
+			const solution = forSolution ?? (this.editingSolution as IExerciseSolution);
 			this.autoSaveManager = new AutoSaveManager<IExerciseSolution>(
-				solution ?? (this.editingSolution as IExerciseSolution),
+				solution,
 				async changes => {
-					if (changes.state === ExerciseSolutionState.SUBMITTED) {
+					if ("state" in changes) {
 						this.publishing = true;
 					}
 					await this.updateExerciseChild({
 						childType: "solution",
 						courseId: this.courseId,
 						exerciseId: this.exercise.id,
-						payload: { ...(solution ?? this.editingSolution), ...changes },
+						payload: { ...solution, ...changes },
 						reFetch: false,
 					});
-					if (changes.state === ExerciseSolutionState.SUBMITTED) {
+					if ("state" in changes) {
 						this.onDraftSolutionSubmitted();
 					}
 				},
 				changes => {
 					this.saving = true;
 					this.savingError = false;
+					console.log("manager");
 					this.setExerciseSolution({
 						exerciseId: this.exercise.id,
 						payload: {
-							...this.editingSolution,
+							...solution,
 							...changes,
 						},
 					});
@@ -297,7 +304,6 @@ export default defineComponent({
 			creatingSolution: false,
 			publishing: false,
 			editingSolutionId: null as string | null,
-			solutionBeingEdited: null as IExerciseSolution | null,
 			autoSaveManager: null as AutoSaveManager<IExerciseSolution> | null,
 			showAll: false,
 			editingSolutionDeepCopy: null as IExerciseSolution | null,
@@ -322,25 +328,21 @@ export default defineComponent({
 					(this.showFirst ?? []).map(s => String(s)).includes(String(a.id)) ? -1 : 0,
 				);
 			}
-			return ret.filter((_, i) => this.showAll || i < SHOW_INITIALLY_COUNT);
+			return ret.filter(
+				(_, i) => this.showAll || this.forceShowAll || i < SHOW_INITIALLY_COUNT,
+			);
 		},
 		draftSolutions(): IExerciseSolution[] {
-			return (this.exercise.solutions ?? []).filter(
-				s => s.state === ExerciseSolutionState.DRAFT,
-			);
+			return this.solutions.filter(s => s.state === ExerciseSolutionState.DRAFT);
 		},
 		nonDraftSolutions(): IExerciseSolution[] {
-			return (this.exercise.solutions ?? []).filter(
-				s => s.state !== ExerciseSolutionState.DRAFT,
-			);
+			return (this.solutions ?? []).filter(s => s.state !== ExerciseSolutionState.DRAFT);
 		},
 		editingSolution(): IExerciseSolution | null {
 			if (this.editingSolutionId === null) {
 				return null;
 			}
-			return (
-				(this.exercise.solutions ?? []).find(s => s.id == this.editingSolutionId) ?? null
-			);
+			return (this.solutions ?? []).find(s => s.id == this.editingSolutionId) ?? null;
 		},
 	},
 	components: { Btn, ExerciseSolution, ExerciseSolutionEditor, Exercise },

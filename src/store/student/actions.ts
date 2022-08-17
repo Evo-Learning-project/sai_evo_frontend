@@ -32,10 +32,11 @@ import {
 	updateEventTemplateRule,
 	updateEventTemplateRuleClause,
 } from "@/api/events";
-import { StudentState } from "../types";
+import { SharedState, StudentState } from "../types";
 import {
 	createExerciseSolution,
 	createExerciseSolutionComment,
+	deleteExerciseSolution,
 	getExercisesById,
 	setExerciseSolutionBookmark,
 	voteExerciseSolution,
@@ -295,8 +296,9 @@ export const actions = {
 		);
 		return updatedClause;
 	},
+	// ! TODO check if necessary
 	addExerciseSolution: async (
-		{ getters }: { getters: any },
+		{ getters, rootState }: { getters: any; rootState: { shared: SharedState } },
 		{
 			courseId,
 			exerciseId,
@@ -308,24 +310,41 @@ export const actions = {
 		},
 	) => {
 		const newSolution = await createExerciseSolution(courseId, exerciseId, solution);
-		const exercise: Exercise | undefined = getters.exercises.find(
-			(e: Exercise) => e.id == exerciseId,
-		);
+		const exerciseSolutions =
+			rootState.shared.paginatedSolutionsByExerciseId[exerciseId]?.data;
 
-		if (!exercise) {
-			throw new Error("addExerciseSolution couldn't find exercise with id " + exerciseId);
-		}
-		if (!exercise.solutions) {
+		if (!exerciseSolutions) {
 			throw new Error(
-				"addExerciseSolution couldn't find field solutions for exercise " +
-					JSON.stringify(exercise),
+				"addExerciseSolution couldn't find field solutions for exercise " + exerciseId,
 			);
 		}
-		exercise.solutions.push(newSolution);
+		exerciseSolutions.push(newSolution);
 		return newSolution;
 	},
+	deleteExerciseSolution: async (
+		{ getters, rootState }: { getters: any; rootState: { shared: SharedState } },
+		{
+			courseId,
+			exerciseId,
+			solutionId,
+		}: {
+			courseId: string;
+			exerciseId: string;
+			solutionId: string;
+		},
+	) => {
+		await deleteExerciseSolution(courseId, exerciseId, solutionId);
+		const exerciseSolutions = rootState.shared.paginatedSolutionsByExerciseId[exerciseId];
+
+		if (!exerciseSolutions) {
+			throw new Error(
+				"addExerciseSolution couldn't find field solutions for exercise " + exerciseId,
+			);
+		}
+		exerciseSolutions.data = exerciseSolutions.data.filter(s => s.id != solutionId);
+	},
 	addExerciseSolutionComment: async (
-		{ getters }: { getters: any },
+		{ rootGetters }: { rootGetters: any },
 		{
 			courseId,
 			exerciseId,
@@ -344,19 +363,10 @@ export const actions = {
 			solutionId,
 			comment,
 		);
-		const exercise: Exercise | undefined = getters.exercises.find(
-			(e: Exercise) => e.id == exerciseId,
-		);
 
-		if (!exercise) {
-			throw new Error(
-				"addExerciseSolutionComment couldn't find exercise with id " + exerciseId,
-			);
-		}
-
-		const solution: ExerciseSolution | undefined = exercise.solutions?.find(
-			(s: ExerciseSolution) => s.id == solutionId,
-		);
+		const solution: ExerciseSolution | undefined = (
+			rootGetters["shared/exerciseSolutions"] as ExerciseSolution[]
+		).find((s: ExerciseSolution) => s.id == solutionId);
 
 		if (!solution) {
 			throw new Error(
@@ -369,7 +379,7 @@ export const actions = {
 	 * Creates an ExerciseSolutionVote and re-fetches the voted solution
 	 */
 	addExerciseSolutionVote: async (
-		{ getters }: { getters: any },
+		{ rootGetters }: { rootGetters: any },
 		{
 			courseId,
 			exerciseId,
@@ -388,19 +398,10 @@ export const actions = {
 			solutionId,
 			vote,
 		);
-		const exercise: Exercise | undefined = getters.exercises.find(
-			(e: Exercise) => e.id == exerciseId,
-		);
 
-		if (!exercise) {
-			throw new Error(
-				"addExerciseSolutionComment couldn't find exercise with id " + exerciseId,
-			);
-		}
-
-		const solution: ExerciseSolution | undefined = exercise.solutions?.find(
-			(s: ExerciseSolution) => s.id == solutionId,
-		);
+		const solution: ExerciseSolution | undefined = (
+			rootGetters["shared/exerciseSolutions"] as ExerciseSolution[]
+		).find((s: ExerciseSolution) => s.id == solutionId);
 
 		if (!solution) {
 			throw new Error(
@@ -414,7 +415,7 @@ export const actions = {
 	 * the user  and re-fetches the solution
 	 */
 	setExerciseSolutionBookmark: async (
-		{ getters }: { getters: any },
+		{ rootGetters }: { rootGetters: any },
 		{
 			courseId,
 			exerciseId,
@@ -433,25 +434,17 @@ export const actions = {
 			solutionId,
 			bookmarked,
 		);
-		const exercise: Exercise | undefined = getters.exercises.find(
-			(e: Exercise) => e.id == exerciseId,
-		);
 
-		if (!exercise) {
-			throw new Error(
-				"setExerciseSolutionBookmark couldn't find exercise with id " + exerciseId,
-			);
-		}
-
-		const solution: ExerciseSolution | undefined = exercise.solutions?.find(
-			(s: ExerciseSolution) => s.id == solutionId,
-		);
+		const solution: ExerciseSolution | undefined = (
+			rootGetters["shared/exerciseSolutions"] as ExerciseSolution[]
+		).find((s: ExerciseSolution) => s.id == solutionId);
 
 		if (!solution) {
 			throw new Error(
 				"setExerciseSolutionBookmark couldn't find solution with id " + solutionId,
 			);
 		}
+
 		Object.assign(solution, updatedSolution);
 	},
 	getExercises: async (

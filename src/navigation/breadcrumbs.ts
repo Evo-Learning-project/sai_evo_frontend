@@ -24,6 +24,22 @@ export const courseDashBoardBreadCrumbs: BreadCrumb[] = [
 	courseDashBoardBreadCrumb,
 ];
 
+export const examsListBreadCrumbs: BreadCrumb[] = [
+	courseListBreadCrumb,
+	courseDashBoardBreadCrumb,
+	{
+		title: _("student_dashboard_options.my_exams"),
+	},
+];
+
+export const practicesListBreadCrumbs: BreadCrumb[] = [
+	courseListBreadCrumb,
+	courseDashBoardBreadCrumb,
+	{
+		title: _("student_dashboard_options.my_practice_sessions"),
+	},
+];
+
 export const examParticipationBreadCrumbs: BreadCrumb[] = [
 	courseListBreadCrumb,
 	courseDashBoardBreadCrumb,
@@ -74,5 +90,14 @@ export const exerciseSolutionThreadBreadCrumbs: BreadCrumb[] = [
 	{
 		title: _("breadcrumbs.exercise_solution_thread"),
 		routeName: "ExerciseSolutionThread",
+	},
+];
+
+export const exerciseThreadsBreadCrumbs: BreadCrumb[] = [
+	courseListBreadCrumb,
+	courseDashBoardBreadCrumb,
+	{
+		title: _("breadcrumbs.exercise_solution_thread"),
+		routeName: "CourseDashBoardExerciseThreadList",
 	},
 ];

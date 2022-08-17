@@ -1,7 +1,24 @@
 <template>
 	<div>
 		<div class="relative flex w-full rounded-sm card-border">
-			<div class="flex flex-col w-full">
+			<div
+				v-if="showTeacherControls && solution.state === ExerciseSolutionState.REJECTED"
+				class="flex absolute h-full w-full bg-opacity-0 bg-dark z-10"
+			>
+				<div class="m-auto flex flex-col items-center space-y-2">
+					<h5>{{ $t("exercise_solution.you_rejected_this_solution") }}</h5>
+					<Btn @click="onUpdateState(ExerciseSolutionState.SUBMITTED)">{{
+						$t("misc.undo")
+					}}</Btn>
+				</div>
+			</div>
+			<div
+				class="flex flex-col w-full"
+				:class="{
+					'opacity-50 hover:opacity-70 ease-in-out transition-opacity duration-200':
+						solution.state === ExerciseSolutionState.REJECTED,
+				}"
+			>
 				<!-- main -->
 				<div class="flex h-full">
 					<!-- voting -->
@@ -66,7 +83,12 @@
 						>
 							<span class="text-4xl material-icons text-success">verified</span>
 						</Tooltip>
-						<div class="banner banner-light mx-2" v-if="showTeacherControls">
+						<div
+							class="banner banner-light mx-2"
+							v-if="
+								showTeacherControls && solution.state === ExerciseSolutionState.SUBMITTED
+							"
+						>
 							<span class="material-icons text-muted"> shield </span>
 							<p class="">
 								{{ $t("exercise_solution.teacher_is_this_solution_correct") }}
@@ -94,6 +116,7 @@
 							:class="{ 'h-full': !collapsed, 'overflow-hidden': collapsed }"
 							:style="collapsed ? 'max-height: ' + MAX_CONTENT_HEIGHT_PX + 'px' : ''"
 						>
+							<!-- {{ ExerciseSolutionState[solution.state] }} -->
 							<ProcessedTextFragment
 								v-if="solutionType === 'text'"
 								style="white-space: break-spaces"
@@ -104,7 +127,7 @@
 								v-else
 								:language="solutionType"
 								:value="solution.content"
-								class="-mt-4 -mr-5 rounded-tr rounded-none"
+								class="-mt-4 rounded-tr rounded-none"
 							/>
 							<div
 								v-if="collapsed"
@@ -264,10 +287,15 @@ export default defineComponent({
 		},
 	},
 	mounted() {
-		const contentElement = this.$refs.content as HTMLElement;
-		if (contentElement.clientHeight > this.MAX_CONTENT_HEIGHT_PX && !this.forceExpanded) {
-			this.collapsed = true;
-		}
+		setTimeout(() => {
+			const contentElement = this.$refs.content as HTMLElement;
+			if (
+				contentElement.clientHeight > this.MAX_CONTENT_HEIGHT_PX &&
+				!this.forceExpanded
+			) {
+				this.collapsed = true;
+			}
+		}, 50);
 	},
 	data() {
 		return {

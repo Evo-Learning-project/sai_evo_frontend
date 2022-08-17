@@ -2,6 +2,7 @@ import {
 	CourseSearchFilter,
 	EventSearchFilter,
 	ExerciseSearchFilter,
+	ExerciseSolutionSearchFilter,
 } from "./interfaces";
 import store from "@/store";
 import { EventTemplateRule, EventTemplateRuleType, Tag } from "@/models";
@@ -47,6 +48,20 @@ export const isEmptyFilter = (filter: ExerciseSearchFilter): boolean =>
 	filter.states.length === 0 &&
 	filter.tags.length === 0;
 
+export const getExerciseSolutionUrlQueryParams = (
+	filters: ExerciseSolutionSearchFilter | null,
+): string => {
+	if (!filters) {
+		return "";
+	}
+	let ret = "";
+
+	if (filters.states && filters.states.length > 0) {
+		ret += `&state=${filters.states.join(",")}&`;
+	}
+	return ret;
+};
+
 export const getExerciseUrlQueryParams = (
 	filters: ExerciseSearchFilter | null,
 ): string => {
@@ -59,7 +74,9 @@ export const getExerciseUrlQueryParams = (
 		(filters.exercise_types?.length ?? 0) > 0 ||
 		(filters.states?.length ?? 0) > 0 ||
 		(filters.tags?.length ?? 0) > 0 ||
-		(filters.text?.length ?? 0) > 0
+		(filters.text?.length ?? 0) > 0 ||
+		typeof filters.with_submitted_solutions !== "undefined" ||
+		typeof filters.by_popularity !== "undefined"
 	) {
 		ret += "&";
 	}
@@ -79,6 +96,16 @@ export const getExerciseUrlQueryParams = (
 
 	if (filters.tags && filters.tags.length > 0) {
 		ret += `tags=${filters.tags.join("&tags=")}&`;
+	}
+
+	if (typeof filters.with_submitted_solutions !== "undefined") {
+		ret += `with_submitted_solutions=${JSON.stringify(
+			filters.with_submitted_solutions,
+		)}&`;
+	}
+
+	if (typeof filters.by_popularity !== "undefined") {
+		ret += `by_popularity=${JSON.stringify(filters.by_popularity)}&`;
 	}
 
 	return ret;

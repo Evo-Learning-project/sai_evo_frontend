@@ -1,4 +1,9 @@
-import { normalizeIncomingExercise, normalizeIncomingExerciseChoice } from "./converters";
+import {
+	aggregateExerciseSolutionThreads,
+	convertPaginatedResponseToLocalPaginatedData,
+	normalizeIncomingExercise,
+	normalizeIncomingExerciseChoice,
+} from "./converters";
 /* eslint-disable no-constant-condition */
 import {
 	CodeExecutionResults,
@@ -9,10 +14,16 @@ import {
 	ExerciseSolution,
 	ExerciseTestCase,
 	ExerciseSolutionVote,
+	ExerciseSolutionState,
 } from "@/models";
 import axios from "axios";
-import { ExerciseSearchFilter } from "./interfaces";
-import { getExerciseUrlQueryParams } from "./utils";
+import {
+	BackendPaginatedResponse,
+	ExerciseSearchFilter,
+	ExerciseSolutionSearchFilter,
+	PaginatedData,
+} from "./interfaces";
+import { getExerciseSolutionUrlQueryParams, getExerciseUrlQueryParams } from "./utils";
 
 // export async function getExercises(
 //   courseId: string
@@ -25,17 +36,17 @@ export async function getExercises(
 	courseId: string,
 	pageNumber: number,
 	filter: ExerciseSearchFilter | null,
-): Promise<{ exercises: Exercise[]; moreResults: boolean }> {
+): Promise<PaginatedData<Exercise>> {
 	const filterUrlQuery = getExerciseUrlQueryParams(filter);
 	const response = await axios.get(
 		`/courses/${courseId}/exercises/?page=${pageNumber}${filterUrlQuery}`,
 	);
-	return {
-		exercises: (response.data.results as Exercise[]).map(e =>
-			normalizeIncomingExercise(e),
-		),
-		moreResults: !!response.data.next,
+	const normalizedResponseData = {
+		...(response.data as BackendPaginatedResponse<Exercise>),
+		results: (response.data.results as Exercise[]).map(e => normalizeIncomingExercise(e)),
 	};
+
+	return convertPaginatedResponseToLocalPaginatedData(normalizedResponseData, pageNumber);
 }
 
 export async function getExercisesById(
@@ -244,6 +255,23 @@ export async function updateExerciseTestCase(
 	return response.data;
 }
 
+export async function getExerciseSolutionsByExercise(
+	courseId: string,
+	exerciseId: string,
+	pageNumber: number,
+	filter: ExerciseSolutionSearchFilter | null,
+): Promise<PaginatedData<ExerciseSolution>> {
+	const filterUrlQuery = getExerciseSolutionUrlQueryParams(filter);
+
+	const response = await axios.get(
+		`/courses/${courseId}/exercises/${exerciseId}/solutions/?page=${pageNumber}${filterUrlQuery}`,
+	);
+	return convertPaginatedResponseToLocalPaginatedData(
+		response.data as BackendPaginatedResponse<ExerciseSolution>,
+		pageNumber,
+	);
+}
+
 export async function createExerciseSolution(
 	courseId: string,
 	exerciseId: string,
@@ -262,6 +290,7 @@ export async function updateExerciseSolution(
 	solutionId: string,
 	solution: ExerciseSolution,
 ): Promise<ExerciseSolution> {
+	console.log("SOLUTION", solutionId);
 	const response = await axios.patch(
 		`/courses/${courseId}/exercises/${exerciseId}/solutions/${solutionId}/`,
 		solution,
@@ -323,3 +352,41 @@ export async function setExerciseSolutionBookmark(
 	const response = await axios.delete(url);
 	return response.data;
 }
+
+export async function getPopularExerciseSolutionThreads(
+	courseId: string,
+	pageNumber: number,
+): Promise<PaginatedData<Exercise>> {
+	const response = await axios.get(`/courses/${courseId}/solutions/?by_popularity=1`);
+	const threads = response.data as BackendPaginatedResponse<
+		ExerciseSolution & { exercise: Exercise }
+	>;
+	const aggregatedThreads = aggregateExerciseSolutionThreads(threads.results);
+	return convertPaginatedResponseToLocalPaginatedData(
+		{
+			...response.data,
+			data: aggregatedThreads,
+		},
+		pageNumber,
+	);
+}
+
+// export async function getSubmittedExerciseSolutionThreads(
+// 	courseId: string,
+// 	pageNumber: number,
+// ): Promise<PaginatedData<Exercise>> {
+// 	const response = await axios.get(
+// 		`/courses/${courseId}/solutions/?page=${pageNumber}&state=${ExerciseSolutionState.SUBMITTED}`,
+// 	);
+// 	const threads = response.data as BackendPaginatedResponse<
+// 		ExerciseSolution & { exercise: Exercise }
+// 	>;
+// 	const aggregatedThreads = aggregateExerciseSolutionThreads(threads.results);
+// 	return convertPaginatedResponseToLocalPaginatedData(
+// 		{
+// 			...response.data,
+// 			results: aggregatedThreads,
+// 		},
+// 		pageNumber,
+// 	);
+// }

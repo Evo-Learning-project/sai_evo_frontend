@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+import { PaginatedData } from "@/api/interfaces";
 import { ErrorMessage } from "@/interfaces";
-import { Course, Tag, User } from "@/models";
+import { Course, Exercise, Tag, User } from "@/models";
 import { SharedState } from "../types";
 import { actions } from "./actions";
 import { getters } from "./getters";
@@ -38,6 +39,7 @@ export const sharedStore = {
 		dirtyTex: false,
 		helpCenterOpen: false,
 		helpCenterSelectedArticleId: null,
+		paginatedSolutionsByExerciseId: {},
 	}),
 	mutations: {
 		...mutations,

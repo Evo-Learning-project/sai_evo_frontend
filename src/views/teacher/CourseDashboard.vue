@@ -349,8 +349,7 @@ export default defineComponent({
 		},
 	},
 	computed: {
-		...mapGetters(["exams"]),
-		...mapState(["exercises"]),
+		...mapGetters(["exams", "exercises"]),
 		recentExams(): Event[] {
 			return this.exams.slice(0, 3);
 		},

@@ -19,6 +19,7 @@
 				<!-- exercise -->
 				<Exercise
 					:exercise="exercise"
+					:showReadOnlyAnswer="showAnswer"
 					:submission="submission"
 					:readOnly="!allowEditSubmission"
 					:showLabel="showExerciseLabel"
@@ -128,8 +129,9 @@
 			<!-- solution -->
 			<ExerciseSolutionContainer
 				:exercise="exercise"
+				:solutions="[]"
 				class="w-full mt-4"
-				v-if="showSolutionAndScores"
+				v-if="false && showSolutionAndScores"
 			/>
 		</div>
 	</div>
@@ -141,6 +143,7 @@ import {
 	EventParticipationSlotAssessment,
 	EventParticipationSlotSubmission,
 	Exercise as IExercise,
+	ExerciseSolution,
 	ExerciseType,
 	programmingExerciseTypes,
 } from "@/models";
@@ -223,6 +226,11 @@ export default defineComponent({
 			// to be used when reviewing a participation to a practice event
 			type: Boolean,
 			default: false,
+		},
+		showAnswer: {
+			// whether the exercise's readOnlyAnswer prop should be shown, if enabled
+			type: Boolean,
+			default: true,
 		},
 		showAssessmentCard: {
 			// whether the card with teacher assessment fields (scores and comments) should be displayed.

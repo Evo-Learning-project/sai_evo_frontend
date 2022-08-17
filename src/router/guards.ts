@@ -13,10 +13,9 @@ export const exerciseSolutionThreadBeforeGuard = async (
 	const params = to.params;
 	const course = await getCourse(params.courseId as string);
 	const privileges = course.privileges ?? [];
-	next({ name: "ExerciseSolutionThread", params });
-	// if (privileges.length > 0) {
-	// 	next("TeacherSolutions");
-	// } else {
-	// 	next("StudentSolutions");
-	// }
+	if (privileges.length > 0) {
+		next({ name: "TeacherDetailExerciseSolutionThreads", params });
+	} else {
+		next({ name: "ExerciseSolutionThread", params });
+	}
 };

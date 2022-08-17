@@ -26,7 +26,7 @@
 
 		<!-- representation of a read-only answer given to
     the exercise (e.g. a code fragment for a programming exercise) -->
-		<slot v-else name="readOnlyAnswer"></slot>
+		<slot v-else-if="showReadOnlyAnswer" name="readOnlyAnswer"></slot>
 
 		<!-- solutions -->
 		<div

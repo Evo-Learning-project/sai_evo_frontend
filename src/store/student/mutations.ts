@@ -8,9 +8,11 @@ import {
 	Event,
 	EventTemplateRuleClause,
 	ExerciseSolution,
+	Exercise,
 } from "@/models";
 import { MutationPayload, StudentState } from "../types";
 import { getters } from "./getters";
+import store from "..";
 
 export const mutations = {
 	// update the slots of the current event participation
@@ -112,21 +114,18 @@ export const mutations = {
 		state: StudentState,
 		{ exerciseId, payload }: MutationPayload<ExerciseSolution>,
 	) => {
-		const exercise = getters.exercises(state).find(e => e.id == exerciseId);
-		if (!exercise) {
-			throw new Error("setExerciseSolution didn't find exercise with id " + exerciseId);
-		}
-		if (!exercise.solutions) {
-			throw new Error(
-				"setExerciseSolution didn't find solutions for exercise " +
-					JSON.stringify(exercise),
-			);
-		}
-		const target = exercise.solutions.find(s => s.id == payload.id);
+		console.log("MUTATION", payload);
+		const exercise = (store.getters["student/exercises"] as Exercise[]).find(
+			e => e.id == exerciseId,
+		);
+		const solutions = store.getters["shared/exerciseSolutions"] as ExerciseSolution[];
+		const target = solutions.find(s => s.id == payload.id);
+
 		if (target) {
 			Object.assign(target, payload);
 		} else {
-			exercise.solutions.push(payload);
+			// TODO refactor
+			exercise?.solutions?.push(payload);
 		}
 	},
 };

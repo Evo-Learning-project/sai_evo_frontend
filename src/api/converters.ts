@@ -8,7 +8,9 @@ import {
 	ExerciseChoice,
 	EventTemplateRuleClause,
 	EventParticipationSlot,
+	ExerciseSolution,
 } from "@/models";
+import { BackendPaginatedResponse, PaginatedData } from "./interfaces";
 
 export const normalizeIncomingExercise = (exercise: Exercise): Exercise => ({
 	...exercise,
@@ -93,4 +95,34 @@ export const normalizeIncomingEvent = (event: Event): Event => ({
 	...(typeof event.template === "undefined"
 		? {}
 		: { template: normalizeIncomingEventTemplate(event.template) }),
+});
+
+/**
+ * Takes in an array of ExerciseSolution objects that also have a
+ * reference to an Exercise; returns an array of Exercise objects
+ * where each one contains all the solutions that referenced it
+ */
+export const aggregateExerciseSolutionThreads = (
+	solutions: (ExerciseSolution & { exercise: Exercise })[],
+): Exercise[] => {
+	const exercises = solutions
+		.map(s => s.exercise)
+		.filter((e, i, a) => a.findIndex(ex => ex.id == e.id) === i);
+	solutions.forEach(s => {
+		const solutionExercise = exercises.find(e => e.id == s.exercise.id) as Exercise;
+		solutionExercise.solutions ??= [];
+		const { exercise, ...solution } = s;
+		solutionExercise.solutions.push(solution);
+	});
+	return exercises;
+};
+
+export const convertPaginatedResponseToLocalPaginatedData = <T>(
+	response: BackendPaginatedResponse<T>,
+	pageNumber: number,
+): PaginatedData<T> => ({
+	data: response.results,
+	count: response.count,
+	isLastPage: response.next === null,
+	pageNumber,
 });

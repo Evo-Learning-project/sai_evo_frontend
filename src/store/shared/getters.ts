@@ -1,7 +1,14 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { Course, getBlankCourse, getBlankTag, User } from "@/models";
+import {
+	Course,
+	getBlankCourse,
+	getBlankTag,
+	User,
+	Exercise,
+	ExerciseSolution,
+} from "@/models";
 import { SharedState } from "../types";
 
 export const getters = {
@@ -16,4 +23,13 @@ export const getters = {
 		state.tags.find(t => t.id == tagId) ?? getBlankTag(),
 	tagByName: (state: SharedState) => (tagName: string) =>
 		state.tags.find(t => t.name == tagName) ?? getBlankTag(),
+	exerciseSolutions: (
+		state: SharedState,
+		_getters: any,
+		_rootState: any,
+		rootGetters: any,
+	): ExerciseSolution[] => [
+		// TODO handle duplicates ...(rootGetters["student/exercises"] as Exercise[]).flatMap(e => e.solutions ?? []),
+		...Object.values(state.paginatedSolutionsByExerciseId).flatMap(p => p.data),
+	],
 };

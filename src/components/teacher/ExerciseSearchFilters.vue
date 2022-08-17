@@ -33,12 +33,14 @@
 				}"
 			>
 				<Chipset
+					v-if="allowFilterByType"
 					:allowMultiple="false"
 					:options="exerciseTypeOptions"
 					:modelValue="modelValue.exercise_types"
 					@update:modelValue="emitUpdate('exercise_types', $event)"
 				></Chipset>
 				<Chipset
+					v-if="allowFilterByState"
 					class="my-2"
 					:allowMultiple="false"
 					:options="exerciseStateOptions"
@@ -89,7 +91,7 @@
 						{{ false && expanded ? "expand_less" : "expand_more" }}
 					</span>
 				</Btn>
-				<label class="cursor-pointer text-muted" for="more-filters-btn">{{
+				<label v-if="!full" class="cursor-pointer text-muted" for="more-filters-btn">{{
 					$t("filter_results.more_filters")
 				}}</label>
 			</div>
@@ -124,6 +126,14 @@ export default defineComponent({
 		full: {
 			type: Boolean,
 			default: false,
+		},
+		allowFilterByState: {
+			type: Boolean,
+			default: true,
+		},
+		allowFilterByType: {
+			type: Boolean,
+			default: true,
 		},
 	},
 	data() {
