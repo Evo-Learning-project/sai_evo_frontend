@@ -9,4 +9,11 @@ export const internalSidebarOptionsToSidebarMenuOptions = (opts: SidebarOption[]
 			class: "material-icons-outlined",
 			text: o.icon ?? "",
 		},
+		//child: [{ href: { name: "ExerciseSolutionThread" }, title: "Discussione esercizio" }],
+		// badge: {
+		// 	text: "99+",
+		// 	class: "vsm--badge_default",
+		// 	// attributes: {}
+		// 	// element: 'span'
+		// },
 	}));

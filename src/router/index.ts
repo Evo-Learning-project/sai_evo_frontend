@@ -293,6 +293,17 @@ const routes: Array<RouteRecordRaw> = [
 							routeTitle: _("headings.student_exercise_solution_threads"),
 							breadcrumbs: exerciseThreadsBreadCrumbs,
 						},
+						children: [
+							{
+								path: "/student/courses/:courseId/threads/:exerciseId/:solutionId?",
+								name: "ExerciseSolutionThread",
+								component: ExerciseSolutionThread,
+								meta: {
+									routeTitle: _("headings.student_exercise_solution_thread"),
+									breadcrumbs: exerciseSolutionThreadBreadCrumbs,
+								},
+							},
+						],
 					},
 					// TODO
 					{
@@ -315,16 +326,6 @@ const routes: Array<RouteRecordRaw> = [
 						},
 					},
 				],
-			},
-
-			{
-				path: "courses/:courseId/threads/:exerciseId/:solutionId?",
-				name: "ExerciseSolutionThread",
-				component: ExerciseSolutionThread,
-				meta: {
-					routeTitle: _("headings.student_exercise_solution_thread"),
-					breadcrumbs: exerciseSolutionThreadBreadCrumbs,
-				},
 			},
 			{
 				path: "courses/:courseId/exams/:examId",
