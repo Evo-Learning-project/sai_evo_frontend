@@ -24,6 +24,7 @@
 					:showPublicTags="true"
 				/>
 				<!-- TODO handle cloze exercises -->
+				<!-- TODO handle pagination-->
 				<ExerciseSolutionContainer
 					class="mt-4"
 					:showTitle="false"

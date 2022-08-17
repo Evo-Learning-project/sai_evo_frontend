@@ -116,9 +116,10 @@ export const actions = {
 			// TODO make function to update PaginatedData
 			state.paginatedSolutionsByExerciseId[exerciseId] = {
 				...state.paginatedSolutionsByExerciseId[exerciseId],
+				...paginatedSolutions,
 				data: [
 					...state.paginatedSolutionsByExerciseId[exerciseId].data,
-					...paginatedSolutionsForExercise.data,
+					...paginatedSolutions.data,
 				],
 			};
 		}

@@ -19,7 +19,9 @@
 					:key="'thread-e-' + slot.exercise.id"
 				>
 					<h4>{{ getExerciseTitle(slot.exercise) }}</h4>
+					<!-- TODO use <Exercise> and handle cloze exercises -->
 					<AbstractEventParticipationSlot :modelValue="slot" :showAnswer="false" />
+					<!-- TODO handle pagination -->
 					<ExerciseSolutionContainer
 						v-if="!loadingSolutionsByExercise[slot.exercise.id]"
 						class=""

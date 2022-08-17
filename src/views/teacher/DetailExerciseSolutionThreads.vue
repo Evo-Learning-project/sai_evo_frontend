@@ -4,7 +4,9 @@
 			<MinimalExercisePreviewSkeleton />
 		</div>
 		<div v-else-if="exercise">
+			<!-- TODO use <Exercise> and handle cloze exercises -->
 			<AbstractEventParticipationSlot :modelValue="slot" />
+			<!-- TODO handle pagination -->
 			<ExerciseSolutionContainer
 				:exercise="exercise"
 				:solutions="exerciseSolutions"

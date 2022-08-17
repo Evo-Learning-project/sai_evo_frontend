@@ -125,14 +125,6 @@
 					</AbstractEventParticipationSlot>
 				</div>
 			</div>
-
-			<!-- solution -->
-			<ExerciseSolutionContainer
-				:exercise="exercise"
-				:solutions="[]"
-				class="w-full mt-4"
-				v-if="false && showSolutionAndScores"
-			/>
 		</div>
 	</div>
 </template>
@@ -155,7 +147,6 @@ import Exercise from "./Exercise/Exercise.vue";
 import ParticipationSlotAssessment from "./ParticipationSlotAssessment.vue";
 import { isOpenAnswerExercise, isProgrammingExercise } from "./Exercise/utils";
 import ClozeExercise from "./Exercise/ClozeExercise.vue";
-import ExerciseSolutionContainer from "./ExerciseSolution/ExerciseSolutionContainer.vue";
 
 export default defineComponent({
 	components: {
@@ -163,7 +154,6 @@ export default defineComponent({
 		Exercise,
 		ParticipationSlotAssessment,
 		ClozeExercise,
-		ExerciseSolutionContainer,
 	},
 	emits: {
 		blur(slot: EventParticipationSlot) {

@@ -14,7 +14,9 @@
 			:solutions="exerciseSolutions"
 			:showFirst="solutiondId ? [solutionId] : []"
 			:standalone="true"
-		></ExerciseSolutionContainer>
+			@loadMore="loadMore()"
+			:canLoadMore="!(paginatedExerciseSolutions?.isLastPage ?? true)"
+		/>
 	</div>
 	<SkeletonCard v-else />
 </template>
@@ -32,6 +34,8 @@ import ExerciseSolutionContainer from "@/components/shared/ExerciseSolution/Exer
 import { mapActions, mapGetters, mapState } from "vuex";
 import SkeletonCard from "@/components/ui/SkeletonCard.vue";
 import Exercise from "@/components/shared/Exercise/Exercise.vue";
+import { PaginatedData } from "@/api";
+import Btn from "@/components/ui/Btn.vue";
 export default defineComponent({
 	name: "ExerciseSolutionThread",
 	props: {},
@@ -45,12 +49,23 @@ export default defineComponent({
 			await this.getSolutionsByExercise({
 				courseId: this.courseId,
 				exerciseId: this.exerciseId,
+				fromFirstPage: true,
 			});
 		});
 	},
 	methods: {
 		...mapActions("student", ["getExercises"]),
 		...mapActions("shared", ["getSolutionsByExercise"]),
+		async loadMore() {
+			await this.withLoading(
+				async () =>
+					await this.getSolutionsByExercise({
+						courseId: this.courseId,
+						exerciseId: this.exerciseId,
+						fromFirstPage: false,
+					}),
+			);
+		},
 	},
 	computed: {
 		...mapGetters("student", ["exercises"]),
@@ -60,8 +75,11 @@ export default defineComponent({
 				e => e.id == (this.exerciseId as string),
 			);
 		},
+		paginatedExerciseSolutions(): PaginatedData<ExerciseSolution> | undefined {
+			return this.paginatedSolutionsByExerciseId[this.exerciseId];
+		},
 		exerciseSolutions(): ExerciseSolution[] {
-			return this.paginatedSolutionsByExerciseId[this.exerciseId]?.data ?? [];
+			return this.paginatedExerciseSolutions?.data ?? [];
 		},
 
 		solutionId() {
@@ -82,6 +100,7 @@ export default defineComponent({
 		ExerciseSolutionContainer,
 		SkeletonCard,
 		Exercise,
+		//Btn,
 	},
 });
 </script>

@@ -195,6 +195,7 @@
 						{{ slot.slot_number + 1 }}
 					</h3>
 				</AbstractEventParticipationSlot>
+				<!-- TODO add link to go to exercise thread -->
 				<ExerciseSolutionContainer
 					v-if="showSolutionAndScores && !slotsLoadingSolution[slot.id]"
 					:exercise="slot.exercise"

@@ -282,6 +282,8 @@ export const it = {
 		my_favorites: "Salvati",
 	},
 	exercise_solution: {
+		load_more_solutions: "Carica più soluzioni",
+		go_to_exercise_thread: "Vai alla discussione di questo esercizio",
 		reveal_solutions_1: "Mostra",
 		reveal_solutions_2_singular: "soluzione proposta",
 		reveal_solutions_2_plural: "soluzioni proposte",

@@ -33,6 +33,8 @@
 						getSolutionCountForExercise(exercise) === 0
 					"
 					:solutions="getSolutionsForExercise(exercise)"
+					:canLoadMore="!(getPaginatedSolutionsForExercise(exercise)?.isLastPage ?? true)"
+					@loadMore="loadMore(exercise)"
 				></ExerciseSolutionContainer>
 				<SlotSkeleton v-else />
 
@@ -78,7 +80,7 @@
 </template>
 
 <script lang="ts">
-import { ExerciseSearchFilter } from "@/api";
+import { ExerciseSearchFilter, PaginatedData } from "@/api";
 import { courseIdMixin, loadingMixin } from "@/mixins";
 import { Exercise as IExercise, ExerciseSolution } from "@/models";
 import { defineComponent, PropType } from "@vue/runtime-core";
@@ -119,11 +121,26 @@ export default defineComponent({
 		...mapActions("teacher", ["getExercises"]),
 		...mapActions("shared", ["getSolutionsByExercise", "getTags"]),
 		getBlankExerciseSearchFilters,
+		getPaginatedSolutionsForExercise(
+			exercise: IExercise,
+		): PaginatedData<ExerciseSolution> | undefined {
+			return this.paginatedSolutionsByExerciseId[exercise.id];
+		},
 		getSolutionsForExercise(exercise: IExercise): ExerciseSolution[] {
-			return this.paginatedSolutionsByExerciseId[exercise.id]?.data ?? [];
+			return this.getPaginatedSolutionsForExercise(exercise)?.data ?? [];
 		},
 		getSolutionCountForExercise(exercise: IExercise): number {
-			return this.paginatedSolutionsByExerciseId[exercise.id]?.count ?? 0;
+			return this.getPaginatedSolutionsForExercise(exercise)?.count ?? 0;
+		},
+		async loadMore(exercise: IExercise) {
+			await this.withLoading(
+				async () =>
+					await this.getSolutionsByExercise({
+						courseId: this.courseId,
+						exerciseId: exercise.id,
+						fromFirstPage: false,
+					}),
+			);
 		},
 		fetchSolutionsForNewExercises() {
 			(this.exercises as IExercise[])

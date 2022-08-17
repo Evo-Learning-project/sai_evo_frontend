@@ -36,16 +36,15 @@
 		</div>
 		<div class="flex flex-col">
 			<Btn
-				@click="showAll = true"
+				@click="onShowMore()"
 				:size="'xs'"
 				:variant="'primary-borderless'"
 				class="mr-auto -ml-1"
-				v-if="
-					!showAll && nonDraftSolutions.length > SHOW_INITIALLY_COUNT && allowAddSolution
-				"
+				v-if="canShowMore"
 			>
-				{{ $t("exercise_solution.show_all") }} ({{ nonDraftSolutions.length }})</Btn
-			>
+				{{ $t("exercise_solution.load_more_solutions") }}
+				<!-- ({{ nonDraftSolutions.length }}) -->
+			</Btn>
 			<Btn
 				@click="onAddSolution()"
 				v-if="solutions.length > 0 && allowAddSolution"
@@ -58,9 +57,9 @@
 				{{ $t("exercise_solution.propose_solution") }}
 			</Btn>
 			<router-link :to="threadPermalink" v-if="showExerciseThreadLink">
-				<Btn :size="'xs'" class="-ml-1" :variant="'primary-borderless'"
-					>Vai alla discussione di questo esercizio</Btn
-				>
+				<Btn :size="'xs'" class="-ml-1" :variant="'primary-borderless'">
+					{{ $t("exercise_solution.go_to_exercise_thread") }}
+				</Btn>
 			</router-link>
 		</div>
 
@@ -116,6 +115,10 @@ export default defineComponent({
 			type: Array as PropType<IExerciseSolution[]>,
 			required: true,
 		},
+		canLoadMore: {
+			type: Boolean,
+			default: false,
+		},
 		showFirst: {
 			type: Array as PropType<string[]>,
 			required: false,
@@ -154,6 +157,13 @@ export default defineComponent({
 			this.editingSolutionId = null;
 			this.editingSolutionDeepCopy = null;
 			this.autoSaveManager = null;
+		},
+		onShowMore() {
+			if (!this.showAll) {
+				this.showAll = true;
+			} else {
+				this.$emit("loadMore");
+			}
 		},
 		async onDraftSolutionChange<K extends keyof IExerciseSolution>(
 			key: K,
@@ -321,6 +331,11 @@ export default defineComponent({
 		};
 	},
 	computed: {
+		canShowMore() {
+			return (
+				this.canLoadMore || this.shownSolutions.length < this.nonDraftSolutions.length
+			);
+		},
 		// TODO extract to utils
 		solutionType() {
 			if (this.exercise.exercise_type === ExerciseType.JS) {
