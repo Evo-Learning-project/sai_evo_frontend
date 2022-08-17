@@ -24,6 +24,9 @@ export const logOut = (showMessage = true): void => {
 	store.commit("shared/resetToken");
 	router.push({
 		name: "Login",
+		params: {
+			courseId: -1, // !
+		},
 	});
 	if (showMessage) {
 		setErrorNotification(getTranslatedString("misc.logged_out"), true);

@@ -4,6 +4,7 @@ import { CoursePrivilege } from "@/models";
 export interface SidebarOption {
 	label: string;
 	routeName?: string; // ? use better typing
+	routeParams?: Record<string, PropertyKey>;
 	children?: string[];
 	icon?: string;
 	requiredPrivileges: CoursePrivilege[];
@@ -103,7 +104,7 @@ export const studentDashboardSidebarOptions: SidebarOption[] = [
 	{
 		label: _("student_dashboard_options.popular_exercises"),
 		requiredPrivileges: [],
-		children: [],
+		children: ["ExerciseSolutionThread"],
 		icon: "topic",
 		routeName: "CourseDashBoardExerciseThreadList",
 	},
@@ -125,6 +126,7 @@ export const studentDashboardSidebarOptions: SidebarOption[] = [
 		label: _("sidebar_labels.course_dashboard_back_to_courses"),
 		icon: "chevron_left",
 		routeName: "StudentCourseList",
+		routeParams: { courseId: "-1" }, // !
 		requiredPrivileges: [],
 	},
 ];

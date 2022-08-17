@@ -314,18 +314,18 @@ const routes: Array<RouteRecordRaw> = [
 							breadcrumbs: exerciseThreadsBreadCrumbs,
 						},
 					},
+					{
+						path: "threads/:exerciseId/:solutionId?",
+						name: "ExerciseSolutionThread",
+						component: ExerciseSolutionThread,
+						meta: {
+							routeTitle: _("headings.student_exercise_solution_thread"),
+							breadcrumbs: exerciseSolutionThreadBreadCrumbs,
+						},
+					},
 				],
 			},
 
-			{
-				path: "courses/:courseId/threads/:exerciseId/:solutionId?",
-				name: "ExerciseSolutionThread",
-				component: ExerciseSolutionThread,
-				meta: {
-					routeTitle: _("headings.student_exercise_solution_thread"),
-					breadcrumbs: exerciseSolutionThreadBreadCrumbs,
-				},
-			},
 			{
 				path: "courses/:courseId/exams/:examId",
 				component: ExamPreview,
@@ -405,6 +405,11 @@ const router = createRouter({
 	history: createWebHistory(process.env.BASE_URL),
 	routes,
 });
+
+// router.beforeEach((to, from, next) => {
+// 	console.log({ to, from });
+// 	next();
+// });
 
 router.beforeEach((to, from, next) => {
 	const sharedState = (store.state as { shared: SharedState }).shared;
