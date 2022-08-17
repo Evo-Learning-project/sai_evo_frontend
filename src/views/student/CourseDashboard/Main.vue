@@ -6,12 +6,12 @@
 			<!-- sidebar -->
 			<SidebarMenu
 				class="lg:-ml-20 md:-ml-9"
-				:width="'270px'"
+				:width="'250px'"
 				:menu="sidebarOptions"
 				:relative="true"
 			>
-				<template v-slot:header>
-					<div class="vsm--header">
+				<template v-slot:header
+					><div class="vsm--header">
 						<div class="mx-auto flex space-x-2 items-center">
 							<Avatar :user="user" :size="'lg'" />
 							<div class="flex flex-col">
@@ -21,14 +21,6 @@
 								</p>
 							</div>
 						</div>
-					</div>
-				</template>
-				<template v-if="false && hasAnyPrivileges" v-slot:footer>
-					<div class="vsm--footer flex flex-col">
-						<div class="w-56 text-sm mx-auto">
-							Stai visualizzando questo corso come studente
-						</div>
-						<Btn class="mx-auto">Vai al pannello docente</Btn>
 					</div>
 				</template>
 			</SidebarMenu>
@@ -118,17 +110,16 @@ import {
 	ROUTE_TITLE_COURSE_NAME_TOKEN,
 	ROUTE_TITLE_EVENT_NAME_TOKEN,
 } from "@/navigation/const";
-import { courseIdMixin, coursePrivilegeMixin, eventIdMixin } from "@/mixins";
+import { courseIdMixin, eventIdMixin } from "@/mixins";
 import { SidebarMenu } from "vue-sidebar-menu";
 import "vue-sidebar-menu/dist/vue-sidebar-menu.css";
 import { internalSidebarOptionsToSidebarMenuOptions } from "@/navigation/utils";
 import Avatar from "@/components/ui/Avatar.vue";
 import { mapState } from "vuex";
-import Btn from "@/components/ui/Btn.vue";
 export default defineComponent({
 	name: "Main",
 	props: {},
-	mixins: [courseIdMixin, eventIdMixin, coursePrivilegeMixin],
+	mixins: [courseIdMixin, eventIdMixin],
 	methods: {
 		isRouteActive(option: SidebarOption) {
 			return (
@@ -156,7 +147,7 @@ export default defineComponent({
 			return internalSidebarOptionsToSidebarMenuOptions(studentDashboardSidebarOptions);
 		},
 	},
-	components: { BreadCrumbs, SidebarMenu, Avatar, Btn },
+	components: { BreadCrumbs, SidebarMenu, Avatar },
 });
 </script>
 

@@ -1412,7 +1412,7 @@
 	.v-sidebar-menu {
 		@apply bg-light py-4 !important;
 	}
-	.v-sidebar-menu .vsm--header {
+	.v-sidebar-menu .vsm--header{
 		text-transform: none !important;
 		@apply text-darkText font-normal;
 	}
@@ -1446,14 +1446,6 @@
 	.vsm--scroll-wrapper,
 	.vsm--header {
 		@apply fixed !important;
-	}
-
-	.vsm--footer {
-		@apply fixed bottom-20 !important;
-	}
-
-	.vsm--badge_default {
-		@apply bg-danger-dark text-lightText rounded-full !important;
 	}
 
 	.vsm--scroll-wrapper {

@@ -100,7 +100,7 @@
 				>
 					<template v-slot:header>
 						<div class="absolute w-full transform -translate-x-1/2 left-1/2">
-							<h2 class="text-center opacity-70 select-none">
+							<h2 class="text-center opacity-70">
 								{{ $t("student_course_dashboard.new_practice") }}
 							</h2>
 						</div>
