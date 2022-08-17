@@ -96,6 +96,15 @@ export const exerciseThreadsBreadCrumbs: BreadCrumb[] = [
 	},
 ];
 
+export const studentFavoritesBreadCrumbs: BreadCrumb[] = [
+	courseListBreadCrumb,
+	courseDashBoardBreadCrumb,
+	{
+		title: _("breadcrumbs.student_favorites"),
+		routeName: "StudentFavorites",
+	},
+];
+
 export const exerciseSolutionThreadBreadCrumbs: BreadCrumb[] = [
 	...exerciseThreadsBreadCrumbs,
 	{

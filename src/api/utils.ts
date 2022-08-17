@@ -55,9 +55,16 @@ export const getExerciseSolutionUrlQueryParams = (
 		return "";
 	}
 	let ret = "";
+	if (typeof filters.bookmarked !== "undefined" || filters.states.length > 0) {
+		ret += "&";
+	}
+
+	if (typeof filters.bookmarked !== "undefined") {
+		ret += `bookmarked=${JSON.stringify(filters.bookmarked)}&`;
+	}
 
 	if (filters.states && filters.states.length > 0) {
-		ret += `&state=${filters.states.join(",")}&`;
+		ret += `state=${filters.states.join(",")}&`;
 	}
 	return ret;
 };
@@ -76,10 +83,12 @@ export const getExerciseUrlQueryParams = (
 		(filters.tags?.length ?? 0) > 0 ||
 		(filters.text?.length ?? 0) > 0 ||
 		typeof filters.with_submitted_solutions !== "undefined" ||
+		typeof filters.with_bookmarked_solutions !== "undefined" ||
 		typeof filters.by_popularity !== "undefined"
 	) {
 		ret += "&";
 	}
+
 	if (filters.label || filters.text) {
 		ret += `search=${encodeURIComponent(filters.label ?? "")} ${encodeURIComponent(
 			filters.text ?? "",
@@ -101,6 +110,12 @@ export const getExerciseUrlQueryParams = (
 	if (typeof filters.with_submitted_solutions !== "undefined") {
 		ret += `with_submitted_solutions=${JSON.stringify(
 			filters.with_submitted_solutions,
+		)}&`;
+	}
+
+	if (typeof filters.with_bookmarked_solutions !== "undefined") {
+		ret += `with_bookmarked_solutions=${JSON.stringify(
+			filters.with_bookmarked_solutions,
 		)}&`;
 	}
 

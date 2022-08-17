@@ -8,3 +8,11 @@ export const getExerciseSolutionThreadRoute = (
 	name: "ExerciseSolutionThreadDispatcher",
 	params: { courseId, exerciseId, solutionId },
 });
+
+export const getExerciseThreadRoute = (
+	courseId: string,
+	exerciseId: string,
+): RouteLocationRaw => ({
+	name: "ExerciseSolutionThread",
+	params: { courseId, exerciseId },
+});

@@ -57,6 +57,11 @@
 				<span class="mr-2 text-base material-icons">reviews</span>
 				{{ $t("exercise_solution.propose_solution") }}
 			</Btn>
+			<router-link :to="threadPermalink" v-if="showExerciseThreadLink">
+				<Btn :size="'xs'" class="-ml-1" :variant="'primary-borderless'"
+					>Vai alla discussione di questo esercizio</Btn
+				>
+			</router-link>
 		</div>
 
 		<div v-if="editingSolutionId !== null || editingSolutionDeepCopy !== null">
@@ -77,6 +82,7 @@
 
 <script lang="ts">
 const SHOW_INITIALLY_COUNT = 1;
+import { getExerciseThreadRoute } from "./utils";
 
 import {
 	Exercise as IExercise,
@@ -131,6 +137,10 @@ export default defineComponent({
 			default: true,
 		},
 		forceShowAll: {
+			type: Boolean,
+			default: false,
+		},
+		showExerciseThreadLink: {
 			type: Boolean,
 			default: false,
 		},
@@ -343,6 +353,11 @@ export default defineComponent({
 				return null;
 			}
 			return (this.solutions ?? []).find(s => s.id == this.editingSolutionId) ?? null;
+		},
+		threadPermalink() {
+			return this.$router.resolve(
+				getExerciseThreadRoute(this.courseId, this.exercise.id),
+			);
 		},
 	},
 	components: { Btn, ExerciseSolution, ExerciseSolutionEditor, Exercise },

@@ -8,6 +8,7 @@ import StudentCourseDashboard from "../views/student/CourseDashboard/Main.vue";
 import CourseDashBoardExamList from "../views/student/CourseDashboard/ExamsList.vue";
 import CourseDashBoardPracticeSessionList from "../views/student/CourseDashboard/PracticeList.vue";
 import CourseDashBoardExerciseThreadList from "../views/student/CourseDashboard/ExerciseThreadList.vue";
+import FavoriteContentsList from "../views/student/CourseDashboard/FavoriteContentsList.vue";
 //import StudentCourseDashboard from "../views/student/CourseDashboard.vue";
 import CourseExercises from "../views/teacher/CourseExercises.vue";
 import CourseExams from "../views/teacher/CourseExams.vue";
@@ -43,6 +44,7 @@ import {
 	practiceParticipationBreadCrumbs,
 	practiceReviewBreadCrumbs,
 	practicesListBreadCrumbs,
+	studentFavoritesBreadCrumbs,
 	submissionReviewBreadCrumbs,
 } from "@/navigation/breadcrumbs";
 import { getCourse } from "@/api/courses";
@@ -305,14 +307,13 @@ const routes: Array<RouteRecordRaw> = [
 							breadcrumbs: exerciseThreadsBreadCrumbs,
 						},
 					},
-					// TODO
 					{
 						path: "favorites",
 						name: "StudentFavorites",
-						component: CourseDashBoardExerciseThreadList,
+						component: FavoriteContentsList,
 						meta: {
-							routeTitle: _("headings.student_exercise_solution_threads"),
-							breadcrumbs: exerciseThreadsBreadCrumbs,
+							routeTitle: _("headings.student_favorites"),
+							breadcrumbs: studentFavoritesBreadCrumbs,
 						},
 					},
 					{
