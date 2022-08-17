@@ -11,7 +11,7 @@
 							<img class="w-32 -ml-1" src="../../../public/unipi-logo.svg" />
 						</div>
 					</div>
-					<div class="">
+					<div v-if="!$route.meta.hideUserInfoFromNav" class="">
 						<div
 							v-if="$store.getters['shared/isAuthenticated']"
 							class="flex items-center ml-4 space-x-2 md:ml-6"

@@ -87,20 +87,19 @@ export const examAssessmentBreadCrumbs: BreadCrumb[] = [
 	},
 ];
 
-export const exerciseSolutionThreadBreadCrumbs: BreadCrumb[] = [
-	courseListBreadCrumb,
-	courseDashBoardBreadCrumb,
-	{
-		title: _("breadcrumbs.exercise_solution_thread"),
-		routeName: "ExerciseSolutionThread",
-	},
-];
-
 export const exerciseThreadsBreadCrumbs: BreadCrumb[] = [
 	courseListBreadCrumb,
 	courseDashBoardBreadCrumb,
 	{
-		title: _("breadcrumbs.exercise_solution_thread"),
+		title: _("breadcrumbs.exercise_solution_threads"),
 		routeName: "CourseDashBoardExerciseThreadList",
+	},
+];
+
+export const exerciseSolutionThreadBreadCrumbs: BreadCrumb[] = [
+	...exerciseThreadsBreadCrumbs,
+	{
+		title: _("breadcrumbs.exercise_solution_thread"),
+		routeName: "ExerciseSolutionThread",
 	},
 ];

@@ -2,7 +2,7 @@
 	<div
 		class="flex rounded-full bg-primary-light text-primary bg-opacity-30"
 		:class="{
-			'w-6 h-6 text-sm': size === 'md',
+			'w-8 h-8 ': size === 'md',
 			'w-8 h-8': size === 'sm',
 			'w-10 h-10 text-xl': size === 'lg',
 		}"

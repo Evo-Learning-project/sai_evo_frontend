@@ -6,7 +6,7 @@
 			<!-- sidebar -->
 			<SidebarMenu
 				class="lg:-ml-20 md:-ml-9"
-				:width="'250px'"
+				:width="sidebarWidth"
 				:menu="sidebarOptions"
 				:relative="true"
 			>
@@ -23,75 +23,43 @@
 						</div>
 					</div>
 				</template>
-			</SidebarMenu>
-			<!-- <section class="h-full relative bg-light lg:-ml-20 -mt-6 w-1/5">
-				<div class="sticky top-10 py-4 rounded pr-4">
-					<div class="h-full">
-						<ul class="flex flex-col w-full h-full mt-6">
-							<router-link
-								v-wave="{
-									color: '#303f9f',
-								}"
-								class="relative overflow-hidden rounded-r-full"
-								v-for="(option, index) in sidebarOptions"
-								:key="'sidebar-' + option.label"
-								:to="{ name: option.routeName }"
-								:class="{
-									'pl-1.25px': true,
-								}"
-							>
-								<li
-									:id="'sidebar-option-' + index"
-									style="padding-top: 11px; padding-bottom: 11px"
-									class="
-										flex
-										items-center
-										justify-between
-										px-4
-										cursor-pointer
-										sidebar-link-container
-										hover:transition-colors
-										text-darkText
-										hover:bg-primary-light hover:bg-opacity-10 hover:duration-100
-									"
-									:class="{
-										'md:w-full': true,
-										'rounded-r-full pl-5 -ml-1.25px': true,
-										'bg-primary-light bg-opacity-30 pointer-events-none':
-											isRouteActive(option),
-									}"
-								>
-									<div class="flex items-center space-x-2.5">
-										<span
-											:class="[
-												'text-2xl  material-icons-outlined',
-												isRouteActive(option)
-													? 'text-primary'
-													: 'opacity-60 text-darkText',
-											]"
-										>
-											{{ option.icon }}
-										</span>
-										<transition name="fade-quick">
-											<span
-												v-show="true"
-												class="ml-4 whitespace-pre sidebar-link-label"
-												:class="{
-													'text-primary font-semibold': isRouteActive(option),
-													'opacity-80': !isRouteActive(option),
-												}"
-												>{{ option.label }}</span
-											></transition
-										>
-									</div>
-								</li>
-							</router-link>
-						</ul>
+				<template v-slot:footer v-if="hasAnyPrivileges()">
+					<div
+						class="
+							mt-4
+							flex flex-col
+							space-y-1
+							items-center
+							vsm--footer
+							bg-primary-light bg-opacity-5
+							px-3
+							py-4
+						"
+						:style="'width: ' + sidebarWidth"
+					>
+						<p class="mx-auto text-muted text-sm text-center">
+							{{ $t("student_course_dashboard.you_are_in_student_mode") }}
+						</p>
+						<router-link
+							class="w-full"
+							:to="{
+								name: 'TeacherCourseDashboard',
+								params: { courseId },
+							}"
+							><Btn :outline="true" class="w-full">
+								<span class="mr-1 text-lg material-icons-two-tone two-tone-primary">
+									shield
+								</span>
+								<span class="text-base md:text-xs xl:text-base 2xl:text-lg">{{
+									$t("courses.course_panel")
+								}}</span>
+							</Btn></router-link
+						>
 					</div>
-				</div>
-			</section> -->
+				</template>
+			</SidebarMenu>
 			<!-- main -->
-			<section class="w-full">
+			<section class="w-full pb-4">
 				<div class="mb-8 mt-4">
 					<h2 class="mb-0">{{ routeTitle }}</h2>
 					<BreadCrumbs :route="$route" />
@@ -103,6 +71,7 @@
 </template>
 
 <script lang="ts">
+const SIDEBAR_WIDTH_EXPANDED = "270px";
 import { SidebarOption, studentDashboardSidebarOptions } from "@/navigation/sidebar";
 import { defineComponent, PropType } from "@vue/runtime-core";
 import BreadCrumbs from "@/components/ui/BreadCrumbs.vue";
@@ -110,16 +79,17 @@ import {
 	ROUTE_TITLE_COURSE_NAME_TOKEN,
 	ROUTE_TITLE_EVENT_NAME_TOKEN,
 } from "@/navigation/const";
-import { courseIdMixin, eventIdMixin } from "@/mixins";
+import { courseIdMixin, coursePrivilegeMixin, eventIdMixin } from "@/mixins";
 import { SidebarMenu } from "vue-sidebar-menu";
 import "vue-sidebar-menu/dist/vue-sidebar-menu.css";
 import { internalSidebarOptionsToSidebarMenuOptions } from "@/navigation/utils";
 import Avatar from "@/components/ui/Avatar.vue";
 import { mapState } from "vuex";
+import Btn from "@/components/ui/Btn.vue";
 export default defineComponent({
 	name: "Main",
 	props: {},
-	mixins: [courseIdMixin, eventIdMixin],
+	mixins: [courseIdMixin, eventIdMixin, coursePrivilegeMixin],
 	methods: {
 		isRouteActive(option: SidebarOption) {
 			return (
@@ -135,7 +105,7 @@ export default defineComponent({
 	},
 	data() {
 		return {
-			//sidebarOptions: studentDashboardSidebarOptions,
+			sidebarWidth: SIDEBAR_WIDTH_EXPANDED,
 		};
 	},
 	computed: {
@@ -147,7 +117,7 @@ export default defineComponent({
 			return internalSidebarOptionsToSidebarMenuOptions(studentDashboardSidebarOptions);
 		},
 	},
-	components: { BreadCrumbs, SidebarMenu, Avatar },
+	components: { BreadCrumbs, SidebarMenu, Avatar, Btn },
 });
 </script>
 

@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<div class="pb-4">
 		<div v-if="!firstLoading">
 			<CourseSearchFilters class="mb-8" v-model="searchFilters"></CourseSearchFilters>
 			<div class="mb-4 banner banner-danger" v-if="!user.is_teacher && !user.mat">

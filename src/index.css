@@ -1444,8 +1444,17 @@
 	}
 
 	.vsm--scroll-wrapper,
-	.vsm--header {
+	.vsm--header,
+	.vsm--footer {
 		@apply fixed !important;
+	}
+
+	.vsm--footer {
+		@apply bottom-10 !important;
+	}
+
+	.vsm--badge_default {
+		@apply bg-danger-dark text-lightText rounded-full !important;
 	}
 
 	.vsm--scroll-wrapper {

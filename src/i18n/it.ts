@@ -681,6 +681,7 @@ export const it = {
 		select: "Seleziona",
 	},
 	student_course_dashboard: {
+		you_are_in_student_mode: "Stai visualizzando il corso in modalità studente",
 		no_exams: "Non hai ancora partecipato a nessun esame",
 		show_bookmarked: "Mostra solo preferite",
 		add_bookmark: "Aggiungi ai preferiti",
@@ -914,7 +915,8 @@ export const it = {
 		submission_review: "Revisione " + ROUTE_TITLE_EVENT_NAME_TOKEN,
 		practice_review: "Riepilogo esercitazione",
 		exam_assessment: "Valutazione " + ROUTE_TITLE_EVENT_NAME_TOKEN,
-		exercise_solution_thread: "Esercizi popolari",
+		exercise_solution_thread: "Discussione esercizio",
+		exercise_solution_threads: "Esercizi popolari",
 	},
 	course_list: {
 		filter_courses: "Cerca corsi",

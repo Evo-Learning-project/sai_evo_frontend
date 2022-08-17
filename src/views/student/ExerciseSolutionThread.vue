@@ -1,7 +1,13 @@
 <template>
 	<!-- <h2>{{ $t("exercise_solution_thread.thread_title") }}</h2> -->
 	<div class="mt-4" v-if="!firstLoading">
-		<AbstractEventParticipationSlot :modelValue="slot" />
+		<!-- <AbstractEventParticipationSlot :modelValue="slot" /> -->
+		<Exercise
+			:exercise="exercise"
+			:showReadOnlyAnswer="false"
+			:readOnly="true"
+		></Exercise>
+		<!-- TODO cloze exercises -->
 		<ExerciseSolutionContainer
 			class="mt-8"
 			:exercise="exercise"
@@ -14,13 +20,18 @@
 </template>
 
 <script lang="ts">
-import { Exercise, ExerciseSolution, getFakeEventParticipationSlot } from "@/models";
+import {
+	Exercise as IExercise,
+	ExerciseSolution,
+	getFakeEventParticipationSlot,
+} from "@/models";
 import { defineComponent, PropType } from "@vue/runtime-core";
 import AbstractEventParticipationSlot from "@/components/shared/AbstractEventParticipationSlot.vue";
 import { courseIdMixin, loadingMixin } from "@/mixins";
 import ExerciseSolutionContainer from "@/components/shared/ExerciseSolution/ExerciseSolutionContainer.vue";
 import { mapActions, mapGetters, mapState } from "vuex";
 import SkeletonCard from "@/components/ui/SkeletonCard.vue";
+import Exercise from "@/components/shared/Exercise/Exercise.vue";
 export default defineComponent({
 	name: "ExerciseSolutionThread",
 	props: {},
@@ -44,8 +55,8 @@ export default defineComponent({
 	computed: {
 		...mapGetters("student", ["exercises"]),
 		...mapState("shared", ["paginatedSolutionsByExerciseId"]),
-		exercise(): Exercise | undefined {
-			return (this.exercises as Exercise[]).find(
+		exercise(): IExercise | undefined {
+			return (this.exercises as IExercise[]).find(
 				e => e.id == (this.exerciseId as string),
 			);
 		},
@@ -66,7 +77,12 @@ export default defineComponent({
 			return getFakeEventParticipationSlot(this.exercise);
 		},
 	},
-	components: { AbstractEventParticipationSlot, ExerciseSolutionContainer, SkeletonCard },
+	components: {
+		//AbstractEventParticipationSlot,
+		ExerciseSolutionContainer,
+		SkeletonCard,
+		Exercise,
+	},
 });
 </script>
 

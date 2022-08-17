@@ -264,6 +264,7 @@ const routes: Array<RouteRecordRaw> = [
 				meta: {
 					routeTitle: _("headings.course_title"),
 					breadcrumbs: courseDashBoardBreadCrumbs,
+					hideUserInfoFromNav: true,
 				},
 				redirect: { name: "CourseDashBoardPracticeSessionList" },
 				children: [
