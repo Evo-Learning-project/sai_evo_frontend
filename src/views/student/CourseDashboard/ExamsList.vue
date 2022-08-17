@@ -1,6 +1,6 @@
 <template>
-	<div class="mb-4">
-		<div class="mb-8" v-if="examParticipations.length > 0">
+	<div class="mb-4 h-full">
+		<div class="mb-8" v-if="firstLoading || examParticipations.length > 0">
 			<div class="grid gap-4 xl:gap-8 md:grid-cols-2 lg:grid-cols-3" v-if="!firstLoading">
 				<EventParticipationPreview
 					v-for="participation in examParticipations"
@@ -14,7 +14,14 @@
 				<SkeletonCard class="h-44"></SkeletonCard>
 			</div>
 		</div>
-		<div v-else>no esami</div>
+		<div class="flex h-full -mt-40" v-else>
+			<div class="mx-auto my-auto flex flex-col">
+				<p style="font-size: 10rem" class="material-icons-outlined opacity-10 mx-auto">
+					assignment
+				</p>
+				<h2 class="opacity-40">{{ $t("student_course_dashboard.no_exams") }}</h2>
+			</div>
+		</div>
 	</div>
 </template>
 

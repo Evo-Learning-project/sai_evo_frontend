@@ -681,6 +681,7 @@ export const it = {
 		select: "Seleziona",
 	},
 	student_course_dashboard: {
+		no_exams: "Non hai ancora partecipato a nessun esame",
 		show_bookmarked: "Mostra solo preferite",
 		add_bookmark: "Aggiungi ai preferiti",
 		remove_bookmark: "Rimuovi dai preferiti",

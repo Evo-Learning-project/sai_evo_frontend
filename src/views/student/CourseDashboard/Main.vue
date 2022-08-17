@@ -5,11 +5,25 @@
 		<div class="flex h-full bg-red space-x-10">
 			<!-- sidebar -->
 			<SidebarMenu
-				class="lg:-ml-20"
+				class="lg:-ml-20 md:-ml-9"
 				:width="'250px'"
 				:menu="sidebarOptions"
 				:relative="true"
-			/>
+			>
+				<template v-slot:header
+					><div class="vsm--header">
+						<div class="mx-auto flex space-x-2 items-center">
+							<Avatar :user="user" :size="'lg'" />
+							<div class="flex flex-col">
+								<p class="text-sm mb-0">{{ $store.getters["shared/email"] }}</p>
+								<p class="text-xs text-muted -mt-0.5">
+									{{ $store.state.shared.user?.mat }}
+								</p>
+							</div>
+						</div>
+					</div>
+				</template>
+			</SidebarMenu>
 			<!-- <section class="h-full relative bg-light lg:-ml-20 -mt-6 w-1/5">
 				<div class="sticky top-10 py-4 rounded pr-4">
 					<div class="h-full">
@@ -100,6 +114,8 @@ import { courseIdMixin, eventIdMixin } from "@/mixins";
 import { SidebarMenu } from "vue-sidebar-menu";
 import "vue-sidebar-menu/dist/vue-sidebar-menu.css";
 import { internalSidebarOptionsToSidebarMenuOptions } from "@/navigation/utils";
+import Avatar from "@/components/ui/Avatar.vue";
+import { mapState } from "vuex";
 export default defineComponent({
 	name: "Main",
 	props: {},
@@ -123,6 +139,7 @@ export default defineComponent({
 		};
 	},
 	computed: {
+		...mapState("shared", ["user"]),
 		routeTitle(): string {
 			return this.replaceTitleTokens(this.$route.meta.routeTitle as string);
 		},
@@ -130,7 +147,7 @@ export default defineComponent({
 			return internalSidebarOptionsToSidebarMenuOptions(studentDashboardSidebarOptions);
 		},
 	},
-	components: { BreadCrumbs, SidebarMenu },
+	components: { BreadCrumbs, SidebarMenu, Avatar },
 });
 </script>
 

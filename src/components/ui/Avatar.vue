@@ -1,5 +1,12 @@
 <template>
-	<div class="flex w-8 h-8 rounded-full bg-primary-light text-primary bg-opacity-30">
+	<div
+		class="flex rounded-full bg-primary-light text-primary bg-opacity-30"
+		:class="{
+			'w-6 h-6 text-sm': size === 'md',
+			'w-8 h-8': size === 'sm',
+			'w-10 h-10 text-xl': size === 'lg',
+		}"
+	>
 		<p class="mx-auto my-auto font-semibold">
 			{{ authorName[0].toLocaleUpperCase() }}
 		</p>
@@ -15,6 +22,10 @@ export default defineComponent({
 		user: {
 			type: Object as PropType<User>,
 			default: () => ({}),
+		},
+		size: {
+			type: String as PropType<"sm" | "md" | "lg">,
+			default: "md",
 		},
 	},
 	methods: {},
