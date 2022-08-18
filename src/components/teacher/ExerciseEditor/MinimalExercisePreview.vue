@@ -169,7 +169,7 @@
 		>
 			<template v-slot:title>{{ $t("misc.exercise_preview_title") }}</template>
 			<template v-slot:body>
-				<FullExercise :exercise="exercise"></FullExercise>
+				<FullExercise :exercise="exercise" :showTags="false"></FullExercise>
 			</template>
 		</Dialog>
 	</div>

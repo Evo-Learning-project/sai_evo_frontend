@@ -77,7 +77,8 @@
 				@close="onClose()"
 				:editorType="solutionType"
 			>
-				<Exercise :exercise="exercise" :showSolution="true" :readOnly="true" />
+				<FullExercise :exercise="exercise" />
+				<!-- <Exercise :exercise="exercise" :showSolution="true" :readOnly="true" /> -->
 			</ExerciseSolutionEditor>
 		</div>
 	</div>
@@ -384,7 +385,12 @@ export default defineComponent({
 			);
 		},
 	},
-	components: { Btn, ExerciseSolution, ExerciseSolutionEditor, Exercise },
+	components: {
+		Btn,
+		ExerciseSolution,
+		ExerciseSolutionEditor,
+		//Exercise
+	},
 });
 </script>
 

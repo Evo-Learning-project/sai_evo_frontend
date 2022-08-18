@@ -1,13 +1,7 @@
 <template>
 	<!-- <h2>{{ $t("exercise_solution_thread.thread_title") }}</h2> -->
 	<div class="mt-4" v-if="!firstLoading">
-		<!-- <AbstractEventParticipationSlot :modelValue="slot" /> -->
-		<Exercise
-			:exercise="exercise"
-			:showReadOnlyAnswer="false"
-			:readOnly="true"
-		></Exercise>
-		<!-- TODO cloze exercises -->
+		<FullExercise :exercise="exercise" />
 		<ExerciseSolutionContainer
 			class="mt-8"
 			:exercise="exercise"
@@ -36,6 +30,7 @@ import SkeletonCard from "@/components/ui/SkeletonCard.vue";
 import Exercise from "@/components/shared/Exercise/Exercise.vue";
 import { PaginatedData } from "@/api";
 import Btn from "@/components/ui/Btn.vue";
+import FullExercise from "@/components/shared/FullExercise.vue";
 export default defineComponent({
 	name: "ExerciseSolutionThread",
 	props: {},
@@ -99,8 +94,8 @@ export default defineComponent({
 		//AbstractEventParticipationSlot,
 		ExerciseSolutionContainer,
 		SkeletonCard,
-		Exercise,
-		//Btn,
+		// Exercise,
+		FullExercise,
 	},
 });
 </script>

@@ -15,44 +15,43 @@
 			<transition-group name="quick-bounce">
 				<div
 					class="my-8"
-					v-for="{ slot, highlightedSolutionIds } in processedExercises"
-					:key="'thread-e-' + slot.exercise.id"
+					v-for="{ exercise, highlightedSolutionIds } in processedExercises"
+					:key="'thread-e-' + exercise.id"
 				>
-					<h4>{{ getExerciseTitle(slot.exercise) }}</h4>
-					<!-- TODO use <Exercise> and handle cloze exercises -->
-					<AbstractEventParticipationSlot :modelValue="slot" :showAnswer="false" />
-					<!-- TODO handle pagination -->
+					<h4>{{ getExerciseTitle(exercise) }}</h4>
+					<!-- <AbstractEventParticipationSlot :modelValue="slot" :showAnswer="false" /> -->
+					<FullExercise :exercise="exercise" />
 					<ExerciseSolutionContainer
-						v-show="showSolutionsByExercise[slot.exercise.id]"
-						v-if="!loadingSolutionsByExercise[slot.exercise.id]"
+						v-show="showSolutionsByExercise[exercise.id]"
+						v-if="!loadingSolutionsByExercise[exercise.id]"
 						class=""
 						:showTitle="false"
 						:allowAddSolution="false"
 						:showTeacherControls="true"
-						:exercise="slot.exercise"
-						:solutions="getSolutionsForExercise(slot.exercise)"
+						:exercise="exercise"
+						:solutions="getSolutionsForExercise(exercise)"
 						:showFirst="highlightedSolutionIds"
 						:canLoadMore="
-							!(getPaginatedSolutionsForExercise(slot.exercise)?.isLastPage ?? true)
+							!(getPaginatedSolutionsForExercise(exercise)?.isLastPage ?? true)
 						"
-						@loadMore="loadMore(slot.exercise)"
+						@loadMore="loadMore(exercise)"
 					/>
 					<SlotSkeleton class="mt-4" v-else />
 					<div
 						v-if="
-							!loadingSolutionsByExercise[slot.exercise.id] &&
-							!showSolutionsByExercise[slot.exercise.id]
+							!loadingSolutionsByExercise[exercise.id] &&
+							!showSolutionsByExercise[exercise.id]
 						"
 					>
 						<Btn
-							@click="showSolutionsByExercise[slot.exercise.id] = true"
+							@click="showSolutionsByExercise[exercise.id] = true"
 							:size="'sm'"
 							class="mt-2 -ml-4"
 							:variant="'primary-borderless'"
 							>{{ $t("exercise_solution.reveal_solutions_1") }}
-							{{ getSolutionCountForExercise(slot.exercise) }}
+							{{ getSolutionCountForExercise(exercise) }}
 							{{
-								getSolutionCountForExercise(slot.exercise) === 1
+								getSolutionCountForExercise(exercise) === 1
 									? $t("exercise_solution.reveal_solutions_2_singular")
 									: $t("exercise_solution.reveal_solutions_2_plural")
 							}}</Btn
@@ -115,6 +114,7 @@ import {
 import MinimalExercisePreviewSkeleton from "@/components/ui/skeletons/MinimalExercisePreviewSkeleton.vue";
 import SlotSkeleton from "@/components/ui/skeletons/SlotSkeleton.vue";
 import Btn from "@/components/ui/Btn.vue";
+import FullExercise from "@/components/shared/FullExercise.vue";
 const { mapGetters } = createNamespacedHelpers("teacher");
 export default defineComponent({
 	name: "CourseExerciseSolutionThreads",
@@ -213,12 +213,12 @@ export default defineComponent({
 		...mapState("teacher", ["paginatedExercises"]),
 		...mapState("shared", ["paginatedSolutionsByExerciseId"]),
 		processedExercises(): {
-			slot: EventParticipationSlot;
+			exercise: Exercise;
 			highlightedSolutionIds: string[];
 		}[] {
 			// TODO return exercises with the most important solutions shown
-			return this.exercises?.map((e: Exercise) => ({
-				slot: getFakeEventParticipationSlot(e),
+			return this.exercises?.map((exercise: Exercise) => ({
+				exercise,
 				highlightedSolutionIds: [],
 			}));
 		},
@@ -228,13 +228,14 @@ export default defineComponent({
 	},
 	components: {
 		ExerciseSolutionContainer,
-		AbstractEventParticipationSlot,
+		//AbstractEventParticipationSlot,
 		VueEternalLoading,
 		Spinner,
 		ExerciseEditorWrapperSkeleton,
 		MinimalExercisePreviewSkeleton,
 		SlotSkeleton,
 		Btn,
+		FullExercise,
 	},
 });
 </script>

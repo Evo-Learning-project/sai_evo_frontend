@@ -4,9 +4,8 @@
 			<MinimalExercisePreviewSkeleton />
 		</div>
 		<div v-else-if="exercise">
-			<!-- TODO use <Exercise> and handle cloze exercises -->
-			<AbstractEventParticipationSlot :modelValue="slot" />
-			<!-- TODO handle pagination -->
+			<!-- <AbstractEventParticipationSlot :modelValue="slot" /> -->
+			<FullExercise :exercise="exercise" />
 			<ExerciseSolutionContainer
 				:exercise="exercise"
 				:solutions="exerciseSolutions"
@@ -83,11 +82,6 @@ export default defineComponent({
 		exerciseSolutions(): ExerciseSolution[] {
 			return this.exercisePaginatedSolutions?.data ?? [];
 		},
-		slot(): EventParticipationSlot | undefined {
-			return typeof this.exercise === "undefined"
-				? undefined
-				: getFakeEventParticipationSlot(this.exercise);
-		},
 		exerciseId() {
 			return this.$route.params.exerciseId as string;
 		},
@@ -96,7 +90,7 @@ export default defineComponent({
 		},
 	},
 	components: {
-		AbstractEventParticipationSlot,
+		//AbstractEventParticipationSlot,
 		ExerciseSolutionContainer,
 		MinimalExercisePreviewSkeleton,
 	},

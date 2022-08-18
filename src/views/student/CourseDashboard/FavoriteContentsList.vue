@@ -17,14 +17,13 @@
 						</Btn>
 					</div>
 				</div> -->
-				<Exercise
+				<!-- <Exercise
 					:exercise="exercise"
 					:readOnly="true"
 					:showReadOnlyAnswer="false"
 					:showPublicTags="true"
-				/>
-				<!-- TODO handle cloze exercises -->
-				<!-- TODO handle pagination-->
+				/> -->
+				<FullExercise :exercise="exercise" />
 				<ExerciseSolutionContainer
 					class="mt-4"
 					:showTitle="false"
@@ -71,6 +70,7 @@ import { LoadAction } from "@ts-pro/vue-eternal-loading";
 import { getBlankExerciseSearchFilters } from "@/api/utils";
 import ExerciseSearchFilters from "@/components/teacher/ExerciseSearchFilters.vue";
 import Btn from "@/components/ui/Btn.vue";
+import FullExercise from "@/components/shared/FullExercise.vue";
 export default defineComponent({
 	name: "FavoriteContentsList",
 	mixins: [courseIdMixin, loadingMixin],
@@ -147,12 +147,11 @@ export default defineComponent({
 	},
 	components: {
 		SlotSkeleton,
-		Exercise,
+		// Exercise,
 		ExerciseSolutionContainer,
 		Spinner,
 		VueEternalLoading,
-		//ExerciseSearchFilters,
-		//Btn,
+		FullExercise,
 	},
 });
 </script>

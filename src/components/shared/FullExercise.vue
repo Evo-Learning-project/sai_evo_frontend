@@ -4,6 +4,8 @@
 		:modelValue="exerciseWrapperSlot"
 		:allowEditAssessment="false"
 		:allowEditSubmission="false"
+		:showAnswer="false"
+		:showTags="showTags"
 	/>
 </template>
 
@@ -22,6 +24,10 @@ export default defineComponent({
 		exercise: {
 			type: Object as PropType<IExercise>,
 			required: true,
+		},
+		showTags: {
+			type: Boolean,
+			default: true,
 		},
 	},
 	components: {
