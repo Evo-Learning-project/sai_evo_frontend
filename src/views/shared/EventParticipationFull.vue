@@ -200,6 +200,7 @@
 					v-if="showSolutionAndScores && !slotsLoadingSolution[slot.id]"
 					:exercise="slot.exercise"
 					:solutions="getSolutionsForExercise(slot.exercise)"
+					class="mt-4"
 				/>
 				<SlotSkeleton v-else-if="slotsLoadingSolution[slot.id]" />
 			</div>

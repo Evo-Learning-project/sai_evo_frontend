@@ -1,5 +1,5 @@
 <template>
-	<div class="flex flex-col flex-grow h-full">
+	<div class="flex flex-col flex-grow h-full pb-4">
 		<div
 			v-if="showTimeUpBackdrop"
 			style="z-index: 99999"

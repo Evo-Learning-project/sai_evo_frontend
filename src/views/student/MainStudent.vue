@@ -1,7 +1,7 @@
 <template>
 	<div class="flex flex-col flex-grow">
 		<nav
-			class="shadow-elevation py-0.5 md:px-2 sticky top-0 lg:px-12 bg-primary"
+			class="shadow-elevation py-0.5 md:px-2 top-0 lg:px-12 bg-primary"
 			style="z-index: 999999"
 		>
 			<div class="px-4 mx-auto sm:px-6 lg:px-8">
@@ -32,16 +32,18 @@
 							>
 						</div>
 					</div>
+					<div class="ml-auto md:hidden" id="main-student-nav-right"></div>
 				</div>
 			</div>
 		</nav>
 		<header
 			v-if="showSecondaryHeader"
 			class="
+				sticky
 				top-0
 				z-50
 				mb-6
-				shadow-none
+				shadow
 				bg-light bg-opacity-100 bg-fallback-firefox
 				md:px-2
 				backdrop-blur-sm backdrop-filter
@@ -65,8 +67,8 @@
 				</div>
 			</div>
 		</header>
-		<main class="flex-grow px-2 bg-white md:px-8 lg:px-12">
-			<div class="h-full px-2 mx-auto sm:px-1 lg:px-8">
+		<main class="flex-grow bg-white md:px-8 lg:px-12">
+			<div class="h-full mx-auto lg:px-8" :class="{ 'px-4': showSecondaryHeader }">
 				<ErrorView v-if="!!$store.state.shared.pageWideErrorData"></ErrorView>
 				<router-view class="" v-else />
 				<transition name="quick-bounce"

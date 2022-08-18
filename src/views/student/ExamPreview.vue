@@ -1,5 +1,5 @@
 <template>
-	<div class="h-full">
+	<div class="h-full pb-4">
 		<div v-if="firstLoading" class="mt-4">
 			<SlotSkeleton></SlotSkeleton>
 			<SlotSkeleton></SlotSkeleton>

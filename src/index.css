@@ -1424,16 +1424,20 @@
 
 	.v-sidebar-menu.vsm_rtl {
 	}
-	.v-sidebar-menu .vsm--item {
+	.vsm--item {
 		@apply text-darkText;
 	}
-	.v-sidebar-menu .vsm--link {
+	.vsm--link {
 		@apply hover:bg-primary-light hover:bg-opacity-10  rounded-r-full;
+		transition-property: background-color, border-color, color, fill, stroke !important;
+		transition-duration: 0.15s !important;
+		transition-timing-function: ease;
+		transition-delay: 0s;
 	}
 	.v-sidebar-menu.vsm_collapsed.vsm--link {
 		@apply rounded-l-full;
 	}
-	.v-sidebar-menu .vsm--link_active {
+	.vsm--link_active {
 		@apply bg-primary-light bg-opacity-30 shadow-none !important;
 	}
 	.v-sidebar-menu .vsm--link_open {
@@ -1448,16 +1452,15 @@
 
 	.vsm--scroll-wrapper
 	/* .vsm--header,
-	.vsm--footer  */
-	{
+	.vsm--footer  */ {
 		@apply fixed !important;
 	}
-
 
 	/*
 	!!! TODO if you ever need to have 2nd level sidebar items, remove this
 	*/
-	.vsm--child, .vsm--arrow {
+	.vsm--child,
+	.vsm--arrow {
 		@apply hidden !important;
 	}
 
@@ -1476,7 +1479,7 @@
 	.v-sidebar-menu .vsm--title {
 		@apply opacity-80 text-darkText;
 	}
-	.v-sidebar-menu .vsm--icon {
+	.vsm--icon {
 		@apply bg-transparent !important;
 		@apply opacity-60 text-darkText;
 	}
