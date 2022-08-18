@@ -12,14 +12,14 @@ export const internalSidebarOptionsToSidebarMenuOptions = (opts: SidebarOption[]
 			class: "material-icons-outlined",
 			text: o.icon ?? "",
 		},
-		// child: o.children?.map(
-		// 	c =>
-		// 		internalSidebarOptionsToSidebarMenuOptions([
-		// 			{
-		// 				routeName: c,
-		// 				label: "",
-		// 				requiredPrivileges: [],
-		// 			},
-		// 		]) as any,
+		// child: (o.children ?? []).flatMap(c =>
+		// 	internalSidebarOptionsToSidebarMenuOptions([
+		// 		{ routeName: c, label: "", requiredPrivileges: [] },
+		// 	]),
 		// ),
+		// child: o.children?.map(c => ({
+		// 	href: {
+		// 		name: c,
+		// 	},
+		// })),
 	}));

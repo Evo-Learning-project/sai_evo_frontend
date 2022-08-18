@@ -12,7 +12,7 @@
 			class="mt-8"
 			:exercise="exercise"
 			:solutions="exerciseSolutions"
-			:showFirst="solutiondId ? [solutionId] : []"
+			:showFirst="solutionId ? [solutionId] : []"
 			:standalone="true"
 			@loadMore="loadMore()"
 			:canLoadMore="!(paginatedExerciseSolutions?.isLastPage ?? true)"
