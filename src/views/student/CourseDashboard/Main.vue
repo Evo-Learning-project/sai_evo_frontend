@@ -80,8 +80,8 @@ import {
 	ROUTE_TITLE_EVENT_NAME_TOKEN,
 } from "@/navigation/const";
 import { courseIdMixin, coursePrivilegeMixin, eventIdMixin } from "@/mixins";
-import { SidebarMenu } from "vue-sidebar-menu";
-import "vue-sidebar-menu/dist/vue-sidebar-menu.css";
+import { SidebarMenu } from "vue3-sidebar-menu";
+import "vue3-sidebar-menu/dist/vue-sidebar-menu.css";
 import { internalSidebarOptionsToSidebarMenuOptions } from "@/navigation/utils";
 import Avatar from "@/components/ui/Avatar.vue";
 import { mapState } from "vuex";
