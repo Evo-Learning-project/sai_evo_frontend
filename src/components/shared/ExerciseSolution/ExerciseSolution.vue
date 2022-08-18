@@ -111,35 +111,43 @@
 						</div>
 						<!-- content -->
 						<div
-							ref="content"
 							class="relative w-full pt-4 mb-auto whitespace-pre"
-							:class="{ 'h-full': !collapsed, 'overflow-hidden': collapsed }"
-							:style="collapsed ? 'max-height: ' + MAX_CONTENT_HEIGHT_PX + 'px' : ''"
+							:class="{
+								'h-full': !collapsed && !calculatingHeight,
+								'overflow-hidden': collapsed || calculatingHeight,
+							}"
+							:style="
+								collapsed || calculatingHeight
+									? 'max-height: ' + MAX_CONTENT_HEIGHT_PX + 'px'
+									: ''
+							"
 						>
-							<!-- {{ ExerciseSolutionState[solution.state] }} -->
-							<ProcessedTextFragment
-								v-if="solutionType === 'text'"
-								style="white-space: break-spaces"
-								class="w-full px-4 py-2 rounded"
-								:value="solution.content"
-							/>
-							<CodeFragment
-								v-else
-								:language="solutionType"
-								:value="solution.content"
-								class="-mt-4 rounded-tr rounded-none"
-							/>
-							<div
-								v-if="collapsed"
-								class="absolute bottom-0 left-0 flex w-full h-40 hidden-content"
-							>
-								<Btn
-									@click="collapsed = false"
-									:variant="'primary-borderless'"
-									class="z-20 mx-auto mt-auto mb-2"
-									>{{ $t("exercise_solution.reveal_solution") }}</Btn
+							<div ref="content">
+								<ProcessedTextFragment
+									v-if="solutionType === 'text'"
+									style="white-space: break-spaces"
+									class="w-full px-4 py-2 rounded"
+									:value="solution.content"
+								/>
+								<CodeFragment
+									v-else
+									:language="solutionType"
+									:value="solution.content"
+									class="-mt-4 rounded-tr rounded-none"
+								/>
+								<div
+									v-if="collapsed"
+									class="absolute bottom-0 left-0 flex w-full h-40 hidden-content"
 								>
+									<Btn
+										@click="collapsed = false"
+										:variant="'primary-borderless'"
+										class="z-20 mx-auto mt-auto mb-2"
+										>{{ $t("exercise_solution.reveal_solution") }}</Btn
+									>
+								</div>
 							</div>
+							<!-- {{ ExerciseSolutionState[solution.state] }} -->
 						</div>
 
 						<div class="flex w-full mt-2 pb-0.5">
@@ -295,6 +303,7 @@ export default defineComponent({
 			) {
 				this.collapsed = true;
 			}
+			this.calculatingHeight = false;
 		}, 50);
 	},
 	data() {
@@ -308,6 +317,7 @@ export default defineComponent({
 			MAX_CONTENT_HEIGHT_PX,
 			collapsed: false,
 			showAnimation: false,
+			calculatingHeight: true,
 			//solutionId: uuid4(),
 		};
 	},

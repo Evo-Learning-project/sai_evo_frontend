@@ -39,13 +39,11 @@
 			v-if="showSecondaryHeader"
 			class="
 				top-0
-				-mx-12
 				z-50
 				mb-6
 				shadow-none
-				bg-primary-light bg-opacity-0 bg-fallback-firefox
+				bg-light bg-opacity-100 bg-fallback-firefox
 				md:px-2
-				lg:px-12
 				backdrop-blur-sm backdrop-filter
 			"
 		>
