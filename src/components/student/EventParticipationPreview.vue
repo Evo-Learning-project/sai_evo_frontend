@@ -10,9 +10,9 @@
 		>
 			<!-- 334 x 371 -->
 			<template v-slot:header>
-				<h3 class="text-center" v-if="participation.event.name.length > 0">
+				<h4 class="text-center" v-if="participation.event.name.length > 0">
 					{{ participation.event.name }}
-				</h3>
+				</h4>
 				<div class="flex mx-auto font-medium text-muted">
 					<p class="mx-auto space-x-1">
 						<span class="hidden inline-icon material-icons-outlined light-icon">

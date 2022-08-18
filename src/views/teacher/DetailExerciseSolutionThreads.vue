@@ -15,6 +15,8 @@
 				:showTeacherControls="true"
 				:allowAddSolution="false"
 				:showTitle="false"
+				:canLoadMore="!(exercisePaginatedSolutions?.isLastPage ?? true)"
+				@loadMore="loadMore()"
 			/>
 		</div>
 	</div>
@@ -34,6 +36,7 @@ import ExerciseSolutionContainer from "@/components/shared/ExerciseSolution/Exer
 import { mapActions, mapGetters, mapState } from "vuex";
 import { courseIdMixin, loadingMixin } from "@/mixins";
 import MinimalExercisePreviewSkeleton from "@/components/ui/skeletons/MinimalExercisePreviewSkeleton.vue";
+import { PaginatedData } from "@/api";
 export default defineComponent({
 	name: "DetailExerciseSolutionThreads",
 	props: {},
@@ -55,6 +58,16 @@ export default defineComponent({
 	methods: {
 		...mapActions("teacher", ["getExercisesById"]),
 		...mapActions("shared", ["getSolutionsByExercise"]),
+		async loadMore() {
+			await this.withLoading(
+				async () =>
+					await this.getSolutionsByExercise({
+						courseId: this.courseId,
+						exerciseId: this.exerciseId,
+						fromFirstPage: false,
+					}),
+			);
+		},
 	},
 	computed: {
 		...mapGetters("teacher", ["exercises"]),
@@ -64,8 +77,11 @@ export default defineComponent({
 				e => e.id == (this.exerciseId as string),
 			);
 		},
+		exercisePaginatedSolutions(): PaginatedData<ExerciseSolution> | undefined {
+			return this.paginatedSolutionsByExerciseId[this.exerciseId];
+		},
 		exerciseSolutions(): ExerciseSolution[] {
-			return this.paginatedSolutionsByExerciseId[this.exerciseId]?.data ?? [];
+			return this.exercisePaginatedSolutions?.data ?? [];
 		},
 		slot(): EventParticipationSlot | undefined {
 			return typeof this.exercise === "undefined"

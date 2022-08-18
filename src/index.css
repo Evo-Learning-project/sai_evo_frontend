@@ -1428,7 +1428,7 @@
 		@apply text-darkText;
 	}
 	.vsm--link {
-		@apply hover:bg-primary-light hover:bg-opacity-10  rounded-r-full;
+		@apply hover:bg-primary-light hover:bg-opacity-10 rounded-r-full;
 		transition-property: background-color, border-color, color, fill, stroke !important;
 		transition-duration: 0.15s !important;
 		transition-timing-function: ease;

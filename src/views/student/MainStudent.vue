@@ -1,6 +1,7 @@
 <template>
 	<div class="flex flex-col flex-grow">
 		<nav
+			:class="{ sticky: !showSecondaryHeader }"
 			class="shadow-elevation py-0.5 md:px-2 top-0 lg:px-12 bg-primary"
 			style="z-index: 999999"
 		>

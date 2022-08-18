@@ -1,6 +1,9 @@
 <template>
-	<div class="flex items-center space-x-2">
-		<Avatar :size="'xs'" :user="comment.user" />
+	<div class="flex items-center">
+		<Avatar :user="comment.user" />
+		<p class="ml-2 mr-2 font-medium text-primary capitalize">
+			{{ comment.user.full_name ?? "" }}
+		</p>
 		<p>{{ comment.content }}</p>
 	</div>
 </template>

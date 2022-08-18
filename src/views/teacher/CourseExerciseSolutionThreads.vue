@@ -23,6 +23,7 @@
 					<AbstractEventParticipationSlot :modelValue="slot" :showAnswer="false" />
 					<!-- TODO handle pagination -->
 					<ExerciseSolutionContainer
+						v-show="showSolutionsByExercise[slot.exercise.id]"
 						v-if="!loadingSolutionsByExercise[slot.exercise.id]"
 						class=""
 						:showTitle="false"
@@ -31,9 +32,32 @@
 						:exercise="slot.exercise"
 						:solutions="getSolutionsForExercise(slot.exercise)"
 						:showFirst="highlightedSolutionIds"
-						:forceShowAll="true"
+						:canLoadMore="
+							!(getPaginatedSolutionsForExercise(slot.exercise)?.isLastPage ?? true)
+						"
+						@loadMore="loadMore(slot.exercise)"
 					/>
 					<SlotSkeleton class="mt-4" v-else />
+					<div
+						v-if="
+							!loadingSolutionsByExercise[slot.exercise.id] &&
+							!showSolutionsByExercise[slot.exercise.id]
+						"
+					>
+						<Btn
+							@click="showSolutionsByExercise[slot.exercise.id] = true"
+							:size="'sm'"
+							class="mt-2 -ml-4"
+							:variant="'primary-borderless'"
+							>{{ $t("exercise_solution.reveal_solutions_1") }}
+							{{ getSolutionCountForExercise(slot.exercise) }}
+							{{
+								getSolutionCountForExercise(slot.exercise) === 1
+									? $t("exercise_solution.reveal_solutions_2_singular")
+									: $t("exercise_solution.reveal_solutions_2_plural")
+							}}</Btn
+						>
+					</div>
 					<MinimalExercisePreviewSkeleton v-if="false" />
 				</div>
 			</transition-group>
@@ -71,6 +95,7 @@ import {
 	EventParticipationSlot,
 	Exercise,
 	ExerciseSolution,
+	ExerciseSolutionState,
 	getFakeEventParticipationSlot,
 } from "@/models";
 import { defineComponent } from "@vue/runtime-core";
@@ -82,9 +107,14 @@ import AbstractEventParticipationSlot from "@/components/shared/AbstractEventPar
 import { VueEternalLoading, LoadAction } from "@ts-pro/vue-eternal-loading";
 import Spinner from "@/components/ui/Spinner.vue";
 import ExerciseEditorWrapperSkeleton from "@/components/ui/skeletons/ExerciseEditorWrapperSkeleton.vue";
-import { ExerciseSearchFilter, PaginatedData } from "@/api/interfaces";
+import {
+	ExerciseSearchFilter,
+	ExerciseSolutionSearchFilter,
+	PaginatedData,
+} from "@/api/interfaces";
 import MinimalExercisePreviewSkeleton from "@/components/ui/skeletons/MinimalExercisePreviewSkeleton.vue";
 import SlotSkeleton from "@/components/ui/skeletons/SlotSkeleton.vue";
+import Btn from "@/components/ui/Btn.vue";
 const { mapGetters } = createNamespacedHelpers("teacher");
 export default defineComponent({
 	name: "CourseExerciseSolutionThreads",
@@ -105,6 +135,7 @@ export default defineComponent({
 		return {
 			isInitialInfiniteLoad: false,
 			loadingSolutionsByExercise: {} as Record<string, boolean>,
+			showSolutionsByExercise: {} as Record<string, boolean>,
 		};
 	},
 	methods: {
@@ -112,6 +143,27 @@ export default defineComponent({
 		...mapActions("shared", ["getSolutionsByExercise"]),
 		getSolutionsForExercise(exercise: Exercise): ExerciseSolution[] {
 			return this.paginatedSolutionsByExerciseId[exercise.id]?.data ?? [];
+		},
+		getPaginatedSolutionsForExercise(
+			exercise: Exercise,
+		): PaginatedData<ExerciseSolution> | undefined {
+			return this.paginatedSolutionsByExerciseId[exercise.id];
+		},
+		getSolutionCountForExercise(exercise: Exercise): number {
+			return this.getPaginatedSolutionsForExercise(exercise)?.count ?? 0;
+		},
+		async loadMore(exercise: Exercise) {
+			await this.withLoading(
+				async () =>
+					await this.getSolutionsByExercise({
+						courseId: this.courseId,
+						exerciseId: exercise.id,
+						fromFirstPage: false,
+						filter: {
+							states: [ExerciseSolutionState.SUBMITTED],
+						} as ExerciseSolutionSearchFilter,
+					}),
+			);
 		},
 		getExerciseTitle(exercise: Exercise): string {
 			return (exercise?.label ?? "").trim().length > 0
@@ -127,6 +179,9 @@ export default defineComponent({
 						await this.getSolutionsByExercise({
 							courseId: this.courseId,
 							exerciseId: e.id,
+							filter: {
+								states: [ExerciseSolutionState.SUBMITTED],
+							} as ExerciseSolutionSearchFilter,
 						});
 					} catch (e) {
 						this.setErrorNotification(e);
@@ -179,6 +234,7 @@ export default defineComponent({
 		ExerciseEditorWrapperSkeleton,
 		MinimalExercisePreviewSkeleton,
 		SlotSkeleton,
+		Btn,
 	},
 });
 </script>

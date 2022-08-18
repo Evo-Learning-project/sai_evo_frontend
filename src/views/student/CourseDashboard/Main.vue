@@ -150,10 +150,24 @@
 								</p>
 							</div>
 						</div>
+						<!-- <div class="flex w-full">
+							<Btn
+								@click="logOut()"
+								:variant="'icon'"
+								:size="'sm'"
+								:outline="true"
+								class="ml-auto"
+								:tooltip="$t('misc.logout')"
+								><span style="font-size: 18px !important" class="material-icons-outlined">
+									logout
+								</span>
+							</Btn>
+						</div> -->
 					</div>
 				</template>
-				<template v-slot:footer v-if="hasAnyPrivileges()">
+				<template v-slot:footer>
 					<div
+						v-if="hasAnyPrivileges()"
 						class="
 							mt-4
 							flex flex-col

@@ -7,7 +7,18 @@
 			:full="false"
 			v-model="searchFilter"
 			@resetFilters="searchFilter = getBlankExerciseSearchFilters()"
-		></ExerciseSearchFilters>
+		/>
+		<div
+			class="flex flex-col w-full mt-12 mb-12 text-center select-none"
+			v-if="!firstLoading && !loading && exercises.length === 0"
+		>
+			<p style="font-size: 10rem" class="material-icons-outlined opacity-10">
+				search_off
+			</p>
+			<h2 class="opacity-40">
+				{{ $t("course_exercises.no_matching_exercises") }}
+			</h2>
+		</div>
 		<div v-if="!firstLoading">
 			<div class="mb-14" v-for="exercise in exercises" :key="'e-' + exercise.id">
 				<!-- <div class="flex w-full -mb-4">
@@ -94,11 +105,21 @@ import { LoadAction } from "@ts-pro/vue-eternal-loading";
 import { getBlankExerciseSearchFilters } from "@/api/utils";
 import ExerciseSearchFilters from "@/components/teacher/ExerciseSearchFilters.vue";
 import Btn from "@/components/ui/Btn.vue";
+import { getDebouncedForFilter } from "@/utils";
 export default defineComponent({
 	name: "ExerciseThreadList",
 	mixins: [courseIdMixin, loadingMixin],
 	props: {},
+	watch: {
+		searchFilter: {
+			async handler() {
+				await this.onFilterChange();
+			},
+			deep: true,
+		},
+	},
 	async created() {
+		this.onFilterChange = getDebouncedForFilter(this.onFilterChange);
 		this.withFirstLoading(async () => {
 			await this.getTags({ courseId: this.courseId });
 			await this.getExercises({
@@ -121,6 +142,21 @@ export default defineComponent({
 		...mapActions("teacher", ["getExercises"]),
 		...mapActions("shared", ["getSolutionsByExercise", "getTags"]),
 		getBlankExerciseSearchFilters,
+		async onFilterChange() {
+			this.isInitialInfiniteLoad = true;
+			await this.withLoading(
+				async () =>
+					await this.getExercises({
+						courseId: this.courseId,
+						fromFirstPage: true,
+						filters: {
+							by_popularity: true,
+							...this.searchFilter,
+						} as ExerciseSearchFilter,
+					}),
+			);
+			this.fetchSolutionsForNewExercises();
+		},
 		getPaginatedSolutionsForExercise(
 			exercise: IExercise,
 		): PaginatedData<ExerciseSolution> | undefined {
@@ -164,7 +200,7 @@ export default defineComponent({
 				const moreResults = await this.getExercises({
 					courseId: this.courseId,
 					fromFirstPage: false,
-					filters: { by_popularity: true } as ExerciseSearchFilter,
+					filters: { by_popularity: true, ...this.searchFilter } as ExerciseSearchFilter,
 				});
 				if (!moreResults) {
 					noMore();

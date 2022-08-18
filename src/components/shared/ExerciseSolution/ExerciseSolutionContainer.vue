@@ -56,7 +56,11 @@
 				<span class="mr-2 text-base material-icons">reviews</span>
 				{{ $t("exercise_solution.propose_solution") }}
 			</Btn>
-			<router-link :to="threadPermalink" v-if="showExerciseThreadLink">
+			<router-link
+				:to="threadPermalink"
+				v-if="showExerciseThreadLink && solutions.length > 0"
+				class="mt-4"
+			>
 				<Btn :size="'xs'" class="-ml-1" :variant="'primary-borderless'">
 					{{ $t("exercise_solution.go_to_exercise_thread") }}
 				</Btn>
@@ -147,6 +151,10 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+		allowShowMore: {
+			type: Boolean,
+			default: true,
+		},
 	},
 	mixins: [courseIdMixin, savingMixin],
 	methods: {
@@ -159,7 +167,7 @@ export default defineComponent({
 			this.autoSaveManager = null;
 		},
 		onShowMore() {
-			if (!this.showAll) {
+			if (!this.showAll && !this.forceShowAll) {
 				this.showAll = true;
 			} else {
 				this.$emit("loadMore");
@@ -333,7 +341,8 @@ export default defineComponent({
 	computed: {
 		canShowMore() {
 			return (
-				this.canLoadMore || this.shownSolutions.length < this.nonDraftSolutions.length
+				this.allowShowMore &&
+				(this.canLoadMore || this.shownSolutions.length < this.nonDraftSolutions.length)
 			);
 		},
 		// TODO extract to utils

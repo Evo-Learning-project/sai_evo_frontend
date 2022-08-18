@@ -195,13 +195,16 @@
 						{{ slot.slot_number + 1 }}
 					</h3>
 				</AbstractEventParticipationSlot>
-				<!-- TODO add link to go to exercise thread -->
-				<ExerciseSolutionContainer
-					v-if="showSolutionAndScores && !slotsLoadingSolution[slot.id]"
-					:exercise="slot.exercise"
-					:solutions="getSolutionsForExercise(slot.exercise)"
-					class="mt-4"
-				/>
+				<div v-if="showSolutionAndScores && !slotsLoadingSolution[slot.id]">
+					<ExerciseSolutionContainer
+						:exercise="slot.exercise"
+						:solutions="getSolutionsForExercise(slot.exercise)"
+						class="mt-4"
+						:showExerciseThreadLink="true"
+						:allowShowMore="false"
+					/>
+				</div>
+
 				<SlotSkeleton v-else-if="slotsLoadingSolution[slot.id]" />
 			</div>
 		</div>
