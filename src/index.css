@@ -1414,7 +1414,7 @@
 	}
 	.v-sidebar-menu .vsm--header {
 		text-transform: none !important;
-		@apply text-darkText font-normal mb-6;
+		@apply text-darkText font-normal mb-4;
 	}
 	.v-sidebar-menu .vsm--footer {
 		@apply mt-10;
@@ -1476,6 +1476,11 @@
 		/* @apply mt-20; */
 	}
 
+	li.vsm--header {
+		letter-spacing: 0.6px !important;
+		@apply text-lg font-medium mb-2 overflow-hidden overflow-ellipsis !important;
+	}
+
 	.v-sidebar-menu .vsm--title {
 		@apply opacity-80 text-darkText;
 	}
@@ -1498,8 +1503,6 @@
 	.v-sidebar-menu .vsm--badge {
 	}
 	.v-sidebar-menu .vsm--badge_default {
-	}
-	.v-sidebar-menu .vsm--header {
 	}
 	.v-sidebar-menu .vsm--dropdown {
 	}

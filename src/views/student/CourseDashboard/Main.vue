@@ -231,6 +231,7 @@ import { internalSidebarOptionsToSidebarMenuOptions } from "@/navigation/utils";
 import Avatar from "@/components/ui/Avatar.vue";
 import { mapState } from "vuex";
 import Btn from "@/components/ui/Btn.vue";
+import { Course } from "@/models";
 export default defineComponent({
 	name: "Main",
 	props: {},
@@ -273,7 +274,10 @@ export default defineComponent({
 			return studentDashboardSidebarOptions;
 		},
 		sidebarOptions() {
-			return internalSidebarOptionsToSidebarMenuOptions(studentDashboardSidebarOptions);
+			return [
+				{ header: this.currentCourse.name },
+				...internalSidebarOptionsToSidebarMenuOptions(studentDashboardSidebarOptions),
+			];
 		},
 	},
 	components: { BreadCrumbs, SidebarMenu, Avatar, Btn },
