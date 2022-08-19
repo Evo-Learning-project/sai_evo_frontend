@@ -418,6 +418,13 @@ export default defineComponent({
 		$route() {
 			this.showMobileSidebar = false;
 		},
+		showMobileSidebar(newVal) {
+			if (newVal) {
+				document.body.classList.add("overflow-y-hidden");
+			} else {
+				document.body.classList.remove("overflow-y-hidden");
+			}
+		},
 	},
 	mounted() {
 		setTimeout(() => {

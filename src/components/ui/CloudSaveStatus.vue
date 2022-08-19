@@ -7,7 +7,7 @@
 				<span class="text-xl opacity-80 material-icons-outlined animate-spin">
 					sync
 				</span>
-				<p class="text-base">{{ $t("cloud.saving") }}</p>
+				<p class="hidden md:block text-base">{{ $t("cloud.saving") }}</p>
 			</div>
 			<div v-else-if="!hadError" class="flex items-center ml-auto space-x-1.5 text-muted">
 				<Tooltip :placement="'left'" :text-value="$t('cloud.changes_saved_to_server')">

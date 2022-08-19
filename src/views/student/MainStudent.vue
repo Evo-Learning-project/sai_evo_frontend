@@ -60,7 +60,7 @@
 					<BreadCrumbs
 						v-if="!$route.meta.hideBreadcrumbs"
 						:route="$route"
-						class="mt-1 ml-2 md:ml-0"
+						class="mt-1 md:ml-0"
 					></BreadCrumbs>
 				</div>
 				<div class="flex ml-auto md:w-80">

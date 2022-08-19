@@ -114,7 +114,6 @@ export const mutations = {
 		state: StudentState,
 		{ exerciseId, payload }: MutationPayload<ExerciseSolution>,
 	) => {
-		console.log("MUTATION", payload);
 		const exercise = (store.getters["student/exercises"] as Exercise[]).find(
 			e => e.id == exerciseId,
 		);
@@ -124,7 +123,7 @@ export const mutations = {
 		if (target) {
 			Object.assign(target, payload);
 		} else {
-			// TODO refactor
+			// ! TODO refactor
 			exercise?.solutions?.push(payload);
 		}
 	},

@@ -20,10 +20,21 @@
 				}"
 			>
 				<!-- main -->
-				<div class="flex h-full">
+				<div class="flex md:flex-row flex-col h-full">
 					<!-- voting -->
-					<div class="h-full px-4 pt-4 rounded-tl-sm bg-gray-50">
-						<div class="sticky flex flex-col items-center pb-4 space-y-4 top-18">
+					<div class="h-full pt-2 pb-2 md:pb-0 px-4 md:pt-4 rounded-tl-sm bg-gray-50">
+						<div
+							class="
+								sticky
+								flex
+								md:flex-col
+								flex-row
+								place-content-evenly
+								items-center
+								md:pb-4 md:space-y-4 md:space-x-0
+								top-18
+							"
+						>
 							<div class="relative">
 								<Btn
 									:disabled="isOwnSolution"
@@ -37,7 +48,11 @@
 										:class="[
 											solution.has_upvote ? 'material-icons' : 'material-icons-outlined',
 										]"
-										style="font-size: 35px !important"
+										:style="
+											mediaQueryMdMatches
+												? 'font-size: 35px !important'
+												: 'font-size: 28px !important'
+										"
 									>
 										thumb_up_alt</span
 									>
@@ -54,7 +69,7 @@
 								/>
 							</div>
 
-							<p class="text-4xl text-muted">{{ solution.score }}</p>
+							<p class="text-3xl md:text-4xl text-muted">{{ solution.score }}</p>
 							<Btn
 								:disabled="isOwnSolution"
 								:variant="'icon'"
@@ -66,7 +81,11 @@
 									:class="[
 										solution.has_downvote ? 'material-icons' : 'material-icons-outlined',
 									]"
-									style="font-size: 35px !important"
+									:style="
+										mediaQueryMdMatches
+											? 'font-size: 35px !important'
+											: 'font-size: 28px !important'
+									"
 								>
 									thumb_down_alt</span
 								></Btn
@@ -152,7 +171,7 @@
 
 						<div class="flex w-full mt-2 pb-0.5">
 							<!-- actions -->
-							<div class="flex ml-2">
+							<div class="flex md:ml-2">
 								<Btn
 									v-if="canEdit"
 									:variant="'icon'"
@@ -186,8 +205,10 @@
 
 							<!-- author -->
 							<div class="flex items-center ml-auto">
-								<Avatar class="ml-auto mr-2" :user="solution.user" />
-								<p class="mr-5 text-muted">{{ authorName }}</p>
+								<Avatar class="ml-auto md:mr-2 mr-1" :user="solution.user" />
+								<p class="md:mr-5 mr-2 text-sm md:text-base text-muted">
+									{{ authorName }}
+								</p>
 							</div>
 						</div>
 					</div>
@@ -247,7 +268,7 @@ import Avatar from "@/components/ui/Avatar.vue";
 import { mapActions, mapState } from "vuex";
 import ExerciseSolutionComment from "./ExerciseSolutionComment.vue";
 import ProcessedTextFragment from "@/components/ui/ProcessedTextFragment.vue";
-import { courseIdMixin, coursePrivilegeMixin } from "@/mixins";
+import { courseIdMixin, coursePrivilegeMixin, mediaQueryMixin } from "@/mixins";
 import { setErrorNotification } from "@/utils";
 import CopyToClipboard from "@/components/ui/CopyToClipboard.vue";
 import { getExerciseSolutionThreadRoute } from "./utils";
@@ -259,7 +280,7 @@ import Tooltip from "@/components/ui/Tooltip.vue";
 //import { v4 as uuid4 } from "uuid";
 export default defineComponent({
 	name: "ExerciseSolution",
-	mixins: [courseIdMixin, coursePrivilegeMixin],
+	mixins: [courseIdMixin, coursePrivilegeMixin, mediaQueryMixin],
 	props: {
 		exercise: {
 			type: Object as PropType<Exercise>,

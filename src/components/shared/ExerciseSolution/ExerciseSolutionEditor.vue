@@ -8,7 +8,9 @@
 			class="fixed z-10 w-full h-full transition-none bg-gray-900 opacity-80"
 		></div>
 		<div
-			style="min-height: 24rem; max-height: 40rem"
+			:style="
+				mediaQueryMdMatches ? 'min-height: 24rem; max-height: 40rem' : 'height: 100vh'
+			"
 			class="
 				fixed
 				bottom-0
@@ -33,9 +35,11 @@
 					><span class="material-icons-outlined">close</span></Btn
 				>
 			</div>
-			<div class="flex w-full pb-10 space-x-8 overflow-y-auto">
+			<div
+				class="flex md:flex-row w-full h-full pb-10 flex-col md:space-x-8 overflow-y-auto"
+			>
 				<!-- editor section -->
-				<div class="w-full">
+				<div class="w-full md:order-1 order-2 mt-4 md:mt-0">
 					<TextEditor
 						v-if="editorType === 'text'"
 						:tall="true"
@@ -53,7 +57,7 @@
 					/>
 				</div>
 				<!-- exercise section -->
-				<div class="w-full overflow-y-auto">
+				<div class="md:order-2 order-1 w-full overflow-y-auto">
 					<slot></slot>
 				</div>
 			</div>
@@ -85,12 +89,12 @@ import TextEditor from "@/components/ui/TextEditor.vue";
 import { ExerciseSolution, ExerciseSolutionState } from "@/models";
 import Btn from "@/components/ui/Btn.vue";
 import CloudSaveStatus from "@/components/ui/CloudSaveStatus.vue";
-import { texMixin } from "@/mixins";
+import { mediaQueryMixin, texMixin } from "@/mixins";
 import CodeEditor from "@/components/ui/CodeEditor.vue";
 import { AutoSaveManager } from "@/autoSave";
 export default defineComponent({
 	name: "ExerciseSolutionEditor",
-	mixins: [texMixin],
+	mixins: [texMixin, mediaQueryMixin],
 	props: {
 		modelValue: {
 			type: Object as PropType<ExerciseSolution>,

@@ -57,6 +57,10 @@
 	select {
 		@apply px-3 py-1 border rounded bg-light;
 	}
+
+	pre {
+		white-space: pre-wrap;
+	}
 }
 
 @layer components {
@@ -1281,6 +1285,7 @@
 		font-family: "Source Sans Pro", "Helvetica Neue", "Helvetica", "Arial", sans-serif !important;
 		padding: 0px;
 		font-size: 5px !important;
+		display: none;
 	}
 
 	.thumbnail-slot .ql-editor-container button {
@@ -1476,7 +1481,7 @@
 		/* @apply mt-20; */
 	}
 
-	li.vsm--header {
+	li.vsm--header, .sidebar-title {
 		letter-spacing: 0.6px !important;
 		@apply text-lg font-medium mb-2 overflow-hidden overflow-ellipsis !important;
 	}

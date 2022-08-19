@@ -19,14 +19,17 @@
 			@updateState="onSolutionStateUpdate(solution, $event)"
 			@editSolution="onEditSolution(solution)"
 		/>
-		<div class="flex items-center space-x-4" v-if="solutions.length === 0">
+		<div
+			class="flex md:flex-row items-center md:space-y-0 space-y-2 flex-col md:space-x-4"
+			v-if="solutions.length === 0"
+		>
 			<p class="text-muted">
 				{{ $t("exercise_solution.no_solutions_call_to_action") }}
 			</p>
 			<Btn
 				@click="onAddSolution()"
 				:variant="'primary'"
-				class=""
+				class="w-full md:w-max"
 				:size="'sm'"
 				:outline="true"
 			>
@@ -49,7 +52,7 @@
 				@click="onAddSolution()"
 				v-if="solutions.length > 0 && allowAddSolution"
 				:variant="'primary'"
-				class="mt-4 mr-auto"
+				class="mt-4 md:mr-auto w-full md:w-max"
 				:size="'sm'"
 				:outline="true"
 			>
@@ -109,6 +112,7 @@ import {
 	EXERCISE_SOLUTION_AUTO_SAVE_DEBOUNCE_FIELDS,
 	EXERCISE_SOLUTION_AUTO_SAVE_DEBOUNCE_TIME_MS,
 } from "@/const";
+import FullExercise from "../FullExercise.vue";
 export default defineComponent({
 	name: "ExerciseSolutionContainer",
 	props: {
@@ -389,7 +393,7 @@ export default defineComponent({
 		Btn,
 		ExerciseSolution,
 		ExerciseSolutionEditor,
-		//Exercise
+		FullExercise,
 	},
 });
 </script>

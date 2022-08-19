@@ -12,7 +12,7 @@
 		<transition name="fade"
 			><div
 				@click="showMobileSidebar = false"
-				class="absolute z-50 w-full h-full opacity-50 bg-dark"
+				class="fixed z-50 w-full h-full opacity-50 bg-dark"
 				v-show="showMobileSidebar"
 			></div
 		></transition>
@@ -78,6 +78,7 @@
 						</div>
 					</div>
 				</div>
+				<div class="sidebar-title mt-6">{{ currentCourse.name }}</div>
 				<ul class="flex flex-col w-full mt-6 -ml-4">
 					<router-link
 						class="relative my-1 overflow-hidden w-full"
@@ -239,6 +240,13 @@ export default defineComponent({
 	watch: {
 		$route() {
 			this.showMobileSidebar = false;
+		},
+		showMobileSidebar(newVal) {
+			if (newVal) {
+				document.body.classList.add("overflow-y-hidden");
+			} else {
+				document.body.classList.remove("overflow-y-hidden");
+			}
 		},
 	},
 	mounted() {

@@ -1,10 +1,13 @@
 <template>
-	<div class="flex items-center">
-		<Avatar :user="comment.user" />
-		<p class="ml-2 mr-2 font-medium text-primary capitalize">
-			{{ comment.user.full_name ?? "" }}
-		</p>
-		<p>{{ comment.content }}</p>
+	<div class="flex items-center flex-wrap">
+		<div class="flex items-center">
+			<Avatar :user="comment.user" />
+			<p class="ml-2 mr-2 font-medium text-primary capitalize">
+				{{ comment.user.full_name ?? "" }}
+			</p>
+		</div>
+
+		<p class="break-normal">{{ comment.content }}</p>
 	</div>
 </template>
 
