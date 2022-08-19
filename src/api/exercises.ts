@@ -112,7 +112,7 @@ export async function updateExercise(
 export async function testProgrammingExerciseSolution(
 	courseId: string,
 	exerciseId: string,
-): Promise<CodeExecutionResults> {
+): Promise<Record<string, CodeExecutionResults>> {
 	const response = await axios.post(
 		`courses/${courseId}/exercises/${exerciseId}/solution_execution_results/`,
 	);

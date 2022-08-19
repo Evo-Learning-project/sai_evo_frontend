@@ -3,33 +3,23 @@
 		<div class="flex items-center mb-2">
 			<div class="mt-auto">
 				<Spinner class="mb-2 ml-0.5" v-if="executingSolution"></Spinner>
-				<Tooltip
-					:textCode="'testcase_passes'"
-					v-else-if="
-						executionResults &&
-						testCaseExecutionResults &&
-						testCaseExecutionResults?.passed
-					"
-				>
+				<Tooltip :textCode="'testcase_passes'" v-else-if="allTestsPass">
 					<span class="material-icons-outlined text-success-dark">check_circle</span>
 				</Tooltip>
 				<Tooltip
 					:placement="'bottom'"
 					:allowHoverOnText="true"
 					:textCode="'testcase_fails'"
-					v-else-if="
-						executionResults &&
-						(testCaseExecutionResults ||
-							executionResults.compilation_errors ||
-							executionResults.execution_error)
-					"
+					v-else
 				>
 					<span class="material-icons-outlined text-danger-dark">warning</span>
 					<template v-slot:body>
 						<div class="max-w-lg m-2 overflow-y-scroll rounded-sm max-h-64 bg-light">
 							<CodeExecutionResults
+								v-for="(executionResults, index) in nonPassingExecutionResults"
+								:key="'test-' + modelValue.id + '-non-passing-' + index"
 								:executionResults="executionResults"
-								:testCases="executionResultsSlot?.exercise.testcases"
+								:testCases="executionResultsSlots?.[0].exercise.testcases"
 								:showTestIds="[modelValue.id]"
 								:onlyErrors="true"
 							></CodeExecutionResults>
@@ -192,8 +182,8 @@ export default defineComponent({
 			type: Number as PropType<ExerciseType.JS | ExerciseType.C>,
 			required: true,
 		},
-		executionResultsSlot: {
-			type: Object as PropType<EventParticipationSlot>,
+		executionResultsSlots: {
+			type: Array as PropType<EventParticipationSlot[]>,
 		},
 		executingSolution: {
 			type: Boolean,
@@ -222,11 +212,26 @@ export default defineComponent({
 		},
 	},
 	computed: {
-		executionResults(): ICodeExecutionResults | undefined {
-			return this.executionResultsSlot?.execution_results;
+		executionResults(): ICodeExecutionResults[] {
+			return (this.executionResultsSlots ?? []).map(
+				s => s.execution_results ?? { state: "completed", tests: [] },
+			);
 		},
-		testCaseExecutionResults(): TestCaseExecutionResults | undefined {
-			return this.executionResults?.tests?.find(t => t.id == this.modelValue.id);
+		nonPassingExecutionResults(): ICodeExecutionResults[] {
+			return this.executionResults.filter(e => {
+				const testResults = (e.tests ?? []).find(t => t.id == this.modelValue.id);
+				return typeof testResults === "undefined" || !testResults.passed;
+			});
+		},
+		testCaseExecutionResults(): (TestCaseExecutionResults | undefined)[] {
+			return this.executionResults.map(r =>
+				r.tests?.find(t => t.id == this.modelValue.id),
+			);
+		},
+		allTestsPass(): boolean {
+			return this.testCaseExecutionResults.every(
+				r => typeof r !== "undefined" && r.passed,
+			);
 		},
 	},
 });

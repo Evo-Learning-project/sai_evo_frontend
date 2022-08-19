@@ -264,7 +264,7 @@
 					<!-- solutions -->
 					<div v-if="!cloze" class="mb-12">
 						<h3 class="mb-4">{{ $t("exercise_editor.solutions_title") }}</h3>
-						<div v-if="!firstLoading">
+						<div v-if="!loadingSolutions">
 							<div
 								v-for="solution in solutions"
 								:key="'e-' + modelValue.id + '-sol-' + solution.id"
@@ -290,13 +290,13 @@
 											modelValue.exercise_type === ExerciseType.JS ? 'typescript' : 'c'
 										"
 										@run="onTestSolution(solution.id)"
-										:running="testingSolution"
+										:running="testingSolutions[solution.id] ?? false"
 									>
 										<template v-slot:runButton
 											><span class="ml-1 mr-1 text-base material-icons-outlined">
 												science </span
 											>{{
-												testingSolution
+												testingSolutions[solution.id]
 													? $t("exercise_editor.testing_solution")
 													: $t("exercise_editor.test_solution")
 											}}</template
@@ -529,8 +529,7 @@
 								:testCaseType="modelValue.exercise_type"
 								@delete="onDeleteTestCase(element.id)"
 								:modelValue="element"
-								:executionResultsSlot="solutionTestSlot"
-								:executionResults="solutionTestSlot?.execution_results"
+								:executionResultsSlots="Object.values(solutionTestSlots)"
 								@testCaseUpdate="onUpdateTestCase(element.id, $event.field, $event.value)"
 							></TestCaseEditor>
 						</template>
@@ -678,6 +677,8 @@ import {
 	TEST_CASE_AUTO_SAVE_DEBOUNCED_FIELDS,
 	TEST_CASE_AUTO_SAVE_DEBOUNCE_TIME_MS,
 	CLOZE_SEPARATOR,
+	EXERCISE_SOLUTION_AUTO_SAVE_DEBOUNCE_FIELDS,
+	EXERCISE_SOLUTION_AUTO_SAVE_DEBOUNCE_TIME_MS,
 } from "@/const";
 import CodeEditor from "@/components/ui/CodeEditor.vue";
 import TestCaseEditor from "./TestCaseEditor.vue";
@@ -786,20 +787,19 @@ export default defineComponent({
 
 		this.loadingSolutions = true;
 		try {
-			this.getSolutionsByExercise({
+			await this.getSolutionsByExercise({
 				courseId: this.courseId,
 				exerciseId: this.modelValue.id,
 				filter: {
 					states: [ExerciseSolutionState.APPROVED],
 				} as ExerciseSolutionSearchFilter,
 			});
+			this.solutions.forEach(s => this.instantiateSolutionAutoSaveManager(s));
 		} catch (e) {
 			this.setErrorNotification(e);
 		} finally {
 			this.loadingSolutions = false;
 		}
-
-		this.modelValue.solutions?.forEach(s => this.instantiateSolutionAutoSaveManager(s));
 	},
 	mounted() {
 		if (this.cloze) {
@@ -836,7 +836,7 @@ export default defineComponent({
 			editingClozePosition: null as number | null,
 			editableClozePosition: null as number | null,
 			solutionTestSlots: {} as Record<string, EventParticipationSlot>,
-			testingSolution: false,
+			testingSolutions: {} as Record<string, boolean>,
 		};
 	},
 	methods: {
@@ -875,22 +875,32 @@ export default defineComponent({
 				},
 			};
 		},
-		async onTestSolution(solutionId: string) {
-			this.testingSolution = true;
+		async onTestSolution(solutionId?: string) {
 			try {
-				await this.solutionAutoSaveManagers[solutionId]?.flush();
-				//await this.autoSaveManager?.flush();
-				const fakeSlot = (this.solutionTestSlots[solutionId] ??=
-					getFakeEventParticipationSlot(this.modelValue));
-				fakeSlot.execution_results = await testProgrammingExerciseSolution(
+				if (solutionId) {
+					this.testingSolutions[solutionId] = true;
+					await this.solutionAutoSaveManagers[solutionId]?.flush();
+				}
+
+				const executionResults = await testProgrammingExerciseSolution(
 					this.courseId,
 					this.modelValue.id,
 				);
+
+				Object.keys(executionResults).forEach(sId => {
+					if (!solutionId || sId == solutionId) {
+						const fakeSlot = (this.solutionTestSlots[sId] ??=
+							getFakeEventParticipationSlot(this.modelValue));
+						fakeSlot.execution_results = executionResults[sId];
+					}
+				});
 				//this.solutionTestSlots[solutionId] = fakeSlot;
 			} catch (e) {
 				this.setErrorNotification(e);
 			} finally {
-				this.testingSolution = false;
+				if (solutionId) {
+					this.testingSolutions[solutionId] = false;
+				}
 			}
 		},
 		onTextSelectionChange(event: {
@@ -1160,8 +1170,8 @@ export default defineComponent({
 						payload: { ...solution, ...changes },
 					});
 				},
-				[],
-				0,
+				EXERCISE_SOLUTION_AUTO_SAVE_DEBOUNCE_FIELDS,
+				EXERCISE_SOLUTION_AUTO_SAVE_DEBOUNCE_TIME_MS,
 				undefined,
 				() => (this.savingError = true),
 				() => (this.saving = false),
@@ -1180,8 +1190,7 @@ export default defineComponent({
 						payload: { ...testcase, ...changes },
 						reFetch,
 					});
-					// TODO run all solutions
-					//await this.onTestSolution();
+					await this.onTestSolution();
 				},
 				changes => {
 					this.saving = true;
