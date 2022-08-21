@@ -71,6 +71,7 @@ export default defineComponent({
 				[ExerciseType.OPEN_ANSWER]: "OpenAnswerExercise",
 				[ExerciseType.JS]: "ProgrammingExercise",
 				[ExerciseType.C]: "ProgrammingExercise",
+				[ExerciseType.PYTHON]: "ProgrammingExercise",
 				[ExerciseType.ATTACHMENT]: "AttachmentExercise",
 				[ExerciseType.AGGREGATED]: "AggregatedExercise",
 				[ExerciseType.COMPLETION]: "ClozeExercise",

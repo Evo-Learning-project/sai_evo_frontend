@@ -110,6 +110,9 @@ export const en = {
 		unnamed_exercise: "Unnamed exercise",
 	},
 	exercise_editor: {
+		max_score: "Max score",
+		solutions_title: "Solutions",
+		new_solution: "New solution",
 		exercise_tags: "Tags",
 		exercise_editor_title: "Exercise editor",
 		draft_notice: "Draft",
@@ -245,6 +248,14 @@ export const en = {
 		tag_based_and: "... and",
 		tag_based_add_condition: "Aggiungi condizione",
 		eligible_exercises: "Eligible exercises:",
+	},
+	exercise_states_descriptions: {
+		[ExerciseState.PUBLIC]:
+			"Will be visible to students and able to be used both in exams and in student practice sessions.",
+		[ExerciseState.PRIVATE]:
+			"Won't be visible by students, but teachers will be able to use it in exams.",
+		[ExerciseState.DRAFT]:
+			"Won't be visible to students and teachers won't be able to use it in exams.",
 	},
 	event_participation_page: {
 		exercise: "Exercise",

@@ -7,6 +7,7 @@ export enum ExerciseType {
 	JS,
 	ATTACHMENT,
 	C,
+	PYTHON,
 	//EXTERNAL_RESOURCE,
 }
 

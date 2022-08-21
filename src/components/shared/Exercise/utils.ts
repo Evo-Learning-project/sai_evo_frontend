@@ -25,7 +25,7 @@ export const getMaxScore = (exercise: Exercise): number | null => {
 				.reduce((a, b) => a + b, 0)
 		);
 	}
-	if ([ExerciseType.C, ExerciseType.JS].includes(exType)) {
+	if ([ExerciseType.C, ExerciseType.JS, ExerciseType.PYTHON].includes(exType)) {
 		return (exercise.testcases ?? []).length;
 	}
 	if (exType === ExerciseType.MULTIPLE_CHOICE_SINGLE_POSSIBLE) {

@@ -6,7 +6,11 @@ export const multipleChoiceExerciseTypes = [
 	ExerciseType.MULTIPLE_CHOICE_SINGLE_POSSIBLE,
 ];
 
-export const programmingExerciseTypes = [ExerciseType.JS, ExerciseType.C];
+export const programmingExerciseTypes = [
+	ExerciseType.JS,
+	ExerciseType.C,
+	ExerciseType.PYTHON,
+];
 
 export type exerciseChildName = "choice" | "testcase" | "sub_exercise" | "solution";
 

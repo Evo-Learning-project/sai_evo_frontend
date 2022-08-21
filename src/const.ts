@@ -82,7 +82,7 @@ export const testcaseTypeOptions: SelectableOption[] = (
 		icons: testCaseTypeIcons[key],
 		value: parseInt(String(key)),
 		content: _("testcase_types." + key),
-		description: _("exercise_states_descriptions." + key),
+		//description: _("exercise_states_descriptions." + key),
 	}));
 
 export enum ProgrammingExerciseTabs {

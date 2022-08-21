@@ -56,7 +56,8 @@
 			<div class="grid w-full grid-cols-6 gap-5 md:grid-cols-12">
 				<div
 					:class="{
-						'col-span-6': testCaseType === ExerciseType.JS,
+						'col-span-6':
+							testCaseType === ExerciseType.JS || testCaseType === ExerciseType.PYTHON,
 						'md:col-span-5 col-span-7': testCaseType === ExerciseType.C,
 					}"
 				>
@@ -69,7 +70,7 @@
 				</div>
 				<CodeEditor
 					class="col-span-6 md:row-span-2"
-					v-if="testCaseType === ExerciseType.JS"
+					v-if="testCaseType === ExerciseType.JS || testCaseType === ExerciseType.PYTHON"
 					:size="'sm'"
 					:modelValue="modelValue.code"
 					@update:modelValue="onUpdate('code', $event)"
@@ -131,7 +132,8 @@
 				</div>
 				<TextEditor
 					:class="{
-						'col-span-6': testCaseType === ExerciseType.JS,
+						'col-span-6':
+							testCaseType === ExerciseType.JS || testCaseType === ExerciseType.PYTHON,
 						'md:col-span-5 col-span-7': testCaseType === ExerciseType.C,
 					}"
 					:modelValue="modelValue.text"
@@ -179,7 +181,7 @@ export default defineComponent({
 			required: true,
 		},
 		testCaseType: {
-			type: Number as PropType<ExerciseType.JS | ExerciseType.C>,
+			type: Number as PropType<ExerciseType.JS | ExerciseType.C | ExerciseType.PYTHON>,
 			required: true,
 		},
 		executionResultsSlots: {

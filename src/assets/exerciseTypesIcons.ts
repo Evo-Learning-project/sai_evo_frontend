@@ -10,7 +10,7 @@ export const icons = {
 		// "check_box_outline_blank",
 	],
 	[ExerciseType.OPEN_ANSWER]: ["notes"],
-	[ExerciseType.JS]: ["javascript"],
+	[ExerciseType.JS]: ["code"],
 	[ExerciseType.C]: ["code"], // raw-c.svg
 	[ExerciseType.COMPLETION]: [
 		"expand_circle_down",
@@ -22,4 +22,5 @@ export const icons = {
 		"category",
 		// "radio_button_checked", "check_box"
 	],
+	[ExerciseType.PYTHON]: ["code"],
 };
