@@ -208,6 +208,7 @@
 						class="mt-4"
 						:showExerciseThreadLink="true"
 						:allowShowMore="false"
+						:initialEditorContent="slot.answer_text"
 					/>
 				</div>
 

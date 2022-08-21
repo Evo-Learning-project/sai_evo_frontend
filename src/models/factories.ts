@@ -41,12 +41,13 @@ export const getBlankCourse = (): Course => ({
 
 export const getBlankExerciseSolution = (
 	state: ExerciseSolutionState | undefined,
+	content = "",
 ): ExerciseSolution => ({
 	id: "",
 	state,
 	comments: [],
 	// votes: [],
-	content: "",
+	content,
 	user: null,
 	score: 0,
 	is_bookmarked: false,

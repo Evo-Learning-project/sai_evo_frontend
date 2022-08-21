@@ -160,6 +160,10 @@ export default defineComponent({
 			type: Boolean,
 			default: true,
 		},
+		initialEditorContent: {
+			type: String,
+			default: "",
+		},
 	},
 	mixins: [courseIdMixin, savingMixin],
 	methods: {
@@ -294,7 +298,10 @@ export default defineComponent({
 				const newSolution: IExerciseSolution = await this.addExerciseSolution({
 					courseId: this.courseId,
 					exerciseId: this.exercise.id,
-					solution: getBlankExerciseSolution(ExerciseSolutionState.DRAFT),
+					solution: getBlankExerciseSolution(
+						ExerciseSolutionState.DRAFT,
+						this.initialEditorContent,
+					),
 				});
 				this.editingSolutionId = newSolution.id;
 			}
