@@ -73,7 +73,7 @@ export const getBlankExercise = (): Exercise => ({
 	text: "",
 	exercise_type: ExerciseType.MULTIPLE_CHOICE_SINGLE_POSSIBLE,
 	state: ExerciseState.DRAFT,
-	// solution: "",
+	all_or_nothing: false,
 	choices: [],
 });
 

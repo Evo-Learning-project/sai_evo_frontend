@@ -97,7 +97,7 @@ export const actions = {
 		const newExercises = await bulkCreateExercises(courseId, exercises);
 		state.paginatedExercises = {
 			...state.paginatedExercises,
-			data: [...state.paginatedExercises.data, ...newExercises],
+			data: [...newExercises, ...state.paginatedExercises.data],
 		};
 		return newExercises;
 	},

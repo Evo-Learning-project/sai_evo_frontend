@@ -425,6 +425,25 @@
 						></TagInput>
 					</div>
 				</div>
+				<div
+					class="mt-6"
+					v-if="
+						modelValue.exercise_type === ExerciseType.MULTIPLE_CHOICE_MULTIPLE_POSSIBLE
+					"
+				>
+					<Toggle
+						:modelValue="modelValue.all_or_nothing"
+						@update:modelValue="onBaseExerciseChange('all_or_nothing', $event)"
+					>
+						<div class="flex space-x-1 mt-1">
+							<p>{{ $t("exercise_editor.all_or_nothing") }}</p>
+							<Tooltip
+								class="transform scale-125"
+								:text-code="'exercise_editor.all_or_nothing'"
+							></Tooltip>
+						</div>
+					</Toggle>
+				</div>
 				<!-- Multiple-choice exercise types settings -->
 				<div :class="[cloze ? '-mt-6' : 'mt-8']" v-if="isMultipleChoice">
 					<h3 class="mb-6">{{ $t("exercise_editor.choices_title") }}</h3>
@@ -455,6 +474,11 @@
 					>
 						<template #item="{ element }">
 							<ChoiceEditor
+								:correctnessIsBoolean="
+									modelValue.exercise_type ===
+										ExerciseType.MULTIPLE_CHOICE_MULTIPLE_POSSIBLE &&
+									modelValue.all_or_nothing
+								"
 								:singleLine="cloze"
 								:invalidCorrectness="!!choicesCorrectnessError"
 								:modelValue="element"

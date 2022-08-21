@@ -41,7 +41,7 @@ const importExercisesFromMoodleXml = async (
 		if (questionType === "category") {
 			ret.extras.tags = getTagsFromMoodleCategory(q.category);
 		} else {
-			const exerciseType = getExerciseTypeFromMoodleQuestion(q);
+			const { exerciseType, extras } = getExerciseTypeFromMoodleQuestion(q);
 			if (typeof exerciseType === "undefined") {
 				ret.errors?.push("Unsupported exercise type: " + questionType);
 				return;
@@ -54,9 +54,15 @@ const importExercisesFromMoodleXml = async (
 				exercise_type: exerciseType,
 				choices: (q.answer ?? []).map(a => ({
 					text: a.text[0],
-					correctness: parseFloat(a.$.fraction) * 100,
+					correctness:
+						// for checkbox exercises, ensure incorrect choices get a negative value
+						parseFloat(a.$.fraction) > 0 ||
+						exerciseType !== ExerciseType.MULTIPLE_CHOICE_MULTIPLE_POSSIBLE
+							? parseFloat(a.$.fraction) / 100
+							: -1,
 				})),
 				sub_exercises: getMoodleClozeQuestionsAsExercises(q),
+				...extras,
 			} as Exercise);
 		}
 	});

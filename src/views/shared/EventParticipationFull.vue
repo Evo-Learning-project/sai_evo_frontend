@@ -195,7 +195,13 @@
 						{{ slot.slot_number + 1 }}
 					</h3>
 				</AbstractEventParticipationSlot>
-				<div v-if="showSolutionAndScores && !slotsLoadingSolution[slot.id]">
+				<div
+					v-if="
+						showSolutionAndScores &&
+						!allowEditAssessment &&
+						!slotsLoadingSolution[slot.id]
+					"
+				>
 					<ExerciseSolutionContainer
 						:exercise="slot.exercise"
 						:solutions="getSolutionsForExercise(slot.exercise)"

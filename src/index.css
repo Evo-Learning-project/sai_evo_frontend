@@ -1481,7 +1481,8 @@
 		/* @apply mt-20; */
 	}
 
-	li.vsm--header, .sidebar-title {
+	li.vsm--header,
+	.sidebar-title {
 		letter-spacing: 0.6px !important;
 		@apply text-lg font-medium mb-2 overflow-hidden overflow-ellipsis !important;
 	}

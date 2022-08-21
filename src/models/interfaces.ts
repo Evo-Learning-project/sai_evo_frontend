@@ -96,6 +96,7 @@ export interface Exercise extends Orderable, Lockable {
 	public_tags?: Tag[];
 	private_tags?: Tag[];
 	requires_typescript?: boolean;
+	all_or_nothing: boolean;
 }
 
 export interface ExerciseChoice extends Orderable {

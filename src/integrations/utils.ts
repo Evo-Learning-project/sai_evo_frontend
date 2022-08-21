@@ -14,20 +14,29 @@ export const getTagsFromMoodleCategory = (category: MoodleCategory): string[] =>
 
 export const getExerciseTypeFromMoodleQuestion = (
 	q: MoodleQuestion,
-): ExerciseType | undefined => {
+): { exerciseType: ExerciseType | undefined; extras: any } => {
 	const questionType = q.$.type;
 	if (questionType === "truefalse") {
-		return ExerciseType.MULTIPLE_CHOICE_SINGLE_POSSIBLE;
+		return { exerciseType: ExerciseType.MULTIPLE_CHOICE_SINGLE_POSSIBLE, extras: {} };
 	}
 	if (questionType === "multichoice") {
-		return JSON.parse(q.single[0])
-			? ExerciseType.MULTIPLE_CHOICE_SINGLE_POSSIBLE
-			: ExerciseType.MULTIPLE_CHOICE_MULTIPLE_POSSIBLE;
+		return {
+			exerciseType: JSON.parse(q.single[0])
+				? ExerciseType.MULTIPLE_CHOICE_SINGLE_POSSIBLE
+				: ExerciseType.MULTIPLE_CHOICE_MULTIPLE_POSSIBLE,
+			extras: {},
+		};
+	}
+	if (questionType === "multichoiceset") {
+		return {
+			exerciseType: ExerciseType.MULTIPLE_CHOICE_MULTIPLE_POSSIBLE,
+			extras: { all_or_nothing: true },
+		};
 	}
 	if (questionType === "cloze") {
-		return ExerciseType.COMPLETION;
+		return { exerciseType: ExerciseType.COMPLETION, extras: {} };
 	}
-	return undefined;
+	return { exerciseType: undefined, extras: {} };
 };
 
 const clozeSubQuestionRegex =
@@ -48,6 +57,7 @@ export const getMoodleClozeQuestionsAsExercises = (q: MoodleQuestion): Exercise[
 			exercise_type: ExerciseType.MULTIPLE_CHOICE_SINGLE_POSSIBLE,
 			choices: [],
 			child_weight: childWeight ? parseFloat(childWeight) : 1,
+			all_or_nothing: false,
 		};
 		const answers = match[3].split("~");
 		for (const answer of answers) {

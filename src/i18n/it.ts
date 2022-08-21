@@ -632,6 +632,7 @@ export const it = {
 		exercise_public_tags: "Tag pubblici",
 		exercise_tags: "Tag",
 		exercise_private_tags: "Tag privati",
+		all_or_nothing: "All or nothing",
 		choice_text: "Testo",
 		choice_correctness: "Punteggio",
 		choice_score_checked: "Punteggio selez.",
@@ -677,6 +678,7 @@ export const it = {
 		delete_choice: "Elimina scelta",
 		delete_testcase: "Elimina test case",
 		clone_confirm: "Sei sicuro di voler clonare",
+		is_choice_correct: "Corretta",
 		no_choice_penalty_warning:
 			"Non hai impostato una penalità (punteggio negativo) per alcuna scelta. Gli studenti potranno ottenere il punteggio massimo per questo esercizio selezionando tutte le scelte disponibili.",
 	},
@@ -936,6 +938,8 @@ export const it = {
 		practice_score: "Basato sugli esercizi correggibili automaticamente",
 		student_practice_rule_amount: "Quanti esercizi con questo tag vuoi vedere?",
 		exercise_editor: {
+			all_or_nothing:
+				"Se attivo, gli studenti che selezionano almeno una scelta errata o non selezionano tutte quelle corrette otterranno 0 punti.",
 			label: "Il nome dell'esercizio non viene mai mostrato agli studenti",
 			sub_exercise_weight:
 				"Peso con cui il punteggio ottenuto in questo sotto-esercizio incide sulla valutazione complessiva dell'esercizio.",

@@ -65,6 +65,7 @@
 
 		<div class="md:w-2/12">
 			<NumberInput
+				v-if="!correctnessIsBoolean"
 				class="mb-auto"
 				:iconFilled="true"
 				:max="100"
@@ -81,15 +82,15 @@
 			>
 				<div class="flex w-full items-center space-x-0.5">
 					<p>{{ $t("exercise_editor.choice_correctness") }}</p>
-					<!-- <Tooltip
-            :placement="'left'"
-            class="-ml-1.5 -mb-1.25px transform scale-125"
-            :textCode="'exercise_editor.score_if_checked'"
-          ></Tooltip> -->
 				</div>
 				<!-- highlight in red if there's a score-related error -->
 				<template #errors v-if="invalidCorrectness"> &nbsp; </template>
 			</NumberInput>
+			<div v-else>
+				<Toggle v-model="booleanCorrectnessProxy">{{
+					$t("exercise_editor.is_choice_correct")
+				}}</Toggle>
+			</div>
 		</div>
 		<div class="my-auto">
 			<Btn
@@ -122,6 +123,7 @@ import TextInput from "@/components/ui/TextInput.vue";
 import Btn from "@/components/ui/Btn.vue";
 import useVuelidate from "@vuelidate/core";
 import { exerciseChoiceValidation } from "@/validation/models";
+import Toggle from "@/components/ui/Toggle.vue";
 
 export default defineComponent({
 	name: "ChoiceEditor",
@@ -142,6 +144,10 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+		correctnessIsBoolean: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	validations() {
 		return {
@@ -159,16 +165,24 @@ export default defineComponent({
 		//Tooltip,
 		TextInput,
 		Btn,
+		Toggle,
 	},
 	methods: {
-		onUpdate(field: keyof ExerciseChoice, value: unknown) {
-			console.log("choice update", field, value);
+		onUpdate<K extends keyof ExerciseChoice>(field: K, value: ExerciseChoice[K]) {
 			this.$emit("choiceUpdate", { field, value });
 		},
 	},
 	computed: {
 		choice() {
 			return this.modelValue;
+		},
+		booleanCorrectnessProxy: {
+			get() {
+				return (this.modelValue.correctness ?? 0) > 0;
+			},
+			set(value: boolean) {
+				this.onUpdate("correctness", value ? 1 : -1);
+			},
 		},
 	},
 });
