@@ -66,7 +66,7 @@
 		<template #submissionControls>
 			<div v-if="currentTab === ProgrammingExerciseTabs.EDITOR" class="relative flex">
 				<CodeEditor
-					:language="exercise.exercise_type === ExerciseType.JS ? 'typescript' : 'c'"
+					:language="languageCode"
 					class="w-full"
 					:size="'lg'"
 					v-model="proxyModelValue"
@@ -181,6 +181,8 @@ import {
 	Exercise,
 	ExerciseType,
 	getEmptySubmission,
+	ProgrammingExerciseType,
+	programmingExerciseTypeToLanguageId,
 } from "@/models";
 import { defineComponent, PropType } from "@vue/runtime-core";
 import { loadingMixin, texMixin } from "@/mixins";
@@ -248,6 +250,11 @@ export default defineComponent({
 		},
 		executionState() {
 			return this.submission.execution_results?.state;
+		},
+		languageCode() {
+			return programmingExerciseTypeToLanguageId[
+				this.exercise.exercise_type as ProgrammingExerciseType
+			];
 		},
 	},
 	components: {

@@ -286,9 +286,7 @@
 										@update:modelValue="onUpdateSolution(solution.id, 'content', $event)"
 										:size="'lg'"
 										:showRunButton="true"
-										:language="
-											modelValue.exercise_type === ExerciseType.JS ? 'typescript' : 'c'
-										"
+										:language="languageCode"
 										@run="onTestSolution(solution.id)"
 										:running="testingSolutions[solution.id] ?? false"
 									>
@@ -673,6 +671,8 @@ import {
 	ExerciseSolution,
 	getBlankExerciseSolution,
 	ExerciseSolutionState,
+	programmingExerciseTypeToLanguageId,
+	ProgrammingExerciseType,
 } from "@/models";
 import { multipleChoiceExerciseTypes } from "@/models";
 import Card from "@/components/ui/Card.vue";
@@ -1279,6 +1279,11 @@ export default defineComponent({
 			return (this.v$ as any).modelValue.$errors.find((e: any) =>
 				["modelValue.choices-atLeastOneCorrectChoice"].includes(e.$uid),
 			);
+		},
+		languageCode() {
+			return programmingExerciseTypeToLanguageId[
+				this.modelValue.exercise_type as ProgrammingExerciseType
+			];
 		},
 	},
 });

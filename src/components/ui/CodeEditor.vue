@@ -85,7 +85,7 @@ export default defineComponent({
 			default: "md",
 		},
 		language: {
-			type: String as PropType<"typescript" | "c">,
+			type: String as PropType<"typescript" | "c" | "python">,
 			default: "typescript",
 		},
 	},

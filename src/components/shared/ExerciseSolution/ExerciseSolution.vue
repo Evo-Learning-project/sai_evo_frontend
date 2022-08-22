@@ -259,6 +259,8 @@ import {
 	ExerciseType,
 	getComment,
 	getVote,
+	ProgrammingExerciseType,
+	programmingExerciseTypeToLanguageId,
 	VoteType,
 } from "@/models";
 import { defineComponent, PropType } from "@vue/runtime-core";
@@ -418,13 +420,11 @@ export default defineComponent({
 		...mapState("shared", ["user"]),
 		// TODO extract to utils
 		solutionType() {
-			if (this.exercise.exercise_type === ExerciseType.JS) {
-				return "typescript";
-			}
-			if (this.exercise.exercise_type === ExerciseType.C) {
-				return "c";
-			}
-			return "text";
+			const code =
+				programmingExerciseTypeToLanguageId[
+					this.exercise.exercise_type as ProgrammingExerciseType
+				];
+			return code ?? "text";
 		},
 		authorName(): string {
 			return this.solution.user?.full_name ?? _("exercise_solution.default_author");

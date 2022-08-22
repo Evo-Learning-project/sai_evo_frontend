@@ -109,7 +109,7 @@ export default defineComponent({
 			required: true,
 		},
 		editorType: {
-			type: String as PropType<"text" | "typescript" | "c">,
+			type: String as PropType<"text" | "typescript" | "c" | "python">,
 			required: true,
 		},
 		publishing: {

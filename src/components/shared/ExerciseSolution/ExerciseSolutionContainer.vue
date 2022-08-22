@@ -97,6 +97,8 @@ import {
 	ExerciseSolutionState,
 	ExerciseType,
 	getBlankExerciseSolution,
+	ProgrammingExerciseType,
+	programmingExerciseTypeToLanguageId,
 } from "@/models";
 import { defineComponent, PropType } from "@vue/runtime-core";
 import Btn from "@/components/ui/Btn.vue";
@@ -357,16 +359,6 @@ export default defineComponent({
 				(this.canLoadMore || this.shownSolutions.length < this.nonDraftSolutions.length)
 			);
 		},
-		// TODO extract to utils
-		solutionType() {
-			if (this.exercise.exercise_type === ExerciseType.JS) {
-				return "typescript";
-			}
-			if (this.exercise.exercise_type === ExerciseType.C) {
-				return "c";
-			}
-			return "text";
-		},
 		shownSolutions(): IExerciseSolution[] {
 			const ret = [...this.nonDraftSolutions];
 			if (this.showFirst) {
@@ -394,6 +386,13 @@ export default defineComponent({
 			return this.$router.resolve(
 				getExerciseThreadRoute(this.courseId, this.exercise.id),
 			);
+		},
+		solutionType() {
+			const code =
+				programmingExerciseTypeToLanguageId[
+					this.exercise.exercise_type as ProgrammingExerciseType
+				];
+			return code ?? "text";
 		},
 	},
 	components: {

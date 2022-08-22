@@ -757,6 +757,7 @@ export const it = {
 		[ExerciseType.OPEN_ANSWER]: "Risposta aperta",
 		[ExerciseType.JS]: "Esercizio JavaScript",
 		[ExerciseType.C]: "Esercizio C",
+		[ExerciseType.PYTHON]: "Esercizio Python",
 		[ExerciseType.COMPLETION]: "Esercizio a completamento",
 		[ExerciseType.ATTACHMENT]: "Caricamento di file",
 		[ExerciseType.AGGREGATED]: "Esercizio composto",

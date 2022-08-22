@@ -20,3 +20,17 @@ export const exerciseChildrenNames = {
 	choice: "choices",
 	solution: "solutions",
 } as Record<exerciseChildName, "sub_exercises" | "testcases" | "choices" | "solutions">;
+
+export type ProgrammingExerciseType =
+	| ExerciseType.JS
+	| ExerciseType.C
+	| ExerciseType.PYTHON;
+
+export const programmingExerciseTypeToLanguageId: Record<
+	ProgrammingExerciseType,
+	string
+> = {
+	[ExerciseType.C]: "c",
+	[ExerciseType.JS]: "typescript",
+	[ExerciseType.PYTHON]: "python",
+};

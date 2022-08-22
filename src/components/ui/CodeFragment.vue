@@ -45,7 +45,7 @@ export default defineComponent({
 			default: false,
 		},
 		language: {
-			type: String as PropType<"javascript" | "typescript" | "c">,
+			type: String as PropType<"javascript" | "typescript" | "c" | "python">,
 			default: "typescript",
 		},
 		defaultValue: {
