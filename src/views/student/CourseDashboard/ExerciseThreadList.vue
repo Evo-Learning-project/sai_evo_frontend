@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<ExerciseSearchFilters
-			class="bg-light px-8 mb-8 pb-3 pt-6"
+			class="bg-transparent mb-10 rounded-sm"
 			:allowFilterByState="false"
 			:allowFilterByType="false"
 			:full="false"

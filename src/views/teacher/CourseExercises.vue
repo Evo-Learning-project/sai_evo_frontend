@@ -1,15 +1,13 @@
 <template>
 	<div>
-		<Card :hoverable="false" :border-less="true" class="mb-4 card-filled">
-			<template v-slot:body>
-				<ExerciseSearchFilters
-					v-model="searchFilter"
-					@resetFilters="searchFilter = getBlankExerciseSearchFilters()"
-				></ExerciseSearchFilters>
-			</template>
-		</Card>
+		<div>
+			<ExerciseSearchFilters
+				v-model="searchFilter"
+				@resetFilters="searchFilter = getBlankExerciseSearchFilters()"
+			></ExerciseSearchFilters>
+		</div>
 
-		<div class="flex items-center w-full mt-12 mb-6">
+		<div class="flex items-center w-full mt-8 mb-6">
 			<Btn @click="onAddExercise()" :loading="localLoading" class="ml-auto"
 				><span class="mr-1 text-base material-icons-outlined"> add </span>
 				{{ $t("course_exercises.new_exercise") }}</Btn
@@ -171,7 +169,7 @@ export default defineComponent({
 	components: {
 		ExerciseEditorWrapper,
 		VueEternalLoading,
-		Card,
+		//Card,
 		Btn,
 		Spinner,
 		ExerciseSearchFilters,

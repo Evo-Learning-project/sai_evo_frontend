@@ -1,7 +1,7 @@
 <template>
 	<div class="">
 		<ExerciseSearchFilters
-			class="px-8 py-4 mb-6 -mx-4 md:-mx-8 bg-light"
+			class="px-8 pt-6 pb-2 mb-6 -mx-4 md:-mx-8 bg-light"
 			v-model="searchFilter"
 			@resetFilters="searchFilter = getBlankExerciseSearchFilters()"
 			:full="false"
@@ -78,7 +78,7 @@
 <script lang="ts">
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { createNamespacedHelpers } from "vuex";
-const { mapState, mapActions } = createNamespacedHelpers("teacher");
+const { mapState, mapActions, mapGetters } = createNamespacedHelpers("teacher");
 
 import { VueEternalLoading, LoadAction } from "@ts-pro/vue-eternal-loading";
 import Spinner from "@/components/ui/Spinner.vue";
@@ -196,7 +196,7 @@ export default defineComponent({
 		getBlankExerciseSearchFilters,
 	},
 	computed: {
-		...mapState(["exercises"]),
+		...mapGetters(["exercises"]),
 		emptyFilter() {
 			return isEmptyFilter(this.searchFilter);
 		},
