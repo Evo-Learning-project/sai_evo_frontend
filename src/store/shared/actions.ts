@@ -13,6 +13,7 @@ import {
 } from "@/api/exercises";
 import { ExerciseSolutionSearchFilter } from "@/api/interfaces";
 import { getMe, updateUser } from "@/api/users";
+import { updatePaginatedData } from "@/api/utils";
 import {
 	Exercise,
 	exerciseChildrenNames,
@@ -113,15 +114,19 @@ export const actions = {
 		if (fromFirstPage) {
 			state.paginatedSolutionsByExerciseId[exerciseId] = paginatedSolutions;
 		} else {
-			// TODO make function to update PaginatedData
-			state.paginatedSolutionsByExerciseId[exerciseId] = {
-				...state.paginatedSolutionsByExerciseId[exerciseId],
-				...paginatedSolutions,
-				data: [
-					...state.paginatedSolutionsByExerciseId[exerciseId].data,
-					...paginatedSolutions.data,
-				],
-			};
+			// state.paginatedSolutionsByExerciseId[exerciseId] = {
+			// 	...state.paginatedSolutionsByExerciseId[exerciseId],
+			// 	...paginatedSolutions,
+			// 	data: [
+			// 		...state.paginatedSolutionsByExerciseId[exerciseId].data,
+			// 		...paginatedSolutions.data,
+			// 	],
+			// };
+			state.paginatedSolutionsByExerciseId[exerciseId] = updatePaginatedData(
+				state.paginatedSolutionsByExerciseId[exerciseId],
+				paginatedSolutions,
+				false,
+			);
 		}
 
 		return !state.paginatedSolutionsByExerciseId[exerciseId].isLastPage;

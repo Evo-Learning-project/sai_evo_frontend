@@ -3,6 +3,7 @@ import {
 	EventSearchFilter,
 	ExerciseSearchFilter,
 	ExerciseSolutionSearchFilter,
+	PaginatedData,
 } from "./interfaces";
 import store from "@/store";
 import { EventTemplateRule, EventTemplateRuleType, Tag } from "@/models";
@@ -180,3 +181,36 @@ export const normalizeOptionalStringContainingNumber = (
 	// if strVal represents a number, return it as a number
 	return parseFloat(strVal);
 };
+
+export const updatePaginatedData = <T>(
+	existingData: PaginatedData<T>,
+	newData: PaginatedData<T>,
+	prepend: boolean,
+): PaginatedData<T> => ({
+	...existingData,
+	...newData,
+	data: [
+		...(prepend ? newData.data : []),
+		...existingData.data,
+		...(prepend ? [] : newData.data),
+	],
+});
+
+export const prependToPaginatedData = <T>(
+	paginatedData: PaginatedData<T>,
+	...newElement: T[]
+): PaginatedData<T> => ({
+	...paginatedData,
+	data: [...newElement, ...paginatedData.data],
+	//count: paginatedData.count + 1,
+});
+
+export const deleteByIdFromPaginatedData = <T extends { id: string }>(
+	paginatedData: PaginatedData<T>,
+	...toDelete: { id: string }[]
+): PaginatedData<T> => ({
+	...paginatedData,
+	data: paginatedData.data.filter(
+		d => !toDelete.map(t => String(t.id)).includes(String(d.id)),
+	),
+});

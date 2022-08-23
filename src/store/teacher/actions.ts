@@ -68,6 +68,11 @@ import {
 	updateUserCoursePrivileges,
 } from "@/api/users";
 import { TeacherState } from "../types";
+import {
+	deleteByIdFromPaginatedData,
+	prependToPaginatedData,
+	updatePaginatedData,
+} from "@/api/utils";
 
 export const actions = {
 	createCourse: async ({ commit }: { commit: Commit }, course: Course) => {
@@ -84,10 +89,14 @@ export const actions = {
 		{ courseId, exercise }: { courseId: string; exercise: Exercise },
 	) => {
 		const newExercise = await createExercise(courseId, exercise);
-		state.paginatedExercises = {
-			...state.paginatedExercises,
-			data: [newExercise, ...state.paginatedExercises.data],
-		};
+		// state.paginatedExercises = {
+		// 	...state.paginatedExercises,
+		// 	data: [newExercise, ...state.paginatedExercises.data],
+		// };
+		state.paginatedExercises = prependToPaginatedData(
+			state.paginatedExercises,
+			newExercise,
+		);
 		return newExercise;
 	},
 	bulkCreateExercises: async (
@@ -95,10 +104,14 @@ export const actions = {
 		{ courseId, exercises }: { courseId: string; exercises: Exercise[] },
 	) => {
 		const newExercises = await bulkCreateExercises(courseId, exercises);
-		state.paginatedExercises = {
-			...state.paginatedExercises,
-			data: [...newExercises, ...state.paginatedExercises.data],
-		};
+		// state.paginatedExercises = {
+		// 	...state.paginatedExercises,
+		// 	data: [...newExercises, ...state.paginatedExercises.data],
+		// };
+		state.paginatedExercises = prependToPaginatedData(
+			state.paginatedExercises,
+			...newExercises,
+		);
 		return newExercises;
 	},
 	deleteExercise: async (
@@ -106,10 +119,13 @@ export const actions = {
 		{ courseId, exerciseId }: { courseId: string; exerciseId: string },
 	) => {
 		await deleteExercise(courseId, exerciseId);
-		state.paginatedExercises = {
-			...state.paginatedExercises,
-			data: state.paginatedExercises.data.filter(e => e.id != exerciseId),
-		};
+		state.paginatedExercises = deleteByIdFromPaginatedData(state.paginatedExercises, {
+			id: exerciseId,
+		});
+		// state.paginatedExercises = {
+		// 	...state.paginatedExercises,
+		// 	data: state.paginatedExercises.data.filter(e => e.id != exerciseId),
+		// };
 	},
 	createEvent: async (
 		{ commit, state }: { commit: Commit; state: any },
@@ -508,10 +524,14 @@ export const actions = {
 				pageNumber: 1,
 			};
 		} else {
-			state.paginatedExercises = {
-				...state.paginatedExercises,
-				data: [...exercises, ...state.paginatedExercises.data],
-			};
+			state.paginatedExercises = prependToPaginatedData(
+				state.paginatedExercises,
+				...exercises,
+			);
+			// state.paginatedExercises = {
+			// 	...state.paginatedExercises,
+			// 	data: [...exercises, ...state.paginatedExercises.data],
+			// };
 		}
 	},
 	getExercises: async (
@@ -535,42 +555,19 @@ export const actions = {
 		if (fromFirstPage) {
 			state.paginatedExercises = paginatedExercises;
 		} else {
-			state.paginatedExercises = {
-				...paginatedExercises,
-				data: [...state.paginatedExercises.data, ...paginatedExercises.data],
-			};
+			state.paginatedExercises = updatePaginatedData(
+				state.paginatedExercises,
+				paginatedExercises,
+				false,
+			);
+			// state.paginatedExercises = {
+			// 	...paginatedExercises,
+			// 	data: [...state.paginatedExercises.data, ...paginatedExercises.data],
+			// };
 		}
 
 		return !state.paginatedExercises.isLastPage;
 	},
-	/*getExerciseSolutionThreads: async (
-		{ commit, state }: { commit: Commit; state: TeacherState },
-		{
-			courseId,
-			fromFirstPage,
-		}: {
-			courseId: string;
-			fromFirstPage: boolean;
-		},
-	) => {
-		const paginatedExercises = await getSubmittedExerciseSolutionThreads(
-			courseId,
-			fromFirstPage ? 1 : (state.paginatedExercises.pageNumber ?? 0) + 1, // TODO refactor
-		);
-
-		console.log("exer", paginatedExercises);
-
-		if (fromFirstPage) {
-			state.paginatedExercises = paginatedExercises;
-		} else {
-			state.paginatedExercises = {
-				...paginatedExercises,
-				data: [...state.paginatedExercises.data, ...paginatedExercises.data],
-			};
-		}
-
-		return !state.paginatedExercises.isLastPage;
-	},*/
 	addExerciseTag: async (
 		{ commit, state }: { commit: Commit; state: TeacherState },
 		{
