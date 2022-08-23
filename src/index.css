@@ -1237,6 +1237,11 @@
 		@apply -mr-0.5 !important;
 	}
 
+	.thumbnail-slot input[type=checkbox] {
+		@apply mr-0.5 !important;
+	}
+
+
 	.thumbnail-slot select {
 		@apply py-0 px-0 !important;
 		font-size: 7px !important;

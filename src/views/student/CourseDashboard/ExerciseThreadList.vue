@@ -128,7 +128,7 @@ export default defineComponent({
 				fromFirstPage: true,
 				filters: { by_popularity: true } as ExerciseSearchFilter,
 			});
-			this.fetchSolutionsForNewExercises();
+			this.fetchSolutionsForNewExercises(true);
 		});
 	},
 	data() {
@@ -179,9 +179,11 @@ export default defineComponent({
 					}),
 			);
 		},
-		fetchSolutionsForNewExercises() {
+		fetchSolutionsForNewExercises(force = false) {
 			(this.exercises as IExercise[])
-				.filter(e => typeof this.paginatedSolutionsByExerciseId[e.id] === "undefined")
+				.filter(
+					e => force || typeof this.paginatedSolutionsByExerciseId[e.id] === "undefined",
+				)
 				.forEach(async e => {
 					this.loadingSolutionsByExercise[e.id] = true;
 					try {

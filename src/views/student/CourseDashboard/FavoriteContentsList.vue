@@ -83,7 +83,7 @@ export default defineComponent({
 				fromFirstPage: true,
 				filters: { with_bookmarked_solutions: true } as ExerciseSearchFilter,
 			});
-			this.fetchSolutionsForNewExercises();
+			this.fetchSolutionsForNewExercises(true);
 		});
 	},
 	data() {
@@ -104,9 +104,11 @@ export default defineComponent({
 		getSolutionCountForExercise(exercise: IExercise): number {
 			return this.paginatedSolutionsByExerciseId[exercise.id]?.count ?? 0;
 		},
-		fetchSolutionsForNewExercises() {
+		fetchSolutionsForNewExercises(force = false) {
 			(this.exercises as IExercise[])
-				.filter(e => typeof this.paginatedSolutionsByExerciseId[e.id] === "undefined")
+				.filter(
+					e => force || typeof this.paginatedSolutionsByExerciseId[e.id] === "undefined",
+				)
 				.forEach(async e => {
 					this.loadingSolutionsByExercise[e.id] = true;
 					try {
