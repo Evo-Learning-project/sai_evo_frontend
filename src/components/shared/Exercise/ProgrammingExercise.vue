@@ -49,7 +49,7 @@
 					v-model="proxyModelValue"
 					:showRunButton="true"
 					:runCoolDown="runCoolDown"
-					:running="executionState === 'running' || running || runCoolDown > 0"
+					:running="isRunning || runCoolDown > 0"
 					@run="onRun()"
 				>
 					<template v-slot:runButton
@@ -210,7 +210,6 @@ import CodeFragment from "@/components/ui/CodeFragment.vue";
 export default defineComponent({
 	name: "ProgrammingExercise",
 	mixins: [loadingMixin, texMixin],
-	watch: {},
 	props: {
 		...exerciseProps,
 		running: {
@@ -226,6 +225,13 @@ export default defineComponent({
 			runCoolDown: 0,
 			ExerciseType,
 		};
+	},
+	watch: {
+		isRunning(newVal, oldVal) {
+			if (oldVal && !newVal) {
+				this.currentTab = ProgrammingExerciseTabs.EXECUTION_RESULTS;
+			}
+		},
 	},
 	methods: {
 		onRun() {
@@ -260,6 +266,9 @@ export default defineComponent({
 			return programmingExerciseTypeToLanguageId[
 				this.exercise.exercise_type as ProgrammingExerciseType
 			];
+		},
+		isRunning() {
+			return this.running || this.executionState === "running";
 		},
 	},
 	components: {
