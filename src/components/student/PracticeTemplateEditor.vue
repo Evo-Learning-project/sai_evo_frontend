@@ -65,18 +65,57 @@
 				</p>
 			</div>
 			<div
-				class="flex flex-col flex-wrap mt-4 md:items-center md:flex-row"
+				class="
+					flex flex-col flex-wrap
+					mt-4
+					md:items-center md:flex-row md:static
+					fixed
+					top-1/2
+					md:transform-none md:w-max
+					w-10/12
+					transform
+					-translate-y-1/2
+					p-3
+					md:p-0
+					left-1/2
+					-translate-x-1/2
+					rounded
+					md:rounded-none
+					bg-light
+					shadow-popup
+					md:shadow-none md:bg-transparent
+				"
 				:class="[editingRule ? 'visible' : 'invisible']"
 			>
-				<div class="flex flex-wrap md:mr-4">
-					<p class="mt-3">{{ $t("practice_template_editor.rule_amount_1") }}</p>
-					<Tag class="mx-2 mt-3" v-if="editingRuleTag" :tag="editingRuleTag"></Tag>
-					<p class="mt-3">{{ $t("practice_template_editor.rule_amount_2") }}</p>
+				<div
+					class="
+						flex flex-col
+						md:items-start
+						items-center
+						md:flex-row md:space-y-0 md:mr-4
+						space-y-2
+					"
+				>
+					<p class="">{{ $t("practice_template_editor.rule_amount_1") }}</p>
+					<Tag class="md:mx-2" v-if="editingRuleTag" :tag="editingRuleTag"></Tag>
+					<p class="">{{ $t("practice_template_editor.rule_amount_2") }}</p>
 				</div>
-				<div class="flex items-center mt-3">
+				<div
+					class="
+						flex
+						md:mt-4
+						w-full
+						md:flex-row
+						flex-col
+						md:space-y-0
+						space-y-2
+						md:space-x-2
+						items-center
+					"
+				>
 					<NumberInput
 						v-model="editingRuleDirtyAmount"
-						class="mt-2 w-28 md:mt-0"
+						class="mt-2 md:w-32 w-full md:mt-0"
 						:min="0"
 						:max="editingRuleTag?.public_exercises_not_seen ?? 100000000"
 					>
@@ -84,15 +123,17 @@
 							/{{ editingRuleTag?.public_exercises_not_seen ?? "" }}</template
 						></NumberInput
 					>
-					<Btn
-						class="my-auto ml-2"
-						:disabled="editingRuleDirtyAmount < 1"
-						@click="saveRule"
-						>{{ $t("dialog.default_ok_text") }}</Btn
-					>
-					<Btn class="my-auto ml-2" :outline="true" @click="discardRule">{{
-						$t("dialog.default_cancel_text")
-					}}</Btn>
+					<div class="flex items-center w-full md:w-max space-x-2">
+						<Btn
+							class="my-auto md:w-max w-full"
+							:disabled="editingRuleDirtyAmount < 1"
+							@click="saveRule"
+							>{{ $t("dialog.default_ok_text") }}</Btn
+						>
+						<Btn class="my-auto md:w-max w-full" :outline="true" @click="discardRule">{{
+							$t("dialog.default_cancel_text")
+						}}</Btn>
+					</div>
 				</div>
 			</div>
 		</div>

@@ -87,13 +87,17 @@
 					:border-less="true"
 					class="
 						relative
-						h-40
 						overflow-hidden
 						text-gray-600
 						cursor-pointer
-						h-23rem
+						md:h-23rem
+						h-64
 						elevate-when-pressed
 						bg-light
+						hover:bg-gray-200
+						transition-all
+						duration-300
+						ease-in-out
 					"
 					v-wave
 					@click="onCreatePractice()"
@@ -134,10 +138,10 @@
 				"
 				v-else
 			>
-				<SkeletonCard :full="true"></SkeletonCard>
-				<SkeletonCard :full="true"></SkeletonCard>
-				<SkeletonCard :full="true"></SkeletonCard>
-				<SkeletonCard :full="true"></SkeletonCard>
+				<SkeletonCard :full="true" />
+				<SkeletonCard :full="true" />
+				<SkeletonCard :full="true" />
+				<SkeletonCard :full="true" />
 			</div>
 		</div>
 		<Dialog

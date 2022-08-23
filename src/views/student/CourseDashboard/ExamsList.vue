@@ -19,7 +19,9 @@
 				<p style="font-size: 10rem" class="material-icons-outlined opacity-10 mx-auto">
 					assignment
 				</p>
-				<h2 class="opacity-40">{{ $t("student_course_dashboard.no_exams") }}</h2>
+				<h2 class="opacity-40 text-center">
+					{{ $t("student_course_dashboard.no_exams") }}
+				</h2>
 			</div>
 		</div>
 	</div>
