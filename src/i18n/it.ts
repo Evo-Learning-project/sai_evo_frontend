@@ -727,6 +727,7 @@ export const it = {
 		tab_text: "Testo",
 		tab_testcases: "Test case",
 		tab_editor: "Editor",
+		tab_execution_results: "Risultato",
 		run_code: "Esegui",
 		running_code: "Esecuzione in corso...",
 		execution_results: "Risultato esecuzione",

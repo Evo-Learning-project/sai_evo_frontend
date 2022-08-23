@@ -89,6 +89,7 @@ export enum ProgrammingExerciseTabs {
 	TEXT,
 	EDITOR,
 	TEST_CASES,
+	EXECUTION_RESULTS,
 }
 
 export const examInsightsPageTourSteps = [
@@ -173,9 +174,14 @@ export const programmingExerciseTabsOptions: SelectableOption[] = [
 		content: _("programming_exercise.tab_text"),
 		icons: ["description-sm"],
 	},
+	// {
+	// 	value: ProgrammingExerciseTabs.EDITOR,
+	// 	content: _("programming_exercise.tab_editor"),
+	// 	icons: ["code-sm"],
+	// },
 	{
-		value: ProgrammingExerciseTabs.EDITOR,
-		content: _("programming_exercise.tab_editor"),
+		value: ProgrammingExerciseTabs.EXECUTION_RESULTS,
+		content: _("programming_exercise.tab_execution_results"),
 		icons: ["code-sm"],
 	},
 	{

@@ -1,45 +1,19 @@
 <template>
 	<AbstractExercise v-bind="$props">
 		<template #exerciseText>
-			<div class="mx-auto mb-4 md:w-2/5 hide-in-thumbnail">
+			<div class="mx-auto mb-4 md:w-2/5 hide-in-thumbnail hidden" v-if="readOnly">
 				<Tabs v-model="currentTab" :options="filteredTabsOptions"></Tabs>
 			</div>
 			<!-- exercise text pane -->
-			<div class="relative">
-				<DraggablePopup
-					@close="showPopup = false"
-					v-show="showPopup"
-					:title="$t('programming_exercise.tab_text')"
-				>
-					<div class="user-content" v-html="exercise.text"></div>
-				</DraggablePopup>
-
-				<div class="mt-4"></div>
-			</div>
-			<div class="user-content" v-show="currentTab === ProgrammingExerciseTabs.TEXT">
-				<div class="flex w-full" :class="{ '-mt-5': !readOnly }">
-					<Btn
-						v-if="!readOnly"
-						@click="onOpenPopup()"
-						:disabled="showPopup"
-						class="ml-auto -mr-2"
-						:variant="'icon'"
-						:outline="true"
-						:tooltip="$t('programming_exercise.open_text_popup')"
-					>
-						<svg style="width: 26px; height: 26px" viewBox="0 0 24 24">
-							<path
-								fill="currentColor"
-								d="M4,8H8V4H20V16H16V20H4V8M16,8V14H18V6H10V8H16M6,12V18H14V12H6Z"
-							/>
-						</svg>
-					</Btn>
-				</div>
+			<div
+				class="user-content"
+				v-show="readOnly && currentTab === ProgrammingExerciseTabs.TEXT"
+			>
 				<div v-html="exercise.text"></div>
 			</div>
 
 			<!-- test cases pane -->
-			<div v-show="currentTab === ProgrammingExerciseTabs.TEST_CASES">
+			<div v-show="readOnly && currentTab === ProgrammingExerciseTabs.TEST_CASES">
 				<div
 					class="my-8"
 					v-for="(testcase, index) in exercise.testcases"
@@ -64,7 +38,10 @@
 		</template>
 
 		<template #submissionControls>
-			<div v-if="currentTab === ProgrammingExerciseTabs.EDITOR" class="relative flex">
+			<div
+				v-if="true || currentTab === ProgrammingExerciseTabs.EDITOR"
+				class="relative flex"
+			>
 				<CodeEditor
 					:language="languageCode"
 					class="w-full"
@@ -83,27 +60,62 @@
 						>
 						<span v-if="runCoolDown < 10" class="opacity-0">0</span></template
 					>
-					<template v-slot:sidePaneTitle
-						><div class="flex items-center p-3 pl-4 space-x-2 rounded-tr-sm bg-gray-50">
-							<span class="my-auto material-icons-outlined icon-light"> code </span>
-							<h3>
-								{{ $t("programming_exercise.execution_results") }}
-							</h3>
+					<template v-slot:sidePaneTitle>
+						<div class="mx-auto mb-2 md:w-full hide-in-thumbnail">
+							<Tabs v-model="currentTab" :options="filteredTabsOptions"></Tabs>
 						</div>
 					</template>
 					<template v-slot:sidePane>
-						<CodeExecutionResults
-							v-if="submission.execution_results"
-							:executionResults="submission.execution_results"
-							:testCases="exercise.testcases"
-						></CodeExecutionResults>
-						<div class="flex flex-col" v-else>
-							<span class="mx-auto mt-24 opacity-30 text-8xl material-icons-outlined">
-								code
-							</span>
-							<p class="px-4 mx-auto select-none text-muted">
-								{{ $t("programming_exercise.code_execution_will_appear_here") }}
-							</p>
+						<div
+							class="user-content mx-2 programming-exercise-text"
+							v-show="currentTab === ProgrammingExerciseTabs.TEXT"
+						>
+							<div v-html="exercise.text"></div>
+						</div>
+
+						<!-- test cases pane -->
+						<div v-show="currentTab === ProgrammingExerciseTabs.TEST_CASES">
+							<div
+								class="my-8 mx-2"
+								v-for="(testcase, index) in exercise.testcases"
+								:key="'t-' + testcase.id"
+							>
+								<h4 class="mb-1">
+									{{ $t("programming_exercise.testcase") }} {{ index + 1 }}
+									<span
+										v-if="!testcase.code && !testcase.text && !testcase.stdin"
+										class="ml-2 icon-light inline-icon material-icons-outlined"
+										>visibility_off</span
+									>
+								</h4>
+								<ExerciseTestCase :test-case="testcase"></ExerciseTestCase>
+							</div>
+							<div v-if="exercise.testcases?.length === 0">
+								<h4 class="mt-8 text-center text-muted">
+									{{ $t("programming_exercise.no_testcases") }}
+								</h4>
+							</div>
+						</div>
+						<div v-show="currentTab === ProgrammingExerciseTabs.EXECUTION_RESULTS">
+							<div class="flex items-center p-3 pl-4 space-x-2 rounded-tr-sm bg-gray-50">
+								<span class="my-auto material-icons-outlined icon-light"> code </span>
+								<h3>
+									{{ $t("programming_exercise.execution_results") }}
+								</h3>
+							</div>
+							<CodeExecutionResults
+								v-if="submission.execution_results"
+								:executionResults="submission.execution_results"
+								:testCases="exercise.testcases"
+							></CodeExecutionResults>
+							<div class="flex flex-col" v-else>
+								<span class="mx-auto mt-24 opacity-30 text-8xl material-icons-outlined">
+									code
+								</span>
+								<p class="px-4 mx-auto select-none text-muted">
+									{{ $t("programming_exercise.code_execution_will_appear_here") }}
+								</p>
+							</div>
 						</div>
 					</template>
 					<template v-slot:bottom>
@@ -124,7 +136,7 @@
 									rounded
 									bg-dark
 									text-lightText
-									bg-opacity-90 bg-light
+									bg-opacity-90
 									shadow-popup
 								"
 								v-if="executionState === 'running'"
@@ -188,7 +200,6 @@ import { defineComponent, PropType } from "@vue/runtime-core";
 import { loadingMixin, texMixin } from "@/mixins";
 import { SelectableOption } from "@/interfaces";
 import Tabs from "@/components/ui/Tabs.vue";
-import Btn from "@/components/ui/Btn.vue";
 import CodeEditor from "@/components/ui/CodeEditor.vue";
 import CodeExecutionResults from "../CodeExecutionResults.vue";
 import Spinner from "@/components/ui/Spinner.vue";
@@ -196,7 +207,6 @@ import ExerciseTestCase from "../ExerciseTestCase.vue";
 import { exerciseProps } from "./shared";
 import AbstractExercise from "./AbstractExercise.vue";
 import CodeFragment from "@/components/ui/CodeFragment.vue";
-import DraggablePopup from "@/components/ui/DraggablePopup.vue";
 export default defineComponent({
 	name: "ProgrammingExercise",
 	mixins: [loadingMixin, texMixin],
@@ -215,7 +225,6 @@ export default defineComponent({
 			showExecutingMessage: false,
 			runCoolDown: 0,
 			ExerciseType,
-			showPopup: false,
 		};
 	},
 	methods: {
@@ -229,10 +238,6 @@ export default defineComponent({
 				}
 			}, 1000);
 		},
-		onOpenPopup() {
-			this.showPopup = true;
-			this.triggerTexRender();
-		},
 	},
 	computed: {
 		proxyModelValue: {
@@ -245,7 +250,7 @@ export default defineComponent({
 		},
 		filteredTabsOptions(): SelectableOption[] {
 			return this.programmingExerciseTabsOptions.filter(
-				o => !this.readOnly || o.value !== ProgrammingExerciseTabs.EDITOR,
+				o => !this.readOnly || o.value === ProgrammingExerciseTabs.TEXT,
 			);
 		},
 		executionState() {
@@ -259,14 +264,12 @@ export default defineComponent({
 	},
 	components: {
 		Tabs,
-		Btn,
 		CodeEditor,
 		CodeExecutionResults,
 		Spinner,
 		ExerciseTestCase,
 		AbstractExercise,
 		CodeFragment,
-		DraggablePopup,
 	},
 });
 </script>

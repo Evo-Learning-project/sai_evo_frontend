@@ -4,10 +4,16 @@
 			><slot></slot
 		></label>
 
-		<div class="flex w-full">
-			<div class="relative rounded-sm" :class="$slots.sidePane ? 'w-7/12' : 'w-full'">
+		<div class="flex md:flex-row space-x-1 flex-col md:space-y-0 space-y-2 w-full">
+			<div
+				class="relative rounded-sm hide-in-thumbnail"
+				:class="$slots.sidePane ? 'md:w-7/12 w-full' : 'w-full'"
+			>
 				<div style="height: inherit" class="absolute flex w-full">
-					<div v-if="showRunButton" class="top-0 ml-auto h-full z-40 right-0 mt-0.5 mr-4">
+					<div
+						v-if="showRunButton"
+						class="hide-in-thumbnail top-0 ml-auto h-full z-40 right-0 mt-0.5 mr-4"
+					>
 						<Btn
 							:disabled="running || runCoolDown > 0"
 							:variant="'success'"
@@ -29,7 +35,10 @@
 				/>
 				<slot name="bottom"></slot>
 			</div>
-			<div v-if="$slots.sidePane" class="flex flex-col w-5/12 overflow-hidden">
+			<div
+				v-if="$slots.sidePane"
+				class="code-editor-side-pane flex flex-col w-full md:w-5/12 overflow-hidden"
+			>
 				<div :id="elementId + 'sidePaneTitle'">
 					<slot name="sidePaneTitle"></slot>
 				</div>

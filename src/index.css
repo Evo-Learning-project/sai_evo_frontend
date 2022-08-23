@@ -1209,6 +1209,14 @@
 		@apply hidden !important;
 	}
 
+	.thumbnail-slot .programming-exercise-text {
+		@apply mx-0 !important;
+	}
+
+	.thumbnail-slot .code-editor-side-pane {
+		@apply w-full !important;
+	}
+
 	.thumbnail-slot .ql-editor-container:focus-within ~ label {
 		@apply duration-300 transform scale-100 -translate-y-2.5 text-primary !important;
 	}
