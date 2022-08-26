@@ -252,3 +252,31 @@ export interface TestCaseExecutionResults {
 	stdout?: string;
 	stderr?: string;
 }
+
+/**
+ * Gamification
+ */
+
+export interface GamificationGoal {
+	// TODO create
+}
+
+export interface GamificationBadge {
+	// TODO create
+}
+
+export interface GamificationContext {
+	id: string;
+	reputation: number;
+	// TODO instead of putting these here, fetch "my gamification account" separately
+	badges: GamificationBadge[];
+	goals: GamificationGoal[];
+}
+
+export interface GamificationUser {
+	id: string;
+	full_name: string;
+	email: string;
+	reputation: number;
+	badges: GamificationBadge[];
+}

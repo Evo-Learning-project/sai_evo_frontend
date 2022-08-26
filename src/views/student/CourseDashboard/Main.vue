@@ -41,30 +41,6 @@
 			}"
 		>
 			<div class="w-full h-full px-2">
-				<!-- <div class="flex items-center w-full mt-4">
-					<img class="mx-auto w-36" src="../../../../public/unipi-logo.svg" />
-				</div> -->
-				<!-- <div
-					v-if="$store.getters['shared/isAuthenticated']"
-					class="
-						flex
-						items-center
-						justify-center
-						w-full
-						mx-auto
-						mt-8
-						mb-4
-						space-x-1
-						text-sm text-light
-					"
-				>
-					<p>{{ $store.getters["shared/email"] }}</p>
-					<Btn @click="logOut()" :variant="'icon'" :outline="true"
-						><span class="text-lg text-lightText material-icons-outlined">
-							logout
-						</span></Btn
-					>
-				</div> -->
 				<div
 					class="mobile-sidebar-header p-4 mt-4 rounded bg-primary-light bg-opacity-10"
 				>
@@ -140,8 +116,8 @@
 				:menu="sidebarOptions"
 				:relative="true"
 			>
-				<template v-slot:header
-					><div class="vsm--header">
+				<template v-slot:header>
+					<div class="vsm--header">
 						<div class="mx-auto flex space-x-2 items-center">
 							<Avatar :user="user" :size="'lg'" />
 							<div class="flex flex-col">
@@ -151,19 +127,29 @@
 								</p>
 							</div>
 						</div>
-						<!-- <div class="flex w-full">
-							<Btn
-								@click="logOut()"
-								:variant="'icon'"
-								:size="'sm'"
-								:outline="true"
-								class="ml-auto"
-								:tooltip="$t('misc.logout')"
-								><span style="font-size: 18px !important" class="material-icons-outlined">
-									logout
-								</span>
-							</Btn>
-						</div> -->
+						<div class="flex items-center mt-3 ml-1" v-if="gamificationContext">
+							<p class="material-icons mr-1.5 text-primary text-base">auto_awesome</p>
+							<p class="font-semibold">{{ gamificationContext?.reputation ?? 0 }}</p>
+							<!-- TODO plug in actual number -->
+							<p class="ml-3 mr-1.5 material-icons-outlined text-primary text-base">
+								leaderboard
+							</p>
+							<p class="">1</p>
+							<p class="ml-1 text-yellow-400 -mt-1">
+								<!-- <svg style="width: 18px; height: 18px" viewBox="0 0 24 24">
+									<path
+										fill="currentColor"
+										d="M12 1L21 5V11C21 16.55 17.16 21.74 12 23C6.84 21.74 3 16.55 3 11V5L12 1M16 14H8V15.5C8 15.77 8.19 15.96 8.47 16L8.57 16H15.43C15.74 16 15.95 15.84 16 15.59L16 15.5V14M17 8L17 8L14.33 10.67L12 8.34L9.67 10.67L7 8L7 8L8 13H16L17 8Z"
+									/>
+								</svg> -->
+								<svg style="width: 18px; height: 18px" viewBox="0 0 24 24">
+									<path
+										fill="currentColor"
+										d="M5 16L3 5L8.5 10L12 4L15.5 10L21 5L19 16H5M19 19C19 19.6 18.6 20 18 20H6C5.4 20 5 19.6 5 19V18H19V19Z"
+									/>
+								</svg>
+							</p>
+						</div>
 					</div>
 				</template>
 				<template v-slot:footer>
@@ -230,7 +216,7 @@ import { SidebarMenu } from "vue3-sidebar-menu";
 import "vue3-sidebar-menu/dist/vue-sidebar-menu.css";
 import { internalSidebarOptionsToSidebarMenuOptions } from "@/navigation/utils";
 import Avatar from "@/components/ui/Avatar.vue";
-import { mapState } from "vuex";
+import { mapState, mapActions } from "vuex";
 import Btn from "@/components/ui/Btn.vue";
 import { Course } from "@/models";
 export default defineComponent({
@@ -249,11 +235,15 @@ export default defineComponent({
 			}
 		},
 	},
+	async created() {
+		await this.getCourseGamificationContext({ courseId: this.courseId });
+	},
 	mounted() {
 		this.showMobileSidebarButton = true;
 	},
 	methods: {
 		logOut,
+		...mapActions("shared", ["getCourseGamificationContext"]),
 		isRouteActive(option: SidebarOption) {
 			return (
 				option.routeName === this.$route.name ||
@@ -274,7 +264,7 @@ export default defineComponent({
 		};
 	},
 	computed: {
-		...mapState("shared", ["user"]),
+		...mapState("shared", ["user", "gamificationContext"]),
 		routeTitle(): string {
 			return this.replaceTitleTokens(this.$route.meta.routeTitle as string);
 		},

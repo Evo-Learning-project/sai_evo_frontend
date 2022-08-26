@@ -4,4 +4,5 @@ export * from "./exercises";
 export * from "./events";
 export * from "./users";
 export * from "./converters";
+export * from "./gamification";
 export * from "./users";

@@ -1,7 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 
-import { getCourse, getCourses, getTags } from "@/api/courses";
+import {
+	getCourse,
+	getCourseGamificationContext,
+	getCourses,
+	getTags,
+} from "@/api/courses";
 import {
 	updateExerciseChoice,
 	updateExerciseTestCase,
@@ -66,12 +71,16 @@ export const actions = {
 	) => {
 		const { participations, ...course } = await getCourse(courseId);
 		commit("setCourse", course);
-
-		// TODO remove as this is now handled by a separate call in student store
-		if (participations) {
-			commit("student/setEventParticipations", participations, {
-				root: true,
-			});
+	},
+	getCourseGamificationContext: async (
+		{ state }: { state: SharedState },
+		{ courseId }: { courseId: string },
+	) => {
+		try {
+			const context = await getCourseGamificationContext(courseId);
+			state.gamificationContext = context;
+		} catch {
+			state.gamificationContext = null;
 		}
 	},
 	getCourses: async ({ commit }: { commit: Commit }) => {
@@ -114,14 +123,6 @@ export const actions = {
 		if (fromFirstPage) {
 			state.paginatedSolutionsByExerciseId[exerciseId] = paginatedSolutions;
 		} else {
-			// state.paginatedSolutionsByExerciseId[exerciseId] = {
-			// 	...state.paginatedSolutionsByExerciseId[exerciseId],
-			// 	...paginatedSolutions,
-			// 	data: [
-			// 		...state.paginatedSolutionsByExerciseId[exerciseId].data,
-			// 		...paginatedSolutions.data,
-			// 	],
-			// };
 			state.paginatedSolutionsByExerciseId[exerciseId] = updatePaginatedData(
 				state.paginatedSolutionsByExerciseId[exerciseId],
 				paginatedSolutions,
@@ -131,23 +132,6 @@ export const actions = {
 
 		return !state.paginatedSolutionsByExerciseId[exerciseId].isLastPage;
 	},
-	// createExerciseSolution: async  (
-	//   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-	//   { commit, state }: { commit: Commit; state:  },
-	//   {
-	//     courseId,
-	//     exerciseId,
-	//     payload,
-	//   }: {
-	//     courseId: string;
-	//     exerciseId: string;
-	//     payload: ExerciseSolution
-	//   }
-	// ) => {
-	//   const newSolution = await createExerciseSolution(courseId, exerciseId, payload)
-	//   state.
-
-	// },
 	updateExerciseChild: async (
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		{ commit }: { commit: Commit },

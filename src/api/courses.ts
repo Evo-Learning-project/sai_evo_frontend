@@ -1,10 +1,24 @@
-import { Course, EventTemplateRule, Tag, Event, EventParticipation } from "@/models";
+import {
+	Course,
+	EventTemplateRule,
+	Tag,
+	Event,
+	EventParticipation,
+	GamificationContext,
+} from "@/models";
 import axios from "axios";
 import { convertEventTemplateRules } from "./utils";
 
 export async function getCourses(): Promise<Course[]> {
 	const response = await axios.get(`/courses/`);
 	return response?.data ?? [];
+}
+
+export async function getCourseGamificationContext(
+	courseId: string,
+): Promise<GamificationContext> {
+	const response = await axios.get(`/courses/${courseId}/gamification_context/`);
+	return response.data;
 }
 
 export async function getCourseUnstartedPracticeEvents(

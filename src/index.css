@@ -1431,7 +1431,7 @@
 	}
 	.v-sidebar-menu .vsm--header {
 		text-transform: none !important;
-		@apply text-darkText font-normal mb-4;
+		@apply text-darkText font-normal mb-2;
 	}
 	.v-sidebar-menu .vsm--footer {
 		@apply mt-10;

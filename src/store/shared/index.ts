@@ -40,6 +40,7 @@ export const sharedStore = {
 		helpCenterOpen: false,
 		helpCenterSelectedArticleId: null,
 		paginatedSolutionsByExerciseId: {},
+		gamificationContext: null,
 	}),
 	mutations: {
 		...mutations,

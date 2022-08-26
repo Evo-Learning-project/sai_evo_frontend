@@ -69,6 +69,7 @@ export const it = {
 		student_exercise_solution_thread: "Discussione esercizio",
 		student_exercise_solution_threads: "Esercizi popolari",
 		student_favorites: "Contenuti salvati",
+		student_course_leaderboard: "Classifica",
 	},
 	event_participation_page: {
 		times_up: "Tempo scaduto",
@@ -925,6 +926,7 @@ export const it = {
 		exercise_solution_thread: "Discussione esercizio",
 		exercise_solution_threads: "Esercizi popolari",
 		student_favorites: "Contenuti salvati",
+		student_course_leaderboard: "Classifica",
 	},
 	course_list: {
 		filter_courses: "Cerca corsi",

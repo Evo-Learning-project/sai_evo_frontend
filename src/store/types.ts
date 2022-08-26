@@ -8,6 +8,7 @@ import {
 	Event,
 	User,
 	ExerciseSolution,
+	GamificationContext,
 } from "@/models";
 
 export interface StudentState {
@@ -42,6 +43,7 @@ export interface SharedState {
 	helpCenterOpen: boolean;
 	helpCenterSelectedArticleId: string | null;
 	paginatedSolutionsByExerciseId: Record<string, PaginatedData<ExerciseSolution>>; // string = exercise id,
+	gamificationContext: GamificationContext | null;
 }
 
 interface StoreOperationParameters<T> {

@@ -22,6 +22,7 @@ import ExerciseSolutionThread from "../views/student/ExerciseSolutionThread.vue"
 import EventParticipationsMonitor from "../views/teacher/EventParticipationsMonitor.vue";
 import CourseExerciseSolutionThreads from "../views/teacher/CourseExerciseSolutionThreads.vue";
 import DetailExerciseSolutionThreads from "../views/teacher/DetailExerciseSolutionThreads.vue";
+import GamificationLeaderboard from "../views/shared/GamificationLeaderboard.vue";
 import EventStats from "../views/teacher/EventStats.vue";
 import Login from "../views/Login.vue";
 import PageNotFound from "../views/shared/PageNotFound.vue";
@@ -41,6 +42,7 @@ import {
 	examsListBreadCrumbs,
 	exerciseSolutionThreadBreadCrumbs,
 	exerciseThreadsBreadCrumbs,
+	leaderboardBreadCrumbs,
 	practiceParticipationBreadCrumbs,
 	practiceReviewBreadCrumbs,
 	practicesListBreadCrumbs,
@@ -297,14 +299,13 @@ const routes: Array<RouteRecordRaw> = [
 							breadcrumbs: exerciseThreadsBreadCrumbs,
 						},
 					},
-					// TODO
 					{
 						path: "leaderboard",
 						name: "StudentCourseLeaderboard",
-						component: CourseDashBoardExerciseThreadList,
+						component: GamificationLeaderboard,
 						meta: {
-							routeTitle: _("headings.student_exercise_solution_threads"),
-							breadcrumbs: exerciseThreadsBreadCrumbs,
+							routeTitle: _("headings.student_course_leaderboard"),
+							breadcrumbs: leaderboardBreadCrumbs,
 						},
 					},
 					{
