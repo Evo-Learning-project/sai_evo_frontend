@@ -23,10 +23,17 @@ export const sharedStore = {
 	namespaced: true,
 	//plugins: [vuexLocal.plugin],
 	state: (): SharedState => ({
+		// user data
 		user: {} as User,
-		courses: [] as Course[],
 		token: "",
 		refreshToken: "",
+
+		// global data
+		courses: [] as Course[],
+		tags: [] as Tag[],
+		paginatedSolutionsByExerciseId: {},
+
+		// bookkeeping
 		loading: false,
 		firstLoading: false,
 		localLoading: false,
@@ -35,12 +42,14 @@ export const sharedStore = {
 		saving: false,
 		savingError: false,
 		showSuccessFeedback: false,
-		tags: [] as Tag[],
 		dirtyTex: false,
 		helpCenterOpen: false,
 		helpCenterSelectedArticleId: null,
-		paginatedSolutionsByExerciseId: {},
+
+		// gamification
 		gamificationContext: null,
+		gamificationContextGoals: [],
+		progressByGoalId: {},
 	}),
 	mutations: {
 		...mutations,

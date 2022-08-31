@@ -16,6 +16,7 @@ import {
 	ROUTE_TITLE_COURSE_NAME_TOKEN,
 	ROUTE_TITLE_EVENT_NAME_TOKEN,
 } from "@/navigation/const";
+import { GamificationAction } from "@/gamification";
 
 export const it = {
 	dialog: {
@@ -991,6 +992,19 @@ export const it = {
 		exam_insights_header: "Statistiche esame",
 		exam_insights_content:
 			"Visita la pagina delle statistiche per vedere approfondimenti sull'andamento dell'esame.",
+	},
+	gamification: {
+		your_reputation: "La tua reputazione",
+		your_leaderboard_position: "La tua posizione in classifica",
+		your_badges: "Le tue medaglie",
+		goals: "Obiettivi",
+		actions: {
+			[GamificationAction.SUBMIT_EXERCISE_SOLUTION]:
+				"Proponi la soluzione di un esercizio",
+			[GamificationAction.EXERCISE_SOLUTION_APPROVED]:
+				"Ottieni l'approvazione del docente per una tua soluzione",
+			[GamificationAction.TURN_IN_PRACTICE_PARTICIPATION]: "Completa un'esercitazione",
+		},
 	},
 	reports: {
 		csv_headers: {

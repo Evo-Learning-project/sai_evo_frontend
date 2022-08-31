@@ -1,4 +1,5 @@
 import { ExerciseSearchFilter, PaginatedData } from "@/api/interfaces";
+import { Goal, GoalProgress } from "@/gamification";
 import { ErrorMessage } from "@/interfaces";
 import {
 	Course,
@@ -26,10 +27,17 @@ export interface TeacherState {
 	users: User[];
 }
 export interface SharedState {
+	// user data
 	user: User;
-	courses: Course[];
 	token: string;
 	refreshToken: string;
+
+	// global data
+	courses: Course[];
+	tags: Tag[];
+	paginatedSolutionsByExerciseId: Record<string, PaginatedData<ExerciseSolution>>; // string = exercise id,
+
+	// bookeeping
 	loading: boolean; // global spinner
 	firstLoading: boolean; // skeletons on page
 	localLoading: boolean; // spinners in buttons and local components
@@ -38,12 +46,14 @@ export interface SharedState {
 	saving: boolean;
 	savingError: boolean;
 	showSuccessFeedback: boolean;
-	tags: Tag[];
 	dirtyTex: boolean;
 	helpCenterOpen: boolean;
 	helpCenterSelectedArticleId: string | null;
-	paginatedSolutionsByExerciseId: Record<string, PaginatedData<ExerciseSolution>>; // string = exercise id,
+
+	//gamification
 	gamificationContext: GamificationContext | null;
+	gamificationContextGoals: Goal[];
+	progressByGoalId: Record<string, GoalProgress>;
 }
 
 interface StoreOperationParameters<T> {

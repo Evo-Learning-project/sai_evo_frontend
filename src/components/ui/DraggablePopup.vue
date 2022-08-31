@@ -17,15 +17,16 @@
 			overflow-y-auto
 			transition-opacity
 			duration-75
-			resize
-			md:w-2/5
-			opacity-80
 			card
 			hover:opacity-100
 		"
 		:class="{
+			'opacity-80': !opaque,
 			'bg-light': !whiteBg,
 			'bg-white': whiteBg,
+			'md:w-2/5': !large,
+			'md:w-3/5': large,
+			resize: resizable,
 		}"
 	>
 		<div
@@ -82,6 +83,18 @@ export default defineComponent({
 			default: 63,
 		},
 		inForeground: {
+			type: Boolean,
+			default: false,
+		},
+		opaque: {
+			type: Boolean,
+			default: false,
+		},
+		resizable: {
+			type: Boolean,
+			default: true,
+		},
+		large: {
 			type: Boolean,
 			default: false,
 		},

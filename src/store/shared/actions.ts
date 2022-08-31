@@ -19,6 +19,7 @@ import {
 import { ExerciseSolutionSearchFilter } from "@/api/interfaces";
 import { getMe, updateUser } from "@/api/users";
 import { updatePaginatedData } from "@/api/utils";
+import { getContextGoals, getGoalProgress } from "@/gamification";
 import {
 	Exercise,
 	exerciseChildrenNames,
@@ -81,6 +82,25 @@ export const actions = {
 			state.gamificationContext = context;
 		} catch {
 			state.gamificationContext = null;
+		}
+	},
+	getGamificationContextGoals: async (
+		{ state }: { state: SharedState },
+		{ contextId }: { contextId: string },
+	) => {
+		const goals = await getContextGoals(contextId);
+		state.gamificationContextGoals = goals;
+		state.progressByGoalId = {};
+	},
+	getGamificationGoalProgress: async (
+		{ state }: { state: SharedState },
+		{ contextId, goalId }: { contextId: string; goalId: string },
+	) => {
+		try {
+			const progress = await getGoalProgress(contextId, goalId);
+			state.progressByGoalId[goalId] = progress;
+		} catch (e) {
+			state.progressByGoalId[goalId] = { current_level: 0, action_counts: [] };
 		}
 	},
 	getCourses: async ({ commit }: { commit: Commit }) => {

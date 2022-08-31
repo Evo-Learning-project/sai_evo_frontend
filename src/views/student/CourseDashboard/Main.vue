@@ -127,7 +127,7 @@
 								</p>
 							</div>
 						</div>
-						<div class="flex items-center mt-3 ml-1" v-if="gamificationContext">
+						<div class="relative flex items-center mt-3 ml-1" v-if="gamificationContext">
 							<p class="material-icons mr-1.5 text-primary text-base">auto_awesome</p>
 							<p class="font-semibold">{{ gamificationContext?.reputation ?? 0 }}</p>
 							<!-- TODO plug in actual number -->
@@ -149,6 +149,22 @@
 									/>
 								</svg>
 							</p>
+							<DraggablePopup
+								:title="''"
+								v-if="showGamificationPanel"
+								@close="showGamificationPanel = false"
+								:initialTop="160"
+								:initialLeft="1"
+								:opaque="true"
+								:resizable="false"
+								:large="true"
+							>
+								<GamificationContextPanel
+									style="margin-top: -34px"
+									class="w-full"
+									v-if="showGamificationPanel"
+								/>
+							</DraggablePopup>
 						</div>
 					</div>
 				</template>
@@ -219,6 +235,8 @@ import Avatar from "@/components/ui/Avatar.vue";
 import { mapState, mapActions } from "vuex";
 import Btn from "@/components/ui/Btn.vue";
 import { Course } from "@/models";
+import GamificationContextPanel from "@/components/student/GamificationContextPanel.vue";
+import DraggablePopup from "@/components/ui/DraggablePopup.vue";
 export default defineComponent({
 	name: "Main",
 	props: {},
@@ -237,13 +255,18 @@ export default defineComponent({
 	},
 	async created() {
 		await this.getCourseGamificationContext({ courseId: this.courseId });
+		await this.getGamificationContextGoals({ contextId: this.gamificationContext.id });
+		this.showGamificationPanel = true;
 	},
 	mounted() {
 		this.showMobileSidebarButton = true;
 	},
 	methods: {
 		logOut,
-		...mapActions("shared", ["getCourseGamificationContext"]),
+		...mapActions("shared", [
+			"getCourseGamificationContext",
+			"getGamificationContextGoals",
+		]),
 		isRouteActive(option: SidebarOption) {
 			return (
 				option.routeName === this.$route.name ||
@@ -261,10 +284,11 @@ export default defineComponent({
 			sidebarWidth: SIDEBAR_WIDTH_EXPANDED,
 			showMobileSidebar: false,
 			showMobileSidebarButton: false,
+			showGamificationPanel: false,
 		};
 	},
 	computed: {
-		...mapState("shared", ["user", "gamificationContext"]),
+		...mapState("shared", ["user", "gamificationContext", "gamificationGoals"]),
 		routeTitle(): string {
 			return this.replaceTitleTokens(this.$route.meta.routeTitle as string);
 		},
@@ -278,7 +302,14 @@ export default defineComponent({
 			];
 		},
 	},
-	components: { BreadCrumbs, SidebarMenu, Avatar, Btn },
+	components: {
+		BreadCrumbs,
+		SidebarMenu,
+		Avatar,
+		Btn,
+		GamificationContextPanel,
+		DraggablePopup,
+	},
 });
 </script>
 
