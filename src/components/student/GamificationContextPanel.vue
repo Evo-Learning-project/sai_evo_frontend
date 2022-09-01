@@ -36,29 +36,36 @@
 
 		<!-- TODO sticky footer -->
 		<!-- reputation & leaderboard-->
-		<div class="flex items-center mt-6 pt-6 border-t border-gray-200">
-			<!-- <p>{{ $t("gamification.your_reputation") }}</p> -->
-			<p class="material-icons mr-1.5 text-primary">auto_awesome</p>
-			<p class="font-semibold text-lg">{{ gamificationContext?.reputation ?? 0 }}</p>
-			<!-- <p class="ml-4">{{ $t("gamification.your_leaderboard_position") }}</p> -->
+		<div class="flex items-center ml-1 mt-6 pt-6 border-t border-gray-200 space-x-4">
+			<!-- <p>{{ }}</p> -->
+			<Tooltip :placement="'top'" :textValue="$t('gamification.your_reputation')">
+				<div class="flex items-center space-x-1">
+					<p class="material-icons mr-1.5 text-primary">auto_awesome</p>
+					<p class="font-semibold text-lg">{{ gamificationContext?.reputation ?? 0 }}</p>
+				</div>
+			</Tooltip>
+
+			<!-- <p class="ml-4">{{ $t("") }}</p> -->
 			<!-- TODO plug in actual number -->
-			<p class="ml-4 mr-1.5 material-icons-outlined text-primary">leaderboard</p>
-			<p class="text-lg">1</p>
-			<p class="ml-1 text-yellow-400 -mt-1">
-				<!-- <svg style="width: 18px; height: 18px" viewBox="0 0 24 24">
-									<path
-										fill="currentColor"
-										d="M12 1L21 5V11C21 16.55 17.16 21.74 12 23C6.84 21.74 3 16.55 3 11V5L12 1M16 14H8V15.5C8 15.77 8.19 15.96 8.47 16L8.57 16H15.43C15.74 16 15.95 15.84 16 15.59L16 15.5V14M17 8L17 8L14.33 10.67L12 8.34L9.67 10.67L7 8L7 8L8 13H16L17 8Z"
-									/>
-								</svg> -->
-				<svg style="width: 24px; height: 24px" viewBox="0 0 24 24">
-					<path
-						fill="currentColor"
-						d="M5 16L3 5L8.5 10L12 4L15.5 10L21 5L19 16H5M19 19C19 19.6 18.6 20 18 20H6C5.4 20 5 19.6 5 19V18H19V19Z"
-					/>
-				</svg>
-			</p>
-			<div class="ml-4 flex items-center flex-wrap space-x-0.5">
+			<Tooltip
+				:placement="'top'"
+				:textValue="$t('gamification.your_leaderboard_position')"
+			>
+				<div class="flex items-center space-x-1">
+					<p class="material-icons-outlined text-primary">leaderboard</p>
+					<p class="text-lg">1</p>
+					<p class="text-yellow-400">
+						<svg style="width: 24px; height: 24px" viewBox="0 0 24 24">
+							<path
+								fill="currentColor"
+								d="M5 16L3 5L8.5 10L12 4L15.5 10L21 5L19 16H5M19 19C19 19.6 18.6 20 18 20H6C5.4 20 5 19.6 5 19V18H19V19Z"
+							/>
+						</svg>
+					</p>
+				</div>
+			</Tooltip>
+
+			<div v-if="false" class="ml-4 flex items-center flex-wrap space-x-0.5">
 				<GamificationBadge class="text-primary" />
 				<GamificationBadge class="text-primary" />
 				<GamificationBadge class="text-primary-light" />
@@ -83,6 +90,7 @@ import { mapActions, mapState } from "vuex";
 import CircularProgress from "../ui/CircularProgress.vue";
 import Spinner from "../ui/Spinner.vue";
 import GamificationBadge from "../ui/GamificationBadge.vue";
+import Tooltip from "../ui/Tooltip.vue";
 export default defineComponent({
 	name: "GamificationContextPanel",
 	props: {},
@@ -136,7 +144,7 @@ export default defineComponent({
 			return this.gamificationContext.id;
 		},
 	},
-	components: { CircularProgress, Spinner, GamificationBadge },
+	components: { CircularProgress, Spinner, GamificationBadge, Tooltip },
 });
 </script>
 

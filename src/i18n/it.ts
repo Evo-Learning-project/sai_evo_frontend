@@ -997,6 +997,7 @@ export const it = {
 		your_reputation: "La tua reputazione",
 		your_leaderboard_position: "La tua posizione in classifica",
 		your_badges: "Le tue medaglie",
+		show_panel: "Mostra dettagli",
 		goals: "Obiettivi",
 		actions: {
 			[GamificationAction.SUBMIT_EXERCISE_SOLUTION]:

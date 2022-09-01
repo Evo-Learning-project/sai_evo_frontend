@@ -149,6 +149,20 @@
 									/>
 								</svg>
 							</p>
+							<Btn
+								:tooltip="showGamificationPanel ? '' : $t('gamification.show_panel')"
+								:variant="'icon'"
+								@click="showGamificationPanel = !showGamificationPanel"
+								:outline="true"
+								><span
+									style="font-size: 20px !important"
+									:class="{
+										'material-icons-outlined': !showGamificationPanel,
+										'material-icons': showGamificationPanel,
+									}"
+									>visibility</span
+								></Btn
+							>
 							<DraggablePopup
 								:title="''"
 								v-if="showGamificationPanel"
@@ -256,7 +270,6 @@ export default defineComponent({
 	async created() {
 		await this.getCourseGamificationContext({ courseId: this.courseId });
 		await this.getGamificationContextGoals({ contextId: this.gamificationContext.id });
-		this.showGamificationPanel = true;
 	},
 	mounted() {
 		this.showMobileSidebarButton = true;

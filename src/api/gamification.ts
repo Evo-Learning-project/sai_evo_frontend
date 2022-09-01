@@ -12,6 +12,6 @@ import axios from "axios";
 export async function getCourseLeaderboard(
 	contextId: string,
 ): Promise<GamificationUser[]> {
-	const response = await axios.get(`/gamification/${contextId}/leaderboard/`);
+	const response = await axios.get(`/gamification/contexts/${contextId}/leaderboard/`);
 	return response.data;
 }
