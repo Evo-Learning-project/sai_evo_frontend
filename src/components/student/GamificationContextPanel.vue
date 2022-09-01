@@ -2,7 +2,7 @@
 	<div class="mt-2">
 		<!-- goals -->
 		<!-- <h3 class="mb-4">Obiettivi</h3> -->
-		<h3>{{ $t("gamification.goals") }}</h3>
+		<h3 class="mb-4">{{ $t("gamification.goals") }}</h3>
 		<div class="mb-6" v-for="goal in sortedGoals" :key="'goal-' + goal.id">
 			<div class="flex items-center space-x-2">
 				<h5 class="text-lg font-medium">{{ goal.name }}</h5>
@@ -33,6 +33,17 @@
 				</div>
 			</div>
 		</div>
+		<div class="flex flex-col -mt-12" v-if="sortedGoals.length === 0">
+			<p style="font-size: 10rem" class="opacity-10 mx-auto">
+				<svg style="width: 10rem; height: 10rem" viewBox="0 0 24 24">
+					<path
+						fill="currentColor"
+						d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12C22,10.84 21.79,9.69 21.39,8.61L19.79,10.21C19.93,10.8 20,11.4 20,12A8,8 0 0,1 12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4C12.6,4 13.2,4.07 13.79,4.21L15.4,2.6C14.31,2.21 13.16,2 12,2M19,2L15,6V7.5L12.45,10.05C12.3,10 12.15,10 12,10A2,2 0 0,0 10,12A2,2 0 0,0 12,14A2,2 0 0,0 14,12C14,11.85 14,11.7 13.95,11.55L16.5,9H18L22,5H19V2M12,6A6,6 0 0,0 6,12A6,6 0 0,0 12,18A6,6 0 0,0 18,12H16A4,4 0 0,1 12,16A4,4 0 0,1 8,12A4,4 0 0,1 12,8V6Z"
+					/>
+				</svg>
+			</p>
+			<h4 class="mx-auto opacity-40 -mt-4">{{ $t("gamification.no_goals") }}</h4>
+		</div>
 
 		<!-- TODO sticky footer -->
 		<!-- reputation & leaderboard-->
@@ -45,16 +56,23 @@
 				</div>
 			</Tooltip>
 
-			<!-- <p class="ml-4">{{ $t("") }}</p> -->
-			<!-- TODO plug in actual number -->
 			<Tooltip
 				:placement="'top'"
 				:textValue="$t('gamification.your_leaderboard_position')"
 			>
 				<div class="flex items-center space-x-1">
 					<p class="material-icons-outlined text-primary">leaderboard</p>
-					<p class="text-lg">1</p>
-					<p class="text-yellow-400">
+					<p v-if="gamificationContext" class="text-lg">
+						{{ gamificationContext.leaderboard_position }}
+					</p>
+					<p
+						v-if="gamificationContext.leaderboard_position <= 3"
+						:class="{
+							'text-yellow-400': gamificationContext.leaderboard_position === 1,
+							'text-gray-400': gamificationContext.leaderboard_position === 2,
+							'text-yellow-900': gamificationContext.leaderboard_position === 3,
+						}"
+					>
 						<svg style="width: 24px; height: 24px" viewBox="0 0 24 24">
 							<path
 								fill="currentColor"

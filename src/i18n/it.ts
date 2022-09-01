@@ -999,6 +999,7 @@ export const it = {
 		your_badges: "Le tue medaglie",
 		show_panel: "Mostra dettagli",
 		goals: "Obiettivi",
+		no_goals: "Non ci sono ancora obiettivi",
 		actions: {
 			[GamificationAction.SUBMIT_EXERCISE_SOLUTION]:
 				"Proponi la soluzione di un esercizio",

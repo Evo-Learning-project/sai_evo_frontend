@@ -271,6 +271,7 @@ export interface GamificationContext {
 	// TODO instead of putting these here, fetch "my gamification account" separately
 	badges: GamificationBadge[];
 	goals: GamificationGoal[];
+	leaderboard_position: number | null;
 }
 
 export interface GamificationUser {

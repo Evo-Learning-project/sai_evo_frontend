@@ -130,25 +130,34 @@
 						<div class="relative flex items-center mt-3 ml-1" v-if="gamificationContext">
 							<p class="material-icons mr-1.5 text-primary text-base">auto_awesome</p>
 							<p class="font-semibold">{{ gamificationContext?.reputation ?? 0 }}</p>
-							<!-- TODO plug in actual number -->
-							<p class="ml-3 mr-1.5 material-icons-outlined text-primary text-base">
-								leaderboard
-							</p>
-							<p class="">1</p>
-							<p class="ml-1 text-yellow-400 -mt-1">
-								<!-- <svg style="width: 18px; height: 18px" viewBox="0 0 24 24">
-									<path
-										fill="currentColor"
-										d="M12 1L21 5V11C21 16.55 17.16 21.74 12 23C6.84 21.74 3 16.55 3 11V5L12 1M16 14H8V15.5C8 15.77 8.19 15.96 8.47 16L8.57 16H15.43C15.74 16 15.95 15.84 16 15.59L16 15.5V14M17 8L17 8L14.33 10.67L12 8.34L9.67 10.67L7 8L7 8L8 13H16L17 8Z"
-									/>
-								</svg> -->
-								<svg style="width: 18px; height: 18px" viewBox="0 0 24 24">
-									<path
-										fill="currentColor"
-										d="M5 16L3 5L8.5 10L12 4L15.5 10L21 5L19 16H5M19 19C19 19.6 18.6 20 18 20H6C5.4 20 5 19.6 5 19V18H19V19Z"
-									/>
-								</svg>
-							</p>
+							<div
+								class="flex items-center space-x-1"
+								v-if="
+									gamificationContext && gamificationContext.leaderboard_position !== null
+								"
+							>
+								<p class="ml-3 material-icons-outlined text-primary text-base">
+									leaderboard
+								</p>
+								<p class="">
+									{{ gamificationContext.leaderboard_position }}
+								</p>
+								<p
+									v-if="gamificationContext.leaderboard_position <= 3"
+									:class="{
+										'text-yellow-400': gamificationContext.leaderboard_position === 1,
+										'text-gray-400': gamificationContext.leaderboard_position === 2,
+										'text-yellow-900': gamificationContext.leaderboard_position === 3,
+									}"
+								>
+									<svg style="width: 18px; height: 18px" viewBox="0 0 24 24">
+										<path
+											fill="currentColor"
+											d="M5 16L3 5L8.5 10L12 4L15.5 10L21 5L19 16H5M19 19C19 19.6 18.6 20 18 20H6C5.4 20 5 19.6 5 19V18H19V19Z"
+										/>
+									</svg>
+								</p>
+							</div>
 							<Btn
 								:tooltip="showGamificationPanel ? '' : $t('gamification.show_panel')"
 								:variant="'icon'"
@@ -161,8 +170,17 @@
 										'material-icons': showGamificationPanel,
 									}"
 									>visibility</span
-								></Btn
-							>
+								>
+
+								<!-- 
+									<svg style="width: 10rem; height: 10rem" viewBox="0 0 24 24">
+										<path
+											fill="currentColor"
+											d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12C22,10.84 21.79,9.69 21.39,8.61L19.79,10.21C19.93,10.8 20,11.4 20,12A8,8 0 0,1 12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4C12.6,4 13.2,4.07 13.79,4.21L15.4,2.6C14.31,2.21 13.16,2 12,2M19,2L15,6V7.5L12.45,10.05C12.3,10 12.15,10 12,10A2,2 0 0,0 10,12A2,2 0 0,0 12,14A2,2 0 0,0 14,12C14,11.85 14,11.7 13.95,11.55L16.5,9H18L22,5H19V2M12,6A6,6 0 0,0 6,12A6,6 0 0,0 12,18A6,6 0 0,0 18,12H16A4,4 0 0,1 12,16A4,4 0 0,1 8,12A4,4 0 0,1 12,8V6Z"
+										/>
+									</svg>
+								-->
+							</Btn>
 							<DraggablePopup
 								:title="''"
 								v-if="showGamificationPanel"
