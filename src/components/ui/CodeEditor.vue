@@ -26,6 +26,7 @@
 				<MonacoEditor
 					@editorDidMount="onDidMount($event)"
 					@change="onChange($event)"
+					@blur="$emit('blur')"
 					:value="modelValue"
 					theme="vs-dark"
 					class="rounded-md"

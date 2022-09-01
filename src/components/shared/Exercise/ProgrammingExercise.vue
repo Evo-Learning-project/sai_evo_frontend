@@ -51,6 +51,7 @@
 					:runCoolDown="runCoolDown"
 					:running="isRunning || runCoolDown > 0"
 					@run="onRun()"
+					@blur="$emit('blur')"
 				>
 					<template v-slot:runButton
 						><span class="ml-1 mr-1 text-base material-icons"> play_arrow </span

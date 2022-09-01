@@ -71,6 +71,9 @@ export default defineComponent({
 					this.$emit("change", value, event);
 				}
 			});
+			editor.onDidBlurEditorWidget(() => {
+				this.$emit("blur");
+			});
 			this.$emit("editorDidMount", this.editor);
 		},
 		_setModel(value, original) {
