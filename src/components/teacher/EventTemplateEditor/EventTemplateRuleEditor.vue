@@ -189,11 +189,11 @@
 
 					{{ " " + $t("event_template_rule_editor.tag_based_description_multiple_2") }}
 				</p>
-				<div class="flex flex-wrap space-x-3">
+				<div class="flex xl:flex-row flex-col xl:space-x-3">
 					<div
 						v-for="(clause, index) in modelValue.clauses"
 						:key="'clause-preview-' + clause.id"
-						class="flex items-center mb-2"
+						class="flex items-center mb-2 flex-wrap"
 					>
 						<p class="mr-2" v-if="clause.tags.length > 1">
 							{{ $t("event_template_rule_editor.tag_based_at_least_one") }}

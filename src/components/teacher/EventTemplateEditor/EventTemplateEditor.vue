@@ -68,6 +68,12 @@
 					</EventTemplateRuleEditor>
 				</template>
 			</draggable>
+			<div
+				class="flex flex-col items-center opacity-70 card card-filled"
+				v-if="(modelValue.rules?.length ?? 0) === 0"
+			>
+				<p class="text-muted select-none">{{ $t("event_template_editor.no_rules") }}</p>
+			</div>
 		</div>
 
 		<div class="flex items-center mb-4 -mt-2">
@@ -347,7 +353,7 @@ export default defineComponent({
 		},
 		async onRuleDelete(rule: EventTemplateRule) {
 			if (confirm(_("event_template_editor.confirm_delete_rule"))) {
-				await this.withLoading(async () =>
+				await this.withLocalLoading(async () =>
 					this.deleteEventTemplateRule({
 						courseId: this.courseId,
 						templateId: this.modelValue.id,

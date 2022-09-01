@@ -7,6 +7,7 @@
 			@cellClicked="onCellClicked"
 			@gridReady="gridApi = $event.api"
 			:getRowClass="getRowClass"
+			:getRowId="getRowId"
 		></DataTable>
 		<Dialog :showDialog="showDialog" :confirmOnly="true" @yes="hideDialog()">
 			<template v-slot:title>
@@ -83,6 +84,9 @@ export default defineComponent({
 	},
 	methods: {
 		...mapActions(["getUsersForCourse", "updateUserCoursePrivileges"]),
+		getRowId(data: any) {
+			return data.id;
+		},
 		onCellClicked(event: CellClickedEvent) {
 			if (
 				event.data.id !== this.user.id &&

@@ -141,7 +141,7 @@
 							{{ $t("event_editor.tip_you_used_randomization") }}
 						</p>
 						<Btn
-							class="w-1/2 -mr-3 lg:-mr-2 lg:w-max md:ml-auto"
+							class="w-full md:w-1/2 -mr-3 lg:-mr-2 lg:w-max md:ml-auto"
 							:outline="true"
 							@click="getInstances"
 							:disabled="loadingExamples"

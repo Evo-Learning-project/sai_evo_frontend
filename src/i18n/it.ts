@@ -476,6 +476,7 @@ export const it = {
 		publish: "Pubblica",
 	},
 	event_template_editor: {
+		no_rules: "Non ci sono ancora slot",
 		list_view: "Visualizzazione lista",
 		grid_view: "Visualizzazione griglia",
 		add_more_rules: "Aggiungi più slot",
