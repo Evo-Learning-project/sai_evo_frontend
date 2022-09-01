@@ -84,6 +84,7 @@
 					bg-light
 					shadow-popup
 					md:shadow-none md:bg-transparent
+					z-50
 				"
 				:class="[editingRule ? 'visible' : 'invisible']"
 			>
