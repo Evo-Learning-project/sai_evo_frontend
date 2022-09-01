@@ -1,5 +1,10 @@
 import { ExerciseState, ExerciseType, EventType, ExerciseSolutionState } from "@/models";
 
+export interface EventParticipationSearchFilter {
+	bookmarked?: boolean;
+	event_type?: EventType;
+}
+
 export interface ExerciseSearchFilter {
 	label: string;
 	text: string;

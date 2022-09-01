@@ -42,6 +42,7 @@ import {
 	voteExerciseSolution,
 } from "@/api/exercises";
 import { updatePaginatedData } from "@/api/utils";
+import { EventParticipationSearchFilter } from "@/api";
 
 export const actions = {
 	participateInEvent: async (
@@ -147,13 +148,22 @@ export const actions = {
 	},
 	getCourseEventParticipations: async (
 		{ commit, state }: { commit: Commit; state: StudentState },
-		{ courseId, fromFirstPage }: { courseId: string; fromFirstPage: boolean },
+		{
+			courseId,
+			fromFirstPage,
+			filter = undefined,
+		}: {
+			courseId: string;
+			fromFirstPage: boolean;
+			filter: undefined | EventParticipationSearchFilter;
+		},
 	) => {
 		const participations = await getCourseEventParticipations(
 			courseId,
 			fromFirstPage ? 1 : (state.eventParticipations?.pageNumber ?? 0) + 1,
 			true,
 			true,
+			filter,
 		);
 
 		if (fromFirstPage) {

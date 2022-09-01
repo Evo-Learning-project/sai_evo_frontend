@@ -227,7 +227,7 @@ import { mapGetters, mapActions, mapMutations, mapState } from "vuex";
 import EventParticipationPreview from "@/components/student/EventParticipationPreview.vue";
 import SkeletonCard from "@/components/ui/SkeletonCard.vue";
 import Card from "@/components/ui/Card.vue";
-import { Event, EventParticipation, getBlankPractice } from "@/models";
+import { Event, EventParticipation, EventType, getBlankPractice } from "@/models";
 import Dialog from "@/components/ui/Dialog.vue";
 import PracticeTemplateEditor from "@/components/student/PracticeTemplateEditor.vue";
 import { getTranslatedString as _ } from "@/i18n";
@@ -237,6 +237,7 @@ import Btn from "@/components/ui/Btn.vue";
 import VueEternalLoading from "@ts-pro/vue-eternal-loading/src/components/VueEternalLoading/VueEternalLoading.vue";
 import Spinner from "@/components/ui/Spinner.vue";
 import { LoadAction } from "@ts-pro/vue-eternal-loading";
+import { EventParticipationSearchFilter } from "@/api";
 
 export default defineComponent({
 	components: {
@@ -258,10 +259,12 @@ export default defineComponent({
 				includeExerciseCount: true,
 			});
 			await this.getCourse({ courseId: this.courseId });
-			// TODO filter to get practice
 			await this.getCourseEventParticipations({
 				courseId: this.courseId,
 				fromFirstPage: true,
+				filter: {
+					event_type: EventType.SELF_SERVICE_PRACTICE,
+				} as EventParticipationSearchFilter,
 			});
 		});
 	},
@@ -289,13 +292,11 @@ export default defineComponent({
 				const moreResults = await this.getCourseEventParticipations({
 					courseId: this.courseId,
 					fromFirstPage: false,
+					filter: {
+						event_type: EventType.SELF_SERVICE_PRACTICE,
+					} as EventParticipationSearchFilter,
 				});
 
-				// await this.getExercises({
-				// 	courseId: this.courseId,
-				// 	fromFirstPage: false,
-				// 	filters: this.searchFilter,
-				// });
 				if (!moreResults) {
 					noMore();
 				} else {

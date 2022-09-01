@@ -13,6 +13,20 @@
 				<SkeletonCard class="h-44"></SkeletonCard>
 				<SkeletonCard class="h-44"></SkeletonCard>
 			</div>
+			<VueEternalLoading
+				v-if="!firstLoading"
+				:load="onLoadMore"
+				class="mt-8"
+				v-model:is-initial="isInitialInfiniteLoad"
+			>
+				<template #loading>
+					<Spinner />
+				</template>
+				<template #no-more>
+					&nbsp;
+					<!-- <div class="w-full h-1 bg-gray-200 rounded-md"></div> -->
+				</template>
+			</VueEternalLoading>
 		</div>
 		<div class="flex h-screen -mt-40" v-else>
 			<div class="mx-auto my-auto flex flex-col">
@@ -37,15 +51,19 @@ import { defineComponent } from "@vue/runtime-core";
 import { mapGetters, mapActions, mapMutations, mapState } from "vuex";
 import EventParticipationPreview from "@/components/student/EventParticipationPreview.vue";
 import SkeletonCard from "@/components/ui/SkeletonCard.vue";
-import { Event, EventParticipation, getBlankPractice } from "@/models";
+import { Event, EventParticipation, EventType, getBlankPractice } from "@/models";
 import { getTranslatedString as _ } from "@/i18n";
 import { sum } from "lodash";
 import { MAX_PRACTICE_EXERCISE_COUNT } from "@/const";
+import { LoadAction } from "@ts-pro/vue-eternal-loading";
+import VueEternalLoading from "@ts-pro/vue-eternal-loading/src/components/VueEternalLoading/VueEternalLoading.vue";
+import { EventParticipationSearchFilter } from "@/api";
 
 export default defineComponent({
 	components: {
 		EventParticipationPreview,
 		SkeletonCard,
+		VueEternalLoading,
 	},
 	name: "CourseDashboard",
 	mixins: [courseIdMixin, loadingMixin],
@@ -56,8 +74,11 @@ export default defineComponent({
 				includeExerciseCount: true,
 			});
 			await this.getCourse({ courseId: this.courseId });
-			// TODO filter to get exams
-			await this.getCourseEventParticipations({ courseId: this.courseId });
+			await this.getCourseEventParticipations({
+				courseId: this.courseId,
+				fromFirstPage: true,
+				filter: { event_type: EventType.EXAM } as EventParticipationSearchFilter,
+			});
 		});
 	},
 	data() {
@@ -67,6 +88,7 @@ export default defineComponent({
 			showNotRecent: false,
 			showBookmarkedOnly: false,
 			loadingParticipations: new Set<string>(),
+			isInitialInfiniteLoad: false,
 		};
 	},
 	methods: {
@@ -76,8 +98,24 @@ export default defineComponent({
 			"partialUpdateEventParticipation",
 			"getCourseEventParticipations",
 		]),
-		//...mapActions("teacher", ["partialUpdateEventParticipation"]),
 		...mapMutations("student", ["setEditingEvent"]),
+		async onLoadMore({ loaded, noMore, error }: LoadAction) {
+			try {
+				const moreResults = await this.getCourseEventParticipations({
+					courseId: this.courseId,
+					fromFirstPage: false,
+					filter: { event_type: EventType.EXAM } as EventParticipationSearchFilter,
+				});
+
+				if (!moreResults) {
+					noMore();
+				} else {
+					loaded();
+				}
+			} catch {
+				error();
+			}
+		},
 	},
 	computed: {
 		...mapGetters("student", ["examParticipations"]),

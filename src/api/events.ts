@@ -7,7 +7,12 @@ import {
 	normalizeIncomingEventTemplateRule,
 	normalizeIncomingEventTemplateRuleClause,
 } from "./converters";
-import { BackendPaginatedResponse, EventSearchFilter, PaginatedData } from "./interfaces";
+import {
+	BackendPaginatedResponse,
+	EventParticipationSearchFilter,
+	EventSearchFilter,
+	PaginatedData,
+} from "./interfaces";
 import {
 	Event,
 	EventParticipation,
@@ -22,6 +27,7 @@ import { forceFileDownload } from "@/utils";
 import axios from "axios";
 import {
 	convertEventTemplateRules,
+	getEventParticipationUrlQueryParams,
 	getEventUrlQueryParams,
 	tagIdsToTags,
 	tagNamesToTags,
@@ -114,11 +120,14 @@ export async function getCourseEventParticipations(
 	pageNumber: number,
 	includeDetails?: boolean,
 	includeEvent?: boolean,
+	filter?: EventParticipationSearchFilter,
 ): Promise<PaginatedData<EventParticipation>> {
 	const response = await axios.get(
 		`/courses/${courseId}/participations/?page=${pageNumber}${
 			includeDetails ? "&include_details=" + includeDetails : ""
-		}${includeEvent ? "&include_event=" + includeEvent : ""}`,
+		}${
+			includeEvent ? "&include_event=" + includeEvent : ""
+		}${getEventParticipationUrlQueryParams(filter ?? null)}`,
 	);
 	const normalizedData = (
 		response.data as BackendPaginatedResponse<EventParticipation>

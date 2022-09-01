@@ -1,5 +1,6 @@
 import {
 	CourseSearchFilter,
+	EventParticipationSearchFilter,
 	EventSearchFilter,
 	ExerciseSearchFilter,
 	ExerciseSolutionSearchFilter,
@@ -66,6 +67,30 @@ export const getExerciseSolutionUrlQueryParams = (
 
 	if (filters.states && filters.states.length > 0) {
 		ret += `state=${filters.states.join(",")}&`;
+	}
+	return ret;
+};
+
+export const getEventParticipationUrlQueryParams = (
+	filters: EventParticipationSearchFilter | null,
+): string => {
+	if (!filters) {
+		return "";
+	}
+	let ret = "";
+	if (
+		typeof filters.bookmarked !== "undefined" ||
+		typeof filters.event_type !== "undefined"
+	) {
+		ret += "&";
+	}
+
+	if (typeof filters.bookmarked !== "undefined") {
+		ret += `bookmarked=${JSON.stringify(filters.bookmarked)}&`;
+	}
+
+	if (typeof filters.event_type !== "undefined") {
+		ret += `event_type=${filters.event_type}&`;
 	}
 	return ret;
 };
