@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+import { PaginatedData } from "@/api";
 import { EventParticipation, Exercise } from "@/models";
 import { actions } from "./actions";
 import { getters } from "./getters";
@@ -8,7 +9,7 @@ export const studentStore = {
 	namespaced: true,
 	state: () => ({
 		currentEventParticipation: null as EventParticipation | null,
-		eventParticipations: [] as EventParticipation[],
+		eventParticipations: {} as PaginatedData<EventParticipation>,
 		editingEvent: null as Event | null,
 		previewingEvent: null as Event | null,
 		exerciseThreads: [] as Exercise[],

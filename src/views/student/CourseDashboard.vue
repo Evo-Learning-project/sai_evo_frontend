@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
 	<div class="mb-4">
 		<div class="mb-8" v-if="examParticipations.length > 0">
 			<h2>{{ $t("student_course_dashboard.exams_you_participated_in") }}</h2>
@@ -244,7 +244,7 @@ export default defineComponent({
 				includeExerciseCount: true,
 			});
 			await this.getCourse({ courseId: this.courseId });
-			await this.getPracticeEventParticipations({ courseId: this.courseId });
+			await this.getCourseEventParticipations({ courseId: this.courseId });
 		});
 	},
 	data() {
@@ -261,7 +261,7 @@ export default defineComponent({
 		...mapActions("student", [
 			"createEvent",
 			"partialUpdateEventParticipation",
-			"getPracticeEventParticipations",
+			"getCourseEventParticipations",
 		]),
 		//...mapActions("teacher", ["partialUpdateEventParticipation"]),
 		...mapMutations("student", ["setEditingEvent"]),
@@ -344,4 +344,4 @@ export default defineComponent({
 });
 </script>
 
-<style></style>
+<style></style> -->

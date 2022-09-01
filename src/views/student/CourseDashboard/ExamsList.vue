@@ -57,7 +57,7 @@ export default defineComponent({
 			});
 			await this.getCourse({ courseId: this.courseId });
 			// TODO filter to get exams
-			await this.getPracticeEventParticipations({ courseId: this.courseId });
+			await this.getCourseEventParticipations({ courseId: this.courseId });
 		});
 	},
 	data() {
@@ -74,13 +74,13 @@ export default defineComponent({
 		...mapActions("student", [
 			"createEvent",
 			"partialUpdateEventParticipation",
-			"getPracticeEventParticipations",
+			"getCourseEventParticipations",
 		]),
 		//...mapActions("teacher", ["partialUpdateEventParticipation"]),
 		...mapMutations("student", ["setEditingEvent"]),
 	},
 	computed: {
-		...mapGetters("student", ["examParticipations", "practiceParticipations"]),
+		...mapGetters("student", ["examParticipations"]),
 		...mapGetters("shared", ["course"]),
 		...mapState("student", ["editingEvent"]),
 		...mapState("shared", ["tags"]),

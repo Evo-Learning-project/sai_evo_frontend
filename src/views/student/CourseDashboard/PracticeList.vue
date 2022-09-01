@@ -1,6 +1,7 @@
 <template>
 	<div class="mb-4">
 		<div class="w-full">
+			<!-- top buttons -->
 			<div class="flex items-center mb-4 -mt-12">
 				<Btn
 					:class="{ 'opacity-0': firstLoading || practiceParticipations.length <= 3 }"
@@ -18,7 +19,7 @@
 						>bookmarks</span
 					></Btn
 				>
-				<Btn
+				<!-- <Btn
 					:class="{ 'opacity-0': firstLoading || practiceParticipations.length <= 3 }"
 					:variant="'icon'"
 					:outline="true"
@@ -32,7 +33,7 @@
 					><span :class="[showNotRecent ? 'material-icons' : 'material-icons-outlined']"
 						>visibility</span
 					></Btn
-				>
+				> -->
 			</div>
 
 			<div
@@ -46,6 +47,7 @@
 				"
 				v-if="!firstLoading"
 			>
+				<!-- resume practice button -->
 				<div v-if="(currentCourse.unstarted_practice_events?.length ?? 0) > 0">
 					<Card
 						:hoverable="false"
@@ -79,6 +81,7 @@
 						</template>
 					</Card>
 				</div>
+				<!-- new practice button -->
 				<Card
 					v-else
 					:margin-less="true"
@@ -117,14 +120,17 @@
 						</div>
 					</template>
 				</Card>
+
+				<!-- preview list -->
 				<EventParticipationPreview
 					v-for="participation in filteredPracticeParticipations"
 					:key="'practice-participation-' + participation.id"
 					:participation="participation"
 					@bookmark="onBookmark(participation)"
 					:loading="loadingParticipations.has(participation.id)"
-				></EventParticipationPreview>
+				/>
 			</div>
+			<!-- skeletons -->
 			<div
 				class="
 					mt-4
@@ -143,7 +149,23 @@
 				<SkeletonCard :full="true" />
 				<SkeletonCard :full="true" />
 			</div>
+			<VueEternalLoading
+				v-if="!firstLoading"
+				:load="onLoadMore"
+				class="mt-8"
+				v-model:is-initial="isInitialInfiniteLoad"
+			>
+				<template #loading>
+					<Spinner />
+				</template>
+				<template #no-more>
+					&nbsp;
+					<!-- <div class="w-full h-1 bg-gray-200 rounded-md"></div> -->
+				</template>
+			</VueEternalLoading>
 		</div>
+
+		<!-- editor dialog-->
 		<Dialog
 			@no="setEditingEvent(null)"
 			@yes="onBeginPractice(editingEvent)"
@@ -212,6 +234,9 @@ import { getTranslatedString as _ } from "@/i18n";
 import { sum } from "lodash";
 import { MAX_PRACTICE_EXERCISE_COUNT } from "@/const";
 import Btn from "@/components/ui/Btn.vue";
+import VueEternalLoading from "@ts-pro/vue-eternal-loading/src/components/VueEternalLoading/VueEternalLoading.vue";
+import Spinner from "@/components/ui/Spinner.vue";
+import { LoadAction } from "@ts-pro/vue-eternal-loading";
 
 export default defineComponent({
 	components: {
@@ -221,6 +246,8 @@ export default defineComponent({
 		Dialog,
 		PracticeTemplateEditor,
 		Btn,
+		VueEternalLoading,
+		Spinner,
 	},
 	name: "PracticeList",
 	mixins: [courseIdMixin, loadingMixin],
@@ -232,14 +259,18 @@ export default defineComponent({
 			});
 			await this.getCourse({ courseId: this.courseId });
 			// TODO filter to get practice
-			await this.getPracticeEventParticipations({ courseId: this.courseId });
+			await this.getCourseEventParticipations({
+				courseId: this.courseId,
+				fromFirstPage: true,
+			});
 		});
 	},
 	data() {
 		return {
+			isInitialInfiniteLoad: false,
 			isEditingRule: false,
 			MAX_PRACTICE_EXERCISE_COUNT,
-			showNotRecent: false,
+			showNotRecent: true,
 			showBookmarkedOnly: false,
 			loadingParticipations: new Set<string>(),
 		};
@@ -249,11 +280,31 @@ export default defineComponent({
 		...mapActions("student", [
 			"createEvent",
 			"partialUpdateEventParticipation",
-			"getPracticeEventParticipations",
+			"getCourseEventParticipations",
 		]),
 		//...mapActions("teacher", ["partialUpdateEventParticipation"]),
 		...mapMutations("student", ["setEditingEvent"]),
+		async onLoadMore({ loaded, noMore, error }: LoadAction) {
+			try {
+				const moreResults = await this.getCourseEventParticipations({
+					courseId: this.courseId,
+					fromFirstPage: false,
+				});
 
+				// await this.getExercises({
+				// 	courseId: this.courseId,
+				// 	fromFirstPage: false,
+				// 	filters: this.searchFilter,
+				// });
+				if (!moreResults) {
+					noMore();
+				} else {
+					loaded();
+				}
+			} catch {
+				error();
+			}
+		},
 		onBeginPractice(event: Event) {
 			this.setEditingEvent(null);
 			this.$router.push({

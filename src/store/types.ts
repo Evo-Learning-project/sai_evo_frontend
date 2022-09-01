@@ -14,7 +14,7 @@ import {
 
 export interface StudentState {
 	currentEventParticipation: EventParticipation | null;
-	eventParticipations: EventParticipation[];
+	eventParticipations: PaginatedData<EventParticipation>;
 	editingEvent: Event | null;
 	previewingEvent: Event | null;
 	exerciseThreads: Exercise[];

@@ -1,4 +1,5 @@
 import {
+	convertPaginatedResponseToLocalPaginatedData,
 	normalizeIncomingEvent,
 	normalizeIncomingEventParticipation,
 	normalizeIncomingEventParticipationSlot,
@@ -6,7 +7,7 @@ import {
 	normalizeIncomingEventTemplateRule,
 	normalizeIncomingEventTemplateRuleClause,
 } from "./converters";
-import { EventSearchFilter } from "./interfaces";
+import { BackendPaginatedResponse, EventSearchFilter, PaginatedData } from "./interfaces";
 import {
 	Event,
 	EventParticipation,
@@ -110,16 +111,22 @@ export async function deleteEvent(courseId: string, eventId: string): Promise<vo
 
 export async function getCourseEventParticipations(
 	courseId: string,
+	pageNumber: number,
 	includeDetails?: boolean,
 	includeEvent?: boolean,
-): Promise<EventParticipation[]> {
+): Promise<PaginatedData<EventParticipation>> {
 	const response = await axios.get(
-		`/courses/${courseId}/participations/${
-			includeDetails ? "?include_details=" + includeDetails : ""
+		`/courses/${courseId}/participations/?page=${pageNumber}${
+			includeDetails ? "&include_details=" + includeDetails : ""
 		}${includeEvent ? "&include_event=" + includeEvent : ""}`,
 	);
-	return response.data.map((p: EventParticipation) =>
-		normalizeIncomingEventParticipation(p),
+	const normalizedData = (
+		response.data as BackendPaginatedResponse<EventParticipation>
+	).results.map((p: EventParticipation) => normalizeIncomingEventParticipation(p));
+
+	return convertPaginatedResponseToLocalPaginatedData(
+		{ ...response.data, results: normalizedData },
+		pageNumber,
 	);
 }
 

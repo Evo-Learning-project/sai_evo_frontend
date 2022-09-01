@@ -13,6 +13,7 @@ import {
 import { MutationPayload, StudentState } from "../types";
 import { getters } from "./getters";
 import store from "..";
+import { PaginatedData } from "@/api";
 
 export const mutations = {
 	// update the slots of the current event participation
@@ -21,12 +22,14 @@ export const mutations = {
 			state.currentEventParticipation.slots = slots;
 		}
 	},
-	setEventParticipations: (state: StudentState, participations: EventParticipation[]) =>
-		(state.eventParticipations = participations),
+	setEventParticipations: (
+		state: StudentState,
+		participations: PaginatedData<EventParticipation>,
+	) => (state.eventParticipations = participations),
 	setEventParticipation: (state: StudentState, participation: EventParticipation) => {
-		const target = state.eventParticipations.find(p => p.id == participation.id);
+		const target = state.eventParticipations.data.find(p => p.id == participation.id);
 		if (!target) {
-			console.log("setEventParticipation in student didn't find", participation.id);
+			console.error("setEventParticipation in student didn't find", participation.id);
 		} else {
 			Object.assign(target, participation);
 		}

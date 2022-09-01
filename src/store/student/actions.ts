@@ -41,6 +41,7 @@ import {
 	setExerciseSolutionBookmark,
 	voteExerciseSolution,
 } from "@/api/exercises";
+import { updatePaginatedData } from "@/api/utils";
 
 export const actions = {
 	participateInEvent: async (
@@ -144,12 +145,27 @@ export const actions = {
 		const participation = await getEventParticipation(courseId, eventId, participationId);
 		commit("setCurrentEventParticipation", participation);
 	},
-	getPracticeEventParticipations: async (
-		{ commit }: { commit: Commit },
-		{ courseId }: { courseId: string },
+	getCourseEventParticipations: async (
+		{ commit, state }: { commit: Commit; state: StudentState },
+		{ courseId, fromFirstPage }: { courseId: string; fromFirstPage: boolean },
 	) => {
-		const participations = await getCourseEventParticipations(courseId, true, true);
-		commit("setEventParticipations", participations);
+		const participations = await getCourseEventParticipations(
+			courseId,
+			fromFirstPage ? 1 : (state.eventParticipations?.pageNumber ?? 0) + 1,
+			true,
+			true,
+		);
+
+		if (fromFirstPage) {
+			state.eventParticipations = participations;
+		} else {
+			state.eventParticipations = updatePaginatedData(
+				state.eventParticipations,
+				participations,
+				false,
+			);
+		}
+		return !participations.isLastPage;
 	},
 	partialUpdateEventParticipationSlot: async (
 		{ commit, state }: { commit: Commit; state: StudentState },
