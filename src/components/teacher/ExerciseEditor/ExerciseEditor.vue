@@ -146,6 +146,39 @@
 				</div>
 			</template>
 			<template v-slot:body>
+				<transition v-if="false" name="fade">
+					<div
+						v-if="showStickyStateDropdown"
+						style="box-shadow: 0px 15px 15px -15px rgb(0 0 0 / 20%)"
+						class="
+							-mx-5
+							sticky
+							top-14
+							z-50
+							h-20
+							py-4
+							bg-white
+							flex
+							items-start
+							align-center
+							space-x-2
+						"
+					>
+						<div class="flex mx-auto space-x-2">
+							<p class="mt-3 text-muted">{{ $t("exercise_editor.exercise_state") }}</p>
+							<div class="w-96 ml-auto">
+								<Dropdown
+									:id="stateDropdownId + '-sticky'"
+									:options="exerciseStateOptions"
+									:modelValue="modelValue.state"
+									@update:modelValue="onExerciseStateChange($event)"
+								>
+									<!--onBaseExerciseChange('state', $event)-->
+								</Dropdown>
+							</div>
+						</div>
+					</div>
+				</transition>
 				<div v-if="!subExercise || !cloze" class="flex flex-col">
 					<!-- top row -->
 					<div
@@ -178,7 +211,7 @@
 						<!-- state dropdown -->
 						<div v-if="!subExercise" class="self-start w-full mr-auto lg:w-3/12">
 							<Dropdown
-								:id="'exercise_state_' + elementId"
+								:id="stateDropdownId"
 								:options="exerciseStateOptions"
 								:modelValue="modelValue.state"
 								@update:modelValue="onExerciseStateChange($event)"
@@ -721,6 +754,7 @@ import {
 } from "@/components/shared/Exercise/utils";
 import { ExerciseSolutionSearchFilter } from "@/api/interfaces";
 import SlotSkeleton from "@/components/ui/skeletons/SlotSkeleton.vue";
+import { isElementVisible } from "@/utils";
 const { mapState } = createNamespacedHelpers("shared");
 
 export default defineComponent({
@@ -779,8 +813,10 @@ export default defineComponent({
 	},
 	beforeUnmount() {
 		this.ws?.close();
+		//window.removeEventListener("scroll", this.onScroll);
 	},
 	async created() {
+		//window.addEventListener("scroll", this.onScroll);
 		if (!this.subExercise) {
 			this.ws = await subscribeToExerciseChanges(this.modelValue.id);
 		}
@@ -861,6 +897,7 @@ export default defineComponent({
 			editableClozePosition: null as number | null,
 			solutionTestSlots: {} as Record<string, EventParticipationSlot>,
 			testingSolutions: {} as Record<string, boolean>,
+			showStickyStateDropdown: false,
 		};
 	},
 	methods: {
@@ -875,6 +912,10 @@ export default defineComponent({
 		...mapActions("shared", ["getTags", "updateExerciseChild", "getSolutionsByExercise"]),
 		...mapMutations("teacher", ["setExercise", "setExerciseChild"]),
 		...mapMutations("shared", ["setExerciseSolution"]),
+		onScroll() {
+			const dropdownElement = document.getElementById(this.stateDropdownId);
+			this.showStickyStateDropdown = !isElementVisible(dropdownElement);
+		},
 		async onChoiceDragEnd(event: { oldIndex: number; newIndex: number }) {
 			const draggedChoice = (this.modelValue.choices as ExerciseChoice[])[event.oldIndex];
 
@@ -1284,6 +1325,9 @@ export default defineComponent({
 			return programmingExerciseTypeToLanguageId[
 				this.modelValue.exercise_type as ProgrammingExerciseType
 			];
+		},
+		stateDropdownId() {
+			return "exercise_state_" + this.elementId;
 		},
 	},
 });
