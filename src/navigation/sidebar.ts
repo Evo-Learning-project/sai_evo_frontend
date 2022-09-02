@@ -57,12 +57,6 @@ export const courseDashboardSidebarOptions: SidebarOption[] = [
 		requiredPrivileges: [CoursePrivilege.ACCESS_EXERCISES],
 	},
 	{
-		label: _("sidebar_labels.course_permissions"),
-		icon: "admin_panel_settings",
-		routeName: "CoursePermissions",
-		requiredPrivileges: [CoursePrivilege.UPDATE_COURSE],
-	},
-	{
 		label: _("sidebar_labels.exercise_solution_threads"),
 		icon: "forum",
 		routeName: "TeacherCourseExerciseSolutionThreads",
@@ -71,6 +65,12 @@ export const courseDashboardSidebarOptions: SidebarOption[] = [
 			CoursePrivilege.ACCESS_EXERCISES,
 			CoursePrivilege.MANAGE_EXERCISES,
 		],
+	},
+	{
+		label: _("sidebar_labels.course_permissions"),
+		icon: "admin_panel_settings",
+		routeName: "CoursePermissions",
+		requiredPrivileges: [CoursePrivilege.UPDATE_COURSE],
 	},
 	{
 		label: _("sidebar_labels.course_insights"),

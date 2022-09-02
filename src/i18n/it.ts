@@ -49,6 +49,7 @@ export const it = {
 			"i cookie devono essere abilitati per effettuare il login, e non si deve essere in modalità incognito.",
 	},
 	headings: {
+		exercise_solution_threads: "Soluzioni esercizi",
 		login: "Login",
 		course_title: ROUTE_TITLE_COURSE_NAME_TOKEN,
 		new_course: "Nuovo corso",
@@ -357,7 +358,7 @@ export const it = {
 		course_dashboard_exams: "Esami",
 		course_dashboard_practices: "Esercitazioni",
 		course_dashboard_exercises: "Esercizi",
-		exercise_solution_threads: "Discussioni",
+		exercise_solution_threads: "Soluzioni",
 		course_insights: "Statistiche",
 		course_dashboard_back_to_courses: "Torna ai corsi",
 		course_list_courses: "Corsi",
