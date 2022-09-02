@@ -1002,6 +1002,7 @@ export const it = {
 		your_badges: "Le tue medaglie",
 		show_panel: "Mostra dettagli",
 		goals: "Obiettivi",
+		no_leaderboard: "La classifica è vuota... per ora",
 		no_goals: "Non ci sono ancora obiettivi",
 		actions: {
 			[GamificationAction.SUBMIT_EXERCISE_SOLUTION]:

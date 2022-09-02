@@ -59,10 +59,11 @@
 			<Tooltip
 				:placement="'top'"
 				:textValue="$t('gamification.your_leaderboard_position')"
+				v-if="gamificationContext && gamificationContext.leaderboard_position !== null"
 			>
 				<div class="flex items-center space-x-1">
 					<p class="material-icons-outlined text-primary">leaderboard</p>
-					<p v-if="gamificationContext" class="text-lg">
+					<p class="text-lg">
 						{{ gamificationContext.leaderboard_position }}
 					</p>
 					<p

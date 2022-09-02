@@ -1,6 +1,6 @@
 <template>
 	<div v-if="!firstLoading" class="">
-		<div class="flex flex-col h-full">
+		<div class="flex flex-col h-full" v-if="(paginatedUsers?.count ?? 0) > 0">
 			<div class="">
 				<div
 					:class="{ 'bg-gray-50': index % 2, 'opacity-60': loading }"
@@ -45,6 +45,12 @@
 				</div>
 			</div>
 		</div>
+		<div v-else class="flex flex-col items-center w-full mx-auto mt-32">
+			<p style="font-size: 10rem" class="material-icons-outlined opacity-10">
+				leaderboard
+			</p>
+			<h2 class="opacity-40">{{ $t("gamification.no_leaderboard") }}</h2>
+		</div>
 	</div>
 	<div v-else>
 		<SlotSkeleton />
@@ -68,11 +74,13 @@ export default defineComponent({
 	async created() {
 		await this.withFirstLoading(async () => {
 			await this.getCourseGamificationContext({ courseId: this.courseId });
-			this.paginatedUsers = await getCourseLeaderboard(
-				this.gamificationContext.id,
-				this.pageNumber,
-			);
-			this.pageSize = this.paginatedUsers.data.length;
+			if (this.gamificationContext) {
+				this.paginatedUsers = await getCourseLeaderboard(
+					this.gamificationContext.id,
+					this.pageNumber,
+				);
+				this.pageSize = this.paginatedUsers.data.length;
+			}
 		});
 	},
 	watch: {
