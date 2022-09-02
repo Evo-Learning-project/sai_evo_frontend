@@ -1009,6 +1009,12 @@ export const it = {
 			[GamificationAction.EXERCISE_SOLUTION_APPROVED]:
 				"Ottieni l'approvazione del docente per una tua soluzione",
 			[GamificationAction.TURN_IN_PRACTICE_PARTICIPATION]: "Completa un'esercitazione",
+			[GamificationAction.CORRECTLY_ANSWERED_EXERCISE]:
+				"Risolvi correttamente un esercizio",
+			[GamificationAction.EXERCISE_SOLUTION_UPVOTED]:
+				"Ottieni un Mi piace a una soluzione da te scritta",
+			[GamificationAction.SUBMIT_FIRST_EXERCISE_SOLUTION]:
+				"Proponi la soluzione di un esercizio per primo",
 		},
 	},
 	reports: {
