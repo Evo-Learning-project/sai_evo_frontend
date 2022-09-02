@@ -3,7 +3,7 @@
 		<nav
 			:class="{ sticky: !showSecondaryHeader }"
 			class="shadow-elevation py-0.5 md:px-2 top-0 lg:px-12 bg-primary"
-			style="z-index: 999999"
+			style="z-index: 1000"
 		>
 			<div class="px-4 mx-auto sm:px-6 lg:px-8">
 				<div class="flex items-center justify-between h-14">
