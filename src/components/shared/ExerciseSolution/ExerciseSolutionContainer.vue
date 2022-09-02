@@ -194,7 +194,7 @@ export default defineComponent({
 			solution: IExerciseSolution,
 			newState: ExerciseSolutionState,
 		) {
-			this.instantiateAutoSaveManager(solution);
+			this.instantiateAutoSaveManager(solution, true);
 			this.publishing = true;
 			try {
 				await this.autoSaveManager?.onChange({ field: "state", value: newState });
@@ -209,7 +209,7 @@ export default defineComponent({
 			this.autoSaveManager = new AutoSaveManager<IExerciseSolution>(
 				this.editingSolutionDeepCopy as IExerciseSolution,
 				async changes => {
-					if (changes.state === ExerciseSolutionState.SUBMITTED) {
+					if ("state" in changes) {
 						await this.onDoneEditing();
 					}
 				},
@@ -231,7 +231,7 @@ export default defineComponent({
 				},
 			);
 		},
-		instantiateAutoSaveManager(forSolution?: IExerciseSolution) {
+		instantiateAutoSaveManager(forSolution?: IExerciseSolution, revertOnFailure = false) {
 			const solution = forSolution ?? (this.editingSolution as IExerciseSolution);
 			this.autoSaveManager = new AutoSaveManager<IExerciseSolution>(
 				solution,
@@ -265,11 +265,15 @@ export default defineComponent({
 				EXERCISE_SOLUTION_AUTO_SAVE_DEBOUNCE_FIELDS,
 				EXERCISE_SOLUTION_AUTO_SAVE_DEBOUNCE_TIME_MS,
 				undefined,
-				() => (this.savingError = true),
+				e => {
+					this.savingError = true;
+					setErrorNotification(e);
+				},
 				() => {
 					this.saving = false;
 					this.publishing = false;
 				},
+				revertOnFailure,
 			);
 		},
 		async onAddSolution() {

@@ -877,10 +877,11 @@ export const it = {
 		[CoursePrivilege.ASSESS_PARTICIPATIONS]:
 			"Può vedere le partecipazioni agli esami e assegnare voti.",
 		[CoursePrivilege.MANAGE_EVENTS]: "Può creare e modificare gli esami del corso.",
+		[CoursePrivilege.MANAGE_EXERCISE_SOLUTIONS]:
+			"Può visionare le soluzioni agli esercizi scritte dagli studenti e approvarle o scartarle.",
 		[CoursePrivilege.MANAGE_EXERCISES]: "Può creare e modificare esercizi.",
 		[CoursePrivilege.UPDATE_COURSE]:
 			"Può modificare le impostazioni del corso, incluso assegnare permessi ad altri utenti.",
-		//[CoursePrivilege.ALL_PRIVILEGES]: 'Tutti i permessi',
 	},
 	course_privileges_short: {
 		[CoursePrivilege.ACCESS_EXERCISES]: "Vedere esercizi",
@@ -888,7 +889,7 @@ export const it = {
 		[CoursePrivilege.MANAGE_EVENTS]: "Creare esami",
 		[CoursePrivilege.MANAGE_EXERCISES]: "Creare esercizi",
 		[CoursePrivilege.UPDATE_COURSE]: "Modificare impostazioni corso",
-		//[CoursePrivilege.ALL_PRIVILEGES]: 'Tutti',
+		[CoursePrivilege.MANAGE_EXERCISE_SOLUTIONS]: "Gestire soluzioni",
 	},
 	testcase_types: {
 		[ExerciseTestCaseType.SHOW_CODE_SHOW_TEXT]: "Pubblico",

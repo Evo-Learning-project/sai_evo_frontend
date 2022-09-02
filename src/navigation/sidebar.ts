@@ -45,14 +45,9 @@ export const courseDashboardSidebarOptions: SidebarOption[] = [
 		],
 		requiredPrivileges: [],
 	},
-	// {
-	//   label: _('sidebar_labels.course_dashboard_practices'),
-	//   icon: 'fitness_center',
-	//   routeName: '',
-	// },
 	{
 		label: _("sidebar_labels.course_dashboard_exercises"),
-		icon: "topic", //'list_alt',
+		icon: "topic",
 		routeName: "CourseExercises",
 		requiredPrivileges: [CoursePrivilege.ACCESS_EXERCISES],
 	},
@@ -61,10 +56,7 @@ export const courseDashboardSidebarOptions: SidebarOption[] = [
 		icon: "forum",
 		routeName: "TeacherCourseExerciseSolutionThreads",
 		children: ["TeacherDetailExerciseSolutionThreads"],
-		requiredPrivileges: [
-			CoursePrivilege.ACCESS_EXERCISES,
-			CoursePrivilege.MANAGE_EXERCISES,
-		],
+		requiredPrivileges: [CoursePrivilege.MANAGE_EXERCISE_SOLUTIONS],
 	},
 	{
 		label: _("sidebar_labels.course_permissions"),

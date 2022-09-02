@@ -212,7 +212,7 @@
 					/>
 				</div>
 
-				<SlotSkeleton v-else-if="slotsLoadingSolution[slot.id]" />
+				<SlotSkeleton class="mt-2" v-else-if="slotsLoadingSolution[slot.id]" />
 			</div>
 		</div>
 		<div class="py-6" v-else>

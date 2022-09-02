@@ -78,12 +78,12 @@ export enum AssessmentSlotState {
 }
 
 export enum CoursePrivilege {
-	//ALL_PRIVILEGES = '__all__',
 	UPDATE_COURSE = "update_course",
 	ACCESS_EXERCISES = "access_exercises",
 	MANAGE_EXERCISES = "manage_exercises",
 	ASSESS_PARTICIPATIONS = "assess_participations",
 	MANAGE_EVENTS = "manage_events",
+	MANAGE_EXERCISE_SOLUTIONS = "manage_exercise_solutions",
 }
 
 export enum ExerciseSolutionState {

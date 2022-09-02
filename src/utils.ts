@@ -218,3 +218,20 @@ export const clickOutsideDirective = {
 
 export const roundToTwoDecimals = (num: number) =>
 	Math.round((num + Number.EPSILON) * 100) / 100;
+
+export function isElementVisible(element: HTMLElement) {
+	if (element.offsetWidth === 0 || element.offsetHeight === 0) return false;
+	const height = document.documentElement.clientHeight,
+		rects = element.getClientRects(),
+		on_top = function (r: any) {
+			const x = (r.left + r.right) / 2,
+				y = (r.top + r.bottom) / 2;
+			return document.elementFromPoint(x, y) === element;
+		};
+	for (let i = 0, l = rects.length; i < l; i++) {
+		const r = rects[i],
+			in_viewport = r.top > 0 ? r.top <= height : r.bottom > 0 && r.bottom <= height;
+		if (in_viewport && on_top(r)) return true;
+	}
+	return false;
+}

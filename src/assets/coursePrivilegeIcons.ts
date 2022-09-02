@@ -6,5 +6,5 @@ export const icons = {
 	[CoursePrivilege.MANAGE_EVENTS]: "edit",
 	[CoursePrivilege.MANAGE_EXERCISES]: "edit",
 	[CoursePrivilege.UPDATE_COURSE]: "settings",
-	//[CoursePrivilege.ALL_PRIVILEGES]: 'done_all',
+	[CoursePrivilege.MANAGE_EXERCISE_SOLUTIONS]: "grading",
 };

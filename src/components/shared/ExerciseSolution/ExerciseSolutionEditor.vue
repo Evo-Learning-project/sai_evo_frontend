@@ -138,7 +138,12 @@ export default defineComponent({
 			this.$emit("updateSolution", { key, value });
 		},
 		onSubmit() {
-			this.onUpdate("state", ExerciseSolutionState.SUBMITTED);
+			this.onUpdate(
+				"state",
+				this.modelValue.state === ExerciseSolutionState.DRAFT
+					? ExerciseSolutionState.SUBMITTED
+					: this.modelValue.state,
+			);
 		},
 	},
 	data() {
