@@ -10,19 +10,6 @@
 		></ExerciseSearchFilters> -->
 		<div v-if="!firstLoading">
 			<div class="mb-14" v-for="exercise in exercises" :key="'e-' + exercise.id">
-				<!-- <div class="flex w-full -mb-4">
-					<div class="ml-auto">
-						<Btn :variant="'icon'" :outline="true">
-							<span class="material-icons text-yellow-500">star</span>
-						</Btn>
-					</div>
-				</div> -->
-				<!-- <Exercise
-					:exercise="exercise"
-					:readOnly="true"
-					:showReadOnlyAnswer="false"
-					:showPublicTags="true"
-				/> -->
 				<FullExercise :exercise="exercise" />
 				<ExerciseSolutionContainer
 					class="mt-4"
@@ -36,6 +23,15 @@
 				></ExerciseSolutionContainer>
 				<SlotSkeleton v-else />
 			</div>
+			<div
+				v-if="exercises.length === 0"
+				class="flex flex-col items-center w-full mx-auto mt-28"
+			>
+				<p style="font-size: 10rem" class="material-icons-outlined opacity-10">
+					bookmark
+				</p>
+				<h2 class="opacity-40">{{ $t("misc.no_favorites") }}</h2>
+			</div>
 		</div>
 		<div v-else>
 			<SlotSkeleton />
@@ -47,10 +43,7 @@
 			<template #loading>
 				<Spinner></Spinner>
 			</template>
-			<template #no-more>
-				<!-- &nbsp; -->
-				<div class="w-full h-1 bg-gray-200 rounded-md"></div>
-			</template>
+			<template #no-more> &nbsp; </template>
 		</VueEternalLoading>
 	</div>
 </template>
