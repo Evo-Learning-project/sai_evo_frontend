@@ -139,7 +139,7 @@ const getCellValue = (participation: EventParticipation, field: string) => {
 
 		const executionResults = slot.execution_results ?? { tests: [] };
 
-		return executionResults.tests?.find(t => t.id == testcase.id)?.passed ?? false;
+		return executionResults.tests?.find(t => t.id == testcase?.id)?.passed ?? false;
 	}
 
 	// otherwise, simply access the field on the participation or its children objects
