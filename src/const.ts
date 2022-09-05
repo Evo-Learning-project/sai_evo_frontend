@@ -312,6 +312,7 @@ export const getEventParticipationMonitorHeaders = (
 		});
 	}
 
+	// TODO FIXME ! uses assumption that all participations have the same number of slots
 	// add a heading for each slot
 	(eventParticipations[0] as EventParticipation).slots.forEach(s =>
 		ret.push({

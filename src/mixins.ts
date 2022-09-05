@@ -138,10 +138,6 @@ export const coursePrivilegeMixin = {
 			return requiredPrivilegesList.every(p => myPrivileges.includes(p));
 		},
 		hasAnyPrivileges() {
-			// console.log(
-			//   "COURSE-ID hasAnyPrivileges",
-			//   router.currentRoute.value.params.courseId
-			// );
 			const myPrivileges: CoursePrivilege[] =
 				(store.state as any).shared.courses.find(
 					(c: Course) => c.id == (router.currentRoute.value.params.courseId as string),

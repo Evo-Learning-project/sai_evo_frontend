@@ -53,10 +53,7 @@ export async function getEventTemplate(
 	templateId: string,
 ): Promise<EventTemplate> {
 	const response = await axios.get(`/courses/${courseId}/templates/${templateId}/`);
-	// const template = response.data as EventTemplate;
-	// const processedRules = convertEventTemplateRules(template.rules);
 	return normalizeIncomingEventTemplate(response.data);
-	//return { ...template, rules: processedRules ?? [] };
 }
 
 export async function getEventTemplateRule(

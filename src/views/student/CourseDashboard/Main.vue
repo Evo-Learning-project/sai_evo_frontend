@@ -287,7 +287,9 @@ export default defineComponent({
 	},
 	async created() {
 		await this.getCourseGamificationContext({ courseId: this.courseId });
-		await this.getGamificationContextGoals({ contextId: this.gamificationContext.id });
+		if (this.gamificationContext) {
+			await this.getGamificationContextGoals({ contextId: this.gamificationContext.id });
+		}
 	},
 	mounted() {
 		this.showMobileSidebarButton = true;

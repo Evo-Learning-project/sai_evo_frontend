@@ -579,6 +579,7 @@
 						item-key="id"
 					>
 						<template #item="{ element }">
+							<!-- TODO hide "testcase passed by solution" tooltip if there's no solution-->
 							<TestCaseEditor
 								:executingSolution="testCaseAutoSaveManagers[element.id].isPending()"
 								:testCaseType="modelValue.exercise_type"

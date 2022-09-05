@@ -112,6 +112,7 @@ export default defineComponent({
 			}
 		},
 		beforeDeletingTag(event: any) {
+			console.log("deleting", event);
 			this.removingTag = event.tag.text;
 			this.$emit("removeTag", event.tag.text);
 		},

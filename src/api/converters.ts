@@ -53,6 +53,7 @@ export const normalizeIncomingEventParticipationSlot = (
 ): EventParticipationSlot => ({
 	...slot,
 	weight: normalizeOptionalStringContainingNumber(slot.weight) as number,
+	// TODO a thought: instead of doing this, you can just put score and it can possibly be undefined
 	...(typeof slot.score === "undefined"
 		? {}
 		: {
@@ -84,7 +85,7 @@ export const normalizeIncomingEventTemplate = (
 	template: EventTemplate,
 ): EventTemplate => ({
 	...template,
-	rules: template?.rules.map(r => normalizeIncomingEventTemplateRule(r)),
+	rules: template.rules.map(r => normalizeIncomingEventTemplateRule(r)),
 });
 
 export const normalizeIncomingEvent = (event: Event): Event => ({
@@ -92,9 +93,11 @@ export const normalizeIncomingEvent = (event: Event): Event => ({
 	time_limit_seconds: normalizeOptionalStringContainingNumber(
 		event.time_limit_seconds,
 	) as number | null,
-	...(typeof event.template === "undefined"
+	...(typeof event.template === "undefined" || event.template === null
 		? {}
-		: { template: normalizeIncomingEventTemplate(event.template) }),
+		: {
+				template: normalizeIncomingEventTemplate(event.template),
+		  }),
 });
 
 /**
