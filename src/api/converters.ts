@@ -84,7 +84,7 @@ export const normalizeIncomingEventTemplate = (
 	template: EventTemplate,
 ): EventTemplate => ({
 	...template,
-	rules: template.rules.map(r => normalizeIncomingEventTemplateRule(r)),
+	rules: template?.rules.map(r => normalizeIncomingEventTemplateRule(r)),
 });
 
 export const normalizeIncomingEvent = (event: Event): Event => ({
