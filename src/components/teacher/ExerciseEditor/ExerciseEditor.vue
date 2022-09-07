@@ -572,6 +572,7 @@
 				<div class="mt-8" v-if="isProgrammingExercise">
 					<h3 class="mb-8">{{ $t("exercise_editor.testcases_title") }}</h3>
 
+					<!-- TODO hide "testcase passed by solution" tooltip if there's no solution-->
 					<draggable
 						:modelValue="modelValue.testcases"
 						ghost-class="drag-ghost"
@@ -579,7 +580,6 @@
 						item-key="id"
 					>
 						<template #item="{ element }">
-							<!-- TODO hide "testcase passed by solution" tooltip if there's no solution-->
 							<TestCaseEditor
 								:executingSolution="testCaseAutoSaveManagers[element.id].isPending()"
 								:testCaseType="modelValue.exercise_type"
