@@ -70,10 +70,12 @@ export const getErrorData = (e: any, useAsIs = false): ErrorMessage => {
 	if (useAsIs) {
 		return { title: e };
 	}
+	console.log(e.response);
 	if (e.response) {
 		return {
 			icon: "error_outline",
 			title: _("errors." + e.response.status),
+			content: e.response?.data?.detail,
 		};
 	} else if (e.request) {
 		return {

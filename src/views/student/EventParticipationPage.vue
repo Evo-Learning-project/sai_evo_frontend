@@ -303,24 +303,30 @@ export default defineComponent({
 
 			// assumption: going forward is only allowed when showing one slot at a time
 			const currentSlot = this.proxyModelValue.slots[0];
-			await this.withLoading(async () => {
-				// flush queued changes before moving on to next slot
-				await this.slotAutoSaveManagers[currentSlot.id].flush();
-				await this.moveEventParticipationCurrentSlotCursorForward({
-					courseId: this.courseId,
-				});
-			});
+			await this.withLoading(
+				async () => {
+					// flush queued changes before moving on to next slot
+					await this.slotAutoSaveManagers[currentSlot.id].flush();
+					await this.moveEventParticipationCurrentSlotCursorForward({
+						courseId: this.courseId,
+					});
+				},
+				e => this.setErrorNotification(e),
+			);
 		},
 		async onGoBack() {
 			// assumption: going back is only allowed when showing one slot at a time
 			const currentSlot = this.proxyModelValue.slots[0];
-			await this.withLoading(async () => {
-				// flush queued changes before moving on to next slot
-				await this.slotAutoSaveManagers[currentSlot.id].flush();
-				await this.moveEventParticipationCurrentSlotCursorBack({
-					courseId: this.courseId,
-				});
-			});
+			await this.withLoading(
+				async () => {
+					// flush queued changes before moving on to next slot
+					await this.slotAutoSaveManagers[currentSlot.id].flush();
+					await this.moveEventParticipationCurrentSlotCursorBack({
+						courseId: this.courseId,
+					});
+				},
+				e => this.setErrorNotification(e),
+			);
 		},
 		async onTimeUp() {
 			this.showTimeUpBackdrop = true;
