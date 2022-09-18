@@ -27,32 +27,46 @@
 						<span class="mr-1 text-base material-icons-outlined"> close </span>
 						<span>{{ $t("programming_exercise.not_passed") }}</span>
 					</div>
+					<Btn
+						@click="
+							testCaseDetailsVisibility[test.id] = !testCaseDetailsVisibility[test.id]
+						"
+						><span
+							:class="[
+								testCaseDetailsVisibility[test.id]
+									? 'material-icons'
+									: 'material-icons-outlined',
+							]"
+							>visibility</span
+						></Btn
+					>
 				</div>
-
-				<ExerciseTestCase
-					:small="true"
-					v-if="!onlyErrors"
-					:test-case="exerciseTestCase(test.id)"
-				></ExerciseTestCase>
-				<div v-if="!test.passed && test.stdout" class="mt-3">
-					<p class="mb-1 text-muted">
-						{{ $t("programming_exercise.test_failed_stdout") }}:
-					</p>
-					<CodeFragment
-						:collapsible="true"
-						:value="test.stdout"
+				<div v-show="testCaseDetailsVisibility[test.id]">
+					<ExerciseTestCase
 						:small="true"
-					></CodeFragment>
-				</div>
-				<div v-if="!test.passed && test.error" class="mt-3">
-					<p class="mb-1 text-muted">
-						{{ $t("programming_exercise.test_failed_with_error") }}:
-					</p>
-					<CodeFragment
-						:collapsible="true"
-						:value="test.stderr || test.error"
-						:small="true"
-					></CodeFragment>
+						v-if="!onlyErrors"
+						:test-case="exerciseTestCase(test.id)"
+					></ExerciseTestCase>
+					<div v-if="!test.passed && test.stdout" class="mt-3">
+						<p class="mb-1 text-muted">
+							{{ $t("programming_exercise.test_failed_stdout") }}:
+						</p>
+						<CodeFragment
+							:collapsible="true"
+							:value="test.stdout"
+							:small="true"
+						></CodeFragment>
+					</div>
+					<div v-if="!test.passed && test.error" class="mt-3">
+						<p class="mb-1 text-muted">
+							{{ $t("programming_exercise.test_failed_with_error") }}:
+						</p>
+						<CodeFragment
+							:collapsible="true"
+							:value="test.stderr || test.error"
+							:small="true"
+						></CodeFragment>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -80,14 +94,11 @@
 </template>
 
 <script lang="ts">
-import {
-	CodeExecutionResults,
-	EventParticipationSlot,
-	ExerciseTestCase as IExerciseTestCase,
-} from "@/models";
+import { CodeExecutionResults, ExerciseTestCase as IExerciseTestCase } from "@/models";
 import { defineComponent, PropType } from "@vue/runtime-core";
 import ExerciseTestCase from "./ExerciseTestCase.vue";
 import CodeFragment from "../ui/CodeFragment.vue";
+import Btn from "../ui/Btn.vue";
 export default defineComponent({
 	name: "CodeExecutionResults",
 	props: {
@@ -112,6 +123,12 @@ export default defineComponent({
 			default: false,
 		},
 	},
+	data() {
+		return {
+			// test case id -> whether it's expanded
+			testCaseDetailsVisibility: {} as Record<string, boolean>,
+		};
+	},
 	methods: {},
 	computed: {
 		exerciseTestCase() {
@@ -125,7 +142,7 @@ export default defineComponent({
 			);
 		},
 	},
-	components: { ExerciseTestCase, CodeFragment },
+	components: { ExerciseTestCase, CodeFragment, Btn },
 });
 </script>
 
