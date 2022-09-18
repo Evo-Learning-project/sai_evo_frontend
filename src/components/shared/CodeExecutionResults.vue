@@ -28,6 +28,9 @@
 						<span>{{ $t("programming_exercise.not_passed") }}</span>
 					</div>
 					<Btn
+						v-if="reduced"
+						:variant="'icon'"
+						:outline="true"
 						@click="
 							testCaseDetailsVisibility[test.id] = !testCaseDetailsVisibility[test.id]
 						"
@@ -41,7 +44,7 @@
 						></Btn
 					>
 				</div>
-				<div v-show="testCaseDetailsVisibility[test.id]">
+				<div v-show="!reduced || testCaseDetailsVisibility[test.id]">
 					<ExerciseTestCase
 						:small="true"
 						v-if="!onlyErrors"
@@ -119,6 +122,10 @@ export default defineComponent({
 			default: () => [],
 		},
 		onlyErrors: {
+			type: Boolean,
+			default: false,
+		},
+		reduced: {
 			type: Boolean,
 			default: false,
 		},

@@ -169,6 +169,7 @@
 						class="-mx-2"
 						:testCases="exercise.testcases"
 						:executionResults="submission.execution_results"
+						:reduced="true"
 					/>
 				</div>
 			</div>
