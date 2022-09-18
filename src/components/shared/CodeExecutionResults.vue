@@ -38,13 +38,21 @@
 					<p class="mb-1 text-muted">
 						{{ $t("programming_exercise.test_failed_stdout") }}:
 					</p>
-					<CodeFragment :value="test.stdout" :small="true"></CodeFragment>
+					<CodeFragment
+						:collapsible="true"
+						:value="test.stdout"
+						:small="true"
+					></CodeFragment>
 				</div>
 				<div v-if="!test.passed && test.error" class="mt-3">
 					<p class="mb-1 text-muted">
 						{{ $t("programming_exercise.test_failed_with_error") }}:
 					</p>
-					<CodeFragment :value="test.stderr || test.error" :small="true"></CodeFragment>
+					<CodeFragment
+						:collapsible="true"
+						:value="test.stderr || test.error"
+						:small="true"
+					></CodeFragment>
 				</div>
 			</div>
 		</div>
@@ -53,14 +61,20 @@
 			v-else-if="!!executionResults && executionResults.execution_error"
 		>
 			<p class="mb-1 text-muted">{{ $t("programming_exercise.code_errored") }}:</p>
-			<CodeFragment :value="executionResults?.execution_error"></CodeFragment>
+			<CodeFragment
+				:collapsible="true"
+				:value="executionResults?.execution_error"
+			></CodeFragment>
 		</div>
 		<div
 			class="px-4 pt-1"
 			v-else-if="!!executionResults && executionResults.compilation_errors"
 		>
 			<p class="mb-1 text-muted">{{ $t("programming_exercise.compilation_errored") }}:</p>
-			<CodeFragment :value="String(executionResults?.compilation_errors)"></CodeFragment>
+			<CodeFragment
+				:collapsible="true"
+				:value="String(executionResults?.compilation_errors)"
+			></CodeFragment>
 		</div>
 	</div>
 </template>

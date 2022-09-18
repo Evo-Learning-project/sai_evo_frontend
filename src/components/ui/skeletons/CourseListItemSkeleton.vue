@@ -4,7 +4,7 @@
 			<div class="relative">
 				<div class="absolute flex space-x-4">
 					<div class="w-10 rounded-lg skeleton-unit"></div>
-					<div class="w-32 md:w-64 skeleton-unit"></div>
+					<div class="w-28 lg:w-64 skeleton-unit"></div>
 				</div>
 				<div class="flex items-center opacity-0">
 					<span class="mr-2 material-icons-two-tone two-tone-primary">book</span>

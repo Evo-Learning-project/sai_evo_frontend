@@ -7,6 +7,7 @@
 			v-html="testCase.text"
 		></div>
 		<CodeFragment
+			:collapsible="true"
 			:small="small"
 			class="w-full"
 			v-if="!!testCase.code"
@@ -20,7 +21,11 @@
 			<div class="text-xs text-muted">
 				{{ $t("programming_exercise.testcase_stdin") }}
 			</div>
-			<CodeFragment :small="small" :value="testCase.stdin"></CodeFragment>
+			<CodeFragment
+				:collapsible="true"
+				:small="small"
+				:value="testCase.stdin"
+			></CodeFragment>
 		</div>
 		<div
 			v-if="!!testCase.expected_stdout"
@@ -30,7 +35,11 @@
 			<div class="text-xs text-muted">
 				{{ $t("programming_exercise.testcase_expected_stdout") }}
 			</div>
-			<CodeFragment :small="small" :value="testCase.expected_stdout"></CodeFragment>
+			<CodeFragment
+				:collapsible="true"
+				:small="small"
+				:value="testCase.expected_stdout"
+			></CodeFragment>
 		</div>
 	</div>
 </template>
