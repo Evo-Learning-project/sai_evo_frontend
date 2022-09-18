@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
 	<div class="">
 		<div class="flex items-center w-full">
 			<span class="material-icons-outlined"> arrow_right </span>
@@ -77,4 +77,4 @@ export default defineComponent({
 });
 </script>
 
-<style></style>
+<style></style> -->

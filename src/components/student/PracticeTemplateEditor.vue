@@ -105,7 +105,9 @@
 					class="
 						flex
 						md:mt-4
+						lg:mt-0
 						w-full
+						lg:w-max
 						md:flex-row
 						flex-col
 						md:space-y-0
