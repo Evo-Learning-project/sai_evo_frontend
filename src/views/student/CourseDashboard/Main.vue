@@ -234,6 +234,20 @@
 							</Btn></router-link
 						>
 					</div>
+					<div v-else>
+						<component
+							:is="'script'"
+							type="text/javascript"
+							src="https://udbaa.com/bnr.php?section=StudentSidebar&pub=949849&format=300x250&ga=g"
+						></component>
+						<noscript
+							><a href="https://yllix.com/publishers/949849" target="_blank"
+								><img
+									src="//ylx-aff.advertica-cdn.com/pub/300x250.png"
+									style="border: none; margin: 0; padding: 0; vertical-align: baseline"
+									alt="ylliX - Online Advertising Network" /></a
+						></noscript>
+					</div>
 				</template>
 			</SidebarMenu>
 			<!-- main -->
