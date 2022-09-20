@@ -234,20 +234,7 @@
 							</Btn></router-link
 						>
 					</div>
-					<div v-else>
-						<component
-							:is="'script'"
-							type="text/javascript"
-							src="https://udbaa.com/bnr.php?section=StudentSidebar&pub=949849&format=300x250&ga=g"
-						></component>
-						<noscript
-							><a href="https://yllix.com/publishers/949849" target="_blank"
-								><img
-									src="//ylx-aff.advertica-cdn.com/pub/300x250.png"
-									style="border: none; margin: 0; padding: 0; vertical-align: baseline"
-									alt="ylliX - Online Advertising Network" /></a
-						></noscript>
-					</div>
+					<!-- <div class="bg-blue-200" v-html="ads1Code" v-else></div> -->
 				</template>
 			</SidebarMenu>
 			<!-- main -->
@@ -273,7 +260,12 @@ import {
 	ROUTE_TITLE_COURSE_NAME_TOKEN,
 	ROUTE_TITLE_EVENT_NAME_TOKEN,
 } from "@/navigation/const";
-import { courseIdMixin, coursePrivilegeMixin, eventIdMixin } from "@/mixins";
+import {
+	courseIdMixin,
+	coursePrivilegeMixin,
+	eventIdMixin,
+	adComponentMixin,
+} from "@/mixins";
 import { SidebarMenu } from "vue3-sidebar-menu";
 import "vue3-sidebar-menu/dist/vue-sidebar-menu.css";
 import { internalSidebarOptionsToSidebarMenuOptions } from "@/navigation/utils";
@@ -286,7 +278,7 @@ import DraggablePopup from "@/components/ui/DraggablePopup.vue";
 export default defineComponent({
 	name: "Main",
 	props: {},
-	mixins: [courseIdMixin, eventIdMixin, coursePrivilegeMixin],
+	mixins: [courseIdMixin, eventIdMixin, coursePrivilegeMixin, adComponentMixin],
 	watch: {
 		$route() {
 			this.showMobileSidebar = false;

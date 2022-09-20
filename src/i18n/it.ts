@@ -193,6 +193,7 @@ export const it = {
 			"L'inserimento del numero di matricola e la selezione del corso sono necessari per poter partecipare agli esami. Fallo ora e non pensarci più!",
 	},
 	misc: {
+		ads: "Pubblicità",
 		no_favorites: "Non ci sono contenuti salvati",
 		undo: "Annulla",
 		redo: "Ripeti",

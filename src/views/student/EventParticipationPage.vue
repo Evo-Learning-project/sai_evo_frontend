@@ -70,6 +70,30 @@
 			v-for="(slot, index) in proxyModelValue.slots"
 			:key="'p-' + proxyModelValue.id + '-s-' + slot.id"
 		>
+			<div
+				v-if="
+					currentEventParticipation.event.event_type ===
+						EventType.SELF_SERVICE_PRACTICE && index === 1
+				"
+				class="relative w-full bg-light py-2 mb-8 -mt-10 px-2"
+			>
+				<p
+					class="
+						select-none
+						uppercase
+						text-muted text-xs
+						mt-2
+						mr-2
+						absolute
+						top-0
+						right-0
+					"
+				>
+					{{ $t("misc.ads") }}
+				</p>
+				<div class="hidden md:block" v-html="ads3Code"></div>
+				<div class="md:hidden" v-html="adsMobileCode"></div>
+			</div>
 			<AbstractEventParticipationSlot
 				:modelValue="slot"
 				@updateSelectedChoices="onChange($event.slot, 'selected_choices', $event.payload)"
@@ -148,7 +172,13 @@ import AbstractEventParticipationSlot from "@/components/shared/AbstractEventPar
 import Btn from "@/components/ui/Btn.vue";
 import CloudSaveStatus from "@/components/ui/CloudSaveStatus.vue";
 import Dialog from "@/components/ui/Dialog.vue";
-import { courseIdMixin, eventIdMixin, loadingMixin, savingMixin } from "@/mixins";
+import {
+	adComponentMixin,
+	courseIdMixin,
+	eventIdMixin,
+	loadingMixin,
+	savingMixin,
+} from "@/mixins";
 import {
 	EventParticipation,
 	EventParticipationSlot,
@@ -184,7 +214,7 @@ export default defineComponent({
 		Countdown,
 	},
 	name: "EventParticipationPage",
-	mixins: [courseIdMixin, eventIdMixin, savingMixin, loadingMixin],
+	mixins: [courseIdMixin, eventIdMixin, savingMixin, loadingMixin, adComponentMixin],
 	watch: {
 		"proxyModelValue.slots"(newVal: EventParticipationSlot[]) {
 			// TODO might need to get more sophisticated to track new slots, old slots leaving etc.

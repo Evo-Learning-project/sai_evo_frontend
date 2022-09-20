@@ -2,7 +2,7 @@
 	<div class="mb-4">
 		<div class="w-full">
 			<!-- top buttons -->
-			<div class="flex items-center mb-4 -mt-12">
+			<div class="flex items-center -mt-12">
 				<Btn
 					:class="{ 'opacity-0': firstLoading || practiceParticipations.length <= 3 }"
 					:variant="'icon'"
@@ -34,6 +34,25 @@
 						>visibility</span
 					></Btn
 				> -->
+			</div>
+
+			<div class="relative w-full bg-light py-2 mb-6 mt-4 px-2">
+				<p
+					class="
+						select-none
+						uppercase
+						text-muted text-xs
+						mt-2
+						mr-2
+						absolute
+						top-0
+						right-0
+					"
+				>
+					{{ $t("misc.ads") }}
+				</p>
+				<div class="hidden md:block" v-html="ads3Code"></div>
+				<div class="md:hidden" v-html="adsMobileCode"></div>
 			</div>
 
 			<div
@@ -120,6 +139,10 @@
 						</div>
 					</template>
 				</Card>
+
+				<!-- <div class="card card-border card-hoverable">
+					<div v-html="ads2Code"></div>
+				</div> -->
 
 				<!-- preview list -->
 				<EventParticipationPreview
@@ -220,7 +243,7 @@
 /* eslint-disable @typescript-eslint/no-extra-semi */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { courseIdMixin, loadingMixin } from "@/mixins";
+import { adComponentMixin, courseIdMixin, loadingMixin } from "@/mixins";
 import { defineComponent } from "@vue/runtime-core";
 
 import { mapGetters, mapActions, mapMutations, mapState } from "vuex";
@@ -251,7 +274,7 @@ export default defineComponent({
 		Spinner,
 	},
 	name: "PracticeList",
-	mixins: [courseIdMixin, loadingMixin],
+	mixins: [courseIdMixin, loadingMixin, adComponentMixin],
 	async created() {
 		await this.withFirstLoading(async () => {
 			await this.getTags({
@@ -268,6 +291,10 @@ export default defineComponent({
 			});
 		});
 	},
+	// mounted() {
+	// 	this.ads2Code = document.getElementById("ads-div-hidden-2")?.innerHTML ?? "";
+	// 	this.ads3Code = document.getElementById("ads-div-hidden-3")?.innerHTML ?? "";
+	// },
 	data() {
 		return {
 			isInitialInfiniteLoad: false,
@@ -276,6 +303,8 @@ export default defineComponent({
 			showNotRecent: true,
 			showBookmarkedOnly: false,
 			loadingParticipations: new Set<string>(),
+			// ads2Code: "",
+			// ads3Code: "",
 		};
 	},
 	methods: {

@@ -55,6 +55,26 @@ export const mediaQueryMixin = {
 	},
 };
 
+export const adComponentMixin = {
+	data() {
+		return {
+			ad1Code: "",
+			ad2Code: "",
+			ad3Code: "",
+			adMobileCode: "",
+		};
+	},
+	mounted() {
+		// ugly trick to get rid of type errors
+		const self = this as any;
+		self.ads1Code = document.getElementById("ads-div-hidden-1")?.innerHTML ?? "";
+		self.ads2Code = document.getElementById("ads-div-hidden-2")?.innerHTML ?? "";
+		self.ads3Code = document.getElementById("ads-div-hidden-3")?.innerHTML ?? "";
+		self.adsMobileCode =
+			document.getElementById("ads-div-hidden-mobile")?.innerHTML ?? "";
+	},
+};
+
 export const loadingMixin = {
 	methods: {
 		async withLoading(
