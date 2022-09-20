@@ -65,6 +65,10 @@ export const adComponentMixin = {
 		};
 	},
 	mounted() {
+		const includeAds = process.env.ENABLE_ADS ?? true;
+		if (!includeAds) {
+			return;
+		}
 		// ugly trick to get rid of type errors
 		const self = this as any;
 		self.ads1Code = document.getElementById("ads-div-hidden-1")?.innerHTML ?? "";

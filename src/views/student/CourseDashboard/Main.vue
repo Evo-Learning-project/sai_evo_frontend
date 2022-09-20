@@ -234,7 +234,6 @@
 							</Btn></router-link
 						>
 					</div>
-					<!-- <div class="bg-blue-200" v-html="ads1Code" v-else></div> -->
 				</template>
 			</SidebarMenu>
 			<!-- main -->
