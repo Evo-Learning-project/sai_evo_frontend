@@ -58,10 +58,10 @@ export const mediaQueryMixin = {
 export const adComponentMixin = {
 	data() {
 		return {
-			ad1Code: "",
-			ad2Code: "",
-			ad3Code: "",
-			adMobileCode: "",
+			ads1Code: "",
+			ads2Code: "",
+			ads3Code: "",
+			adsMobileCode: "",
 		};
 	},
 	mounted() {
