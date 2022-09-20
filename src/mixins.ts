@@ -66,6 +66,7 @@ export const adComponentMixin = {
 	},
 	mounted() {
 		const includeAds = JSON.parse(process.env.ENABLE_ADS ?? "true");
+		console.log(process.env.ENABLE_ADS, process.env, includeAds);
 		if (!includeAds) {
 			return;
 		}
