@@ -43,8 +43,16 @@ export async function getEvents(
 	return (response.data as Event[]).map(e => normalizeIncomingEvent(e));
 }
 
-export async function getEvent(courseId: string, eventId: string): Promise<Event> {
-	const response = await axios.get(`/courses/${courseId}/events/${eventId}/`);
+export async function getEvent(
+	courseId: string,
+	eventId: string,
+	includeDetails: boolean,
+): Promise<Event> {
+	const response = await axios.get(
+		`/courses/${courseId}/events/${eventId}/${
+			includeDetails ? "?include_event_template_rule_details=true" : ""
+		}`,
+	);
 	return normalizeIncomingEvent(response.data);
 }
 

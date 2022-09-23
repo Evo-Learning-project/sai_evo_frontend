@@ -621,9 +621,13 @@ export const actions = {
 	},
 	getEvent: async (
 		{ commit, state }: { commit: Commit; state: any },
-		{ courseId, eventId }: { courseId: string; eventId: string },
+		{
+			courseId,
+			eventId,
+			includeDetails = false,
+		}: { courseId: string; eventId: string; includeDetails: boolean },
 	) => {
-		const event = await getEvent(courseId, eventId);
+		const event = await getEvent(courseId, eventId, includeDetails);
 		commit("setEvents", [event, ...state.events]);
 	},
 	getUsersForCourse: async (

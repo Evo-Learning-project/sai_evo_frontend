@@ -262,6 +262,7 @@ export default defineComponent({
 			await this.getEvent({
 				courseId: this.courseId,
 				eventId: this.eventId,
+				includeDetails: true,
 			});
 			//? is it necessary?
 			await this.getExercises({ courseId: this.courseId });

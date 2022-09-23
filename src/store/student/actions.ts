@@ -85,7 +85,7 @@ export const actions = {
 		 *
 		 * Used to display a preview of an exam before participating into it
 		 */
-		const event = await getEvent(courseId, eventId);
+		const event = await getEvent(courseId, eventId, false);
 		commit("setPreviewingEvent", event);
 	},
 	createEvent: async (
