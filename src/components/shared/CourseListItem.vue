@@ -78,7 +78,7 @@
 				</span>
 			</Tooltip>
 		</div>
-		<div class="mt-0">
+		<div class="mt-2">
 			<!-- <div class="flex items-center px-0.5 mb-1 space-x-1 text-sm"> -->
 			<!-- <div class="flex items-center space-x-0.5 text-muted">
 					<span class="my-auto text-xl material-icons-outlined">person</span>

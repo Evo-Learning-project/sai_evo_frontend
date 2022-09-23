@@ -1,5 +1,5 @@
 <template>
-	<div class="-mt-6">
+	<div class="">
 		<div class="flex items-center mb-4 space-x-2">
 			<router-link class="" :to="{ name: 'ExamResults' }">
 				<Btn
