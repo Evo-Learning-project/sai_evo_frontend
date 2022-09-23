@@ -270,7 +270,7 @@ import Avatar from "@/components/ui/Avatar.vue";
 import { mapActions, mapState } from "vuex";
 import ExerciseSolutionComment from "./ExerciseSolutionComment.vue";
 import ProcessedTextFragment from "@/components/ui/ProcessedTextFragment.vue";
-import { courseIdMixin, coursePrivilegeMixin, mediaQueryMixin } from "@/mixins";
+import { courseIdMixin, coursePrivilegeMixin, mediaQueryMixin, texMixin } from "@/mixins";
 import { setErrorNotification } from "@/utils";
 import CopyToClipboard from "@/components/ui/CopyToClipboard.vue";
 import { getExerciseSolutionThreadRoute } from "./utils";
@@ -282,7 +282,7 @@ import Tooltip from "@/components/ui/Tooltip.vue";
 //import { v4 as uuid4 } from "uuid";
 export default defineComponent({
 	name: "ExerciseSolution",
-	mixins: [courseIdMixin, coursePrivilegeMixin, mediaQueryMixin],
+	mixins: [courseIdMixin, coursePrivilegeMixin, mediaQueryMixin, texMixin],
 	props: {
 		exercise: {
 			type: Object as PropType<Exercise>,
@@ -316,6 +316,9 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+	},
+	created() {
+		this.triggerTexRender();
 	},
 	mounted() {
 		setTimeout(() => {
