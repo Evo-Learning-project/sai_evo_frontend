@@ -2,7 +2,8 @@
 	<div
 		class="
 			flex flex-col
-			px-8
+			px-6
+			py-6
 			overflow-x-hidden
 			md:min-h-21rem
 			lg:overflow-x-visible
@@ -11,25 +12,58 @@
 		"
 	>
 		<div
-			style="margin-left: -21px; margin-right: -21px; margin-top: -21px"
 			class="
+				text-darkText
+				course-header
+				bg-light bg-opacity-0
 				flex
 				items-start
-				md:px-1.25px
-				px-0.5
-				bg-primary-light bg-opacity-0
-				-mt-5
-				py-6
+				py-4
+				-mt-4
 				rounded-t
 			"
 		>
-			<span
+			<!-- <span
 				class="pl-4.5 mr-2 font-light text-2xl material-icons-two-tone two-tone-primary"
 				>book</span
-			>
-			<h4 style="margin-top: 1.5px" class="mb-0 pr-4.5">
-				{{ course.name }}
-			</h4>
+			> -->
+			<div>
+				<div class="flex items-start space-x-2">
+					<div
+						style="min-height: 2rem; min-width: 2rem"
+						class="w-8 h-8 flex mb-full rounded-full bg-primary bg-opacity-20"
+					>
+						<span
+							style="font-size: 1.4rem"
+							class="m-auto text-primary material-icons-outlined icon-light"
+						>
+							book
+						</span>
+					</div>
+					<div class="mb-auto mt-0.5">
+						<h3
+							style="line-height: 25px"
+							class="hidden lg:block mb-1.5 pr-4.5 font-normal"
+						>
+							{{ course.name }}
+						</h3>
+						<h4 style="line-height: 22px" class="lg:hidden mb-1.5 pr-4.5 font-normal">
+							{{ course.name }}
+						</h4>
+						<p style="font-weight: 400" class="-mb-0.5 text-xs text-muted uppercase">
+							{{ course.creator?.full_name }}
+						</p>
+					</div>
+				</div>
+
+				<!-- <div class="flex items-center space-x-1 mt-2"> -->
+				<!-- <span class="my-auto material-icons text-muted text-xl">person</span> -->
+				<!-- <p style="font-weight: 400" class="-mb-0.5 text-xs text-muted uppercase">
+						{{ course.creator?.full_name }}
+					</p> -->
+				<!-- </div> -->
+			</div>
+
 			<Tooltip
 				v-if="course.hidden"
 				:textCode="'hidden_course'"
@@ -44,18 +78,19 @@
 				</span>
 			</Tooltip>
 		</div>
-		<div class="mt-1 -ml-1">
-			<div class="flex items-center px-1 mb-1 space-x-1 text-sm">
-				<div class="flex items-center space-x-0.5 text-muted">
+		<div class="mt-0">
+			<!-- <div class="flex items-center px-0.5 mb-1 space-x-1 text-sm"> -->
+			<!-- <div class="flex items-center space-x-0.5 text-muted">
 					<span class="my-auto text-xl material-icons-outlined">person</span>
 					<span class="">{{ $t("misc.teacher") }}:</span>
-				</div>
-				<p>{{ course.creator?.full_name }}</p>
-			</div>
+				</div> -->
+			<!-- <p class="text-muted text-sm uppercase">{{ course.creator?.full_name }}</p> -->
+			<!-- </div> -->
 			<p
 				style="line-height: 1.2rem; font-weight: 400; opacity: 0.8"
-				class="px-1.5 mt-4 mb-8 text-sm"
-				v-html="course.description"
+				class="my-3 text-sm"
+				v-html="formattedDescription"
+				v-if="formattedDescription"
 			></p>
 		</div>
 		<div class="flex flex-col items-center mt-auto mb-2.5 space-y-2">
@@ -126,8 +161,22 @@ export default defineComponent({
 				(this.course.privileges?.length ?? 0) > 0
 			);
 		},
+		formattedDescription() {
+			const MAX_DESC_LENGTH = 150;
+			const description = this.course.description ?? "";
+			return (
+				description.slice(0, MAX_DESC_LENGTH) +
+				(description.length > MAX_DESC_LENGTH ? "..." : "")
+			);
+		},
 	},
 });
 </script>
 
-<style></style>
+<style>
+.course-header {
+	/* background-image: url("../../../public/course-bg.png");
+	background-size: cover;
+	background-repeat: no-repeat; */
+}
+</style>

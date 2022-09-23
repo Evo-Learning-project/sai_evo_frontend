@@ -51,8 +51,8 @@
 				>
 					{{ $t("misc.ads") }}
 				</p>
-				<div v-show="ads3Code" class="hidden md:block" v-html="ads3Code"></div>
-				<div v-show="adsMobileCode" class="md:hidden" v-html="adsMobileCode"></div>
+				<div v-show="ads3Code" class="hidden lg:block" v-html="ads3Code"></div>
+				<div v-show="adsMobileCode" class="lg:hidden" v-html="adsMobileCode"></div>
 			</div>
 
 			<div

@@ -29,7 +29,7 @@ export const it = {
 	courses: {
 		enroll: "Iscriviti",
 		enroll_title: "Iscriviti al corso",
-		course_panel: "Pannello",
+		course_panel: "Pannello docente",
 		go_to_course: "Vai al corso",
 		access_as_student: "Entra come studente",
 	},
