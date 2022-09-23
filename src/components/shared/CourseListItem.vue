@@ -42,7 +42,7 @@
 					</div>
 					<div class="mb-auto mt-0.5">
 						<h3
-							style="line-height: 25px"
+							style="line-height: 25px; font-size: 20px"
 							class="hidden lg:block mb-1.5 pr-4.5 font-normal"
 						>
 							{{ course.name }}
