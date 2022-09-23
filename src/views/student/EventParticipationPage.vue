@@ -71,6 +71,7 @@
 			:key="'p-' + proxyModelValue.id + '-s-' + slot.id"
 		>
 			<div
+				v-show="ads3Code || adsMobileCode"
 				v-if="
 					currentEventParticipation.event.event_type ===
 						EventType.SELF_SERVICE_PRACTICE && index === 1

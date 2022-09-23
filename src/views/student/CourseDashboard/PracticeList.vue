@@ -36,7 +36,10 @@
 				> -->
 			</div>
 
-			<div class="relative w-full bg-light py-2 mb-6 mt-4 px-2">
+			<div
+				v-show="ads3Code || adsMobileCode"
+				class="relative w-full bg-light py-2 mb-6 mt-4 px-2"
+			>
 				<p
 					class="
 						select-none
