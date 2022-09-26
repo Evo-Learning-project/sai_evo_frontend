@@ -48,13 +48,12 @@ axios.interceptors.response.use(
 	},
 	error => {
 		if (
-			// error.response?.status == 403 ||
-			error.response?.status === 401
+			error?.response?.status === 401 &&
+			(router.currentRoute.value.name?.toString().toLowerCase() ?? "") !== "login"
 		) {
-			logOut(false);
-		} else {
-			throw error;
+			logOut(false, router.currentRoute.value.fullPath);
 		}
+		throw error;
 	},
 );
 

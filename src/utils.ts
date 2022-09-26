@@ -20,13 +20,14 @@ const SEARCH_DEBOUNCE_MAX_WAIT_MS = 1000;
 const STUDENT_DEBOUNCE_TEXT_TIME_MS = 5000;
 const STUDENT_DEBOUNCE_TEXT_MAX_WAIT_MS = 10000;
 
-export const logOut = (showMessage = true): void => {
+export const logOut = (showMessage = true, redirect = ""): void => {
 	store.commit("shared/resetToken");
 	router.push({
 		name: "Login",
 		params: {
 			courseId: -1, // !
 		},
+		...(redirect ? { query: { redirect } } : {}),
 	});
 	if (showMessage) {
 		setErrorNotification(getTranslatedString("misc.logged_out"), true);
@@ -91,8 +92,13 @@ export const getErrorData = (e: any, useAsIs = false): ErrorMessage => {
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const setPageWideError = (e: any) => {
-	const sharedState = (store.state as { shared: SharedState }).shared;
-	sharedState.pageWideErrorData = getErrorData(e);
+	// if the error is a 401 response, don't set the global
+	// error message to allow for redirecting to the login view
+	if (typeof e !== "object" || e?.response?.status !== 401) {
+		const sharedState = (store.state as { shared: SharedState }).shared;
+		sharedState.pageWideErrorData = getErrorData(e);
+	}
+	console.error("setPageWideError", e);
 	throw e;
 };
 

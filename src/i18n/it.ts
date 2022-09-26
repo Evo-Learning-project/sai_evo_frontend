@@ -916,6 +916,7 @@ export const it = {
 		back: "Torna indietro",
 		no_connection: "Connessione assente",
 		400: "La tua richiesta contiene un errore",
+		401: "Effettua il login per visualizzare questa pagina",
 		403: "Non hai i permessi necessari per effettuare quest'azione",
 		404: "La pagina richiesta non sembra esistere",
 		500: "Si è verificato un errore interno",

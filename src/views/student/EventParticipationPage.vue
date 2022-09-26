@@ -123,20 +123,25 @@
 				class=""
 				@click="onGoBack"
 				v-if="goingBackAllowed"
-				:disabled="!canGoBack"
-				:loading="loading"
+				:disabled="!canGoBack || goingBack || goingForward || loading"
+				:loading="false && loading"
 			>
 				<span class="material-icons-outlined mt-0.5 mr-0.5 text-base">
 					chevron_left
 				</span>
-				{{ $t("event_participation_page.previous_exercise") }}</Btn
+				{{
+					goingBack ? $t("misc.wait") : $t("event_participation_page.previous_exercise")
+				}}</Btn
 			>
 			<Btn
 				class="ml-auto"
 				@click="goingBackAllowed ? onGoForward() : confirmGoForward()"
 				v-if="canGoForward"
-				:loading="loading"
-				>{{ $t("event_participation_page.next_exercise") }}
+				:loading="false && loading"
+				:disabled="goingForward || goingBack || loading"
+				>{{
+					goingForward ? $t("misc.wait") : $t("event_participation_page.next_exercise")
+				}}
 				<span class="material-icons-outlined mt-0.5 ml-0.5 text-base">
 					chevron_right
 				</span></Btn
@@ -146,9 +151,10 @@
 				@click="confirmTurnIn"
 				v-else-if="canTurnIn"
 				:variant="'success'"
+				:disabled="loading || goingBack || turningIn"
 			>
 				<span class="material-icons-outlined mt-0.5 text-base mr-1"> check </span
-				>{{ $t("event_participation_page.turn_in") }}
+				>{{ turningIn ? $t("misc.wait") : $t("event_participation_page.turn_in") }}
 			</Btn>
 		</div>
 		<Dialog
@@ -277,6 +283,9 @@ export default defineComponent({
 			showTimeUpBackdrop: false,
 			remainingTime: null as number | null,
 			runTimer: false,
+			goingForward: false,
+			goingBack: false,
+			turningIn: false,
 		};
 	},
 	methods: {
@@ -334,6 +343,7 @@ export default defineComponent({
 
 			// assumption: going forward is only allowed when showing one slot at a time
 			const currentSlot = this.proxyModelValue.slots[0];
+			this.goingForward = true;
 			await this.withLoading(
 				async () => {
 					// flush queued changes before moving on to next slot
@@ -344,10 +354,12 @@ export default defineComponent({
 				},
 				e => this.setErrorNotification(e),
 			);
+			this.goingForward = false;
 		},
 		async onGoBack() {
 			// assumption: going back is only allowed when showing one slot at a time
 			const currentSlot = this.proxyModelValue.slots[0];
+			this.goingBack = true;
 			await this.withLoading(
 				async () => {
 					// flush queued changes before moving on to next slot
@@ -358,6 +370,7 @@ export default defineComponent({
 				},
 				e => this.setErrorNotification(e),
 			);
+			this.goingBack = false;
 		},
 		async onTimeUp() {
 			this.showTimeUpBackdrop = true;
@@ -365,6 +378,7 @@ export default defineComponent({
 		},
 		async onTurnIn() {
 			this.showConfirmDialog = false;
+			this.turningIn = true;
 			await this.withLoading(async () => {
 				// stop timer
 				this.runTimer = false;
@@ -399,6 +413,7 @@ export default defineComponent({
 					this.setErrorNotification(e);
 				}
 			});
+			this.turningIn = false;
 		},
 		confirmGoForward() {
 			this.dialogData = {

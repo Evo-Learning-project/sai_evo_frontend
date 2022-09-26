@@ -58,14 +58,16 @@ import { MAX_PRACTICE_EXERCISE_COUNT } from "@/const";
 import { LoadAction } from "@ts-pro/vue-eternal-loading";
 import VueEternalLoading from "@ts-pro/vue-eternal-loading/src/components/VueEternalLoading/VueEternalLoading.vue";
 import { EventParticipationSearchFilter } from "@/api";
+import Spinner from "@/components/ui/Spinner.vue";
 
 export default defineComponent({
 	components: {
 		EventParticipationPreview,
 		SkeletonCard,
 		VueEternalLoading,
+		Spinner,
 	},
-	name: "CourseDashboard",
+	name: "ExamList",
 	mixins: [courseIdMixin, loadingMixin],
 	async created() {
 		await this.withFirstLoading(async () => {
