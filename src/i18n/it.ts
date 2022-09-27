@@ -1066,6 +1066,7 @@ export const it = {
 	},
 	server_messages: {
 		error: {
+			EVENT_CLOSED: "L'esame è terminato.",
 			NOT_IN_EVENT_ALLOWED_LIST:
 				"Non sei nella lista di studenti ammessi a questo esame. Se ritieni che si tratti di un errore, contatta il docente.",
 		},
