@@ -175,7 +175,7 @@
 	}
 
 	.icon-btn-primary button {
-		@apply hover:text-primary focus:bg-primary hover:bg-primary focus:bg-opacity-20 hover:bg-opacity-20;
+		@apply hover:text-primary focus:bg-primary focus:text-primary hover:bg-primary focus:bg-opacity-20 hover:bg-opacity-20;
 	}
 
 	.icon-btn-secondary button {
@@ -184,6 +184,10 @@
 
 	.icon-btn-success button {
 		@apply text-success focus:bg-success hover:bg-success focus:bg-opacity-20 hover:bg-opacity-20;
+	}
+
+	.icon-btn-danger button {
+		@apply hover:text-danger-dark focus:bg-danger-dark focus:text-danger-dark hover:bg-danger-dark focus:bg-opacity-20 hover:bg-opacity-20;
 	}
 
 	.icon-btn-sm {

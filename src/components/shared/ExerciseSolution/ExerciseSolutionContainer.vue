@@ -18,6 +18,7 @@
 			:showTeacherControls="showTeacherControls"
 			@updateState="onSolutionStateUpdate(solution, $event)"
 			@editSolution="onEditSolution(solution)"
+			@deleteSolution="onDeleteSolution(solution)"
 		/>
 		<div
 			class="flex md:flex-row items-center md:space-y-0 space-y-2 flex-col md:space-x-4"
@@ -105,7 +106,7 @@ import Btn from "@/components/ui/Btn.vue";
 import ExerciseSolution from "./ExerciseSolution.vue";
 import ExerciseSolutionEditor from "./ExerciseSolutionEditor.vue";
 import { createExerciseSolution } from "@/api/exercises";
-import { courseIdMixin, savingMixin } from "@/mixins";
+import { courseIdMixin, loadingMixin, savingMixin } from "@/mixins";
 import { setErrorNotification } from "@/utils";
 import Exercise from "../Exercise/Exercise.vue";
 import { AutoSaveManager } from "@/autoSave";
@@ -115,6 +116,7 @@ import {
 	EXERCISE_SOLUTION_AUTO_SAVE_DEBOUNCE_TIME_MS,
 } from "@/const";
 import FullExercise from "../FullExercise.vue";
+import { getTranslatedString } from "@/i18n";
 export default defineComponent({
 	name: "ExerciseSolutionContainer",
 	props: {
@@ -167,10 +169,10 @@ export default defineComponent({
 			default: "",
 		},
 	},
-	mixins: [courseIdMixin, savingMixin],
+	mixins: [courseIdMixin, savingMixin, loadingMixin],
 	methods: {
 		...mapActions("shared", ["updateExerciseChild"]),
-		...mapActions("student", ["addExerciseSolution"]),
+		...mapActions("student", ["addExerciseSolution", "deleteExerciseSolution"]),
 		...mapMutations("student", ["setExerciseSolution"]),
 		onClose() {
 			this.editingSolutionId = null;
@@ -293,6 +295,20 @@ export default defineComponent({
 			//this.editingSolutionId = solution.id;
 			this.editingSolutionDeepCopy = JSON.parse(JSON.stringify(solution));
 			this.instantiateLocalOnlyAutoSaveManager();
+		},
+		async onDeleteSolution(solution: IExerciseSolution) {
+			if (!confirm(getTranslatedString("exercise_solution.confirm_deletion"))) {
+				return;
+			}
+			await this.withLoading(
+				async () =>
+					await this.deleteExerciseSolution({
+						courseId: this.courseId,
+						exerciseId: this.exercise.id,
+						solutionId: solution.id,
+					}),
+				this.setErrorNotification,
+			);
 		},
 		async editDraftSolution(): Promise<boolean> {
 			if (this.editingSolution !== null) {

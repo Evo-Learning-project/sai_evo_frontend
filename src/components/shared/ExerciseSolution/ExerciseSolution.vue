@@ -201,6 +201,15 @@
 										>{{ solution.is_bookmarked ? "bookmark" : "bookmark_outline" }}</span
 									>
 								</Btn>
+								<Btn
+									class="icon-btn-danger"
+									v-if="canEdit"
+									:variant="'icon'"
+									:outline="true"
+									:tooltip="$t('exercise_solution.delete')"
+									@click="$emit('deleteSolution')"
+									><span class="material-icons">delete</span></Btn
+								>
 							</div>
 
 							<!-- author -->

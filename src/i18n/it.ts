@@ -289,6 +289,8 @@ export const it = {
 		my_favorites: "Salvati",
 	},
 	exercise_solution: {
+		confirm_deletion:
+			"Sei sicuro di voler cancellare questa soluzione? Quest'operazione è irreversibile.",
 		load_more_solutions: "Carica più soluzioni",
 		go_to_exercise_thread: "Vai alla discussione di questo esercizio",
 		reveal_solutions_1: "Mostra",
@@ -306,6 +308,7 @@ export const it = {
 		reject: "Scarta",
 		default_author: "Docenti del corso",
 		edit: "Modifica",
+		delete: "Elimina",
 		share: "Condividi",
 		add_bookmark: "Aggiungi ai preferiti",
 		remove_bookmark: "Rimuovi dai preferiti",

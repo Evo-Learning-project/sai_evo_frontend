@@ -301,7 +301,6 @@ export const actions = {
 			});
 		}
 	},
-	// TODO use a single generic addExerciseChild action like for updating
 	addExerciseChild: async (
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		{ commit, state, getters }: { commit: Commit; state: any; getters: any },
