@@ -2,13 +2,12 @@
 	<div class="flex flex-col h-full">
 		<spinner v-if="loading"></spinner>
 		<div class="flex flex-col h-full">
-			<h1 class="mx-auto text-4xl text-center text-primary">SAI Evolution</h1>
+			<h1 class="mb-0 mx-auto text-5xl text-center text-primary">Evo Learning</h1>
 			<div
 				class="
 					w-11/12
 					pb-12
-					mx-auto
-					my-auto
+					m-auto
 					text-center
 					rounded
 					bg-gray-50
@@ -17,7 +16,7 @@
 					login-card
 				"
 			>
-				<h1 class="mx-auto mb-12 text-4xl text-center">
+				<h1 class="mx-auto mb-8 text-4xl text-center">
 					{{ $t("headings.login") }}
 				</h1>
 				<div
