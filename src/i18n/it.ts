@@ -45,8 +45,10 @@ export const it = {
 		login: "Entra",
 		login_text: "Effettua l'accesso con la tua email",
 		warning: "Attenzione",
-		cookies_warning:
-			"i cookie devono essere abilitati per effettuare il login, e non si deve essere in modalità incognito.",
+		cookies_warning: "i cookie del tuo browser sono disattivati. Per accedere, abilita ",
+		all_cookies: "tutti i cookie",
+		enable_third_party_cookies_1: "Assicurati anche di abilitare i",
+		enable_third_party_cookies_2: "cookie di terze parti",
 	},
 	headings: {
 		exercise_solution_threads: "Soluzioni esercizi",
@@ -572,6 +574,7 @@ export const it = {
 		exceptions_to_time_limit: "Eccezioni al limite di tempo",
 		time_limit_description: "Al termine del tempo, l'esame si chiude automaticamente.",
 		add_exception: "Aggiungi eccezione",
+		no_time_limit_exception: "Non hai impostato eccezioni al limite di tempo.",
 		remove_time_limit_exception_confirmation:
 			"Sei sicuro di voler rimuovere questa eccezione al limite di tempo?",
 		delete_exception: "Rimuovi eccezione",

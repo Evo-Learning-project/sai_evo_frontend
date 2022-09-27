@@ -307,7 +307,13 @@
 							><span class="text-base material-icons"> delete </span></Btn
 						>
 					</div>
-					<Btn @click="onAddTimeLimitException()"
+					<p
+						class="-mt-4 mb-8 text-muted"
+						v-if="(modelValue.time_limit_exceptions ?? []).length === 0"
+					>
+						{{ $t("event_editor.no_time_limit_exception") }}
+					</p>
+					<Btn class="mb-4" @click="onAddTimeLimitException()"
 						><span class="mr-1 text-base material-icons-outlined"> add </span
 						>{{ $t("event_editor.add_exception") }}</Btn
 					>

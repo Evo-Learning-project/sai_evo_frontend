@@ -56,12 +56,7 @@ const googleAuth = (function () {
 					Vue3GoogleOauth.isAuthorized = this.instance.isSignedIn.get();
 				})
 				.catch(error => {
-					store.commit("pushNotification", {
-						severity: 2,
-						autoHide: 9000,
-						message:
-							"Pare che tu sia in modalità in incognito o abbia disattivato i cookie. Se non è così e non riesci ad accedere, inviaci una segnalazione.",
-					});
+					console.log("ERR", error);
 					Vue3GoogleOauth.hadError = true;
 					// throw error
 					// console.error(error)
