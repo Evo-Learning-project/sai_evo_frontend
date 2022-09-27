@@ -14,7 +14,7 @@
 							'text-yellow-400': index === 0,
 							'text-gray-400': index === 1,
 							'text-yellow-900': index === 2,
-							'opacity-0': (pageNumber > 1 && !loading) || index >= 3,
+							'opacity-0': pageNumber > 1 || index >= 3 || loading,
 						}"
 					>
 						<svg style="width: 24px; height: 24px" viewBox="0 0 24 24">
