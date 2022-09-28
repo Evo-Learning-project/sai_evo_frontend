@@ -15,7 +15,7 @@
 					:disabled="disabled || internalDisabled"
 					@change="onEditorChange($event)"
 					@ready="onEditorReady($event)"
-					v-if="!showBaseEditor"
+					v-if="!showBaseEditor && !forceBaseEditor"
 				/>
 				<textarea
 					class="py-3.5 px-3.5 bg-transparent rounded-t-sm outline-none"
@@ -32,7 +32,7 @@
 				<slot></slot>
 			</label>
 		</div>
-		<div class="relative z-10 flex w-full hide-in-thumbnail">
+		<div v-if="!forceBaseEditor" class="relative z-10 flex w-full hide-in-thumbnail">
 			<p v-if="showBaseEditor" style="font-size: 12px" class="ml-auto text-sm text-muted">
 				{{ $t("misc.using_base_editor") }}
 			</p>
@@ -79,6 +79,10 @@ export default defineComponent({
 		placeholder: {
 			type: String,
 			default: "",
+		},
+		forceBaseEditor: {
+			type: Boolean,
+			default: false,
 		},
 	},
 	components: {

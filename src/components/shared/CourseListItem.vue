@@ -86,12 +86,14 @@
 				</div> -->
 			<!-- <p class="text-muted text-sm uppercase">{{ course.creator?.full_name }}</p> -->
 			<!-- </div> -->
+			<!-- v-html="formattedDescription" -->
 			<p
 				style="line-height: 1.2rem; font-weight: 400; opacity: 0.8"
 				class="my-3 text-sm"
-				v-html="formattedDescription"
 				v-if="formattedDescription"
-			></p>
+			>
+				{{ formattedDescription }}
+			</p>
 		</div>
 		<div class="flex flex-col items-center mt-auto mb-2.5 space-y-2">
 			<router-link

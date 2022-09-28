@@ -75,7 +75,11 @@
 							<p class="mr-3" v-html="currentCourse.description"></p>
 						</div>
 						<div v-show="editingDescription" class="flex items-center">
-							<TextEditor class="w-full mr-2" v-model="dirtyCourseDescription">
+							<TextEditor
+								:forceBaseEditor="true"
+								class="w-full mr-2"
+								v-model="dirtyCourseDescription"
+							>
 								{{ $t("course_creation_form.course_description") }}
 							</TextEditor>
 							<Btn

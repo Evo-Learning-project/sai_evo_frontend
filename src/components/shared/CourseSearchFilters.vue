@@ -1,17 +1,21 @@
 <template>
-	<div class="card card-filled">
-		<div class="flex items-center mb-4 space-x-2">
+	<div class="mt-2 mb-12">
+		<!-- <div class="flex items-center mb-4 space-x-2">
 			<span class="text-3xl material-icons-outlined icon-light"> manage_search </span>
 			<h3 class="">{{ $t("course_list.filter_courses") }}</h3>
-		</div>
-		<div class="flex flex-col flex-wrap mb-3 md:items-center md:flex-row">
+		</div> -->
+		<div class="flex flex-col mb-3 flex-wrap md:items-center md:flex-row">
 			<TextInput
-				class="w-full mt-2 mr-auto md:w-1/2 lg:w-1/3"
+				:searchBar="true"
+				:leftIcon="'search'"
+				:placeholder="$t('course_list.filter_courses')"
+				:class="[
+					!anyCourseHasPrivileges && !user.is_teacher ? 'w-full' : 'w-full  md:w-1/2',
+					'mt-2 mr-auto',
+				]"
 				:modelValue="modelValue.name"
 				@update:modelValue="emitUpdate('name', $event)"
-				:rightIcon="'search'"
-				>{{ $t("teacher_course_dashboard.course_name") }}</TextInput
-			>
+			></TextInput>
 			<Toggle
 				:label-on-left="true"
 				class="mt-2 mr-4"
