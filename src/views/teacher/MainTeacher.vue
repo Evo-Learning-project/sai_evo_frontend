@@ -39,7 +39,7 @@
 					</Btn>
 				</div>
 				<div class="flex items-center mr-auto lg:ml-10">
-					<img class="w-32 -ml-1" src="../../../public/unipi-logo.svg" />
+					<img :class="[isDemoMode ? 'w-40' : 'w-32', '-ml-1']" :src="logoUrl" />
 				</div>
 				<div class="">
 					<div
@@ -103,7 +103,7 @@
 					bg-primary
 				"
 			>
-				<img class="w-32" src="../../../public/unipi-logo.svg" />
+				<img :class="[isDemoMode ? 'w-40' : 'w-32']" :src="logoUrl" />
 				<Btn
 					:variant="'icon'"
 					:outline="true"
@@ -151,7 +151,7 @@
 									whitespace-pre
 								"
 							>
-								<img class="w-36" src="../../../public/unipi-logo.svg" /></div
+								<img :class="[isDemoMode ? 'w-40' : 'w-32']" :src="logoUrl" /></div
 						></transition>
 
 						<transition name="fade-quick">
@@ -274,7 +274,7 @@
 			>
 				<div class="w-full h-full px-2">
 					<div class="flex items-center w-full mt-4">
-						<img class="mx-auto w-36" src="../../../public/unipi-logo.svg" />
+						<img :class="[isDemoMode ? 'w-40' : 'w-32', 'mx-auto']" :src="logoUrl" />
 					</div>
 					<div
 						v-if="$store.getters['shared/isAuthenticated']"
@@ -397,7 +397,7 @@ import {
 	ROUTE_TITLE_EVENT_NAME_TOKEN,
 } from "@/navigation/const";
 import { SidebarOption } from "@/navigation/sidebar";
-import { logOut } from "@/utils";
+import { isDemoMode, logOut } from "@/utils";
 import { defineComponent } from "@vue/runtime-core";
 import ErrorView from "../shared/ErrorView.vue";
 import SnackBar from "@/components/ui/SnackBar.vue";
@@ -509,6 +509,15 @@ export default defineComponent({
 	},
 	computed: {
 		...mapState(["helpCenterOpen"]),
+		isDemoMode() {
+			return isDemoMode();
+		},
+		logoUrl() {
+			if (!this.isDemoMode) {
+				return require("../../../public/unipi-logo.svg");
+			}
+			return require("../../../public/evo_logo.png");
+		},
 		allowedSidebarOptions(): SidebarOption[] {
 			return ((this.$route.meta?.sidebarOptions ?? []) as SidebarOption[]).filter(o =>
 				this.hasPrivileges(o.requiredPrivileges),

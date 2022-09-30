@@ -251,3 +251,5 @@ export function isElementVisible(element: HTMLElement | null) {
 	}
 	return false;
 }
+
+export const isDemoMode = () => JSON.parse(process.env.VUE_APP_DEMO_MODE ?? "false");

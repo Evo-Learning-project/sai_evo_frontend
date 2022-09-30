@@ -229,7 +229,7 @@
 						:placeholder="$t('event_editor.student_email')"
 					></TagInput>
 				</div>
-				<div class="flex flex-col mt-12 space-y-4">
+				<div v-if="!isDemoMode" class="flex flex-col mt-12 space-y-4">
 					<h3 class="text-darkText">
 						{{ $t("event_editor.import_from_valutami") }}
 					</h3>
@@ -351,6 +351,7 @@ import { ChangeEvent } from "ag-grid-community/dist/lib/widgets/agCheckbox";
 import { csvToArray, getFileContent, setErrorNotification } from "@/utils";
 import NumberInput from "@/components/ui/NumberInput.vue";
 import { mediaQueryMixin } from "@/mixins";
+import { isDemoMode } from "@/utils";
 
 export default defineComponent({
 	name: "EventMetaEditor",
@@ -479,6 +480,9 @@ export default defineComponent({
 		},
 	},
 	computed: {
+		isDemoMode() {
+			return isDemoMode();
+		},
 		isDraft() {
 			return this.modelValue.state == EventState.DRAFT;
 		},

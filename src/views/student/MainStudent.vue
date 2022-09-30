@@ -9,7 +9,7 @@
 				<div class="flex items-center justify-between h-14">
 					<div class="flex items-center">
 						<div class="flex-shrink-0">
-							<img class="w-32 -ml-1" src="../../../public/unipi-logo.svg" />
+							<img :class="[isDemoMode ? 'w-40' : 'w-32', '-ml-1']" :src="logoUrl" />
 						</div>
 					</div>
 					<div v-if="!$route.meta.hideUserInfoFromNav" class="">
@@ -112,7 +112,7 @@ import ErrorView from "../shared/ErrorView.vue";
 import SnackBar from "@/components/ui/SnackBar.vue";
 import BreadCrumbs from "@/components/ui/BreadCrumbs.vue";
 import Btn from "@/components/ui/Btn.vue";
-import { logOut } from "@/utils";
+import { isDemoMode, logOut } from "@/utils";
 import Dialog from "@/components/ui/Dialog.vue";
 import { createNamespacedHelpers } from "vuex";
 import NumberInput from "@/components/ui/NumberInput.vue";
@@ -152,6 +152,15 @@ export default defineComponent({
 	},
 	computed: {
 		...mapState(["user"]),
+		isDemoMode() {
+			return isDemoMode();
+		},
+		logoUrl() {
+			if (!this.isDemoMode) {
+				return require("../../../public/unipi-logo.svg");
+			}
+			return require("../../../public/evo_logo.png");
+		},
 		sidebarOptions(): SidebarOption[] {
 			return (this.$route.meta?.sidebarOptions ?? []) as SidebarOption[];
 		},
