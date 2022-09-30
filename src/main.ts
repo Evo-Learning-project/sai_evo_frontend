@@ -28,6 +28,8 @@ import Vue3Sanitize from "vue-3-sanitize";
 import VWave from "v-wave";
 import { sanitizeOptions } from "./const";
 
+import VueGtag from "vue-gtag";
+
 const gAuthOptions = {
 	clientId: "956826904172-mcsaj1bqcllv93bpad7dmd0e3oil4758.apps.googleusercontent.com",
 	scope: "profile",
@@ -75,6 +77,9 @@ app
 	})
 	.use(Vue3Tour)
 	.use(Vue3Sanitize, sanitizeOptions)
+	.use(VueGtag, {
+		config: { id: process.env.VUE_APP_GTAG_ID },
+	})
 	.mount("#app");
 
 if (!dev) {
