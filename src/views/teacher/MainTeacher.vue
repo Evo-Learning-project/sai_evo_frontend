@@ -376,16 +376,16 @@
 				></transition>
 			</div>
 		</div>
-		<v-tour
+		<!-- <v-tour
 			name="helpCenterTour"
 			:steps="teacherTourSteps"
 			:options="tourOptions"
-		></v-tour>
-		<v-tour
+		></v-tour> -->
+		<!-- <v-tour
 			name="newSideBarTour"
 			:steps="newSidebarHelpCenterTourSteps"
 			:options="tourOptions"
-		></v-tour>
+		></v-tour> -->
 	</div>
 </template>
 

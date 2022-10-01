@@ -68,11 +68,12 @@
 				</div>
 				<div class="mt-8 text-center">
 					<Btn
+						id="login-btn"
 						@click="handleClickSignIn"
 						:variant="'secondary'"
 						:size="'lg'"
 						class="md:w-max"
-						:disabled="!googleOauthReady || localLoading"
+						:disabled="!googleOauthReady || localLoading || disableLogin"
 						:loading="(!googleOauthReady && !googleOauthHadError) || localLoading"
 					>
 						<span class="mr-2 text-xl material-icons">lock</span>
@@ -81,6 +82,12 @@
 				</div>
 			</div>
 		</div>
+		<v-tour
+			name="demoTour"
+			:steps="demoLoginTourSteps"
+			:options="tourOptions"
+			:callbacks="{ onFinish: onTourFinish }"
+		></v-tour>
 	</div>
 </template>
 
@@ -92,8 +99,11 @@ import { inject, toRefs } from "vue";
 import Spinner from "@/components/ui/Spinner.vue";
 import { defineComponent } from "@vue/runtime-core";
 import { loadingMixin } from "@/mixins";
-import { redirectToMainView } from "@/utils";
+import { isDemoMode, redirectToMainView } from "@/utils";
 import { getTranslatedString } from "@/i18n";
+import { demoLoginTourSteps, tourOptions } from "@/const";
+
+const DEMO_TOUR_KEY = "demo_tour_taken";
 
 export default defineComponent({
 	name: "Login",
@@ -101,15 +111,30 @@ export default defineComponent({
 		Btn,
 		Spinner,
 	},
+	watch: {
+		googleOauthReady(newVal) {
+			if (newVal && isDemoMode() && !(DEMO_TOUR_KEY in localStorage)) {
+				setTimeout(() => ((this as any).$tours["demoTour"] as any).start(), 50);
+				this.disableLogin = true;
+			}
+		},
+	},
 	data() {
 		return {
 			user: "",
 			loadingLogin: true,
+			disableLogin: false,
+			demoLoginTourSteps,
+			tourOptions,
 		};
 	},
 	mixins: [loadingMixin],
 	methods: {
 		redirectToMainView,
+		onTourFinish() {
+			this.disableLogin = false;
+			localStorage.setItem(DEMO_TOUR_KEY, "true");
+		},
 		async handleClickSignIn() {
 			try {
 				await this.withLocalLoading(async () => {
@@ -122,7 +147,7 @@ export default defineComponent({
 					const token = googleUser.getAuthResponse().access_token;
 					await this.$store.dispatch("shared/convertToken", token);
 					await this.$store.dispatch("shared/getUserData");
-					this.redirectToMainView();
+					redirectToMainView();
 					this.setErrorNotification(getTranslatedString("misc.logged_in"), true);
 				});
 			} catch (error) {

@@ -122,6 +122,28 @@ export const newSidebarHelpCenterTourSteps = [
 	},
 ];
 
+export const demoLoginTourSteps = [
+	{
+		target: "#login-btn",
+		header: {
+			title: _("tour.demo_welcome_header"),
+		},
+		content: _("tour.demo_welcome_content"),
+		params: { placement: "top" },
+	},
+];
+
+export const demoCourseTourSteps = [
+	{
+		target: "#course-0",
+		header: {
+			title: _("tour.demo_course_header"),
+		},
+		content: _("tour.demo_course_content"),
+		params: { placement: "top" },
+	},
+];
+
 export const teacherTourSteps = [
 	{
 		// exercises
@@ -147,13 +169,71 @@ export const teacherTourSteps = [
 	},
 	{
 		// permissions
-		target: "#sidebar-option-3",
+		target: "#sidebar-option-4",
 		header: {
 			title: _("tour.permissions_header"),
 		},
 		content: _("tour.permissions_content"),
 		params: {
 			placement: "right",
+		},
+	},
+];
+
+export const demoTeacherTourSteps = [
+	{
+		// exercises
+		target: "#sidebar-option-2",
+		header: {
+			title: _("tour.demo_exercises_header"),
+		},
+		content: _("tour.demo_exercises_content"),
+		params: {
+			placement: "right",
+		},
+	},
+	{
+		// exams
+		target: "#sidebar-option-1",
+		header: {
+			title: _("tour.demo_exams_header"),
+		},
+		content: _("tour.demo_exams_content"),
+		params: {
+			placement: "right",
+		},
+	},
+	{
+		// solutions
+		target: "#sidebar-option-3",
+		header: {
+			title: _("tour.demo_solutions_header"),
+		},
+		content: _("tour.demo_solutions_content"),
+		params: {
+			placement: "right",
+		},
+	},
+	{
+		// permissions
+		target: "#sidebar-option-4",
+		header: {
+			title: _("tour.demo_permissions_header"),
+		},
+		content: _("tour.demo_permissions_content"),
+		params: {
+			placement: "right",
+		},
+	},
+	{
+		// exams
+		target: "#help-center",
+		header: {
+			title: _("tour.demo_help_center_header"),
+		},
+		content: _("tour.demo_help_center_content"),
+		params: {
+			placement: "bottom",
 		},
 	},
 ];

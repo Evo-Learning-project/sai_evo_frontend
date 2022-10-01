@@ -37,10 +37,10 @@
 			</div>
 			<div class="grid gap-4 md:gap-8 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
 				<CourseListItem
-					v-for="course in coursesFiltered"
+					v-for="(course, index) in coursesFiltered"
 					:key="'course-' + course.id"
 					:course="course"
-					class=""
+					:id="index === 0 ? 'course-0' : ''"
 				></CourseListItem>
 			</div>
 		</div>
@@ -75,6 +75,11 @@
 				{{ $t("course_list.no_courses_with_filters") }}
 			</h2>
 		</div>
+		<v-tour
+			name="demoCourseTour"
+			:steps="demoCourseTourSteps"
+			:options="tourOptions"
+		></v-tour>
 	</div>
 </template>
 
@@ -91,7 +96,11 @@ import { Course } from "@/models";
 import { getBlankCourseSearchFilters } from "@/api/utils";
 import { CourseSearchFilter } from "@/api/interfaces";
 import CourseSearchFilters from "@/components/shared/CourseSearchFilters.vue";
+import { demoCourseTourSteps, tourOptions } from "@/const";
+import { isDemoMode } from "@/utils";
 const { mapState, mapActions } = createNamespacedHelpers("shared");
+
+const DEMO_COURSES_TOUR_KEY = "courses_tour_taken";
 
 export default defineComponent({
 	name: "CourseList",
@@ -106,11 +115,17 @@ export default defineComponent({
 	async created() {
 		await this.withFirstLoading(async () => this.$store.dispatch("shared/getCourses"));
 		this.searchFilters.withPrivileges = this.user.is_teacher;
+		if (isDemoMode() && !(DEMO_COURSES_TOUR_KEY in localStorage)) {
+			setTimeout(() => ((this as any).$tours["demoCourseTour"] as any).start(), 50);
+			localStorage.setItem(DEMO_COURSES_TOUR_KEY, "true");
+		}
 	},
 	data() {
 		return {
 			dirtyMat: "",
 			searchFilters: getBlankCourseSearchFilters(),
+			demoCourseTourSteps,
+			tourOptions,
 		};
 	},
 	watch: {

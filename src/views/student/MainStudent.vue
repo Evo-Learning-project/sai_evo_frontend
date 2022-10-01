@@ -9,7 +9,7 @@
 				<div class="flex items-center justify-between h-14">
 					<div class="flex items-center">
 						<div class="flex-shrink-0">
-							<img :class="[isDemoMode ? 'w-40' : 'w-32', '-ml-1']" :src="logoUrl" />
+							<img :class="[isDemoMode ? 'w-40 ml-2' : 'w-32 -ml-1']" :src="logoUrl" />
 						</div>
 					</div>
 					<div v-if="!$route.meta.hideUserInfoFromNav" class="">

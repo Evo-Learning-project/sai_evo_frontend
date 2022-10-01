@@ -31,7 +31,12 @@
 				>Samuele Bonini</a
 			>
 		</p>
-		<Tooltip :placement="'left'" class="ml-auto" :textCode="'telegram'">
+		<Tooltip
+			v-if="!isDemoMode"
+			:placement="'left'"
+			class="ml-auto"
+			:textCode="'telegram'"
+		>
 			<a href="https://t.me/sai_evo" target="_blank"
 				><img
 					class="w-5 h-5 transition-opacity duration-75 opacity-70 hover:opacity-100"
@@ -51,6 +56,7 @@ import { createNamespacedHelpers } from "vuex";
 import { debounce } from "lodash";
 import { Course, CoursePrivilege } from "./models";
 import Tooltip from "./components/ui/Tooltip.vue";
+
 //import { typesetTex } from "./utils";
 const { mapState, mapGetters } = createNamespacedHelpers("shared");
 
@@ -113,6 +119,9 @@ export default defineComponent({
 	computed: {
 		...mapState(["loading", "showSuccessFeedback", "dirtyTex", "courses"]),
 		...mapGetters(["unsavedChanges"]),
+		isDemoMode() {
+			return JSON.parse(process.env.VUE_APP_DEMO_MODE ?? "false");
+		},
 		hasAnyPrivileges(): boolean {
 			if (this.$router.currentRoute.value.params.courseId) {
 				// check user has privileges for course currrently visited
