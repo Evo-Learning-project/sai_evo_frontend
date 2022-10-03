@@ -105,6 +105,7 @@
 				</div>
 				<!-- new practice button -->
 				<Card
+					id="create-practice-btn"
 					v-else
 					:margin-less="true"
 					:hoverable="false"
@@ -239,6 +240,7 @@
 				</p>
 			</template>
 		</Dialog>
+		<v-tour name="demoStudentTour" :steps="demoStudentTourSteps" :options="tourOptions" />
 	</div>
 </template>
 
@@ -258,12 +260,15 @@ import Dialog from "@/components/ui/Dialog.vue";
 import PracticeTemplateEditor from "@/components/student/PracticeTemplateEditor.vue";
 import { getTranslatedString as _ } from "@/i18n";
 import { sum } from "lodash";
-import { MAX_PRACTICE_EXERCISE_COUNT } from "@/const";
+import { demoStudentTourSteps, MAX_PRACTICE_EXERCISE_COUNT, tourOptions } from "@/const";
 import Btn from "@/components/ui/Btn.vue";
 import VueEternalLoading from "@ts-pro/vue-eternal-loading/src/components/VueEternalLoading/VueEternalLoading.vue";
 import Spinner from "@/components/ui/Spinner.vue";
 import { LoadAction } from "@ts-pro/vue-eternal-loading";
 import { EventParticipationSearchFilter } from "@/api";
+import { isDemoMode } from "@/utils";
+
+const DEMO_TOUR_KEY = "demo_student_tour_taken";
 
 export default defineComponent({
 	components: {
@@ -292,6 +297,9 @@ export default defineComponent({
 					event_type: EventType.SELF_SERVICE_PRACTICE,
 				} as EventParticipationSearchFilter,
 			});
+			if (isDemoMode() && !(DEMO_TOUR_KEY in localStorage)) {
+				setTimeout(() => ((this as any).$tours["demoStudentTour"] as any).start(), 50);
+			}
 		});
 	},
 	// mounted() {
@@ -306,6 +314,8 @@ export default defineComponent({
 			showNotRecent: true,
 			showBookmarkedOnly: false,
 			loadingParticipations: new Set<string>(),
+			tourOptions,
+			demoStudentTourSteps,
 			// ads2Code: "",
 			// ads3Code: "",
 		};
@@ -384,7 +394,7 @@ export default defineComponent({
 					event: getBlankPractice(),
 				});
 				this.setEditingEvent(newPracticeEvent);
-			});
+			}, this.setErrorNotification);
 		},
 	},
 	computed: {

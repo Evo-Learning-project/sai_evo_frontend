@@ -180,6 +180,49 @@ export const teacherTourSteps = [
 	},
 ];
 
+export const demoStudentTourSteps = [
+	{
+		target: "body",
+		header: {
+			title: _("tour.demo_student_header"),
+		},
+		content: _("tour.demo_student_content"),
+		// params: {
+		// 	placement: "bottom",
+		// },
+	},
+	{
+		target: "#create-practice-btn",
+		header: {
+			title: _("tour.demo_practice_header"),
+		},
+		content: _("tour.demo_practice_content"),
+		params: {
+			placement: "bottom",
+		},
+	},
+	{
+		target: ".v-sidebar-menu", //".vsm--item:nth-child(4) .vsm--link .vsm--title span",
+		header: {
+			title: _("tour.demo_popular_exercises_header"),
+		},
+		content: _("tour.demo_popular_exercises_content"),
+		params: {
+			placement: "right",
+		},
+	},
+	{
+		target: ".v-sidebar-menu", //".vsm--item:nth-child(5)",
+		header: {
+			title: _("tour.demo_leaderboard_header"),
+		},
+		content: _("tour.demo_leaderboard_content"),
+		params: {
+			placement: "right",
+		},
+	},
+];
+
 export const demoTeacherTourSteps = [
 	{
 		// exercises

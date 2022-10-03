@@ -984,6 +984,18 @@ export const it = {
 		hidden_course: "Corso nascosto agli studenti",
 	},
 	tour: {
+		demo_student_header: "Benvenuto nella sezione studenti!",
+		demo_student_content:
+			"Questa è la dashboard che i tuoi studenti visualizzeranno quando accedono ai tuoi corsi. Vediamo alcune delle funzionalità principali.",
+		demo_practice_header: "Esercitazioni",
+		demo_practice_content:
+			"Evo Learning permette agli studenti di creare autonomamente esercitazioni sfruttando gli esercizi che il docente ha reso pubblici. Prova a creare un'esercitazione.",
+		demo_popular_exercises_header: "Esercizi popolari",
+		demo_popular_exercises_content:
+			"Da questa sezione, gli studenti possono visualizzare gli esercizi che hanno ricevuto più attenzione e discuterne tra di loro, proponendo soluzioni e votando le soluzioni proposte da altri.",
+		demo_leaderboard_header: "Classifica",
+		demo_leaderboard_content:
+			"Per i corsi in cui le funzionalità di gioco sono attive la classifica mostra gli studenti più attivi. Attenzione: nella demo non potrai gestire le funzionalità di gioco nei tuoi corsi, ma abbiamo già attivato queste funzionalità per te, quindi potrai provarle da studente.",
 		demo_help_center_header: "Centro supporto",
 		demo_help_center_content:
 			"Se hai dubbi su qualche funzionalità, visita il centro di supporto: troverai articoli che rispondono alle domande più frequenti sull'utilizzo. Se non trovi la risposta alla tua domanda, utilizza la funzione Contattaci.",

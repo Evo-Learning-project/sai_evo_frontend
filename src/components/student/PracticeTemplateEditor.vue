@@ -331,15 +331,17 @@ export default defineComponent({
 			},
 			async set(val: string[]) {
 				if (val.length > this.selectedTags.length) {
-					const newlyAdded = val[val.length - 1];
-					// get rule containing this tag or create it if it doesn't exist
-					const tagRule =
-						this.tagsToRules[newlyAdded] ?? (await this.onAddRule(newlyAdded));
+					await this.withLoading(async () => {
+						const newlyAdded = val[val.length - 1];
+						// get rule containing this tag or create it if it doesn't exist
+						const tagRule =
+							this.tagsToRules[newlyAdded] ?? (await this.onAddRule(newlyAdded));
 
-					this.editingRule = tagRule.id;
-					this.editingRuleDirtyAmount = tagRule.amount || 1;
-					// defer updating the selected tags array
-					this.pendingSelectedTags = val;
+						this.editingRule = tagRule.id;
+						this.editingRuleDirtyAmount = tagRule.amount || 1;
+						// defer updating the selected tags array
+						this.pendingSelectedTags = val;
+					});
 				} else {
 					// TODO get rule for removed tag and set its amount to 0
 					const removedTag = this.selectedTags.filter(t => !val.includes(t))[0];
