@@ -23,6 +23,17 @@
 						:outline="true"
 						class="px-8 pt-2 pb-2"
 						:variant="'transparent'"
+						@click="onExportExercises()"
+					>
+						<div class="flex items-center align-top">
+							<span class="mr-2 material-icons-outlined"> file_download </span>
+							{{ $t("course_exercises.export_exercises") }}
+						</div>
+					</Btn>
+					<Btn
+						:outline="true"
+						class="px-8 pt-2 pb-2"
+						:variant="'transparent'"
 						@click="showExerciseImporter = true"
 					>
 						<div class="flex items-center align-top">
@@ -135,18 +146,18 @@ import { Exercise, ExerciseState, ExerciseType, getBlankExercise, Tag } from "@/
 import { VueEternalLoading, LoadAction } from "@ts-pro/vue-eternal-loading";
 import { DialogData, SelectableOption } from "@/interfaces";
 import Btn from "@/components/ui/Btn.vue";
-import Card from "@/components/ui/Card.vue";
 import ExerciseEditorWrapper from "@/components/teacher/ExerciseEditor/ExerciseEditorWrapper.vue";
 import { defineComponent } from "@vue/runtime-core";
 import Spinner from "@/components/ui/Spinner.vue";
 import ExerciseSearchFilters from "@/components/teacher/ExerciseSearchFilters.vue";
-import { getClonedExercise, getDebouncedForFilter } from "@/utils";
+import { forceFileDownload, getClonedExercise, getDebouncedForFilter } from "@/utils";
 import { courseIdMixin, loadingMixin } from "@/mixins";
 import ExerciseEditorWrapperSkeleton from "@/components/ui/skeletons/ExerciseEditorWrapperSkeleton.vue";
 import { getBlankExerciseSearchFilters, isEmptyFilter } from "@/api/utils";
 import Dialog from "@/components/ui/Dialog.vue";
 import ExerciseImporter from "@/components/teacher/ExerciseImporter.vue";
 import DropdownMenu from "@/components/ui/DropdownMenu.vue";
+import { getExercises } from "@/api";
 export default defineComponent({
 	name: "CourseExercises",
 	props: {
@@ -169,7 +180,6 @@ export default defineComponent({
 	components: {
 		ExerciseEditorWrapper,
 		VueEternalLoading,
-		//Card,
 		Btn,
 		Spinner,
 		ExerciseSearchFilters,
@@ -226,6 +236,14 @@ export default defineComponent({
 		]),
 		...mapActions("shared", ["getTags"]),
 		getBlankExerciseSearchFilters,
+		async onExportExercises() {
+			await this.withLoading(async () => {
+				const MAX_PAGE_SIZE = 999999;
+				const exercises = (await getExercises(this.courseId, 1, null, MAX_PAGE_SIZE))
+					.data;
+				forceFileDownload({ data: JSON.stringify(exercises) }, "a.json");
+			}, this.setErrorNotification);
+		},
 		async onFilterChange() {
 			await this.withLoading(
 				async () =>

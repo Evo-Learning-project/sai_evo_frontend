@@ -400,6 +400,7 @@ export const it = {
 	},
 	course_exercises: {
 		new_exercise: "Nuovo esercizio",
+		export_exercises: "Esporta",
 		import_exercises: "Importa",
 		import_exercises_title: "Importa esercizi",
 		no_exercises: "Non ci sono ancora esercizi",
