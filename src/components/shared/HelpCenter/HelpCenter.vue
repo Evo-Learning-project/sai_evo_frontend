@@ -129,12 +129,16 @@ import HelpCenterArticleFull from "./HelpCenterArticleFull.vue";
 import Btn from "@/components/ui/Btn.vue";
 import { courseIdMixin, mediaQueryMixin } from "@/mixins";
 import { createNamespacedHelpers } from "vuex";
+import { logAnalyticsEvent } from "@/utils";
 const { mapState, mapMutations } = createNamespacedHelpers("shared");
 export default defineComponent({
 	name: "HelpCenter",
 	components: { DraggablePopup, HelpCenterArticleFull, Btn },
 	mixins: [courseIdMixin, mediaQueryMixin],
 	props: {},
+	created() {
+		logAnalyticsEvent("openedHelpCenter", { path: this.$route.fullPath });
+	},
 	methods: {
 		...mapMutations(["setHelpCenterArticleId"]),
 		getArticleRelevance(article: HelpCenterArticle): number {

@@ -251,3 +251,9 @@ export function isElementVisible(element: HTMLElement | null) {
 	}
 	return false;
 }
+
+import { event } from "vue-gtag";
+
+export function logAnalyticsEvent(eventName: string, params: Record<string, any>) {
+	event(eventName, params);
+}

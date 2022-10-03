@@ -111,7 +111,7 @@ export const studentDashboardSidebarOptions: SidebarOption[] = [
 		label: _("student_dashboard_options.my_favorites"),
 		requiredPrivileges: [],
 		children: [],
-		icon: "bookmark",
+		icon: "bookmark_outline",
 		routeName: "StudentFavorites",
 	},
 	{

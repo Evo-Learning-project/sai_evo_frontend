@@ -53,6 +53,7 @@ import { courseIdMixin, loadingMixin } from "@/mixins";
 import { defineComponent, PropType } from "@vue/runtime-core";
 import StudentCard from "@/components/shared/StudentCard.vue";
 import Card from "@/components/ui/Card.vue";
+import { logAnalyticsEvent } from "@/utils";
 export default defineComponent({
 	name: "CourseInsights",
 	mixins: [courseIdMixin, loadingMixin],
@@ -61,6 +62,7 @@ export default defineComponent({
 		await this.withLoading(
 			async () => await this.getCourseActiveUsers({ courseId: this.courseId }),
 		);
+		logAnalyticsEvent("viewedCourseStats", { courseId: this.courseId });
 	},
 	methods: {
 		...mapActions(["getCourseActiveUsers"]),

@@ -107,7 +107,7 @@ import ExerciseSolution from "./ExerciseSolution.vue";
 import ExerciseSolutionEditor from "./ExerciseSolutionEditor.vue";
 import { createExerciseSolution } from "@/api/exercises";
 import { courseIdMixin, loadingMixin, savingMixin } from "@/mixins";
-import { setErrorNotification } from "@/utils";
+import { logAnalyticsEvent, setErrorNotification } from "@/utils";
 import Exercise from "../Exercise/Exercise.vue";
 import { AutoSaveManager } from "@/autoSave";
 import { mapActions, mapMutations } from "vuex";
@@ -199,6 +199,10 @@ export default defineComponent({
 			this.instantiateAutoSaveManager(solution, true);
 			this.publishing = true;
 			try {
+				logAnalyticsEvent("updatedExerciseSolutionState", {
+					courseId: this.courseId,
+					state: newState,
+				});
 				await this.autoSaveManager?.onChange({ field: "state", value: newState });
 			} catch (e) {
 				setErrorNotification(e);

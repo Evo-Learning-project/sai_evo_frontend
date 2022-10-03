@@ -66,6 +66,7 @@ import { defineComponent, PropType } from "@vue/runtime-core";
 import { mapState, mapActions } from "vuex";
 import SlotSkeleton from "@/components/ui/skeletons/SlotSkeleton.vue";
 import Btn from "@/components/ui/Btn.vue";
+import { logAnalyticsEvent } from "@/utils";
 
 export default defineComponent({
 	name: "GamificationLeaderboard",
@@ -81,6 +82,7 @@ export default defineComponent({
 				);
 				this.pageSize = this.paginatedUsers.data.length;
 			}
+			logAnalyticsEvent("viewedLeaderboard", { courseId: this.courseId });
 		});
 	},
 	watch: {
