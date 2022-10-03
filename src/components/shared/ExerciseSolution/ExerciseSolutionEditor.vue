@@ -36,10 +36,16 @@
 				>
 			</div>
 			<div
+				class="div flex items-center space-x-2 text-muted rounded-sm py-1 mb-2 lg:w-max"
+			>
+				<span class="material-icons-outlined text-lg">info</span>
+				<p class="text-sm">{{ $t("exercise_solution.copyright_disclaimer") }}</p>
+			</div>
+			<div
 				class="flex md:flex-row w-full h-full pb-10 flex-col md:space-x-8 overflow-y-auto"
 			>
 				<!-- editor section -->
-				<div class="w-full md:order-1 order-2 mt-4 md:mt-0">
+				<div class="w-full h-full md:h-auto md:order-1 order-2 mt-4 md:mt-0">
 					<TextEditor
 						v-if="editorType === 'text'"
 						:tall="true"
@@ -57,7 +63,7 @@
 					/>
 				</div>
 				<!-- exercise section -->
-				<div class="md:order-2 order-1 w-full overflow-y-auto">
+				<div class="md:order-2 order-1 w-full h-full md:h-auto overflow-y-auto">
 					<slot></slot>
 				</div>
 			</div>

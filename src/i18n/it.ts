@@ -289,6 +289,8 @@ export const it = {
 		my_favorites: "Salvati",
 	},
 	exercise_solution: {
+		copyright_disclaimer:
+			"Proponendo una soluzione, accetti di rinunciare alla proprietà intellettuale su di essa. ",
 		confirm_deletion:
 			"Sei sicuro di voler cancellare questa soluzione? Quest'operazione è irreversibile.",
 		load_more_solutions: "Carica più soluzioni",

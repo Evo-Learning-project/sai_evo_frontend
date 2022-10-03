@@ -47,7 +47,9 @@
 					:canLoadMore="!(getPaginatedSolutionsForExercise(exercise)?.isLastPage ?? true)"
 					@loadMore="loadMore(exercise)"
 				></ExerciseSolutionContainer>
-				<SlotSkeleton v-else />
+				<div v-else class="w-full mt-4 h-4 mb-2 skeleton-unit"></div>
+
+				<!-- <SlotSkeleton class="mt-4" v-else /> -->
 
 				<div
 					v-if="
@@ -78,7 +80,11 @@
 			<SlotSkeleton />
 			<SlotSkeleton />
 		</div>
-		<VueEternalLoading :load="onLoadMore" v-model:is-initial="isInitialInfiniteLoad">
+		<VueEternalLoading
+			v-if="!firstLoading"
+			:load="onLoadMore"
+			v-model:is-initial="isInitialInfiniteLoad"
+		>
 			<template #loading>
 				<Spinner></Spinner>
 			</template>
