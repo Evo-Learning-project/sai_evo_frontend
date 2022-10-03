@@ -299,6 +299,7 @@ export default defineComponent({
 			});
 			if (isDemoMode() && !(DEMO_TOUR_KEY in localStorage)) {
 				setTimeout(() => ((this as any).$tours["demoStudentTour"] as any).start(), 50);
+				localStorage.setItem(DEMO_TOUR_KEY, "true");
 			}
 		});
 	},
