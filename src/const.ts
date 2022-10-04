@@ -18,6 +18,8 @@ import { icons as exerciseStatesIcons } from "@/assets/exerciseStatesIcons";
 import { icons as testCaseTypeIcons } from "@/assets/exerciseTestCaseTypeIcons";
 import { getTranslatedString as _ } from "@/i18n";
 import { ColDef } from "ag-grid-community";
+import { icons as assessmentStateIcons } from "@/assets/assessmentStateIcons";
+import { icons as participationStateIcons } from "@/assets/participationStateIcons";
 
 export const TEST_CASE_AUTO_SAVE_DEBOUNCE_TIME_MS = 3000;
 export const TEST_CASE_AUTO_SAVE_DEBOUNCED_FIELDS: FieldList<ExerciseTestCase> = [
@@ -202,8 +204,75 @@ export const ESCAPED_CLOZE_SEPARATOR = CLOZE_SEPARATOR.replace(/\[/g, "\\[")
 	.replace(/\]/g, "\\]")
 	.replace(/\?/g, "\\?");
 
-import { icons as assessmentStateIcons } from "@/assets/assessmentStateIcons";
-import { icons as participationStateIcons } from "@/assets/participationStateIcons";
+// returns the headers for the CourseInsights table
+export const getCourseInsightsHeaders = (exams: Event[]): ColDef[] => [
+	{ field: "id", hide: true },
+	{
+		field: "email",
+		headerName: _("event_participation_headings.email"),
+		filterParams: {
+			filterOptions: ["contains"],
+			suppressAndOrCondition: true,
+		},
+		filter: "agTextColumnFilter",
+		width: 300,
+		resizable: true,
+	},
+	{
+		field: "fullName",
+		headerName: _("misc.full_name"),
+		filterParams: {
+			filterOptions: ["contains"],
+			suppressAndOrCondition: true,
+		},
+		filter: "agTextColumnFilter",
+		minWidth: 120,
+		resizable: true,
+		flex: 1,
+	},
+	{
+		field: "mat",
+		headerName: _("event_participation_headings.mat"),
+		filterParams: {
+			filterOptions: ["contains"],
+			suppressAndOrCondition: true,
+		},
+		filter: "agTextColumnFilter",
+		resizable: true,
+	},
+	{
+		field: "course",
+		headerName: _("event_participation_headings.course"),
+		filterParams: {
+			filterOptions: ["contains"],
+			suppressAndOrCondition: true,
+		},
+		filter: "agTextColumnFilter",
+		resizable: true,
+	},
+	...exams.map(e => ({
+		autoHeaderHeight: true,
+		wrapText: true,
+		field: "exam_" + e.id,
+		headerName: e.name,
+		width: 100,
+		resizable: true,
+	})),
+	{
+		field: "score_sum",
+		headerName: _("course_insights.score_sum"),
+		type: "numericColumn",
+		// TODO filtering
+	},
+	{
+		field: "score_average",
+		headerName: _("course_insights.score_average"),
+		type: "numericColumn",
+		// TODO filtering
+	},
+];
+
+// returns the headers for EventParticipationMonitor table
 export const getEventParticipationMonitorHeaders = (
 	resultsMode: boolean, // true if the event is over
 	eventParticipations: EventParticipation[],

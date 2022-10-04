@@ -172,6 +172,8 @@ export const it = {
 			" oppure una stringa.",
 	},
 	course_insights: {
+		score_sum: "Somma",
+		score_average: "Media",
 		practice_sessions: "Esercitazioni",
 		exercises: "Esercizi presenti nel corso",
 		active_students: "Studenti attivi",
