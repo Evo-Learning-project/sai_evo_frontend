@@ -332,15 +332,22 @@ export const getEventParticipationMonitorHeaders = (
 // returns the html contained inside of a participation slot in the
 // participations monitoring ag-grid table
 const renderEventParticipationSlotCell = (resultsMode: boolean) => (params: any) =>
-	`<div class="ml-10 -mr-2 ag-selectable-cell ${
-		params.value.score ?? "transition-opacity duration-75 hover:opacity-100 opacity-70 "
-	}">` +
-	`<span class="mx-auto ${
-		resultsMode
-			? params.value.score ?? "text-lg text-yellow-900 material-icons-outlined"
-			: "material-icons text-lg " +
-			  (params.value.has_answer ? "text-success opacity-80" : "text-muted opacity-50")
-	}">
+	params.value.execution_results && params.value.execution_results.state === "running"
+		? `<div class='text-muted mt-1'>
+			<span style="font-size: 20px !important" class='material-icons-outlined animate-spin'>sync</span>
+		</div>`
+		: `<div class="ml-10 -mr-2 ag-selectable-cell ${
+				params.value.score ??
+				"transition-opacity duration-75 hover:opacity-100 opacity-70 "
+		  }">` +
+		  `<span class="mx-auto ${
+				resultsMode
+					? params.value.score ?? "text-lg text-yellow-900 material-icons-outlined"
+					: "material-icons text-lg " +
+					  (params.value.has_answer
+							? "text-success opacity-80"
+							: "text-muted opacity-50")
+		  }">
                   ${
 										resultsMode
 											? params.value.score ?? "pending_actions"
@@ -349,7 +356,7 @@ const renderEventParticipationSlotCell = (resultsMode: boolean) => (params: any)
 											: "remove"
 									}
                 </span>` +
-	`</div>`;
+		  `</div>`;
 
 export const MAX_PRACTICE_EXERCISE_COUNT = 500;
 
