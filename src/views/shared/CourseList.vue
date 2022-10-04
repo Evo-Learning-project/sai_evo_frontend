@@ -106,6 +106,7 @@ export default defineComponent({
 	async created() {
 		await this.withFirstLoading(async () => this.$store.dispatch("shared/getCourses"));
 		this.searchFilters.withPrivileges = this.user.is_teacher;
+		this.searchFilters.hidden = this.user.is_teacher;
 	},
 	data() {
 		return {

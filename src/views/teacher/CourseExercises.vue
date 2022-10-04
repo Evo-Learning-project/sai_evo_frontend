@@ -241,7 +241,7 @@ export default defineComponent({
 				const MAX_PAGE_SIZE = 999999;
 				const exercises = (await getExercises(this.courseId, 1, null, MAX_PAGE_SIZE))
 					.data;
-				forceFileDownload({ data: JSON.stringify(exercises) }, "a.json");
+				forceFileDownload({ data: JSON.stringify(exercises, null, 4) }, "exercises.json");
 			}, this.setErrorNotification);
 		},
 		async onFilterChange() {
