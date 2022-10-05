@@ -205,7 +205,10 @@ export const ESCAPED_CLOZE_SEPARATOR = CLOZE_SEPARATOR.replace(/\[/g, "\\[")
 	.replace(/\?/g, "\\?");
 
 // returns the headers for the CourseInsights table
-export const getCourseInsightsHeaders = (exams: Event[]): ColDef[] => [
+export const getCourseInsightsHeaders = (
+	exams: Event[],
+	examsColors: Record<string, string>,
+): ColDef[] => [
 	{ field: "id", hide: true },
 	{
 		field: "email",
@@ -250,13 +253,30 @@ export const getCourseInsightsHeaders = (exams: Event[]): ColDef[] => [
 		filter: "agTextColumnFilter",
 		resizable: true,
 	},
-	...exams.map(e => ({
+	...exams.map((e, i) => ({
 		autoHeaderHeight: true,
 		wrapText: true,
 		field: "exam_" + e.id,
 		headerName: e.name,
 		width: 100,
 		resizable: true,
+		headerComponentParams: {
+			template:
+				'<div class="ag-cell-label-container" role="presentation">' +
+				'  <span ref="eMenu" class="ag-header-icon ag-header-cell-menu-button"></span>' +
+				'  <div ref="eLabel" class="ag-header-cell-label" role="presentation">' +
+				'    <span ref="eSortOrder" class="ag-header-icon ag-sort-order" ></span>' +
+				'    <span ref="eSortAsc" class="ag-header-icon ag-sort-ascending-icon" ></span>' +
+				'    <span ref="eSortDesc" class="ag-header-icon ag-sort-descending-icon" ></span>' +
+				'    <span ref="eSortNone" class="ag-header-icon ag-sort-none-icon" ></span>' +
+				`    <span style='background-color: ${
+					examsColors[e.id]
+				}; margin-right: 5px; min-width: 10px; min-height: 10px; width: 10px; height: 10px; border-radius: 50%;'></span>` +
+				'    <span ref="eText" class="ag-header-cell-text" role="columnheader"></span>' +
+				'    <span ref="eFilter" class="ag-header-icon ag-filter-icon"></span>' +
+				"  </div>" +
+				"</div>",
+		},
 	})),
 	{
 		field: "score_sum",

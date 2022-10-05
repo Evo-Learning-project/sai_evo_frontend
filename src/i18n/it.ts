@@ -172,6 +172,7 @@ export const it = {
 			" oppure una stringa.",
 	},
 	course_insights: {
+		filter_exams: "Filtra esami",
 		score_sum: "Somma",
 		score_average: "Media",
 		practice_sessions: "Esercitazioni",
@@ -197,6 +198,8 @@ export const it = {
 			"L'inserimento del numero di matricola e la selezione del corso sono necessari per poter partecipare agli esami. Fallo ora e non pensarci più!",
 	},
 	misc: {
+		select_all: "Seleziona tutti",
+		unselect_all: "Deseleziona tutti",
 		ads: "Pubblicità",
 		no_favorites: "Non ci sono contenuti salvati",
 		undo: "Annulla",

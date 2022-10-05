@@ -186,6 +186,7 @@
 			</div>
 		</div>
 
+		<!-- table -->
 		<div class="flex-grow">
 			<DataTable
 				:class="{
