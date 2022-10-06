@@ -123,7 +123,7 @@
 							class="relative w-full pt-4 mb-auto whitespace-pre"
 							:class="{
 								'h-full': !collapsed && !calculatingHeight,
-								'overflow-hidden': collapsed || calculatingHeight,
+								'overflow-y-hidden': collapsed || calculatingHeight,
 							}"
 							:style="
 								collapsed || calculatingHeight

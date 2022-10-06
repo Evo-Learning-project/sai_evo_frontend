@@ -61,7 +61,7 @@
 				</div>
 			</transition-group>
 		</div>
-		<div class="flex-col flex space-y-4" v-else>
+		<div class="flex-col flex space-y-4 mt-4" v-else>
 			<ExerciseEditorWrapperSkeleton />
 			<ExerciseEditorWrapperSkeleton />
 			<ExerciseEditorWrapperSkeleton />

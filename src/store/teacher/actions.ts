@@ -89,10 +89,6 @@ export const actions = {
 		{ courseId, exercise }: { courseId: string; exercise: Exercise },
 	) => {
 		const newExercise = await createExercise(courseId, exercise);
-		// state.paginatedExercises = {
-		// 	...state.paginatedExercises,
-		// 	data: [newExercise, ...state.paginatedExercises.data],
-		// };
 		state.paginatedExercises = prependToPaginatedData(
 			state.paginatedExercises,
 			newExercise,
@@ -104,10 +100,6 @@ export const actions = {
 		{ courseId, exercises }: { courseId: string; exercises: Exercise[] },
 	) => {
 		const newExercises = await bulkCreateExercises(courseId, exercises);
-		// state.paginatedExercises = {
-		// 	...state.paginatedExercises,
-		// 	data: [...newExercises, ...state.paginatedExercises.data],
-		// };
 		state.paginatedExercises = prependToPaginatedData(
 			state.paginatedExercises,
 			...newExercises,
@@ -122,10 +114,6 @@ export const actions = {
 		state.paginatedExercises = deleteByIdFromPaginatedData(state.paginatedExercises, {
 			id: exerciseId,
 		});
-		// state.paginatedExercises = {
-		// 	...state.paginatedExercises,
-		// 	data: state.paginatedExercises.data.filter(e => e.id != exerciseId),
-		// };
 	},
 	createEvent: async (
 		{ commit, state }: { commit: Commit; state: any },
@@ -527,10 +515,6 @@ export const actions = {
 				state.paginatedExercises,
 				...exercises,
 			);
-			// state.paginatedExercises = {
-			// 	...state.paginatedExercises,
-			// 	data: [...exercises, ...state.paginatedExercises.data],
-			// };
 		}
 	},
 	getExercises: async (
@@ -551,6 +535,15 @@ export const actions = {
 			filters,
 		);
 
+		// investigate https://sentry.io/organizations/samuele/issues/3565313088/?project=6265941&query=is%3Aunresolved
+		if (!paginatedExercises.data) {
+			console.warn(
+				{ courseId, fromFirstPage, filters },
+				"responded with undefined",
+				paginatedExercises,
+			);
+		}
+
 		if (fromFirstPage) {
 			state.paginatedExercises = paginatedExercises;
 		} else {
@@ -559,10 +552,6 @@ export const actions = {
 				paginatedExercises,
 				false,
 			);
-			// state.paginatedExercises = {
-			// 	...paginatedExercises,
-			// 	data: [...state.paginatedExercises.data, ...paginatedExercises.data],
-			// };
 		}
 
 		return !state.paginatedExercises.isLastPage;
