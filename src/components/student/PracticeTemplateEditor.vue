@@ -287,6 +287,7 @@ export default defineComponent({
 		instantiateRuleAutoSaveManager(rule: EventTemplateRule) {
 			this.rulesAutoSaveInstances[rule.id] = new AutoSaveManager<EventTemplateRule>(
 				rule,
+				// TODO investigate https://sentry.io/organizations/samuele/issues/3431902052/?project=6265941&query=is%3Aunresolved
 				async changes =>
 					await this.partialUpdateEventTemplateRule({
 						changes,

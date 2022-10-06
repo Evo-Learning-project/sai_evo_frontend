@@ -20,6 +20,7 @@
 import { HelpCenterArticle } from "@/helpCenter";
 import { defineComponent, PropType } from "@vue/runtime-core";
 import Btn from "@/components/ui/Btn.vue";
+import { logAnalyticsEvent } from "@/utils";
 export default defineComponent({
 	name: "HelpCenterArticleFull",
 	props: {
@@ -27,6 +28,9 @@ export default defineComponent({
 			type: Object as PropType<HelpCenterArticle>,
 			required: true,
 		},
+	},
+	created() {
+		logAnalyticsEvent("openedHelpCenterArticle", { articleId: this.article.id });
 	},
 	methods: {},
 	computed: {},

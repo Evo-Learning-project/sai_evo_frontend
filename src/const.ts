@@ -257,9 +257,11 @@ export const getCourseInsightsHeaders = (
 		autoHeaderHeight: true,
 		wrapText: true,
 		field: "exam_" + e.id,
-		headerName: e.name,
+		headerName:
+			e.name.trim().length > 0 ? e.name.trim() : _("event_preview.unnamed_event"),
 		width: 100,
 		resizable: true,
+		// TODO add filtering like >, < etc.
 		headerComponentParams: {
 			template:
 				'<div class="ag-cell-label-container" role="presentation">' +

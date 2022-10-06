@@ -331,6 +331,7 @@ export default defineComponent({
 	},
 	mounted() {
 		setTimeout(() => {
+			// TODO investigate https://sentry.io/organizations/samuele/issues/3527964852/?project=6265941&query=is%3Aunresolved
 			const contentElement = this.$refs.content as HTMLElement;
 			if (
 				contentElement.clientHeight > this.MAX_CONTENT_HEIGHT_PX &&

@@ -16,7 +16,7 @@
 				:user="user"
 			></StudentCard>
 		</div> -->
-		<div class="flex w-full flex-col">
+		<div class="-mt-4 flex w-full flex-col">
 			<!-- exam checkboxes-->
 			<div
 				:class="[
@@ -48,25 +48,25 @@
 						</div></template
 					></CheckboxGroup
 				>
-				<div class="flex items-center space-x-2 mb-2">
+				<div class="flex items-center space-x-1.5 mb-3">
 					<Btn
-						class="mt-3 -ml-1"
+						class="mt-3 -ml-1 text-sm"
 						:variant="'primary-borderless'"
 						:size="'xs'"
 						@click="selectedExamsIds = exams.map(e => e.id)"
-						>{{ $t("misc.select_all") }}</Btn
+						><span class="text-sm">{{ $t("misc.select_all") }}</span></Btn
 					>
 					<Btn
-						class="mt-3 -ml-1"
+						class="mt-3 text-sm"
 						:variant="'primary-borderless'"
 						:size="'xs'"
 						@click="selectedExamsIds = []"
-						>{{ $t("misc.unselect_all") }}</Btn
+						><span class="text-sm">{{ $t("misc.unselect_all") }}</span></Btn
 					>
 				</div>
 			</div>
 			<!-- filter button -->
-			<div class="w-max -ml-3">
+			<div class="w-max mb-2 -ml-3">
 				<div class="flex items-center w-max">
 					<Btn
 						v-if="!full"
@@ -97,7 +97,7 @@
 		<div class="flex-grow">
 			<div class="h-full overflow-y-auto">
 				<DataTable
-					class=""
+					:class="{ 'opacity-60': loading }"
 					:columnDefs="tableHeaders"
 					:rowData="loading ? [] : tableData"
 					:getRowId="getRowId"
@@ -138,6 +138,7 @@ import { getCourseInsightsHeaders } from "@/const";
 import CheckboxGroup from "@/components/ui/CheckboxGroup.vue";
 import { SelectableOption } from "@/interfaces";
 import Btn from "@/components/ui/Btn.vue";
+import { getTranslatedString as _ } from "@/i18n";
 export default defineComponent({
 	name: "CourseInsights",
 	mixins: [courseIdMixin, loadingMixin],
@@ -224,12 +225,12 @@ export default defineComponent({
 		examsAsSelectableOptions(): SelectableOption[] {
 			return (this.exams as Event[]).map(e => ({
 				value: e.id,
-				content: e.name,
+				content:
+					e.name.trim().length > 0 ? e.name.trim() : _("event_preview.unnamed_event"),
 			}));
 		},
 		activeUsersForSelectedExams() {
 			const activeUsers = this.users as User[];
-
 			return activeUsers.filter(u =>
 				this.selectedExams.some(
 					e =>
