@@ -155,6 +155,7 @@ import {
 	scoreChartDatasetSettings,
 	scoreChartOptions,
 } from "@/reports";
+import { roundToTwoDecimals } from "@/utils";
 ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale);
 
 export default defineComponent({
@@ -283,7 +284,7 @@ export default defineComponent({
 						)
 						.reduce((a, b) => a + b)) /
 				divisor;
-			return Math.round(perc * 100) / 100;
+			return roundToTwoDecimals(perc);
 		},
 	},
 });

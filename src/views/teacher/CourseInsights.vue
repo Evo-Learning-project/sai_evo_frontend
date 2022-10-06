@@ -130,7 +130,7 @@ import { courseIdMixin, loadingMixin } from "@/mixins";
 import { defineComponent, PropType } from "@vue/runtime-core";
 import StudentCard from "@/components/shared/StudentCard.vue";
 import Card from "@/components/ui/Card.vue";
-import { logAnalyticsEvent } from "@/utils";
+import { logAnalyticsEvent, roundToTwoDecimals } from "@/utils";
 import DataTable from "@/components/ui/DataTable.vue";
 import { EventSearchFilter } from "@/api";
 import { EventState, EventType, User, Event, EventParticipation } from "@/models";
@@ -301,8 +301,7 @@ export default defineComponent({
 					return acc;
 				}, {} as any),
 				score_sum: getScoreSumFn(u),
-				score_average:
-					Math.round((getScoreSumFn(u) / this.selectedExams.length) * 100) / 100,
+				score_average: roundToTwoDecimals(getScoreSumFn(u) / this.selectedExams.length),
 			}));
 		},
 	},

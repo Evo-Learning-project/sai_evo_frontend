@@ -330,9 +330,15 @@ export default defineComponent({
 		this.triggerTexRender();
 	},
 	mounted() {
-		setTimeout(() => {
-			// TODO investigate https://sentry.io/organizations/samuele/issues/3527964852/?project=6265941&query=is%3Aunresolved
+		// workaround for https://sentry.io/organizations/samuele/issues/3527964852/?project=6265941&query=is%3Aunresolved
+		// the `content` ref might not be available yet, so loop until it is not null anymore
+		this.intervalHandle = setInterval(() => {
 			const contentElement = this.$refs.content as HTMLElement;
+			if (!contentElement) {
+				console.warn("ref element is null");
+				// ref element isn't available yet
+				return;
+			}
 			if (
 				contentElement.clientHeight > this.MAX_CONTENT_HEIGHT_PX &&
 				!this.forceExpanded
@@ -340,7 +346,9 @@ export default defineComponent({
 				this.collapsed = true;
 			}
 			this.calculatingHeight = false;
-		}, 50);
+			clearInterval(this.intervalHandle as number);
+			this.intervalHandle = null;
+		}, 30);
 	},
 	data() {
 		return {
@@ -354,6 +362,7 @@ export default defineComponent({
 			collapsed: false,
 			showAnimation: false,
 			calculatingHeight: true,
+			intervalHandle: null as number | null,
 			//solutionId: uuid4(),
 		};
 	},
