@@ -57,16 +57,6 @@
 										thumb_up_alt</span
 									>
 								</Btn>
-								<ConfettiExplosion
-									v-if="false && showAnimation"
-									class="absolute -top-2 left-4"
-									:particleCount="50"
-									:force="1"
-									:stageHeight="1000"
-									:stageWidth="400"
-									:particleSize="8"
-									:duration="2500"
-								/>
 							</div>
 
 							<p class="text-3xl md:text-4xl text-muted">{{ solution.score }}</p>
@@ -156,11 +146,16 @@
 								/>
 								<div
 									v-if="collapsed"
-									class="absolute bottom-0 left-0 flex w-full h-40 hidden-content"
+									class="absolute bottom-0 left-0 flex w-full h-40"
+									:class="[
+										solutionType === 'text' ? 'hidden-content' : 'hidden-content-code',
+									]"
 								>
 									<Btn
 										@click="collapsed = false"
-										:variant="'primary-borderless'"
+										:variant="
+											solutionType === 'text' ? 'primary-borderless' : 'secondary'
+										"
 										class="z-20 mx-auto mt-auto mb-2"
 										>{{ $t("exercise_solution.reveal_solution") }}</Btn
 									>
@@ -285,7 +280,6 @@ import CopyToClipboard from "@/components/ui/CopyToClipboard.vue";
 import { getExerciseSolutionThreadRoute } from "./utils";
 import { getTranslatedString as _ } from "@/i18n";
 import CodeFragment from "@/components/ui/CodeFragment.vue";
-import ConfettiExplosion from "vue-confetti-explosion";
 import Tooltip from "@/components/ui/Tooltip.vue";
 
 //import { v4 as uuid4 } from "uuid";
@@ -478,7 +472,6 @@ export default defineComponent({
 		ProcessedTextFragment,
 		CopyToClipboard,
 		CodeFragment,
-		ConfettiExplosion,
 		Tooltip,
 	},
 });
