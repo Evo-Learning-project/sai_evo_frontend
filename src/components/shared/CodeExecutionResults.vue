@@ -12,7 +12,8 @@
 			<div
 				v-for="(test, index) in filteredExecutionResultsTests"
 				:key="'details-' + test.id"
-				class="px-6 py-6 -mx-2"
+				class="px-6 -mx-2"
+				:class="{ 'py-6': !reduced, 'py-2': reduced }"
 			>
 				<div v-if="!onlyErrors" class="flex items-center mb-2 space-x-3">
 					<h5 class="">{{ $t("programming_exercise.testcase") }} {{ index + 1 }}</h5>
