@@ -921,6 +921,12 @@ export const it = {
 		edit_permissions_title: "Modifica i permessi di",
 	},
 	data_table: {
+		equals: "Uguale a",
+		notEqual: "Diverso da",
+		lessThan: "Minore di",
+		lessThanOrEqual: "Minore di o uguale a",
+		greaterThan: "Maggiore di",
+		greaterThanOrEqual: "Maggiore di o uguale a",
 		filterOoo: "Cerca...",
 		contains: "Contenuto",
 		noRowsToShow: "Non ci sono dati da mostrare",

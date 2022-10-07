@@ -101,6 +101,7 @@ export default defineComponent({
 					return null;
 				}
 				if (typeof this.modelValue === "string") {
+					// TODO move this to converter in API module
 					return new Date(this.modelValue.replace(" ", "T"));
 				}
 

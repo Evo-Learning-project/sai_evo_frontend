@@ -253,6 +253,46 @@ export const getCourseInsightsHeaders = (
 		filter: "agTextColumnFilter",
 		resizable: true,
 	},
+	{
+		field: "score_sum",
+		headerName: _("course_insights.score_sum"),
+		filterParams: {
+			allowedCharPattern: "\\d\\-\\,", // note: ensure you escape as if you were creating a RegExp from a string
+			numberParser: (text: string | null) => {
+				return text == null ? null : parseFloat(text.replace(",", "."));
+			},
+			filterOptions: [
+				"equals",
+				"notEqual",
+				"lessThan",
+				"lessThanOrEqual",
+				"greaterThan",
+				"greaterThanOrEqual",
+			],
+			suppressAndOrCondition: true,
+		},
+		filter: "agNumberColumnFilter",
+	},
+	{
+		field: "score_average",
+		headerName: _("course_insights.score_average"),
+		filterParams: {
+			allowedCharPattern: "\\d\\-\\,", // note: ensure you escape as if you were creating a RegExp from a string
+			numberParser: (text: string | null) => {
+				return text == null ? null : parseFloat(text.replace(",", "."));
+			},
+			filterOptions: [
+				"equals",
+				"notEqual",
+				"lessThan",
+				"lessThanOrEqual",
+				"greaterThan",
+				"greaterThanOrEqual",
+			],
+			suppressAndOrCondition: true,
+		},
+		filter: "agNumberColumnFilter",
+	},
 	...exams.map((e, i) => ({
 		autoHeaderHeight: true,
 		wrapText: true,
@@ -261,7 +301,22 @@ export const getCourseInsightsHeaders = (
 			e.name.trim().length > 0 ? e.name.trim() : _("event_preview.unnamed_event"),
 		width: 100,
 		resizable: true,
-		// TODO add filtering like >, < etc.
+		filterParams: {
+			allowedCharPattern: "\\d\\-\\,", // note: ensure you escape as if you were creating a RegExp from a string
+			numberParser: (text: string | null) => {
+				return text == null ? null : parseFloat(text.replace(",", "."));
+			},
+			filterOptions: [
+				"equals",
+				"notEqual",
+				"lessThan",
+				"lessThanOrEqual",
+				"greaterThan",
+				"greaterThanOrEqual",
+			],
+			suppressAndOrCondition: true,
+		},
+		filter: "agNumberColumnFilter",
 		headerComponentParams: {
 			template:
 				'<div class="ag-cell-label-container" role="presentation">' +
@@ -280,18 +335,6 @@ export const getCourseInsightsHeaders = (
 				"</div>",
 		},
 	})),
-	{
-		field: "score_sum",
-		headerName: _("course_insights.score_sum"),
-		type: "numericColumn",
-		// TODO filtering
-	},
-	{
-		field: "score_average",
-		headerName: _("course_insights.score_average"),
-		type: "numericColumn",
-		// TODO filtering
-	},
 ];
 
 // returns the headers for EventParticipationMonitor table

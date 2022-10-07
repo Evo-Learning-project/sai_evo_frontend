@@ -1,24 +1,9 @@
 <template>
 	<div class="relative flex flex-col">
-		<!-- <h3>{{ $t("course_insights.active_students") }}</h3>
-		<p class="text-muted">
-			 {{ $t("course_insights.active_students_description") }}
-		</p> -->
-		<!-- <div v-if="!loading && users.length === 0" class="flex flex-col items-center mt-8">
-			<p style="font-size: 6rem" class="material-icons-outlined opacity-10">person_off</p>
-			<h2 class="opacity-40">{{ $t("course_insights.no_active_students") }}</h2>
-		</div> -->
-		<!-- <div v-if="false" class="grid grid-cols-1 gap-3 mt-4 md:grid-cols-3">
-			<StudentCard
-				class="mb-auto"
-				v-for="user in users"
-				:key="'active-user-' + user.id"
-				:user="user"
-			></StudentCard>
-		</div> -->
 		<div class="-mt-4 flex w-full flex-col">
 			<!-- exam checkboxes-->
 			<div
+				v-show="viewMode === 'table'"
 				:class="[
 					examSelectionExpanded ? 'max-h-100' : 'max-h-0  overflow-y-hidden',
 					'duration-200 ease-in-out w-full transition-max-height',
@@ -66,10 +51,9 @@
 				</div>
 			</div>
 			<!-- filter button -->
-			<div class="w-max mb-2 -ml-3">
-				<div class="flex items-center w-max">
+			<div class="w-full items-center flex mb-4 -ml-3">
+				<div v-show="viewMode === 'table'" class="flex items-center w-max">
 					<Btn
-						v-if="!full"
 						:variant="'icon'"
 						:outline="true"
 						@click="examSelectionExpanded = !examSelectionExpanded"
@@ -92,9 +76,15 @@
 						$t("course_insights.filter_exams")
 					}}</label>
 				</div>
+				<SegmentedControls
+					:small="true"
+					class="hidden ml-auto md:block"
+					:options="viewModesAsOptions"
+					v-model="viewMode"
+				/>
 			</div>
 		</div>
-		<div class="flex-grow">
+		<div v-show="viewMode === 'table'" class="flex-grow">
 			<div class="h-full overflow-y-auto">
 				<DataTable
 					:class="{ 'opacity-60': loading }"
@@ -109,17 +99,20 @@
 				/>
 			</div>
 		</div>
-		<!-- <div class="flex mt-2 space-x-2">
-			<Btn class="" :outline="true" :variant="'danger'">
-				<span class="mr-1 text-base material-icons-outlined"> block </span>
-				{{ $t("event_monitor.close_for_selected") }}</Btn
-			>
-
-			<Btn class="" :variant="'primary'" :outline="true">
-				<span class="mr-1 text-base material-icons-outlined"> undo </span>
-				{{ $t("event_monitor.open_for_selected") }}</Btn
-			>
-		</div> -->
+		<div v-show="viewMode === 'cards'" class="grid grid-cols-1 gap-3 mt-4 md:grid-cols-3">
+			<div v-if="!loading && users.length === 0" class="flex flex-col items-center mt-8">
+				<p style="font-size: 6rem" class="material-icons-outlined opacity-10">
+					person_off
+				</p>
+				<h2 class="opacity-40">{{ $t("course_insights.no_active_students") }}</h2>
+			</div>
+			<StudentCard
+				class="mb-auto"
+				v-for="user in users"
+				:key="'active-user-' + user.id"
+				:user="user"
+			/>
+		</div>
 	</div>
 </template>
 
@@ -128,7 +121,6 @@ import { createNamespacedHelpers } from "vuex";
 const { mapActions, mapState, mapGetters } = createNamespacedHelpers("teacher");
 import { courseIdMixin, loadingMixin } from "@/mixins";
 import { defineComponent, PropType } from "@vue/runtime-core";
-import StudentCard from "@/components/shared/StudentCard.vue";
 import Card from "@/components/ui/Card.vue";
 import { logAnalyticsEvent, roundToTwoDecimals } from "@/utils";
 import DataTable from "@/components/ui/DataTable.vue";
@@ -139,18 +131,28 @@ import CheckboxGroup from "@/components/ui/CheckboxGroup.vue";
 import { SelectableOption } from "@/interfaces";
 import Btn from "@/components/ui/Btn.vue";
 import { getTranslatedString as _ } from "@/i18n";
+import { normalizeOptionalStringContainingNumber } from "@/api/utils";
+import SegmentedControls from "@/components/ui/SegmentedControls.vue";
+import StudentCard from "@/components/shared/StudentCard.vue";
 export default defineComponent({
 	name: "CourseInsights",
 	mixins: [courseIdMixin, loadingMixin],
 	props: {},
 	components: {
-		//StudentCard,
-		//Card,
 		DataTable,
 		CheckboxGroup,
 		Btn,
+		SegmentedControls,
+		StudentCard,
 	},
-
+	watch: {
+		viewMode(newVal) {
+			logAnalyticsEvent("changeCourseInsightsViewMode", {
+				courseId: this.courseId,
+				to: newVal,
+			});
+		},
+	},
 	async created() {
 		await this.withLoading(async () => {
 			await Promise.all([this.fetchUsers(), this.fetchClosedExams()]);
@@ -169,6 +171,7 @@ export default defineComponent({
 			columnApi: null as any,
 			participations: {} as Record<string, EventParticipation[]>,
 			selectedExamsIds: [] as string[],
+			viewMode: "table" as "table" | "cards",
 		};
 	},
 	methods: {
@@ -222,12 +225,30 @@ export default defineComponent({
 		practiceParticipations() {
 			return [];
 		},
+		viewModesAsOptions(): SelectableOption[] {
+			return [
+				{
+					value: "table",
+					icons: ["table_chart"],
+					content: "",
+				},
+				{
+					value: "cards",
+					icons: ["portrait"],
+					content: "",
+				},
+			];
+		},
 		examsAsSelectableOptions(): SelectableOption[] {
-			return (this.exams as Event[]).map(e => ({
-				value: e.id,
-				content:
-					e.name.trim().length > 0 ? e.name.trim() : _("event_preview.unnamed_event"),
-			}));
+			return (this.exams as Event[])
+				.sort((a, b) =>
+					new Date(b.begin_timestamp ?? "") < new Date(a.begin_timestamp ?? "") ? 1 : -1,
+				)
+				.map(e => ({
+					value: e.id,
+					content:
+						e.name.trim().length > 0 ? e.name.trim() : _("event_preview.unnamed_event"),
+				}));
 		},
 		activeUsersForSelectedExams() {
 			const activeUsers = this.users as User[];
@@ -295,9 +316,10 @@ export default defineComponent({
 				mat: u.mat,
 				course: u.course,
 				...exams.reduce((acc, e) => {
-					acc["exam_" + e.id] = this.participations[e.id].find(
-						p => p.user.id == u.id,
-					)?.score;
+					const score = normalizeOptionalStringContainingNumber(
+						this.participations[e.id].find(p => p.user.id == u.id)?.score,
+					);
+					acc["exam_" + e.id] = score;
 					return acc;
 				}, {} as any),
 				score_sum: getScoreSumFn(u),
