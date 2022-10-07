@@ -80,8 +80,9 @@
 				@updateSolution="onDraftSolutionChange($event.key, $event.value)"
 				@close="onClose()"
 				:editorType="solutionType"
+				:exercise="exercise"
 			>
-				<FullExercise :exercise="exercise" />
+				<!-- <FullExercise :exercise="exercise" /> -->
 				<!-- <Exercise :exercise="exercise" :showSolution="true" :readOnly="true" /> -->
 			</ExerciseSolutionEditor>
 		</div>
@@ -115,7 +116,7 @@ import {
 	EXERCISE_SOLUTION_AUTO_SAVE_DEBOUNCE_FIELDS,
 	EXERCISE_SOLUTION_AUTO_SAVE_DEBOUNCE_TIME_MS,
 } from "@/const";
-import FullExercise from "../FullExercise.vue";
+//import FullExercise from "../FullExercise.vue";
 import { getTranslatedString } from "@/i18n";
 export default defineComponent({
 	name: "ExerciseSolutionContainer",
@@ -423,7 +424,7 @@ export default defineComponent({
 		Btn,
 		ExerciseSolution,
 		ExerciseSolutionEditor,
-		FullExercise,
+		//FullExercise,
 	},
 });
 </script>

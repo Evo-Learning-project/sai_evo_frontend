@@ -187,7 +187,7 @@
 </template>
 
 <script lang="ts">
-const RUN_COOL_DOWN = 3;
+const RUN_COOL_DOWN = 10;
 
 import { programmingExerciseTabsOptions, ProgrammingExerciseTabs } from "@/const";
 import {

@@ -356,10 +356,9 @@ import CodeFragment from "@/components/ui/CodeFragment.vue";
 import Tooltip from "@/components/ui/Tooltip.vue";
 import CodeExecutionResults from "../CodeExecutionResults.vue";
 import { openAuthenticatedWsConnection } from "@/ws/utils";
-import { uuid4 } from "@sentry/utils";
 import Spinner from "@/components/ui/Spinner.vue";
+import { v4 as uuid4 } from "uuid";
 
-//import { v4 as uuid4 } from "uuid";
 export default defineComponent({
 	name: "ExerciseSolution",
 	mixins: [courseIdMixin, coursePrivilegeMixin, mediaQueryMixin, texMixin],
