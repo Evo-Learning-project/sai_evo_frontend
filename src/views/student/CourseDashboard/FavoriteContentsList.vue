@@ -64,6 +64,7 @@ import { getBlankExerciseSearchFilters } from "@/api/utils";
 import ExerciseSearchFilters from "@/components/teacher/ExerciseSearchFilters.vue";
 import Btn from "@/components/ui/Btn.vue";
 import FullExercise from "@/components/shared/FullExercise.vue";
+import { logAnalyticsEvent } from "@/utils";
 export default defineComponent({
 	name: "FavoriteContentsList",
 	mixins: [courseIdMixin, loadingMixin],
@@ -78,6 +79,7 @@ export default defineComponent({
 			});
 			this.fetchSolutionsForNewExercises(true);
 		});
+		logAnalyticsEvent("viewedSavedContent", { courseId: this.courseId });
 	},
 	data() {
 		return {

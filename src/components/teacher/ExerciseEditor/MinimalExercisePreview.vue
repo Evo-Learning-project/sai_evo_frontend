@@ -90,7 +90,7 @@
 			</div>
 			<div class="flex items-center mt-auto ml-auto">
 				<Btn
-					@click="$emit('edit')"
+					@click="emitEdit"
 					:variant="'icon'"
 					:outline="true"
 					class="icon-btn-primary"
@@ -192,6 +192,7 @@ import { texMixin } from "@/mixins";
 import Tooltip from "@/components/ui/Tooltip.vue";
 import FadedEdgesScrollableFragment from "@/components/ui/FadedEdgesScrollableFragment.vue";
 import { v4 as uuidv4 } from "uuid";
+import { logAnalyticsEvent } from "@/utils";
 export default defineComponent({
 	name: "MinimalExercisePreview",
 	props: {
@@ -280,6 +281,10 @@ export default defineComponent({
 		};
 	},
 	methods: {
+		emitEdit() {
+			this.$emit("edit");
+			logAnalyticsEvent("editExerciseFromPreview", {});
+		},
 		onSelection() {
 			this.$emit("selection");
 		},

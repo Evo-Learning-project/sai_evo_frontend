@@ -28,18 +28,18 @@
 				<p class="">{{ user.email }}</p>
 			</div>
 		</template>
-		<template v-if="true || expanded" v-slot:body>
+		<template v-slot:body>
 			<div
 				class="duration-200 ease-in-out transition-max-height"
 				:class="{
 					'max-h-0 overflow-hidden': !expanded,
-					'max-h-36': false && expanded && fetching,
-					'max-h-96 overflow-y-auto': expanded && (true || !fetching),
+					'max-h-96 overflow-y-auto': expanded,
 				}"
 			>
 				<SkeletonCard :border-less="true" class="-ml-4" v-if="fetching"></SkeletonCard>
 				<Timeline
 					v-else
+					class="mt-4"
 					:steps="processedHistory"
 					v-slot="{ timestamp, eventType, data }"
 				>

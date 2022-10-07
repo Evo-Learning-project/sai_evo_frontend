@@ -18,6 +18,8 @@ import { icons as exerciseStatesIcons } from "@/assets/exerciseStatesIcons";
 import { icons as testCaseTypeIcons } from "@/assets/exerciseTestCaseTypeIcons";
 import { getTranslatedString as _ } from "@/i18n";
 import { ColDef } from "ag-grid-community";
+import { icons as assessmentStateIcons } from "@/assets/assessmentStateIcons";
+import { icons as participationStateIcons } from "@/assets/participationStateIcons";
 
 export const TEST_CASE_AUTO_SAVE_DEBOUNCE_TIME_MS = 3000;
 export const TEST_CASE_AUTO_SAVE_DEBOUNCED_FIELDS: FieldList<ExerciseTestCase> = [
@@ -325,8 +327,140 @@ export const ESCAPED_CLOZE_SEPARATOR = CLOZE_SEPARATOR.replace(/\[/g, "\\[")
 	.replace(/\]/g, "\\]")
 	.replace(/\?/g, "\\?");
 
-import { icons as assessmentStateIcons } from "@/assets/assessmentStateIcons";
-import { icons as participationStateIcons } from "@/assets/participationStateIcons";
+// returns the headers for the CourseInsights table
+export const getCourseInsightsHeaders = (
+	exams: Event[],
+	examsColors: Record<string, string>,
+): ColDef[] => [
+	{ field: "id", hide: true },
+	{
+		field: "email",
+		headerName: _("event_participation_headings.email"),
+		filterParams: {
+			filterOptions: ["contains"],
+			suppressAndOrCondition: true,
+		},
+		filter: "agTextColumnFilter",
+		width: 300,
+		resizable: true,
+	},
+	{
+		field: "fullName",
+		headerName: _("misc.full_name"),
+		filterParams: {
+			filterOptions: ["contains"],
+			suppressAndOrCondition: true,
+		},
+		filter: "agTextColumnFilter",
+		minWidth: 120,
+		resizable: true,
+		flex: 1,
+	},
+	{
+		field: "mat",
+		headerName: _("event_participation_headings.mat"),
+		filterParams: {
+			filterOptions: ["contains"],
+			suppressAndOrCondition: true,
+		},
+		filter: "agTextColumnFilter",
+		resizable: true,
+	},
+	{
+		field: "course",
+		headerName: _("event_participation_headings.course"),
+		filterParams: {
+			filterOptions: ["contains"],
+			suppressAndOrCondition: true,
+		},
+		filter: "agTextColumnFilter",
+		resizable: true,
+	},
+	{
+		field: "score_sum",
+		headerName: _("course_insights.score_sum"),
+		filterParams: {
+			allowedCharPattern: "\\d\\-\\,", // note: ensure you escape as if you were creating a RegExp from a string
+			numberParser: (text: string | null) => {
+				return text == null ? null : parseFloat(text.replace(",", "."));
+			},
+			filterOptions: [
+				"equals",
+				"notEqual",
+				"lessThan",
+				"lessThanOrEqual",
+				"greaterThan",
+				"greaterThanOrEqual",
+			],
+			suppressAndOrCondition: true,
+		},
+		filter: "agNumberColumnFilter",
+	},
+	{
+		field: "score_average",
+		headerName: _("course_insights.score_average"),
+		filterParams: {
+			allowedCharPattern: "\\d\\-\\,", // note: ensure you escape as if you were creating a RegExp from a string
+			numberParser: (text: string | null) => {
+				return text == null ? null : parseFloat(text.replace(",", "."));
+			},
+			filterOptions: [
+				"equals",
+				"notEqual",
+				"lessThan",
+				"lessThanOrEqual",
+				"greaterThan",
+				"greaterThanOrEqual",
+			],
+			suppressAndOrCondition: true,
+		},
+		filter: "agNumberColumnFilter",
+	},
+	...exams.map((e, i) => ({
+		autoHeaderHeight: true,
+		wrapText: true,
+		field: "exam_" + e.id,
+		headerName:
+			e.name.trim().length > 0 ? e.name.trim() : _("event_preview.unnamed_event"),
+		width: 100,
+		resizable: true,
+		filterParams: {
+			allowedCharPattern: "\\d\\-\\,", // note: ensure you escape as if you were creating a RegExp from a string
+			numberParser: (text: string | null) => {
+				return text == null ? null : parseFloat(text.replace(",", "."));
+			},
+			filterOptions: [
+				"equals",
+				"notEqual",
+				"lessThan",
+				"lessThanOrEqual",
+				"greaterThan",
+				"greaterThanOrEqual",
+			],
+			suppressAndOrCondition: true,
+		},
+		filter: "agNumberColumnFilter",
+		headerComponentParams: {
+			template:
+				'<div class="ag-cell-label-container" role="presentation">' +
+				'  <span ref="eMenu" class="ag-header-icon ag-header-cell-menu-button"></span>' +
+				'  <div ref="eLabel" class="ag-header-cell-label" role="presentation">' +
+				'    <span ref="eSortOrder" class="ag-header-icon ag-sort-order" ></span>' +
+				'    <span ref="eSortAsc" class="ag-header-icon ag-sort-ascending-icon" ></span>' +
+				'    <span ref="eSortDesc" class="ag-header-icon ag-sort-descending-icon" ></span>' +
+				'    <span ref="eSortNone" class="ag-header-icon ag-sort-none-icon" ></span>' +
+				`    <span style='background-color: ${
+					examsColors[e.id]
+				}; margin-right: 5px; min-width: 10px; min-height: 10px; width: 10px; height: 10px; border-radius: 50%;'></span>` +
+				'    <span ref="eText" class="ag-header-cell-text" role="columnheader"></span>' +
+				'    <span ref="eFilter" class="ag-header-icon ag-filter-icon"></span>' +
+				"  </div>" +
+				"</div>",
+		},
+	})),
+];
+
+// returns the headers for EventParticipationMonitor table
 export const getEventParticipationMonitorHeaders = (
 	resultsMode: boolean, // true if the event is over
 	eventParticipations: EventParticipation[],
@@ -455,15 +589,22 @@ export const getEventParticipationMonitorHeaders = (
 // returns the html contained inside of a participation slot in the
 // participations monitoring ag-grid table
 const renderEventParticipationSlotCell = (resultsMode: boolean) => (params: any) =>
-	`<div class="ml-10 -mr-2 ag-selectable-cell ${
-		params.value.score ?? "transition-opacity duration-75 hover:opacity-100 opacity-70 "
-	}">` +
-	`<span class="mx-auto ${
-		resultsMode
-			? params.value.score ?? "text-lg text-yellow-900 material-icons-outlined"
-			: "material-icons text-lg " +
-			  (params.value.has_answer ? "text-success opacity-80" : "text-muted opacity-50")
-	}">
+	params.value.execution_results && params.value.execution_results.state === "running"
+		? `<div class='text-muted mt-1'>
+			<span style="font-size: 20px !important" class='material-icons-outlined animate-spin'>sync</span>
+		</div>`
+		: `<div class="ml-10 -mr-2 ag-selectable-cell ${
+				params.value.score ??
+				"transition-opacity duration-75 hover:opacity-100 opacity-70 "
+		  }">` +
+		  `<span class="mx-auto ${
+				resultsMode
+					? params.value.score ?? "text-lg text-yellow-900 material-icons-outlined"
+					: "material-icons text-lg " +
+					  (params.value.has_answer
+							? "text-success opacity-80"
+							: "text-muted opacity-50")
+		  }">
                   ${
 										resultsMode
 											? params.value.score ?? "pending_actions"
@@ -472,7 +613,7 @@ const renderEventParticipationSlotCell = (resultsMode: boolean) => (params: any)
 											: "remove"
 									}
                 </span>` +
-	`</div>`;
+		  `</div>`;
 
 export const MAX_PRACTICE_EXERCISE_COUNT = 500;
 

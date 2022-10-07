@@ -159,6 +159,7 @@ import NumberInput from "@/components/ui/NumberInput.vue";
 import ArticleHandle from "@/components/shared/HelpCenter/ArticleHandle.vue";
 import SegmentedControls from "@/components/ui/SegmentedControls.vue";
 import { SelectableOption } from "@/interfaces";
+import { logAnalyticsEvent } from "@/utils";
 export default defineComponent({
 	setup() {
 		return {
@@ -201,6 +202,15 @@ export default defineComponent({
 			this.instantiateRuleAutoSaveManager(r);
 			r.clauses?.forEach(c => this.instantiateRuleClauseAutoSaveManager(r.id, c));
 		});
+	},
+	watch: {
+		viewMode(newVal) {
+			logAnalyticsEvent("changeEventEditorViewMode", {
+				courseId: this.courseId,
+				to: newVal,
+				rules: (this.modelValue.rules ?? []).length,
+			});
+		},
 	},
 	data() {
 		return {
@@ -290,6 +300,7 @@ export default defineComponent({
 		},
 
 		async onRuleDragEnd(event: { oldIndex: number; newIndex: number }) {
+			logAnalyticsEvent("draggedRule", { courseId: this.courseId });
 			if (event.oldIndex !== event.newIndex) {
 				const draggedRule = this.modelValue.rules[event.oldIndex];
 				await this.onRuleUpdate(draggedRule, "_ordering", event.newIndex);

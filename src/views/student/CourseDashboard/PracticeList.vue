@@ -267,6 +267,7 @@ import Spinner from "@/components/ui/Spinner.vue";
 import { LoadAction } from "@ts-pro/vue-eternal-loading";
 import { EventParticipationSearchFilter } from "@/api";
 import { isDemoMode } from "@/utils";
+import { logAnalyticsEvent } from "@/utils";
 
 const DEMO_TOUR_KEY = "demo_student_tour_taken";
 
@@ -350,6 +351,7 @@ export default defineComponent({
 			}
 		},
 		onBeginPractice(event: Event) {
+			logAnalyticsEvent("beginPractice", { courseId: this.courseId });
 			this.setEditingEvent(null);
 			this.$router.push({
 				name: "PracticeParticipationPage",
@@ -363,6 +365,7 @@ export default defineComponent({
 		},
 		async onBookmark(participation: EventParticipation) {
 			try {
+				logAnalyticsEvent("bookmarkedPractice", { courseId: this.courseId });
 				this.loadingParticipations.add(participation.id);
 				await this.partialUpdateEventParticipation({
 					courseId: this.courseId,
@@ -379,6 +382,7 @@ export default defineComponent({
 			}
 		},
 		async onCreatePractice() {
+			logAnalyticsEvent("createPractice", { courseId: this.courseId });
 			if (this.loading) {
 				return;
 			}

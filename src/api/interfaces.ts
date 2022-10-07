@@ -1,4 +1,10 @@
-import { ExerciseState, ExerciseType, EventType, ExerciseSolutionState } from "@/models";
+import {
+	ExerciseState,
+	ExerciseType,
+	EventType,
+	ExerciseSolutionState,
+	EventState,
+} from "@/models";
 
 export interface EventParticipationSearchFilter {
 	bookmarked?: boolean;
@@ -29,6 +35,7 @@ export interface CourseSearchFilter {
 
 export interface EventSearchFilter {
 	event_type?: EventType;
+	state?: EventState;
 }
 
 export interface BackendPaginatedResponse<T> {

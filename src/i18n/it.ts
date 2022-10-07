@@ -172,6 +172,9 @@ export const it = {
 			" oppure una stringa.",
 	},
 	course_insights: {
+		filter_exams: "Filtra esami",
+		score_sum: "Somma",
+		score_average: "Media",
 		practice_sessions: "Esercitazioni",
 		exercises: "Esercizi presenti nel corso",
 		active_students: "Studenti attivi",
@@ -196,6 +199,8 @@ export const it = {
 	},
 	misc: {
 		contact_us: "Contattaci",
+		select_all: "Seleziona tutti",
+		unselect_all: "Deseleziona tutti",
 		ads: "Pubblicità",
 		no_favorites: "Non ci sono contenuti salvati",
 		undo: "Annulla",
@@ -290,6 +295,8 @@ export const it = {
 		my_favorites: "Salvati",
 	},
 	exercise_solution: {
+		copyright_disclaimer:
+			"Proponendo una soluzione, accetti di rinunciare alla proprietà intellettuale su di essa. ",
 		confirm_deletion:
 			"Sei sicuro di voler cancellare questa soluzione? Quest'operazione è irreversibile.",
 		load_more_solutions: "Carica più soluzioni",
@@ -399,6 +406,7 @@ export const it = {
 	},
 	course_exercises: {
 		new_exercise: "Nuovo esercizio",
+		export_exercises: "Esporta",
 		import_exercises: "Importa",
 		import_exercises_title: "Importa esercizi",
 		no_exercises: "Non ci sono ancora esercizi",
@@ -915,6 +923,12 @@ export const it = {
 		edit_permissions_title: "Modifica i permessi di",
 	},
 	data_table: {
+		equals: "Uguale a",
+		notEqual: "Diverso da",
+		lessThan: "Minore di",
+		lessThanOrEqual: "Minore di o uguale a",
+		greaterThan: "Maggiore di",
+		greaterThanOrEqual: "Maggiore di o uguale a",
 		filterOoo: "Cerca...",
 		contains: "Contenuto",
 		noRowsToShow: "Non ci sono dati da mostrare",

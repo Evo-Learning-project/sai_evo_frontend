@@ -1,13 +1,13 @@
 <template>
 	<div class="flex flex-col">
 		<div class="flex items-center mb-2">
-			<div class="mt-auto">
+			<div class="mt-auto" v-if="(executionResultsSlots ?? []).length > 0">
 				<Spinner class="mb-2 ml-0.5" v-if="executingSolution"></Spinner>
 				<Tooltip :textCode="'testcase_passes'" v-else-if="allTestsPass">
 					<span class="material-icons-outlined text-success-dark">check_circle</span>
 				</Tooltip>
 				<Tooltip
-					:placement="'bottom'"
+					:placement="'right'"
 					:allowHoverOnText="true"
 					:textCode="'testcase_fails'"
 					v-else

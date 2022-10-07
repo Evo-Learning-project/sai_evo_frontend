@@ -36,10 +36,13 @@ export async function getExercises(
 	courseId: string,
 	pageNumber: number,
 	filter: ExerciseSearchFilter | null,
+	size?: number,
 ): Promise<PaginatedData<Exercise>> {
 	const filterUrlQuery = getExerciseUrlQueryParams(filter);
 	const response = await axios.get(
-		`/courses/${courseId}/exercises/?page=${pageNumber}${filterUrlQuery}`,
+		`/courses/${courseId}/exercises/?page=${pageNumber}${
+			size ? `&size=${size}` : ""
+		}${filterUrlQuery}`,
 	);
 	const normalizedResponseData = {
 		...(response.data as BackendPaginatedResponse<Exercise>),

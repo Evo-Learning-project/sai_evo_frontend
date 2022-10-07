@@ -42,25 +42,31 @@ export const mutations = {
 		state: StudentState,
 		slot: EventParticipationSlot,
 	) => {
-		console.log("inside set mutation", slot);
-
 		// look for both slots and sub-slots
 		const flattenedSlots = (state.currentEventParticipation as EventParticipation).slots
 			.map(e => [e, ...(e.sub_slots ?? [])])
 			.flat(10);
 		const target = flattenedSlots.find((s: EventParticipationSlot) => s.id == slot.id);
+		if (!target) {
+			console.error("setCurrentEventParticipation couldn't find slot with id", slot.id);
+		}
 		Object.assign(target, slot);
 	},
 	patchCurrentEventParticipationSlot: (
 		state: StudentState,
 		{ slotId, changes }: { slotId: string; changes: Partial<EventParticipationSlot> },
 	) => {
-		console.log("inside patch mutation", slotId, changes);
 		// look for both slots and sub-slots
 		const flattenedSlots = (state.currentEventParticipation as EventParticipation).slots
 			.map(e => [e, ...(e.sub_slots ?? [])])
 			.flat(10);
 		const target = flattenedSlots.find((s: EventParticipationSlot) => s.id == slotId);
+		if (!target) {
+			console.error(
+				"patchCurrentEventParticipationSlot couldn't find slot with id",
+				slotId,
+			);
+		}
 		Object.assign(target, { ...target, ...changes });
 	},
 

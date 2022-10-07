@@ -61,7 +61,7 @@
 				</div>
 			</transition-group>
 		</div>
-		<div class="flex-col flex space-y-4" v-else>
+		<div class="flex-col flex space-y-4 mt-4" v-else>
 			<ExerciseEditorWrapperSkeleton />
 			<ExerciseEditorWrapperSkeleton />
 			<ExerciseEditorWrapperSkeleton />
@@ -115,6 +115,7 @@ import MinimalExercisePreviewSkeleton from "@/components/ui/skeletons/MinimalExe
 import SlotSkeleton from "@/components/ui/skeletons/SlotSkeleton.vue";
 import Btn from "@/components/ui/Btn.vue";
 import FullExercise from "@/components/shared/FullExercise.vue";
+import { logAnalyticsEvent } from "@/utils";
 const { mapGetters } = createNamespacedHelpers("teacher");
 export default defineComponent({
 	name: "CourseExerciseSolutionThreads",
@@ -128,7 +129,7 @@ export default defineComponent({
 				filters: { with_submitted_solutions: true } as ExerciseSearchFilter,
 			});
 			this.fetchSolutionsForNewExercises();
-			//await this.getTags({ courseId: this.courseId });
+			logAnalyticsEvent("viewedCourseExerciseSolutions", { courseId: this.courseId });
 		});
 	},
 	data() {

@@ -23,8 +23,14 @@ export const getEventUrlQueryParams = (filters: EventSearchFilter | null): strin
 		return "";
 	}
 	let ret = "";
+	if (typeof filters.event_type !== "undefined" || typeof filters.state !== "undefined") {
+		ret += "?";
+	}
 	if (typeof filters.event_type !== "undefined") {
-		ret += `?event_type=${filters.event_type}`;
+		ret += `event_type=${filters.event_type}&`;
+	}
+	if (typeof filters.state !== "undefined") {
+		ret += `?state=${filters.state}&`;
 	}
 	return ret;
 };

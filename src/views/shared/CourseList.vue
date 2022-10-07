@@ -115,6 +115,8 @@ export default defineComponent({
 	async created() {
 		await this.withFirstLoading(async () => this.$store.dispatch("shared/getCourses"));
 		this.searchFilters.withPrivileges = this.user.is_teacher;
+		this.searchFilters.hidden = this.user.is_teacher;
+
 		if (isDemoMode() && !(DEMO_COURSES_TOUR_KEY in localStorage)) {
 			setTimeout(() => ((this as any).$tours["demoCourseTour"] as any).start(), 50);
 			localStorage.setItem(DEMO_COURSES_TOUR_KEY, "true");

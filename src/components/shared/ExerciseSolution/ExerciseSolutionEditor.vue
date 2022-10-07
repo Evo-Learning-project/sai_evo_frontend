@@ -36,10 +36,16 @@
 				>
 			</div>
 			<div
+				class="div flex items-center space-x-2 text-muted rounded-sm py-1 mb-2 lg:w-max"
+			>
+				<span class="material-icons-outlined text-lg">info</span>
+				<p class="text-sm">{{ $t("exercise_solution.copyright_disclaimer") }}</p>
+			</div>
+			<div
 				class="flex md:flex-row w-full h-full pb-10 flex-col md:space-x-8 overflow-y-auto"
 			>
 				<!-- editor section -->
-				<div class="w-full md:order-1 order-2 mt-4 md:mt-0">
+				<div class="w-full h-full md:h-auto md:order-1 order-2 mt-4 md:mt-0">
 					<TextEditor
 						v-if="editorType === 'text'"
 						:tall="true"
@@ -50,15 +56,72 @@
 					/>
 					<CodeEditor
 						v-else
+						:showRunButton="true"
+						:runCoolDown="runCoolDown"
+						:running="runningCode || runCoolDown > 0"
 						:size="'lg'"
+						@run="runCode()"
 						:modelValue="modelValue.content"
 						@update:modelValue="onUpdate('content', $event)"
 						:language="editorType"
-					/>
+					>
+						<template v-slot:runButton
+							><span class="ml-1 mr-1 text-base material-icons"> play_arrow </span
+							>{{ $t("programming_exercise.run_code") }}
+							<span class="opacity-50" v-if="runCoolDown > 0"
+								>&nbsp;({{ runCoolDown }})</span
+							>
+							<span v-if="runCoolDown < 10" class="opacity-0">0</span></template
+						>
+						<template v-slot:bottom>
+							<transition name="quick-bounce"
+								><div
+									class="
+										absolute
+										bottom-20
+										right-0
+										z-50
+										flex
+										items-center
+										px-6
+										py-3
+										mb-2
+										mr-4
+										space-x-2
+										rounded
+										bg-dark
+										text-lightText
+										bg-opacity-90
+										shadow-popup
+									"
+									v-if="runningCode"
+								>
+									<Spinner :fast="true"></Spinner>
+									<p>{{ $t("programming_exercise.running_code") }}</p>
+								</div>
+							</transition></template
+						>
+					</CodeEditor>
 				</div>
 				<!-- exercise section -->
-				<div class="md:order-2 order-1 w-full overflow-y-auto">
-					<slot></slot>
+				<div class="md:order-2 order-1 w-full h-full md:h-auto overflow-y-auto">
+					<SegmentedControls
+						class="mb-4"
+						v-model="currentTab"
+						:options="programmingExerciseTabsOptions"
+					/>
+
+					<FullExercise
+						:showTags="false"
+						v-show="currentTab === ProgrammingExerciseTabs.TEXT"
+						:exercise="exercise"
+					/>
+					<CodeExecutionResults
+						:reduced="true"
+						:testCases="exercise.testcases ?? []"
+						:executionResults="executionResults"
+						v-show="currentTab === ProgrammingExerciseTabs.EXECUTION_RESULTS"
+					/>
 				</div>
 			</div>
 			<div class="flex items-center px-10 py-3 -mx-10 -mb-6 shadow-popup bg-light">
@@ -84,20 +147,38 @@
 </template>
 
 <script lang="ts">
+const RUN_COOL_DOWN = 10;
+
 import { defineComponent, PropType } from "@vue/runtime-core";
 import TextEditor from "@/components/ui/TextEditor.vue";
-import { ExerciseSolution, ExerciseSolutionState } from "@/models";
+import {
+	CodeExecutionResults as ICodeExecutionResults,
+	Exercise,
+	ExerciseSolution,
+	ExerciseSolutionState,
+} from "@/models";
 import Btn from "@/components/ui/Btn.vue";
 import CloudSaveStatus from "@/components/ui/CloudSaveStatus.vue";
 import { mediaQueryMixin, texMixin } from "@/mixins";
 import CodeEditor from "@/components/ui/CodeEditor.vue";
-import { AutoSaveManager } from "@/autoSave";
+import { v4 as uuid4 } from "uuid";
+import { openAuthenticatedWsConnection } from "@/ws/utils";
+import FullExercise from "../FullExercise.vue";
+import { ProgrammingExerciseTabs, programmingExerciseTabsOptions } from "@/const";
+import CodeExecutionResults from "../CodeExecutionResults.vue";
+import SegmentedControls from "@/components/ui/SegmentedControls.vue";
+import Spinner from "@/components/ui/Spinner.vue";
+
 export default defineComponent({
 	name: "ExerciseSolutionEditor",
 	mixins: [texMixin, mediaQueryMixin],
 	props: {
 		modelValue: {
 			type: Object as PropType<ExerciseSolution>,
+			required: true,
+		},
+		exercise: {
+			type: Object as PropType<Exercise>,
 			required: true,
 		},
 		saving: {
@@ -123,6 +204,7 @@ export default defineComponent({
 		if (bodyContainsOverflowHidden) {
 			document.body.classList.remove("overflow-y-hidden");
 		}
+		this.ws?.close();
 	},
 	created() {
 		// prevent scrolling of the underlying page when open
@@ -145,14 +227,66 @@ export default defineComponent({
 					: this.modelValue.state,
 			);
 		},
+		async runCode() {
+			const taskId = uuid4();
+			const taskMessage = {
+				task_id: taskId,
+				exercise_id: this.exercise.id,
+				code: this.modelValue.content,
+				action: "run_code",
+			};
+			this.runCoolDown = RUN_COOL_DOWN;
+			this.intervalHandle = setInterval(() => {
+				this.runCoolDown--;
+				if (this.runCoolDown === 0) {
+					clearInterval(this.intervalHandle as number);
+					this.intervalHandle = null;
+				}
+			}, 1000);
+			this.runningCode = true;
+			this.ws = await openAuthenticatedWsConnection(
+				"code_runner",
+				s => s.send(JSON.stringify(taskMessage)),
+				m => {
+					const payload = JSON.parse(m.data);
+					if (payload.action === "execution_results") {
+						this.executionResults = JSON.parse(payload.data);
+						this.runningCode = false;
+						this.currentTab = ProgrammingExerciseTabs.EXECUTION_RESULTS;
+					}
+				},
+			);
+		},
 	},
 	data() {
 		return {
 			ExerciseSolutionState,
+			runCoolDown: 0,
+			runningCode: false,
+			ws: null as null | WebSocket,
+			executionResults: {} as ICodeExecutionResults,
+			ProgrammingExerciseTabs,
+			programmingExerciseTabsOptions: programmingExerciseTabsOptions.filter(o =>
+				[
+					ProgrammingExerciseTabs.TEXT,
+					ProgrammingExerciseTabs.EXECUTION_RESULTS,
+				].includes(o.value),
+			),
+			currentTab: ProgrammingExerciseTabs.TEXT,
+			intervalHandle: null as null | number,
 		};
 	},
 	computed: {},
-	components: { TextEditor, Btn, CloudSaveStatus, CodeEditor },
+	components: {
+		TextEditor,
+		Btn,
+		CloudSaveStatus,
+		CodeEditor,
+		FullExercise,
+		CodeExecutionResults,
+		SegmentedControls,
+		Spinner,
+	},
 });
 </script>
 

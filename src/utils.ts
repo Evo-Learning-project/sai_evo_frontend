@@ -117,7 +117,7 @@ export const setErrorNotification = (e: any, useAsIs = false) => {
 // };
 
 export function forceFileDownload(response: { data: BlobPart }, title: string) {
-	console.log("--- calling download", title, response.data);
+	// console.log("--- calling download", title, response.data);
 	const url = window.URL.createObjectURL(new Blob([response.data]));
 	const link = document.createElement("a");
 	link.href = url;
@@ -227,29 +227,35 @@ export const clickOutsideDirective = {
 export const roundToTwoDecimals = (num: number) =>
 	Math.round((num + Number.EPSILON) * 100) / 100;
 
-export function isElementVisible(element: HTMLElement | null) {
-	if (element === null) {
-		return true;
-	}
-	if (element.offsetWidth === 0 || element.offsetHeight === 0) return false;
-	const height = document.documentElement.clientHeight,
-		rects = element.getClientRects(),
-		onTop = function (r: any) {
-			const x = (r.left + r.right) / 2,
-				y = (r.top + r.bottom) / 2;
-			return document.elementFromPoint(x, y) === element;
-		};
-	for (let i = 0, l = rects.length; i < l; i++) {
-		const r = rects[i],
-			in_viewport = r.top > 0 ? r.top <= height : r.bottom > 0 && r.bottom <= height;
-		if (
-			in_viewport
-			// TODO fix
-			// && onTop(r)
-		)
-			return true;
-	}
-	return false;
+// export function isElementVisible(element: HTMLElement | null) {
+// 	if (element === null) {
+// 		return true;
+// 	}
+// 	if (element.offsetWidth === 0 || element.offsetHeight === 0) return false;
+// 	const height = document.documentElement.clientHeight,
+// 		rects = element.getClientRects(),
+// 		onTop = function (r: any) {
+// 			const x = (r.left + r.right) / 2,
+// 				y = (r.top + r.bottom) / 2;
+// 			return document.elementFromPoint(x, y) === element;
+// 		};
+// 	for (let i = 0, l = rects.length; i < l; i++) {
+// 		const r = rects[i],
+// 			in_viewport = r.top > 0 ? r.top <= height : r.bottom > 0 && r.bottom <= height;
+// 		if (
+// 			in_viewport
+// 			// TODO fix
+// 			// && onTop(r)
+// 		)
+// 			return true;
+// 	}
+// 	return false;
+// }
+
+import { event } from "vue-gtag";
+
+export function logAnalyticsEvent(eventName: string, params: Record<string, any>) {
+	event(eventName, params);
 }
 
 export const isDemoMode = () => JSON.parse(process.env.VUE_APP_DEMO_MODE ?? "false");

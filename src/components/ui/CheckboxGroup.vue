@@ -5,6 +5,7 @@
 				disabled ? '' : 'checkbox-container',
 				'relative  flex space-x-1.5 items-start ',
 				optionClass,
+				itemClass,
 			]"
 			v-for="(option, index) in options"
 			:key="id + '-option-' + index"
@@ -47,10 +48,19 @@
 						@update:modelValue="onToggleUpdate($event, option)"
 					></Toggle>
 					<div :class="labelClass" class="flex flex-col">
-						<div class="flex items-center">
+						<div v-if="!usesCustomSlot" class="flex items-center">
 							<slot v-bind:icons="option.icons"></slot>
 							<p v-html="option.content"></p>
 						</div>
+						<slot
+							v-else
+							name="custom"
+							v-bind:item="{
+								content: option.content,
+								icons: option.icons,
+								value: option.value,
+							}"
+						></slot>
 						<slot name="item" v-bind:description="option.description"></slot>
 					</div>
 				</div>
@@ -93,6 +103,14 @@ export default defineComponent({
 		useToggles: {
 			type: Boolean,
 			default: false,
+		},
+		usesCustomSlot: {
+			type: Boolean,
+			default: false,
+		},
+		itemClass: {
+			type: String,
+			default: "",
 		},
 	},
 	created() {

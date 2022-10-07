@@ -755,7 +755,6 @@ import {
 } from "@/components/shared/Exercise/utils";
 import { ExerciseSolutionSearchFilter } from "@/api/interfaces";
 import SlotSkeleton from "@/components/ui/skeletons/SlotSkeleton.vue";
-import { isElementVisible } from "@/utils";
 const { mapState } = createNamespacedHelpers("shared");
 
 export default defineComponent({
@@ -913,10 +912,6 @@ export default defineComponent({
 		...mapActions("shared", ["getTags", "updateExerciseChild", "getSolutionsByExercise"]),
 		...mapMutations("teacher", ["setExercise", "setExerciseChild"]),
 		...mapMutations("shared", ["setExerciseSolution"]),
-		onScroll() {
-			const dropdownElement = document.getElementById(this.stateDropdownId);
-			this.showStickyStateDropdown = !isElementVisible(dropdownElement);
-		},
 		async onChoiceDragEnd(event: { oldIndex: number; newIndex: number }) {
 			const draggedChoice = (this.modelValue.choices as ExerciseChoice[])[event.oldIndex];
 

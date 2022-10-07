@@ -65,6 +65,7 @@
 </template>
 
 <script lang="ts">
+import { logAnalyticsEvent } from "@/utils";
 import { defineComponent } from "@vue/runtime-core";
 import Btn from "./Btn.vue";
 
@@ -102,6 +103,7 @@ export default defineComponent({
 		onCopy() {
 			this.showFeedback = true;
 			setTimeout(() => (this.showFeedback = false), 2000);
+			logAnalyticsEvent("copyToClipboard", { value: this.value });
 		},
 	},
 });

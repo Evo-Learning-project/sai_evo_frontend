@@ -186,6 +186,7 @@
 			</div>
 		</div>
 
+		<!-- table -->
 		<div class="flex-grow">
 			<DataTable
 				:class="{
@@ -423,7 +424,6 @@ export default defineComponent({
 			});
 			// TODO gridApi could be null (doesn't really happen in production) - what did this line solve?
 			//this.gridApi.refreshCells({ force: true });
-
 			await this.getEvent({
 				courseId: this.courseId,
 				eventId: this.eventId,
@@ -436,14 +436,24 @@ export default defineComponent({
 		}
 
 		if (this.refreshData) {
-			this.refreshHandle = setInterval(
-				async () =>
-					await this.getEventParticipations({
-						courseId: this.courseId,
-						eventId: this.eventId,
-					}),
-				10000,
-			);
+			this.setDataRefreshInterval(10000);
+		}
+
+		const runningSlotsCheckFn = () =>
+			(this.eventParticipations as EventParticipation[])
+				.flatMap(p => p.slots)
+				.some(s => s.execution_results && s.execution_results.state === "running");
+
+		// if the exam is closed but there are participation slots with
+		// code still running, periodically refetch data until all slots
+		// are settled down
+		if (this.resultsMode && runningSlotsCheckFn()) {
+			this.setDataRefreshInterval(2000, () => {
+				if (!runningSlotsCheckFn()) {
+					clearInterval(this.refreshHandle as number);
+					this.refreshHandle = null;
+				}
+			});
 		}
 		// setTimeout(() => this.columnApi.autoSizeAllColumns(false), 5000);
 	},
@@ -499,6 +509,17 @@ export default defineComponent({
 			"getEventParticipationSlot",
 		]),
 		areAllParticipationsFullyAssessed,
+		setDataRefreshInterval(interval: number, callback?: any) {
+			this.refreshHandle = setInterval(async () => {
+				await this.getEventParticipations({
+					courseId: this.courseId,
+					eventId: this.eventId,
+				});
+				if (typeof callback === "function") {
+					callback();
+				}
+			}, interval);
+		},
 		showFeedbackAndCleanup() {
 			this.$store.commit("shared/showSuccessFeedback");
 			this.hideDialog();
