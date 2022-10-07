@@ -138,12 +138,84 @@
 									class="w-full px-4 py-2 rounded"
 									:value="solution.content"
 								/>
-								<CodeFragment
-									v-else
-									:language="solutionType"
-									:value="solution.content"
-									class="-mt-4 rounded-tr rounded-none"
-								/>
+								<div class="flex -mt-4 overflow-hidden" v-else>
+									<CodeFragment
+										:language="solutionType"
+										:value="solution.content"
+										class="rounded-tr rounded-none flex-grow bg-dark"
+									/>
+									<div
+										v-show="!collapsed"
+										class="bg-gray-50 px-2 py-2 w-64"
+										:style="
+											collapsed || calculatingHeight
+												? 'max-height: ' + MAX_CONTENT_HEIGHT_PX + 'px'
+												: ''
+										"
+									>
+										<div class="flex">
+											<Btn
+												v-if="runningCode || Object.keys(executionResults).length === 0"
+												class="mt-1"
+												:disabled="runningCode"
+												:variant="'success'"
+												@click="runCode()"
+												><span class="ml-1 mr-1 text-base material-icons">
+													play_arrow </span
+												>{{ $t("programming_exercise.run_code") }}</Btn
+											>
+										</div>
+										<transition name="quick-bounce"
+											><div
+												class="
+													absolute
+													bottom-0
+													right-0
+													z-50
+													flex
+													items-center
+													px-6
+													py-3
+													mb-2
+													mr-4
+													space-x-2
+													rounded
+													bg-dark
+													text-lightText
+													bg-opacity-90
+													shadow-popup
+												"
+												v-if="runningCode"
+											>
+												<Spinner :fast="true"></Spinner>
+												<p>{{ $t("programming_exercise.running_code") }}</p>
+											</div>
+										</transition>
+										<div
+											class="flex flex-col h-full -mt-8"
+											v-if="Object.keys(executionResults).length === 0"
+										>
+											<span
+												class="
+													mx-auto
+													my-auto
+													opacity-30
+													text-8xl
+													material-icons-outlined
+												"
+											>
+												code
+											</span>
+										</div>
+										<CodeExecutionResults
+											v-else
+											class="mt-4"
+											:reduced="true"
+											:executionResults="executionResults"
+											:testCases="exercise.testcases ?? []"
+										/>
+									</div>
+								</div>
 								<div
 									v-if="collapsed"
 									class="absolute bottom-0 left-0 flex w-full h-40"
@@ -257,6 +329,7 @@
 <script lang="ts">
 const MAX_CONTENT_HEIGHT_PX = 300;
 import {
+	CodeExecutionResults as ICodeExecutionResults,
 	Exercise,
 	ExerciseSolution,
 	ExerciseSolutionState,
@@ -281,6 +354,10 @@ import { getExerciseSolutionThreadRoute } from "./utils";
 import { getTranslatedString as _ } from "@/i18n";
 import CodeFragment from "@/components/ui/CodeFragment.vue";
 import Tooltip from "@/components/ui/Tooltip.vue";
+import CodeExecutionResults from "../CodeExecutionResults.vue";
+import { openAuthenticatedWsConnection } from "@/ws/utils";
+import { uuid4 } from "@sentry/utils";
+import Spinner from "@/components/ui/Spinner.vue";
 
 //import { v4 as uuid4 } from "uuid";
 export default defineComponent({
@@ -357,7 +434,9 @@ export default defineComponent({
 			showAnimation: false,
 			calculatingHeight: true,
 			intervalHandle: null as number | null,
-			//solutionId: uuid4(),
+			executionResults: {} as ICodeExecutionResults,
+			runningCode: false,
+			ws: null as null | WebSocket,
 		};
 	},
 	methods: {
@@ -366,6 +445,30 @@ export default defineComponent({
 			"addExerciseSolutionVote",
 			"setExerciseSolutionBookmark",
 		]),
+		async runCode() {
+			const taskId = uuid4();
+			const taskMessage = {
+				task_id: taskId,
+				exercise_id: this.exercise.id,
+				code: this.solution.content,
+				action: "run_code",
+			};
+			this.runningCode = true;
+			this.ws = await openAuthenticatedWsConnection(
+				"code_runner",
+				s => s.send(JSON.stringify(taskMessage)),
+				m => {
+					console.log("MESS", m);
+					const payload = JSON.parse(m.data);
+					console.log(payload);
+					if (payload.action === "execution_results") {
+						this.executionResults = JSON.parse(payload.data);
+						this.runningCode = false;
+						this.ws?.close();
+					}
+				},
+			);
+		},
 		async onVote(voteType: VoteType) {
 			if (this.voting) {
 				return;
@@ -473,6 +576,8 @@ export default defineComponent({
 		CopyToClipboard,
 		CodeFragment,
 		Tooltip,
+		CodeExecutionResults,
+		Spinner,
 	},
 });
 </script>
