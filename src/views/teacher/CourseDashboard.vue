@@ -300,6 +300,7 @@ export default defineComponent({
 		}
 		if (isDemoMode() && !(DEMO_COURSE_DASHBOARD_TOUR_KEY in localStorage)) {
 			setTimeout(() => (this.$tours["demoTeacherTour"] as any).start(), 500);
+			localStorage.setItem(DEMO_COURSE_DASHBOARD_TOUR_KEY, "true");
 		}
 	},
 	data() {
