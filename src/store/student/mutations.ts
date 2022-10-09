@@ -48,7 +48,12 @@ export const mutations = {
 			.flat(10);
 		const target = flattenedSlots.find((s: EventParticipationSlot) => s.id == slot.id);
 		if (!target) {
-			console.error("setCurrentEventParticipation couldn't find slot with id", slot.id);
+			console.log(state.currentEventParticipation, flattenedSlots);
+
+			console.error(
+				"setCurrentEventParticipationSlot couldn't find slot with id",
+				slot.id,
+			);
 		}
 		Object.assign(target, slot);
 	},

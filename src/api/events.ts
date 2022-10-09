@@ -272,7 +272,7 @@ export async function participateInEvent(
 	eventId: string,
 ): Promise<EventParticipation> {
 	const response = await axios.post(
-		`/courses/${courseId}/events/${eventId}/participations/?as_student=1`,
+		`/courses/${courseId}/events/${eventId}/participations/?as_student=true`,
 	);
 	return normalizeIncomingEventParticipation(response.data);
 }
