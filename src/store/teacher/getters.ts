@@ -8,6 +8,7 @@ import {
 	getBlankExam,
 	getBlankTag,
 	Tag,
+	getBlankExercise,
 } from "@/models";
 import { TeacherState } from "../types";
 
@@ -21,6 +22,6 @@ export const getters = {
 		const flattenedExercises = state.paginatedExercises.data
 			.map(e => [e, ...(e.sub_exercises ?? [])])
 			.flat(10);
-		return flattenedExercises.find(e => e.id == exerciseId) ?? {};
+		return flattenedExercises.find(e => e.id == exerciseId) ?? getBlankExercise();
 	},
 };

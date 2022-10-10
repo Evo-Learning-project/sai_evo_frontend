@@ -5,6 +5,8 @@ import { actions } from "./actions";
 import { getters } from "./getters";
 import { mutations } from "./mutations";
 
+export { getters } from "./getters";
+
 export const teacherStore = {
 	namespaced: true,
 	state: () => ({

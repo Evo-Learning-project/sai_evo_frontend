@@ -829,10 +829,10 @@ export default defineComponent({
 	},
 	beforeUnmount() {
 		this.ws?.close();
-		//window.removeEventListener("scroll", this.onScroll);
 	},
 	async created() {
-		//window.addEventListener("scroll", this.onScroll);
+		// TODO you should refetch exercise to make sure someone hasn't locked it
+
 		if (!this.subExercise) {
 			this.ws = await subscribeToExerciseChanges(this.modelValue.id);
 		}
