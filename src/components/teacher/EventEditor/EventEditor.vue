@@ -64,6 +64,7 @@
 				:modelValue="modelValue"
 				class="mb-12"
 				@updateEvent="onChange($event.field, $event.value)"
+				@blur="onBlur()"
 			></EventMetaEditor>
 
 			<div class="flex flex-col mb-12">
@@ -347,6 +348,9 @@ export default defineComponent({
 				this.invalidateExamples();
 			}
 			await this.autoSaveManager?.onChange({ field, value });
+		},
+		async onBlur() {
+			await this.autoSaveManager?.flush();
 		},
 		async getInstances() {
 			if (this.instances.length === 0) {

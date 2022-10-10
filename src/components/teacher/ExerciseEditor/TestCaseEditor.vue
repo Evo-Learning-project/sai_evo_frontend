@@ -69,6 +69,7 @@
 					>
 				</div>
 				<CodeEditor
+					@blur="$emit('blur')"
 					class="col-span-6 md:row-span-2"
 					v-if="testCaseType === ExerciseType.JS || testCaseType === ExerciseType.PYTHON"
 					:size="'sm'"
@@ -90,6 +91,7 @@
 				>
 				<div v-else class="flex col-span-7 space-x-2 md:row-span-2">
 					<CodeEditor
+						@blur="$emit('blur')"
 						class="w-1/2"
 						:size="'sm'"
 						:modelValue="modelValue.stdin"
@@ -109,6 +111,7 @@
 						</div></CodeEditor
 					>
 					<CodeEditor
+						@blur="$emit('blur')"
 						class="w-1/2"
 						:size="'sm'"
 						:modelValue="modelValue.expected_stdout"
@@ -131,6 +134,7 @@
 					>
 				</div>
 				<TextEditor
+					@blur="$emit('blur')"
 					:class="{
 						'col-span-6':
 							testCaseType === ExerciseType.JS || testCaseType === ExerciseType.PYTHON,
