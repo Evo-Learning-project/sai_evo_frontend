@@ -74,6 +74,14 @@ export default defineComponent({
 			editor.onDidBlurEditorWidget(() => {
 				this.$emit("blur");
 			});
+
+			// include assert for ts/js editor
+			const libSource = ['const assert = require("assert")'].join("\n");
+
+			const libUri = "ts:filename/facts.d.ts"; // TODO use actual assert lib
+
+			monaco.languages.typescript.typescriptDefaults.addExtraLib(libSource, libUri);
+			monaco.languages.typescript.javascriptDefaults.addExtraLib(libSource, libUri);
 			this.$emit("editorDidMount", this.editor);
 		},
 		_setModel(value, original) {

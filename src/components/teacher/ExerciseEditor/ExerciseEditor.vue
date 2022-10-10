@@ -197,6 +197,7 @@
 								:modelValue="modelValue.label"
 								:fixedLabel="true"
 								:placeholder="$t('exercise_preview.unnamed_exercise')"
+								@blur="onBlur()"
 								@update:modelValue="onBaseExerciseChange('label', $event)"
 							>
 								<div class="flex space-x-1">
@@ -247,6 +248,7 @@
 							:modelValue="modelValue.text"
 							@ready="textEditorInstance = $event"
 							@selectionChange="onTextSelectionChange($event)"
+							@blur="onBlur()"
 							@update:modelValue="onBaseExerciseChange('text', $event)"
 							>{{ $t("exercise_editor.exercise_text") }}
 							<template v-if="v$.modelValue.text.$errors.length > 0" v-slot:errors>
@@ -308,6 +310,7 @@
 									class="w-full"
 									v-if="!cloze && !isProgrammingExercise"
 									:modelValue="solution.content"
+									@blur="onBlurSolution(solution.id)"
 									@update:modelValue="onUpdateSolution(solution.id, 'content', $event)"
 								>
 									<!-- {{ $t("exercise_editor.exercise_solution") }} -->
@@ -320,6 +323,7 @@
 										:size="'lg'"
 										:showRunButton="true"
 										:language="languageCode"
+										@blur="onBlurSolution(solution.id)"
 										@run="onTestSolution(solution.id)"
 										:running="testingSolutions[solution.id] ?? false"
 									>
@@ -514,6 +518,7 @@
 								:invalidCorrectness="!!choicesCorrectnessError"
 								:modelValue="element"
 								@delete="onDeleteChoice(element.id)"
+								@blur="onBlurChoice(element.id)"
 								@choiceUpdate="onUpdateChoice(element.id, $event.field, $event.value)"
 								:icon-type="
 									cloze
@@ -572,7 +577,17 @@
 				<div class="mt-8" v-if="isProgrammingExercise">
 					<h3 class="mb-8">{{ $t("exercise_editor.testcases_title") }}</h3>
 
-					<!-- TODO hide "testcase passed by solution" tooltip if there's no solution-->
+					<div v-if="modelValue.exercise_type === ExerciseType.JS">
+						<p class="text-muted mb-2">
+							{{ $t("exercise_editor.use_assert_lib") }}
+							<a class="link" href="https://nodejs.org/api/assert.html" target="_blank">
+								<pre class="inline text-sm">assert</pre>
+								<span class="material-icons-outlined ml-0.5 inline-icon">
+									open_in_new
+								</span> </a
+							>.
+						</p>
+					</div>
 					<draggable
 						:modelValue="modelValue.testcases"
 						ghost-class="drag-ghost"
@@ -583,6 +598,7 @@
 							<TestCaseEditor
 								:executingSolution="testCaseAutoSaveManagers[element.id].isPending()"
 								:testCaseType="modelValue.exercise_type"
+								@blur="onBlurTestCase(element.id)"
 								@delete="onDeleteTestCase(element.id)"
 								:modelValue="element"
 								:executionResultsSlots="Object.values(solutionTestSlots)"
@@ -813,10 +829,10 @@ export default defineComponent({
 	},
 	beforeUnmount() {
 		this.ws?.close();
-		//window.removeEventListener("scroll", this.onScroll);
 	},
 	async created() {
-		//window.addEventListener("scroll", this.onScroll);
+		// TODO you should refetch exercise to make sure someone hasn't locked it
+
 		if (!this.subExercise) {
 			this.ws = await subscribeToExerciseChanges(this.modelValue.id);
 		}
@@ -919,6 +935,9 @@ export default defineComponent({
 				await this.onUpdateChoice(draggedChoice.id, "_ordering", event.newIndex);
 			}
 		},
+		async onBlur() {
+			await this.autoSaveManager?.flush();
+		},
 		async onBaseExerciseChange<K extends keyof Exercise>(key: K, value: Exercise[K]) {
 			await this.autoSaveManager?.onChange({ field: key, value });
 		},
@@ -1013,6 +1032,9 @@ export default defineComponent({
 				value,
 			});
 		},
+		async onBlurSolution(solutionId: string) {
+			await this.solutionAutoSaveManagers[solutionId].flush();
+		},
 		async onAddChoice() {
 			const newChoice: ExerciseChoice = await this.addExerciseChild({
 				courseId: this.courseId,
@@ -1031,6 +1053,9 @@ export default defineComponent({
 				field: key,
 				value,
 			});
+		},
+		async onBlurChoice(choiceId: string) {
+			await this.choiceAutoSaveManagers[choiceId].flush();
 		},
 		async onDeleteChoice(choiceId: string) {
 			if (confirm(_("exercise_editor.confirm_delete_choice"))) {
@@ -1100,6 +1125,9 @@ export default defineComponent({
 				field: key,
 				value,
 			});
+		},
+		async onBlurTestCase(testcaseId: string) {
+			await this.testCaseAutoSaveManagers[testcaseId].flush();
 		},
 		async onDeleteTestCase(testcaseId: string) {
 			if (confirm(_("exercise_editor.confirm_delete_testcase"))) {

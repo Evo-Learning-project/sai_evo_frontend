@@ -21,6 +21,7 @@
 			type="number"
 			:min="min"
 			:max="max"
+			@blur="$emit('blur')"
 			:disabled="disabled"
 			placeholder=" "
 			v-model.number="proxyModelValue"

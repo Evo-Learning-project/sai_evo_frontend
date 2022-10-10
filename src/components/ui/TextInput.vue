@@ -19,6 +19,7 @@
 			<input
 				type="text"
 				:value="modelValue"
+				@blur="$emit('blur')"
 				@input="$emit('update:modelValue', $event.target.value)"
 				:placeholder="placeholder"
 				:class="{

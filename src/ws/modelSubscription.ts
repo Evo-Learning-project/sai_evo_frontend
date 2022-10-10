@@ -1,8 +1,8 @@
 import { SharedState } from "./../store/types";
-import { convertEventTemplateRules } from "@/api/utils";
-import { Event, Exercise } from "@/models";
 import store from "@/store";
 import { getWsRequestId, openAuthenticatedWsConnection } from "./utils";
+import { normalizeIncomingEvent, normalizeIncomingExercise } from "@/api";
+import { getters } from "@/store/teacher";
 
 const getCurrentUserId = () => (store.state as { shared: SharedState }).shared.user.id;
 
@@ -18,12 +18,16 @@ export const subscribeToExerciseChanges = async (exerciseId: string, lock = true
 		s => s.send(JSON.stringify(subscriptionMessage)),
 		m => {
 			const payload = JSON.parse(m.data);
+			console.log("MSG", payload);
 
 			if (payload.action === "update") {
-				const exercise = payload.data as Exercise;
-				if ((exercise.locked_by?.id ?? "") != getCurrentUserId()) {
+				const convertedExercise = normalizeIncomingExercise(payload.data);
+				const currentExerciseLock =
+					getters.exercise(store.state.teacher)(convertedExercise.id).locked_by?.id ?? "";
+
+				if (currentExerciseLock != getCurrentUserId()) {
 					// update local object if edit is done by another user
-					store.commit("teacher/setExercise", exercise);
+					store.commit("teacher/setExercise", convertedExercise);
 				}
 			}
 		},
@@ -65,19 +69,12 @@ export const subscribeToEventChanges = async (eventId: string, lock = true) => {
 		s => s.send(JSON.stringify(subscriptionMessage)),
 		m => {
 			const payload = JSON.parse(m.data);
-
 			if (payload.action === "update") {
-				const processedRules = convertEventTemplateRules(payload.data.template?.rules);
+				const convertedEvent = normalizeIncomingEvent(payload.data);
+				const currentEventLock =
+					getters.event(store.state.teacher)(convertedEvent.id).locked_by?.id ?? "";
 
-				const convertedEvent = {
-					...payload.data,
-					template: {
-						...payload.data.template,
-						rules: processedRules,
-					},
-				} as Event;
-
-				if ((convertedEvent.locked_by?.id ?? "") != getCurrentUserId()) {
+				if (currentEventLock != getCurrentUserId()) {
 					// update local object if edit is done by another user
 					store.commit("teacher/setEvent", {
 						eventId: convertedEvent.id,

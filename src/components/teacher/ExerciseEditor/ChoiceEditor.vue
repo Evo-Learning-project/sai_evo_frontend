@@ -28,6 +28,7 @@
 		</div>
 		<TextEditor
 			v-if="!singleLine"
+			@blur="$emit('blur')"
 			class="w-full md:w-10/12"
 			:modelValue="modelValue.text"
 			@update:modelValue="onUpdate('text', $event)"
@@ -46,6 +47,7 @@
 		>
 		<TextInput
 			v-else
+			@blur="$emit('blur')"
 			class="w-full md:w-10/12"
 			:modelValue="modelValue.text"
 			@update:modelValue="onUpdate('text', $event)"
@@ -71,6 +73,7 @@
 				:max="100"
 				:min="-100"
 				:modelValue="modelValue.correctness"
+				@blur="$emit('blur')"
 				@update:modelValue="onUpdate('correctness', $event)"
 				:leftIcon="
 					iconType === 'radio'
