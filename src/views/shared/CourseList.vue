@@ -2,7 +2,10 @@
 	<div class="pb-4">
 		<div v-if="!firstLoading">
 			<CourseSearchFilters class="mb-8" v-model="searchFilters"></CourseSearchFilters>
-			<div class="mb-4 banner banner-danger" v-if="!user.is_teacher && !user.mat">
+			<div
+				class="mb-4 banner banner-danger"
+				v-if="!user.is_teacher && !user.mat && !isDemoMode"
+			>
 				<!-- <span class="material-icons-two-tone two-tone-danger"> school </span> -->
 				<div class="w-full">
 					<div class="flex items-center space-x-3">
@@ -150,6 +153,9 @@ export default defineComponent({
 	},
 	computed: {
 		...mapState(["courses", "user"]),
+		isDemoMode() {
+			return isDemoMode();
+		},
 		coursesFiltered(): Course[] {
 			const filters = this.searchFilters;
 			return this.coursesSorted.filter(

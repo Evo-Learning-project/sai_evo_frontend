@@ -24,7 +24,7 @@
 			<div class="mt-auto">
 				<div
 					class="w-full mb-4 banner banner-danger"
-					v-if="!user.is_teacher && (!user.mat || !user.course)"
+					v-if="!user.is_teacher && !isDemoMode && (!user.mat || !user.course)"
 				>
 					<div class="w-full">
 						<div class="flex items-center space-x-3">
@@ -82,7 +82,9 @@
 					{{ $t("event_participation_page.exam_is_over") }}
 				</p>
 				<router-link
-					v-if="canParticipate && (user.is_teacher || (user.mat && user.course))"
+					v-if="
+						canParticipate && (user.is_teacher || isDemoMode || (user.mat && user.course))
+					"
 					:to="{
 						name: 'ExamParticipationPage',
 						params: {
@@ -115,6 +117,7 @@ import SlotSkeleton from "@/components/ui/skeletons/SlotSkeleton.vue";
 import NumberInput from "@/components/ui/NumberInput.vue";
 import { courseSelectionOptions } from "@/const";
 import RadioGroup from "@/components/ui/RadioGroup.vue";
+import { isDemoMode } from "@/utils";
 export default defineComponent({
 	name: "ExamPreview",
 	mixins: [courseIdMixin, eventIdMixin, loadingMixin],
@@ -170,6 +173,9 @@ export default defineComponent({
 	computed: {
 		...mapState("student", ["previewingEvent"]),
 		...mapState("shared", ["user"]),
+		isDemoMode() {
+			return isDemoMode();
+		},
 		canParticipate(): boolean {
 			return (
 				this.previewingEvent.state !== EventState.PLANNED &&

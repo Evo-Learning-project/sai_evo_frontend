@@ -20,6 +20,7 @@ import { getTranslatedString as _ } from "@/i18n";
 import { ColDef } from "ag-grid-community";
 import { icons as assessmentStateIcons } from "@/assets/assessmentStateIcons";
 import { icons as participationStateIcons } from "@/assets/participationStateIcons";
+import { isDemoMode } from "./utils";
 
 export const TEST_CASE_AUTO_SAVE_DEBOUNCE_TIME_MS = 3000;
 export const TEST_CASE_AUTO_SAVE_DEBOUNCED_FIELDS: FieldList<ExerciseTestCase> = [
@@ -366,16 +367,20 @@ export const getCourseInsightsHeaders = (
 		filter: "agTextColumnFilter",
 		resizable: true,
 	},
-	{
-		field: "course",
-		headerName: _("event_participation_headings.course"),
-		filterParams: {
-			filterOptions: ["contains"],
-			suppressAndOrCondition: true,
-		},
-		filter: "agTextColumnFilter",
-		resizable: true,
-	},
+	...(isDemoMode()
+		? []
+		: [
+				{
+					field: "course",
+					headerName: _("event_participation_headings.course"),
+					filterParams: {
+						filterOptions: ["contains"],
+						suppressAndOrCondition: true,
+					},
+					filter: "agTextColumnFilter",
+					resizable: true,
+				},
+		  ]),
 	{
 		field: "score_sum",
 		headerName: _("course_insights.score_sum"),
@@ -510,16 +515,20 @@ export const getEventParticipationMonitorHeaders = (
 			filter: "agTextColumnFilter",
 			resizable: true,
 		},
-		{
-			field: "course",
-			headerName: _("event_participation_headings.course"),
-			filterParams: {
-				filterOptions: ["contains"],
-				suppressAndOrCondition: true,
-			},
-			filter: "agTextColumnFilter",
-			resizable: true,
-		},
+		...(isDemoMode()
+			? []
+			: [
+					{
+						field: "course",
+						headerName: _("event_participation_headings.course"),
+						filterParams: {
+							filterOptions: ["contains"],
+							suppressAndOrCondition: true,
+						},
+						filter: "agTextColumnFilter",
+						resizable: true,
+					},
+			  ]),
 		{ field: "visibility", hide: true },
 		...(resultsMode
 			? [
