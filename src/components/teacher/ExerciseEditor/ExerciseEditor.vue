@@ -577,7 +577,17 @@
 				<div class="mt-8" v-if="isProgrammingExercise">
 					<h3 class="mb-8">{{ $t("exercise_editor.testcases_title") }}</h3>
 
-					<!-- TODO hide "testcase passed by solution" tooltip if there's no solution-->
+					<div v-if="modelValue.exercise_type === ExerciseType.JS">
+						<p class="text-muted mb-2">
+							{{ $t("exercise_editor.use_assert_lib") }}
+							<a class="link" href="https://nodejs.org/api/assert.html" target="_blank">
+								<pre class="inline text-sm">assert</pre>
+								<span class="material-icons-outlined ml-0.5 inline-icon">
+									open_in_new
+								</span> </a
+							>.
+						</p>
+					</div>
 					<draggable
 						:modelValue="modelValue.testcases"
 						ghost-class="drag-ghost"

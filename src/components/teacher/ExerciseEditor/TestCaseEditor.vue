@@ -195,6 +195,7 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+		// TODO add language prop
 	},
 	components: {
 		TextEditor,

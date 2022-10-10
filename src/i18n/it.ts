@@ -636,6 +636,7 @@ export const it = {
 		allowed_students: "studenti ammessi",
 	},
 	exercise_editor: {
+		use_assert_lib: "Per scrivere il codice dei test case, utilizza la libreria",
 		exercise_editor_title: "Editor esercizio",
 		draft_notice: "Bozza",
 		max_score: "Punteggio massimo",
