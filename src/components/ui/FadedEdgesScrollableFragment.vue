@@ -2,11 +2,46 @@
 	<div
 		class="relative overflow-x-hidden"
 		:class="{
-			'faded-left': !toBeginX,
-			'faded-right': !toEndX,
+			'faded-left': !atBeginX,
+			'faded-right': !atEndX,
 		}"
 	>
-		<div class="flex overflow-x-auto" :id="elementId">
+		<div
+			:style="{
+				opacity: atBeginX ? 0 : 1,
+				'z-index': atBeginX ? -1 : 15,
+				'background-color': 'rgba(255,255,255,0.5)',
+			}"
+			class="faded-navigate-previous absolute left-0"
+		>
+			<Btn
+				@click="scrollBy(-15)"
+				style="z-index: 200"
+				:size="'xs'"
+				:outline="true"
+				:variant="'icon'"
+				><span class="material-icons">navigate_before</span></Btn
+			>
+		</div>
+		<div
+			:style="{
+				opacity: atEndX ? 0 : 1,
+				'z-index': atEndX ? -1 : 15,
+				'background-color': 'rgba(255,255,255,0.5)',
+			}"
+			class="faded-navigate-next absolute right-0"
+		>
+			<Btn
+				@click="scrollBy(15)"
+				style="z-index: 200"
+				:size="'xs'"
+				:outline="true"
+				:variant="'icon'"
+				><span class="material-icons">navigate_next</span></Btn
+			>
+		</div>
+
+		<div class="flex overflow-x-auto scrollable-slot" :id="elementId">
 			<slot></slot>
 		</div>
 	</div>
@@ -15,12 +50,12 @@
 <script lang="ts">
 import { defineComponent, PropType } from "@vue/runtime-core";
 import { v4 as uuid4 } from "uuid";
+import Btn from "./Btn.vue";
 export default defineComponent({
 	name: "FadedEdgesScrollableFragment",
 	props: {},
 	mounted() {
 		this.element = document.getElementById(this.elementId);
-
 		this.element?.addEventListener("scroll", this.debounce(this.onScroll), {
 			passive: true,
 		});
@@ -28,10 +63,10 @@ export default defineComponent({
 	},
 	data() {
 		return {
-			toBeginX: true,
-			toEndX: false,
-			toBeginY: true,
-			toEndY: false,
+			atBeginX: true,
+			atEndX: false,
+			atBeginY: true,
+			atEndY: false,
 			elementId: uuid4(),
 			element: null as null | HTMLElement,
 		};
@@ -55,21 +90,26 @@ export default defineComponent({
 		},
 		onScroll() {
 			const el = this.element as HTMLElement;
-
 			const isScrollable =
 				el.scrollWidth > el.clientWidth &&
 				["scroll", "auto"].indexOf(getComputedStyle(el).overflowX) >= 0;
-
-			this.toEndX =
+			this.atEndX =
 				!isScrollable || -(el.scrollLeft + el.clientWidth) + el.scrollWidth <= 1;
-			this.toBeginX = el.scrollLeft === 0;
+			this.atBeginX = el.scrollLeft === 0;
+		},
+		scrollBy(perc: number) {
+			const el = this.element as HTMLElement;
+			const amount = (el.scrollWidth * perc) / 100;
+			el.scrollLeft = el.scrollLeft + amount;
 		},
 	},
 	computed: {},
+	components: { Btn },
 });
 </script>
 
 <style>
+.faded-navigate-next:before,
 .faded-right:after {
 	background: linear-gradient(
 		to right,
@@ -86,6 +126,7 @@ export default defineComponent({
 	width: 50px;
 }
 
+.faded-navigate-previous:after,
 .faded-left:before {
 	background: linear-gradient(
 		to left,
@@ -115,5 +156,18 @@ export default defineComponent({
 		rgba(255, 255, 255, 0),
 		rgba(243, 244, 246, 1) 90%
 	);
+}
+.scrollable-slot {
+	scroll-behavior: smooth;
+
+	-ms-overflow-style: none;
+	/* for Internet Explorer, Edge */
+	scrollbar-width: none;
+	/* for Firefox */
+}
+
+.scrollable-slot::-webkit-scrollbar {
+	display: none;
+	/* for Chrome, Safari, and Opera */
 }
 </style>
