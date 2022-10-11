@@ -10,9 +10,9 @@
 			:style="{
 				opacity: atBeginX ? 0 : 1,
 				'z-index': atBeginX ? -1 : 15,
-				'background-color': 'rgba(255,255,255,0.5)',
 			}"
 			class="faded-navigate-previous absolute left-0"
+			v-if="!atBeginX"
 		>
 			<Btn
 				@click="scrollBy(-15)"
@@ -24,10 +24,10 @@
 			>
 		</div>
 		<div
+			v-if="isScrollable"
 			:style="{
 				opacity: atEndX ? 0 : 1,
 				'z-index': atEndX ? -1 : 15,
-				'background-color': 'rgba(255,255,255,0.5)',
 			}"
 			class="faded-navigate-next absolute right-0"
 		>
@@ -60,6 +60,8 @@ export default defineComponent({
 			passive: true,
 		});
 		this.onScroll();
+		// (ugly workaround) trigger method to make the right arrow disappear if element isn't scrollable
+		setTimeout(() => this.onScroll(), 50);
 	},
 	data() {
 		return {
@@ -69,6 +71,7 @@ export default defineComponent({
 			atEndY: false,
 			elementId: uuid4(),
 			element: null as null | HTMLElement,
+			isScrollable: false,
 		};
 	},
 	methods: {
@@ -90,11 +93,11 @@ export default defineComponent({
 		},
 		onScroll() {
 			const el = this.element as HTMLElement;
-			const isScrollable =
+			this.isScrollable =
 				el.scrollWidth > el.clientWidth &&
 				["scroll", "auto"].indexOf(getComputedStyle(el).overflowX) >= 0;
 			this.atEndX =
-				!isScrollable || -(el.scrollLeft + el.clientWidth) + el.scrollWidth <= 1;
+				!this.isScrollable || -(el.scrollLeft + el.clientWidth) + el.scrollWidth <= 1;
 			this.atBeginX = el.scrollLeft === 0;
 		},
 		scrollBy(perc: number) {
@@ -109,8 +112,20 @@ export default defineComponent({
 </script>
 
 <style>
+.card-filled .bg-white .faded-navigate-previous,
+.card-filled .bg-white .faded-navigate-next {
+	background-color: rgba(255, 255, 255, 0.5);
+}
+
+.card-filled .faded-navigate-previous,
+.card-filled .faded-navigate-next {
+	background-color: rgba(243, 244, 246, 0.5);
+}
+
 .faded-navigate-next:before,
-.faded-right:after {
+.faded-right:after,
+.bg-white .faded-navigate-next:before,
+.bg-white .faded-right:after {
 	background: linear-gradient(
 		to right,
 		rgba(255, 255, 255, 0),
@@ -127,7 +142,9 @@ export default defineComponent({
 }
 
 .faded-navigate-previous:after,
-.faded-left:before {
+.faded-left:before,
+.card-filled .bg-white .faded-navigate-next:before,
+.card-filled .bg-white .faded-left:before {
 	background: linear-gradient(
 		to left,
 		rgba(255, 255, 255, 0),
@@ -143,20 +160,42 @@ export default defineComponent({
 	width: 50px;
 }
 
+/* --- */
+
+.card-filled .faded-navigate-next:before,
 .card-filled .faded-right:after {
 	background: linear-gradient(
 		to right,
 		rgba(255, 255, 255, 0),
 		rgba(243, 244, 246, 1) 90%
 	);
+	content: "";
+	position: absolute;
+	z-index: 11;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	pointer-events: none;
+	width: 50px;
 }
+
+.card-filled .faded-navigate-previous:after,
 .card-filled .faded-left:before {
 	background: linear-gradient(
 		to left,
 		rgba(255, 255, 255, 0),
 		rgba(243, 244, 246, 1) 90%
 	);
+	content: "";
+	position: absolute;
+	top: 0;
+	z-index: 11;
+	left: 0;
+	bottom: 0;
+	pointer-events: none;
+	width: 50px;
 }
+
 .scrollable-slot {
 	scroll-behavior: smooth;
 
