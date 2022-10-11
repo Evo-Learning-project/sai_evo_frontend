@@ -257,12 +257,12 @@ export default defineComponent({
 		this.triggerTexRender();
 	},
 	mounted() {
-		setTimeout(
-			() =>
-				(this.tagsDivWidth =
-					document.getElementById(this.tagsDivId)?.parentElement?.clientWidth ?? 0),
-			10,
-		);
+		const setWidthFn = () => {
+			this.tagsDivWidth =
+				document.getElementById(this.tagsDivId)?.parentElement?.clientWidth ?? 0;
+		};
+		window.addEventListener("resize", setWidthFn);
+		setTimeout(setWidthFn, 10);
 	},
 	watch: {
 		showPreview(newVal) {
