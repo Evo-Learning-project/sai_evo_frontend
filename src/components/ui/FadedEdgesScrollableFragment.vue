@@ -1,6 +1,6 @@
 <template>
 	<div
-		class="relative overflow-x-hidden"
+		class="relative overflow-hidden"
 		:class="{
 			'faded-left': !atBeginX,
 			'faded-right': !atEndX,
