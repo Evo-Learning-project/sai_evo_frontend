@@ -24,6 +24,7 @@
 					</div>
 				</div>
 				<MonacoEditor
+					v-if="isRendered"
 					@editorDidMount="onDidMount($event)"
 					@change="onChange($event)"
 					@blur="$emit('blur')"
@@ -103,9 +104,17 @@ export default defineComponent({
 		this.sidePaneContentHeight =
 			this.baseHeight -
 			(document.getElementById(this.elementId + "sidePaneTitle")?.clientHeight ?? 0);
+
+		// tear down and re-render monaco to keep its width in sync (otherwise)
+		// resizing the window gives graphical bugs
+		window.addEventListener("resize", () => {
+			this.isRendered = false;
+			this.$nextTick(() => (this.isRendered = true));
+		});
 	},
 	data() {
 		return {
+			isRendered: true,
 			monacoModule: null as any,
 			editorInstance: null as null | monaco.editor.IStandaloneCodeEditor,
 			textModel: null as null | monaco.editor.ITextModel,
