@@ -137,22 +137,30 @@ export default defineComponent({
 		},
 		async handleClickSignIn() {
 			try {
-				await this.withLocalLoading(async () => {
-					const googleUser = await this.$gAuth.signIn();
-					console.log(googleUser);
-					if (!googleUser) {
-						return null;
-					}
-					this.user = googleUser.getBasicProfile().getEmail();
-					const token = googleUser.getAuthResponse().access_token;
-					await this.$store.dispatch("shared/convertToken", token);
-					await this.$store.dispatch("shared/getUserData");
-					redirectToMainView();
-					this.setErrorNotification(getTranslatedString("misc.logged_in"), true);
-				});
+				await this.withLocalLoading(
+					async () => {
+						const googleUser = await this.$gAuth.signIn();
+						console.log(googleUser);
+						if (!googleUser) {
+							return null;
+						}
+						this.user = googleUser.getBasicProfile().getEmail();
+						const token = googleUser.getAuthResponse().access_token;
+						await this.$store.dispatch("shared/convertToken", token);
+						await this.$store.dispatch("shared/getUserData");
+						redirectToMainView();
+						this.setErrorNotification(getTranslatedString("misc.logged_in"), true);
+					},
+					isDemoMode() ? this.redirectToDemoPage : this.setErrorNotification,
+				);
 			} catch (error) {
 				throw error;
 			}
+		},
+		redirectToDemoPage() {
+			const redirectUrl =
+				process.env.VUE_APP_DEMO_REDIRECT_URL ?? "http://localhost:8081";
+			window.location.href = redirectUrl;
 		},
 	},
 	setup() {
