@@ -99,7 +99,7 @@ import { inject, toRefs } from "vue";
 import Spinner from "@/components/ui/Spinner.vue";
 import { defineComponent } from "@vue/runtime-core";
 import { loadingMixin } from "@/mixins";
-import { isDemoMode, redirectToMainView } from "@/utils";
+import { isDemoMode, logAnalyticsEvent, redirectToMainView } from "@/utils";
 import { getTranslatedString } from "@/i18n";
 import { demoLoginTourSteps, tourOptions } from "@/const";
 
@@ -158,6 +158,7 @@ export default defineComponent({
 			}
 		},
 		redirectToDemoPage() {
+			logAnalyticsEvent("loginFailedRedirectToDemo", {});
 			const redirectUrl =
 				process.env.VUE_APP_DEMO_REDIRECT_URL ?? "http://localhost:8081";
 			window.location.href = redirectUrl;
