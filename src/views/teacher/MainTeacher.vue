@@ -47,6 +47,25 @@
 						class="flex items-center ml-4 md:ml-6"
 					>
 						<LocaleSelector v-if="false"></LocaleSelector>
+						<DropdownMenu
+							:placement="'left'"
+							class="text-lightText"
+							:expanded="donateExpanded"
+							@toggleExpanded="onToggleDonate()"
+							v-if="isDemoMode"
+							><template v-slot:icon>
+								<span class="material-icons-outlined text-lightText"
+									>volunteer_activism</span
+								>
+							</template>
+							<div class="text-darkText w-72 text-center">
+								<h3>{{ $t("donate.donate_title") }}</h3>
+								<p class="mb-4">{{ $t("donate.donate_content") }}</p>
+								<a href="https://paypal.me/bsamusp00?country.x=IT&locale.x=it_IT">
+									<Btn>{{ $t("donate.donate_now") }}</Btn>
+								</a>
+							</div>
+						</DropdownMenu>
 						<Btn
 							:tooltip="$t('help.help_guide_label')"
 							@click="setHelpCenterVisibility(true)"
@@ -397,7 +416,7 @@ import {
 	ROUTE_TITLE_EVENT_NAME_TOKEN,
 } from "@/navigation/const";
 import { SidebarOption } from "@/navigation/sidebar";
-import { isDemoMode, logOut } from "@/utils";
+import { isDemoMode, logAnalyticsEvent, logOut } from "@/utils";
 import { defineComponent } from "@vue/runtime-core";
 import ErrorView from "../shared/ErrorView.vue";
 import SnackBar from "@/components/ui/SnackBar.vue";
@@ -407,6 +426,7 @@ import { newSidebarHelpCenterTourSteps, teacherTourSteps, tourOptions } from "@/
 import LocaleSelector from "@/components/ui/LocaleSelector.vue";
 
 import { createNamespacedHelpers } from "vuex";
+import DropdownMenu from "@/components/ui/DropdownMenu.vue";
 const { mapMutations, mapState } = createNamespacedHelpers("shared");
 
 const LOCAL_STORAGE_FIX_SIDEBAR_KEY = "sai_evo_fix_sidebar";
@@ -466,6 +486,7 @@ export default defineComponent({
 			newSidebarHelpCenterTourSteps,
 			tourOptions,
 			mediaQueryMd: false,
+			donateExpanded: false,
 		};
 	},
 	mixins: [courseIdMixin, eventIdMixin, coursePrivilegeMixin],
@@ -505,6 +526,12 @@ export default defineComponent({
 				this.fixSideBar = true;
 			}
 			localStorage.setItem(LOCAL_STORAGE_FIX_SIDEBAR_KEY, String(this.fixSideBar));
+		},
+		onToggleDonate() {
+			if (!this.donateExpanded) {
+				logAnalyticsEvent("toggledDonate", {});
+			}
+			this.donateExpanded = !this.donateExpanded;
 		},
 	},
 	computed: {
@@ -548,7 +575,7 @@ export default defineComponent({
 			};
 		},
 	},
-	components: { ErrorView, SnackBar, Btn, HelpCenter, LocaleSelector },
+	components: { ErrorView, SnackBar, Btn, HelpCenter, LocaleSelector, DropdownMenu },
 });
 </script>
 

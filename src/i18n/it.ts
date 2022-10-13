@@ -197,6 +197,12 @@ export const it = {
 		insert_mat_and_course:
 			"L'inserimento del numero di matricola e la selezione del corso sono necessari per poter partecipare agli esami. Fallo ora e non pensarci più!",
 	},
+	donate: {
+		donate_title: "Dona",
+		donate_content:
+			"Evo Learning è un progetto open source. Se vuoi sostenerne lo sviluppo, considera di effettuare una donazione. Ti ringraziamo in anticipo!",
+		donate_now: "Dona ora",
+	},
 	misc: {
 		contact_us: "Contattaci",
 		select_all: "Seleziona tutti",

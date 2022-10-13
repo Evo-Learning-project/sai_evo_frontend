@@ -24,7 +24,7 @@
 			"
 			:class="{
 				'max-h-0 opacity-0 scale-95 invisible': !expanded,
-				'max-h-44 opacity-100 scale-100': expanded,
+				'max-h-52 opacity-100 scale-100': expanded,
 				'origin-top-left left-0': placement === 'left',
 				'origin-top-right right-0': placement === 'right',
 			}"
