@@ -323,7 +323,13 @@ export default defineComponent({
 					return acc;
 				}, {} as any),
 				score_sum: getScoreSumFn(u),
-				score_average: roundToTwoDecimals(getScoreSumFn(u) / this.selectedExams.length),
+				score_average: roundToTwoDecimals(
+					getScoreSumFn(u) /
+						this.selectedExams.filter(
+							// only consider exams the user has participated in
+							e => this.participations[e.id].findIndex(p => p.user.id == u.id) !== -1,
+						).length,
+				),
 			}));
 		},
 	},
