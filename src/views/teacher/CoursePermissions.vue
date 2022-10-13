@@ -43,6 +43,7 @@
 </template>
 
 <script lang="ts">
+// TODO have a way to add permissions to users that haven't logged in for the first time yet
 import DataTable from "@/components/ui/DataTable.vue";
 import { courseIdMixin, loadingMixin, savingMixin } from "@/mixins";
 import { defineComponent } from "@vue/runtime-core";
