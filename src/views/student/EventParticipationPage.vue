@@ -115,8 +115,9 @@
 						>{{ $t("event_participation_page.of") }}
 						{{ proxyModelValue.last_slot_number + 1 }}
 					</span>
-				</h4> </AbstractEventParticipationSlot
-			><!---@updateAttachment="onChange(slot, 'attachment', $event)"-->
+				</h4>
+			</AbstractEventParticipationSlot>
+			<!---@updateAttachment="onChange(slot, 'attachment', $event)"-->
 		</div>
 		<div class="flex items-center w-full mt-8">
 			<Btn
@@ -131,8 +132,8 @@
 				</span>
 				{{
 					goingBack ? $t("misc.wait") : $t("event_participation_page.previous_exercise")
-				}}</Btn
-			>
+				}}
+			</Btn>
 			<Btn
 				class="ml-auto"
 				@click="goingBackAllowed ? onGoForward() : confirmGoForward()"
@@ -144,8 +145,8 @@
 				}}
 				<span class="material-icons-outlined mt-0.5 ml-0.5 text-base">
 					chevron_right
-				</span></Btn
-			>
+				</span>
+			</Btn>
 			<Btn
 				class="ml-auto"
 				@click="confirmTurnIn"
@@ -193,6 +194,7 @@ import {
 	EventParticipationState,
 	EventType,
 	ExerciseType,
+	programmingExerciseTypes,
 } from "@/models";
 import { defineComponent } from "@vue/runtime-core";
 import { getTranslatedString as _ } from "@/i18n";
@@ -383,12 +385,17 @@ export default defineComponent({
 				// stop timer
 				this.runTimer = false;
 				// flush any pending slots to make sure the most recent content is saved
-				//const s of this.proxyModelValue.slots
 				for (const s of Object.values(this.slotAutoSaveManagers)) {
-					if (s.instance.exercise.exercise_type !== ExerciseType.JS) {
-						await s.flush();
-					} else {
+					if (
+						programmingExerciseTypes.includes(
+							s.instance.exercise.exercise_type as ExerciseType,
+						)
+					) {
+						// for programming exercises, also run code to ensure the most up-to-date results
+						// TODO investigate https://sentry.io/organizations/samuele/issues/3612164391/?project=6265941&query=is%3Aunresolved
 						await this.onRunCode(s.instance);
+					} else {
+						await s.flush();
 					}
 				}
 				try {

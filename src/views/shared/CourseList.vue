@@ -2,7 +2,10 @@
 	<div class="pb-4">
 		<div v-if="!firstLoading">
 			<CourseSearchFilters class="mb-8" v-model="searchFilters"></CourseSearchFilters>
-			<div class="mb-4 banner banner-danger" v-if="!user.is_teacher && !user.mat">
+			<div
+				class="mb-4 banner banner-danger"
+				v-if="!user.is_teacher && !user.mat && !isDemoMode"
+			>
 				<!-- <span class="material-icons-two-tone two-tone-danger"> school </span> -->
 				<div class="w-full">
 					<div class="flex items-center space-x-3">
@@ -37,10 +40,10 @@
 			</div>
 			<div class="grid gap-4 md:gap-8 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
 				<CourseListItem
-					v-for="course in coursesFiltered"
+					v-for="(course, index) in coursesFiltered"
 					:key="'course-' + course.id"
 					:course="course"
-					class=""
+					:id="index === 0 ? 'course-0' : ''"
 				></CourseListItem>
 			</div>
 		</div>
@@ -75,6 +78,11 @@
 				{{ $t("course_list.no_courses_with_filters") }}
 			</h2>
 		</div>
+		<v-tour
+			name="demoCourseTour"
+			:steps="demoCourseTourSteps"
+			:options="tourOptions"
+		></v-tour>
 	</div>
 </template>
 
@@ -91,7 +99,11 @@ import { Course } from "@/models";
 import { getBlankCourseSearchFilters } from "@/api/utils";
 import { CourseSearchFilter } from "@/api/interfaces";
 import CourseSearchFilters from "@/components/shared/CourseSearchFilters.vue";
+import { demoCourseTourSteps, tourOptions } from "@/const";
+import { isDemoMode } from "@/utils";
 const { mapState, mapActions } = createNamespacedHelpers("shared");
+
+const DEMO_COURSES_TOUR_KEY = "courses_tour_taken";
 
 export default defineComponent({
 	name: "CourseList",
@@ -107,11 +119,18 @@ export default defineComponent({
 		await this.withFirstLoading(async () => this.$store.dispatch("shared/getCourses"));
 		this.searchFilters.withPrivileges = this.user.is_teacher;
 		this.searchFilters.hidden = this.user.is_teacher;
+
+		if (isDemoMode() && !(DEMO_COURSES_TOUR_KEY in localStorage)) {
+			setTimeout(() => ((this as any).$tours["demoCourseTour"] as any).start(), 50);
+			localStorage.setItem(DEMO_COURSES_TOUR_KEY, "true");
+		}
 	},
 	data() {
 		return {
 			dirtyMat: "",
 			searchFilters: getBlankCourseSearchFilters(),
+			demoCourseTourSteps,
+			tourOptions,
 		};
 	},
 	watch: {
@@ -134,6 +153,9 @@ export default defineComponent({
 	},
 	computed: {
 		...mapState(["courses", "user"]),
+		isDemoMode() {
+			return isDemoMode();
+		},
 		coursesFiltered(): Course[] {
 			const filters = this.searchFilters;
 			return this.coursesSorted.filter(

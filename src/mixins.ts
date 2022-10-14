@@ -114,7 +114,7 @@ export const loadingMixin = {
 				sharedState.firstLoading = false;
 			}
 		},
-		async withLocalLoading(callback: () => unknown) {
+		async withLocalLoading(callback: () => unknown, onError = setErrorNotification) {
 			const sharedState = (store.state as { shared: SharedState }).shared;
 
 			sharedState.localLoading = true;
@@ -123,7 +123,7 @@ export const loadingMixin = {
 				sharedState.dirtyTex = true; // trigger tex rendering
 				return ret;
 			} catch (e: any) {
-				setErrorNotification(e);
+				onError?.(e);
 			} finally {
 				sharedState.localLoading = false;
 			}

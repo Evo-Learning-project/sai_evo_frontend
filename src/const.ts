@@ -20,6 +20,7 @@ import { getTranslatedString as _ } from "@/i18n";
 import { ColDef } from "ag-grid-community";
 import { icons as assessmentStateIcons } from "@/assets/assessmentStateIcons";
 import { icons as participationStateIcons } from "@/assets/participationStateIcons";
+import { isDemoMode } from "./utils";
 
 export const TEST_CASE_AUTO_SAVE_DEBOUNCE_TIME_MS = 3000;
 export const TEST_CASE_AUTO_SAVE_DEBOUNCED_FIELDS: FieldList<ExerciseTestCase> = [
@@ -124,6 +125,28 @@ export const newSidebarHelpCenterTourSteps = [
 	},
 ];
 
+export const demoLoginTourSteps = [
+	{
+		target: "#login-btn",
+		header: {
+			title: _("tour.demo_welcome_header"),
+		},
+		content: _("tour.demo_welcome_content"),
+		params: { placement: "top" },
+	},
+];
+
+export const demoCourseTourSteps = [
+	{
+		target: "#course-0",
+		header: {
+			title: _("tour.demo_course_header"),
+		},
+		content: _("tour.demo_course_content"),
+		params: { placement: "top" },
+	},
+];
+
 export const teacherTourSteps = [
 	{
 		// exercises
@@ -149,13 +172,114 @@ export const teacherTourSteps = [
 	},
 	{
 		// permissions
-		target: "#sidebar-option-3",
+		target: "#sidebar-option-4",
 		header: {
 			title: _("tour.permissions_header"),
 		},
 		content: _("tour.permissions_content"),
 		params: {
 			placement: "right",
+		},
+	},
+];
+
+export const demoStudentTourSteps = [
+	{
+		target: "body",
+		header: {
+			title: _("tour.demo_student_header"),
+		},
+		content: _("tour.demo_student_content"),
+		// params: {
+		// 	placement: "bottom",
+		// },
+	},
+	{
+		target: "#create-practice-btn",
+		header: {
+			title: _("tour.demo_practice_header"),
+		},
+		content: _("tour.demo_practice_content"),
+		params: {
+			placement: "bottom",
+		},
+	},
+	{
+		target: ".v-sidebar-menu", //".vsm--item:nth-child(4) .vsm--link .vsm--title span",
+		header: {
+			title: _("tour.demo_popular_exercises_header"),
+		},
+		content: _("tour.demo_popular_exercises_content"),
+		params: {
+			placement: "right",
+		},
+	},
+	{
+		target: ".v-sidebar-menu", //".vsm--item:nth-child(5)",
+		header: {
+			title: _("tour.demo_leaderboard_header"),
+		},
+		content: _("tour.demo_leaderboard_content"),
+		params: {
+			placement: "right",
+		},
+	},
+];
+
+export const demoTeacherTourSteps = [
+	{
+		// exercises
+		target: "#sidebar-option-2",
+		header: {
+			title: _("tour.demo_exercises_header"),
+		},
+		content: _("tour.demo_exercises_content"),
+		params: {
+			placement: "right",
+		},
+	},
+	{
+		// exams
+		target: "#sidebar-option-1",
+		header: {
+			title: _("tour.demo_exams_header"),
+		},
+		content: _("tour.demo_exams_content"),
+		params: {
+			placement: "right",
+		},
+	},
+	{
+		// solutions
+		target: "#sidebar-option-3",
+		header: {
+			title: _("tour.demo_solutions_header"),
+		},
+		content: _("tour.demo_solutions_content"),
+		params: {
+			placement: "right",
+		},
+	},
+	{
+		// permissions
+		target: "#sidebar-option-4",
+		header: {
+			title: _("tour.demo_permissions_header"),
+		},
+		content: _("tour.demo_permissions_content"),
+		params: {
+			placement: "right",
+		},
+	},
+	{
+		// exams
+		target: "#help-center",
+		header: {
+			title: _("tour.demo_help_center_header"),
+		},
+		content: _("tour.demo_help_center_content"),
+		params: {
+			placement: "bottom",
 		},
 	},
 ];
@@ -243,16 +367,20 @@ export const getCourseInsightsHeaders = (
 		filter: "agTextColumnFilter",
 		resizable: true,
 	},
-	{
-		field: "course",
-		headerName: _("event_participation_headings.course"),
-		filterParams: {
-			filterOptions: ["contains"],
-			suppressAndOrCondition: true,
-		},
-		filter: "agTextColumnFilter",
-		resizable: true,
-	},
+	...(isDemoMode()
+		? []
+		: [
+				{
+					field: "course",
+					headerName: _("event_participation_headings.course"),
+					filterParams: {
+						filterOptions: ["contains"],
+						suppressAndOrCondition: true,
+					},
+					filter: "agTextColumnFilter",
+					resizable: true,
+				},
+		  ]),
 	{
 		field: "score_sum",
 		headerName: _("course_insights.score_sum"),
@@ -387,16 +515,20 @@ export const getEventParticipationMonitorHeaders = (
 			filter: "agTextColumnFilter",
 			resizable: true,
 		},
-		{
-			field: "course",
-			headerName: _("event_participation_headings.course"),
-			filterParams: {
-				filterOptions: ["contains"],
-				suppressAndOrCondition: true,
-			},
-			filter: "agTextColumnFilter",
-			resizable: true,
-		},
+		...(isDemoMode()
+			? []
+			: [
+					{
+						field: "course",
+						headerName: _("event_participation_headings.course"),
+						filterParams: {
+							filterOptions: ["contains"],
+							suppressAndOrCondition: true,
+						},
+						filter: "agTextColumnFilter",
+						resizable: true,
+					},
+			  ]),
 		{ field: "visibility", hide: true },
 		...(resultsMode
 			? [

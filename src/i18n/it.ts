@@ -197,7 +197,14 @@ export const it = {
 		insert_mat_and_course:
 			"L'inserimento del numero di matricola e la selezione del corso sono necessari per poter partecipare agli esami. Fallo ora e non pensarci più!",
 	},
+	donate: {
+		donate_title: "Dona",
+		donate_content:
+			"Evo Learning è un progetto open source. Se vuoi sostenerne lo sviluppo, considera di effettuare una donazione. Ti ringraziamo in anticipo!",
+		donate_now: "Dona ora",
+	},
 	misc: {
+		contact_us: "Contattaci",
 		select_all: "Seleziona tutti",
 		unselect_all: "Deseleziona tutti",
 		ads: "Pubblicità",
@@ -519,6 +526,7 @@ export const it = {
 		help_center_title: "Guida all'utilizzo",
 		based_on_your_activity: "In base alla tua attività",
 		take_the_tour: "Scopri le funzionalità della piattaforma col feature tour.",
+		cannot_find_the_answer: "Non trovi la risposta?",
 		start_tour: "Inizia",
 		articles: "Articoli",
 	},
@@ -997,6 +1005,39 @@ export const it = {
 		hidden_course: "Corso nascosto agli studenti",
 	},
 	tour: {
+		demo_student_header: "Benvenuto nella sezione studenti!",
+		demo_student_content:
+			"Questa è la dashboard che i tuoi studenti visualizzeranno quando accedono ai tuoi corsi. Vediamo alcune delle funzionalità principali.",
+		demo_practice_header: "Esercitazioni",
+		demo_practice_content:
+			"Evo Learning permette agli studenti di creare autonomamente esercitazioni sfruttando gli esercizi che il docente ha reso pubblici. Prova a creare un'esercitazione.",
+		demo_popular_exercises_header: "Esercizi popolari",
+		demo_popular_exercises_content:
+			"Da questa sezione, gli studenti possono visualizzare gli esercizi che hanno ricevuto più attenzione e discuterne tra di loro, proponendo soluzioni e votando le soluzioni proposte da altri.",
+		demo_leaderboard_header: "Classifica",
+		demo_leaderboard_content:
+			"Per i corsi in cui le funzionalità di gioco sono attive la classifica mostra gli studenti più attivi. Attenzione: nella demo non potrai gestire le funzionalità di gioco nei tuoi corsi, ma abbiamo già attivato queste funzionalità per te, quindi potrai provarle da studente.",
+		demo_help_center_header: "Centro supporto",
+		demo_help_center_content:
+			"Se hai dubbi su qualche funzionalità, visita il centro di supporto: troverai articoli che rispondono alle domande più frequenti sull'utilizzo. Se non trovi la risposta alla tua domanda, utilizza la funzione Contattaci.",
+		demo_permissions_header: "Permessi",
+		demo_permissions_content:
+			"Da questa sezione puoi aggiungere docenti al tuo corso, assegnando loro permessi diversi a seconda del loro ruolo.",
+		demo_solutions_header: "Soluzioni agli esercizi",
+		demo_solutions_content:
+			"Mentre dalla sezione Esercizi potrai scrivere le soluzioni per gli esercizi del tuo corso, in questa sezione troverai le soluzioni proposte dagli studenti.",
+		demo_exams_header: "Esami",
+		demo_exams_content:
+			"Gli esercizi che crei potranno essere inseriti in prove d'esame. In questa sezione potrai creare esami per il tuo corso, monitorare l'andamento di quelli in corso e visualizzare le statistiche di quelli già conclusi.",
+		demo_exercises_header: "Esercizi",
+		demo_exercises_content:
+			"La maggior parte delle funzionalità di Evo Learning sono incentrate sugli esercizi. In questa sezione troverai gli esercizi del tuo corso e potrai crearne di nuovi.",
+		demo_course_header: "È tutto pronto",
+		demo_course_content:
+			"Abbiamo già creato alcuni corsi per te, in modo che tu possa provare tutte le funzionaltà di Evo Learning. Inizia accedendo al pannello docente di uno dei corsi disponibili.",
+		demo_welcome_header: "Benvenuto nella tua demo di Evo Learning!",
+		demo_welcome_content:
+			"Per iniziare, effettua l'accesso con l'indirizzo email che hai usato per attivare la demo.",
 		new_sidebar_header: "Nuova sidebar",
 		new_sidebar_content:
 			"La nuova sidebar collassabile ti permette di concentrarti sul tuo lavoro senza distrazioni. Per mantenerla aperta sempre, clicca sul bottone qui in alto.",

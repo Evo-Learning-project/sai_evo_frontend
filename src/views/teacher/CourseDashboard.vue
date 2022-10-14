@@ -213,6 +213,11 @@
 			</div>
 		</div>
 		<v-tour name="teacherTour" :steps="teacherTourSteps" :options="tourOptions"></v-tour>
+		<v-tour
+			name="demoTeacherTour"
+			:steps="demoTeacherTourSteps"
+			:options="tourOptions"
+		></v-tour>
 	</div>
 </template>
 
@@ -235,8 +240,11 @@ import TextEditor from "@/components/ui/TextEditor.vue";
 import useVuelidate from "@vuelidate/core";
 
 import { courseValidation } from "@/validation/models";
-import { teacherTourSteps, tourOptions } from "@/const";
+import { demoTeacherTourSteps, teacherTourSteps, tourOptions } from "@/const";
 import CopyToClipboard from "@/components/ui/CopyToClipboard.vue";
+import { isDemoMode } from "@/utils";
+
+const DEMO_COURSE_DASHBOARD_TOUR_KEY = "course_dashboard_tour_taken";
 
 export default defineComponent({
 	name: "CourseDashboard",
@@ -290,6 +298,10 @@ export default defineComponent({
 		if (this.showTour) {
 			setTimeout(() => (this.$tours["teacherTour"] as any).start(), 500);
 		}
+		if (isDemoMode() && !(DEMO_COURSE_DASHBOARD_TOUR_KEY in localStorage)) {
+			setTimeout(() => (this.$tours["demoTeacherTour"] as any).start(), 500);
+			localStorage.setItem(DEMO_COURSE_DASHBOARD_TOUR_KEY, "true");
+		}
 	},
 	data() {
 		return {
@@ -299,6 +311,7 @@ export default defineComponent({
 			dirtyCourseDescription: "",
 			CoursePrivilege,
 			teacherTourSteps,
+			demoTeacherTourSteps,
 			tourOptions,
 			loadingEvents: false,
 			loadingExercises: false,

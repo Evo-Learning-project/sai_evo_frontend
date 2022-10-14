@@ -656,12 +656,27 @@
 		margin-top: 0;
 		margin-bottom: 0;
 	}
+	.v-step[x-placement^="top"] .v-step__arrow {
+		@apply border-light !important;
+		border-width: 0 0.5rem 0.5rem 0.5rem;
+		border-left-color: transparent !important;
+		border-right-color: transparent !important;
+		border-bottom-color: transparent !important;
+		bottom: -0.5rem;
+		left: calc(50% - 1rem);
+		margin-top: 0;
+		margin-bottom: 0;
+	}
 	.v-tour__target--highlighted {
-		z-index: 99999;
+		z-index: 9999999 !important;
 		box-shadow: 0 0 0 99999px rgba(0, 0, 0, 0.4) !important;
 	}
 	.v-tour {
-		z-index: 999;
+		z-index: 99999999 !important;
+	}
+
+	.v-step {
+		z-index: 99999999 !important;
 	}
 
 	/* tag input */

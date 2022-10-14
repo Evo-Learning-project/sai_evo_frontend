@@ -331,12 +331,24 @@ export default defineComponent({
 			return this.replaceTitleTokens(this.$route.meta.routeTitle as string);
 		},
 		internalSidebarOptions() {
-			return studentDashboardSidebarOptions;
+			return [
+				...studentDashboardSidebarOptions.filter(
+					r => r.routeName !== "StudentCourseList",
+				),
+				{
+					...studentDashboardSidebarOptions.filter(
+						r => r.routeName === "StudentCourseList",
+					)[0],
+					// override path for course list for teachers so it goes to /teacher/courses
+					// instead of /student/courses
+					...(this.user.is_teacher ? { routeName: "TeacherCourseList" } : {}),
+				},
+			];
 		},
 		sidebarOptions() {
 			return [
 				{ header: this.currentCourse.name },
-				...internalSidebarOptionsToSidebarMenuOptions(studentDashboardSidebarOptions),
+				...internalSidebarOptionsToSidebarMenuOptions(this.internalSidebarOptions),
 			];
 		},
 	},

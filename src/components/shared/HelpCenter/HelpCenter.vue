@@ -15,10 +15,17 @@
 			<div v-if="helpCenterSelectedArticleId === null">
 				<div
 					v-if="courseId"
+					v-show="!isDemo"
 					class="flex items-center px-6 py-4 mb-2 -mx-6 bg-light place-content-evenly"
 				>
 					<p>{{ $t("help.take_the_tour") }}</p>
 					<Btn @click="$emit('startTour')">{{ $t("help.start_tour") }}</Btn>
+				</div>
+				<div v-show="isDemo" class="flex items-center px-6 py-4 mb-2 -mx-6 bg-light">
+					<p>{{ $t("help.cannot_find_the_answer") }}</p>
+					<a href="mailto:s.bonini7@studenti.unipi.it" class="ml-auto"
+						><Btn>{{ $t("misc.contact_us") }}</Btn></a
+					>
 				</div>
 
 				<!-- relevant articles -->
@@ -129,6 +136,7 @@ import HelpCenterArticleFull from "./HelpCenterArticleFull.vue";
 import Btn from "@/components/ui/Btn.vue";
 import { courseIdMixin, mediaQueryMixin } from "@/mixins";
 import { createNamespacedHelpers } from "vuex";
+import { isDemoMode } from "@/utils";
 import { logAnalyticsEvent } from "@/utils";
 const { mapState, mapMutations } = createNamespacedHelpers("shared");
 export default defineComponent({
@@ -153,6 +161,9 @@ export default defineComponent({
 	},
 	computed: {
 		...mapState(["helpCenterSelectedArticleId"]),
+		isDemo() {
+			return isDemoMode();
+		},
 		sortedArticles(): HelpCenterArticle[] {
 			return [...getArticles()].sort(
 				(a, b) => this.getArticleRelevance(b) - this.getArticleRelevance(a),

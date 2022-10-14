@@ -39,7 +39,7 @@
 					</Btn>
 				</div>
 				<div class="flex items-center mr-auto lg:ml-10">
-					<img class="w-32 -ml-1" src="../../../public/unipi-logo.svg" />
+					<img :class="[isDemoMode ? 'w-40' : 'w-32', '-ml-1']" :src="logoUrl" />
 				</div>
 				<div class="">
 					<div
@@ -47,6 +47,25 @@
 						class="flex items-center ml-4 md:ml-6"
 					>
 						<LocaleSelector v-if="false"></LocaleSelector>
+						<DropdownMenu
+							:placement="'left'"
+							class="text-lightText"
+							:expanded="donateExpanded"
+							@toggleExpanded="onToggleDonate()"
+							v-if="isDemoMode"
+							><template v-slot:icon>
+								<span class="material-icons-outlined text-lightText"
+									>volunteer_activism</span
+								>
+							</template>
+							<div class="text-darkText w-72 text-center">
+								<h3>{{ $t("donate.donate_title") }}</h3>
+								<p class="mb-4">{{ $t("donate.donate_content") }}</p>
+								<a href="https://paypal.me/bsamusp00?country.x=IT&locale.x=it_IT">
+									<Btn>{{ $t("donate.donate_now") }}</Btn>
+								</a>
+							</div>
+						</DropdownMenu>
 						<Btn
 							:tooltip="$t('help.help_guide_label')"
 							@click="setHelpCenterVisibility(true)"
@@ -103,7 +122,7 @@
 					bg-primary
 				"
 			>
-				<img class="w-32" src="../../../public/unipi-logo.svg" />
+				<img :class="[isDemoMode ? 'w-40' : 'w-32']" :src="logoUrl" />
 				<Btn
 					:variant="'icon'"
 					:outline="true"
@@ -151,7 +170,7 @@
 									whitespace-pre
 								"
 							>
-								<img class="w-36" src="../../../public/unipi-logo.svg" /></div
+								<img :class="[isDemoMode ? 'w-40' : 'w-32']" :src="logoUrl" /></div
 						></transition>
 
 						<transition name="fade-quick">
@@ -274,7 +293,7 @@
 			>
 				<div class="w-full h-full px-2">
 					<div class="flex items-center w-full mt-4">
-						<img class="mx-auto w-36" src="../../../public/unipi-logo.svg" />
+						<img :class="[isDemoMode ? 'w-40' : 'w-32', 'mx-auto']" :src="logoUrl" />
 					</div>
 					<div
 						v-if="$store.getters['shared/isAuthenticated']"
@@ -376,16 +395,16 @@
 				></transition>
 			</div>
 		</div>
-		<v-tour
+		<!-- <v-tour
 			name="helpCenterTour"
 			:steps="teacherTourSteps"
 			:options="tourOptions"
-		></v-tour>
-		<v-tour
+		></v-tour> -->
+		<!-- <v-tour
 			name="newSideBarTour"
 			:steps="newSidebarHelpCenterTourSteps"
 			:options="tourOptions"
-		></v-tour>
+		></v-tour> -->
 	</div>
 </template>
 
@@ -397,7 +416,7 @@ import {
 	ROUTE_TITLE_EVENT_NAME_TOKEN,
 } from "@/navigation/const";
 import { SidebarOption } from "@/navigation/sidebar";
-import { logOut } from "@/utils";
+import { isDemoMode, logAnalyticsEvent, logOut } from "@/utils";
 import { defineComponent } from "@vue/runtime-core";
 import ErrorView from "../shared/ErrorView.vue";
 import SnackBar from "@/components/ui/SnackBar.vue";
@@ -407,6 +426,7 @@ import { newSidebarHelpCenterTourSteps, teacherTourSteps, tourOptions } from "@/
 import LocaleSelector from "@/components/ui/LocaleSelector.vue";
 
 import { createNamespacedHelpers } from "vuex";
+import DropdownMenu from "@/components/ui/DropdownMenu.vue";
 const { mapMutations, mapState } = createNamespacedHelpers("shared");
 
 const LOCAL_STORAGE_FIX_SIDEBAR_KEY = "sai_evo_fix_sidebar";
@@ -466,6 +486,7 @@ export default defineComponent({
 			newSidebarHelpCenterTourSteps,
 			tourOptions,
 			mediaQueryMd: false,
+			donateExpanded: false,
 		};
 	},
 	mixins: [courseIdMixin, eventIdMixin, coursePrivilegeMixin],
@@ -506,9 +527,24 @@ export default defineComponent({
 			}
 			localStorage.setItem(LOCAL_STORAGE_FIX_SIDEBAR_KEY, String(this.fixSideBar));
 		},
+		onToggleDonate() {
+			if (!this.donateExpanded) {
+				logAnalyticsEvent("toggledDonate", {});
+			}
+			this.donateExpanded = !this.donateExpanded;
+		},
 	},
 	computed: {
 		...mapState(["helpCenterOpen"]),
+		isDemoMode() {
+			return isDemoMode();
+		},
+		logoUrl() {
+			if (!this.isDemoMode) {
+				return require("../../../public/unipi-logo.svg");
+			}
+			return require("../../../public/evo_logo.png");
+		},
 		allowedSidebarOptions(): SidebarOption[] {
 			return ((this.$route.meta?.sidebarOptions ?? []) as SidebarOption[]).filter(o =>
 				this.hasPrivileges(o.requiredPrivileges),
@@ -539,7 +575,7 @@ export default defineComponent({
 			};
 		},
 	},
-	components: { ErrorView, SnackBar, Btn, HelpCenter, LocaleSelector },
+	components: { ErrorView, SnackBar, Btn, HelpCenter, LocaleSelector, DropdownMenu },
 });
 </script>
 

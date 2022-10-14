@@ -257,3 +257,5 @@ import { event } from "vue-gtag";
 export function logAnalyticsEvent(eventName: string, params: Record<string, any>) {
 	event(eventName, params);
 }
+
+export const isDemoMode = () => JSON.parse(process.env.VUE_APP_DEMO_MODE ?? "false");
