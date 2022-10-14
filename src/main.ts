@@ -82,10 +82,10 @@ app
 	})
 	.mount("#app");
 
-if (!dev) {
+if (!dev && process.env.VUE_APP_SENTRY_URL) {
 	Sentry.init({
 		app,
-		dsn: "https://a254871461ce4189bc483cc527fcebb9@o1003719.ingest.sentry.io/6265941",
+		dsn: process.env.VUE_APP_SENTRY_URL,
 		integrations: [
 			new BrowserTracing({
 				routingInstrumentation: Sentry.vueRouterInstrumentation(router),
