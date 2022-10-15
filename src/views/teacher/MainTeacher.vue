@@ -457,18 +457,6 @@ export default defineComponent({
 			this.fixSideBar = fixSideBar;
 			this.$nextTick(() => (this.unfixingSideBar = false));
 		}, 1);
-
-		if (
-			!JSON.parse(
-				localStorage.getItem(LOCAL_STORAGE_HAS_TAKEN_SIDEBAR_TOUR_KEY) ?? "false",
-			)
-		) {
-			setTimeout(() => {
-				(this.$tours["newSideBarTour"] as any).start();
-				localStorage.setItem(LOCAL_STORAGE_HAS_TAKEN_SIDEBAR_TOUR_KEY, "true");
-			}, 500);
-		}
-
 		// adjust router view padding and width according to screen size breakpoint
 		const mq = window.matchMedia("(min-width: 768px)");
 		mq.addEventListener("change", event => (this.mediaQueryMd = mq.matches));
