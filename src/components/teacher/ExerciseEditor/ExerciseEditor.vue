@@ -1307,6 +1307,7 @@ export default defineComponent({
 			return (
 				this.modelValue.exercise_type ===
 					ExerciseType.MULTIPLE_CHOICE_MULTIPLE_POSSIBLE &&
+				!this.modelValue.all_or_nothing &&
 				!this.v$.$invalid &&
 				!(this.modelValue.choices ?? []).some(c => (c.correctness ?? 0) < 0)
 			);
