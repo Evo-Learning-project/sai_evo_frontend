@@ -106,6 +106,7 @@
 				<!-- exercise section -->
 				<div class="md:order-2 order-1 w-full h-full md:h-auto overflow-y-auto">
 					<SegmentedControls
+						v-if="editorType !== 'text'"
 						class="mb-4"
 						v-model="currentTab"
 						:options="programmingExerciseTabsOptions"
