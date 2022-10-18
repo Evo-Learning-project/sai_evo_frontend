@@ -56,7 +56,7 @@
 					/>
 					<CodeEditor
 						v-else
-						:showRunButton="true"
+						:showRunButton="false && true"
 						:runCoolDown="runCoolDown"
 						:running="runningCode || runCoolDown > 0"
 						:size="'lg'"
@@ -106,7 +106,7 @@
 				<!-- exercise section -->
 				<div class="md:order-2 order-1 w-full h-full md:h-auto overflow-y-auto">
 					<SegmentedControls
-						v-if="editorType !== 'text'"
+						v-if="false && editorType !== 'text'"
 						class="mb-4"
 						v-model="currentTab"
 						:options="programmingExerciseTabsOptions"

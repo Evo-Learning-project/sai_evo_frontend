@@ -145,7 +145,7 @@
 										class="rounded-tr rounded-none flex-grow bg-dark"
 									/>
 									<div
-										v-show="!collapsed"
+										v-show="false && !collapsed"
 										class="bg-gray-50 px-2 py-2 w-64"
 										:style="
 											collapsed || calculatingHeight
