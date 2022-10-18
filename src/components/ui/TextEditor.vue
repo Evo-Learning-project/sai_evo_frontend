@@ -34,7 +34,7 @@
 				>
 					<slot></slot>
 				</label>
-				<div class="absolute -top-5 right-2">
+				<div class="absolute -top-5 right-0">
 					<Btn
 						:size="'xs'"
 						:variant="'primary-borderless'"
