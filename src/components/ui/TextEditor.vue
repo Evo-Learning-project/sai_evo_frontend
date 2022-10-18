@@ -1,7 +1,7 @@
 <template>
 	<div :class="{ 'h-full': tall }">
 		<Btn @click="showPreview = !showPreview">Anteprima</Btn>
-		<div @mouseup="endDragging()" class="flex space-x-4 relative">
+		<div @mouseup="endDragging()" class="flex space-x-2 relative">
 			<div
 				:id="resizablePanelId"
 				:style="previewPanelStyle"
@@ -41,19 +41,25 @@
 				:style="dividerStyle"
 				@mousedown="startDragging()"
 				style="width: 5px"
-				class="absolute resizer h-full top-0 bg-gray-300 z-30"
+				class="absolute resizer h-full top-0 bg-gray-300 bg-opacity-50 z-30"
 			></div>
+			<span
+				v-if="showPreview"
+				@mousedown="startDragging()"
+				:style="{
+					...dividerStyle,
+					transform: 'translate(-40%, -50%) rotate(90deg)',
+					'font-size': '20px !important',
+				}"
+				class="absolute opacity-30 resizer top-1/2 z-30 material-icons-outlined"
+			>
+				drag_handle
+			</span>
 			<div
-				class="px-4 py-2 relative"
+				class="px-8 py-2 relative"
 				:style="{ width: 100 - previewPanelWidth + '%' }"
 				v-if="showPreview"
 			>
-				<!-- <div
-					:style="dividerStyle"
-					@mousedown="startDragging()"
-					style="width: 5px"
-					class="absolute resizer h-full top-0 bg-gray-300"
-				></div> -->
 				<div v-html="modelValue" />
 			</div>
 		</div>
@@ -147,9 +153,8 @@ export default defineComponent({
 	},
 	methods: {
 		handleDragging(e: any) {
-			const percentage = (e.pageX / window.innerWidth) * 100;
-			console.log(percentage);
-			if (percentage >= 10 && percentage <= 90) {
+			const percentage = ((e.pageX - 51) / window.innerWidth) * 100;
+			if (percentage >= 30 && percentage <= 70) {
 				this.previewPanelWidth = percentage;
 			}
 		},
