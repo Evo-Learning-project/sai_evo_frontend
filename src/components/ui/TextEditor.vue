@@ -45,6 +45,29 @@
 						</p>
 					</Btn>
 				</div>
+				<div v-if="!forceBaseEditor" class="relative z-10 flex w-full hide-in-thumbnail">
+					<p
+						v-if="showBaseEditor"
+						style="font-size: 12px"
+						class="ml-auto text-sm text-muted"
+					>
+						{{ $t("misc.using_base_editor") }}
+					</p>
+					<Btn
+						@click="toggleBaseEditor()"
+						:size="'xs'"
+						:class="[showBaseEditor ? 'ml-2' : 'ml-auto my-auto -mt-6']"
+						:variant="'primary-borderless'"
+					>
+						<p class="text-sm" style="font-weight: 400; font-size: 11px">
+							{{
+								showBaseEditor
+									? $t("misc.show_full_editor")
+									: $t("misc.having_troubles_with_editor")
+							}}
+						</p></Btn
+					>
+				</div>
 			</div>
 			<div
 				v-if="showPreview"
@@ -70,28 +93,11 @@
 				:style="{ width: 100 - previewPanelWidth + '%' }"
 				v-if="showPreview"
 			>
+				<!-- TODO fix overflow with long, uninterrupted words -->
 				<div style="white-space: break-spaces" class="w-full" v-html="modelValue" />
 			</div>
 		</div>
-		<div v-if="!forceBaseEditor" class="relative z-10 flex w-full hide-in-thumbnail">
-			<p v-if="showBaseEditor" style="font-size: 12px" class="ml-auto text-sm text-muted">
-				{{ $t("misc.using_base_editor") }}
-			</p>
-			<Btn
-				@click="toggleBaseEditor()"
-				:size="'xs'"
-				:class="[showBaseEditor ? 'ml-2' : 'ml-auto my-auto -mt-6']"
-				:variant="'primary-borderless'"
-			>
-				<p class="text-sm" style="font-weight: 400; font-size: 11px">
-					{{
-						showBaseEditor
-							? $t("misc.show_full_editor")
-							: $t("misc.having_troubles_with_editor")
-					}}
-				</p></Btn
-			>
-		</div>
+
 		<div v-if="$slots.errors?.()" class="text-sm font-light text-danger-dark">
 			<slot name="errors"></slot>
 		</div>
