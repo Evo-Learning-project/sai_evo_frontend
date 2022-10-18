@@ -1,6 +1,5 @@
 <template>
 	<div :class="{ 'h-full': tall }">
-		<Btn @click="showPreview = !showPreview">Anteprima</Btn>
 		<div @mouseup="endDragging()" class="flex space-x-2 relative">
 			<div
 				:id="resizablePanelId"
@@ -35,6 +34,17 @@
 				>
 					<slot></slot>
 				</label>
+				<div class="absolute -top-5 right-2">
+					<Btn
+						:size="'xs'"
+						:variant="'primary-borderless'"
+						@click="showPreview = !showPreview"
+					>
+						<p class="text-sm" style="font-weight: 400; font-size: 11px">
+							{{ showPreview ? $t("misc.hide_preview") : $t("misc.show_preview") }}
+						</p>
+					</Btn>
+				</div>
 			</div>
 			<div
 				v-if="showPreview"
@@ -60,7 +70,7 @@
 				:style="{ width: 100 - previewPanelWidth + '%' }"
 				v-if="showPreview"
 			>
-				<div v-html="modelValue" />
+				<div style="white-space: break-spaces" class="w-full" v-html="modelValue" />
 			</div>
 		</div>
 		<div v-if="!forceBaseEditor" class="relative z-10 flex w-full hide-in-thumbnail">
@@ -134,6 +144,14 @@ export default defineComponent({
 				this.triggerTexRender();
 			}
 		},
+		modelValue() {
+			if (this.showPreview) {
+				if (this.triggerTexHandle !== null) {
+					clearTimeout(this.triggerTexHandle);
+				}
+				this.triggerTexHandle = setTimeout(() => this.triggerTexRender(), 100);
+			}
+		},
 	},
 	mounted() {
 		// prevent auto-focusing of quill editor
@@ -149,6 +167,7 @@ export default defineComponent({
 			resizablePanelId: uuid4(),
 			previewPanelWidth: 50,
 			pos: 0,
+			triggerTexHandle: null as number | null,
 		};
 	},
 	methods: {

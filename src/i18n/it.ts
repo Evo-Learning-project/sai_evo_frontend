@@ -204,6 +204,8 @@ export const it = {
 		donate_now: "Dona ora",
 	},
 	misc: {
+		show_preview: "Mostra anteprima",
+		hide_preview: "Nascondi anteprima",
 		contact_us: "Contattaci",
 		select_all: "Seleziona tutti",
 		unselect_all: "Deseleziona tutti",
