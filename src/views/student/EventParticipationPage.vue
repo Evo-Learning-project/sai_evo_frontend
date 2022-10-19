@@ -176,6 +176,7 @@
 </template>
 
 <script lang="ts">
+const EXECUTION_RESULTS_POLLING_INTERVAL = 1000;
 import AbstractEventParticipationSlot from "@/components/shared/AbstractEventParticipationSlot.vue";
 import Btn from "@/components/ui/Btn.vue";
 import CloudSaveStatus from "@/components/ui/CloudSaveStatus.vue";
@@ -206,9 +207,11 @@ import {
 	EVENT_PARTICIPATION_SLOT_DEBOUNCED_FIELDS,
 	EVENT_PARTICIPATION_SLOT_DEBOUNCE_TIME_MS,
 } from "@/const";
-import { partialUpdateEventParticipationSlot } from "@/api/events";
+import {
+	getEventParticipationSlotExecutionResults,
+	partialUpdateEventParticipationSlot,
+} from "@/api";
 import SlotSkeleton from "@/components/ui/skeletons/SlotSkeleton.vue";
-import { subscribeToSubmissionSlotChanges } from "@/ws/modelSubscription";
 import Countdown from "@/components/ui/Countdown.vue";
 import { getParticipationRemainingTime } from "@/utils";
 const { mapActions, mapMutations } = createNamespacedHelpers("student");
@@ -280,7 +283,6 @@ export default defineComponent({
 				yesText: "",
 				onYes: () => null,
 			} as DialogData,
-			ws: null as WebSocket | null,
 			EventType,
 			showTimeUpBackdrop: false,
 			remainingTime: null as number | null,
@@ -288,6 +290,7 @@ export default defineComponent({
 			goingForward: false,
 			goingBack: false,
 			turningIn: false,
+			executionResultsPollingHandles: {} as Record<string, number | null>,
 		};
 	},
 	methods: {
@@ -299,7 +302,10 @@ export default defineComponent({
 			"partialUpdateEventParticipation",
 			"runEventParticipationSlotCode",
 		]),
-		...mapMutations(["setCurrentEventParticipationSlot"]),
+		...mapMutations([
+			"setCurrentEventParticipationSlot",
+			"patchCurrentEventParticipationSlot",
+		]),
 		async onUpdateSubmission(
 			slot: EventParticipationSlot,
 			change: [keyof EventParticipationSlotSubmission, any],
@@ -320,13 +326,10 @@ export default defineComponent({
 			}
 		},
 		async onRunCode(slot: EventParticipationSlot) {
-			this.running = true;
-			// flush queued changes before moving on to next slot
 			try {
+				// flush queued changes before scheduling code run
 				await this.slotAutoSaveManagers[slot.id].flush();
-				// subscribe to slot to get code execution results
-				this.ws?.close();
-				this.ws = await subscribeToSubmissionSlotChanges(slot.id);
+
 				// send request to run code
 				await this.runEventParticipationSlotCode({
 					courseId: this.courseId,
@@ -334,11 +337,34 @@ export default defineComponent({
 					participationId: this.currentEventParticipation.id,
 					slotId: slot.id,
 				});
+
+				// poll until execution is complete
+				this.pollForExecutionResults(slot.id);
 			} catch (e) {
 				this.setErrorNotification(e);
-			} finally {
-				this.running = false;
 			}
+		},
+		pollForExecutionResults(slotId: string) {
+			const handle = this.executionResultsPollingHandles[slotId];
+			if (typeof handle === "number") {
+				clearInterval(handle);
+			}
+			this.executionResultsPollingHandles[slotId] = setInterval(async () => {
+				const executionResults = await getEventParticipationSlotExecutionResults(
+					this.courseId,
+					this.eventId,
+					this.proxyModelValue.id,
+					slotId,
+				);
+				if (executionResults.state !== "running") {
+					this.patchCurrentEventParticipationSlot({
+						slotId,
+						changes: { execution_results: executionResults },
+					});
+					clearInterval(this.executionResultsPollingHandles[slotId] as number);
+					this.executionResultsPollingHandles[slotId] = null;
+				}
+			}, EXECUTION_RESULTS_POLLING_INTERVAL);
 		},
 		async onGoForward() {
 			this.showConfirmDialog = false;
