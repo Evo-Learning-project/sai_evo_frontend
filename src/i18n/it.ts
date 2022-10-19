@@ -204,6 +204,7 @@ export const it = {
 		donate_now: "Dona ora",
 	},
 	misc: {
+		maintenance_mode: "Evo Learning è in modalità manutenzione. Riprova più tardi.",
 		show_preview: "Mostra anteprima",
 		hide_preview: "Nascondi anteprima",
 		contact_us: "Contattaci",

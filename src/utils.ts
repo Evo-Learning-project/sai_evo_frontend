@@ -68,6 +68,13 @@ export const getFormattedTimestamp = (
 };
 
 export const getErrorData = (e: any, useAsIs = false): ErrorMessage => {
+	if (isMaintenanceMode()) {
+		return {
+			title: _("misc.maintenance_mode"),
+			icon: "engineering",
+		};
+	}
+
 	if (useAsIs) {
 		return { title: e };
 	}
@@ -259,3 +266,5 @@ export function logAnalyticsEvent(eventName: string, params: Record<string, any>
 }
 
 export const isDemoMode = () => JSON.parse(process.env.VUE_APP_DEMO_MODE ?? "false");
+export const isMaintenanceMode = () =>
+	JSON.parse(process.env.VUE_APP_MAINTENANCE_MODE ?? "false");
