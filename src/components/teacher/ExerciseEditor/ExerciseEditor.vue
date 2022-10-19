@@ -833,9 +833,9 @@ export default defineComponent({
 	async created() {
 		// TODO you should refetch exercise to make sure someone hasn't locked it
 
-		if (!this.subExercise) {
-			this.ws = await subscribeToExerciseChanges(this.modelValue.id);
-		}
+		// ! if (!this.subExercise) {
+		// 	this.ws = await subscribeToExerciseChanges(this.modelValue.id);
+		// }
 		this.autoSaveManager = new AutoSaveManager<Exercise>(
 			this.modelValue,
 			async changes =>
