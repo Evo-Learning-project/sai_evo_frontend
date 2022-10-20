@@ -163,31 +163,74 @@
 				>
 
 				<!-- test case attachments -->
-				<div class="col-span-12">
-					<h5 class="mb-2">{{ $t("exercise_editor.testcase_attachments") }}</h5>
-					<p class="text-muted mb-2">
+				<Btn
+					class="-mt-4 col-span-3 w-max"
+					@click="showAttachmentArea = true"
+					v-if="!showAttachmentArea"
+					:variant="'primary-borderless'"
+					:size="'xs'"
+					><span class="text-sm">{{
+						$t("exercise_editor.testcase_add_attachments")
+					}}</span></Btn
+				>
+				<div v-else class="col-span-12">
+					<h5 class="mb-1">{{ $t("exercise_editor.testcase_attachments") }}</h5>
+					<p class="text-muted mb-2 text-sm">
 						{{ $t("exercise_editor.testcase_attachments_description") }}
 					</p>
-					<div
-						class="flex items-center w-full"
-						v-for="testcaseAttachment in attachments"
-						:key="'attachment-' + testcaseAttachment.id"
-					>
-						<p class="text-sm mr-2">{{ testcaseAttachment.attachment.name }}</p>
-						<p class="text-xs text-muted">
-							{{ testcaseAttachment.attachment.size / 1000 }} KB
-						</p>
-						<Btn
-							class="transition-opacity duration-100 opacity-50 hover:opacity-100 ml-auto"
-							:variant="'icon'"
-							:size="'xs'"
-							:outline="true"
-							><span style="font-size: 18px !important" class="material-icons"
-								>delete</span
-							></Btn
-						>
+					<div class="w-full flex items-start space-x-4">
+						<!-- attachment upload -->
+						<div class="w-full">
+							<FileUpload :small="true" :autoUpload="true" v-model="attachmentProxy" />
+						</div>
+
+						<!-- attachment list -->
+						<div class="w-full">
+							<div
+								class="flex items-center w-full my-0.5"
+								v-for="testcaseAttachment in attachments"
+								:key="'attachment-' + testcaseAttachment.id"
+							>
+								<div class="flex items-center">
+									<span
+										class="material-icons text-muted mr-1"
+										style="font-size: 18px !important"
+										>insert_drive_file</span
+									>
+									<p class="text-sm mr-2">{{ testcaseAttachment.attachment.name }}</p>
+									<p class="text-xs text-muted mr-2">
+										{{ testcaseAttachment.attachment.size / 1000 }} KB
+									</p>
+									<Btn
+										@click="$emit('downloadAttachment', testcaseAttachment.id)"
+										:size="'xs'"
+										:outline="true"
+										:variant="'icon'"
+										><span
+											class="material-icons-outlined text-muted"
+											style="font-size: 18px !important"
+											>file_download</span
+										></Btn
+									>
+								</div>
+								<Btn
+									class="
+										transition-opacity
+										duration-100
+										ml-auto
+										opacity-50
+										hover:opacity-100
+									"
+									:variant="'icon'"
+									:size="'xs'"
+									:outline="true"
+									><span style="font-size: 18px !important" class="material-icons"
+										>delete</span
+									></Btn
+								>
+							</div>
+						</div>
 					</div>
-					<FileUpload :autoUpload="true" v-model="attachmentProxy"></FileUpload>
 				</div>
 			</div>
 		</div>
@@ -239,6 +282,16 @@ export default defineComponent({
 		},
 		// TODO add language prop
 	},
+	watch: {
+		attachments: {
+			deep: true,
+			handler(newVal) {
+				if (newVal.length > 0) {
+					this.showAttachmentArea = true;
+				}
+			},
+		},
+	},
 	components: {
 		TextEditor,
 		CodeEditor,
@@ -254,6 +307,7 @@ export default defineComponent({
 			testcaseTypeOptions,
 			ExerciseTestCaseType,
 			ExerciseType,
+			showAttachmentArea: false,
 		};
 	},
 	methods: {

@@ -647,9 +647,10 @@ export const it = {
 		allowed_students: "studenti ammessi",
 	},
 	exercise_editor: {
+		testcase_add_attachments: "Aggiungi allegati",
 		testcase_attachments: "Allegati",
 		testcase_attachments_description:
-			"I file che alleghi a un test case verranno inclusi nella directory di lavoro nella quale verrà eseguito il codice.",
+			"I file che alleghi a un test case verranno inclusi nella directory di lavoro nella quale verrà eseguito il codice. Gli allegati di un test case sono disponibili solo durante l'esecuzione di quel test case.",
 		use_assert_lib: "Per scrivere il codice dei test case, utilizza la libreria",
 		exercise_editor_title: "Editor esercizio",
 		draft_notice: "Bozza",

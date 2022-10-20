@@ -16,6 +16,7 @@
 				:input-id="elementId"
 			>
 				<div
+					:class="[!small ? 'h-44' : 'h-20']"
 					class="
 						relative
 						flex
@@ -23,15 +24,17 @@
 						rounded
 						cursor-pointer
 						w-full
-						h-44
 						bg-light
 					"
 				>
 					<div :class="{ invisible: files.length > 0 }" class="p-4 mx-auto my-auto">
-						<p class="opacity-30 material-icons-outlined text-5xl">
+						<p
+							class="opacity-30 material-icons-outlined"
+							:class="[!small ? 'text-5xl' : 'text-3xl -mt-1.5']"
+						>
 							{{ disabled ? "file_download_off" : "cloud_upload" }}
 						</p>
-						<p class="opacity-60">
+						<p class="opacity-60" :class="[!small ? '' : '-mt-2 text-sm']">
 							{{ disabled ? $t("misc.file_upload_no_files") : $t("misc.file_upload") }}
 						</p>
 					</div>
@@ -59,11 +62,11 @@
               > -->
 							<div
 								@click="download"
+								:class="[small ? 'py-4' : 'py-16']"
 								class="
 									absolute
 									z-50
 									top-0
-									py-16
 									hover:bg-opacity-40
 									transition-all
 									duration-75
@@ -80,8 +83,17 @@
 								class="absolute top-0 right-0 mt-2 mr-3"
 								v-if="file.success"
 							></AnimatedIcon>
-							<img class="mt-7 w-28 h-28" v-if="file.thumb" :src="file.thumb" />
-							<span v-else class="mt-12 material-icons-outlined text-gray-400 text-5xl">
+							<img
+								class=""
+								:class="[small ? 'w-10 h-10 mt-2' : 'w-28 h-28 mt-7']"
+								v-if="file.thumb"
+								:src="file.thumb"
+							/>
+							<span
+								v-else
+								class="material-icons-outlined text-gray-400"
+								:class="[small ? 'text-3xl mt-2.5' : 'text-5xl mt-12']"
+							>
 								insert_drive_file
 							</span>
 							<!-- <img class="mt-4 w-28 h-28" v-else src="../../../public/pdf_thmb.png" /> -->
@@ -122,6 +134,10 @@ export default defineComponent({
 		AnimatedIcon,
 	},
 	props: {
+		small: {
+			type: Boolean,
+			default: false,
+		},
 		maxFilesNum: {
 			type: Number,
 			default: 1,
