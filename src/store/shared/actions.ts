@@ -15,6 +15,8 @@ import {
 	updateExerciseSolution,
 	createExerciseSolution,
 	getExerciseSolutionsByExercise,
+	getExerciseTestCaseAttachments,
+	createExerciseTestCaseAttachment,
 } from "@/api/exercises";
 import { ExerciseSolutionSearchFilter } from "@/api/interfaces";
 import { getMe, updateUser } from "@/api/users";
@@ -27,6 +29,7 @@ import {
 	ExerciseTestCase,
 	User,
 	ExerciseSolution,
+	ExerciseTestCaseAttachment,
 } from "@/models";
 
 import axios from "axios";
@@ -190,5 +193,50 @@ export const actions = {
 				payload: choices,
 			});
 		}
+	},
+	getExerciseTestCaseAttachments: async (
+		{ state }: { state: SharedState },
+		{
+			courseId,
+			exerciseId,
+			testcaseId,
+		}: {
+			courseId: string;
+			exerciseId: string;
+			testcaseId: string;
+		},
+	) => {
+		const attachments = await getExerciseTestCaseAttachments(
+			courseId,
+			exerciseId,
+			testcaseId,
+		);
+
+		state.exerciseTestCaseAttachmentsByTestCaseId[testcaseId] = attachments;
+		return attachments;
+	},
+	createExerciseTestCaseAttachment: async (
+		{ state }: { state: SharedState },
+		{
+			courseId,
+			exerciseId,
+			testcaseId,
+			attachment,
+		}: {
+			courseId: string;
+			exerciseId: string;
+			testcaseId: string;
+			attachment: Blob;
+		},
+	) => {
+		console.log("ACTION", attachment);
+		const response = await createExerciseTestCaseAttachment(
+			courseId,
+			exerciseId,
+			testcaseId,
+			attachment,
+		);
+		state.exerciseTestCaseAttachmentsByTestCaseId[testcaseId] ??= [];
+		state.exerciseTestCaseAttachmentsByTestCaseId[testcaseId].push(response);
 	},
 };

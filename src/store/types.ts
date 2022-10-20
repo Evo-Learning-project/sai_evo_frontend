@@ -10,6 +10,7 @@ import {
 	User,
 	ExerciseSolution,
 	GamificationContext,
+	ExerciseTestCaseAttachment,
 } from "@/models";
 
 export interface StudentState {
@@ -36,6 +37,7 @@ export interface SharedState {
 	courses: Course[];
 	tags: Tag[];
 	paginatedSolutionsByExerciseId: Record<string, PaginatedData<ExerciseSolution>>; // string = exercise id,
+	exerciseTestCaseAttachmentsByTestCaseId: Record<string, ExerciseTestCaseAttachment[]>;
 
 	// bookeeping
 	loading: boolean; // global spinner

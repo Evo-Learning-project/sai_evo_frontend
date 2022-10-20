@@ -32,6 +32,7 @@ export const sharedStore = {
 		courses: [] as Course[],
 		tags: [] as Tag[],
 		paginatedSolutionsByExerciseId: {},
+		exerciseTestCaseAttachmentsByTestCaseId: {},
 
 		// bookkeeping
 		loading: false,

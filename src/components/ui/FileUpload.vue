@@ -134,6 +134,10 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+		autoUpload: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	watch: {
 		uploading(newVal) {
@@ -148,7 +152,6 @@ export default defineComponent({
 			files: [] as any,
 			minSize: 0,
 			maxSize: 1000000000,
-			uploadAuto: false,
 			showUpload: false,
 			elementId: uuid4(),
 		};
@@ -285,7 +288,7 @@ export default defineComponent({
 			if (Boolean(newFile) !== Boolean(oldFile) || oldFile.error !== newFile.error) {
 				this.showUpload = true;
 
-				if (this.uploadAuto && !(this.$refs as any).upload.active) {
+				if (this.autoUpload && !(this.$refs as any).upload.active) {
 					(this.$refs as any).upload.active = true;
 				}
 			}

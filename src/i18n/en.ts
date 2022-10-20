@@ -1,4 +1,4 @@
-import { ExerciseState, ExerciseType, EventState } from "@/models";
+import { ExerciseState, ExerciseType, EventState, ExerciseTestCaseType } from "@/models";
 
 export const en = {
 	dialog: {
@@ -110,6 +110,11 @@ export const en = {
 		unnamed_exercise: "Unnamed exercise",
 	},
 	exercise_editor: {
+		testcases_title: "Test cases",
+		testcase_type: "Visibility",
+		testcase_text: "Description",
+		testcase_stdin: "Standard Input",
+		testcase_expected_stdout: "Expected Standard Output",
 		max_score: "Max score",
 		solutions_title: "Solutions",
 		new_solution: "New solution",
@@ -162,6 +167,8 @@ export const en = {
 		[ExerciseState.DRAFT]: "Draft",
 	},
 	misc: {
+		show_preview: "Show preview",
+		hide_preview: "Hide preview",
 		having_troubles_with_editor: "Having problems with the editor?",
 		tags: "Tags",
 		example: "Example",
@@ -280,6 +287,11 @@ export const en = {
 		exam_is_over: "L'esame è terminato.",
 		begin_timestamp: "Began on",
 		turn_in_timestamp: "Turned in on",
+	},
+	testcase_types: {
+		[ExerciseTestCaseType.SHOW_CODE_SHOW_TEXT]: "Public",
+		[ExerciseTestCaseType.SHOW_TEXT_ONLY]: "Only descript.",
+		[ExerciseTestCaseType.HIDDEN]: "Hidden",
 	},
 	event_assessment: {
 		overall_score: "Grade",

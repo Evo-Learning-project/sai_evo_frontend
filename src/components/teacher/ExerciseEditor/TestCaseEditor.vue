@@ -1,5 +1,6 @@
 <template>
 	<div class="flex flex-col">
+		<!-- top row -->
 		<div class="flex items-center mb-2">
 			<div class="mt-auto" v-if="(executionResultsSlots ?? []).length > 0">
 				<Spinner class="mb-2 ml-0.5" v-if="executingSolution"></Spinner>
@@ -38,7 +39,7 @@
 				>
 			</div>
 		</div>
-
+		<!-- body -->
 		<div
 			class="
 				flex flex-col
@@ -54,6 +55,7 @@
       drag_indicator
     </span> -->
 			<div class="grid w-full grid-cols-6 gap-5 md:grid-cols-12">
+				<!-- visibility controls -->
 				<div
 					:class="{
 						'col-span-6':
@@ -68,6 +70,8 @@
 						>{{ $t("exercise_editor.testcase_type") }}</SegmentedControls
 					>
 				</div>
+
+				<!-- JS/Python test case codice -->
 				<CodeEditor
 					@blur="$emit('blur')"
 					class="col-span-6 md:row-span-2"
@@ -89,6 +93,8 @@
 						</div>
 					</div></CodeEditor
 				>
+
+				<!-- stdin & stdout -->
 				<div v-else class="flex col-span-7 space-x-2 md:row-span-2">
 					<CodeEditor
 						@blur="$emit('blur')"
@@ -133,6 +139,8 @@
 						</div></CodeEditor
 					>
 				</div>
+
+				<!-- test case description editor -->
 				<TextEditor
 					@blur="$emit('blur')"
 					:class="{
@@ -153,6 +161,34 @@
 						</div>
 					</div></TextEditor
 				>
+
+				<!-- test case attachments -->
+				<div class="col-span-12">
+					<h5 class="mb-2">{{ $t("exercise_editor.testcase_attachments") }}</h5>
+					<p class="text-muted mb-2">
+						{{ $t("exercise_editor.testcase_attachments_description") }}
+					</p>
+					<div
+						class="flex items-center w-full"
+						v-for="testcaseAttachment in attachments"
+						:key="'attachment-' + testcaseAttachment.id"
+					>
+						<p class="text-sm mr-2">{{ testcaseAttachment.attachment.name }}</p>
+						<p class="text-xs text-muted">
+							{{ testcaseAttachment.attachment.size / 1000 }} KB
+						</p>
+						<Btn
+							class="transition-opacity duration-100 opacity-50 hover:opacity-100 ml-auto"
+							:variant="'icon'"
+							:size="'xs'"
+							:outline="true"
+							><span style="font-size: 18px !important" class="material-icons"
+								>delete</span
+							></Btn
+						>
+					</div>
+					<FileUpload :autoUpload="true" v-model="attachmentProxy"></FileUpload>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -163,6 +199,7 @@ import {
 	CodeExecutionResults as ICodeExecutionResults,
 	EventParticipationSlot,
 	ExerciseTestCase,
+	ExerciseTestCaseAttachment,
 	ExerciseTestCaseType,
 	ExerciseType,
 	TestCaseExecutionResults,
@@ -176,6 +213,7 @@ import Btn from "@/components/ui/Btn.vue";
 import Tooltip from "@/components/ui/Tooltip.vue";
 import Spinner from "@/components/ui/Spinner.vue";
 import CodeExecutionResults from "@/components/shared/CodeExecutionResults.vue";
+import FileUpload from "@/components/ui/FileUpload.vue";
 
 export default defineComponent({
 	name: "TestCaseEditor",
@@ -195,6 +233,10 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+		attachments: {
+			type: Array as PropType<ExerciseTestCaseAttachment[]>,
+			default: () => [],
+		},
 		// TODO add language prop
 	},
 	components: {
@@ -205,6 +247,7 @@ export default defineComponent({
 		Tooltip,
 		Spinner,
 		CodeExecutionResults,
+		FileUpload,
 	},
 	data() {
 		return {
@@ -219,6 +262,14 @@ export default defineComponent({
 		},
 	},
 	computed: {
+		attachmentProxy: {
+			get() {
+				return [];
+			},
+			set(val: any) {
+				this.$emit("createAttachment", val);
+			},
+		},
 		executionResults(): ICodeExecutionResults[] {
 			return (this.executionResultsSlots ?? []).map(
 				s => s.execution_results ?? { state: "completed", tests: [] },

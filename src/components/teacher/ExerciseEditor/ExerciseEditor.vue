@@ -596,10 +596,12 @@
 					>
 						<template #item="{ element }">
 							<TestCaseEditor
+								:attachments="exerciseTestCaseAttachmentsByTestCaseId[element.id] ?? []"
 								:executingSolution="testCaseAutoSaveManagers[element.id].isPending()"
 								:testCaseType="modelValue.exercise_type"
 								@blur="onBlurTestCase(element.id)"
 								@delete="onDeleteTestCase(element.id)"
+								@createAttachment="onTestCaseCreateAttachment(element.id, $event)"
 								:modelValue="element"
 								:executionResultsSlots="Object.values(solutionTestSlots)"
 								@testCaseUpdate="onUpdateTestCase(element.id, $event.field, $event.value)"
@@ -855,11 +857,21 @@ export default defineComponent({
 			() => (this.saving = false),
 		);
 
+		// instantiate managers for children
 		this.modelValue.choices?.forEach(c =>
 			// TODO extract auto-save manager instantiation to module
 			this.instantiateChoiceAutoSaveManager(c),
 		);
-		this.modelValue.testcases?.forEach(t => this.instantiateTestCaseAutoSaveManager(t));
+
+		// for test cases, also fetch attachments
+		this.modelValue.testcases?.forEach(t => {
+			this.instantiateTestCaseAutoSaveManager(t);
+			this.getExerciseTestCaseAttachments({
+				courseId: this.courseId,
+				exerciseId: this.modelValue.id,
+				testcaseId: t.id,
+			});
+		});
 
 		this.loadingSolutions = true;
 		try {
@@ -925,7 +937,13 @@ export default defineComponent({
 			"deleteExerciseChild",
 		]),
 		...mapActions("student", ["addExerciseSolution", "deleteExerciseSolution"]),
-		...mapActions("shared", ["getTags", "updateExerciseChild", "getSolutionsByExercise"]),
+		...mapActions("shared", [
+			"getTags",
+			"updateExerciseChild",
+			"getSolutionsByExercise",
+			"getExerciseTestCaseAttachments",
+			"createExerciseTestCaseAttachment",
+		]),
 		...mapMutations("teacher", ["setExercise", "setExerciseChild"]),
 		...mapMutations("shared", ["setExerciseSolution"]),
 		async onChoiceDragEnd(event: { oldIndex: number; newIndex: number }) {
@@ -1143,6 +1161,15 @@ export default defineComponent({
 				);
 			}
 		},
+		async onTestCaseCreateAttachment(testcaseId: string, attachment: Blob) {
+			console.log("CREATING", attachment);
+			await this.createExerciseTestCaseAttachment({
+				courseId: this.courseId,
+				exerciseId: this.modelValue.id,
+				testcaseId,
+				attachment,
+			});
+		},
 		async onAddTag(tag: string, isPublic: boolean) {
 			await this.addExerciseTag({
 				courseId: this.courseId,
@@ -1299,7 +1326,12 @@ export default defineComponent({
 		},
 	},
 	computed: {
-		...mapState(["tags", "user", "paginatedSolutionsByExerciseId"]),
+		...mapState([
+			"tags",
+			"user",
+			"paginatedSolutionsByExerciseId",
+			"exerciseTestCaseAttachmentsByTestCaseId",
+		]),
 		solutions(): ExerciseSolution[] {
 			return this.paginatedSolutionsByExerciseId[this.modelValue.id]?.data ?? [];
 		},

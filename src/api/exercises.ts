@@ -15,6 +15,7 @@ import {
 	ExerciseTestCase,
 	ExerciseSolutionVote,
 	ExerciseSolutionState,
+	ExerciseTestCaseAttachment,
 } from "@/models";
 import axios from "axios";
 import {
@@ -183,6 +184,33 @@ export async function deleteExerciseTestCase(
 ): Promise<ExerciseChoice> {
 	const response = await axios.delete(
 		`/courses/${courseId}/exercises/${exerciseId}/testcases/${testcaseId}/`,
+	);
+	return response.data;
+}
+
+export async function getExerciseTestCaseAttachments(
+	courseId: string,
+	exerciseId: string,
+	testcaseId: string,
+): Promise<ExerciseTestCaseAttachment[]> {
+	const response = await axios.get(
+		`/courses/${courseId}/exercises/${exerciseId}/testcases/${testcaseId}/attachments/`,
+	);
+	return response.data;
+}
+
+export async function createExerciseTestCaseAttachment(
+	courseId: string,
+	exerciseId: string,
+	testcaseId: string,
+	attachment: Blob,
+): Promise<ExerciseTestCaseAttachment> {
+	const formData = new FormData();
+	formData.append("attachment", attachment as Blob);
+
+	const response = await axios.post(
+		`/courses/${courseId}/exercises/${exerciseId}/testcases/${testcaseId}/attachments/`,
+		formData,
 	);
 	return response.data;
 }

@@ -115,6 +115,17 @@ export interface ExerciseTestCase {
 	testcase_type: ExerciseTestCaseType;
 }
 
+export interface ExerciseTestCaseAttachment {
+	id: string;
+	attachment:
+		| {
+				name: string;
+				size: number;
+				extras: {};
+		  } // download representation
+		| Blob; // upload representation
+}
+
 export interface Tag {
 	id?: string;
 	name: string;
