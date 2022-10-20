@@ -166,14 +166,14 @@
 				<Btn
 					class="-mt-4 col-span-3 w-max"
 					@click="showAttachmentArea = true"
-					v-if="!showAttachmentArea"
+					v-if="false && !showAttachmentArea"
 					:variant="'primary-borderless'"
 					:size="'xs'"
 					><span class="text-sm">{{
 						$t("exercise_editor.testcase_add_attachments")
 					}}</span></Btn
 				>
-				<div v-else class="col-span-12">
+				<div v-else-if="false" class="col-span-12">
 					<h5 class="mb-1">{{ $t("exercise_editor.testcase_attachments") }}</h5>
 					<p class="text-muted mb-2 text-sm">
 						{{ $t("exercise_editor.testcase_attachments_description") }}
@@ -185,7 +185,7 @@
 						</div>
 
 						<!-- attachment list -->
-						<div class="w-full">
+						<div class="w-full" v-if="attachments.length > 0">
 							<div
 								class="flex items-center w-full my-0.5"
 								v-for="testcaseAttachment in attachments"
@@ -283,6 +283,7 @@ export default defineComponent({
 		// TODO add language prop
 	},
 	watch: {
+		// TODO review, it might be shared among components
 		attachments: {
 			deep: true,
 			handler(newVal) {

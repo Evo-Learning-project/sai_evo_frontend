@@ -233,6 +233,11 @@ export default defineComponent({
 			newVal.forEach(s => this.instantiateSlotAutoSaveManager(s));
 		},
 	},
+	beforeUnmount() {
+		Object.values(this.executionResultsPollingHandles)
+			.filter(h => typeof h === "number")
+			.forEach(h => clearInterval(h as number));
+	},
 	async created() {
 		await this.withFirstLoading(
 			async () =>
