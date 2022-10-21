@@ -92,10 +92,7 @@ if (!dev && process.env.VUE_APP_SENTRY_URL) {
 				tracingOrigins: ["localhost", "my-site-url.com", /^\//],
 			}),
 		],
-		// Set tracesSampleRate to 1.0 to capture 100%
-		// of transactions for performance monitoring.
-		// We recommend adjusting this value in production
-		tracesSampleRate: 1.0,
+		tracesSampleRate: 0.5,
 		logErrors: true,
 		beforeSend(event) {
 			if (event.exception?.values?.[0]?.value === "Request failed with status code 401") {
