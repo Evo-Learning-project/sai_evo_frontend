@@ -185,13 +185,16 @@ export const actions = {
 
 		if (reFetch) {
 			if (childType !== "choice") return;
-			// TODO fix!!
 			const choices = await getExerciseChoices(courseId, exerciseId);
-			commit("setExerciseChildren", {
-				exerciseId,
-				children: "choices",
-				payload: choices,
-			});
+			commit(
+				"teacher/setExerciseChildren",
+				{
+					exerciseId,
+					children: "choices",
+					payload: choices,
+				},
+				{ root: true },
+			);
 		}
 	},
 	getExerciseTestCaseAttachments: async (
