@@ -166,14 +166,14 @@
 				<Btn
 					class="-mt-4 col-span-3 w-max"
 					@click="showAttachmentArea = true"
-					v-if="false && !showAttachmentArea"
+					v-if="testCaseType === ExerciseType.C && !showAttachmentArea"
 					:variant="'primary-borderless'"
 					:size="'xs'"
 					><span class="text-sm">{{
 						$t("exercise_editor.testcase_add_attachments")
 					}}</span></Btn
 				>
-				<div v-else-if="false" class="col-span-12">
+				<div v-else-if="testCaseType === ExerciseType.C" class="col-span-12">
 					<h5 class="mb-1">{{ $t("exercise_editor.testcase_attachments") }}</h5>
 					<p class="text-muted mb-2 text-sm">
 						{{ $t("exercise_editor.testcase_attachments_description") }}
@@ -218,14 +218,15 @@
 										transition-opacity
 										duration-100
 										ml-auto
+										mr-2.5
 										opacity-50
 										hover:opacity-100
 									"
 									:variant="'icon'"
 									:size="'xs'"
 									:outline="true"
-									><span style="font-size: 18px !important" class="material-icons"
-										>delete</span
+									><span style="font-size: 16px !important" class="material-icons"
+										>close</span
 									></Btn
 								>
 							</div>

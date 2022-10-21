@@ -97,5 +97,12 @@ if (!dev && process.env.VUE_APP_SENTRY_URL) {
 		// We recommend adjusting this value in production
 		tracesSampleRate: 1.0,
 		logErrors: true,
+		beforeSend(event) {
+			if (event.exception?.values?.[0]?.value === "Request failed with status code 401") {
+				// avoid sending 401's
+				return null;
+			}
+			return event;
+		},
 	});
 }
