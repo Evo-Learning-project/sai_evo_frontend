@@ -215,6 +215,30 @@ export async function createExerciseTestCaseAttachment(
 	return response.data;
 }
 
+export async function deleteExerciseTestCaseAttachment(
+	courseId: string,
+	exerciseId: string,
+	testcaseId: string,
+	attachmentId: string,
+): Promise<void> {
+	const response = await axios.delete(
+		`/courses/${courseId}/exercises/${exerciseId}/testcases/${testcaseId}/attachments/${attachmentId}/`,
+	);
+	return response.data;
+}
+
+export async function downloadExerciseTestCaseAttachment(
+	courseId: string,
+	exerciseId: string,
+	testcaseId: string,
+	attachmentId: string,
+): Promise<BlobPart> {
+	const response = await axios.get(
+		`/courses/${courseId}/exercises/${exerciseId}/testcases/${testcaseId}/attachments/${attachmentId}/`,
+	);
+	return response.data;
+}
+
 export async function getExerciseSubExercises(
 	courseId: string,
 	exerciseId: string,

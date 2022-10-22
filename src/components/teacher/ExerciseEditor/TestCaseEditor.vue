@@ -202,7 +202,7 @@
 										{{ testcaseAttachment.attachment.size / 1000 }} KB
 									</p>
 									<Btn
-										@click="$emit('downloadAttachment', testcaseAttachment.id)"
+										@click="$emit('downloadAttachment', testcaseAttachment)"
 										:size="'xs'"
 										:outline="true"
 										:variant="'icon'"
@@ -222,6 +222,7 @@
 										opacity-50
 										hover:opacity-100
 									"
+									@click="$emit('deleteAttachment', testcaseAttachment)"
 									:variant="'icon'"
 									:size="'xs'"
 									:outline="true"

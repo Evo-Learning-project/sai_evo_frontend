@@ -602,6 +602,8 @@
 								@blur="onBlurTestCase(element.id)"
 								@delete="onDeleteTestCase(element.id)"
 								@createAttachment="onTestCaseCreateAttachment(element.id, $event)"
+								@downloadAttachment="onTestCaseDownloadAttachment(element.id, $event)"
+								@deleteAttachment="onTestCaseDeleteAttachment(element.id, $event)"
 								:modelValue="element"
 								:executionResultsSlots="Object.values(solutionTestSlots)"
 								@testCaseUpdate="onUpdateTestCase(element.id, $event.field, $event.value)"
@@ -725,6 +727,7 @@ import {
 	ExerciseSolutionState,
 	programmingExerciseTypeToLanguageId,
 	ProgrammingExerciseType,
+	ExerciseTestCaseAttachment,
 } from "@/models";
 import { multipleChoiceExerciseTypes } from "@/models";
 import Card from "@/components/ui/Card.vue";
@@ -761,7 +764,10 @@ import TestCaseEditor from "./TestCaseEditor.vue";
 import Tooltip from "@/components/ui/Tooltip.vue";
 import { subscribeToExerciseChanges } from "@/ws/modelSubscription";
 import Toggle from "@/components/ui/Toggle.vue";
-import { testProgrammingExerciseSolution } from "@/api/exercises";
+import {
+	downloadExerciseTestCaseAttachment,
+	testProgrammingExerciseSolution,
+} from "@/api/exercises";
 import CodeExecutionResults from "@/components/shared/CodeExecutionResults.vue";
 import NumberInput from "@/components/ui/NumberInput.vue";
 import { exerciseValidation } from "@/validation/models";
@@ -773,6 +779,7 @@ import {
 } from "@/components/shared/Exercise/utils";
 import { ExerciseSolutionSearchFilter } from "@/api/interfaces";
 import SlotSkeleton from "@/components/ui/skeletons/SlotSkeleton.vue";
+import { forceFileDownload } from "@/utils";
 const { mapState } = createNamespacedHelpers("shared");
 
 export default defineComponent({
@@ -943,6 +950,7 @@ export default defineComponent({
 			"getSolutionsByExercise",
 			"getExerciseTestCaseAttachments",
 			"createExerciseTestCaseAttachment",
+			"deleteExerciseTestCaseAttachment",
 		]),
 		...mapMutations("teacher", ["setExercise", "setExerciseChild"]),
 		...mapMutations("shared", ["setExerciseSolution"]),
@@ -1162,13 +1170,50 @@ export default defineComponent({
 			}
 		},
 		async onTestCaseCreateAttachment(testcaseId: string, attachment: Blob) {
-			console.log("CREATING", attachment);
 			await this.createExerciseTestCaseAttachment({
 				courseId: this.courseId,
 				exerciseId: this.modelValue.id,
 				testcaseId,
 				attachment,
 			});
+		},
+		async onTestCaseDeleteAttachment(
+			testcaseId: string,
+			attachment: ExerciseTestCaseAttachment,
+		) {
+			if (
+				!confirm(
+					_("exercise_editor.confirm_delete_testcase_attachment") +
+						" " +
+						(attachment.attachment as { name: string }).name +
+						"?",
+				)
+			) {
+				return;
+			}
+			await this.deleteExerciseTestCaseAttachment({
+				courseId: this.courseId,
+				exerciseId: this.modelValue.id,
+				testcaseId,
+				attachmentId: attachment.id,
+			});
+		},
+		async onTestCaseDownloadAttachment(
+			testcaseId: string,
+			attachment: ExerciseTestCaseAttachment,
+		) {
+			// TODO fix, this downloads empty file
+			forceFileDownload(
+				{
+					data: await downloadExerciseTestCaseAttachment(
+						this.courseId,
+						this.exerciseId,
+						testcaseId,
+						attachment.id,
+					),
+				},
+				(attachment.attachment as { name: string }).name,
+			);
 		},
 		async onAddTag(tag: string, isPublic: boolean) {
 			await this.addExerciseTag({

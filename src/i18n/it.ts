@@ -647,6 +647,7 @@ export const it = {
 		allowed_students: "studenti ammessi",
 	},
 	exercise_editor: {
+		confirm_delete_testcase_attachment: "Sei sicuro di voler eliminare l'allegato",
 		testcase_add_attachments: "Aggiungi allegati",
 		testcase_attachments: "Allegati",
 		testcase_attachments_description:

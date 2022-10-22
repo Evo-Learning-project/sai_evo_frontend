@@ -17,6 +17,7 @@ import {
 	getExerciseSolutionsByExercise,
 	getExerciseTestCaseAttachments,
 	createExerciseTestCaseAttachment,
+	deleteExerciseTestCaseAttachment,
 } from "@/api/exercises";
 import { ExerciseSolutionSearchFilter } from "@/api/interfaces";
 import { getMe, updateUser } from "@/api/users";
@@ -241,5 +242,31 @@ export const actions = {
 		);
 		state.exerciseTestCaseAttachmentsByTestCaseId[testcaseId] ??= [];
 		state.exerciseTestCaseAttachmentsByTestCaseId[testcaseId].push(response);
+	},
+	deleteExerciseTestCaseAttachment: async (
+		{ state }: { state: SharedState },
+		{
+			courseId,
+			exerciseId,
+			testcaseId,
+			attachmentId,
+		}: {
+			courseId: string;
+			exerciseId: string;
+			testcaseId: string;
+			attachmentId: string;
+		},
+	) => {
+		await deleteExerciseTestCaseAttachment(
+			courseId,
+			exerciseId,
+			testcaseId,
+			attachmentId,
+		);
+
+		state.exerciseTestCaseAttachmentsByTestCaseId[testcaseId] =
+			state.exerciseTestCaseAttachmentsByTestCaseId[testcaseId]?.filter(
+				a => a.id != attachmentId,
+			) ?? [];
 	},
 };
