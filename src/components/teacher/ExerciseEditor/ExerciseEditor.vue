@@ -1202,12 +1202,11 @@ export default defineComponent({
 			testcaseId: string,
 			attachment: ExerciseTestCaseAttachment,
 		) {
-			// TODO fix, this downloads empty file
 			forceFileDownload(
 				{
 					data: await downloadExerciseTestCaseAttachment(
 						this.courseId,
-						this.exerciseId,
+						this.modelValue.id,
 						testcaseId,
 						attachment.id,
 					),

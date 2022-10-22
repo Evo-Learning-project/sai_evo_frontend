@@ -235,6 +235,7 @@ export async function downloadExerciseTestCaseAttachment(
 ): Promise<BlobPart> {
 	const response = await axios.get(
 		`/courses/${courseId}/exercises/${exerciseId}/testcases/${testcaseId}/attachments/${attachmentId}/`,
+		{ responseType: "arraybuffer" },
 	);
 	return response.data;
 }
