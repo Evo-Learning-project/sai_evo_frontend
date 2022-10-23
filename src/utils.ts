@@ -134,6 +134,12 @@ export function forceFileDownload(response: { data: BlobPart }, title: string) {
 }
 
 export function stripHtmlFromLaTexBlocks(html: string) {
+	/**
+		Returns the given string containing html where all blocks
+		enclosed in $ or $$ have all html tags stripped off (currently
+		only <p>, </p>, and <br /> tags). This is needed due to quill
+		editor adding html to them, which messes with MathJax
+	 */
 	// eslint-disable-next-line no-useless-escape
 	const LATEX_REGEX = /(\${1,2})((?:\\.|[\s\S])*)\1/g; ///(\${1,2})[^]*?[^\\]\1|[^\$]+/g;
 
