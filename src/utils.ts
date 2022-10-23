@@ -133,6 +133,20 @@ export function forceFileDownload(response: { data: BlobPart }, title: string) {
 	link.click();
 }
 
+export function stripHtmlFromLaTexBlocks(html: string) {
+	// eslint-disable-next-line no-useless-escape
+	const LATEX_REGEX = /(\${1,2})((?:\\.|[\s\S])*)\1/g; ///(\${1,2})[^]*?[^\\]\1|[^\$]+/g;
+
+	return html.replace(LATEX_REGEX, val => {
+		const textContent = val
+			.replace(/<\/p>/g, "\n")
+			.replace(/<p>/g, "")
+			.replace(/<br\s*\/?>/g, "\n");
+		//new DOMParser().parseFromString(val, "text/html").body.textContent ?? "";
+		return textContent;
+	});
+}
+
 export const formatExerciseText = (text: string): string => {
 	return text.replace(/```([^`]*)```/g, "<pre>$1</pre>");
 };

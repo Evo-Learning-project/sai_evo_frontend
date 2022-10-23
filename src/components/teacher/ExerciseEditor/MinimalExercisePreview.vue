@@ -77,16 +77,16 @@
 				<!-- </div> -->
 			</div>
 			<div class="relative overflow-y-hidden h-14">
-				<div
+				<ProcessedTextFragment
 					style="
 						display: -webkit-box;
 						-webkit-line-clamp: 2;
 						-webkit-box-orient: vertical;
 						overflow: hidden;
 					"
-					class="w-11/12 overflow-x-hidden overflow-ellipsis text-muted"
-					v-html="previewText"
-				></div>
+					class="w-full overflow-x-hidden overflow-ellipsis text-muted"
+					:value="previewText"
+				></ProcessedTextFragment>
 			</div>
 			<div class="flex items-center mt-auto ml-auto">
 				<Btn
@@ -193,6 +193,7 @@ import Tooltip from "@/components/ui/Tooltip.vue";
 import FadedEdgesScrollableFragment from "@/components/ui/FadedEdgesScrollableFragment.vue";
 import { v4 as uuidv4 } from "uuid";
 import { logAnalyticsEvent } from "@/utils";
+import ProcessedTextFragment from "@/components/ui/ProcessedTextFragment.vue";
 export default defineComponent({
 	name: "MinimalExercisePreview",
 	props: {
@@ -250,6 +251,7 @@ export default defineComponent({
 		FullExercise,
 		Tooltip,
 		FadedEdgesScrollableFragment,
+		ProcessedTextFragment,
 	},
 	created() {
 		this.elementId = uuid4();

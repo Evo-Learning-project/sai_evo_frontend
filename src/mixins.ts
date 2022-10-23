@@ -64,19 +64,19 @@ export const adComponentMixin = {
 			adsMobileCode: "",
 		};
 	},
-	mounted() {
-		const includeAds = JSON.parse(process.env.VUE_APP_ENABLE_ADS ?? "true");
-		if (!includeAds) {
-			return;
-		}
-		// ugly trick to get rid of type errors
-		const self = this as any;
-		self.ads1Code = document.getElementById("ads-div-hidden-1")?.innerHTML ?? "";
-		self.ads2Code = document.getElementById("ads-div-hidden-2")?.innerHTML ?? "";
-		self.ads3Code = document.getElementById("ads-div-hidden-3")?.innerHTML ?? "";
-		self.adsMobileCode =
-			document.getElementById("ads-div-hidden-mobile")?.innerHTML ?? "";
-	},
+	// mounted() {
+	// 	const includeAds = JSON.parse(process.env.VUE_APP_ENABLE_ADS ?? "true");
+	// 	if (!includeAds) {
+	// 		return;
+	// 	}
+	// 	// ugly trick to get rid of type errors
+	// 	const self = this as any;
+	// 	self.ads1Code = document.getElementById("ads-div-hidden-1")?.innerHTML ?? "";
+	// 	self.ads2Code = document.getElementById("ads-div-hidden-2")?.innerHTML ?? "";
+	// 	self.ads3Code = document.getElementById("ads-div-hidden-3")?.innerHTML ?? "";
+	// 	self.adsMobileCode =
+	// 		document.getElementById("ads-div-hidden-mobile")?.innerHTML ?? "";
+	// },
 };
 
 export const loadingMixin = {

@@ -73,8 +73,19 @@
 				v-if="showPreview"
 				:style="dividerStyle"
 				@mousedown="startDragging()"
-				style="width: 5px"
-				class="absolute resizer h-full top-0 bg-gray-300 bg-opacity-50 z-30"
+				style="width: 5px; transition-property: background"
+				class="
+					absolute
+					resizer
+					h-full
+					top-0
+					bg-gray-300
+					hover:bg-opacity-70
+					duration-150
+					delay-75
+					bg-opacity-50
+					z-30
+				"
 			></div>
 			<span
 				v-if="showPreview"
@@ -94,7 +105,11 @@
 				v-if="showPreview"
 			>
 				<!-- TODO fix overflow with long, uninterrupted words -->
-				<div style="white-space: break-spaces" class="w-full" v-html="modelValue" />
+				<div
+					style="white-space: break-spaces"
+					class="w-full"
+					v-html="stripHtmlFromLaTexBlocks(modelValue)"
+				/>
 			</div>
 		</div>
 
@@ -111,6 +126,7 @@ import { v4 as uuid4 } from "uuid";
 import { defineComponent } from "@vue/runtime-core";
 import { quillEditor } from "vue3-quill";
 import Btn from "./Btn.vue";
+import { stripHtmlFromLaTexBlocks } from "@/utils";
 export default defineComponent({
 	name: "TextEditor",
 	props: {
@@ -167,7 +183,7 @@ export default defineComponent({
 		return {
 			showBaseEditor: false,
 			instance: null as any,
-			content: "",
+			//content: "",
 			internalDisabled: true,
 			showPreview: false,
 			resizablePanelId: uuid4(),
@@ -183,6 +199,7 @@ export default defineComponent({
 				this.previewPanelWidth = percentage;
 			}
 		},
+		stripHtmlFromLaTexBlocks,
 		startDragging() {
 			document.addEventListener("mousemove", this.handleDragging);
 		},
@@ -193,7 +210,8 @@ export default defineComponent({
 			this.showBaseEditor = !this.showBaseEditor;
 		},
 		onEditorChange({ quill, html, text }: unknown) {
-			this.content = html;
+			//this.content = html;
+			console.log({ quill, html, text });
 			this.$emit("update:modelValue", html);
 		},
 		onEditorReady(quill: any) {

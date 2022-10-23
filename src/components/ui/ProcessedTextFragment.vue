@@ -9,7 +9,7 @@
 
 <script lang="ts">
 import { defineComponent } from "@vue/runtime-core";
-import { formatExerciseText } from "@/utils";
+import { formatExerciseText, stripHtmlFromLaTexBlocks } from "@/utils";
 
 export default defineComponent({
 	name: "ProcessedTextFragment",
@@ -35,7 +35,7 @@ export default defineComponent({
 			return formatExerciseText(this.value);
 		},
 		sanitizedFormattedValue(): string {
-			return this.$sanitize(this.formattedValue);
+			return this.$sanitize(stripHtmlFromLaTexBlocks(this.formattedValue));
 		},
 	},
 });
