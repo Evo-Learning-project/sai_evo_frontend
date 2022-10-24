@@ -18,19 +18,6 @@
 						>
 							{{ description }}
 						</p>
-						<!-- <p class="text-sm text-muted" v-if="nonUniformScores">
-              {{ description?.[1] }}
-              {{
-                $t(
-                  `exercise.choice_score_word_${
-                    parseFloat(description?.[1] ?? "") == 1 ||
-                    parseFloat(description?.[1] ?? "") == -1
-                      ? "singular"
-                      : "plural"
-                  }`
-                )
-              }}
-            </p> -->
 					</div></template
 				></CheckboxGroup
 			>
@@ -54,23 +41,6 @@
 						>
 							{{ description }}
 						</p>
-						<!-- <p
-              :id="description?.[3] ?? ''"
-              class="text-sm text-muted"
-              v-if="nonUniformScores"
-            >
-              {{ description?.[1] }}
-              {{
-                $t(
-                  `exercise.choice_score_word_${
-                    parseFloat(description?.[1] ?? "") == 1 ||
-                    parseFloat(description?.[1] ?? "") == -1
-                      ? "singular"
-                      : "plural"
-                  }`
-                )
-              }} 
-            </p>-->
 					</div></template
 				></RadioGroup
 			>
@@ -91,7 +61,7 @@ import AbstractExercise from "./AbstractExercise.vue";
 import CheckboxGroup from "@/components/ui/CheckboxGroup.vue";
 import RadioGroup from "@/components/ui/RadioGroup.vue";
 import { SelectableOption } from "@/interfaces";
-import { formatExerciseText } from "@/utils";
+import { formatExerciseText, stripHtmlFromLaTexBlocks } from "@/utils";
 import { exerciseProps } from "./shared";
 import { getCorrectChoices } from "./utils";
 export default defineComponent({
@@ -130,7 +100,8 @@ export default defineComponent({
 
 			return (this.exercise.choices as ExerciseChoice[]).map(c => ({
 				value: c.id,
-				content: formatExerciseText(c.text),
+				// TODO extract this sanitizing (it's the same as in ProcessedTextFragment.vue)
+				content: this.$sanitize(stripHtmlFromLaTexBlocks(formatExerciseText(c.text))),
 				description: this.showSolution
 					? this.correctChoices.includes(c.id)
 						? "done"

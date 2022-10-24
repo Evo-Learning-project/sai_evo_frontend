@@ -247,16 +247,6 @@ export default defineComponent({
 				}),
 		);
 
-		// set up timer, if there is a time limit
-		const remainingTime = getParticipationRemainingTime(
-			this.currentEventParticipation,
-			this.currentEventParticipation.event,
-		);
-		if (remainingTime !== null) {
-			this.remainingTime = remainingTime;
-			this.runTimer = true;
-		}
-
 		// already turned in, redirect to submission review page
 		if (this.proxyModelValue.state === EventParticipationState.TURNED_IN) {
 			this.$router.push({
@@ -268,7 +258,24 @@ export default defineComponent({
 					participationId: this.currentEventParticipation.id,
 				},
 			});
+			return;
 		}
+
+		// set up timer, if there is a time limit
+		const remainingTime = getParticipationRemainingTime(
+			this.currentEventParticipation,
+			this.currentEventParticipation.event,
+		);
+		if (remainingTime !== null) {
+			this.remainingTime = remainingTime;
+			this.runTimer = true;
+		}
+
+		// poll for any slots whose execution results is running (for example,
+		// if the user refreshed the page while a programming exercise was running)
+		this.proxyModelValue.slots
+			.filter(s => s.execution_results && s.execution_results.state === "running")
+			.forEach(s => this.pollForExecutionResults(s.id));
 	},
 	mounted() {
 		this.mounted = true; // prevent issues with teleported component

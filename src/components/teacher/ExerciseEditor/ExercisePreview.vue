@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
 	<Card :marginLess="true" :filled="exercise.state === ExerciseState.DRAFT">
 		<template v-slot:header>
 			<div class="flex flex-col mb-2 md:items-center md:flex-row">
@@ -107,4 +107,4 @@ export default defineComponent({
 });
 </script>
 
-<style></style>
+<style></style> -->
