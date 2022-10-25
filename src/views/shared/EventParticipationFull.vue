@@ -330,7 +330,7 @@ export default defineComponent({
 		]),
 		...mapActions("shared", ["getSolutionsByExercise"]),
 		...mapActions("teacher", ["partialUpdateEventParticipationSlot"]),
-		...mapMutations(["setCurrentEventParticipationSlot"]),
+		...mapMutations(["setCurrentEventParticipationSlot"]), // ? remove
 		getSolutionsForExercise(exercise: Exercise) {
 			return this.paginatedSolutionsByExerciseId[exercise.id]?.data ?? [];
 		},

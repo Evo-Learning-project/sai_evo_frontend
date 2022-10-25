@@ -537,7 +537,7 @@ export const actions = {
 
 		// investigate https://sentry.io/organizations/samuele/issues/3565313088/?project=6265941&query=is%3Aunresolved
 		if (!paginatedExercises.data) {
-			console.warn(
+			console.error(
 				{ courseId, fromFirstPage, filters },
 				"responded with undefined",
 				paginatedExercises,
