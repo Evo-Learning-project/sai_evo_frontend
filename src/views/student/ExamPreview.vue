@@ -4,7 +4,7 @@
 			<SlotSkeleton></SlotSkeleton>
 			<SlotSkeleton></SlotSkeleton>
 		</div>
-		<div class="flex flex-col h-full" v-else>
+		<div class="flex flex-col h-full" v-else-if="previewingEvent">
 			<h2>{{ previewingEvent.name }}</h2>
 			<div
 				v-if="previewingEvent.instructions.length > 0"
@@ -140,7 +140,7 @@ export default defineComponent({
 		this.dirtyCourse = this.user.course;
 		this.dirtyMat = this.user.mat;
 
-		if ((this.previewingEvent as Event).participation_exists) {
+		if ((this.previewingEvent as Event)?.participation_exists) {
 			this.$router.push({
 				name: "ExamParticipationPage",
 				params: {

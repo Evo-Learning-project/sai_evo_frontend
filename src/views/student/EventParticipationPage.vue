@@ -369,12 +369,16 @@ export default defineComponent({
 					slotId,
 				);
 				if (executionResults.state !== "running") {
-					this.patchCurrentEventParticipationSlot({
-						slotId,
-						changes: { execution_results: executionResults },
-					});
-					clearInterval(this.executionResultsPollingHandles[slotId] as number);
-					this.executionResultsPollingHandles[slotId] = null;
+					try {
+						// slot might not exist anymore is user has gone forward/back or has turned in
+						this.patchCurrentEventParticipationSlot({
+							slotId,
+							changes: { execution_results: executionResults },
+						});
+					} finally {
+						clearInterval(this.executionResultsPollingHandles[slotId] as number);
+						this.executionResultsPollingHandles[slotId] = null;
+					}
 				}
 			}, EXECUTION_RESULTS_POLLING_INTERVAL);
 		},
