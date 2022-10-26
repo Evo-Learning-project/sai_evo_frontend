@@ -53,6 +53,7 @@ export const mutations = {
 			console.error(
 				"setCurrentEventParticipationSlot couldn't find slot with id",
 				slot.id,
+				{ payload: JSON.stringify(slot) },
 			);
 		}
 		Object.assign(target, slot);

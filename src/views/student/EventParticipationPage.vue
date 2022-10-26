@@ -261,6 +261,10 @@ export default defineComponent({
 			return;
 		}
 
+		// TODO if user leaves page while this participation is still loading,
+		// the participation becomes null & an error occurs
+		// see: https://sentry.io/organizations/samuele/issues/3698964231/?project=6265941
+
 		// set up timer, if there is a time limit
 		const remainingTime = getParticipationRemainingTime(
 			this.currentEventParticipation,
@@ -529,7 +533,13 @@ export default defineComponent({
 						this.savingError = false;
 						this.$store.state.shared.localLoading = true;
 					}
-					this.setCurrentEventParticipationSlot({ ...slot, ...changes });
+					try {
+						this.setCurrentEventParticipationSlot({ ...slot, ...changes });
+					} catch (e) {
+						// investigating https://sentry.io/organizations/samuele/issues/3603878793
+						console.error("setCurrentEventParticipationSlot failed", { changes });
+						throw e;
+					}
 				},
 				EVENT_PARTICIPATION_SLOT_DEBOUNCED_FIELDS,
 				EVENT_PARTICIPATION_SLOT_DEBOUNCE_TIME_MS,
