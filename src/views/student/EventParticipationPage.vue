@@ -537,7 +537,10 @@ export default defineComponent({
 						this.setCurrentEventParticipationSlot({ ...slot, ...changes });
 					} catch (e) {
 						// investigating https://sentry.io/organizations/samuele/issues/3603878793
-						console.error("setCurrentEventParticipationSlot failed", { changes });
+						console.error(
+							"setCurrentEventParticipationSlot failed",
+							JSON.stringify(changes),
+						);
 						throw e;
 					}
 				},

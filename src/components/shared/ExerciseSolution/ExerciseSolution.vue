@@ -400,6 +400,8 @@ export default defineComponent({
 		this.triggerTexRender();
 	},
 	mounted() {
+		// TODO stop using ref and use getElementById
+
 		// workaround for https://sentry.io/organizations/samuele/issues/3527964852/?project=6265941&query=is%3Aunresolved
 		// the `content` ref might not be available yet, so loop until it is not null anymore
 		this.intervalHandle = setInterval(() => {
