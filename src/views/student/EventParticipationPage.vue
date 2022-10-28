@@ -103,7 +103,6 @@
 				@blur="onBlur($event)"
 				:allowEditSubmission="true"
 				:saving="saving"
-				:running="running"
 				:showTags="
 					currentEventParticipation.event.event_type === EventType.SELF_SERVICE_PRACTICE
 				"
@@ -124,8 +123,9 @@
 				class=""
 				@click="onGoBack"
 				v-if="goingBackAllowed"
-				:disabled="!canGoBack || goingBack || goingForward || loading"
-				:loading="false && loading"
+				:disabled="
+					!canGoBack || goingBack || goingForward || loading || schedulingCodeRun
+				"
 			>
 				<span class="material-icons-outlined mt-0.5 mr-0.5 text-base">
 					chevron_left
@@ -138,8 +138,7 @@
 				class="ml-auto"
 				@click="goingBackAllowed ? onGoForward() : confirmGoForward()"
 				v-if="canGoForward"
-				:loading="false && loading"
-				:disabled="goingForward || goingBack || loading"
+				:disabled="goingForward || goingBack || loading || schedulingCodeRun"
 				>{{
 					goingForward ? $t("misc.wait") : $t("event_participation_page.next_exercise")
 				}}
@@ -264,6 +263,19 @@ export default defineComponent({
 		// TODO if user leaves page while this participation is still loading,
 		// the participation becomes null & an error occurs
 		// see: https://sentry.io/organizations/samuele/issues/3698964231/?project=6265941
+		/*
+		Apparently, if the component is unloaded during the execution of this method,
+		the state mapped with mapState becomes out of sync: the participation is stored
+		in vuex, and is accessible via this.$store, but the version mapped with mapState
+		stays null.
+
+		To test, print: console.log({
+			fromMappedState: this.currentEventParticipation,
+			fromStore: this.$store.state.student.currentEventParticipation,
+		});
+		The first will be null, the second will contain a valid object
+		This is probably a bug in vue/vuex, see if it's worth it to find a workaround
+		*/
 
 		// set up timer, if there is a time limit
 		const remainingTime = getParticipationRemainingTime(
@@ -292,7 +304,7 @@ export default defineComponent({
 			savingError: false,
 			mounted: false,
 			showConfirmDialog: false,
-			running: false,
+			schedulingCodeRun: false,
 			dialogData: {
 				title: "",
 				text: "",
@@ -346,18 +358,22 @@ export default defineComponent({
 				// flush queued changes before scheduling code run
 				await this.slotAutoSaveManagers[slot.id].flush();
 
+				// temporarily block forward/go buttons to prevent issues with setCurrentEventParticipationSlot
+				this.schedulingCodeRun = true;
 				// send request to run code
 				await this.runEventParticipationSlotCode({
 					courseId: this.courseId,
 					eventId: this.eventId,
 					participationId: this.currentEventParticipation.id,
-					slotId: slot.id,
+					slot,
 				});
 
 				// poll until execution is complete
 				this.pollForExecutionResults(slot.id);
 			} catch (e) {
 				this.setErrorNotification(e);
+			} finally {
+				this.schedulingCodeRun = false;
 			}
 		},
 		pollForExecutionResults(slotId: string) {

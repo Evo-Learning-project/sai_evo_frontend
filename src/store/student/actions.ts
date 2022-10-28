@@ -215,23 +215,38 @@ export const actions = {
 			courseId,
 			eventId,
 			participationId,
-			slotId,
+			slot,
 		}: {
 			courseId: string;
 			eventId: string;
 			participationId: string;
-			slotId: string;
+			slot: EventParticipationSlot;
 		},
 	) => {
-		const response = await runEventParticipationSlotCode(
-			courseId,
-			eventId,
-			participationId,
-			slotId,
-		);
-		commit("setCurrentEventParticipationSlot", response);
-		//    commit("patchCurrentEventParticipationSlot", { slotId, changes: response });
-		return response;
+		const previousExecutionResults = slot.execution_results;
+		try {
+			// immediately mark slot as running
+			commit("patchCurrentEventParticipationSlot", {
+				slotId: slot.id,
+				changes: { execution_results: { ...slot.execution_results, state: "running" } },
+			});
+			// schedule running on the server-side
+			const response = await runEventParticipationSlotCode(
+				courseId,
+				eventId,
+				participationId,
+				slot.id,
+			);
+			commit("setCurrentEventParticipationSlot", response);
+			return response;
+		} catch (e) {
+			// reset execution results in case of errors
+			commit("patchCurrentEventParticipationSlot", {
+				slotId: slot.id,
+				changes: { execution_results: previousExecutionResults },
+			});
+			throw e;
+		}
 	},
 	addEventTemplateRule: async (
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars

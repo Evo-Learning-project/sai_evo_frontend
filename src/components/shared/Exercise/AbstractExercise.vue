@@ -28,32 +28,6 @@
     the exercise (e.g. a code fragment for a programming exercise) -->
 		<slot v-else-if="showReadOnlyAnswer" name="readOnlyAnswer"></slot>
 
-		<!-- solutions -->
-		<div
-			class="mt-10"
-			v-if="false && showSolution && (exercise.solutions ?? []).length > 0"
-		>
-			<h4>Soluzioni proposte</h4>
-			<ExerciseSolution
-				v-for="solution in exercise.solutions"
-				:key="'e-' + exercise.id + '-solution-' + solution.id"
-				:solution="solution"
-			>
-				<slot v-bind:solution="solution">
-					<div class="w-full whitespace-pre">
-						<!-- <p class="ml-2 text-sm text-muted">
-              {{ $t("misc.solution") }}
-            </p> -->
-						<ProcessedTextFragment
-							style="white-space: break-spaces"
-							class="w-full px-4 py-2 rounded bg-gray-50"
-							:value="solution.content"
-						></ProcessedTextFragment>
-					</div>
-				</slot>
-			</ExerciseSolution>
-		</div>
-
 		<slot name="extras"></slot>
 	</div>
 </template>
@@ -65,7 +39,6 @@ import ProcessedTextFragment from "@/components/ui/ProcessedTextFragment.vue";
 import { exerciseProps } from "./shared";
 import { getExerciseTitle } from "@/utils";
 import Tag from "@/components/ui/Tag.vue";
-import ExerciseSolution from "../ExerciseSolution/ExerciseSolution.vue";
 export default defineComponent({
 	name: "AbstractExercise",
 	props: {
@@ -83,7 +56,7 @@ export default defineComponent({
 			];
 		},
 	},
-	components: { ProcessedTextFragment, Tag, ExerciseSolution },
+	components: { ProcessedTextFragment, Tag },
 });
 </script>
 

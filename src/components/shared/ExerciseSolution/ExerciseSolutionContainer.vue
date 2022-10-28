@@ -81,10 +81,7 @@
 				@close="onClose()"
 				:editorType="solutionType"
 				:exercise="exercise"
-			>
-				<!-- <FullExercise :exercise="exercise" /> -->
-				<!-- <Exercise :exercise="exercise" :showSolution="true" :readOnly="true" /> -->
-			</ExerciseSolutionEditor>
+			/>
 		</div>
 	</div>
 </template>

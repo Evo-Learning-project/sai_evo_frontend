@@ -32,7 +32,7 @@
 					v-if="exercise.exercise_type !== ExerciseType.COMPLETION"
 				/>
 				<!-- cloze exercise requires special treatment; might need
-        to improve on this eventually -->
+        		to improve on this eventually -->
 				<ClozeExercise
 					v-else
 					class="w-full"
@@ -250,10 +250,6 @@ export default defineComponent({
 		saving: {
 			type: Boolean,
 			default: false,
-		},
-		running: {
-			// whether code for the submission is being run on the server
-			type: Boolean,
 		},
 		showTags: {
 			type: Boolean,
