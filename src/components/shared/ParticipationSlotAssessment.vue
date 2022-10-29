@@ -181,7 +181,6 @@ export default defineComponent({
 			immediate: true,
 			deep: true,
 			handler(newVal: EventParticipationSlotAssessment) {
-				console.log("PROP CHANGED", newVal);
 				this.dirtyComment = newVal.comment ?? "";
 				this.dirtyScore = newVal.score ?? null;
 			},

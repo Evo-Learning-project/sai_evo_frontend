@@ -95,8 +95,12 @@ if (!dev && process.env.VUE_APP_SENTRY_URL) {
 		tracesSampleRate: 0.5,
 		logErrors: true,
 		beforeSend(event) {
-			if (event.exception?.values?.[0]?.value === "Request failed with status code 401") {
-				// avoid sending 401's
+			const IGNORED_MESSAGES = [
+				"Request failed with status code 401",
+				"Request failed with status code 403",
+				"Request failed with status code 404",
+			];
+			if (IGNORED_MESSAGES.includes(event.exception?.values?.[0]?.value ?? "")) {
 				return null;
 			}
 			return event;

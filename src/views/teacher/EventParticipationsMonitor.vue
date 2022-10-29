@@ -217,7 +217,7 @@
 				<span class="mr-1 text-base material-icons-outlined"> done </span>
 				{{ $t("event_results.publish_results") }}</Btn
 			>
-			<CsvParticipationDownloader class="ml-auto"></CsvParticipationDownloader>
+			<CsvParticipationDownloader class="ml-auto" />
 		</div>
 
 		<!-- buttons to close/open participations-->

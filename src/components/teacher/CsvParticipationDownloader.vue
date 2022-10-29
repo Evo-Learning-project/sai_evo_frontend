@@ -103,6 +103,15 @@ export default defineComponent({
 				localStorage.setItem(LOCAL_STORAGE_SETTINGS_KEY, newVal);
 			}
 		},
+		// TODO ! find a way to keep in-sync (the one below re-fetches too often)
+		// eventParticipations: {
+		// 	deep: true,
+		// 	handler() {
+		// 		// re-fetch report data if participations' data changes
+		// 		this.apiCallPromise = (async () =>
+		// 			(this.participations = await this.getReportData()))();
+		// 	},
+		// },
 	},
 	created() {
 		// restore last used settings
