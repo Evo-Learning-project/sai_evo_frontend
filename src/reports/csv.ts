@@ -2,6 +2,7 @@ import { ReportField, ReportSettings } from "./types";
 import { getTranslatedString as _ } from "@/i18n";
 import { EventParticipation, ExerciseType, ExerciseTestCase } from "@/models";
 import { get } from "lodash";
+import { isNumeric } from "@/api/utils";
 
 const getEventParticipationHeaders = (
 	participations: EventParticipation[],
@@ -165,7 +166,7 @@ export const getParticipationsAsCsv = (
 		if (value === null) {
 			return null;
 		}
-		if (!Number.isNaN(parseFloat(value))) {
+		if (isNumeric(value)) {
 			// ! TODO keep an eye on this, locale problems
 			return String(parseFloat(value)).replace(".", ",");
 		}
