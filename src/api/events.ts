@@ -57,6 +57,21 @@ export async function getEvent(
 	return normalizeIncomingEvent(response.data);
 }
 
+export async function lockEvent(courseId: string, eventId: string): Promise<Event> {
+	const response = await axios.post(`/courses/${courseId}/events/${eventId}/lock/`);
+	return response.data;
+}
+
+export async function unlockEvent(courseId: string, eventId: string): Promise<void> {
+	const response = await axios.post(`/courses/${courseId}/events/${eventId}/unlock/`);
+	return response.data;
+}
+
+export async function heartbeatEvent(courseId: string, eventId: string): Promise<void> {
+	const response = await axios.post(`/courses/${courseId}/events/${eventId}/heartbeat/`);
+	return response.data;
+}
+
 export async function getEventTemplate(
 	courseId: string,
 	templateId: string,

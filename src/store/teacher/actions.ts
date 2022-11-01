@@ -55,6 +55,7 @@ import {
 	getEvents,
 	getEventTemplate,
 	getEventTemplateRule,
+	lockEvent,
 	partialUpdateEvent,
 	partialUpdateEventParticipationSlot,
 	partialUpdateEventTemplateRule,
@@ -194,6 +195,19 @@ export const actions = {
 		if (mutate) {
 			commit("setEvent", { eventId, payload: event });
 		}
+	},
+	lockEvent: async (
+		{ commit }: { commit: Commit },
+		{
+			courseId,
+			eventId,
+		}: {
+			courseId: string;
+			eventId: string;
+		},
+	) => {
+		const event = await lockEvent(courseId, eventId);
+		commit("setEvent", { eventId, payload: event });
 	},
 	deleteExerciseChild: async (
 		{ commit }: { commit: Commit },
