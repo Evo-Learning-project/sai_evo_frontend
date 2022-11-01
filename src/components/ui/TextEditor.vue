@@ -124,7 +124,16 @@ const BORDER_SIZE = 4;
 import { texMixin } from "@/mixins";
 import { v4 as uuid4 } from "uuid";
 import { defineComponent } from "@vue/runtime-core";
+
 import { quillEditor } from "vue3-quill";
+
+import Quill from "quill";
+const ImageResize = require("quill-image-resize").default;
+const ImageDrop = require("quill-image-drop-module").ImageDrop;
+
+Quill.register("modules/imageDrop", ImageDrop);
+Quill.register("modules/imageResize", ImageResize);
+
 import Btn from "./Btn.vue";
 import { stripHtmlFromLaTexBlocks } from "@/utils";
 export default defineComponent({
@@ -216,6 +225,8 @@ export default defineComponent({
 		},
 		onEditorReady(quill: any) {
 			this.$emit("ready", quill);
+
+			console.log("mod", ImageDrop);
 			quill.on("selection-change", this.onSelectionChange);
 			quill.root.addEventListener("blur", () => this.$emit("blur"));
 			this.instance = quill;
@@ -258,12 +269,13 @@ export default defineComponent({
 						// [{ color: [] }, { background: [] }],
 						// [{ font: [] }],
 						// [{ align: [] }],
-						// ['clean'],
-						[
-							"image",
-							//'video'
-						],
+						["image"], // "video"
+						["clean"],
 					],
+					imageResize: {
+						modules: ["Resize", "DisplaySize"],
+					},
+					imageDrop: true,
 				},
 			};
 		},
