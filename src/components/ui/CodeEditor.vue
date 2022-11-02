@@ -145,12 +145,7 @@ export default defineComponent({
 		onChange(newVal: string) {
 			this.$emit("update:modelValue", newVal);
 		},
-		// onWillMount(monaco: any) {
-		//   console.log("WILL MOUNT", monaco);
-		//   this.monacoModule = monaco;
-		// },
 		onDidMount(event: monaco.editor.IStandaloneCodeEditor) {
-			//console.log("DID MOUNT", event, event.getModel());
 			this.editorInstance = event;
 			this.textModel = event.getModel();
 		},

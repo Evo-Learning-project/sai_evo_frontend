@@ -93,7 +93,6 @@ export default defineComponent({
 			);
 		},
 		beforeAddingTag(event: any) {
-			console.log("before adding", event.tag.text);
 			if (
 				!this.processedModelValue
 					.map((t: { text: string; classes?: string }) => t.text)
@@ -112,7 +111,6 @@ export default defineComponent({
 			}
 		},
 		beforeDeletingTag(event: any) {
-			console.log("deleting", event);
 			this.removingTag = event.tag.text;
 			this.$emit("removeTag", event.tag.text);
 		},

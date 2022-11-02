@@ -346,7 +346,6 @@ export async function updateExerciseSolution(
 	solutionId: string,
 	solution: ExerciseSolution,
 ): Promise<ExerciseSolution> {
-	console.log("SOLUTION", solutionId);
 	const response = await axios.patch(
 		`/courses/${courseId}/exercises/${exerciseId}/solutions/${solutionId}/`,
 		solution,

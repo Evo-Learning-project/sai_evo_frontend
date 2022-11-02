@@ -182,7 +182,7 @@ export default defineComponent({
 					loaded();
 				}
 			} catch (e) {
-				console.log("ERROR", e);
+				console.error("Error loading more exercises", e);
 				error();
 			}
 		},

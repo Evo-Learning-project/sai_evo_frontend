@@ -534,14 +534,25 @@ export default defineComponent({
 		instantiateSlotAutoSaveManager(slot: EventParticipationSlot) {
 			this.slotAutoSaveManagers[slot.id] = new AutoSaveManager<EventParticipationSlot>(
 				slot,
-				async changes =>
-					await this.partialUpdateEventParticipationSlot({
-						courseId: this.courseId,
-						eventId: this.eventId,
-						participationId: this.proxyModelValue.id,
-						slotId: slot.id,
-						changes,
-					}),
+				async changes => {
+					try {
+						await this.partialUpdateEventParticipationSlot({
+							courseId: this.courseId,
+							eventId: this.eventId,
+							participationId: this.proxyModelValue.id,
+							slotId: slot.id,
+							changes,
+						});
+					} catch (e) {
+						// investigate https://sentry.io/organizations/samuele/issues/3683654671/?project=6265941
+						console.log(
+							"partialUpdateEventParticipationSlot failed when called with args",
+							slot.id,
+							JSON.stringify(changes),
+						);
+						throw e;
+					}
+				},
 				(changes, reverting) => {
 					if (!reverting) {
 						// TODO find a way not to block multiple choice questions while open answer exercises are saving

@@ -56,7 +56,6 @@ export default defineComponent({
 	},
 	methods: {
 		onSelectionUpdate(slot: EventParticipationSlot, selection: string) {
-			console.log("slot", slot.id, "selection", selection);
 			this.$emit("updateSubmission", {
 				slot: slot,
 				payload: selection.length === 0 ? [] : [selection],
@@ -89,8 +88,6 @@ export default defineComponent({
 		},
 		clozeUnits(): { text: string; choices: ExerciseChoice[] }[] {
 			const tokens = this.exercise.text.split(CLOZE_SEPARATOR);
-
-			console.log("TOKENS", tokens);
 
 			return tokens.map((t, i) => ({
 				subSlot: this.slot.sub_slots[i],

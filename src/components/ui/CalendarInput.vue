@@ -82,7 +82,6 @@ export default defineComponent({
 	},
 	methods: {
 		onOpen() {
-			console.log("open");
 			this.calendarOpen = true;
 			this.$emit("open");
 		},

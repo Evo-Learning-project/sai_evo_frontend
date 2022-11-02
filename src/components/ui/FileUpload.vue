@@ -287,7 +287,7 @@ export default defineComponent({
 					// progress
 				}
 				if (newFile.error && !oldFile.error) {
-					console.log("eeeerror");
+					console.log("error uploading file");
 					(this.$refs as any).upload.active = false;
 				}
 				if (newFile.success && !oldFile.success) {
