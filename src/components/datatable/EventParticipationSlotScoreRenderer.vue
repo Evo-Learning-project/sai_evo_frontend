@@ -15,7 +15,6 @@
 				>
 			</div>
 			<Btn
-				:tooltip="'sfihd'"
 				:variant="'icon'"
 				:outline="true"
 				:class="{

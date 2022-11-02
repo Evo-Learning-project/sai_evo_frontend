@@ -16,7 +16,7 @@
           ><span class="material-icons-outlined">arrow_back</span></Btn
         ></router-link
       > -->
-			<Btn @click="$router.back()" :outline="true" :variant="'icon'"
+			<Btn @click="onGoBack" :outline="true" :variant="'icon'"
 				><span class="material-icons-outlined">arrow_back</span></Btn
 			>
 			<h3 class="mb-0.5">
@@ -331,6 +331,16 @@ export default defineComponent({
 		...mapActions("shared", ["getSolutionsByExercise"]),
 		...mapActions("teacher", ["partialUpdateEventParticipationSlot"]),
 		...mapMutations(["setCurrentEventParticipationSlot"]), // ? remove
+		onGoBack() {
+			if (window.history.length > 1) {
+				this.$router.back();
+			} else {
+				// default "back" location
+				this.$router.push({
+					name: "ExamProgress",
+				});
+			}
+		},
 		getSolutionsForExercise(exercise: Exercise) {
 			return this.paginatedSolutionsByExerciseId[exercise.id]?.data ?? [];
 		},

@@ -485,10 +485,7 @@ export const getEventParticipationMonitorHeaders = (
 			filter: "agTextColumnFilter",
 			width: 300,
 			resizable: true,
-			cellRenderer: (params: any) =>
-				`<div class="flex items-center space-x-1">
-            <span class="p-2 mr-2 text-sm ag-selectable-cell material-icons-outlined">launch</span>
-            ${params.value}</div>`,
+			cellRenderer: "EventParticipationEmailRenderer",
 			checkboxSelection: true,
 			headerCheckboxSelection: true,
 			headerCheckboxSelectionFilteredOnly: true,
@@ -536,14 +533,7 @@ export const getEventParticipationMonitorHeaders = (
 						field: "state", // assessment progress
 						width: 90,
 						headerName: _("event_participation_headings.state"),
-						cellRenderer: (params: any) =>
-							`<span class="${
-								params.value == ParticipationAssessmentProgress.PARTIALLY_ASSESSED
-									? "text-yellow-900"
-									: "text-success"
-							} pt-2 ml-1 text-lg material-icons-outlined">${
-								assessmentStateIcons[params.value as ParticipationAssessmentProgress]
-							}</span>`,
+						cellRenderer: "EventParticipationAssessmentStateRenderer",
 					},
 			  ]
 			: []),
@@ -553,17 +543,7 @@ export const getEventParticipationMonitorHeaders = (
 						field: "state", // participation state (in progress / turned in)
 						width: 90,
 						headerName: _("event_participation_headings.participation_state"),
-						cellRenderer: (params: any) =>
-							`<div title="${_(
-								"event_participation_states." + params.value,
-							)}" class=" ag-selectable-cell">
-                  <span  class="mx-auto ${
-										params.value == EventParticipationState.IN_PROGRESS
-											? "text-muted"
-											: "text-success"
-									} text-lg material-icons-outlined">${
-								participationStateIcons[params.value as EventParticipationState]
-							}</span></div>`,
+						cellRenderer: "EventParticipationStateRenderer",
 					},
 			  ]
 			: []),
@@ -583,7 +563,7 @@ export const getEventParticipationMonitorHeaders = (
 	(eventParticipations[0] as EventParticipation).slots.forEach(s =>
 		ret.push({
 			width: 90,
-			type: "numericColumn",
+			...(resultsMode ? { type: "numericColumn" } : {}),
 			field: "slot-" + ((s.slot_number as number) + 1),
 			headerName:
 				_("event_participation_headings.exercise") +

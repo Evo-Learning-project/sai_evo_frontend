@@ -1,6 +1,6 @@
 <template>
 	<div class="flex items-center">
-		<div class="m-auto transform translate-x-1/3">
+		<div class="">
 			<!-- ag-selectable-cell -->
 			<div :class="[hasAnswer ? 'text-success opacity-80' : 'text-muted opacity-50']">
 				<span
