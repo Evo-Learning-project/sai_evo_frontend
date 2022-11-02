@@ -73,11 +73,9 @@ export default defineComponent({
 			return _("data_table." + key);
 		},
 		onGridReady(params: any) {
-			//console.log('READY', params)
 			this.$emit("gridReady", params);
 		},
 		// getRowId(params: any) {
-		//   console.log("PARAMS", params);
 		//   return params.data.id;
 		// },
 	},

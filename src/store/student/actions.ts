@@ -208,6 +208,7 @@ export const actions = {
 		if (mutate) {
 			commit("setCurrentEventParticipationSlot", response);
 		}
+		//await new Promise(r => setTimeout(r, 5000));
 	},
 	runEventParticipationSlotCode: async (
 		{ commit }: { commit: Commit },

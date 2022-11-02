@@ -459,9 +459,7 @@ export default defineComponent({
 				"code_runner",
 				s => s.send(JSON.stringify(taskMessage)),
 				m => {
-					console.log("MESS", m);
 					const payload = JSON.parse(m.data);
-					console.log(payload);
 					if (payload.action === "execution_results") {
 						this.executionResults = JSON.parse(payload.data);
 						this.runningCode = false;

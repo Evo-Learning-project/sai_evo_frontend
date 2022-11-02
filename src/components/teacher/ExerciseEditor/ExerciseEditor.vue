@@ -1403,7 +1403,6 @@ export default defineComponent({
 			);
 		},
 		exerciseLocked(): boolean {
-			console.log("locked", this.modelValue.locked_by);
 			return !!this.modelValue.locked_by && this.modelValue.locked_by.id != this.user.id;
 		},
 		editingCloze(): Exercise | null {

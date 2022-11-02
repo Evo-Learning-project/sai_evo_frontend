@@ -78,7 +78,7 @@ export const getErrorData = (e: any, useAsIs = false): ErrorMessage => {
 	if (useAsIs) {
 		return { title: e };
 	}
-	console.log(e.response);
+	console.log("Error data", e.response);
 	if (e.response) {
 		return {
 			icon: "error_outline",
@@ -117,11 +117,6 @@ export const setErrorNotification = (e: any, useAsIs = false) => {
 		data: getErrorData(e, useAsIs),
 	});
 };
-
-// export const typesetTex = () => {
-//   console.log("typesetting");
-//   (window as any).MathJax.typeset();
-// };
 
 export function forceFileDownload(response: { data: BlobPart }, title: string) {
 	// console.log("--- calling download", title, response.data);

@@ -195,7 +195,6 @@ export default defineComponent({
 		this.modelValue.rules.forEach(r => {
 			this.instantiateRuleAutoSaveManager(r);
 		});
-		console.log("in created");
 		this.selectedTags = this.modelValue.rules.map(r => String(r.clauses?.[0].tags[0].id));
 	},
 	watch: {
@@ -252,7 +251,6 @@ export default defineComponent({
 			this.editingRule = null;
 		},
 		async onRuleUpdateClause(clause: EventTemplateRuleClause) {
-			console.log("in update clause");
 			await this.ruleClausesAutoSaveInstances[clause.id].onChange({
 				field: "tags",
 				value: clause.tags,
@@ -267,7 +265,6 @@ export default defineComponent({
 					(this.tags as ITag[]).find(t => t.id == tagId),
 				),
 			});
-			console.log("added clause to ", rule, tagId);
 		},
 		async onAddRule(tagId: string): Promise<EventTemplateRule> {
 			return (await this.withLoading(async () => {
@@ -356,16 +353,15 @@ export default defineComponent({
 		},
 		tagsToRules(): Record<string, EventTemplateRule> {
 			const ret = {} as Record<string, EventTemplateRule>;
-			console.log("in tag to rules");
+
 			this.modelValue.rules.forEach(r => {
 				const tag = r?.clauses?.[0]?.tags[0];
-				console.log("TAG", tag);
+
 				ret[String(typeof tag === "object" ? tag?.id ?? "" : tag)] = r;
 			});
 			return ret;
 		},
 		editingRuleTag(): ITag | undefined {
-			console.log("in editing rule tag");
 			return (this.tags as ITag[]).find(
 				t =>
 					t.id ==
