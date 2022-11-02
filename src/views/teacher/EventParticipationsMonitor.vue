@@ -394,6 +394,9 @@ import {
 	getParticipationsAverageProgress,
 } from "@/reports";
 
+import EventParticipationSlotScoreRenderer from "@/components/datatable/EventParticipationSlotScoreRenderer.vue";
+import EventParticipationSlotCompletionRenderer from "@/components/datatable/EventParticipationSlotCompletionRenderer.vue";
+
 export default defineComponent({
 	components: {
 		DataTable,
@@ -403,6 +406,12 @@ export default defineComponent({
 		CsvParticipationDownloader,
 		SkeletonCard,
 		Spinner,
+
+		/** Cell renderers required by Ag-grid */
+		// eslint-disable-next-line vue/no-unused-components
+		EventParticipationSlotScoreRenderer,
+		// eslint-disable-next-line vue/no-unused-components
+		EventParticipationSlotCompletionRenderer,
 	},
 	name: "EventParticipationsMonitor",
 	props: {
