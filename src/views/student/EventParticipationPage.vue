@@ -395,6 +395,8 @@ export default defineComponent({
 							slotId,
 							changes: { execution_results: executionResults },
 						});
+					} catch (e) {
+						console.warn("caught patchCurrentEventParticipationSlot", e);
 					} finally {
 						clearInterval(this.executionResultsPollingHandles[slotId] as number);
 						this.executionResultsPollingHandles[slotId] = null;

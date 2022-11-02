@@ -226,7 +226,6 @@ export default defineComponent({
 		onEditorReady(quill: any) {
 			this.$emit("ready", quill);
 
-			console.log("mod", ImageDrop);
 			quill.on("selection-change", this.onSelectionChange);
 			quill.root.addEventListener("blur", () => this.$emit("blur"));
 			this.instance = quill;
