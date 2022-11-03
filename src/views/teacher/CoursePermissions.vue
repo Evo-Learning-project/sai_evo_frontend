@@ -58,6 +58,7 @@ import { icons as coursePrivilegeIcons } from "@/assets/coursePrivilegeIcons";
 import Dialog from "@/components/ui/Dialog.vue";
 import CheckboxGroup from "@/components/ui/CheckboxGroup.vue";
 import { SelectableOption } from "@/interfaces";
+import UserCoursePermissionsRenderer from "@/components/datatable/UserCoursePermissionsRenderer.vue";
 
 export default defineComponent({
 	name: "CoursePermissions",
@@ -65,6 +66,10 @@ export default defineComponent({
 		DataTable,
 		Dialog,
 		CheckboxGroup,
+
+		/* Ag grid renderers */
+		// eslint-disable-next-line vue/no-unused-components
+		UserCoursePermissionsRenderer,
 	},
 	mixins: [courseIdMixin, loadingMixin, savingMixin],
 	async created() {
@@ -162,20 +167,8 @@ export default defineComponent({
 						_("misc.click_to_edit") +
 						")",
 					minWidth: 685,
-					cellRenderer: (params: any) =>
-						'<div class="flex mt-2 space-x-4 cursor-pointer">' +
-						((params.value ?? []) as CoursePrivilege[]).reduce(
-							(acc, curr) =>
-								acc +
-								`
-          <div class="flex items-center space-x-1 text-muted"><span class="text-base material-icons-outlined" title="${_(
-						"course_privileges." + curr,
-					)}">${coursePrivilegeIcons[curr]}</span> <p class="text-sm">${_(
-									"course_privileges_short." + curr,
-								)}</p></div>`,
-							"",
-						) +
-						"</div>",
+					flex: 1,
+					cellRenderer: "UserCoursePermissionsRenderer",
 				},
 			];
 		},
@@ -191,7 +184,7 @@ export default defineComponent({
 			return Object.values(CoursePrivilege).map(key => ({
 				value: key,
 				content: _("course_privileges_short." + key),
-				icons: [coursePrivilegeIcons[key]],
+				icons: coursePrivilegeIcons[key],
 				description: _("course_privileges." + key),
 			}));
 		},

@@ -35,6 +35,10 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+		small: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	created() {
 		this.id = uuid4();
@@ -67,7 +71,7 @@ export default defineComponent({
 				return sizeException;
 			}
 
-			return "20px !important";
+			return this.small ? "16px !important" : "20px !important";
 		},
 		isRawIcon(): boolean {
 			return this.icons?.[0].startsWith("raw-") ?? false;
