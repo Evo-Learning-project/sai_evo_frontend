@@ -18,7 +18,9 @@
 		@cell-click="$emit('cellClicked', $event)"
 		@selection-change="$emit('selectionChanged', $event)"
 		@first-data-rendered="onGridReady"
+		@filterChanged="onFilterChanged"
 	></ag-grid-vue>
+	<!-- <p>Rows: {{ rowCount }}</p> -->
 </template>
 
 <script lang="ts">
@@ -66,6 +68,8 @@ export default defineComponent({
 			//columnDefs: [] as any,
 			//rowData: [] as any,
 			style: "width: 100%; height: 100%; min-height: 300px",
+			gridApi: null as any,
+			rowCount: 0,
 		};
 	},
 	methods: {
@@ -73,7 +77,11 @@ export default defineComponent({
 			return _("data_table." + key);
 		},
 		onGridReady(params: any) {
+			this.gridApi = params.api;
 			this.$emit("gridReady", params);
+		},
+		onFilterChanged() {
+			this.rowCount = this.gridApi?.getDisplayedRowCount() ?? 0;
 		},
 		// getRowId(params: any) {
 		//   return params.data.id;

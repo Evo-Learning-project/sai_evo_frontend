@@ -3,7 +3,11 @@
 		<router-link
 			:to="{
 				name: 'ExamParticipationFull',
-				params: { participationId: params.data.id },
+				params: {
+					participationId: params.data.id,
+					examId: eventId ?? '-1', // prevent 'missing required param' bugs
+					courseId: courseId ?? '-1',
+				},
 			}"
 			target="_blank"
 			class="mt-1.5"
@@ -27,6 +31,7 @@
 </template>
 
 <script lang="ts">
+import { courseIdMixin, eventIdMixin } from "@/mixins";
 import { EventParticipation } from "@/models";
 import { defineComponent, PropType } from "@vue/runtime-core";
 import Btn from "../ui/Btn.vue";
@@ -41,6 +46,7 @@ export default defineComponent({
 			required: true,
 		},
 	},
+	mixins: [eventIdMixin, courseIdMixin],
 	methods: {},
 	computed: {},
 	components: { Btn },

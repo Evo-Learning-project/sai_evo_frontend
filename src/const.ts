@@ -422,7 +422,7 @@ export const getCourseInsightsHeaders = (
 		filter: "agNumberColumnFilter",
 	},
 	...exams.map((e, i) => ({
-		autoHeaderHeight: true,
+		//autoHeight: true,
 		wrapText: true,
 		field: "exam_" + e.id,
 		headerName:

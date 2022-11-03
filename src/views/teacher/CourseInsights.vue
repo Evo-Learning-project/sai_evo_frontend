@@ -72,7 +72,7 @@
 							{{ "expand_more" }}
 						</span>
 					</Btn>
-					<label v-if="!full" class="cursor-pointer text-muted" for="more-filters-btn">{{
+					<label class="cursor-pointer text-muted" for="more-filters-btn">{{
 						$t("course_insights.filter_exams")
 					}}</label>
 				</div>
