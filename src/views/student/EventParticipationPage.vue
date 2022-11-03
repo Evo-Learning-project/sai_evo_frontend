@@ -547,7 +547,7 @@ export default defineComponent({
 						});
 					} catch (e) {
 						// investigate https://sentry.io/organizations/samuele/issues/3683654671/?project=6265941
-						console.log(
+						console.error(
 							"partialUpdateEventParticipationSlot failed when called with args",
 							slot.id,
 							JSON.stringify(changes),
