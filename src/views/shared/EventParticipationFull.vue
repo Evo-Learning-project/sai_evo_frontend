@@ -16,10 +16,10 @@
           ><span class="material-icons-outlined">arrow_back</span></Btn
         ></router-link
       > -->
-			<Btn @click="onGoBack" :outline="true" :variant="'icon'"
+			<Btn @click="onGoBack" :outline="true" :variant="'icon'" v-if="false"
 				><span class="material-icons-outlined">arrow_back</span></Btn
 			>
-			<h3 class="mb-0.5">
+			<h3 class="mb-0.5 pl-2">
 				{{
 					participation.event.event_type === EventType.EXAM
 						? $t("event_assessment.viewing_participation_of")

@@ -2,7 +2,7 @@
 	<div :title="$t('event_participation_states.' + params.value)" class="mt-1">
 		<span
 			v-if="params.value == EventParticipationState.IN_PROGRESS"
-			class="focus-within:text-lg material-icons-outlined text-muted"
+			class="focus-within:text-lg material-icons-outlined text-muted -mb-2 pt-2.5"
 			style="margin-left: 13px"
 			>{{participationStateIcons[params.value as EventParticipationState][0] }}</span
 		>
