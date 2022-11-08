@@ -766,7 +766,9 @@ import { subscribeToExerciseChanges } from "@/ws/modelSubscription";
 import Toggle from "@/components/ui/Toggle.vue";
 import {
 	downloadExerciseTestCaseAttachment,
+	heartbeatExercise,
 	testProgrammingExerciseSolution,
+	unlockExercise,
 } from "@/api/exercises";
 import CodeExecutionResults from "@/components/shared/CodeExecutionResults.vue";
 import NumberInput from "@/components/ui/NumberInput.vue";
@@ -779,7 +781,7 @@ import {
 } from "@/components/shared/Exercise/utils";
 import { ExerciseSolutionSearchFilter } from "@/api/interfaces";
 import SlotSkeleton from "@/components/ui/skeletons/SlotSkeleton.vue";
-import { forceFileDownload } from "@/utils";
+import { forceFileDownload, getCurrentUserId } from "@/utils";
 const { mapState } = createNamespacedHelpers("shared");
 
 export default defineComponent({
@@ -837,14 +839,12 @@ export default defineComponent({
 		return { v$: v };
 	},
 	beforeUnmount() {
-		this.ws?.close();
+		this.unlockEditingObject();
 	},
 	async created() {
-		// TODO you should refetch exercise to make sure someone hasn't locked it
+		// TODO if the exercise is locked, the user will only see it when they first poll for it, a few seconds later. fix
+		this.lockEditingObject();
 
-		// ! if (!this.subExercise) {
-		// 	this.ws = await subscribeToExerciseChanges(this.modelValue.id);
-		// }
 		this.autoSaveManager = new AutoSaveManager<Exercise>(
 			this.modelValue,
 			async changes =>
@@ -926,13 +926,14 @@ export default defineComponent({
 			exerciseStateOptions,
 			ExerciseState,
 			ExerciseType,
-			ws: null as WebSocket | null,
 			textEditorInstance: null as any,
 			editingClozePosition: null as number | null,
 			editableClozePosition: null as number | null,
 			solutionTestSlots: {} as Record<string, EventParticipationSlot>,
 			testingSolutions: {} as Record<string, boolean>,
 			showStickyStateDropdown: false,
+			lockPollingHandle: null as null | number,
+			heartbeatHandle: null as null | number,
 		};
 	},
 	methods: {
@@ -942,6 +943,8 @@ export default defineComponent({
 			"addExerciseTag",
 			"removeExerciseTag",
 			"deleteExerciseChild",
+			"lockExercise",
+			"getExercise",
 		]),
 		...mapActions("student", ["addExerciseSolution", "deleteExerciseSolution"]),
 		...mapActions("shared", [
@@ -966,6 +969,59 @@ export default defineComponent({
 		},
 		async onBaseExerciseChange<K extends keyof Exercise>(key: K, value: Exercise[K]) {
 			await this.autoSaveManager?.onChange({ field: key, value });
+		},
+		async lockEditingObject() {
+			const LOCK_POLLING_INTERVAL = 5000;
+			const LOCK_HEARTBEAT_INTERVAL = 10000;
+
+			const setUpHeartbeatPollingFn = () =>
+				(this.heartbeatHandle = setInterval(
+					// TODO defensively handle failures, i.e. lock might've been passed onto someone else
+					async () => await heartbeatExercise(this.courseId, this.modelValue.id),
+					LOCK_HEARTBEAT_INTERVAL,
+				));
+
+			try {
+				console.log("locking...");
+				await this.lockExercise({
+					courseId: this.courseId,
+					exerciseId: this.modelValue.id,
+				});
+				setUpHeartbeatPollingFn();
+				console.log("locked!");
+			} catch (e: any) {
+				if (e.response?.status === 403) {
+					// if lock can't be acquired at the moment, periodically
+					// poll to see if the object is still locked, stopping
+					// once the lock has been acquired by the requesting user
+					this.lockPollingHandle = setInterval(async () => {
+						console.log("polling...");
+						await this.getExercise({
+							courseId: this.courseId,
+							exerciseId: this.modelValue.id,
+						});
+						// user has finally acquired the lock; stop polling
+						if (this.modelValue.locked_by?.id === getCurrentUserId()) {
+							console.log("acquired lock!");
+							clearInterval(this.lockPollingHandle as number);
+							setUpHeartbeatPollingFn();
+							this.lockPollingHandle = null;
+						}
+					}, LOCK_POLLING_INTERVAL);
+				} else {
+					this.setErrorNotification(e);
+				}
+			}
+		},
+		async unlockEditingObject() {
+			console.log("unlocking...");
+			if (typeof this.heartbeatHandle === "number") {
+				clearInterval(this.heartbeatHandle);
+			}
+			if (typeof this.lockPollingHandle === "number") {
+				clearInterval(this.lockPollingHandle);
+			}
+			await unlockExercise(this.courseId, this.modelValue.id);
 		},
 		onFocusNonDraft() {
 			this.showDialog = true;

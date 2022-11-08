@@ -53,6 +53,34 @@ export async function getExercises(
 	return convertPaginatedResponseToLocalPaginatedData(normalizedResponseData, pageNumber);
 }
 
+export async function lockExercise(
+	courseId: string,
+	exerciseId: string,
+): Promise<Exercise> {
+	const response = await axios.post(`/courses/${courseId}/exercises/${exerciseId}/lock/`);
+	return response.data;
+}
+
+export async function unlockExercise(
+	courseId: string,
+	exerciseId: string,
+): Promise<void> {
+	const response = await axios.post(
+		`/courses/${courseId}/exercises/${exerciseId}/unlock/`,
+	);
+	return response.data;
+}
+
+export async function heartbeatExercise(
+	courseId: string,
+	exerciseId: string,
+): Promise<void> {
+	const response = await axios.post(
+		`/courses/${courseId}/exercises/${exerciseId}/heartbeat/`,
+	);
+	return response.data;
+}
+
 export async function getExercisesById(
 	courseId: string,
 	exerciseIds: string[],
