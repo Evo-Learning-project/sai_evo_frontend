@@ -59,6 +59,7 @@ export default defineComponent({
 	},
 	methods: {
 		startTimer() {
+			// TODO to make this more solid, run every 500 ms & instead of just decreasing the seconds, count the difference
 			this.seconds = this.initialSeconds;
 			if (this.seconds <= 0) {
 				this.stopTimer();

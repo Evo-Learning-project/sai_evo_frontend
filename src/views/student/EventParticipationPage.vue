@@ -228,7 +228,7 @@ export default defineComponent({
 	mixins: [courseIdMixin, eventIdMixin, savingMixin, loadingMixin, adComponentMixin],
 	watch: {
 		"proxyModelValue.slots"(newVal: EventParticipationSlot[]) {
-			// TODO might need to get more sophisticated to track new slots, old slots leaving etc.
+			// TODO be more sophisticated to track new slots, old slots leaving etc.
 			newVal.forEach(s => this.instantiateSlotAutoSaveManager(s));
 		},
 	},
@@ -524,6 +524,7 @@ export default defineComponent({
 			field: K,
 			value: EventParticipationSlot[K],
 		) {
+			// !! [this might cause the bug with missing slot]
 			// if a new slot has been changed, flush any pending slots
 			if (this.lastSlotChanged != null && this.lastSlotChanged.id != slot.id) {
 				for (const s of Object.values(this.slotAutoSaveManagers)) {
@@ -568,6 +569,8 @@ export default defineComponent({
 						// investigating https://sentry.io/organizations/samuele/issues/3603878793
 						console.error(
 							"setCurrentEventParticipationSlot failed",
+							"slot id was",
+							slot.id,
 							JSON.stringify(changes),
 						);
 						throw e;
