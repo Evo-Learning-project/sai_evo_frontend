@@ -1,5 +1,8 @@
 <template>
-	<div :title="$t('event_participation_states.' + params.value)" class="mt-1">
+	<div
+		:title="$t('event_participation_states.' + params.value)"
+		:class="[params.value === EventParticipationState.IN_PROGRESS ? 'mt-1' : 'mt-1.5']"
+	>
 		<span
 			v-if="params.value == EventParticipationState.IN_PROGRESS"
 			class="focus-within:text-lg material-icons-outlined text-muted -mb-2 pt-2.5"
