@@ -65,6 +65,7 @@
 		></div>
 		<!-- FIXME review shadow -->
 		<Card
+			:loading="fetchingExercise"
 			:focusable="!subExercise"
 			:hoverable="false"
 			:borderLess="subExercise"
@@ -699,6 +700,14 @@
 				</div>
 			</template>
 		</Card>
+		<!-- <Spinner
+			style="top: 10%"
+			:variant="'dark'"
+			fast
+			class="absolute transform z-50 left-1/2 -translate-x-1/2"
+			:size="'xl'"
+			v-if="fetchingExercise"
+		/> -->
 	</div>
 </template>
 
@@ -718,8 +727,6 @@ import {
 	ExerciseTestCase,
 	getBlankTestCase,
 	getBlankExercise,
-	programmingExerciseTypes,
-	CodeExecutionResults as ICodeExecutionResults,
 	EventParticipationSlot,
 	getFakeEventParticipationSlot,
 	ExerciseSolution,
@@ -729,14 +736,14 @@ import {
 	ProgrammingExerciseType,
 	ExerciseTestCaseAttachment,
 } from "@/models";
-import { multipleChoiceExerciseTypes } from "@/models";
 import Card from "@/components/ui/Card.vue";
-import { defineComponent, provide, PropType, inject } from "@vue/runtime-core";
+import { defineComponent, PropType } from "@vue/runtime-core";
 import useVuelidate from "@vuelidate/core";
 
 import TextEditor from "@/components/ui/TextEditor.vue";
 import TextInput from "@/components/ui/TextInput.vue";
 import Btn from "@/components/ui/Btn.vue";
+import Spinner from "@/components/ui/Spinner.vue";
 import TagInput from "@/components/ui/TagInput.vue";
 
 import ChoiceEditor from "@/components/teacher/ExerciseEditor/ChoiceEditor.vue";
@@ -762,7 +769,6 @@ import {
 import CodeEditor from "@/components/ui/CodeEditor.vue";
 import TestCaseEditor from "./TestCaseEditor.vue";
 import Tooltip from "@/components/ui/Tooltip.vue";
-import { subscribeToExerciseChanges } from "@/ws/modelSubscription";
 import Toggle from "@/components/ui/Toggle.vue";
 import {
 	downloadExerciseTestCaseAttachment,
@@ -805,6 +811,7 @@ export default defineComponent({
 		NumberInput,
 		ArticleHandle,
 		SlotSkeleton,
+		//Spinner,
 	},
 	props: {
 		modelValue: {
@@ -845,12 +852,20 @@ export default defineComponent({
 		// fetch exercise to make sure to have the most up to date version
 		this.$nextTick(
 			// nextTick required to prevent render issues with vue-draggable
-			async () =>
+			async () => {
+				this.fetchingExercise = true;
 				// TODO overwriting the whole exercise isn't necessary, what we really want is locked_by
-				await this.getExercise({
-					courseId: this.courseId,
-					exerciseId: this.modelValue.id,
-				}),
+				try {
+					await this.getExercise({
+						courseId: this.courseId,
+						exerciseId: this.modelValue.id,
+					});
+				} catch (e) {
+					this.setErrorNotification(e);
+				} finally {
+					this.fetchingExercise = false;
+				}
+			},
 		);
 
 		this.lockEditingObject();
@@ -944,6 +959,7 @@ export default defineComponent({
 			showStickyStateDropdown: false,
 			lockPollingHandle: null as null | number,
 			heartbeatHandle: null as null | number,
+			fetchingExercise: false,
 		};
 	},
 	methods: {
