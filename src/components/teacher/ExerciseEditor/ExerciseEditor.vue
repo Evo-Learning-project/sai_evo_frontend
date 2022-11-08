@@ -842,7 +842,17 @@ export default defineComponent({
 		this.unlockEditingObject();
 	},
 	async created() {
-		// TODO if the exercise is locked, the user will only see it when they first poll for it, a few seconds later. fix
+		// fetch exercise to make sure to have the most up to date version
+		this.$nextTick(
+			// nextTick required to prevent render issues with vue-draggable
+			async () =>
+				// TODO overwriting the whole exercise isn't necessary, what we really want is locked_by
+				await this.getExercise({
+					courseId: this.courseId,
+					exerciseId: this.modelValue.id,
+				}),
+		);
+
 		this.lockEditingObject();
 
 		this.autoSaveManager = new AutoSaveManager<Exercise>(

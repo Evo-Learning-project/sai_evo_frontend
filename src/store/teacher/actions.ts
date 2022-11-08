@@ -651,6 +651,7 @@ export const actions = {
 		{ courseId, exerciseId }: { courseId: string; exerciseId: string },
 	) => {
 		const exercise = (await getExercisesById(courseId, [exerciseId]))[0];
+		console.log("EX", exercise);
 		commit("setExercise", exercise);
 	},
 	getUsersForCourse: async (
