@@ -16,10 +16,10 @@
           ><span class="material-icons-outlined">arrow_back</span></Btn
         ></router-link
       > -->
-			<Btn @click="$router.back()" :outline="true" :variant="'icon'"
+			<Btn @click="onGoBack" :outline="true" :variant="'icon'" v-if="false"
 				><span class="material-icons-outlined">arrow_back</span></Btn
 			>
-			<h3 class="mb-0.5">
+			<h3 class="mb-0.5 pl-2">
 				{{
 					participation.event.event_type === EventType.EXAM
 						? $t("event_assessment.viewing_participation_of")
@@ -331,6 +331,16 @@ export default defineComponent({
 		...mapActions("shared", ["getSolutionsByExercise"]),
 		...mapActions("teacher", ["partialUpdateEventParticipationSlot"]),
 		...mapMutations(["setCurrentEventParticipationSlot"]), // ? remove
+		onGoBack() {
+			if (window.history.length > 1) {
+				this.$router.back();
+			} else {
+				// default "back" location
+				this.$router.push({
+					name: "ExamProgress",
+				});
+			}
+		},
 		getSolutionsForExercise(exercise: Exercise) {
 			return this.paginatedSolutionsByExerciseId[exercise.id]?.data ?? [];
 		},

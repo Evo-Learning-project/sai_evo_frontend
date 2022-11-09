@@ -1,5 +1,5 @@
 <template>
-	<div class="flex flex-wrap p-1">
+	<div class="flex p-1" :class="{ 'flex-wrap': wrap }">
 		<div v-for="(option, index) in options" :key="'chipset-' + id + '-option-' + index">
 			<Tooltip :textValue="option.description" :noArrow="true" :placement="'bottom'">
 				<div
@@ -13,7 +13,9 @@
 						hover:bg-gray-200
 					"
 					:class="{
+						'chip-sm': compact,
 						'chip-primary': modelValue.includes(option.value),
+						'border-0 bg-light': filled && !modelValue.includes(option.value),
 						'opacity-50 bg-gray-50': option.disabled,
 					}"
 					v-wave="!option.disabled"
@@ -33,8 +35,10 @@
 					>
 						<MultiIcon
 							v-if="option.icons"
-							class="w-6 mr-2 -ml-1"
+							class="w-6 -ml-1"
+							:class="[compact ? 'mr-1' : 'mr-2']"
 							:icons="option.icons"
+							:small="compact"
 						></MultiIcon>
 						<p v-html="option.content"></p>
 						<div class="" v-if="$slots.default">
@@ -61,6 +65,18 @@ export default defineComponent({
 		},
 		options: Array,
 		allowMultiple: {
+			type: Boolean,
+			default: true,
+		},
+		filled: {
+			type: Boolean,
+			default: false,
+		},
+		compact: {
+			type: Boolean,
+			default: false,
+		},
+		wrap: {
 			type: Boolean,
 			default: true,
 		},

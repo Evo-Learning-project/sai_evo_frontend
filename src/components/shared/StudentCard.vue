@@ -56,6 +56,7 @@
 								name: 'ExamParticipationFull',
 								params: { examId: data.examId, participationId: data.id },
 							}"
+							target="_blank"
 						>
 							<Btn :outline="true" :variant="'icon'"
 								><span style="font-size: 18px !important" class="material-icons-outlined"

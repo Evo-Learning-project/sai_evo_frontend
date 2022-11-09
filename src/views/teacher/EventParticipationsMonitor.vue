@@ -394,6 +394,12 @@ import {
 	getParticipationsAverageProgress,
 } from "@/reports";
 
+import EventParticipationSlotScoreRenderer from "@/components/datatable/EventParticipationSlotScoreRenderer.vue";
+import EventParticipationSlotCompletionRenderer from "@/components/datatable/EventParticipationSlotCompletionRenderer.vue";
+import EventParticipationEmailRenderer from "@/components/datatable/EventParticipationEmailRenderer.vue";
+import EventParticipationStateRenderer from "@/components/datatable/EventParticipationStateRenderer.vue";
+import EventParticipationAssessmentStateRenderer from "@/components/datatable/EventParticipationAssessmentStateRenderer.vue";
+
 export default defineComponent({
 	components: {
 		DataTable,
@@ -403,6 +409,18 @@ export default defineComponent({
 		CsvParticipationDownloader,
 		SkeletonCard,
 		Spinner,
+
+		/** Cell renderers required by Ag-grid */
+		// eslint-disable-next-line vue/no-unused-components
+		EventParticipationSlotScoreRenderer,
+		// eslint-disable-next-line vue/no-unused-components
+		EventParticipationSlotCompletionRenderer,
+		// eslint-disable-next-line vue/no-unused-components
+		EventParticipationEmailRenderer,
+		// eslint-disable-next-line vue/no-unused-components
+		EventParticipationStateRenderer,
+		// eslint-disable-next-line vue/no-unused-components
+		EventParticipationAssessmentStateRenderer,
 	},
 	name: "EventParticipationsMonitor",
 	props: {
@@ -574,15 +592,7 @@ export default defineComponent({
 		},
 		async onCellClicked(event: CellClickedEvent) {
 			// TODO refactor to have separate methods
-			// open full participation
-			if (event.colDef.field === "email") {
-				this.$router.push({
-					name: "ExamParticipationFull",
-					params: { participationId: event.data.id },
-				});
-			}
-			// edit assessment slot
-			else if (event.colDef.field?.startsWith("slot") && this.resultsMode) {
+			if (event.colDef.field?.startsWith("slot") && this.resultsMode) {
 				this.editingSlot = event.value;
 				this.editingParticipationId = event.data.id;
 				this.editingAssessmentSlotMode = true;

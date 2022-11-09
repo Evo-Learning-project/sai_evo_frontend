@@ -422,7 +422,7 @@ export const getCourseInsightsHeaders = (
 		filter: "agNumberColumnFilter",
 	},
 	...exams.map((e, i) => ({
-		autoHeaderHeight: true,
+		//autoHeight: true,
 		wrapText: true,
 		field: "exam_" + e.id,
 		headerName:
@@ -485,10 +485,7 @@ export const getEventParticipationMonitorHeaders = (
 			filter: "agTextColumnFilter",
 			width: 300,
 			resizable: true,
-			cellRenderer: (params: any) =>
-				`<div class="flex items-center space-x-1">
-            <span class="p-2 mr-2 text-sm ag-selectable-cell material-icons-outlined">launch</span>
-            ${params.value}</div>`,
+			cellRenderer: "EventParticipationEmailRenderer",
 			checkboxSelection: true,
 			headerCheckboxSelection: true,
 			headerCheckboxSelectionFilteredOnly: true,
@@ -536,14 +533,7 @@ export const getEventParticipationMonitorHeaders = (
 						field: "state", // assessment progress
 						width: 90,
 						headerName: _("event_participation_headings.state"),
-						cellRenderer: (params: any) =>
-							`<span class="${
-								params.value == ParticipationAssessmentProgress.PARTIALLY_ASSESSED
-									? "text-yellow-900"
-									: "text-success"
-							} pt-2 ml-1 text-lg material-icons-outlined">${
-								assessmentStateIcons[params.value as ParticipationAssessmentProgress]
-							}</span>`,
+						cellRenderer: "EventParticipationAssessmentStateRenderer",
 					},
 			  ]
 			: []),
@@ -553,17 +543,7 @@ export const getEventParticipationMonitorHeaders = (
 						field: "state", // participation state (in progress / turned in)
 						width: 90,
 						headerName: _("event_participation_headings.participation_state"),
-						cellRenderer: (params: any) =>
-							`<div title="${_(
-								"event_participation_states." + params.value,
-							)}" class=" ag-selectable-cell">
-                  <span  class="mx-auto ${
-										params.value == EventParticipationState.IN_PROGRESS
-											? "text-muted"
-											: "text-success"
-									} text-lg material-icons-outlined">${
-								participationStateIcons[params.value as EventParticipationState]
-							}</span></div>`,
+						cellRenderer: "EventParticipationStateRenderer",
 					},
 			  ]
 			: []),
@@ -583,46 +563,19 @@ export const getEventParticipationMonitorHeaders = (
 	(eventParticipations[0] as EventParticipation).slots.forEach(s =>
 		ret.push({
 			width: 90,
-			type: "numericColumn",
+			...(resultsMode ? { type: "numericColumn" } : {}),
 			field: "slot-" + ((s.slot_number as number) + 1),
 			headerName:
 				_("event_participation_headings.exercise") +
 				" " +
 				((s.slot_number as number) + 1),
-			cellRenderer: renderEventParticipationSlotCell(resultsMode),
+			cellRenderer: resultsMode
+				? "EventParticipationSlotScoreRenderer"
+				: "EventParticipationSlotCompletionRenderer", //renderEventParticipationSlotCell(resultsMode),
 		}),
 	);
 	return ret;
 };
-
-// returns the html contained inside of a participation slot in the
-// participations monitoring ag-grid table
-const renderEventParticipationSlotCell = (resultsMode: boolean) => (params: any) =>
-	params.value.execution_results && params.value.execution_results.state === "running"
-		? `<div class='text-muted mt-1'>
-			<span style="font-size: 20px !important" class='material-icons-outlined animate-spin'>sync</span>
-		</div>`
-		: `<div class="ml-10 -mr-2 ag-selectable-cell ${
-				params.value.score ??
-				"transition-opacity duration-75 hover:opacity-100 opacity-70 "
-		  }">` +
-		  `<span class="mx-auto ${
-				resultsMode
-					? params.value.score ?? "text-lg text-yellow-900 material-icons-outlined"
-					: "material-icons text-lg " +
-					  (params.value.has_answer
-							? "text-success opacity-80"
-							: "text-muted opacity-50")
-		  }">
-                  ${
-										resultsMode
-											? params.value.score ?? "pending_actions"
-											: params.value.has_answer
-											? "done"
-											: "remove"
-									}
-                </span>` +
-		  `</div>`;
 
 export const MAX_PRACTICE_EXERCISE_COUNT = 500;
 

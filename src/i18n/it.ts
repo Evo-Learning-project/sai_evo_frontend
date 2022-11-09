@@ -462,6 +462,9 @@ export const it = {
 		copied_link: "Copiato link per gli studenti negli appunti",
 	},
 	event_monitor: {
+		assess_slot: "Valuta",
+		change_slot_score: "Modifica punteggio",
+		undo_turn_in: "Annulla consegna",
 		stats_turned_in: "Consegnati",
 		stats_participants: "Partecipanti",
 		stats_average_progress: "Completamento medio",
