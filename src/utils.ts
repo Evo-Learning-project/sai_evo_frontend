@@ -20,6 +20,9 @@ const SEARCH_DEBOUNCE_MAX_WAIT_MS = 1000;
 const STUDENT_DEBOUNCE_TEXT_TIME_MS = 5000;
 const STUDENT_DEBOUNCE_TEXT_MAX_WAIT_MS = 10000;
 
+export const getCurrentUserId = () =>
+	(store.state as { shared: SharedState }).shared.user.id;
+
 export const logOut = (showMessage = true, redirect = ""): void => {
 	store.commit("shared/resetToken");
 	router.push({

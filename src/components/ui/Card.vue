@@ -9,6 +9,11 @@
 			'card-filled': filled,
 		}"
 	>
+		<transition name="fade">
+			<div v-if="loading" class="linear-activity absolute top-0 left-0 rounded-t">
+				<div class="indeterminate"></div></div
+		></transition>
+
 		<!-- FIXME review shadow -->
 		<div class="flex flex-col flex-grow w-full">
 			<div v-if="$slots.header" class="">
@@ -45,6 +50,10 @@ import { defineComponent, PropType } from "@vue/runtime-core";
 export default defineComponent({
 	name: "Card",
 	props: {
+		loading: {
+			type: Boolean,
+			default: false,
+		},
 		size: {
 			type: String as PropType<"sm" | "default">,
 			default: "default",

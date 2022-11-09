@@ -214,13 +214,13 @@ import {
 import { subscribeToEventChanges } from "@/ws/modelSubscription";
 import Toggle from "@/components/ui/Toggle.vue";
 import Btn from "@/components/ui/Btn.vue";
-import { getEventInstances } from "@/api/events";
+import { getEventInstances, heartbeatEvent, unlockEvent } from "@/api/events";
 import EventInstancesPreview from "./EventInstancesPreview.vue";
 const { mapGetters, mapMutations } = createNamespacedHelpers("teacher");
 import useVuelidate from "@vuelidate/core";
 import { eventValidation } from "@/validation/models";
 import NumberInput from "@/components/ui/NumberInput.vue";
-import { roundToTwoDecimals } from "@/utils";
+import { getCurrentUserId, roundToTwoDecimals } from "@/utils";
 
 export default defineComponent({
 	setup() {
@@ -248,15 +248,19 @@ export default defineComponent({
 	mixins: [courseIdMixin, eventIdMixin, loadingMixin, savingMixin],
 	props: [],
 	beforeRouteLeave() {
+		console.log("route", this.modelValue);
 		document.removeEventListener("keydown", this.doSave);
-		this.ws?.close();
+		this.unlockEditingObject();
 	},
 	mounted() {
 		document.addEventListener("keydown", this.doSave);
 	},
-	beforeDestroy() {
-		document.removeEventListener("keydown", this.doSave);
-	},
+	// beforeUnmount() {
+	// 	console.log("unmount", this.modelValue);
+
+	// 	document.removeEventListener("keydown", this.doSave);
+	// 	this.unlockEditingObject();
+	// },
 	async created() {
 		await this.withLoading(async () => {
 			await this.getTags({ courseId: this.courseId });
@@ -271,36 +275,9 @@ export default defineComponent({
 
 		// ! this.ws = await subscribeToEventChanges(this.eventId);
 
-		this.autoSaveManager = new AutoSaveManager<Event>(
-			this.modelValue,
-			async changes => {
-				await this.partialUpdateEvent({
-					courseId: this.courseId,
-					eventId: this.modelValue.id,
-					changes,
-				});
-				if (changes.state === EventState.PLANNED) {
-					this.$store.commit("shared/showSuccessFeedback");
-				}
-			},
-			changes => {
-				this.saving = true;
-				this.savingError = false;
-				//this.$store.state.shared.localLoading = true;
-				this.setEvent({
-					eventId: this.eventId,
-					payload: { ...this.modelValue, ...changes },
-				});
-			},
-			EVENT_AUTO_SAVE_DEBOUNCED_FIELDS,
-			EVENT_AUTO_SAVE_DEBOUNCE_TIME_MS,
-			undefined,
-			() => (this.savingError = true),
-			() => {
-				//this.$store.state.shared.localLoading = false;
-				this.saving = false;
-			},
-		);
+		this.lockEditingObject();
+
+		this.instantiateAutoSaveManager();
 
 		if (this.modelValue.state == EventState.OPEN) {
 			this.showConfirmationDialog = true;
@@ -320,6 +297,8 @@ export default defineComponent({
 			loadingExamples: false,
 			editingMaxScore: false,
 			dirtyMaxScore: null as null | number,
+			lockPollingHandle: null as null | number,
+			heartbeatHandle: null as null | number,
 		};
 	},
 	methods: {
@@ -329,6 +308,7 @@ export default defineComponent({
 			"getExercises",
 			"partialUpdateEvent",
 			"updateEvent",
+			"lockEvent",
 		]),
 		...mapMutations(["setEvent"]),
 		invalidateExamples() {
@@ -337,6 +317,89 @@ export default defineComponent({
 		onEditMaxScore() {
 			this.dirtyMaxScore = this.modelValue.max_score ?? 0;
 			this.editingMaxScore = true;
+		},
+		async lockEditingObject() {
+			const LOCK_POLLING_INTERVAL = 5000;
+			const LOCK_HEARTBEAT_INTERVAL = 10000;
+
+			const setUpHeartbeatPollingFn = () =>
+				(this.heartbeatHandle = setInterval(
+					// TODO defensively handle failures, i.e. lock might've been passed onto someone else
+					async () => await heartbeatEvent(this.courseId, this.modelValue.id),
+					LOCK_HEARTBEAT_INTERVAL,
+				));
+
+			try {
+				console.log("locking...");
+				await this.lockEvent({ courseId: this.courseId, eventId: this.modelValue.id });
+				setUpHeartbeatPollingFn();
+				console.log("locked!");
+			} catch (e: any) {
+				if (e.response?.status === 403) {
+					// if lock can't be acquired at the moment, periodically
+					// poll to see if the object is still locked, stopping
+					// once the lock has been acquired by the requesting user
+					this.lockPollingHandle = setInterval(async () => {
+						console.log("polling...");
+						await this.getEvent({
+							courseId: this.courseId,
+							eventId: this.eventId,
+							includeDetails: true,
+						});
+						// user has finally acquired the lock; stop polling
+						if (this.modelValue.locked_by?.id === getCurrentUserId()) {
+							console.log("acquired lock!");
+							clearInterval(this.lockPollingHandle as number);
+							setUpHeartbeatPollingFn();
+							this.lockPollingHandle = null;
+						}
+					}, LOCK_POLLING_INTERVAL);
+				} else {
+					this.setErrorNotification(e);
+				}
+			}
+		},
+		async unlockEditingObject() {
+			console.log("unlocking...");
+			if (typeof this.heartbeatHandle === "number") {
+				clearInterval(this.heartbeatHandle);
+			}
+			if (typeof this.lockPollingHandle === "number") {
+				clearInterval(this.lockPollingHandle);
+			}
+			await unlockEvent(this.courseId, this.modelValue.id);
+		},
+		instantiateAutoSaveManager() {
+			this.autoSaveManager = new AutoSaveManager<Event>(
+				this.modelValue,
+				async changes => {
+					await this.partialUpdateEvent({
+						courseId: this.courseId,
+						eventId: this.modelValue.id,
+						changes,
+					});
+					if (changes.state === EventState.PLANNED) {
+						this.$store.commit("shared/showSuccessFeedback");
+					}
+				},
+				changes => {
+					this.saving = true;
+					this.savingError = false;
+					//this.$store.state.shared.localLoading = true;
+					this.setEvent({
+						eventId: this.eventId,
+						payload: { ...this.modelValue, ...changes },
+					});
+				},
+				EVENT_AUTO_SAVE_DEBOUNCED_FIELDS,
+				EVENT_AUTO_SAVE_DEBOUNCE_TIME_MS,
+				undefined,
+				() => (this.savingError = true),
+				() => {
+					//this.$store.state.shared.localLoading = false;
+					this.saving = false;
+				},
+			);
 		},
 		async onSaveMaxScore() {
 			await this.onChange("max_score", this.dirtyMaxScore as number);

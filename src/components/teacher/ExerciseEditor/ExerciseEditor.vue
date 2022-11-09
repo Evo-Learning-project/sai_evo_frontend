@@ -65,6 +65,7 @@
 		></div>
 		<!-- FIXME review shadow -->
 		<Card
+			:loading="fetchingExercise"
 			:focusable="!subExercise"
 			:hoverable="false"
 			:borderLess="subExercise"
@@ -699,6 +700,14 @@
 				</div>
 			</template>
 		</Card>
+		<!-- <Spinner
+			style="top: 10%"
+			:variant="'dark'"
+			fast
+			class="absolute transform z-50 left-1/2 -translate-x-1/2"
+			:size="'xl'"
+			v-if="fetchingExercise"
+		/> -->
 	</div>
 </template>
 
@@ -718,8 +727,6 @@ import {
 	ExerciseTestCase,
 	getBlankTestCase,
 	getBlankExercise,
-	programmingExerciseTypes,
-	CodeExecutionResults as ICodeExecutionResults,
 	EventParticipationSlot,
 	getFakeEventParticipationSlot,
 	ExerciseSolution,
@@ -729,14 +736,14 @@ import {
 	ProgrammingExerciseType,
 	ExerciseTestCaseAttachment,
 } from "@/models";
-import { multipleChoiceExerciseTypes } from "@/models";
 import Card from "@/components/ui/Card.vue";
-import { defineComponent, provide, PropType, inject } from "@vue/runtime-core";
+import { defineComponent, PropType } from "@vue/runtime-core";
 import useVuelidate from "@vuelidate/core";
 
 import TextEditor from "@/components/ui/TextEditor.vue";
 import TextInput from "@/components/ui/TextInput.vue";
 import Btn from "@/components/ui/Btn.vue";
+import Spinner from "@/components/ui/Spinner.vue";
 import TagInput from "@/components/ui/TagInput.vue";
 
 import ChoiceEditor from "@/components/teacher/ExerciseEditor/ChoiceEditor.vue";
@@ -762,11 +769,12 @@ import {
 import CodeEditor from "@/components/ui/CodeEditor.vue";
 import TestCaseEditor from "./TestCaseEditor.vue";
 import Tooltip from "@/components/ui/Tooltip.vue";
-import { subscribeToExerciseChanges } from "@/ws/modelSubscription";
 import Toggle from "@/components/ui/Toggle.vue";
 import {
 	downloadExerciseTestCaseAttachment,
+	heartbeatExercise,
 	testProgrammingExerciseSolution,
+	unlockExercise,
 } from "@/api/exercises";
 import CodeExecutionResults from "@/components/shared/CodeExecutionResults.vue";
 import NumberInput from "@/components/ui/NumberInput.vue";
@@ -779,7 +787,7 @@ import {
 } from "@/components/shared/Exercise/utils";
 import { ExerciseSolutionSearchFilter } from "@/api/interfaces";
 import SlotSkeleton from "@/components/ui/skeletons/SlotSkeleton.vue";
-import { forceFileDownload } from "@/utils";
+import { forceFileDownload, getCurrentUserId } from "@/utils";
 const { mapState } = createNamespacedHelpers("shared");
 
 export default defineComponent({
@@ -803,6 +811,7 @@ export default defineComponent({
 		NumberInput,
 		ArticleHandle,
 		SlotSkeleton,
+		//Spinner,
 	},
 	props: {
 		modelValue: {
@@ -837,14 +846,30 @@ export default defineComponent({
 		return { v$: v };
 	},
 	beforeUnmount() {
-		this.ws?.close();
+		this.unlockEditingObject();
 	},
 	async created() {
-		// TODO you should refetch exercise to make sure someone hasn't locked it
+		// fetch exercise to make sure to have the most up to date version
+		this.$nextTick(
+			// nextTick required to prevent render issues with vue-draggable
+			async () => {
+				this.fetchingExercise = true;
+				// TODO overwriting the whole exercise isn't necessary, what we really want is locked_by
+				try {
+					await this.getExercise({
+						courseId: this.courseId,
+						exerciseId: this.modelValue.id,
+					});
+				} catch (e) {
+					this.setErrorNotification(e);
+				} finally {
+					this.fetchingExercise = false;
+				}
+			},
+		);
 
-		// ! if (!this.subExercise) {
-		// 	this.ws = await subscribeToExerciseChanges(this.modelValue.id);
-		// }
+		this.lockEditingObject();
+
 		this.autoSaveManager = new AutoSaveManager<Exercise>(
 			this.modelValue,
 			async changes =>
@@ -926,13 +951,15 @@ export default defineComponent({
 			exerciseStateOptions,
 			ExerciseState,
 			ExerciseType,
-			ws: null as WebSocket | null,
 			textEditorInstance: null as any,
 			editingClozePosition: null as number | null,
 			editableClozePosition: null as number | null,
 			solutionTestSlots: {} as Record<string, EventParticipationSlot>,
 			testingSolutions: {} as Record<string, boolean>,
 			showStickyStateDropdown: false,
+			lockPollingHandle: null as null | number,
+			heartbeatHandle: null as null | number,
+			fetchingExercise: false,
 		};
 	},
 	methods: {
@@ -942,6 +969,8 @@ export default defineComponent({
 			"addExerciseTag",
 			"removeExerciseTag",
 			"deleteExerciseChild",
+			"lockExercise",
+			"getExercise",
 		]),
 		...mapActions("student", ["addExerciseSolution", "deleteExerciseSolution"]),
 		...mapActions("shared", [
@@ -966,6 +995,59 @@ export default defineComponent({
 		},
 		async onBaseExerciseChange<K extends keyof Exercise>(key: K, value: Exercise[K]) {
 			await this.autoSaveManager?.onChange({ field: key, value });
+		},
+		async lockEditingObject() {
+			const LOCK_POLLING_INTERVAL = 5000;
+			const LOCK_HEARTBEAT_INTERVAL = 10000;
+
+			const setUpHeartbeatPollingFn = () =>
+				(this.heartbeatHandle = setInterval(
+					// TODO defensively handle failures, i.e. lock might've been passed onto someone else
+					async () => await heartbeatExercise(this.courseId, this.modelValue.id),
+					LOCK_HEARTBEAT_INTERVAL,
+				));
+
+			try {
+				console.log("locking...");
+				await this.lockExercise({
+					courseId: this.courseId,
+					exerciseId: this.modelValue.id,
+				});
+				setUpHeartbeatPollingFn();
+				console.log("locked!");
+			} catch (e: any) {
+				if (e.response?.status === 403) {
+					// if lock can't be acquired at the moment, periodically
+					// poll to see if the object is still locked, stopping
+					// once the lock has been acquired by the requesting user
+					this.lockPollingHandle = setInterval(async () => {
+						console.log("polling...");
+						await this.getExercise({
+							courseId: this.courseId,
+							exerciseId: this.modelValue.id,
+						});
+						// user has finally acquired the lock; stop polling
+						if (this.modelValue.locked_by?.id === getCurrentUserId()) {
+							console.log("acquired lock!");
+							clearInterval(this.lockPollingHandle as number);
+							setUpHeartbeatPollingFn();
+							this.lockPollingHandle = null;
+						}
+					}, LOCK_POLLING_INTERVAL);
+				} else {
+					this.setErrorNotification(e);
+				}
+			}
+		},
+		async unlockEditingObject() {
+			console.log("unlocking...");
+			if (typeof this.heartbeatHandle === "number") {
+				clearInterval(this.heartbeatHandle);
+			}
+			if (typeof this.lockPollingHandle === "number") {
+				clearInterval(this.lockPollingHandle);
+			}
+			await unlockExercise(this.courseId, this.modelValue.id);
 		},
 		onFocusNonDraft() {
 			this.showDialog = true;

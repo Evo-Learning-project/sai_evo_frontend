@@ -37,6 +37,7 @@ import {
 	deleteExerciseTestCase,
 	getExercises,
 	getExercisesById,
+	lockExercise,
 	removeTagFromExercise,
 	updateExercise,
 } from "@/api/exercises";
@@ -55,6 +56,7 @@ import {
 	getEvents,
 	getEventTemplate,
 	getEventTemplateRule,
+	lockEvent,
 	partialUpdateEvent,
 	partialUpdateEventParticipationSlot,
 	partialUpdateEventTemplateRule,
@@ -194,6 +196,32 @@ export const actions = {
 		if (mutate) {
 			commit("setEvent", { eventId, payload: event });
 		}
+	},
+	lockEvent: async (
+		{ commit }: { commit: Commit },
+		{
+			courseId,
+			eventId,
+		}: {
+			courseId: string;
+			eventId: string;
+		},
+	) => {
+		const event = await lockEvent(courseId, eventId);
+		commit("setEvent", { eventId, payload: event });
+	},
+	lockExercise: async (
+		{ commit }: { commit: Commit },
+		{
+			courseId,
+			exerciseId,
+		}: {
+			courseId: string;
+			exerciseId: string;
+		},
+	) => {
+		const exercise = await lockExercise(courseId, exerciseId);
+		commit("setExercise", exercise);
 	},
 	deleteExerciseChild: async (
 		{ commit }: { commit: Commit },
@@ -608,7 +636,7 @@ export const actions = {
 		commit("setEvents", events);
 	},
 	getEvent: async (
-		{ commit, state }: { commit: Commit; state: any },
+		{ commit, state }: { commit: Commit; state: TeacherState },
 		{
 			courseId,
 			eventId,
@@ -617,6 +645,14 @@ export const actions = {
 	) => {
 		const event = await getEvent(courseId, eventId, includeDetails);
 		commit("setEvents", [event, ...state.events]);
+	},
+	getExercise: async (
+		{ commit }: { commit: Commit },
+		{ courseId, exerciseId }: { courseId: string; exerciseId: string },
+	) => {
+		const exercise = (await getExercisesById(courseId, [exerciseId]))[0];
+		console.log("EX", exercise);
+		commit("setExercise", exercise);
 	},
 	getUsersForCourse: async (
 		// returns all users in the system and their permissions relative to given course
