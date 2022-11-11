@@ -17,6 +17,7 @@ import {
 	AssessmentSlotState,
 	AssessmentVisibility,
 } from ".";
+import { PaginatedData } from "@/api";
 
 interface Orderable {
 	_ordering?: number;
@@ -292,3 +293,31 @@ export interface GamificationUser {
 	reputation: number;
 	badges: GamificationBadge[];
 }
+
+// Course tree
+
+interface BaseNodeFields {
+	id: string;
+	parent_id: string;
+	created: string;
+	creator: User;
+	// children: PaginatedData<CourseTreeNode>;
+}
+
+export interface FileNode extends BaseNodeFields {
+	file: any; // TODO
+	resourcetype: "FileNode";
+}
+
+export interface LessonNode extends BaseNodeFields {
+	title: string;
+	body: string;
+	resourcetype: "LessonNode";
+}
+
+export interface TopicNode extends BaseNodeFields {
+	name: string;
+	resourcetype: "TopicNode";
+}
+
+export type CourseTreeNode = FileNode | LessonNode | TopicNode;

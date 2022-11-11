@@ -76,11 +76,14 @@ module.exports = {
 				lightText: "#FFFFFF",
 				darkText: "#111827",
 				primary: {
+					// #6200ee
+					// TODO try #0057C9
 					light: "#666ad1",
 					DEFAULT: "#303f9f", // '#0F7490', '#3730A3',
 					dark: "#001970", //'#312E81'
 				},
 				secondary: {
+					// #018786
 					light: "#a255ff",
 					DEFAULT: "#651fff",
 					dark: "#4527a0",

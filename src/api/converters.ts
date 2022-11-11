@@ -9,9 +9,25 @@ import {
 	EventTemplateRuleClause,
 	EventParticipationSlot,
 	ExerciseSolution,
+	CourseTreeNode,
 } from "@/models";
 import { BackendPaginatedResponse, PaginatedData } from "./interfaces";
 
+// export const normalizeIncomingCourseTreeNode = (
+// 	node: CourseTreeNode & { children: BackendPaginatedResponse<CourseTreeNode> },
+// 	pageNumber: number,
+// ): CourseTreeNode => ({
+// 	...node,
+// 	children: convertPaginatedResponseToLocalPaginatedData(
+// 		{
+// 			...node.children,
+// 			results: node.children.results.map(c =>
+// 				normalizeIncomingCourseTreeNode(c as any, pageNumber),
+// 			),
+// 		},
+// 		pageNumber,
+// 	),
+// });
 export const normalizeIncomingExercise = (exercise: Exercise): Exercise => ({
 	...exercise,
 	sub_exercises: (exercise.sub_exercises ?? []).map(s => normalizeIncomingExercise(s)),
