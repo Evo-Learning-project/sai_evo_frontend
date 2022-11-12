@@ -489,6 +489,7 @@ export const actions = {
 
 		Object.assign(solution, updatedSolution);
 	},
+	// ! only used once
 	getExercises: async (
 		{ state }: { state: StudentState },
 		{

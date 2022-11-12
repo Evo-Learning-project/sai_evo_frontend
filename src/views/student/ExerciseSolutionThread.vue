@@ -21,21 +21,19 @@ import {
 	ExerciseSolution,
 	getFakeEventParticipationSlot,
 } from "@/models";
-import { defineComponent, PropType } from "@vue/runtime-core";
-import AbstractEventParticipationSlot from "@/components/shared/AbstractEventParticipationSlot.vue";
+import { defineComponent } from "@vue/runtime-core";
 import { courseIdMixin, loadingMixin } from "@/mixins";
 import ExerciseSolutionContainer from "@/components/shared/ExerciseSolution/ExerciseSolutionContainer.vue";
 import { mapActions, mapGetters, mapState } from "vuex";
 import SkeletonCard from "@/components/ui/SkeletonCard.vue";
-import Exercise from "@/components/shared/Exercise/Exercise.vue";
 import { PaginatedData } from "@/api";
-import Btn from "@/components/ui/Btn.vue";
 import FullExercise from "@/components/shared/FullExercise.vue";
 export default defineComponent({
 	name: "ExerciseSolutionThread",
 	props: {},
 	mixins: [courseIdMixin, loadingMixin],
 	async created() {
+		// ! use of student getExercises
 		await this.withFirstLoading(async () => {
 			await this.getExercises({
 				courseId: this.courseId,
@@ -63,6 +61,7 @@ export default defineComponent({
 		},
 	},
 	computed: {
+		// ! getter is used here only because it spreads ...exerciseThreads too, this is unnecessary
 		...mapGetters("student", ["exercises"]),
 		...mapState("shared", ["paginatedSolutionsByExerciseId"]),
 		exercise(): IExercise | undefined {
