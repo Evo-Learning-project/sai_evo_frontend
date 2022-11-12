@@ -51,4 +51,3 @@ export interface PaginatedData<T> {
 	pageNumber: number;
 	count: number;
 }
-// TODO define operations on paginated data (insert, reset, delete from...)

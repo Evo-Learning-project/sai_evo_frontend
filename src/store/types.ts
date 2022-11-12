@@ -136,6 +136,7 @@ export interface SharedState {
 	progressByGoalId: Record<string, GoalProgress>;
 }
 
+// TODO create types for payloads
 interface StoreOperationParameters<T> {
 	courseId: string;
 	eventId: string;
