@@ -100,7 +100,6 @@ export default defineComponent({
 			"partialUpdateEventParticipation",
 			"getCourseEventParticipations",
 		]),
-		...mapMutations("student", ["setEditingEvent"]),
 		async onLoadMore({ loaded, noMore, error }: LoadAction) {
 			try {
 				const moreResults = await this.getCourseEventParticipations({
@@ -122,7 +121,6 @@ export default defineComponent({
 	computed: {
 		...mapGetters("student", ["examParticipations"]),
 		...mapGetters("shared", ["course"]),
-		...mapState("student", ["editingEvent"]),
 		...mapState("shared", ["tags"]),
 	},
 });

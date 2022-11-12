@@ -405,6 +405,7 @@ export default defineComponent({
 	computed: {
 		...mapGetters("student", ["examParticipations", "practiceParticipations"]),
 		...mapGetters("shared", ["course"]),
+		// ! only use of editingEvent in the app
 		...mapState("student", ["editingEvent"]),
 		...mapState("shared", ["tags"]),
 		filteredPracticeParticipations() {

@@ -11,6 +11,7 @@ import {
 	ExerciseSolution,
 	GamificationContext,
 	ExerciseTestCaseAttachment,
+	CourseTreeNode,
 } from "@/models";
 
 export interface StudentState {
@@ -49,47 +50,49 @@ export interface MetaStoreState {
 }
 
 export interface MainStoreState {
-	// global data
-	courses: Course[];
-
-	tags: Tag[];
-
-	paginatedSolutionsByExerciseId: Record<string, PaginatedData<ExerciseSolution>>; // string = exercise id,
-
-	exerciseTestCaseAttachmentsByTestCaseId: Record<string, ExerciseTestCaseAttachment[]>;
-
-	// mappings
-
-	// paginated resources
-
-	// ! previous teacher store
-	// exercises currently displayed
-	paginatedExercises: PaginatedData<Exercise>;
-
-	// events currently displayed (e.g. course exam list)
-	events: Event[];
-
-	// event participations currently displayed (e.g. exam results page)
+	/**
+	 *  Paginated resources and list-based resources
+	 */
+	courses: Course[]; // global list of courses
+	paginatedCourseTreeNodes: PaginatedData<CourseTreeNode>;
+	tags: Tag[]; // tags of current course
+	users: User[]; // users currently displayed (e.g. course insights page)
+	paginatedExercises: PaginatedData<Exercise>; // exercises currently displayed
+	events: Event[]; // events currently displayed (e.g. course exam list)
+	// event participations of the user
+	// ! currently used on the home page for student dashboard, with the Event nested inside; improve
+	eventParticipations: PaginatedData<EventParticipation>; // TODO rename to paginatedEventParticipations
 	// TODO rename to something like currentEventParticipations
-	// eventParticipations: EventParticipation[];
+	// eventParticipations: EventParticipation[]; // event participations currently displayed (e.g. exam results page)
 
-	// users currently displayed (e.g. course insights page)
-	users: User[];
+	/**
+	 * Mappings
+	 */
+	// exercise id to set of ExerciseSolution
+	paginatedSolutionsByExerciseId: Record<string, PaginatedData<ExerciseSolution>>;
+	// testcase id to set of ExerciseTestCaseAttachment
+	exerciseTestCaseAttachmentsByTestCaseId: Record<string, ExerciseTestCaseAttachment[]>;
+	// gamification goal id to GoalProgress
+	progressByGoalId: Record<string, GoalProgress>;
+	// node id to set of children nodes
+	paginatedChildrenByNodeId: Record<string, PaginatedData<CourseTreeNode>>;
+
+	/**
+	 * Stand-alone data, used as main source of information for a view
+	 * or component
+	 */
+	// event participation currently displayed (e.g. during an exam or when reviewing answers)
+	currentEventParticipation: EventParticipation | null;
+	// ! see if this is really necessary here
+	// event currently being edited
+	editingEvent: Event | null;
+	// event currently being displayed (e.g. in the confirmation page before joining an event)
+	previewingEvent: Event | null;
 
 	// --------------------------------------------
 
 	// ! previous student store
-	// event participation currently displayed (e.g. during an exam or when reviewing answers)
-	currentEventParticipation: EventParticipation | null;
-	// event participations of the user
-	// ! currently used on the home page for student dashboard, with the Event nested inside; improve
-	eventParticipations: PaginatedData<EventParticipation>;
-	// ! currently used to hold data about the practice being created - maybe this shouldn't be in the store?
-	// event currently being edited
-	editingEvent: Event | null;
-	// ! this is pretty local, maybe shouldn't live in the store?
-	// event currently being displayed (e.g. in the confirmation page before joining an event)
-	previewingEvent: Event | null;
+
 	// --------------------------------------------
 
 	// Gamification -------------------------------
@@ -98,8 +101,6 @@ export interface MainStoreState {
 	gamificationContext: GamificationContext | null;
 	// goals of the current gamificationContext
 	gamificationContextGoals: Goal[];
-	// mapping from goal id to GoalProgress for that goal
-	progressByGoalId: Record<string, GoalProgress>;
 
 	// --------------------------------------------
 }
