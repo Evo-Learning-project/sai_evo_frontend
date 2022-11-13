@@ -71,7 +71,7 @@
 			:borderLess="subExercise"
 			:filled="subExercise"
 			:class="{
-				'bg-gray-50': modelValue.state === ExerciseState.DRAFT,
+				'bg-gray-50': false && modelValue.state === ExerciseState.DRAFT,
 				'mb-6': subExercise,
 				'transition-shadow duration-100 focus-within-shadow-elevation-2': !subExercise,
 			}"
@@ -413,7 +413,7 @@
 							@update:modelValue="onBaseExerciseChange('requires_typescript', $event)"
 							>{{ $t("exercise_editor.requires_typescript") }}
 							<svg
-								class="mb-1 ml-1 text-primary-light"
+								class="mb-1 ml-1 text-primary"
 								style="width: 24px; height: 24px"
 								viewBox="0 0 24 24"
 							>

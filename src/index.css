@@ -448,11 +448,11 @@
 	}
 
 	.chip-primary {
-		@apply border-0 text-primary bg-primary-light bg-opacity-25  !important;
+		@apply border-0 text-primary bg-primary-light bg-opacity-10  !important;
 	}
 
 	.chip-success {
-		@apply border-0 text-success-dark bg-success bg-opacity-25 !important;
+		@apply border-0 text-success-dark bg-success bg-opacity-10 !important;
 	}
 
 	/* .chip-primary .material-icons-outlined {

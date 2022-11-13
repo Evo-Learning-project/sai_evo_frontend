@@ -2,7 +2,6 @@
 	<div>
 		<Card
 			:class="{
-				'bg-primary-light bg-opacity-0': isParticipable,
 				'md:h-23rem h-64':
 					participation.event.event_type === EventType.SELF_SERVICE_PRACTICE,
 				'h-44': participation.event.event_type !== EventType.SELF_SERVICE_PRACTICE,

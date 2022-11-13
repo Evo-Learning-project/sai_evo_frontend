@@ -14,7 +14,7 @@
 				top-0
 				py-0.5
 				md:px-12
-				bg-primary
+				bg-white
 				px-4
 				shadow-elevation
 				mx-auto
@@ -233,7 +233,7 @@
 										'md:w-11/12': false && fixSideBar,
 										'rounded-r-full pl-5 -ml-1.25px': hoveringSidebar || fixSideBar,
 										'rounded-full ml-1': !hoveringSidebar && !fixSideBar,
-										'bg-primary-light bg-opacity-30 pointer-events-none':
+										'bg-primary-light bg-opacity-20 pointer-events-none':
 											isRouteActive(option),
 									}"
 								>

@@ -60,7 +60,7 @@ export const mutations = {
 				JSON.stringify(flattenedSlots),
 			);
 		}
-		Object.assign(target, slot);
+		Object.assign(target as EventParticipationSlot, slot);
 	},
 	patchCurrentEventParticipationSlot: (
 		state: StudentState,
@@ -77,7 +77,7 @@ export const mutations = {
 				slotId,
 			);
 		}
-		Object.assign(target, { ...target, ...changes });
+		Object.assign(target as EventParticipationSlot, { ...target, ...changes });
 	},
 
 	// updates the event currently being previewed

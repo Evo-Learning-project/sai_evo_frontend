@@ -23,10 +23,6 @@
 				rounded-t
 			"
 		>
-			<!-- <span
-				class="pl-4.5 mr-2 font-light text-2xl material-icons-two-tone two-tone-primary"
-				>book</span
-			> -->
 			<div>
 				<div class="flex items-start space-x-2">
 					<div
@@ -120,9 +116,7 @@
 					params: { courseId: course.id },
 				}"
 				><Btn :outline="true" class="w-full">
-					<span class="mr-1 text-lg material-icons-two-tone two-tone-primary">
-						shield
-					</span>
+					<span class="mr-1 text-lg material-icons"> shield </span>
 					<span class="text-base md:text-xs xl:text-base 2xl:text-lg">{{
 						$t("courses.course_panel")
 					}}</span>
