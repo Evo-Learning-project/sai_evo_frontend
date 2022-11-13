@@ -13,6 +13,7 @@
 			border-b-2
 			rounded-t-sm
 			light-input
+			darken-on-hover
 			transition-border
 			focus-within:border-primary
 		"

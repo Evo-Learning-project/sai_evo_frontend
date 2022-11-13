@@ -80,6 +80,7 @@ module.exports = {
 				darkText: "#111827",
 				onPrimary: "#FFFFFF",
 				onSecondary: "#111827",
+				darkTextInput: "#e0e0e0",
 				primary: {
 					// #6200ee
 					// TODO try #0057C9
@@ -88,6 +89,7 @@ module.exports = {
 					dark: "#5611c4", //'#312E81'
 				},
 				secondary: {
+					// TODO try color used at try.evo-learning.com for button
 					// #018786
 					light: "#f9fafb",
 					DEFAULT: "#e5e7eb",

@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<div class="darken-on-hover">
 		<div
 			:class="{
 				'border-danger-dark focus-within:border-danger-dark': $slots.errors,
@@ -11,9 +11,10 @@
 				relative
 				z-10
 				bg-light
+				hover:bg-gray-150
 				focus-within:border-primary
-				transition-border
 				duration-300
+				transition-border
 			"
 		>
 			<input

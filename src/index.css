@@ -392,6 +392,16 @@
 		@apply bg-gray-200 border-gray-300;
 	}
 
+	.darken-on-hover {
+		transition: filter .1s ease;
+	}
+
+	.darken-on-hover:hover,
+	.darken-on-hover:focus,
+	.darken-on-hover:focus-within {
+		filter: brightness(.975);
+	}
+
 	.ql-editor,
 	.ql-clipboard {
 		white-space: pre-wrap !important;

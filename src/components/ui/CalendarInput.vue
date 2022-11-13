@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<div class="darken-on-hover">
 		<div
 			:class="{
 				'border-danger-dark focus-within:border-danger-dark': $slots.errors,

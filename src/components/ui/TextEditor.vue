@@ -4,7 +4,7 @@
 			<div
 				:id="resizablePanelId"
 				:style="previewPanelStyle"
-				class="relative z-10 h-full rounded-t-sm light-input bg-light"
+				class="relative z-10 h-full rounded-t-sm light-input darken-on-hover bg-light"
 				:class="{ 'opacity-80': disabled, 'w-full': !showPreview }"
 			>
 				<!-- TODO! make this just a textarea for students-->
