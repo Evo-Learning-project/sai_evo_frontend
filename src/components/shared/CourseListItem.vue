@@ -27,7 +27,7 @@
 				<div class="flex items-start space-x-2">
 					<div
 						style="min-height: 2rem; min-width: 2rem"
-						class="w-8 h-8 flex mb-full rounded-full bg-primary bg-opacity-20"
+						class="w-8 h-8 flex mb-full rounded-full bg-primary bg-opacity-15"
 					>
 						<span
 							style="font-size: 1.4rem"

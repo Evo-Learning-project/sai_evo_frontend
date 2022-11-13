@@ -379,6 +379,7 @@ export const it = {
 	sidebar_labels: {
 		course_dashboard_dashboard: "Dashboard",
 		course_permissions: "Permessi",
+		course_dashboard_material: "Materiale",
 		course_dashboard_exams: "Esami",
 		course_dashboard_practices: "Esercitazioni",
 		course_dashboard_exercises: "Esercizi",

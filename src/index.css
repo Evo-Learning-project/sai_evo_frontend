@@ -393,13 +393,13 @@
 	}
 
 	.darken-on-hover {
-		transition: filter .1s ease;
+		transition: filter 0.1s ease;
 	}
 
 	.darken-on-hover:hover,
 	.darken-on-hover:focus,
 	.darken-on-hover:focus-within {
-		filter: brightness(.975);
+		filter: brightness(0.975);
 	}
 
 	.ql-editor,
