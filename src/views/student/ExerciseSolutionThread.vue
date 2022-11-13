@@ -61,6 +61,7 @@ export default defineComponent({
 		},
 	},
 	computed: {
+		// TODO replace with new getter
 		// ! getter is used here only because it spreads ...exerciseThreads too, this is unnecessary
 		...mapGetters("student", ["exercises"]),
 		...mapState("shared", ["paginatedSolutionsByExerciseId"]),

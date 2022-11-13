@@ -347,7 +347,7 @@ export const actions = {
 			choice: createExerciseChoice,
 			testcase: createExerciseTestCase,
 			sub_exercise: createExerciseSubExercise,
-			solution: createExerciseSolution,
+			//solution: createExerciseSolution,
 		};
 		// get the correct api call to create the child
 		const apiCall = apiCalls[childType];
