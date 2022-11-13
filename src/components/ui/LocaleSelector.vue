@@ -2,7 +2,7 @@
 	<div>
 		<DropdownMenu :expanded="expanded" @toggleExpanded="expanded = !expanded">
 			<template v-slot:icon>
-				<span class="text-lg material-icons-outlined text-lightText">language</span>
+				<span class="text-lg material-icons-outlined">language</span>
 			</template>
 			<div class="-mx-5 -my-3">
 				<ul class="">

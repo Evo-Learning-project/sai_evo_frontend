@@ -13,9 +13,9 @@
 				'px-3.5 .5': size === 'sm' && variant !== 'icon',
 				'px-1': size === 'xs' && variant !== 'icon',
 				'px-14 py-2 text-lg font-medium': size === 'lg' && variant !== 'icon',
-				'text-lightText bg-primary hover:bg-primary-dark shadow-btn':
+				'text-onPrimary bg-primary hover:bg-primary-dark shadow-btn':
 					!outline && variant === 'primary',
-				'text-lightText bg-secondary hover:bg-secondary-dark shadow-btn':
+				'text-onSecondary bg-secondary hover:bg-secondary-dark shadow-btn':
 					!outline && variant === 'secondary',
 				'text-danger-dark bg-danger shadow-btn': !outline && variant === 'danger',
 				'text-danger-dark border-danger-dark bg-white border hover:bg-danger-dark hover:bg-opacity-5':
@@ -78,9 +78,9 @@
 			'px-3.5 py-1.5': size === 'sm' && variant !== 'icon',
 			'px-1': size === 'xs' && variant !== 'icon',
 			'px-14 py-2 text-lg font-medium': size === 'lg' && variant !== 'icon',
-			'text-lightText bg-primary hover:bg-primary-dark shadow-btn':
+			'text-onPrimary bg-primary hover:bg-primary-dark shadow-btn':
 				!outline && variant === 'primary',
-			'text-lightText bg-secondary hover:bg-secondary-dark shadow-btn':
+			'text-onSecondary bg-secondary hover:bg-secondary-dark shadow-btn':
 				!outline && variant === 'secondary',
 			'text-danger-dark bg-danger shadow-btn': !outline && variant === 'danger',
 			'text-danger-dark border-danger-dark bg-white border hover:bg-danger-dark hover:bg-opacity-5':

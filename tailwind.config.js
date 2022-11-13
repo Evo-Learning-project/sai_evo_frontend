@@ -59,6 +59,9 @@ module.exports = {
 				"2xs": ".7rem",
 				"2.5xl": "28px",
 			},
+			backgroundOpacity: {
+				15: "0.15",
+			},
 			borderWidth: {
 				1.5: "1.5px",
 				6: "6px",
@@ -75,20 +78,22 @@ module.exports = {
 			colors: {
 				lightText: "#FFFFFF",
 				darkText: "#111827",
+				onPrimary: "#FFFFFF",
+				onSecondary: "#111827",
 				primary: {
 					// #6200ee
 					// TODO try #0057C9
-					light: "#666ad1",
-					DEFAULT: "#303f9f", // '#0F7490', '#3730A3',
-					dark: "#001970", //'#312E81'
+					light: "#a450ff",
+					DEFAULT: "#6a16f0", // '#0F7490', '#3730A3',
+					dark: "#5611c4", //'#312E81'
 				},
 				secondary: {
 					// #018786
-					light: "#a255ff",
-					DEFAULT: "#651fff",
-					dark: "#4527a0",
+					light: "#f9fafb",
+					DEFAULT: "#e5e7eb",
+					dark: "#d1d5db",
 				},
-				light: "#F3F4F6",
+				light: "#F8F8F9",
 				dark: "#111827",
 				danger: {
 					light: "#FCA5A5",

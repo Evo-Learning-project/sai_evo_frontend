@@ -192,7 +192,7 @@
 	}
 
 	.icon-btn-primary button {
-		@apply hover:text-primary focus:bg-primary focus:text-primary hover:bg-primary focus:bg-opacity-20 hover:bg-opacity-20;
+		@apply hover:text-primary focus:bg-primary focus:text-primary hover:bg-primary focus:bg-opacity-15 hover:bg-opacity-15;
 	}
 
 	.icon-btn-secondary button {
@@ -680,6 +680,10 @@
 	}
 
 	/* tag input */
+	.tags-input-container:focus-within {
+		border-bottom: 2px solid !important;
+		@apply border-primary !important;
+	}
 	.create-tag {
 		@apply flex items-center;
 	}
@@ -804,7 +808,8 @@
 	}
 
 	.ql-container.ql-snow:focus-within {
-		border: 1px solid #303f9f;
+		border: 1px solid;
+		@apply border-primary;
 	}
 	.ql-toolbar.ql-snow {
 		order: 12 !important;

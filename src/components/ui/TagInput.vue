@@ -172,8 +172,4 @@ export default defineComponent({
 	transition-duration: 150ms;
 	transition-duration: 300ms;
 }
-
-.tags-input-container:focus-within {
-	border-bottom: 2px solid #303f9f !important;
-}
 </style>

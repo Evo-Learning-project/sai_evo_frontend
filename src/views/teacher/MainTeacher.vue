@@ -14,6 +14,7 @@
 				top-0
 				py-0.5
 				md:px-12
+				text-gray-700
 				bg-white
 				px-4
 				shadow-elevation
@@ -33,20 +34,20 @@
 						@click="toggleFixSideBar()"
 						class="hidden lg:block"
 					>
-						<span class="text-gray-200 material-icons-outlined">{{
+						<span class="material-icons-outlined">{{
 							fixSideBar ? "menu_open" : "menu"
 						}}</span>
 					</Btn>
 				</div>
 				<div class="flex items-center mr-auto lg:ml-10">
-					<img :class="[isDemoMode ? 'w-40' : 'w-32', '-ml-1']" :src="logoUrl" />
+					<img :class="[isDemoMode ? 'w-40' : 'w-56', '-ml-1']" :src="logoUrl" />
 				</div>
 				<div class="">
 					<div
 						v-if="$store.getters['shared/isAuthenticated']"
 						class="flex items-center ml-4 md:ml-6"
 					>
-						<LocaleSelector v-if="false"></LocaleSelector>
+						<LocaleSelector v-if="true"></LocaleSelector>
 						<DropdownMenu
 							:placement="'left'"
 							class="text-lightText"
@@ -58,7 +59,7 @@
 									>volunteer_activism</span
 								>
 							</template>
-							<div class="text-darkText w-72 text-center">
+							<div class="w-72 text-center">
 								<h3>{{ $t("donate.donate_title") }}</h3>
 								<p class="mb-4">{{ $t("donate.donate_content") }}</p>
 								<a href="https://paypal.me/bsamusp00?country.x=IT&locale.x=it_IT">
@@ -72,16 +73,14 @@
 							id="help-center"
 							:variant="'icon'"
 							:outline="true"
-							><span class="text-lg text-lightText material-icons-outlined">
-								help_outline
-							</span></Btn
+							><span class="text-lg material-icons-outlined"> help_outline </span></Btn
 						>
-						<p class="ml-4 mr-1 text-xs text-lightText md:text-base">
+						<p class="ml-4 mr-1 text-xs md:text-base">
 							{{ $store.getters["shared/email"] }}
 						</p>
 						<p
 							@click="onShowMatEdit"
-							class="hidden text-xs cursor-pointer md:block text-lightText md:text-sm"
+							class="hidden text-xs cursor-pointer md:block md:text-sm"
 						>
 							{{ $store.state.shared.user?.mat }}
 						</p>
@@ -90,9 +89,7 @@
 							@click="logOut()"
 							:variant="'icon'"
 							:outline="true"
-							><span class="text-lg text-lightText material-icons-outlined">
-								logout
-							</span></Btn
+							><span class="text-lg material-icons-outlined"> logout </span></Btn
 						>
 					</div>
 				</div>
@@ -529,7 +526,8 @@ export default defineComponent({
 		},
 		logoUrl() {
 			if (!this.isDemoMode) {
-				return require("../../../public/unipi-logo.svg");
+				//return require("../../../public/unipi-logo.svg");
+				return require("../../assets/logo.png");
 			}
 			return require("../../../public/evo_logo.png");
 		},
