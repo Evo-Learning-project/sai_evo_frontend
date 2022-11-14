@@ -173,17 +173,22 @@ export type ExerciseIdActionPayload = CourseIdActionPayload & { exerciseId: stri
 export type ExerciseSolutionIdActionPayload = ExerciseIdActionPayload & {
 	solutionId: string;
 };
+
 export type TemplateIdPayload = {
 	templateId: string;
 };
 export type TemplateRuleIdActionPayload = CourseIdActionPayload &
 	TemplateIdPayload & { ruleId: string };
+export type TemplateRuleClauseIdActionPayload = CourseIdActionPayload &
+	TemplateRuleIdActionPayload & { clauseId: string };
+
 export type ParticipationIdActionPayload = EventIdActionPayload & {
 	participationId: string;
 };
 export type ParticipationSlotIdActionPayload = ParticipationIdActionPayload & {
 	slotId: string;
 };
+export type ExerciseActionPayload = { exercise: Exercise };
 export type EventActionPayload = { event: Event };
 export type EventTemplateRuleActionPayload = { rule: EventTemplateRule };
 export type EventTemplateRuleClauseActionPayload = { clause: EventTemplateRuleClause };

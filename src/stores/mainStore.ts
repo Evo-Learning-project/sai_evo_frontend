@@ -1,26 +1,64 @@
 import {
+	addTagToExercise,
+	bulkCreateExercises,
+	bulkPartialUpdateEventParticipation,
+	createCourse,
 	createEvent,
 	createEventTemplateRule,
 	createEventTemplateRuleClause,
+	createExercise,
+	createExerciseChoice,
 	createExerciseSolution,
 	createExerciseSolutionComment,
+	createExerciseSubExercise,
+	createExerciseTestCase,
+	createExerciseTestCase,
+	deleteEventTemplateRule,
+	deleteEventTemplateRuleClause,
+	deleteExercise,
+	deleteExerciseChoice,
 	deleteExerciseSolution,
+	deleteExerciseSubExercise,
+	deleteExerciseTestCase,
 	EventParticipationSearchFilter,
+	EventSearchFilter,
+	ExerciseSearchFilter,
+	getActiveUsersForCourse,
 	getCourseEventParticipations,
 	getEvent,
 	getEventParticipation,
+	getEventParticipations,
+	getEventParticipationSlot,
+	getEvents,
+	getEventTemplate,
+	getEventTemplateRule,
+	getExercises,
+	getExercisesById,
+	getUsers,
+	lockEvent,
+	lockExercise,
 	moveEventParticipationCurrentSlotCursor,
 	PaginatedData,
+	partialUpdateEvent,
 	partialUpdateEventParticipation,
 	partialUpdateEventParticipationSlot,
 	partialUpdateEventTemplateRule,
 	participateInEvent,
+	removeTagFromExercise,
 	runEventParticipationSlotCode,
 	setExerciseSolutionBookmark,
+	updateCourse,
+	updateEvent,
 	updateEventTemplateRuleClause,
+	updateExercise,
+	updateUserCoursePrivileges,
 	voteExerciseSolution,
 } from "@/api";
-import { updatePaginatedData } from "@/api/utils";
+import {
+	deleteByIdFromPaginatedData,
+	prependToPaginatedData,
+	updatePaginatedData,
+} from "@/api/utils";
 import { Goal, GoalProgress } from "@/gamification";
 import {
 	Course,
@@ -48,6 +86,7 @@ import {
 	EventTemplateRuleClause,
 	ExerciseSolutionComment,
 	ExerciseSolutionVote,
+	CoursePrivilege,
 } from "@/models";
 import {
 	CourseIdActionPayload,
@@ -55,6 +94,7 @@ import {
 	EventIdActionPayload,
 	EventTemplateRuleActionPayload,
 	EventTemplateRuleClauseActionPayload,
+	ExerciseActionPayload,
 	ExerciseIdActionPayload,
 	ExerciseSolutionActionPayload,
 	ExerciseSolutionIdActionPayload,
@@ -63,6 +103,7 @@ import {
 	ParticipationSlotIdActionPayload,
 	RuleIdPayload,
 	TemplateIdPayload,
+	TemplateRuleClauseIdActionPayload,
 	TemplateRuleIdPayload,
 } from "@/store/types";
 import { defineStore } from "pinia";
@@ -73,7 +114,12 @@ export const useMainStore = defineStore("main", {
 		paginatedCourseTreeNodes: null as null | PaginatedData<CourseTreeNode>,
 		tags: [] as Tag[], // tags of current course
 		users: [] as User[], // users currently displayed (e.g. course insights page)
-		paginatedExercises: null as null | PaginatedData<Exercise>, // exercises currently displayed
+		paginatedExercises: {
+			count: 0,
+			data: [],
+			isLastPage: true,
+			pageNumber: 1,
+		} as PaginatedData<Exercise>, // exercises currently displayed
 		events: [] as Event[], // events currently displayed (e.g. course exam list)
 
 		// event participations of the user
@@ -108,6 +154,10 @@ export const useMainStore = defineStore("main", {
 	}),
 	getters: {
 		exams: state => state.events.filter(e => e.event_type == EventType.EXAM),
+		getPaginatedExercises: state =>
+			state.paginatedExercises ?? { count: 0, data: [], isLastPage: true, pageNumber: 1 },
+		getCourseById: state => (courseId: string) =>
+			state.courses.find(c => c.id == courseId),
 		getEventById: state => (eventId: string) =>
 			state.events.find(e => e.id == eventId) ?? getBlankExam(),
 		getEventByTemplateId: state => (templateId: string) =>
@@ -192,7 +242,7 @@ export const useMainStore = defineStore("main", {
 			}
 		},
 		// replace the user with same id as payload user with the given payload
-		setUser({ user }: { user: User }) {
+		setUser(user: User) {
 			const target = this.users.find((u: User) => u.id == user.id);
 			if (target) {
 				Object.assign(target, user);
@@ -530,8 +580,7 @@ export const useMainStore = defineStore("main", {
 			);
 			this.setEventParticipationSlots([slot]);
 		},
-		// TODO better naming
-		async getEvent({ courseId, eventId }: EventIdActionPayload) {
+		async getEventPreview({ courseId, eventId }: EventIdActionPayload) {
 			/**
 			 * Gets an event in detail mode
 			 *
@@ -540,22 +589,15 @@ export const useMainStore = defineStore("main", {
 			const event = await getEvent(courseId, eventId, false);
 			this.previewingEvent = event;
 		},
-		// TODO better naming
-		async createEvent({ courseId, event }: CourseIdActionPayload & EventActionPayload) {
-			/**
-			 * Creates an event
-			 *
-			 * Used when creating a new practice event
-			 */
-			const newEvent = await createEvent(courseId, event);
-			return newEvent;
-		},
 		async partialUpdateCurrentEventParticipation({
 			courseId,
-			eventId,
-			participationId,
 			changes,
 		}: ParticipationIdActionPayload & { changes: Partial<EventParticipation> }) {
+			if (!this.currentEventParticipation) {
+				throw new Error(
+					"partialUpdateCurrentEventParticipation called with null currentParticipation",
+				);
+			}
 			const response = await partialUpdateEventParticipation(
 				courseId,
 				this.currentEventParticipation.event.id,
@@ -570,14 +612,6 @@ export const useMainStore = defineStore("main", {
 			participationId,
 			changes,
 		}: ParticipationIdActionPayload & { changes: Partial<EventParticipation> }) {
-			/**
-			 * Updates a participation
-			 *
-			 * Used with no event or participation id for when updating the current participation
-			 * (e.g. turning in)
-			 *
-			 * Used with event and participation id when bookmarking a specific participation
-			 */
 			const response = await partialUpdateEventParticipation(
 				courseId,
 				eventId,
@@ -626,10 +660,8 @@ export const useMainStore = defineStore("main", {
 			}
 			return !participations.isLastPage;
 		},
-		async partialUpdateEventParticipationSlot({
+		async partialUpdateCurrentEventParticipationSlot({
 			courseId,
-			eventId,
-			participationId,
 			slotId,
 			changes,
 			// true if action mutates the store state to reflect changes,
@@ -639,10 +671,15 @@ export const useMainStore = defineStore("main", {
 			changes: Partial<EventParticipationSlot>;
 			mutate: boolean;
 		}) {
+			if (!this.currentEventParticipation) {
+				throw new Error(
+					"partialUpdateCurrentEventParticipation called with null currentParticipation",
+				);
+			}
 			const response = await partialUpdateEventParticipationSlot(
 				courseId,
-				eventId,
-				participationId, //state.eventParticipation?.id,
+				this.currentEventParticipation.event.id,
+				this.currentEventParticipation.id,
 				slotId,
 				changes,
 				true,
@@ -650,7 +687,6 @@ export const useMainStore = defineStore("main", {
 			if (mutate) {
 				this.setCurrentEventParticipationSlot(response);
 			}
-			//await new Promise(r => setTimeout(r, 5000));
 		},
 		async runEventParticipationSlotCode({
 			courseId,
@@ -685,8 +721,7 @@ export const useMainStore = defineStore("main", {
 				throw e;
 			}
 		},
-		// TODO better naming for these actions that only concern editingEvent
-		async addEventTemplateRule({
+		async addEventTemplateRuleToCurrentEditingEvent({
 			courseId,
 			templateId,
 			rule,
@@ -695,27 +730,7 @@ export const useMainStore = defineStore("main", {
 			this.setEditingEventTemplateRule(newRule);
 			return newRule;
 		},
-		async partialUpdateEventTemplateRule(
-			// eslint-disable-next-line @typescript-eslint/no-unused-vars
-			{
-				courseId,
-				templateId,
-				ruleId,
-				changes,
-			}: CourseIdActionPayload &
-				TemplateRuleIdPayload & {
-					changes: Partial<EventTemplateRule>;
-				},
-		) {
-			const updatedRule = await partialUpdateEventTemplateRule(
-				courseId,
-				templateId,
-				ruleId,
-				changes,
-			);
-			return updatedRule;
-		},
-		async addEventTemplateRuleClause({
+		async addEventTemplateRuleClauseToCurrentEditingEvent({
 			courseId,
 			templateId,
 			ruleId,
@@ -729,22 +744,6 @@ export const useMainStore = defineStore("main", {
 			);
 			this.setEditingEventTemplateRuleClause({ ruleId, payload: newClause });
 			return newClause;
-		},
-		async updateEventTemplateRuleClause({
-			courseId,
-			templateId,
-			ruleId,
-			clause,
-		}: TemplateRuleIdPayload & {
-			clause: EventTemplateRuleClause;
-		}) {
-			const updatedClause = await updateEventTemplateRuleClause(
-				courseId,
-				templateId,
-				ruleId,
-				clause,
-			);
-			return updatedClause;
 		},
 		async createExerciseSolution({
 			courseId,
@@ -876,6 +875,483 @@ export const useMainStore = defineStore("main", {
 		// },
 
 		/** Previous teacher actions */
-		// TODO
+		// CRUD on courses
+		async createCourse(course: Course) {
+			const newCourse = await createCourse(course);
+			return newCourse;
+		},
+		async updateCourse(course: Course) {
+			const updatedCourse = await updateCourse(course.id, course);
+			const oldCourse = this.getCourseById(course.id);
+			if (!oldCourse) {
+				throw new Error("updateCourse couldn't find course with id " + course.id);
+			}
+			Object.assign(oldCourse, updatedCourse);
+			return updatedCourse;
+		},
+
+		// CRUD on exercises
+		async createExercise({
+			courseId,
+			exercise,
+		}: CourseIdActionPayload & ExerciseActionPayload) {
+			const newExercise = await createExercise(courseId, exercise);
+			this.paginatedExercises = prependToPaginatedData(
+				this.paginatedExercises,
+				newExercise,
+			);
+			return newExercise;
+		},
+		async getExercise({ courseId, exerciseId }: ExerciseIdActionPayload) {
+			const exercise = (await getExercisesById(courseId, [exerciseId]))[0];
+			this.setExercise(exercise);
+		},
+		async bulkCreateExercises({
+			courseId,
+			exercises,
+		}: CourseIdActionPayload & {
+			exercises: Exercise[];
+		}) {
+			const newExercises = await bulkCreateExercises(courseId, exercises);
+			this.paginatedExercises = prependToPaginatedData(
+				this.getPaginatedExercises,
+				...newExercises,
+			);
+			return newExercises;
+		},
+		async updateExercise({
+			courseId,
+			exercise,
+		}: CourseIdActionPayload & ExerciseActionPayload) {
+			await updateExercise(courseId, exercise.id, exercise);
+		},
+		async deleteExercise({ courseId, exerciseId }: ExerciseIdActionPayload) {
+			await deleteExercise(courseId, exerciseId);
+			this.paginatedExercises = deleteByIdFromPaginatedData(this.paginatedExercises, {
+				id: exerciseId,
+			});
+		},
+		async lockExercise({ courseId, exerciseId }: ExerciseIdActionPayload) {
+			const exercise = await lockExercise(courseId, exerciseId);
+			this.setExercise(exercise);
+		},
+		async createExerciseChild<K extends exerciseChildName>(
+			// eslint-disable-next-line @typescript-eslint/no-unused-vars
+			{
+				courseId,
+				exerciseId,
+				childType,
+				payload,
+			}: ExerciseIdActionPayload & {
+				childType: K;
+				payload: exerciseChildNameToChildType[K];
+			},
+		) {
+			const apiCalls: Record<exerciseChildName, any> = {
+				choice: createExerciseChoice,
+				testcase: createExerciseTestCase,
+				sub_exercise: createExerciseSubExercise,
+			};
+			// get the correct api call to create the child
+			const apiCall = apiCalls[childType];
+			const newChild = await apiCall(courseId, exerciseId, payload);
+			this.setExerciseChild({
+				childType,
+				exerciseId: exerciseId,
+				payload: newChild as any, // TODO review
+			});
+			return newChild;
+		},
+		async deleteExerciseChild({
+			courseId,
+			exerciseId,
+			childType,
+			childId,
+		}: ExerciseIdActionPayload & {
+			childType: exerciseChildName;
+			childId: string;
+		}) {
+			const apiCalls: Record<exerciseChildName, any> = {
+				choice: deleteExerciseChoice,
+				testcase: deleteExerciseTestCase,
+				sub_exercise: deleteExerciseSubExercise,
+			};
+			const apiCall = apiCalls[childType];
+			await apiCall(courseId, exerciseId, childId);
+			this.removeExerciseChild({ exerciseId, childType, childId });
+		},
+		async getExercisesById({
+			courseId,
+			exerciseIds,
+			replace = true,
+		}: CourseIdActionPayload & {
+			exerciseIds: string[];
+			replace: boolean;
+		}) {
+			const exercises = await getExercisesById(courseId, exerciseIds);
+			if (replace) {
+				this.paginatedExercises = {
+					data: exercises,
+					isLastPage: true,
+					count: exercises.length,
+					pageNumber: 1,
+				};
+			} else {
+				this.paginatedExercises = prependToPaginatedData(
+					this.paginatedExercises,
+					...exercises,
+				);
+			}
+		},
+		async getExercises({
+			courseId,
+			fromFirstPage = true,
+			filters = null,
+		}: CourseIdActionPayload & {
+			fromFirstPage: boolean;
+			filters: ExerciseSearchFilter | null;
+		}) {
+			const paginatedExercises = await getExercises(
+				courseId,
+				fromFirstPage ? 1 : (this.paginatedExercises.pageNumber ?? 0) + 1, // TODO refactor
+				filters,
+			);
+
+			// investigate https://sentry.io/organizations/samuele/issues/3565313088/?project=6265941&query=is%3Aunresolved
+			if (!paginatedExercises.data) {
+				console.error(
+					{ courseId, fromFirstPage, filters },
+					"responded with undefined",
+					paginatedExercises,
+				);
+			}
+
+			if (fromFirstPage) {
+				this.paginatedExercises = paginatedExercises;
+			} else {
+				this.paginatedExercises = updatePaginatedData(
+					this.paginatedExercises,
+					paginatedExercises,
+					false,
+				);
+			}
+
+			return !this.paginatedExercises.isLastPage;
+		},
+		async addExerciseTag({
+			courseId,
+			exerciseId,
+			tag,
+			isPublic,
+		}: ExerciseIdActionPayload & {
+			tag: string;
+			isPublic: boolean;
+		}) {
+			await addTagToExercise(courseId, exerciseId, tag, isPublic);
+			const target = this.getExerciseById(exerciseId);
+			target[isPublic ? "public_tags" : "private_tags"]?.push({
+				name: tag,
+			});
+		},
+		async removeExerciseTag({
+			courseId,
+			exerciseId,
+			tag,
+			isPublic,
+		}: ExerciseIdActionPayload & {
+			tag: string;
+			isPublic: boolean;
+		}) {
+			await removeTagFromExercise(courseId, exerciseId, tag, isPublic);
+			const target = this.getExerciseById(exerciseId);
+			target[isPublic ? "public_tags" : "private_tags"] = target[
+				isPublic ? "public_tags" : "private_tags"
+			]?.filter(t => t.name != tag);
+		},
+
+		// CRUD on events
+		async createEvent({
+			courseId,
+			event,
+			mutate,
+		}: CourseIdActionPayload & EventActionPayload & { mutate: boolean }) {
+			const newEvent = await createEvent(courseId, event);
+			if (mutate) {
+				this.events.unshift(newEvent);
+			}
+			return newEvent;
+		},
+		// TODO better naming scheme, e.g. getEventsByFilter
+		async getEvents({
+			courseId,
+			filters,
+		}: CourseIdActionPayload & {
+			filters?: EventSearchFilter;
+		}) {
+			const events = await getEvents(courseId, filters);
+			this.events = events;
+		},
+		async getEvent({
+			courseId,
+			eventId,
+			includeDetails = false,
+		}: EventIdActionPayload & {
+			includeDetails: boolean;
+		}) {
+			const event = await getEvent(courseId, eventId, includeDetails);
+			this.events.unshift(event);
+		},
+		async updateEvent({ courseId, event }: CourseIdActionPayload & EventActionPayload) {
+			await updateEvent(courseId, event.id, event);
+		},
+		async partialUpdateEvent({
+			courseId,
+			eventId,
+			changes,
+			mutate = false,
+		}: EventIdActionPayload & {
+			changes: Partial<Event>;
+			mutate: boolean;
+		}) {
+			const event = await partialUpdateEvent(courseId, eventId, changes);
+			if (mutate) {
+				this.setEvent({ eventId, payload: event });
+			}
+		},
+		async lockEvent({ courseId, eventId }: EventIdActionPayload) {
+			const event = await lockEvent(courseId, eventId);
+			this.setEvent({ eventId, payload: event });
+		},
+
+		// CRUD on event participations
+		async getEventParticipations({
+			courseId,
+			eventId,
+			includeDetails,
+			forCsv, // TODO refactor
+			mutate = true,
+		}: EventIdActionPayload & {
+			includeDetails?: boolean;
+			forCsv?: boolean;
+			mutate: boolean;
+		}) {
+			const participations = await getEventParticipations(
+				courseId,
+				eventId,
+				includeDetails,
+				forCsv,
+			);
+			if (mutate) {
+				this.eventParticipations = participations;
+			}
+			return participations;
+		},
+		async getEventParticipation({
+			courseId,
+			eventId,
+			participationId,
+		}: ParticipationIdActionPayload) {
+			const participation = await getEventParticipation(
+				courseId,
+				eventId,
+				participationId,
+			);
+			this.setEventParticipation(participation);
+		},
+
+		// CRUD on event templates, template rules, and rule clauses
+		async deleteEventTemplateRule({ courseId, templateId, ruleId }: RuleIdPayload) {
+			await deleteEventTemplateRule(courseId, templateId, ruleId);
+			this.removeEventTemplateRule({ templateId, ruleId });
+		},
+		async deleteEventTemplateRuleClause({
+			courseId,
+			templateId,
+			ruleId,
+			clauseId,
+		}: TemplateRuleClauseIdActionPayload) {
+			await deleteEventTemplateRuleClause(courseId, templateId, ruleId, clauseId);
+			this.removeEventTemplateRuleClause({
+				templateId,
+				ruleId,
+				clauseId,
+			});
+		},
+		async partialUpdateEventTemplateRule({
+			courseId,
+			templateId,
+			ruleId,
+			changes,
+			reFetch = false,
+		}: RuleIdPayload & {
+			changes: Partial<EventTemplateRule>;
+			reFetch: boolean;
+		}) {
+			await partialUpdateEventTemplateRule(courseId, templateId, ruleId, changes);
+			if (reFetch) {
+				const rules = (await getEventTemplate(courseId, templateId)).rules;
+				this.setEventTemplateRules({
+					templateId,
+					payload: rules,
+				});
+			}
+		},
+		async getEventTemplateRule({ courseId, templateId, ruleId }: RuleIdPayload) {
+			const rule = await getEventTemplateRule(courseId, templateId, ruleId);
+			this.patchEventTemplateRule({
+				templateId,
+				ruleId,
+				payload: rule,
+			});
+		},
+		async addEventTemplateRule({
+			courseId,
+			templateId,
+			rule,
+		}: CourseIdActionPayload & TemplateIdPayload & EventTemplateRuleActionPayload) {
+			const newRule = await createEventTemplateRule(courseId, templateId, rule);
+			const event = this.getEventByTemplateId(templateId);
+			const rules = event?.template?.rules;
+			if (!rules) {
+				throw new Error(
+					"addEventTemplateRule couldn't find event with template id " + templateId,
+				);
+			}
+			rules.push(newRule);
+			return newRule;
+		},
+		async addEventTemplateRuleClause({
+			courseId,
+			templateId,
+			ruleId,
+			clause,
+		}: RuleIdPayload & EventTemplateRuleClauseActionPayload) {
+			const newClause = await createEventTemplateRuleClause(
+				courseId,
+				templateId,
+				ruleId,
+				clause,
+			);
+			const event = this.getEventByTemplateId(templateId);
+			const rules = event?.template?.rules;
+			if (!rules) {
+				throw new Error(
+					"addEventTemplateRuleClause couldn't find event with template id " + templateId,
+				);
+			}
+			const targetRule = rules?.find((r: EventTemplateRule) => r.id === ruleId);
+			if (!targetRule) {
+				throw new Error(
+					"addEventTemplateRuleClause couldn't find rule with id " + ruleId,
+				);
+			}
+			targetRule?.clauses?.push(newClause);
+			return newClause;
+		},
+		async updateEventTemplateRuleClause({
+			courseId,
+			templateId,
+			ruleId,
+			clause,
+		}: RuleIdPayload & EventTemplateRuleClauseActionPayload) {
+			const updatedClause = await updateEventTemplateRuleClause(
+				courseId,
+				templateId,
+				ruleId,
+				clause,
+			);
+			return updatedClause;
+			//const target = state.events
+			//   .find((e: Event) => e.template?.id === templateId)
+			//   ?.template?.rules?.find((r: EventTemplateRule) => r.id === ruleId)
+			//   ?.clauses?.find((c: EventTemplateRuleClause) => c.id == clause.id);
+
+			// Object.assign(target, newClause);
+		},
+
+		/** CRUD on users */
+		async getUsersForCourse(
+			// returns all users in the system and their permissions relative to given course
+			{ courseId }: CourseIdActionPayload,
+		) {
+			const users = await getUsers(courseId);
+			this.users = users;
+		},
+		async getCourseActiveUsers(
+			// returns all users that are active in given course
+			{ courseId }: CourseIdActionPayload,
+		) {
+			const users = await getActiveUsersForCourse(courseId);
+			this.users = users;
+		},
+		async updateUserCoursePrivileges({
+			courseId,
+			userId,
+			privileges,
+		}: CourseIdActionPayload & {
+			userId: string;
+			privileges: CoursePrivilege[];
+		}) {
+			const user = await updateUserCoursePrivileges(courseId, userId, privileges);
+			this.setUser(user);
+		},
+		async bulkPartialUpdateEventParticipation({
+			courseId,
+			changes,
+			eventId,
+			participationIds,
+		}: {
+			courseId: string;
+			eventId: string;
+			changes: Partial<EventParticipation>;
+			participationIds: string[];
+		}) {
+			const response = await bulkPartialUpdateEventParticipation(
+				courseId,
+				eventId,
+				participationIds,
+				changes,
+			);
+			response.forEach(p => this.setEventParticipation(p));
+		},
+		async getEventParticipationSlot({
+			courseId,
+			eventId,
+			participationId,
+			slotId,
+		}: ParticipationSlotIdActionPayload) {
+			const response = await getEventParticipationSlot(
+				courseId,
+				eventId,
+				participationId,
+				slotId,
+			);
+			this.setEventParticipationSlot({ participationId, slotId, payload: response });
+		},
+		async partialUpdateEventParticipationSlot({
+			courseId,
+			eventId,
+			participationId,
+			slotId,
+			changes,
+			// true if action mutates the store state to reflect changes,
+			//false if action only dispatches api call
+			mutate = true,
+		}: ParticipationSlotIdActionPayload & {
+			changes: Partial<EventParticipationSlot>;
+			mutate: boolean;
+		}) {
+			const response = await partialUpdateEventParticipationSlot(
+				courseId,
+				eventId,
+				participationId, //state.eventParticipation?.id,
+				slotId,
+				changes,
+			);
+			if (mutate) {
+				this.setEventParticipationSlot({ slotId, payload: response, participationId });
+			}
+			return response;
+		},
 	},
 });

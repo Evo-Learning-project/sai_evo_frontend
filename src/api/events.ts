@@ -121,11 +121,10 @@ export async function getEventInstances(
 	return response.data;
 }
 
-// TODO change Record<keyof Event, unknown> to Partial<Event>
 export async function partialUpdateEvent(
 	courseId: string,
 	eventId: string,
-	changes: Record<keyof Event, unknown>,
+	changes: Partial<Event>,
 ): Promise<Event> {
 	const response = await axios.patch(`courses/${courseId}/events/${eventId}/`, changes);
 	return normalizeIncomingEvent(response.data);
@@ -310,7 +309,7 @@ export async function bulkPartialUpdateEventParticipation(
 	courseId: string,
 	eventId: string,
 	participationIds: string[],
-	changes: Record<keyof EventParticipation, unknown>,
+	changes: Partial<EventParticipation>,
 ): Promise<EventParticipation[]> {
 	const url = `/courses/${courseId}/events/${eventId}/participations/bulk_patch/?ids=${participationIds.join(
 		",",

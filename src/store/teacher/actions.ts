@@ -695,7 +695,7 @@ export const actions = {
 		}: {
 			courseId: string;
 			eventId: string;
-			changes: Record<keyof EventParticipation, unknown>;
+			changes: Partial<EventParticipation>;
 			participationIds: string[];
 		},
 	) => {
