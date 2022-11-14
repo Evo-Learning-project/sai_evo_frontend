@@ -12,6 +12,8 @@ import {
 	GamificationContext,
 	ExerciseTestCaseAttachment,
 	CourseTreeNode,
+	EventTemplateRule,
+	EventTemplateRuleClause,
 } from "@/models";
 
 export interface StudentState {
@@ -164,3 +166,25 @@ export type ActionPayload<T> = Partial<StoreOperationParameters<T>> & {
 export type MutationPayload<T> = Partial<StoreOperationParameters<T>> & {
 	payload: T;
 };
+
+export type CourseIdActionPayload = { courseId: string };
+export type EventIdActionPayload = CourseIdActionPayload & { eventId: string };
+export type ExerciseIdActionPayload = CourseIdActionPayload & { exerciseId: string };
+export type ExerciseSolutionIdActionPayload = ExerciseIdActionPayload & {
+	solutionId: string;
+};
+export type TemplateIdPayload = {
+	templateId: string;
+};
+export type TemplateRuleIdActionPayload = CourseIdActionPayload &
+	TemplateIdPayload & { ruleId: string };
+export type ParticipationIdActionPayload = EventIdActionPayload & {
+	participationId: string;
+};
+export type ParticipationSlotIdActionPayload = ParticipationIdActionPayload & {
+	slotId: string;
+};
+export type EventActionPayload = { event: Event };
+export type EventTemplateRuleActionPayload = { rule: EventTemplateRule };
+export type EventTemplateRuleClauseActionPayload = { clause: EventTemplateRuleClause };
+export type ExerciseSolutionActionPayload = { solution: ExerciseSolution };

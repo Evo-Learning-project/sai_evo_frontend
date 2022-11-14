@@ -1,4 +1,26 @@
-import { PaginatedData } from "@/api";
+import {
+	createEvent,
+	createEventTemplateRule,
+	createEventTemplateRuleClause,
+	createExerciseSolution,
+	createExerciseSolutionComment,
+	deleteExerciseSolution,
+	EventParticipationSearchFilter,
+	getCourseEventParticipations,
+	getEvent,
+	getEventParticipation,
+	moveEventParticipationCurrentSlotCursor,
+	PaginatedData,
+	partialUpdateEventParticipation,
+	partialUpdateEventParticipationSlot,
+	partialUpdateEventTemplateRule,
+	participateInEvent,
+	runEventParticipationSlotCode,
+	setExerciseSolutionBookmark,
+	updateEventTemplateRuleClause,
+	voteExerciseSolution,
+} from "@/api";
+import { updatePaginatedData } from "@/api/utils";
 import { Goal, GoalProgress } from "@/gamification";
 import {
 	Course,
@@ -24,8 +46,25 @@ import {
 	exerciseChildrenNameToChildType,
 	EventTemplateRule,
 	EventTemplateRuleClause,
+	ExerciseSolutionComment,
+	ExerciseSolutionVote,
 } from "@/models";
-import { MutationPayload } from "@/store/types";
+import {
+	CourseIdActionPayload,
+	EventActionPayload,
+	EventIdActionPayload,
+	EventTemplateRuleActionPayload,
+	EventTemplateRuleClauseActionPayload,
+	ExerciseIdActionPayload,
+	ExerciseSolutionActionPayload,
+	ExerciseSolutionIdActionPayload,
+	MutationPayload,
+	ParticipationIdActionPayload,
+	ParticipationSlotIdActionPayload,
+	RuleIdPayload,
+	TemplateIdPayload,
+	TemplateRuleIdPayload,
+} from "@/store/types";
 import { defineStore } from "pinia";
 
 export const useMainStore = defineStore("main", {
@@ -455,7 +494,386 @@ export const useMainStore = defineStore("main", {
 		/** --------------------------------------------- */
 
 		/** Previous student actions */
-		// TODO
+		async participateInEvent({ courseId, eventId }: EventIdActionPayload) {
+			const participation = await participateInEvent(courseId, eventId);
+			this.currentEventParticipation = participation;
+		},
+		async moveEventParticipationCurrentSlotCursorForward({
+			courseId,
+		}: CourseIdActionPayload) {
+			if (!this.currentEventParticipation) {
+				throw new Error(
+					"moveEventParticipationCurrentSlotCursorForward called while currentEventParticipation was null",
+				);
+			}
+			const slot = await moveEventParticipationCurrentSlotCursor(
+				courseId,
+				this.currentEventParticipation.event.id,
+				this.currentEventParticipation.id,
+				"forward",
+			);
+			this.setEventParticipationSlots([slot]);
+		},
+		async moveEventParticipationCurrentSlotCursorBack({
+			courseId,
+		}: CourseIdActionPayload) {
+			if (!this.currentEventParticipation) {
+				throw new Error(
+					"moveEventParticipationCurrentSlotCursorBack called while currentEventParticipation was null",
+				);
+			}
+			const slot = await moveEventParticipationCurrentSlotCursor(
+				courseId,
+				this.currentEventParticipation.event.id,
+				this.currentEventParticipation.id,
+				"back",
+			);
+			this.setEventParticipationSlots([slot]);
+		},
+		// TODO better naming
+		async getEvent({ courseId, eventId }: EventIdActionPayload) {
+			/**
+			 * Gets an event in detail mode
+			 *
+			 * Used to display a preview of an exam before participating into it
+			 */
+			const event = await getEvent(courseId, eventId, false);
+			this.previewingEvent = event;
+		},
+		// TODO better naming
+		async createEvent({ courseId, event }: CourseIdActionPayload & EventActionPayload) {
+			/**
+			 * Creates an event
+			 *
+			 * Used when creating a new practice event
+			 */
+			const newEvent = await createEvent(courseId, event);
+			return newEvent;
+		},
+		async partialUpdateCurrentEventParticipation({
+			courseId,
+			eventId,
+			participationId,
+			changes,
+		}: ParticipationIdActionPayload & { changes: Partial<EventParticipation> }) {
+			const response = await partialUpdateEventParticipation(
+				courseId,
+				this.currentEventParticipation.event.id,
+				this.currentEventParticipation.id,
+				changes,
+			);
+			this.currentEventParticipation = response;
+		},
+		async partialUpdateEventParticipation({
+			courseId,
+			eventId,
+			participationId,
+			changes,
+		}: ParticipationIdActionPayload & { changes: Partial<EventParticipation> }) {
+			/**
+			 * Updates a participation
+			 *
+			 * Used with no event or participation id for when updating the current participation
+			 * (e.g. turning in)
+			 *
+			 * Used with event and participation id when bookmarking a specific participation
+			 */
+			const response = await partialUpdateEventParticipation(
+				courseId,
+				eventId,
+				participationId,
+				changes,
+			);
+			this.setEventParticipation(response);
+		},
+		async getCurrentEventParticipation({
+			courseId,
+			eventId,
+			participationId,
+		}: ParticipationIdActionPayload) {
+			const participation = await getEventParticipation(
+				courseId,
+				eventId,
+				participationId,
+			);
+			this.currentEventParticipation = participation;
+		},
+		// TODO this is used for retrieving practices of a student, use better naming
+		async getCourseEventParticipations({
+			courseId,
+			fromFirstPage,
+			filter = undefined,
+		}: CourseIdActionPayload & {
+			fromFirstPage: boolean;
+			filter: undefined | EventParticipationSearchFilter;
+		}) {
+			const participations = await getCourseEventParticipations(
+				courseId,
+				fromFirstPage ? 1 : (this.paginatedEventParticipations?.pageNumber ?? 0) + 1,
+				true,
+				true,
+				filter,
+			);
+
+			if (fromFirstPage || !this.paginatedEventParticipations) {
+				this.paginatedEventParticipations = participations;
+			} else {
+				this.paginatedEventParticipations = updatePaginatedData(
+					this.paginatedEventParticipations,
+					participations,
+					false,
+				);
+			}
+			return !participations.isLastPage;
+		},
+		async partialUpdateEventParticipationSlot({
+			courseId,
+			eventId,
+			participationId,
+			slotId,
+			changes,
+			// true if action mutates the store state to reflect changes,
+			//false if action only dispatches api call
+			mutate = true,
+		}: ParticipationSlotIdActionPayload & {
+			changes: Partial<EventParticipationSlot>;
+			mutate: boolean;
+		}) {
+			const response = await partialUpdateEventParticipationSlot(
+				courseId,
+				eventId,
+				participationId, //state.eventParticipation?.id,
+				slotId,
+				changes,
+				true,
+			);
+			if (mutate) {
+				this.setCurrentEventParticipationSlot(response);
+			}
+			//await new Promise(r => setTimeout(r, 5000));
+		},
+		async runEventParticipationSlotCode({
+			courseId,
+			eventId,
+			participationId,
+			slot,
+		}: ParticipationIdActionPayload & {
+			slot: EventParticipationSlot;
+		}) {
+			const previousExecutionResults = slot.execution_results;
+			try {
+				// immediately mark slot as running
+				this.patchCurrentEventParticipationSlot({
+					slotId: slot.id,
+					changes: { execution_results: { ...slot.execution_results, state: "running" } },
+				});
+				// schedule running on the server-side
+				const response = await runEventParticipationSlotCode(
+					courseId,
+					eventId,
+					participationId,
+					slot.id,
+				);
+				this.setCurrentEventParticipationSlot(response);
+				return response;
+			} catch (e) {
+				// reset execution results in case of errors
+				this.patchCurrentEventParticipationSlot({
+					slotId: slot.id,
+					changes: { execution_results: previousExecutionResults },
+				});
+				throw e;
+			}
+		},
+		// TODO better naming for these actions that only concern editingEvent
+		async addEventTemplateRule({
+			courseId,
+			templateId,
+			rule,
+		}: CourseIdActionPayload & EventTemplateRuleActionPayload & TemplateIdPayload) {
+			const newRule = await createEventTemplateRule(courseId, templateId, rule);
+			this.setEditingEventTemplateRule(newRule);
+			return newRule;
+		},
+		async partialUpdateEventTemplateRule(
+			// eslint-disable-next-line @typescript-eslint/no-unused-vars
+			{
+				courseId,
+				templateId,
+				ruleId,
+				changes,
+			}: CourseIdActionPayload &
+				TemplateRuleIdPayload & {
+					changes: Partial<EventTemplateRule>;
+				},
+		) {
+			const updatedRule = await partialUpdateEventTemplateRule(
+				courseId,
+				templateId,
+				ruleId,
+				changes,
+			);
+			return updatedRule;
+		},
+		async addEventTemplateRuleClause({
+			courseId,
+			templateId,
+			ruleId,
+			clause,
+		}: CourseIdActionPayload & RuleIdPayload & EventTemplateRuleClauseActionPayload) {
+			const newClause = await createEventTemplateRuleClause(
+				courseId,
+				templateId,
+				ruleId,
+				clause,
+			);
+			this.setEditingEventTemplateRuleClause({ ruleId, payload: newClause });
+			return newClause;
+		},
+		async updateEventTemplateRuleClause({
+			courseId,
+			templateId,
+			ruleId,
+			clause,
+		}: TemplateRuleIdPayload & {
+			clause: EventTemplateRuleClause;
+		}) {
+			const updatedClause = await updateEventTemplateRuleClause(
+				courseId,
+				templateId,
+				ruleId,
+				clause,
+			);
+			return updatedClause;
+		},
+		async createExerciseSolution({
+			courseId,
+			exerciseId,
+			solution,
+		}: ExerciseIdActionPayload & ExerciseSolutionActionPayload) {
+			const newSolution = await createExerciseSolution(courseId, exerciseId, solution);
+			const exerciseSolutions = this.paginatedSolutionsByExerciseId[exerciseId]?.data;
+
+			if (!exerciseSolutions) {
+				throw new Error(
+					"createExerciseSolution couldn't find field solutions for exercise " +
+						exerciseId,
+				);
+			}
+			exerciseSolutions.push(newSolution);
+			return newSolution;
+		},
+		async deleteExerciseSolution({
+			courseId,
+			exerciseId,
+			solutionId,
+		}: ExerciseSolutionIdActionPayload) {
+			await deleteExerciseSolution(courseId, exerciseId, solutionId);
+			const exerciseSolutions = this.paginatedSolutionsByExerciseId[exerciseId];
+
+			if (!exerciseSolutions) {
+				throw new Error(
+					"addExerciseSolution couldn't find field solutions for exercise " + exerciseId,
+				);
+			}
+			exerciseSolutions.data = exerciseSolutions.data.filter(s => s.id != solutionId);
+		},
+		async createExerciseSolutionComment({
+			courseId,
+			exerciseId,
+			solutionId,
+			comment,
+		}: ExerciseSolutionIdActionPayload & {
+			comment: ExerciseSolutionComment;
+		}) {
+			const newComment = await createExerciseSolutionComment(
+				courseId,
+				exerciseId,
+				solutionId,
+				comment,
+			);
+			const solution = this.getPaginatedSolutionsByExerciseId(exerciseId).data.find(
+				s => s.id == solutionId,
+			);
+			if (!solution) {
+				throw new Error(
+					"createExerciseSolutionComment couldn't find solution with id " + solutionId,
+				);
+			}
+			solution.comments.push(newComment);
+		},
+		/**
+		 * Creates an ExerciseSolutionVote and re-fetches the voted solution
+		 */
+		async createExerciseSolutionVote({
+			courseId,
+			exerciseId,
+			solutionId,
+			vote,
+		}: ExerciseSolutionIdActionPayload & {
+			vote: ExerciseSolutionVote | undefined;
+		}) {
+			const updatedSolution = await voteExerciseSolution(
+				courseId,
+				exerciseId,
+				solutionId,
+				vote,
+			);
+			const solution = this.getPaginatedSolutionsByExerciseId(exerciseId).data.find(
+				s => s.id == solutionId,
+			);
+			if (!solution) {
+				throw new Error(
+					"createExerciseSolutionComment couldn't find solution with id " + solutionId,
+				);
+			}
+			Object.assign(solution, updatedSolution);
+		},
+		/**
+		 * Toggles an ExerciseSolution bookmark status for
+		 * the user  and re-fetches the solution
+		 */
+		async setExerciseSolutionBookmark({
+			courseId,
+			exerciseId,
+			solutionId,
+			bookmarked,
+		}: ExerciseSolutionIdActionPayload & {
+			bookmarked: boolean;
+		}) {
+			const updatedSolution = await setExerciseSolutionBookmark(
+				courseId,
+				exerciseId,
+				solutionId,
+				bookmarked,
+			);
+
+			const solution = this.getPaginatedSolutionsByExerciseId(exerciseId).data.find(
+				s => s.id == solutionId,
+			);
+
+			if (!solution) {
+				throw new Error(
+					"setExerciseSolutionBookmark couldn't find solution with id " + solutionId,
+				);
+			}
+
+			Object.assign(solution, updatedSolution);
+		},
+		// // ! only used once
+		// async getExercises(
+		// 	{ state }: { state: StudentState },
+		// 	{
+		// 		courseId,
+		// 		exerciseIds,
+		// 	}: {
+		// 		courseId: string;
+		// 		exerciseIds: string[];
+		// 	},
+		// ) {
+		// 	const exercises = await getExercisesById(courseId, exerciseIds);
+		// 	state.exerciseThreads = exercises;
+		// },
 
 		/** Previous teacher actions */
 		// TODO

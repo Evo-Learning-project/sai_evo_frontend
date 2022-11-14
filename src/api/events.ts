@@ -297,7 +297,7 @@ export async function partialUpdateEventParticipation(
 	courseId: string,
 	eventId: string,
 	participationId: string,
-	changes: Record<keyof EventParticipation, unknown>,
+	changes: Partial<EventParticipation>,
 ): Promise<EventParticipation> {
 	const response = await axios.patch(
 		`/courses/${courseId}/events/${eventId}/participations/${participationId}/`,
@@ -326,7 +326,7 @@ export async function partialUpdateEventParticipationSlot(
 	eventId: string,
 	participationId: string,
 	slotId: string,
-	changes: Record<keyof EventParticipationSlot, unknown>,
+	changes: Partial<EventParticipationSlot>,
 	forceStudent = false,
 ): Promise<EventParticipationSlot> {
 	const response = await axios.patch(

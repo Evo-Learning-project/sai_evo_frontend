@@ -749,7 +749,7 @@ export const actions = {
 			eventId: string;
 			participationId: string;
 			slotId: string;
-			changes: Record<keyof EventParticipationSlot, unknown>;
+			changes: Partial<EventParticipationSlot>;
 			mutate: boolean;
 		},
 	) => {

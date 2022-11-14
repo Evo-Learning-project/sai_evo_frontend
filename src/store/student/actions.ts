@@ -111,7 +111,7 @@ export const actions = {
 			courseId: string;
 			eventId?: string;
 			participationId?: string;
-			changes: Record<keyof EventParticipation, unknown>;
+			changes: Partial<EventParticipation>;
 		},
 	) => {
 		/**
@@ -193,7 +193,7 @@ export const actions = {
 			eventId: string;
 			participationId: string;
 			slotId: string;
-			changes: Record<keyof EventParticipationSlot, unknown>;
+			changes: Partial<EventParticipationSlot>;
 			mutate: boolean;
 		},
 	) => {
