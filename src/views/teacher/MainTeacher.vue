@@ -47,6 +47,9 @@
 						v-if="$store.getters['shared/isAuthenticated']"
 						class="flex items-center ml-4 md:ml-6"
 					>
+						<!-- <Btn :variant="'icon'" :outline="true"
+							><span class="material-icons-outlined">brightness_4</span></Btn
+						> -->
 						<LocaleSelector v-if="true"></LocaleSelector>
 						<DropdownMenu
 							:placement="'left'"
