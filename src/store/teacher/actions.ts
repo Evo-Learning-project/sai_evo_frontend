@@ -188,7 +188,7 @@ export const actions = {
 		}: {
 			courseId: string;
 			eventId: string;
-			changes: Record<keyof Event, unknown>;
+			changes: Partial<Event>;
 			mutate: boolean;
 		},
 	) => {
