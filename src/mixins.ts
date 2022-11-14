@@ -6,6 +6,7 @@ import { Course, CoursePrivilege, getBlankCourse } from "./models";
 import router from "./router";
 import store from "./store/index";
 import { SharedState, StudentState } from "./store/types";
+import { useMainStore } from "./stores/mainStore";
 import { setErrorNotification, setPageWideError } from "./utils";
 export const courseIdMixin = {
 	computed: {
@@ -13,7 +14,8 @@ export const courseIdMixin = {
 			return router.currentRoute.value.params.courseId as string;
 		},
 		currentCourse(): Course {
-			return store.getters["shared/course"](this.courseId) ?? getBlankCourse();
+			const mainStore = useMainStore();
+			return mainStore.getCourseById(this.courseId as any as string) ?? getBlankCourse();
 		},
 	},
 };

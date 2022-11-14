@@ -12,7 +12,7 @@ import {
 	createExerciseSolutionComment,
 	createExerciseSubExercise,
 	createExerciseTestCase,
-	createExerciseTestCase,
+	createExerciseTestCaseAttachment,
 	deleteEventTemplateRule,
 	deleteEventTemplateRuleClause,
 	deleteExercise,
@@ -20,11 +20,16 @@ import {
 	deleteExerciseSolution,
 	deleteExerciseSubExercise,
 	deleteExerciseTestCase,
+	deleteExerciseTestCaseAttachment,
 	EventParticipationSearchFilter,
 	EventSearchFilter,
 	ExerciseSearchFilter,
+	ExerciseSolutionSearchFilter,
 	getActiveUsersForCourse,
+	getCourse,
 	getCourseEventParticipations,
+	getCourseGamificationContext,
+	getCourses,
 	getEvent,
 	getEventParticipation,
 	getEventParticipations,
@@ -32,8 +37,12 @@ import {
 	getEvents,
 	getEventTemplate,
 	getEventTemplateRule,
+	getExerciseChoices,
 	getExercises,
 	getExercisesById,
+	getExerciseSolutionsByExercise,
+	getExerciseTestCaseAttachments,
+	getTags,
 	getUsers,
 	lockEvent,
 	lockExercise,
@@ -51,6 +60,9 @@ import {
 	updateEvent,
 	updateEventTemplateRuleClause,
 	updateExercise,
+	updateExerciseChoice,
+	updateExerciseSubExercise,
+	updateExerciseTestCase,
 	updateUserCoursePrivileges,
 	voteExerciseSolution,
 } from "@/api";
@@ -59,7 +71,7 @@ import {
 	prependToPaginatedData,
 	updatePaginatedData,
 } from "@/api/utils";
-import { Goal, GoalProgress } from "@/gamification";
+import { getContextGoals, getGoalProgress, Goal, GoalProgress } from "@/gamification";
 import {
 	Course,
 	CourseTreeNode,
@@ -101,10 +113,9 @@ import {
 	MutationPayload,
 	ParticipationIdActionPayload,
 	ParticipationSlotIdActionPayload,
-	RuleIdPayload,
+	TemplateRuleIdActionPayload,
 	TemplateIdPayload,
 	TemplateRuleClauseIdActionPayload,
-	TemplateRuleIdPayload,
 } from "@/store/types";
 import { defineStore } from "pinia";
 
@@ -206,6 +217,15 @@ export const useMainStore = defineStore("main", {
 		},
 	},
 	actions: {
+		/** Previous shared mutations */
+		setCourse(course: Course) {
+			const target = this.courses.find(c => c.id == course.id);
+			if (target) {
+				Object.assign(target, course);
+			} else {
+				throw new Error("setCourse couldn't find " + course.id);
+			}
+		},
 		/** Previous teacher mutations */
 		// update an event in memory with the given payload
 		setEvent({ eventId, payload }: { eventId: string; payload: Event }) {
@@ -443,14 +463,6 @@ export const useMainStore = defineStore("main", {
 		setEventParticipations(participations: PaginatedData<EventParticipation>) {
 			this.paginatedEventParticipations = participations;
 		},
-		setEventParticipation(participation: EventParticipation) {
-			const target = this.getEventParticipationById(participation.id);
-			if (!target) {
-				console.error("setEventParticipation in student didn't find", participation.id);
-			} else {
-				Object.assign(target, participation);
-			}
-		},
 		setCurrentEventParticipationSlot(slot: EventParticipationSlot) {
 			// look for both slots and sub-slots
 			const flattenedSlots = this.currentEventParticipationFlattenedSlots;
@@ -513,7 +525,7 @@ export const useMainStore = defineStore("main", {
 			ruleId,
 			payload,
 		}: MutationPayload<EventTemplateRuleClause>) {
-			const targetRule = state.editingEvent?.template?.rules.find(
+			const targetRule = this.editingEvent?.template?.rules.find(
 				(r: EventTemplateRule) => r.id == ruleId,
 			) as EventTemplateRule;
 			const targetClause = targetRule.clauses?.find(c => c.id == payload.id);
@@ -735,7 +747,9 @@ export const useMainStore = defineStore("main", {
 			templateId,
 			ruleId,
 			clause,
-		}: CourseIdActionPayload & RuleIdPayload & EventTemplateRuleClauseActionPayload) {
+		}: CourseIdActionPayload &
+			TemplateRuleIdActionPayload &
+			EventTemplateRuleClauseActionPayload) {
 			const newClause = await createEventTemplateRuleClause(
 				courseId,
 				templateId,
@@ -761,6 +775,36 @@ export const useMainStore = defineStore("main", {
 			}
 			exerciseSolutions.push(newSolution);
 			return newSolution;
+		},
+		async getSolutionsByExercise({
+			courseId,
+			exerciseId,
+			fromFirstPage = true,
+			filter = null,
+		}: ExerciseIdActionPayload & {
+			fromFirstPage: boolean;
+			filter: ExerciseSolutionSearchFilter | null;
+		}) {
+			const paginatedSolutionsForExercise =
+				this.paginatedSolutionsByExerciseId[exerciseId];
+			const paginatedSolutions = await getExerciseSolutionsByExercise(
+				courseId,
+				exerciseId,
+				fromFirstPage ? 1 : (paginatedSolutionsForExercise?.pageNumber ?? 0) + 1, // TODO refactor
+				filter,
+			);
+
+			if (fromFirstPage) {
+				this.paginatedSolutionsByExerciseId[exerciseId] = paginatedSolutions;
+			} else {
+				this.paginatedSolutionsByExerciseId[exerciseId] = updatePaginatedData(
+					this.getPaginatedSolutionsByExerciseId(exerciseId),
+					paginatedSolutions,
+					false,
+				);
+			}
+
+			return !this.paginatedSolutionsByExerciseId[exerciseId].isLastPage;
 		},
 		async deleteExerciseSolution({
 			courseId,
@@ -859,23 +903,51 @@ export const useMainStore = defineStore("main", {
 
 			Object.assign(solution, updatedSolution);
 		},
-		// // ! only used once
-		// async getExercises(
-		// 	{ state }: { state: StudentState },
-		// 	{
-		// 		courseId,
-		// 		exerciseIds,
-		// 	}: {
-		// 		courseId: string;
-		// 		exerciseIds: string[];
-		// 	},
-		// ) {
-		// 	const exercises = await getExercisesById(courseId, exerciseIds);
-		// 	state.exerciseThreads = exercises;
-		// },
 
 		/** Previous teacher actions */
 		// CRUD on courses
+		async getCourse({ courseId }: CourseIdActionPayload) {
+			const { participations, ...course } = await getCourse(courseId);
+			this.setCourse(course);
+		},
+		async getCourseGamificationContext({ courseId }: CourseIdActionPayload) {
+			try {
+				const context = await getCourseGamificationContext(courseId);
+				this.gamificationContext = context;
+			} catch {
+				this.gamificationContext = null;
+			}
+		},
+		async getGamificationContextGoals({ contextId }: { contextId: string }) {
+			const goals = await getContextGoals(contextId);
+			this.gamificationContextGoals = goals;
+			this.progressByGoalId = {};
+		},
+		async getGamificationGoalProgress({
+			contextId,
+			goalId,
+		}: {
+			contextId: string;
+			goalId: string;
+		}) {
+			try {
+				const progress = await getGoalProgress(contextId, goalId);
+				this.progressByGoalId[goalId] = progress;
+			} catch (e) {
+				this.progressByGoalId[goalId] = { current_level: 0, action_counts: [] };
+			}
+		},
+		async getCourses() {
+			const courses = await getCourses();
+			this.courses = courses;
+		},
+		async getTags({
+			courseId,
+			includeExerciseCount = false,
+		}: CourseIdActionPayload & { includeExerciseCount: boolean }) {
+			const tags = await getTags(courseId, includeExerciseCount);
+			this.tags = tags;
+		},
 		async createCourse(course: Course) {
 			const newCourse = await createCourse(course);
 			return newCourse;
@@ -962,6 +1034,38 @@ export const useMainStore = defineStore("main", {
 			});
 			return newChild;
 		},
+		async updateExerciseChild<K extends exerciseChildName>({
+			courseId,
+			exerciseId,
+			childType,
+			payload,
+			reFetch = false,
+		}: ExerciseIdActionPayload & {
+			childType: K;
+			payload: exerciseChildNameToChildType[K];
+			reFetch: boolean;
+		}) {
+			const apiCalls: Record<exerciseChildName, any> = {
+				choice: updateExerciseChoice,
+				testcase: updateExerciseTestCase,
+				sub_exercise: updateExerciseSubExercise,
+			};
+			const apiCall = apiCalls[childType];
+
+			await apiCall(courseId, exerciseId, payload.id as string, payload as any);
+
+			if (reFetch) {
+				if (childType !== "choice") {
+					throw new Error("reFetch not implemented for " + childType);
+				}
+				const choices = await getExerciseChoices(courseId, exerciseId);
+				this.setExerciseChildren({
+					exerciseId,
+					childrenName: "choices",
+					payload: choices,
+				});
+			}
+		},
 		async deleteExerciseChild({
 			courseId,
 			exerciseId,
@@ -1002,6 +1106,59 @@ export const useMainStore = defineStore("main", {
 					...exercises,
 				);
 			}
+		},
+		async getExerciseTestCaseAttachments({
+			courseId,
+			exerciseId,
+			testcaseId,
+		}: ExerciseIdActionPayload & {
+			testcaseId: string;
+		}) {
+			const attachments = await getExerciseTestCaseAttachments(
+				courseId,
+				exerciseId,
+				testcaseId,
+			);
+			this.exerciseTestCaseAttachmentsByTestCaseId[testcaseId] = attachments;
+			return attachments;
+		},
+		async createExerciseTestCaseAttachment({
+			courseId,
+			exerciseId,
+			testcaseId,
+			attachment,
+		}: ExerciseIdActionPayload & {
+			testcaseId: string;
+			attachment: Blob;
+		}) {
+			const response = await createExerciseTestCaseAttachment(
+				courseId,
+				exerciseId,
+				testcaseId,
+				attachment,
+			);
+			this.exerciseTestCaseAttachmentsByTestCaseId[testcaseId] ??= [];
+			this.exerciseTestCaseAttachmentsByTestCaseId[testcaseId].push(response);
+		},
+		async deleteExerciseTestCaseAttachment({
+			courseId,
+			exerciseId,
+			testcaseId,
+			attachmentId,
+		}: ExerciseIdActionPayload & {
+			testcaseId: string;
+			attachmentId: string;
+		}) {
+			await deleteExerciseTestCaseAttachment(
+				courseId,
+				exerciseId,
+				testcaseId,
+				attachmentId,
+			);
+			this.exerciseTestCaseAttachmentsByTestCaseId[testcaseId] =
+				this.exerciseTestCaseAttachmentsByTestCaseId[testcaseId]?.filter(
+					a => a.id != attachmentId,
+				) ?? [];
 		},
 		async getExercises({
 			courseId,
@@ -1160,7 +1317,11 @@ export const useMainStore = defineStore("main", {
 		},
 
 		// CRUD on event templates, template rules, and rule clauses
-		async deleteEventTemplateRule({ courseId, templateId, ruleId }: RuleIdPayload) {
+		async deleteEventTemplateRule({
+			courseId,
+			templateId,
+			ruleId,
+		}: TemplateRuleIdActionPayload) {
 			await deleteEventTemplateRule(courseId, templateId, ruleId);
 			this.removeEventTemplateRule({ templateId, ruleId });
 		},
@@ -1183,7 +1344,7 @@ export const useMainStore = defineStore("main", {
 			ruleId,
 			changes,
 			reFetch = false,
-		}: RuleIdPayload & {
+		}: TemplateRuleIdActionPayload & {
 			changes: Partial<EventTemplateRule>;
 			reFetch: boolean;
 		}) {
@@ -1196,7 +1357,11 @@ export const useMainStore = defineStore("main", {
 				});
 			}
 		},
-		async getEventTemplateRule({ courseId, templateId, ruleId }: RuleIdPayload) {
+		async getEventTemplateRule({
+			courseId,
+			templateId,
+			ruleId,
+		}: TemplateRuleIdActionPayload) {
 			const rule = await getEventTemplateRule(courseId, templateId, ruleId);
 			this.patchEventTemplateRule({
 				templateId,
@@ -1225,7 +1390,7 @@ export const useMainStore = defineStore("main", {
 			templateId,
 			ruleId,
 			clause,
-		}: RuleIdPayload & EventTemplateRuleClauseActionPayload) {
+		}: TemplateRuleIdActionPayload & EventTemplateRuleClauseActionPayload) {
 			const newClause = await createEventTemplateRuleClause(
 				courseId,
 				templateId,
@@ -1253,7 +1418,7 @@ export const useMainStore = defineStore("main", {
 			templateId,
 			ruleId,
 			clause,
-		}: RuleIdPayload & EventTemplateRuleClauseActionPayload) {
+		}: TemplateRuleIdActionPayload & EventTemplateRuleClauseActionPayload) {
 			const updatedClause = await updateEventTemplateRuleClause(
 				courseId,
 				templateId,
@@ -1261,12 +1426,6 @@ export const useMainStore = defineStore("main", {
 				clause,
 			);
 			return updatedClause;
-			//const target = state.events
-			//   .find((e: Event) => e.template?.id === templateId)
-			//   ?.template?.rules?.find((r: EventTemplateRule) => r.id === ruleId)
-			//   ?.clauses?.find((c: EventTemplateRuleClause) => c.id == clause.id);
-
-			// Object.assign(target, newClause);
 		},
 
 		/** CRUD on users */
@@ -1344,7 +1503,7 @@ export const useMainStore = defineStore("main", {
 			const response = await partialUpdateEventParticipationSlot(
 				courseId,
 				eventId,
-				participationId, //state.eventParticipation?.id,
+				participationId,
 				slotId,
 				changes,
 			);

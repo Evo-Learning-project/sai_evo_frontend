@@ -61,6 +61,16 @@ import Tooltip from "./components/ui/Tooltip.vue";
 const { mapState, mapGetters } = createNamespacedHelpers("shared");
 
 export default defineComponent({
+	setup() {
+		// TODO temporary workaround for a werid issue: if use import like this:
+		//import { useMainStore } from "./stores/mainStore";
+		// the app won't render as useMainStore will be undefined in other components; investigate
+		const useMainStore = require("./stores/mainStore").useMainStore;
+		const mainStore = useMainStore();
+		return {
+			mainStore,
+		};
+	},
 	beforeCreate(): void {
 		this.$store.commit("shared/initStore");
 	},
@@ -75,7 +85,8 @@ export default defineComponent({
 	async created() {
 		if (this.$store.getters["shared/isAuthenticated"]) {
 			try {
-				await this.$store.dispatch("shared/getCourses");
+				await this.$store.dispatch("shared/getCourses"); // TODO remove
+				await this.mainStore.getCourses();
 				if (!this.hasAnyPrivileges && this.isTeacherRoute) {
 					this.$router.push(
 						this.user?.is_teacher ? "/teacher/courses" : "/student/courses",

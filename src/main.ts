@@ -29,6 +29,7 @@ import VWave from "v-wave";
 import { sanitizeOptions } from "./const";
 
 import VueGtag from "vue-gtag";
+import { createPinia } from "pinia";
 
 const gAuthOptions = {
 	clientId: "956826904172-mcsaj1bqcllv93bpad7dmd0e3oil4758.apps.googleusercontent.com",
@@ -59,10 +60,13 @@ axios.interceptors.response.use(
 	},
 );
 
+const pinia = createPinia();
+
 const app = createApp(App);
 
 app
 	.directive("click-outside", clickOutsideDirective)
+	.use(pinia)
 	.use(VWave, {
 		duration: 0.3,
 	})

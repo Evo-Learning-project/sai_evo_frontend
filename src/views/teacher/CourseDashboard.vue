@@ -157,7 +157,7 @@
 				</div>
 				<div
 					class="flex flex-col w-full mt-6 mb-16 text-center select-none"
-					v-if="!loadingEvents && exams.length === 0"
+					v-if="!loadingEvents && mainStore.exams.length === 0"
 				>
 					<p style="font-size: 6rem" class="material-icons-outlined opacity-10">
 						assignment
@@ -199,7 +199,7 @@
 			</div>
 			<div
 				class="flex flex-col w-full mt-6 text-center select-none mb-14"
-				v-if="!loadingExercises && exercises.length === 0"
+				v-if="!loadingExercises && mainStore.exercises.length === 0"
 			>
 				<p style="font-size: 6rem" class="material-icons-outlined opacity-10">topic</p>
 				<h2 class="opacity-40">{{ $t("course_exercises.no_exercises") }}</h2>
@@ -224,7 +224,6 @@
 <script lang="ts">
 import { defineComponent } from "@vue/runtime-core";
 import { createNamespacedHelpers } from "vuex";
-const { mapActions, mapGetters, mapState } = createNamespacedHelpers("teacher");
 import { courseIdMixin, coursePrivilegeMixin, loadingMixin } from "@/mixins";
 import EventEditorPreview from "@/components/teacher/EventEditor/EventEditorPreview.vue";
 import { Course, CoursePrivilege, Event, EventType, Exercise } from "@/models";
@@ -245,6 +244,9 @@ import CopyToClipboard from "@/components/ui/CopyToClipboard.vue";
 import { isDemoMode } from "@/utils";
 
 const DEMO_COURSE_DASHBOARD_TOUR_KEY = "course_dashboard_tour_taken";
+
+import { mapStores } from "pinia";
+import { useMainStore } from "@/stores/mainStore";
 
 export default defineComponent({
 	name: "CourseDashboard",
@@ -268,7 +270,7 @@ export default defineComponent({
 		this.loadingEvents = true;
 		this.loadingExercises = true;
 		try {
-			await this.getEvents({
+			await this.mainStore.getEvents({
 				courseId: this.courseId,
 				filters: { event_type: EventType.EXAM },
 			});
@@ -278,9 +280,10 @@ export default defineComponent({
 			this.loadingEvents = false;
 		}
 		try {
-			await this.getExercises({
+			await this.mainStore.getExercises({
 				courseId: this.courseId,
 				fromFirstPage: true,
+				filters: null,
 			});
 		} catch {
 			this.showExercises = false;
@@ -324,7 +327,7 @@ export default defineComponent({
 		};
 	},
 	methods: {
-		...mapActions(["getExercises", "getEvents", "updateCourse"]),
+		//...mapActions(useMainStore, ["getExercises", "getEvents", "updateCourse"]),
 		editCourseName() {
 			this.dirtyCourseName = this.currentCourse.name;
 			this.editingName = true;
@@ -336,7 +339,7 @@ export default defineComponent({
 		async onDoneEditingName(discard = false) {
 			if (!discard) {
 				await this.withLocalLoading(async () => {
-					await this.updateCourse({
+					await this.mainStore.updateCourse({
 						...this.currentCourse,
 						name: this.dirtyCourseName,
 					});
@@ -349,7 +352,7 @@ export default defineComponent({
 		async onDoneEditingDescription(discard = false) {
 			if (!discard) {
 				await this.withLocalLoading(async () => {
-					await this.updateCourse({
+					await this.mainStore.updateCourse({
 						...this.currentCourse,
 						description: this.dirtyCourseDescription,
 					});
@@ -361,17 +364,18 @@ export default defineComponent({
 		},
 		async onChangeCourseVisibility(value: boolean) {
 			await this.withLoading(async () => {
-				await this.updateCourse({ ...this.currentCourse, hidden: value });
+				await this.mainStore.updateCourse({ ...this.currentCourse, hidden: value });
 			});
 		},
 	},
 	computed: {
-		...mapGetters(["exams", "exercises"]),
+		...mapStores(useMainStore),
+		//...mapState(useMainStore, ["exams", "exercises"]),
 		recentExams(): Event[] {
-			return this.exams.slice(0, 3);
+			return this.mainStore.exams?.slice(0, 3) ?? [];
 		},
 		recentExercises(): Exercise[] {
-			return this.exercises.slice(0, 4);
+			return this.mainStore.exercises?.slice(0, 4) ?? [];
 		},
 		dirtyCourse(): Course {
 			return {
