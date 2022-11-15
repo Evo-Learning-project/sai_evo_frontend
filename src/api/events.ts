@@ -59,7 +59,7 @@ export async function getEvent(
 
 export async function lockEvent(courseId: string, eventId: string): Promise<Event> {
 	const response = await axios.post(`/courses/${courseId}/events/${eventId}/lock/`);
-	return response.data;
+	return normalizeIncomingEvent(response.data);
 }
 
 export async function unlockEvent(courseId: string, eventId: string): Promise<void> {

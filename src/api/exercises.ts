@@ -58,7 +58,7 @@ export async function lockExercise(
 	exerciseId: string,
 ): Promise<Exercise> {
 	const response = await axios.post(`/courses/${courseId}/exercises/${exerciseId}/lock/`);
-	return response.data;
+	return normalizeIncomingExercise(response.data);
 }
 
 export async function unlockExercise(

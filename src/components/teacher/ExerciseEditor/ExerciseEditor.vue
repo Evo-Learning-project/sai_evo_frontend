@@ -700,14 +700,6 @@
 				</div>
 			</template>
 		</Card>
-		<!-- <Spinner
-			style="top: 10%"
-			:variant="'dark'"
-			fast
-			class="absolute transform z-50 left-1/2 -translate-x-1/2"
-			:size="'xl'"
-			v-if="fetchingExercise"
-		/> -->
 	</div>
 </template>
 
