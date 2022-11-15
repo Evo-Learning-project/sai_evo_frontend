@@ -64,7 +64,7 @@
 		</div>
 		<VueEternalLoading :load="onLoadMore" v-model:is-initial="isInitialInfiniteLoad">
 			<template #loading>
-				<spinner></spinner>
+				<Spinner />
 				<!-- <Btn @click="onLoadMore()">Carica di più</Btn> -->
 			</template>
 			<template #no-more>

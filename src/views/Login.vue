@@ -1,6 +1,6 @@
 <template>
 	<div class="flex flex-col h-full">
-		<spinner v-if="loading"></spinner>
+		<Spinner v-if="loading" />
 		<div class="flex flex-col h-full">
 			<!-- <div class="flex items-center">
 				<img src="../assets/logo1.png" />

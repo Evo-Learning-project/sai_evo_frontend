@@ -83,7 +83,7 @@
 		</div>
 		<VueEternalLoading :load="onLoadMore" v-model:is-initial="isInitialInfiniteLoad">
 			<template #loading>
-				<spinner></spinner>
+				<Spinner />
 			</template>
 			<template #no-more>
 				<!-- &nbsp; -->

@@ -3,7 +3,6 @@
 		<!-- in-view version -->
 		<div class="h-8">
 			<div v-if="saving" class="flex items-center ml-auto space-x-1.5 text-muted">
-				<!-- <Spinner :size="'sm'"></Spinner> -->
 				<span class="text-xl opacity-80 material-icons-outlined animate-spin">
 					sync
 				</span>
@@ -51,7 +50,6 @@
 			>
 				<div class="opacity-70 shadow-all-around px-3 pt-1.5 pb-1 pr-3 rounded-full">
 					<div v-if="saving" class="flex items-center ml-auto space-x-1.5 text-muted">
-						<!-- <Spinner :size="'sm'"></Spinner> -->
 						<span class="text-xl opacity-80 material-icons-outlined animate-spin">
 							sync
 						</span>

@@ -170,7 +170,7 @@ export const exerciseChoicesBarChartOptions = {
 };
 
 export const scoreChartDatasetSettings = {
-	backgroundColor: "#303f9fb3",
+	backgroundColor: "#6a16f099",
 	maxBarThickness: 100,
 };
 

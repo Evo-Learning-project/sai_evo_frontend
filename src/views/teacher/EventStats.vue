@@ -11,7 +11,7 @@
 			>
 			<h3 class="mb-0.5">
 				{{ $t("event_stats.event_stats") }}
-				{{ event(eventId).name }}
+				{{ mainStore.getEventById(eventId).name }}
 			</h3>
 		</div>
 
@@ -67,7 +67,7 @@
 				<!-- score distribution chart -->
 				<h2>{{ $t("event_stats.score_distribution") }}</h2>
 				<div
-					v-if="!areAllParticipationsFullyAssessed(eventParticipations)"
+					v-if="!areAllParticipationsFullyAssessed(mainStore.eventParticipations)"
 					class="flex my-4 transition-all duration-200 banner banner-danger"
 				>
 					<span class="ml-px text-yellow-900 material-icons-outlined">
@@ -105,10 +105,10 @@
 				v-show="currentTab === ExamStatsTabs.EXERCISES"
 				v-else
 			>
-				<MinimalExercisePreviewSkeleton></MinimalExercisePreviewSkeleton>
-				<MinimalExercisePreviewSkeleton></MinimalExercisePreviewSkeleton>
-				<MinimalExercisePreviewSkeleton></MinimalExercisePreviewSkeleton>
-				<MinimalExercisePreviewSkeleton></MinimalExercisePreviewSkeleton>
+				<MinimalExercisePreviewSkeleton />
+				<MinimalExercisePreviewSkeleton />
+				<MinimalExercisePreviewSkeleton />
+				<MinimalExercisePreviewSkeleton />
 			</div>
 		</div>
 	</div>
@@ -124,10 +124,8 @@ import {
 	Exercise,
 } from "@/models";
 import { defineComponent, PropType } from "@vue/runtime-core";
-import { createNamespacedHelpers } from "vuex";
 import { icons as participationStateIcons } from "@/assets/participationStateIcons";
 
-const { mapState, mapActions, mapGetters } = createNamespacedHelpers("teacher");
 import { Bar } from "vue-chartjs";
 import { TChartData } from "vue-chartjs/dist/types";
 import {
@@ -156,6 +154,8 @@ import {
 	scoreChartOptions,
 } from "@/reports";
 import { roundToTwoDecimals } from "@/utils";
+import { mapStores } from "pinia";
+import { useMainStore } from "@/stores/mainStore";
 ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale);
 
 export default defineComponent({
@@ -173,22 +173,26 @@ export default defineComponent({
 		await this.withLoading(async () => {
 			// make a first request without the heavy fields in order
 			// to quickly show the first chart...
-			await this.getEventParticipations({
+			await this.mainStore.getEventParticipations({
 				courseId: this.courseId,
 				eventId: this.eventId,
+				mutate: true,
+				includeDetails: false,
 			});
-			await this.getEvent({
+			await this.mainStore.getEvent({
 				courseId: this.courseId,
 				eventId: this.eventId,
+				includeDetails: false, // event template isn't needed
 			});
 		});
 		// ... then make the heavy request, whose data is to be shown
 		// in a tab that's not yet visible to the user
 		await this.withLocalLoading(
 			async () =>
-				await this.getEventParticipations({
+				await this.mainStore.getEventParticipations({
 					courseId: this.courseId,
 					eventId: this.eventId,
+					mutate: true,
 					includeDetails: true, // needed to get slots' exercises and answer texts
 				}),
 		);
@@ -203,10 +207,9 @@ export default defineComponent({
 		};
 	},
 	methods: {
-		...mapActions(["getEventParticipations", "getEvent"]),
 		getSlotsContaining(exercise: Exercise) {
 			if (exercise) {
-				return (this.eventParticipations as EventParticipation[])
+				return this.mainStore.eventParticipations
 					.flatMap(p => p.slots)
 					.filter(s => s.exercise?.id == exercise.id);
 			}
@@ -215,8 +218,7 @@ export default defineComponent({
 		areAllParticipationsFullyAssessed,
 	},
 	computed: {
-		...mapState(["eventParticipations"]),
-		...mapGetters(["event"]),
+		...mapStores(useMainStore),
 		tabsAsSelectableOptions(): SelectableOption[] {
 			return [
 				{
@@ -230,16 +232,10 @@ export default defineComponent({
 			];
 		},
 		exercises(): Exercise[] {
-			if ((this.eventParticipations?.length ?? 0) === 0) {
-				return [];
-			}
-			return getExerciseListFromParticipations(this.eventParticipations);
+			return getExerciseListFromParticipations(this.mainStore.eventParticipations);
 		},
 		scoreFrequency(): DataFrequency<string>[] {
-			if ((this.eventParticipations?.length ?? 0) === 0) {
-				return [];
-			}
-			return getScoreFrequencyFromParticipations(this.eventParticipations);
+			return getScoreFrequencyFromParticipations(this.mainStore.eventParticipations);
 		},
 		scoreFrequencyChartData(): TChartData<"bar", number[], unknown> {
 			return {
@@ -254,25 +250,24 @@ export default defineComponent({
 		},
 		// overall stats
 		participantCount() {
-			return this.eventParticipations?.length ?? 0;
+			return this.mainStore.eventParticipations.length;
 		},
 		turnedInCount() {
-			return (
-				this.eventParticipations?.filter(
-					(p: EventParticipation) => p.state === EventParticipationState.TURNED_IN,
-				).length ?? 0
-			);
+			return this.mainStore.eventParticipations.filter(
+				p => p.state === EventParticipationState.TURNED_IN,
+			).length;
 		},
 		averageProgress() {
 			// TODO use method in utils (like in monitor view)
-			const participations = this.eventParticipations as EventParticipation[];
-			if (!participations?.length) {
+			const participations = this.mainStore.eventParticipations;
+			if (!participations.length) {
 				return 0;
 			}
 			const divisor =
-				((this.event(this.eventId) as Event).template?.rules as EventTemplateRule[])
-					.map(r => r.amount)
-					.reduce((a, b) => a + b, 0) * participations.length;
+				(this.mainStore
+					.getEventById(this.eventId)
+					.template?.rules?.map(r => r.amount)
+					?.reduce((a, b) => a + b, 0) ?? 0) * participations.length;
 
 			const perc =
 				(100 *

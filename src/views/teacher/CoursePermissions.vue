@@ -49,9 +49,6 @@ import { courseIdMixin, loadingMixin, savingMixin } from "@/mixins";
 import { defineComponent } from "@vue/runtime-core";
 import { CellClickedEvent, ColDef, RowClassParams, RowNode } from "ag-grid-community";
 
-import { createNamespacedHelpers, mapState } from "vuex";
-const { mapActions } = createNamespacedHelpers("teacher");
-
 import { getTranslatedString as _ } from "@/i18n";
 import { Course, CoursePrivilege, User } from "@/models";
 import { icons as coursePrivilegeIcons } from "@/assets/coursePrivilegeIcons";
@@ -59,6 +56,9 @@ import Dialog from "@/components/ui/Dialog.vue";
 import CheckboxGroup from "@/components/ui/CheckboxGroup.vue";
 import { SelectableOption } from "@/interfaces";
 import UserCoursePermissionsRenderer from "@/components/datatable/UserCoursePermissionsRenderer.vue";
+import { mapStores } from "pinia";
+import { useMetaStore } from "@/stores/metaStore";
+import { useMainStore } from "@/stores/mainStore";
 
 export default defineComponent({
 	name: "CoursePermissions",
@@ -75,7 +75,7 @@ export default defineComponent({
 	async created() {
 		await this.withLoading(
 			async () =>
-				await this.getUsersForCourse({
+				await this.mainStore.getUsersForCourse({
 					courseId: this.courseId,
 				}),
 			this.setPageWideError,
@@ -89,13 +89,12 @@ export default defineComponent({
 		};
 	},
 	methods: {
-		...mapActions(["getUsersForCourse", "updateUserCoursePrivileges"]),
 		getRowId(data: any) {
 			return data.id;
 		},
 		onCellClicked(event: CellClickedEvent) {
 			if (
-				event.data.id !== this.user.id &&
+				event.data.id !== this.metaStore.user.id &&
 				event.data.id != this.currentCourse?.creator?.id
 			) {
 				this.showDialog = true;
@@ -108,28 +107,25 @@ export default defineComponent({
 		},
 		getRowClass(row: RowClassParams) {
 			const userId = row.data.id as string;
-			if (userId == this.user.id || userId == this.currentCourse?.creator?.id) {
+			if (userId == this.metaStore.user.id || userId == this.currentCourse?.creator?.id) {
 				return "opacity-60 bg-light-important";
 			}
 			return "";
 		},
 	},
 	computed: {
-		...mapState("shared", ["user"]),
-		...mapState("teacher", ["users"]),
-		editingUser(): User {
-			return this.users.find((u: User) => u.id === this.editingUserId);
+		...mapStores(useMainStore, useMetaStore),
+		editingUser(): User | undefined {
+			return this.mainStore.users.find(u => u.id === this.editingUserId);
 		},
 		editingUserPrivileges: {
 			get() {
 				return this.editingUser?.course_privileges;
 			},
 			async set(val: CoursePrivilege[]) {
-				// eslint-disable-next-line @typescript-eslint/no-extra-semi
-				//;(this.editingUser as User).course_privileges = val
 				await this.withLoading(
 					async () =>
-						await this.updateUserCoursePrivileges({
+						await this.mainStore.updateUserCoursePrivileges({
 							courseId: this.courseId,
 							userId: this.editingUserId,
 							privileges: val,
@@ -173,7 +169,7 @@ export default defineComponent({
 			];
 		},
 		usersData() {
-			return this.users.map((u: User) => ({
+			return this.mainStore.users.map(u => ({
 				id: u.id,
 				email: u.email,
 				fullName: u.full_name,

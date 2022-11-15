@@ -1227,15 +1227,9 @@ export const useMainStore = defineStore("main", {
 		},
 
 		// CRUD on events
-		async createEvent({
-			courseId,
-			event,
-			mutate,
-		}: CourseIdActionPayload & EventActionPayload & { mutate: boolean }) {
+		async createEvent({ courseId, event }: CourseIdActionPayload & EventActionPayload) {
 			const newEvent = await createEvent(courseId, event);
-			if (mutate) {
-				this.events.unshift(newEvent);
-			}
+			this.events.unshift(newEvent);
 			return newEvent;
 		},
 		// TODO better naming scheme, e.g. getEventsByFilter
@@ -1286,6 +1280,7 @@ export const useMainStore = defineStore("main", {
 			eventId,
 			includeDetails,
 			forCsv, // TODO refactor
+			// TODO mutate = false is only used by course insights & csv downloader, consider calling the api function directly and removing this param
 			mutate = true,
 		}: EventIdActionPayload & {
 			includeDetails?: boolean;

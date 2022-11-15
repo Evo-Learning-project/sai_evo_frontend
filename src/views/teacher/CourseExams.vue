@@ -13,7 +13,7 @@
 		</div>
 		<div v-if="!firstLoading" class="grid grid-cols-1 gap-4 mt-4 lg:grid-cols-2">
 			<EventEditorPreview
-				v-for="(exam, index) in exams"
+				v-for="(exam, index) in mainStore.exams"
 				:key="exam + '-' + index"
 				:event="exam"
 				@close="onClose(exam)"
@@ -21,16 +21,16 @@
 			></EventEditorPreview>
 		</div>
 		<div class="grid grid-cols-1 gap-4 mt-4 lg:grid-cols-2" v-else>
-			<EventEditorPreviewSkeleton></EventEditorPreviewSkeleton>
-			<EventEditorPreviewSkeleton></EventEditorPreviewSkeleton>
-			<EventEditorPreviewSkeleton></EventEditorPreviewSkeleton>
-			<EventEditorPreviewSkeleton></EventEditorPreviewSkeleton>
-			<EventEditorPreviewSkeleton></EventEditorPreviewSkeleton>
-			<EventEditorPreviewSkeleton></EventEditorPreviewSkeleton>
+			<EventEditorPreviewSkeleton />
+			<EventEditorPreviewSkeleton />
+			<EventEditorPreviewSkeleton />
+			<EventEditorPreviewSkeleton />
+			<EventEditorPreviewSkeleton />
+			<EventEditorPreviewSkeleton />
 		</div>
 		<div
 			class="flex flex-col w-full text-center select-none mt-9"
-			v-if="!firstLoading && exams.length === 0"
+			v-if="!firstLoading && mainStore.exams.length === 0"
 		>
 			<p style="font-size: 10rem" class="material-icons-outlined opacity-10">
 				assignment
@@ -88,10 +88,10 @@ import { defineComponent } from "@vue/runtime-core";
 import { courseIdMixin, coursePrivilegeMixin, loadingMixin } from "@/mixins";
 import Dialog from "@/components/ui/Dialog.vue";
 
-import { createNamespacedHelpers } from "vuex";
 import EventEditorPreviewSkeleton from "@/components/ui/skeletons/EventEditorPreviewSkeleton.vue";
 import { EventSearchFilter } from "@/api/interfaces";
-const { mapActions, mapGetters } = createNamespacedHelpers("teacher");
+import { mapStores } from "pinia";
+import { useMainStore } from "@/stores/mainStore";
 
 export default defineComponent({
 	components: {
@@ -105,7 +105,7 @@ export default defineComponent({
 	async created() {
 		await this.withFirstLoading(
 			async () =>
-				await this.getEvents({
+				await this.mainStore.getEvents({
 					courseId: this.courseId,
 					filters: {
 						event_type: EventType.EXAM,
@@ -125,7 +125,6 @@ export default defineComponent({
 		};
 	},
 	methods: {
-		...mapActions(["partialUpdateEvent", "createEvent", "getEvents"]),
 		onClose(event: Event) {
 			this.showCloseDialog = true;
 			this.closingExam = event;
@@ -137,9 +136,9 @@ export default defineComponent({
 		async closeExam() {
 			await this.withLoading(
 				async () =>
-					await this.partialUpdateEvent({
+					await this.mainStore.partialUpdateEvent({
 						courseId: this.courseId,
-						eventId: this.closingExam?.id,
+						eventId: (this.closingExam as Event).id,
 						mutate: true,
 						changes: {
 							state: EventState.CLOSED,
@@ -155,9 +154,9 @@ export default defineComponent({
 		async reopenExam() {
 			await this.withLoading(
 				async () =>
-					await this.partialUpdateEvent({
+					await this.mainStore.partialUpdateEvent({
 						courseId: this.courseId,
-						eventId: this.reopeningExam?.id,
+						eventId: (this.reopeningExam as Event).id,
 						mutate: true,
 						changes: {
 							state: EventState.OPEN,
@@ -172,7 +171,7 @@ export default defineComponent({
 		},
 		async onAddExam() {
 			await this.withLocalLoading(async () => {
-				const newExam = await this.createEvent({
+				const newExam = await this.mainStore.createEvent({
 					courseId: this.courseId,
 					event: getBlankExam(),
 				});
@@ -185,7 +184,7 @@ export default defineComponent({
 		},
 	},
 	computed: {
-		...mapGetters(["exams"]),
+		...mapStores(useMainStore),
 	},
 });
 </script>

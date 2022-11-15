@@ -38,7 +38,7 @@
 						class="mt-3 -ml-1 text-sm"
 						:variant="'primary-borderless'"
 						:size="'xs'"
-						@click="selectedExamsIds = exams.map(e => e.id)"
+						@click="selectedExamsIds = mainStore.exams.map(e => e.id)"
 						><span class="text-sm">{{ $t("misc.select_all") }}</span></Btn
 					>
 					<Btn
@@ -100,7 +100,10 @@
 			</div>
 		</div>
 		<div v-show="viewMode === 'cards'" class="grid grid-cols-1 gap-3 mt-4 md:grid-cols-3">
-			<div v-if="!loading && users.length === 0" class="flex flex-col items-center mt-8">
+			<div
+				v-if="!loading && mainStore.users.length === 0"
+				class="flex flex-col items-center mt-8"
+			>
 				<p style="font-size: 6rem" class="material-icons-outlined opacity-10">
 					person_off
 				</p>
@@ -108,7 +111,7 @@
 			</div>
 			<StudentCard
 				class="mb-auto"
-				v-for="user in users"
+				v-for="user in mainStore.users"
 				:key="'active-user-' + user.id"
 				:user="user"
 			/>
@@ -117,11 +120,8 @@
 </template>
 
 <script lang="ts">
-import { createNamespacedHelpers } from "vuex";
-const { mapActions, mapState, mapGetters } = createNamespacedHelpers("teacher");
 import { courseIdMixin, loadingMixin } from "@/mixins";
 import { defineComponent, PropType } from "@vue/runtime-core";
-import Card from "@/components/ui/Card.vue";
 import { logAnalyticsEvent, roundToTwoDecimals } from "@/utils";
 import DataTable from "@/components/ui/DataTable.vue";
 import { EventSearchFilter } from "@/api";
@@ -134,6 +134,8 @@ import { getTranslatedString as _ } from "@/i18n";
 import { normalizeOptionalStringContainingNumber } from "@/api/utils";
 import SegmentedControls from "@/components/ui/SegmentedControls.vue";
 import StudentCard from "@/components/shared/StudentCard.vue";
+import { mapStores } from "pinia";
+import { useMainStore } from "@/stores/mainStore";
 export default defineComponent({
 	name: "CourseInsights",
 	mixins: [courseIdMixin, loadingMixin],
@@ -157,7 +159,7 @@ export default defineComponent({
 		await this.withLoading(async () => {
 			await Promise.all([this.fetchUsers(), this.fetchClosedExams()]);
 			// initially enable all exams in the table
-			this.selectedExamsIds = this.exams.map((e: Event) => e.id);
+			this.selectedExamsIds = this.mainStore.exams.map(e => e.id);
 			this.participations = await this.fetchParticipations();
 		});
 		logAnalyticsEvent("viewedCourseStats", { courseId: this.courseId });
@@ -175,14 +177,13 @@ export default defineComponent({
 		};
 	},
 	methods: {
-		...mapActions(["getCourseActiveUsers", "getEvents", "getEventParticipations"]),
 		getRowId(data: any) {
 			return data.id;
 		},
 		async fetchUsers() {
 			this.loadingActiveStudents = true;
 			try {
-				await this.getCourseActiveUsers({ courseId: this.courseId });
+				await this.mainStore.getCourseActiveUsers({ courseId: this.courseId });
 			} catch (e) {
 				this.setErrorNotification(e);
 			} finally {
@@ -192,7 +193,7 @@ export default defineComponent({
 		async fetchClosedExams() {
 			this.loadingExams = true;
 			try {
-				await this.getEvents({
+				await this.mainStore.getEvents({
 					courseId: this.courseId,
 					filters: {
 						event_type: EventType.EXAM,
@@ -207,21 +208,19 @@ export default defineComponent({
 		},
 		async fetchParticipations() {
 			const participations: Record<string, EventParticipation[]> = {};
-			for (const e of this.exams as Event[]) {
+			for (const e of this.mainStore.exams) {
 				// TODO profile this and consider enabling bulk get
-				participations[e.id] = await this.getEventParticipations({
+				participations[e.id] = await this.mainStore.getEventParticipations({
 					courseId: this.courseId,
 					eventId: e.id,
-					mutate: false,
-					//includeDetails: true, // TODO make custom serializer that includes event id
+					mutate: false, //TODO consider calling api function direclty if not mutating
 				});
 			}
 			return participations;
 		},
 	},
 	computed: {
-		...mapState(["users"]),
-		...mapGetters(["exams"]),
+		...mapStores(useMainStore),
 		practiceParticipations() {
 			return [];
 		},
@@ -240,7 +239,7 @@ export default defineComponent({
 			];
 		},
 		examsAsSelectableOptions(): SelectableOption[] {
-			return (this.exams as Event[])
+			return [...this.mainStore.exams]
 				.sort((a, b) =>
 					new Date(b.begin_timestamp ?? "") < new Date(a.begin_timestamp ?? "") ? 1 : -1,
 				)
@@ -251,7 +250,7 @@ export default defineComponent({
 				}));
 		},
 		activeUsersForSelectedExams() {
-			const activeUsers = this.users as User[];
+			const activeUsers = this.mainStore.users;
 			return activeUsers.filter(u =>
 				this.selectedExams.some(
 					e =>
@@ -260,7 +259,7 @@ export default defineComponent({
 			);
 		},
 		selectedExams(): Event[] {
-			return this.exams.filter((e: Event) =>
+			return this.mainStore.exams.filter(e =>
 				this.selectedExamsIds.map(i => String(i)).includes(String(e.id)),
 			);
 		},
@@ -270,7 +269,7 @@ export default defineComponent({
 			return getCourseInsightsHeaders(this.selectedExams, this.examsColors);
 		},
 		examsColors(): Record<string, string> {
-			return (this.exams as Event[]).reduce((acc, e) => {
+			return this.mainStore.exams.reduce((acc, e) => {
 				const letters = "0123456789ABCDEF";
 				let color = "#";
 				for (let i = 0; i < 6; i++) {
@@ -296,7 +295,7 @@ export default defineComponent({
 				return [];
 			}
 			const activeUsers = this.activeUsersForSelectedExams;
-			const exams = this.exams as Event[];
+			const exams = this.mainStore.exams;
 
 			const getScoreSumFn = (u: User) =>
 				Math.round(

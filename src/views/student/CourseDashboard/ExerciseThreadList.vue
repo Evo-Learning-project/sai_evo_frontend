@@ -86,7 +86,7 @@
 			v-model:is-initial="isInitialInfiniteLoad"
 		>
 			<template #loading>
-				<Spinner></Spinner>
+				<Spinner />
 			</template>
 			<template #no-more>
 				<!-- &nbsp; -->
