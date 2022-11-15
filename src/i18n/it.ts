@@ -490,7 +490,7 @@ export const it = {
 		per_exercise_stats: "Statistiche per esercizio",
 		selections: "Selezioni",
 		answers: "Risposte",
-		event_stats: "Statistiche esame",
+		event_stats: "Statistiche",
 		back_to_results: "Torna ai risultati",
 		testcase_passed_in: "Superato in",
 		submissions: "sottomissioni",
