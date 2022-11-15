@@ -32,10 +32,7 @@ export const mutations = {
 
 	// update an event in memory with the given payload
 	setEvent: (state: TeacherState, { eventId, payload }: MutationPayload<Event>) =>
-		Object.assign(
-			state.events.find((e: Event) => e.id == eventId),
-			payload,
-		),
+		Object.assign(state.events.find((e: Event) => e.id == eventId) as Event, payload),
 	// update the slot with id `slotId` using the given payload
 	setEventParticipationSlot: (
 		state: TeacherState,
@@ -158,7 +155,7 @@ export const mutations = {
 			const targetRule = (targetTemplate.template as EventTemplate).rules.find(
 				r => r.id == ruleId,
 			);
-			Object.assign(targetRule, { ...targetRule, ...payload });
+			Object.assign(targetRule as EventTemplateRule, { ...targetRule, ...payload });
 		} else {
 			console.error("patchEventTemplateRule didn't find", ruleId);
 		}
