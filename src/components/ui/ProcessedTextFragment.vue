@@ -1,4 +1,6 @@
 <template>
+	<!-- TODO use dynamic template to render backtick-enclosed text into CodeFragment
+	components if you detect the value contains code -->
 	<div
 		v-html="sanitizedFormattedValue"
 		:class="{
