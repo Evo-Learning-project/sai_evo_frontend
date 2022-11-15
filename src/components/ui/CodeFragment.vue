@@ -23,23 +23,35 @@
 				><span class="material-icons-outlined text-lightText">expand_more</span></Btn
 			>
 		</div>
+		<highlightjs
+			:language="'javascript'"
+			:code="useDefault ? defaultValue : processedValue"
+		/>
 
-		<SshPre
+		<!-- <SshPre
 			v-if="show"
 			:language="'js'"
 			:dark="true"
 			:class="{ 'ssh-pre-small': small }"
 			>{{ useDefault ? defaultValue : processedValue }}</SshPre
-		>
+		> -->
 	</div>
 </template>
 
 <script lang="ts">
 import { defineComponent, PropType } from "@vue/runtime-core";
-import SshPre from "simple-syntax-highlighter";
+//import SshPre from "simple-syntax-highlighter";
 import "simple-syntax-highlighter/dist/sshpre.css";
 import CopyToClipboard from "./CopyToClipboard.vue";
 import Btn from "./Btn.vue";
+
+import hljsVuePlugin from "@highlightjs/vue-plugin";
+// import "highlight.js/styles/github-dark.css";
+import "highlight.js/styles/base16/material.css";
+
+import hljs from "highlight.js/lib/core";
+import javascript from "highlight.js/lib/languages/javascript";
+hljs.registerLanguage("javascript", javascript);
 
 const MAX_COLLAPSED_LENGTH = 500;
 const MAX_EXPANDED_LENGTH = 5000;
@@ -48,7 +60,8 @@ const MAX_COLLAPSED_LINES = 20;
 export default defineComponent({
 	name: "CodeFragment",
 	components: {
-		SshPre,
+		//SshPre,
+		highlightjs: hljsVuePlugin.component,
 		CopyToClipboard,
 		Btn,
 	},
