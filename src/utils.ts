@@ -112,13 +112,10 @@ export const setPageWideError = (e: any) => {
 	throw e;
 };
 
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const setErrorNotification = (e: any, useAsIs = false) => {
-	console.error("EEEE", e);
-
-	store.commit("shared/setErrorNotificationData", {
-		data: getErrorData(e, useAsIs),
-	});
+	console.error("setErrorNotification", e);
+	const metaStore = useMetaStore();
+	metaStore.errorNotificationData = getErrorData(e, useAsIs);
 };
 
 export function forceFileDownload(response: { data: BlobPart }, title: string) {
@@ -278,6 +275,7 @@ export const roundToTwoDecimals = (num: number) =>
 // }
 
 import { event } from "vue-gtag";
+import { useMetaStore } from "./stores/metaStore";
 
 export function logAnalyticsEvent(eventName: string, params: Record<string, any>) {
 	event(eventName, params);

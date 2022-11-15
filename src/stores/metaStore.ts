@@ -35,7 +35,7 @@ export const useMetaStore = defineStore("meta", {
 			if (token) {
 				console.log("restoring token");
 				this.token = token;
-				axios.defaults.headers.common["Authorization"] = "Bearer " + state.token;
+				axios.defaults.headers.common["Authorization"] = "Bearer " + this.token;
 			}
 			if (refreshToken) {
 				this.refreshToken = refreshToken;

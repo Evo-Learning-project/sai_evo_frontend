@@ -12,7 +12,7 @@
 			class="mt-3"
 			:style="'max-height:' + (mediaQueryMdMatches ? '30' : '15') + 'rem'"
 		>
-			<div v-if="helpCenterSelectedArticleId === null">
+			<div v-if="metaStore.helpCenterSelectedArticleId === null">
 				<div
 					v-if="courseId"
 					v-show="!isDemo"
@@ -38,7 +38,7 @@
 				</div>
 				<div
 					v-wave
-					@click="setHelpCenterArticleId(article.id)"
+					@click="metaStore.setHelpCenterArticleId(article.id)"
 					class="
 						flex
 						px-2
@@ -82,7 +82,7 @@
 				</div>
 				<div
 					v-wave
-					@click="setHelpCenterArticleId(article.id)"
+					@click="metaStore.setHelpCenterArticleId(article.id)"
 					class="
 						flex
 						px-2
@@ -120,7 +120,7 @@
 			<HelpCenterArticleFull
 				v-else
 				:article="selectedArticle"
-				@back="setHelpCenterArticleId(null)"
+				@back="metaStore.setHelpCenterArticleId(null)"
 			></HelpCenterArticleFull>
 		</div>
 	</DraggablePopup>
@@ -138,7 +138,8 @@ import { courseIdMixin, mediaQueryMixin } from "@/mixins";
 import { createNamespacedHelpers } from "vuex";
 import { isDemoMode } from "@/utils";
 import { logAnalyticsEvent } from "@/utils";
-const { mapState, mapMutations } = createNamespacedHelpers("shared");
+import { mapStores } from "pinia";
+import { useMetaStore } from "@/stores/metaStore";
 export default defineComponent({
 	name: "HelpCenter",
 	components: { DraggablePopup, HelpCenterArticleFull, Btn },
@@ -148,7 +149,6 @@ export default defineComponent({
 		logAnalyticsEvent("openedHelpCenter", { path: this.$route.fullPath });
 	},
 	methods: {
-		...mapMutations(["setHelpCenterArticleId"]),
 		getArticleRelevance(article: HelpCenterArticle): number {
 			const routeTags: string[] = this.$route.meta.tags as string[];
 			return article.tags.filter(t => routeTags.includes(t)).length;
@@ -160,7 +160,7 @@ export default defineComponent({
 		};
 	},
 	computed: {
-		...mapState(["helpCenterSelectedArticleId"]),
+		...mapStores(useMetaStore),
 		isDemo() {
 			return isDemoMode();
 		},
@@ -178,10 +178,10 @@ export default defineComponent({
 				.slice(0, this.showAll ? Infinity : SHOWN_ARTICLES);
 		},
 		selectedArticle(): HelpCenterArticle | undefined {
-			if (this.helpCenterSelectedArticleId === null) {
+			if (this.metaStore.helpCenterSelectedArticleId === null) {
 				return undefined;
 			}
-			return getArticle(this.helpCenterSelectedArticleId);
+			return getArticle(this.metaStore.helpCenterSelectedArticleId);
 		},
 	},
 });

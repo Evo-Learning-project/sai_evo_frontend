@@ -2,8 +2,8 @@
 	<div class="relative flex flex-col flex-grow">
 		<HelpCenter
 			@startTour="startTour()"
-			@close="setHelpCenterVisibility(false)"
-			v-if="helpCenterOpen"
+			@close="metaStore.setHelpCenterVisibility(false)"
+			v-if="metaStore.helpCenterOpen"
 		></HelpCenter>
 		<nav
 			style="z-index: 100"
@@ -72,7 +72,7 @@
 						</DropdownMenu>
 						<Btn
 							:tooltip="$t('help.help_guide_label')"
-							@click="setHelpCenterVisibility(true)"
+							@click="metaStore.setHelpCenterVisibility(true)"
 							id="help-center"
 							:variant="'icon'"
 							:outline="true"
@@ -388,9 +388,9 @@
 				<transition name="quick-bounce"
 					><SnackBar
 						class="w-full px-4"
-						v-if="$store.state.shared.errorNotificationData"
-						:icon="$store.state.shared.errorNotificationData.icon"
-						:message="$store.state.shared.errorNotificationData.title"
+						v-if="metaStore.errorNotificationData"
+						:icon="metaStore.errorNotificationData.icon"
+						:message="metaStore.errorNotificationData.title"
 					></SnackBar
 				></transition>
 			</div>
@@ -425,12 +425,11 @@ import HelpCenter from "@/components/shared/HelpCenter/HelpCenter.vue";
 import { newSidebarHelpCenterTourSteps, teacherTourSteps, tourOptions } from "@/const";
 import LocaleSelector from "@/components/ui/LocaleSelector.vue";
 
-import { createNamespacedHelpers } from "vuex";
 import DropdownMenu from "@/components/ui/DropdownMenu.vue";
-const { mapMutations, mapState } = createNamespacedHelpers("shared");
+import { mapStores } from "pinia";
+import { useMetaStore } from "@/stores/metaStore";
 
 const LOCAL_STORAGE_FIX_SIDEBAR_KEY = "sai_evo_fix_sidebar";
-const LOCAL_STORAGE_HAS_TAKEN_SIDEBAR_TOUR_KEY = "has_taken_sidebar_tour";
 
 export default defineComponent({
 	name: "MainTeacher",
@@ -479,7 +478,6 @@ export default defineComponent({
 	},
 	mixins: [courseIdMixin, eventIdMixin, coursePrivilegeMixin],
 	methods: {
-		...mapMutations(["setHelpCenterVisibility"]),
 		logOut,
 		startTour() {
 			(this.$tours["helpCenterTour"] as any).start();
@@ -523,7 +521,7 @@ export default defineComponent({
 		},
 	},
 	computed: {
-		...mapState(["helpCenterOpen"]),
+		...mapStores(useMetaStore),
 		isDemoMode() {
 			return isDemoMode();
 		},
