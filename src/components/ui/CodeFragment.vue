@@ -23,10 +23,7 @@
 				><span class="material-icons-outlined text-lightText">expand_more</span></Btn
 			>
 		</div>
-		<highlightjs
-			:language="'javascript'"
-			:code="useDefault ? defaultValue : processedValue"
-		/>
+		<highlightjs autodetect :code="useDefault ? defaultValue : processedValue" />
 
 		<!-- <SshPre
 			v-if="show"
@@ -47,11 +44,22 @@ import Btn from "./Btn.vue";
 
 import hljsVuePlugin from "@highlightjs/vue-plugin";
 // import "highlight.js/styles/github-dark.css";
-import "highlight.js/styles/base16/material.css";
+
+// TODO light theme import "highlight.js/styles/base16/material-lighter.css";
+import "highlight.js/styles/base16/material-darker.css";
 
 import hljs from "highlight.js/lib/core";
 import javascript from "highlight.js/lib/languages/javascript";
+import typescript from "highlight.js/lib/languages/typescript";
+import python from "highlight.js/lib/languages/python";
+import c from "highlight.js/lib/languages/c";
+import cpp from "highlight.js/lib/languages/cpp";
+
 hljs.registerLanguage("javascript", javascript);
+hljs.registerLanguage("typescript", typescript);
+hljs.registerLanguage("python", python);
+hljs.registerLanguage("c", c);
+hljs.registerLanguage("cpp", cpp);
 
 const MAX_COLLAPSED_LENGTH = 500;
 const MAX_EXPANDED_LENGTH = 5000;

@@ -59,6 +59,7 @@
 	}
 
 	pre {
+		font-size: 15px !important;
 		white-space: pre-wrap;
 	}
 }
