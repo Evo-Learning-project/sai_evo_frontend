@@ -37,15 +37,9 @@
 				><span class="material-icons-outlined text-lightText">expand_more</span></Btn
 			>
 		</div>
-		<highlightjs autodetect :code="useDefault ? defaultValue : processedValue" />
-
-		<!-- <SshPre
-			v-if="show"
-			:language="'js'"
-			:dark="true"
-			:class="{ 'ssh-pre-small': small }"
-			>{{ useDefault ? defaultValue : processedValue }}</SshPre
-		> -->
+		<div class="rounded-sm overflow-hidden">
+			<highlightjs autodetect :code="useDefault ? defaultValue : processedValue" />
+		</div>
 	</div>
 </template>
 
@@ -129,16 +123,16 @@ export default defineComponent({
 		}
 	},
 	watch: {
-		value() {
-			// tear down and re-build component as it doesn't update on its own...
-			this.show = false;
-			this.$nextTick(() => (this.show = true));
-		},
-		processedValue() {
-			// tear down and re-build component as it doesn't update on its own...
-			this.show = false;
-			this.$nextTick(() => (this.show = true));
-		},
+		// value() {
+		// 	// tear down and re-build component as it doesn't update on its own...
+		// 	this.show = false;
+		// 	this.$nextTick(() => (this.show = true));
+		// },
+		// processedValue() {
+		// 	// tear down and re-build component as it doesn't update on its own...
+		// 	this.show = false;
+		// 	this.$nextTick(() => (this.show = true));
+		// },
 	},
 	data() {
 		return {
@@ -168,12 +162,15 @@ export default defineComponent({
 				document.querySelector(`link[title="${activeTheme}"]`),
 				document.querySelector(`link[title="${removeTheme}"]`),
 			);
+
+			// TODO have some transition
 			document.querySelector(`link[title="${activeTheme}"]`)?.removeAttribute("disabled");
 			document
 				.querySelector(`link[title="${removeTheme}"]`)
 				?.setAttribute("disabled", "disabled");
-			this.show = false;
-			this.$nextTick(() => (this.show = true));
+
+			// this.show = false;
+			// this.$nextTick(() => (this.show = true));
 		},
 	},
 	computed: {
