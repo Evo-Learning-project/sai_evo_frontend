@@ -62,12 +62,12 @@ import Toggle from "@/components/ui/Toggle.vue";
 import FileUpload from "../../components/ui/FileUpload.vue";
 import Btn from "@/components/ui/Btn.vue";
 import useVuelidate from "@vuelidate/core";
-import { mapState } from "vuex";
 
-import { createNamespacedHelpers } from "vuex";
 import { loadingMixin } from "@/mixins";
 import { courseValidation } from "@/validation/models";
-const { mapActions } = createNamespacedHelpers("teacher");
+import { mapStores } from "pinia";
+import { useMainStore } from "@/stores/mainStore";
+import { useMetaStore } from "@/stores/metaStore";
 
 export default defineComponent({
 	name: "CourseCreationForm",
@@ -87,14 +87,13 @@ export default defineComponent({
 		};
 	},
 	methods: {
-		...mapActions(["createCourse"]),
 		onFileUploadClick() {
 			alert("Questa funzionalità non è ancora disponibile");
 		},
 		async onCreate() {
 			await this.withLocalLoading(async () => {
-				const course = await this.createCourse(this.course);
-				await this.$store.dispatch("shared/getCourses");
+				const course = await this.mainStore.createCourse(this.course);
+				await this.mainStore.getCourses();
 				this.$router.push({
 					name: "TeacherCourseDashboard",
 					params: {
@@ -103,12 +102,11 @@ export default defineComponent({
 					},
 				});
 			});
-
-			this.$store.commit("shared/showSuccessFeedback");
+			this.metaStore.showSuccessFeedback();
 		},
 	},
 	computed: {
-		...mapState("shared", ["courses"]),
+		...mapStores(useMainStore, useMetaStore),
 	},
 });
 </script>

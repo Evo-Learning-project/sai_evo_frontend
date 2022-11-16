@@ -327,7 +327,6 @@ export default defineComponent({
 		};
 	},
 	methods: {
-		//...mapActions(useMainStore, ["getExercises", "getEvents", "updateCourse"]),
 		editCourseName() {
 			this.dirtyCourseName = this.currentCourse.name;
 			this.editingName = true;
@@ -370,7 +369,6 @@ export default defineComponent({
 	},
 	computed: {
 		...mapStores(useMainStore),
-		//...mapState(useMainStore, ["exams", "exercises"]),
 		recentExams(): Event[] {
 			return this.mainStore.exams?.slice(0, 3) ?? [];
 		},

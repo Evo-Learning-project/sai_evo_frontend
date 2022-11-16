@@ -32,7 +32,7 @@
 						:solutions="getSolutionsForExercise(exercise)"
 						:showFirst="highlightedSolutionIds"
 						:canLoadMore="
-							!(getPaginatedSolutionsForExercise(exercise)?.isLastPage ?? true)
+							!(mainStore.paginatedSolutionsByExerciseId[exercise.id]?.isLastPage ?? true)
 						"
 						@loadMore="loadMore(exercise)"
 					/>
@@ -70,7 +70,7 @@
 
 		<div
 			class="flex flex-col w-full mt-12 mb-12 text-center select-none"
-			v-if="!firstLoading && exercises.length === 0"
+			v-if="!firstLoading && mainStore.exercises.length === 0"
 		>
 			<p style="font-size: 10rem" class="material-icons-outlined opacity-10">inventory</p>
 			<h2 class="opacity-40">{{ $t("exercise_solution.no_solutions_to_review") }}</h2>
@@ -90,40 +90,29 @@
 
 <script lang="ts">
 import { courseIdMixin, loadingMixin } from "@/mixins";
-import {
-	EventParticipationSlot,
-	Exercise,
-	ExerciseSolution,
-	ExerciseSolutionState,
-	getFakeEventParticipationSlot,
-} from "@/models";
+import { Exercise, ExerciseSolution, ExerciseSolutionState } from "@/models";
 import { defineComponent } from "@vue/runtime-core";
 import ExerciseSolutionContainer from "@/components/shared/ExerciseSolution/ExerciseSolutionContainer.vue";
 import { getTranslatedString as _ } from "@/i18n";
 
-import { createNamespacedHelpers, mapState, mapActions } from "vuex";
-import AbstractEventParticipationSlot from "@/components/shared/AbstractEventParticipationSlot.vue";
 import { VueEternalLoading, LoadAction } from "@ts-pro/vue-eternal-loading";
 import Spinner from "@/components/ui/Spinner.vue";
 import ExerciseEditorWrapperSkeleton from "@/components/ui/skeletons/ExerciseEditorWrapperSkeleton.vue";
-import {
-	ExerciseSearchFilter,
-	ExerciseSolutionSearchFilter,
-	PaginatedData,
-} from "@/api/interfaces";
+import { ExerciseSearchFilter, ExerciseSolutionSearchFilter } from "@/api/interfaces";
 import MinimalExercisePreviewSkeleton from "@/components/ui/skeletons/MinimalExercisePreviewSkeleton.vue";
 import SlotSkeleton from "@/components/ui/skeletons/SlotSkeleton.vue";
 import Btn from "@/components/ui/Btn.vue";
 import FullExercise from "@/components/shared/FullExercise.vue";
 import { logAnalyticsEvent } from "@/utils";
-const { mapGetters } = createNamespacedHelpers("teacher");
+import { mapStores } from "pinia";
+import { useMainStore } from "@/stores/mainStore";
 export default defineComponent({
 	name: "CourseExerciseSolutionThreads",
 	mixins: [loadingMixin, courseIdMixin],
 	props: {},
 	async created() {
 		this.withFirstLoading(async () => {
-			await this.getExercises({
+			await this.mainStore.getExercises({
 				courseId: this.courseId,
 				fromFirstPage: true,
 				filters: { with_submitted_solutions: true } as ExerciseSearchFilter,
@@ -140,23 +129,16 @@ export default defineComponent({
 		};
 	},
 	methods: {
-		...mapActions("teacher", ["getExercises"]),
-		...mapActions("shared", ["getSolutionsByExercise"]),
 		getSolutionsForExercise(exercise: Exercise): ExerciseSolution[] {
-			return this.paginatedSolutionsByExerciseId[exercise.id]?.data ?? [];
-		},
-		getPaginatedSolutionsForExercise(
-			exercise: Exercise,
-		): PaginatedData<ExerciseSolution> | undefined {
-			return this.paginatedSolutionsByExerciseId[exercise.id];
+			return this.mainStore.getPaginatedSolutionsByExerciseId(exercise.id).data;
 		},
 		getSolutionCountForExercise(exercise: Exercise): number {
-			return this.getPaginatedSolutionsForExercise(exercise)?.count ?? 0;
+			return this.mainStore.paginatedSolutionsByExerciseId[exercise.id]?.count ?? 0;
 		},
 		async loadMore(exercise: Exercise) {
 			await this.withLoading(
 				async () =>
-					await this.getSolutionsByExercise({
+					await this.mainStore.getSolutionsByExercise({
 						courseId: this.courseId,
 						exerciseId: exercise.id,
 						fromFirstPage: false,
@@ -172,14 +154,17 @@ export default defineComponent({
 				: _("exercise_preview.unnamed_exercise");
 		},
 		fetchSolutionsForNewExercises() {
-			(this.exercises as Exercise[])
-				.filter(e => typeof this.paginatedSolutionsByExerciseId[e.id] === "undefined")
+			this.mainStore.exercises
+				.filter(
+					e => typeof this.mainStore.paginatedSolutionsByExerciseId[e.id] === "undefined",
+				)
 				.forEach(async e => {
 					this.loadingSolutionsByExercise[e.id] = true;
 					try {
-						await this.getSolutionsByExercise({
+						await this.mainStore.getSolutionsByExercise({
 							courseId: this.courseId,
 							exerciseId: e.id,
+							fromFirstPage: true,
 							filter: {
 								states: [ExerciseSolutionState.SUBMITTED],
 							} as ExerciseSolutionSearchFilter,
@@ -193,7 +178,7 @@ export default defineComponent({
 		},
 		async onLoadMore({ loaded, noMore, error }: LoadAction) {
 			try {
-				const moreResults = await this.getExercises({
+				const moreResults = await this.mainStore.getExercises({
 					courseId: this.courseId,
 					fromFirstPage: false,
 					filters: { with_submitted_solutions: true } as ExerciseSearchFilter,
@@ -210,21 +195,19 @@ export default defineComponent({
 		},
 	},
 	computed: {
-		...mapGetters(["exercises"]),
-		...mapState("teacher", ["paginatedExercises"]),
-		...mapState("shared", ["paginatedSolutionsByExerciseId"]),
+		...mapStores(useMainStore),
 		processedExercises(): {
 			exercise: Exercise;
 			highlightedSolutionIds: string[];
 		}[] {
 			// TODO return exercises with the most important solutions shown
-			return this.exercises?.map((exercise: Exercise) => ({
+			return this.mainStore.exercises.map((exercise: Exercise) => ({
 				exercise,
 				highlightedSolutionIds: [],
 			}));
 		},
-		remainingCount(): number {
-			return (this.paginatedExercises as PaginatedData<Exercise>).count;
+		remainingCount() {
+			return this.mainStore.paginatedExercises.count;
 		},
 	},
 	components: {

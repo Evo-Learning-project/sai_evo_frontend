@@ -11,11 +11,11 @@ import {
 } from "@/models";
 import store from "@/store";
 import { SharedState } from "@/store/types";
+import { useMainStore } from "@/stores/mainStore";
 
 export const courseNameUnique = (name: string, course: Course): boolean => {
-	return (store.state as { shared: SharedState }).shared.courses.every(
-		c => c.name !== name || c.id == course.id,
-	);
+	const mainStore = useMainStore();
+	return mainStore.courses.every(c => c.name !== name || c.id == course.id);
 };
 
 export const idBasedRulePopulated = (

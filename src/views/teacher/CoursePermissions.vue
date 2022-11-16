@@ -184,9 +184,6 @@ export default defineComponent({
 				description: _("course_privileges." + key),
 			}));
 		},
-		// currentCourse (): Course {
-		//   return this.$store.getters['shared/course'](this.courseId)
-		// }
 	},
 });
 </script>
