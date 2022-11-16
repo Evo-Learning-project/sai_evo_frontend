@@ -1,12 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+import { mapStores } from "pinia";
 import { mapState } from "vuex";
 import { getTranslatedString as _ } from "./i18n";
+import { DialogData } from "./interfaces";
 import { Course, CoursePrivilege, getBlankCourse } from "./models";
 import router from "./router";
 import store from "./store/index";
 import { SharedState, StudentState } from "./store/types";
 import { useMainStore } from "./stores/mainStore";
+import { useMetaStore } from "./stores/metaStore";
 import { setErrorNotification, setPageWideError } from "./utils";
 export const courseIdMixin = {
 	computed: {
@@ -42,8 +45,34 @@ export const eventIdMixin = {
 export const texMixin = {
 	methods: {
 		triggerTexRender() {
-			const sharedState = (store.state as { shared: SharedState }).shared;
-			sharedState.dirtyTex = true;
+			const metaStore = useMetaStore();
+			metaStore.dirtyTex = true;
+		},
+	},
+};
+
+export const blockingDialogMixin = {
+	data() {
+		return {
+			blockingDialogData: null as null | DialogData,
+			showBlockingDialog: false,
+			blockingDialogPromise: null as null | Promise<boolean>,
+			resolveBlockingDialog: null as null | ((boolean) => void),
+		};
+	},
+	methods: {
+		async getBlockingBinaryDialogChoice(): Promise<boolean> {
+			const self = this as any; // temporary workaround to prevent type errors
+
+			self.showBlockingDialog = true;
+
+			self.blockingDialogPromise = new Promise(
+				resolve => (self.resolveBlockingDialog = resolve),
+			);
+			const choice = await self.blockingDialogPromise;
+
+			//self.showBlockingDialog = false;
+			return choice;
 		},
 	},
 };
@@ -88,63 +117,73 @@ export const loadingMixin = {
 			onError?: (e?: unknown) => unknown,
 			onSuccess?: () => void,
 		) {
-			const sharedState = (store.state as { shared: SharedState }).shared;
+			const sharedState = useMetaStore();
 
-			sharedState.loading = true;
+			(this as any).metaStore.loading = true;
 			try {
 				const ret = await callback();
-				sharedState.dirtyTex = true; // trigger tex rendering
+				(this as any).metaStore.dirtyTex = true; // trigger tex rendering
 				onSuccess?.();
 				return ret;
 			} catch (e) {
 				onError?.(e);
 			} finally {
-				sharedState.loading = false;
+				(this as any).metaStore.loading = false;
 			}
 		},
 		async withFirstLoading(callback: () => unknown, onError = setPageWideError) {
-			const sharedState = (store.state as { shared: SharedState }).shared;
+			(this as any).metaStore.firstLoading = true;
 
-			sharedState.firstLoading = true;
 			try {
 				const ret = await callback();
-				sharedState.dirtyTex = true; // trigger tex rendering
+				(this as any).metaStore.dirtyTex = true; // trigger tex rendering
 				return ret;
 			} catch (e: any) {
 				onError?.(e);
 			} finally {
-				sharedState.firstLoading = false;
+				(this as any).metaStore.firstLoading = false;
 			}
 		},
 		async withLocalLoading(callback: () => unknown, onError = setErrorNotification) {
-			const sharedState = (store.state as { shared: SharedState }).shared;
-
-			sharedState.localLoading = true;
+			(this as any).metaStore.localLoading = true;
 			try {
 				const ret = await callback();
-				sharedState.dirtyTex = true; // trigger tex rendering
+				(this as any).metaStore.dirtyTex = true; // trigger tex rendering
 				return ret;
 			} catch (e: any) {
 				onError?.(e);
 			} finally {
-				sharedState.localLoading = false;
+				(this as any).metaStore.localLoading = false;
 			}
 		},
 		setPageWideError,
 		setErrorNotification,
 	},
 	computed: {
-		...mapState("shared", ["firstLoading", "localLoading", "loading"]),
+		...mapStores(useMetaStore),
+		loading() {
+			return (this.metaStore as any).loading;
+		},
+		localLoading() {
+			return (this.metaStore as any).localLoading;
+		},
+		firstLoading() {
+			return (this.metaStore as any).firstLoading;
+		},
 	},
 };
 
 export const savingMixin = {
 	watch: {
 		saving(newVal: boolean) {
-			(store.state as any).shared.saving = newVal;
+			/* TODO this will give problems with multiple saving components
+			at the same time: use a counter instead; increment it when newVal
+			is true, decrement it when it's false
+			*/
+			useMetaStore().saving = newVal;
 		},
 		savingError(newVal: boolean) {
-			(store.state as any).savingError = newVal;
+			useMetaStore().savingError = newVal;
 		},
 	},
 };
@@ -156,20 +195,21 @@ export const coursePrivilegeMixin = {
 			 * Given a list of required privileges, returns true iff the current
 			 * user has such privileges for the current course
 			 */
-			const myPrivileges: CoursePrivilege[] =
-				(store.state as any).shared.courses.find(
-					(c: Course) => c.id == (router.currentRoute.value.params.courseId as string),
-				)?.privileges ?? [];
-
+			const myPrivileges = (this as any).userCoursePrivileges;
+			console.log(myPrivileges);
 			return requiredPrivilegesList.every(p => myPrivileges.includes(p));
 		},
 		hasAnyPrivileges() {
-			const myPrivileges: CoursePrivilege[] =
-				(store.state as any).shared.courses.find(
-					(c: Course) => c.id == (router.currentRoute.value.params.courseId as string),
-				)?.privileges ?? [];
-
+			const myPrivileges = (this as any).userCoursePrivileges;
 			return myPrivileges.length > 0;
+		},
+	},
+	computed: {
+		userCoursePrivileges() {
+			return (
+				useMainStore().getCourseById(router.currentRoute.value.params.courseId as string)
+					?.privileges ?? []
+			);
 		},
 	},
 };

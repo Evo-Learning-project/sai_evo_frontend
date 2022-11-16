@@ -43,10 +43,7 @@
 					<img :class="[isDemoMode ? 'w-40' : 'w-56', '-ml-1']" :src="logoUrl" />
 				</div>
 				<div class="">
-					<div
-						v-if="$store.getters['shared/isAuthenticated']"
-						class="flex items-center ml-4 md:ml-6"
-					>
+					<div v-if="metaStore.isAuthenticated" class="flex items-center ml-4 md:ml-6">
 						<!-- <Btn :variant="'icon'" :outline="true"
 							><span class="material-icons-outlined">brightness_4</span></Btn
 						> -->
@@ -79,13 +76,13 @@
 							><span class="text-lg material-icons-outlined"> help_outline </span></Btn
 						>
 						<p class="ml-4 mr-1 text-xs md:text-base">
-							{{ $store.getters["shared/email"] }}
+							{{ metaStore.email }}
 						</p>
 						<p
 							@click="onShowMatEdit"
 							class="hidden text-xs cursor-pointer md:block md:text-sm"
 						>
-							{{ $store.state.shared.user?.mat }}
+							{{ metaStore.user?.mat }}
 						</p>
 						<Btn
 							:tooltip="$t('misc.logout')"
@@ -175,7 +172,7 @@
 
 						<transition name="fade-quick">
 							<div
-								v-if="false && $store.getters['shared/isAuthenticated']"
+								v-if="false && metaStore.isAuthenticated"
 								:class="[hoveringSidebar || fixSideBar ? 'opacity-100' : 'opacity-0']"
 								class="
 									flex
@@ -192,7 +189,7 @@
 									text-light
 								"
 							>
-								<p>{{ $store.getters["shared/email"] }}</p>
+								<p>{{ metaStore.email }}</p>
 								<Btn @click="logOut()" :variant="'icon'" :outline="true"
 									><span class="text-lg text-lightText material-icons-outlined">
 										logout
@@ -296,7 +293,7 @@
 						<img :class="[isDemoMode ? 'w-40' : 'w-32', 'mx-auto']" :src="logoUrl" />
 					</div>
 					<div
-						v-if="$store.getters['shared/isAuthenticated']"
+						v-if="metaStore.isAuthenticated"
 						class="
 							flex
 							items-center
@@ -309,7 +306,7 @@
 							text-sm text-light
 						"
 					>
-						<p>{{ $store.getters["shared/email"] }}</p>
+						<p>{{ metaStore.email }}</p>
 						<Btn @click="logOut()" :variant="'icon'" :outline="true"
 							><span class="text-lg text-lightText material-icons-outlined">
 								logout
@@ -383,7 +380,7 @@
 				<h1 v-if="routeTitle?.length > 0" class="">
 					{{ routeTitle }}
 				</h1>
-				<ErrorView v-if="!!$store.state.shared.pageWideErrorData"></ErrorView>
+				<ErrorView v-if="!!metaStore.pageWideErrorData"></ErrorView>
 				<router-view v-else class="flex-grow"></router-view>
 				<transition name="quick-bounce"
 					><SnackBar
@@ -428,6 +425,7 @@ import LocaleSelector from "@/components/ui/LocaleSelector.vue";
 import DropdownMenu from "@/components/ui/DropdownMenu.vue";
 import { mapStores } from "pinia";
 import { useMetaStore } from "@/stores/metaStore";
+import { useMainStore } from "@/stores/mainStore";
 
 const LOCAL_STORAGE_FIX_SIDEBAR_KEY = "sai_evo_fix_sidebar";
 
@@ -521,7 +519,7 @@ export default defineComponent({
 		},
 	},
 	computed: {
-		...mapStores(useMetaStore),
+		...mapStores(useMetaStore, useMainStore),
 		isDemoMode() {
 			return isDemoMode();
 		},
@@ -543,7 +541,7 @@ export default defineComponent({
 				?.replace(ROUTE_TITLE_EVENT_NAME_TOKEN, this.currentEvent?.name ?? "");
 		},
 		currentEvent(): Event {
-			return this.$store.getters["teacher/event"](this.eventId);
+			return this.mainStore.getEventById(this.eventId);
 		},
 		routerViewStyle() {
 			const unfixedSidebarOnMdScreen = !this.fixSideBar && this.mediaQueryMd;

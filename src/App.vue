@@ -1,14 +1,14 @@
 <template>
 	<!-- <div> -->
 	<div
-		v-if="loading"
+		v-if="metaStore.loading"
 		style="z-index: 999"
 		class="fixed transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
 	>
 		<Spinner :size="'xl'" :variant="'dark'" :fast="true"></Spinner>
 	</div>
 	<transition name="fade">
-		<Notification v-if="showSuccessFeedback"></Notification>
+		<Notification v-if="metaStore._showSuccessFeedback"></Notification>
 	</transition>
 	<transition name="fade">
 		<!-- unfortunately doesn't work -->
@@ -52,13 +52,11 @@ import Spinner from "./components/ui/Spinner.vue";
 import Notification from "./components/ui/Notification.vue";
 import { getTranslatedString as _ } from "./i18n";
 
-import { createNamespacedHelpers } from "vuex";
 import { debounce } from "lodash";
 import { Course, CoursePrivilege } from "./models";
 import Tooltip from "./components/ui/Tooltip.vue";
 
 //import { typesetTex } from "./utils";
-const { mapState, mapGetters } = createNamespacedHelpers("shared");
 
 export default defineComponent({
 	setup() {
@@ -66,13 +64,17 @@ export default defineComponent({
 		//import { useMainStore } from "./stores/mainStore";
 		// the app won't render as useMainStore will be undefined in other components; investigate
 		const useMainStore = require("./stores/mainStore").useMainStore;
+		const useMetaStore = require("./stores/metaStore").useMetaStore;
 		const mainStore = useMainStore();
+		const metaStore = useMetaStore();
 		return {
 			mainStore,
+			metaStore,
 		};
 	},
 	beforeCreate(): void {
 		this.$store.commit("shared/initStore");
+		this.metaStore.initStore();
 	},
 	beforeUnmount() {
 		window.removeEventListener("beforeunload", this.beforeWindowUnload);
@@ -85,11 +87,11 @@ export default defineComponent({
 	async created() {
 		if (this.$store.getters["shared/isAuthenticated"]) {
 			try {
-				await this.$store.dispatch("shared/getCourses"); // TODO remove
+				//await this.$store.dispatch("shared/getCourses"); // TODO remove
 				await this.mainStore.getCourses();
 				if (!this.hasAnyPrivileges && this.isTeacherRoute) {
 					this.$router.push(
-						this.user?.is_teacher ? "/teacher/courses" : "/student/courses",
+						this.metaStore.user?.is_teacher ? "/teacher/courses" : "/student/courses",
 					);
 				}
 			} catch (e) {
@@ -102,9 +104,10 @@ export default defineComponent({
 	},
 	watch: {
 		dirtyTex(newVal) {
+			console.log("changed");
 			if (newVal) {
 				this.typesetTex();
-				this.$store.state.shared.dirtyTex = false;
+				this.metaStore.dirtyTex = false;
 			}
 		},
 	},
@@ -119,7 +122,7 @@ export default defineComponent({
 		},
 		beforeWindowUnload(e: { preventDefault: () => void; returnValue: string }) {
 			if (
-				this.unsavedChanges &&
+				this.metaStore.unsavedChanges &&
 				!window.confirm(_("misc.confirm_exiting_unsaved_changes"))
 			) {
 				// Cancel the event
@@ -130,8 +133,9 @@ export default defineComponent({
 		},
 	},
 	computed: {
-		...mapState(["loading", "showSuccessFeedback", "dirtyTex", "courses", "user"]),
-		...mapGetters(["unsavedChanges"]),
+		dirtyTex() {
+			return this.metaStore.dirtyTex;
+		},
 		isDemoMode() {
 			return JSON.parse(process.env.VUE_APP_DEMO_MODE ?? "false");
 		},
@@ -139,7 +143,7 @@ export default defineComponent({
 			if (this.$router.currentRoute.value.params.courseId) {
 				// check user has privileges for course currrently visited
 				const myPrivileges: CoursePrivilege[] =
-					this.courses.find(
+					this.mainStore.courses.find(
 						(c: Course) =>
 							c.id == (this.$router.currentRoute.value.params.courseId ?? ""),
 					)?.privileges ?? [];
@@ -149,8 +153,10 @@ export default defineComponent({
 			// check user has any privileges at all if not visiting a
 			// course (i.e. in course list) or that the user is a teacher
 			return (
-				this.user?.is_teacher ||
-				(this.courses as Course[]).map(c => c.privileges ?? []).some(p => p.length > 0)
+				this.metaStore.user?.is_teacher ||
+				(this.mainStore.courses as Course[])
+					.map(c => c.privileges ?? [])
+					.some(p => p.length > 0)
 			);
 		},
 		isTeacherRoute(): boolean {

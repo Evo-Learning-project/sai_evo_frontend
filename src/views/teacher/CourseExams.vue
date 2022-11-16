@@ -16,8 +16,8 @@
 				v-for="(exam, index) in mainStore.exams"
 				:key="exam + '-' + index"
 				:event="exam"
-				@close="onClose(exam)"
-				@reopen="onReopen(exam)"
+				@close="onCloseExam(exam)"
+				@reopen="onReopenExam(exam)"
 			></EventEditorPreview>
 		</div>
 		<div class="grid grid-cols-1 gap-4 mt-4 lg:grid-cols-2" v-else>
@@ -37,42 +37,20 @@
 			</p>
 			<h2 class="opacity-40">{{ $t("course_events.no_exams") }}</h2>
 		</div>
+
 		<Dialog
-			:warning="true"
-			:showDialog="showCloseDialog"
-			@no="showCloseDialog = false"
-			@yes="closeExam()"
-			:yesText="$t('course_events.close_for_everyone')"
-			:noText="$t('dialog.default_cancel_text')"
+			:showDialog="showBlockingDialog"
+			@no="resolveBlockingDialog(false)"
+			@yes="resolveBlockingDialog(true)"
+			:yesText="blockingDialogData?.yesText"
+			:noText="blockingDialogData?.noText"
 		>
 			<template v-slot:title>
-				{{ $t("course_events.close_exam_for_everyone_title") }}
+				{{ blockingDialogData?.title }}
 			</template>
 			<template v-slot:body>
 				<p>
-					{{ $t("course_events.close_exam_for_everyone_body_1") }}
-					<strong>{{ closingExam.name }}</strong>
-					{{ $t("course_events.close_exam_for_everyone_body_2") }}
-					{{ $t("course_events.close_exam_for_everyone_body_3") }}
-					{{ $t("event_preview.monitor") }}.
-				</p>
-			</template>
-		</Dialog>
-		<Dialog
-			:showDialog="showReopenDialog"
-			@no="showReopenDialog = false"
-			@yes="reopenExam()"
-			:yesText="$t('course_events.reopen')"
-			:noText="$t('dialog.default_cancel_text')"
-		>
-			<template v-slot:title>
-				{{ $t("course_events.reopen_exam_title") }}
-			</template>
-			<template v-slot:body>
-				<p>
-					{{ $t("course_events.reopen_exam_body") }}
-					<strong>{{ reopeningExam.name }}</strong
-					>?
+					{{ blockingDialogData?.text }}
 				</p>
 			</template>
 		</Dialog>
@@ -85,13 +63,21 @@ import { Event, EventState, CoursePrivilege, getBlankExam, EventType } from "@/m
 import Btn from "@/components/ui/Btn.vue";
 
 import { defineComponent } from "@vue/runtime-core";
-import { courseIdMixin, coursePrivilegeMixin, loadingMixin } from "@/mixins";
+import {
+	blockingDialogMixin,
+	courseIdMixin,
+	coursePrivilegeMixin,
+	loadingMixin,
+} from "@/mixins";
 import Dialog from "@/components/ui/Dialog.vue";
 
 import EventEditorPreviewSkeleton from "@/components/ui/skeletons/EventEditorPreviewSkeleton.vue";
 import { EventSearchFilter } from "@/api/interfaces";
 import { mapStores } from "pinia";
 import { useMainStore } from "@/stores/mainStore";
+import { DialogData } from "@/interfaces";
+import { getTranslatedString as _ } from "@/i18n";
+import { useMetaStore } from "@/stores/metaStore";
 
 export default defineComponent({
 	components: {
@@ -101,7 +87,7 @@ export default defineComponent({
 		EventEditorPreviewSkeleton,
 	},
 	name: "CourseExams",
-	mixins: [courseIdMixin, loadingMixin, coursePrivilegeMixin],
+	mixins: [courseIdMixin, loadingMixin, coursePrivilegeMixin, blockingDialogMixin],
 	async created() {
 		await this.withFirstLoading(
 			async () =>
@@ -118,27 +104,39 @@ export default defineComponent({
 		return {
 			CoursePrivilege,
 			buttonLoading: false,
-			showCloseDialog: false,
-			showReopenDialog: false,
-			reopeningExam: null as Event | null,
-			closingExam: null as Event | null,
 		};
 	},
 	methods: {
-		onClose(event: Event) {
-			this.showCloseDialog = true;
-			this.closingExam = event;
-		},
-		onReopen(event: Event) {
-			this.showReopenDialog = true;
-			this.reopeningExam = event;
-		},
-		async closeExam() {
+		async onCloseExam(event: Event) {
+			this.blockingDialogData = {
+				title: _("course_events.close_exam_for_everyone_title"),
+				text:
+					_("course_events.close_exam_for_everyone_body_1") +
+					" " +
+					event.name +
+					" " +
+					_("course_events.close_exam_for_everyone_body_2") +
+					" " +
+					_("course_events.close_exam_for_everyone_body_3") +
+					" " +
+					_("event_preview.monitor") +
+					".",
+				yesText: _("course_events.close_for_everyone"),
+				noText: _("dialog.default_cancel_text"),
+			};
+
+			const choice = await this.getBlockingBinaryDialogChoice();
+			this.showBlockingDialog = false;
+
+			if (!choice) {
+				return;
+			}
+
 			await this.withLoading(
 				async () =>
 					await this.mainStore.partialUpdateEvent({
 						courseId: this.courseId,
-						eventId: (this.closingExam as Event).id,
+						eventId: event.id,
 						mutate: true,
 						changes: {
 							state: EventState.CLOSED,
@@ -146,17 +144,29 @@ export default defineComponent({
 						},
 					}),
 				this.setErrorNotification,
-				() => this.$store.commit("shared/showSuccessFeedback"),
+				() => this.metaStore.showSuccessFeedback(),
 			);
-			this.closingExam = null;
-			this.showCloseDialog = false;
 		},
-		async reopenExam() {
+		async onReopenExam(event: Event) {
+			this.blockingDialogData = {
+				title: _("course_events.reopen_exam_title"),
+				text: _("course_events.reopen_exam_body") + " " + event.name + "?",
+				yesText: _("course_events.close_for_everyone"),
+				noText: _("dialog.default_cancel_text"),
+			};
+
+			const choice = await this.getBlockingBinaryDialogChoice();
+			this.showBlockingDialog = false;
+
+			if (!choice) {
+				return;
+			}
+
 			await this.withLoading(
 				async () =>
 					await this.mainStore.partialUpdateEvent({
 						courseId: this.courseId,
-						eventId: (this.reopeningExam as Event).id,
+						eventId: event.id,
 						mutate: true,
 						changes: {
 							state: EventState.OPEN,
@@ -164,10 +174,8 @@ export default defineComponent({
 						},
 					}),
 				this.setErrorNotification,
-				() => this.$store.commit("shared/showSuccessFeedback"),
+				() => this.metaStore.showSuccessFeedback(),
 			);
-			this.reopeningExam = null;
-			this.showReopenDialog = false;
 		},
 		async onAddExam() {
 			await this.withLocalLoading(async () => {
@@ -184,7 +192,7 @@ export default defineComponent({
 		},
 	},
 	computed: {
-		...mapStores(useMainStore),
+		...mapStores(useMainStore, useMetaStore),
 	},
 });
 </script>
