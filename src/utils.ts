@@ -115,7 +115,10 @@ export const setPageWideError = (e: any) => {
 export const setErrorNotification = (e: any, useAsIs = false) => {
 	console.error("setErrorNotification", e);
 	const metaStore = useMetaStore();
-	metaStore.errorNotificationData = getErrorData(e, useAsIs);
+	metaStore.setErrorNotificationData({
+		data: getErrorData(e, useAsIs),
+		hideTimeout: 4000,
+	});
 };
 
 export function forceFileDownload(response: { data: BlobPart }, title: string) {

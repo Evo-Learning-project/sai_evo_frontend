@@ -126,9 +126,9 @@ export default defineComponent({
 			};
 
 			const choice = await this.getBlockingBinaryDialogChoice();
-			this.showBlockingDialog = false;
 
 			if (!choice) {
+				this.showBlockingDialog = false;
 				return;
 			}
 
@@ -146,6 +146,7 @@ export default defineComponent({
 				this.setErrorNotification,
 				() => this.metaStore.showSuccessFeedback(),
 			);
+			this.showBlockingDialog = false;
 		},
 		async onReopenExam(event: Event) {
 			this.blockingDialogData = {
@@ -156,9 +157,9 @@ export default defineComponent({
 			};
 
 			const choice = await this.getBlockingBinaryDialogChoice();
-			this.showBlockingDialog = false;
 
 			if (!choice) {
+				this.showBlockingDialog = false;
 				return;
 			}
 
@@ -176,6 +177,7 @@ export default defineComponent({
 				this.setErrorNotification,
 				() => this.metaStore.showSuccessFeedback(),
 			);
+			this.showBlockingDialog = false;
 		},
 		async onAddExam() {
 			await this.withLocalLoading(async () => {
