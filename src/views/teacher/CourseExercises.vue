@@ -47,9 +47,9 @@
 		<div v-if="!firstLoading">
 			<transition-group name="quick-bounce">
 				<ExerciseEditorWrapper
-					v-for="(exercise, index) in exercises"
+					v-for="(exercise, index) in mainStore.exercises"
 					:key="'course-' + courseId + '-exercise-' + exercise.id"
-					v-model="exercises[index]"
+					v-model="mainStore.exercises[index]"
 					:ref="'course-' + courseId + '-exercise-' + exercise.id"
 					:id="'course-' + courseId + '-exercise-' + exercise.id"
 					@delete="onDeleteExercise(exercise)"
@@ -65,14 +65,14 @@
 		</div>
 		<div
 			class="flex flex-col w-full mt-12 mb-12 text-center select-none"
-			v-if="!firstLoading && exercises.length === 0 && emptyFilters"
+			v-if="!firstLoading && mainStore.exercises.length === 0 && emptyFilters"
 		>
 			<p style="font-size: 10rem" class="material-icons-outlined opacity-10">topic</p>
 			<h2 class="opacity-40">{{ $t("course_exercises.no_exercises") }}</h2>
 		</div>
 		<div
 			class="flex flex-col w-full mt-12 mb-12 text-center select-none"
-			v-else-if="!firstLoading && exercises.length === 0"
+			v-else-if="!firstLoading && mainStore.exercises.length === 0"
 		>
 			<p style="font-size: 10rem" class="material-icons-outlined opacity-10">
 				search_off
@@ -136,12 +136,11 @@
 </template>
 
 <script lang="ts">
-import { createNamespacedHelpers, mapActions } from "vuex";
-const { mapState, mapGetters } = createNamespacedHelpers("teacher");
+// ! TODO test, this requires migrating ExerciseEditor first
 import { getTranslatedString as _ } from "@/i18n";
 import { icons as exerciseTypesIcons } from "@/assets/exerciseTypesIcons";
 import { icons as exerciseStatesIcons } from "@/assets/exerciseStatesIcons";
-import { Exercise, ExerciseState, ExerciseType, getBlankExercise, Tag } from "@/models";
+import { Exercise, ExerciseState, ExerciseType, getBlankExercise } from "@/models";
 
 import { VueEternalLoading, LoadAction } from "@ts-pro/vue-eternal-loading";
 import { DialogData, SelectableOption } from "@/interfaces";
@@ -158,6 +157,8 @@ import Dialog from "@/components/ui/Dialog.vue";
 import ExerciseImporter from "@/components/teacher/ExerciseImporter.vue";
 import DropdownMenu from "@/components/ui/DropdownMenu.vue";
 import { getExercises } from "@/api";
+import { mapStores } from "pinia";
+import { useMainStore } from "@/stores/mainStore";
 export default defineComponent({
 	name: "CourseExercises",
 	props: {
@@ -191,11 +192,15 @@ export default defineComponent({
 	async created() {
 		this.onFilterChange = getDebouncedForFilter(this.onFilterChange);
 		this.withFirstLoading(async () => {
-			await this.getExercises({
+			await this.mainStore.getExercises({
 				courseId: this.courseId,
 				fromFirstPage: true,
+				filters: null,
 			});
-			await this.getTags({ courseId: this.courseId });
+			await this.mainStore.getTags({
+				courseId: this.courseId,
+				includeExerciseCount: false,
+			});
 		});
 	},
 	mounted() {
@@ -228,13 +233,6 @@ export default defineComponent({
 		};
 	},
 	methods: {
-		...mapActions("teacher", [
-			"getExercises",
-			"createExercise",
-			"bulkCreateExercises",
-			"deleteExercise",
-		]),
-		...mapActions("shared", ["getTags"]),
 		getBlankExerciseSearchFilters,
 		async onExportExercises() {
 			await this.withLoading(async () => {
@@ -247,7 +245,7 @@ export default defineComponent({
 		async onFilterChange() {
 			await this.withLoading(
 				async () =>
-					await this.getExercises({
+					await this.mainStore.getExercises({
 						courseId: this.courseId,
 						fromFirstPage: true,
 						filters: this.searchFilter,
@@ -258,7 +256,7 @@ export default defineComponent({
 			await this.withLoading(
 				async () => {
 					this.importLoading = true;
-					await this.bulkCreateExercises({
+					await this.mainStore.bulkCreateExercises({
 						courseId: this.courseId,
 						exercises: this.importedExercises,
 					});
@@ -275,7 +273,7 @@ export default defineComponent({
 		},
 		async onLoadMore({ loaded, noMore, error }: LoadAction) {
 			try {
-				const moreResults = await this.getExercises({
+				const moreResults = await this.mainStore.getExercises({
 					courseId: this.courseId,
 					fromFirstPage: false,
 					filters: this.searchFilter,
@@ -301,7 +299,7 @@ export default defineComponent({
 		async onAddExercise(cloned?: Exercise): Promise<Exercise> {
 			const wrapperFunc = cloned ? this.withLoading : this.withLocalLoading;
 			return (await wrapperFunc(async () => {
-				const newExercise = await this.createExercise({
+				const newExercise = await this.mainStore.createExercise({
 					courseId: this.courseId,
 					exercise: cloned ?? getBlankExercise(),
 				});
@@ -326,7 +324,7 @@ export default defineComponent({
 					confirmOnly: false,
 					text: _("course_exercises.confirm_delete_exercise"),
 					onYes: async () => {
-						await this.deleteExercise({
+						await this.mainStore.deleteExercise({
 							courseId: this.courseId,
 							exerciseId: exercise.id,
 						});
@@ -341,11 +339,12 @@ export default defineComponent({
 		},
 	},
 	computed: {
+		...mapStores(useMainStore),
 		emptyFilters() {
 			return isEmptyFilter(this.searchFilter);
 		},
 		tagsOptions() {
-			return this.tags.map((t: Tag) => ({
+			return this.mainStore.tags.map(t => ({
 				value: t.name,
 				content: t.name,
 			}));
@@ -369,8 +368,6 @@ export default defineComponent({
 					description: _("exercise_states_descriptions." + key),
 				}));
 		},
-		...mapState(["tags"]),
-		...mapGetters(["exercises"]),
 	},
 });
 </script>
