@@ -12,7 +12,7 @@ export const useMetaStore = defineStore("meta", {
 		loading: false,
 		firstLoading: false,
 		localLoading: false,
-		pageWideErrorData: null,
+		pageWideErrorData: null as ErrorMessage | null,
 		errorNotificationData: null as ErrorMessage | null,
 		saving: false,
 		savingError: false,
@@ -105,7 +105,7 @@ export const useMetaStore = defineStore("meta", {
 			const response = await getMe();
 			this.user = response;
 		},
-		async updateUser({ userId, changes }: { userId: string; changes: Partial<User> }) {
+		async patchUser({ userId, changes }: { userId: string; changes: Partial<User> }) {
 			const response = await updateUser(userId, changes);
 			this.setUser(response);
 		},

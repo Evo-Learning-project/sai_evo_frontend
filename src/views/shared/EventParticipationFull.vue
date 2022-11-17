@@ -9,7 +9,7 @@
 		</div>
 		<div
 			class="mb-4 items-center flex space-x-0.5 md:space-x-2"
-			v-if="!firstLoading && allowEditAssessment"
+			v-if="!firstLoading && mainStore.currentEventParticipation && allowEditAssessment"
 		>
 			<!-- <router-link :to="{ name: 'ExamProgress' }"
         ><Btn :outline="true" :variant="'icon'"
@@ -21,14 +21,14 @@
 			>
 			<h3 class="mb-0.5 pl-2">
 				{{
-					participation.event.event_type === EventType.EXAM
+					mainStore.currentEventParticipation.event.event_type === EventType.EXAM
 						? $t("event_assessment.viewing_participation_of")
 						: $t("event_assessment.viewing_practice_of")
 				}}
-				{{ participation.user.full_name }}
+				{{ mainStore.currentEventParticipation.user.full_name }}
 			</h3>
 		</div>
-		<div class="px-2 py-6" v-if="!firstLoading">
+		<div class="px-2 py-6" v-if="!firstLoading && mainStore.currentEventParticipation">
 			<div class="flex flex-col mb-6 space-y-8">
 				<!--md:flex-row md:space-y-0-->
 				<div class="text-sm">
@@ -36,11 +36,14 @@
 						<span class="my-auto text-sm material-icons-outlined"> timer </span>
 						<p class="">{{ $t("event_participation_page.begin_timestamp") }}:</p>
 						<Timestamp
-							:value="participation.begin_timestamp"
+							:value="mainStore.currentEventParticipation.begin_timestamp"
 							class="text-muted"
-						></Timestamp>
+						/>
 					</div>
-					<div class="flex space-x-1" v-if="participation.end_timestamp">
+					<div
+						class="flex space-x-1"
+						v-if="mainStore.currentEventParticipation.end_timestamp"
+					>
 						<span class="my-auto text-sm material-icons-outlined">
 							assignment_turned_in
 						</span>
@@ -48,8 +51,8 @@
 						<p class="">{{ $t("event_participation_page.turn_in_timestamp") }}:</p>
 						<Timestamp
 							class="text-muted"
-							:value="participation.end_timestamp"
-						></Timestamp>
+							:value="mainStore.currentEventParticipation.end_timestamp"
+						/>
 					</div>
 				</div>
 				<div class="flex flex-col space-y-2">
@@ -67,7 +70,7 @@
 							<div class="flex items-center">
 								<h4 class="">
 									{{ $t("event_assessment.overall_score") }}:
-									<strong>{{ participation.score }}</strong>
+									<strong>{{ mainStore.currentEventParticipation.score }}</strong>
 								</h4>
 								<Btn
 									v-if="allowEditAssessment"
@@ -80,7 +83,7 @@
 									><span class="text-lg icon-light material-icons">edit</span></Btn
 								>
 								<Btn
-									v-if="participation.score_edited"
+									v-if="mainStore.currentEventParticipation.score_edited"
 									:outline="true"
 									class="ml-auto"
 									:variant="'icon'"
@@ -138,7 +141,9 @@
 					</div>
 					<div
 						class="banner banner-light"
-						v-if="allowEditAssessment && !participation.score_edited"
+						v-if="
+							allowEditAssessment && !mainStore.currentEventParticipation.score_edited
+						"
 					>
 						<span class="material-icons-outlined icon-light">info</span>
 						<p class="text-muted">
@@ -147,7 +152,9 @@
 					</div>
 					<div
 						class="banner banner-light"
-						v-else-if="allowEditAssessment && participation.score_edited"
+						v-else-if="
+							allowEditAssessment && mainStore.currentEventParticipation.score_edited
+						"
 					>
 						<span class="material-icons-outlined icon-light">sync_disabled</span>
 						<span class="text-muted">
@@ -156,7 +163,11 @@
 					</div>
 					<div
 						class="banner banner-danger"
-						v-if="allowEditAssessment && someSlotsPending && !participation.score_edited"
+						v-if="
+							allowEditAssessment &&
+							someSlotsPending &&
+							!mainStore.currentEventParticipation.score_edited
+						"
 					>
 						<span class="mr-1 text-base text-2xl text-yellow-900 material-icons-outlined"
 							>pending_actions</span
@@ -171,12 +182,12 @@
 			<div
 				:class="{
 					'mt-0': index === 0,
-					'mb-5': index === participation.slots.length - 1,
-					'mb-10': index !== participation.slots.length - 1,
+					'mb-5': index === mainStore.currentEventParticipation.slots.length - 1,
+					'mb-10': index !== mainStore.currentEventParticipation.slots.length - 1,
 				}"
 				class=""
-				v-for="(slot, index) in participation.slots"
-				:key="'p-' + participation.id + '-s-' + slot.id"
+				v-for="(slot, index) in mainStore.currentEventParticipation.slots"
+				:key="'p-' + mainStore.currentEventParticipation.id + '-s-' + slot.id"
 			>
 				<AbstractEventParticipationSlot
 					:modelValue="slot"
@@ -229,7 +240,6 @@ import { courseIdMixin, eventIdMixin, loadingMixin } from "@/mixins";
 import { defineComponent } from "@vue/runtime-core";
 import AbstractEventParticipationSlot from "@/components/shared/AbstractEventParticipationSlot.vue";
 
-import { createNamespacedHelpers, mapActions, mapState } from "vuex";
 import {
 	EventParticipation,
 	EventParticipationSlot,
@@ -245,7 +255,8 @@ import Btn from "@/components/ui/Btn.vue";
 import TextInput from "@/components/ui/TextInput.vue";
 import { getTranslatedString } from "@/i18n";
 import ExerciseSolutionContainer from "@/components/shared/ExerciseSolution/ExerciseSolutionContainer.vue";
-const { mapMutations } = createNamespacedHelpers("student");
+import { mapStores } from "pinia";
+import { useMainStore } from "@/stores/mainStore";
 
 export default defineComponent({
 	name: "EventParticipationFull",
@@ -274,7 +285,7 @@ export default defineComponent({
 	},
 	async created() {
 		await this.withFirstLoading(async () => {
-			await this.getEventParticipation({
+			await this.mainStore.getCurrentEventParticipation({
 				courseId: this.courseId,
 				eventId: this.eventId,
 				participationId: this.participationId,
@@ -285,8 +296,10 @@ export default defineComponent({
 		// still open, redirect to participation page
 		if (
 			!this.allowEditAssessment && // not in teacher mode
-			this.participation.state !== EventParticipationState.TURNED_IN &&
-			this.participation.event.state === EventState.OPEN
+			this.mainStore.currentEventParticipation?.state !==
+				EventParticipationState.TURNED_IN &&
+			// TODO assumes that currentEventParticipation contains Event
+			this.mainStore.currentEventParticipation?.event.state === EventState.OPEN
 		) {
 			this.$router.push({
 				name: "ExamParticipationPage",
@@ -297,12 +310,14 @@ export default defineComponent({
 		}
 
 		if (this.showSolutionAndScores) {
-			(this.participation as EventParticipation).slots.forEach(async s => {
+			(this.mainStore.currentEventParticipation?.slots ?? []).forEach(async s => {
 				this.slotsLoadingSolution[s.id] = true;
 				try {
-					await this.getSolutionsByExercise({
+					await this.mainStore.getSolutionsByExercise({
 						courseId: this.courseId,
 						exerciseId: s.exercise.id,
+						filter: null,
+						fromFirstPage: true,
 					});
 				} catch (e) {
 					this.setErrorNotification(e);
@@ -324,13 +339,6 @@ export default defineComponent({
 		};
 	},
 	methods: {
-		...mapActions("student", [
-			"getEventParticipation",
-			"partialUpdateEventParticipation",
-		]),
-		...mapActions("shared", ["getSolutionsByExercise"]),
-		...mapActions("teacher", ["partialUpdateEventParticipationSlot"]),
-		...mapMutations(["setCurrentEventParticipationSlot"]), // ? remove
 		onGoBack() {
 			if (window.history.length > 1) {
 				this.$router.back();
@@ -342,10 +350,10 @@ export default defineComponent({
 			}
 		},
 		getSolutionsForExercise(exercise: Exercise) {
-			return this.paginatedSolutionsByExerciseId[exercise.id]?.data ?? [];
+			return this.mainStore.getPaginatedSolutionsByExerciseId(exercise.id).data;
 		},
 		onShowEditScore() {
-			this.dirtyScore = this.participation.score;
+			this.dirtyScore = this.mainStore.currentEventParticipation?.score;
 			this.showEditScore = true;
 		},
 		async onUndoScoreEdit() {
@@ -362,7 +370,7 @@ export default defineComponent({
 			this.assessmentLoading = true;
 			await this.withLocalLoading(
 				async () =>
-					await this.partialUpdateEventParticipation({
+					await this.mainStore.partialUpdateCurrentEventParticipation({
 						courseId: this.courseId,
 						changes: {
 							score: this.dirtyScore,
@@ -378,16 +386,15 @@ export default defineComponent({
 		) {
 			this.slotsAssessmentLoading[slot.id] = true;
 			try {
-				await this.partialUpdateEventParticipationSlot({
+				await this.mainStore.partialUpdateCurrentEventParticipationSlot({
 					courseId: this.courseId,
-					eventId: this.eventId,
-					participationId: this.participation.id,
 					slotId: slot.id,
 					changes,
 					mutate: false,
+					forceStudent: false, // update performed as a teacher
 				});
 				// re-fetch participation to register any updates (e.g. the score property)
-				await this.getEventParticipation({
+				await this.mainStore.getCurrentEventParticipation({
 					courseId: this.courseId,
 					eventId: this.eventId,
 					participationId: this.participationId,
@@ -401,14 +408,13 @@ export default defineComponent({
 		},
 	},
 	computed: {
-		...mapState("student", { participation: "currentEventParticipation" }),
-		...mapState("shared", ["paginatedSolutionsByExerciseId"]),
+		...mapStores(useMainStore),
 		participationId(): string {
 			return this.$router.currentRoute.value.params.participationId as string;
 		},
 		someSlotsPending(): boolean {
 			return (
-				(this.participation as EventParticipation | undefined)?.slots.some(
+				this.mainStore.currentEventParticipation?.slots.some(
 					s => s.score === null || s.sub_slots.some(r => r.score === null),
 				) ?? true
 			);

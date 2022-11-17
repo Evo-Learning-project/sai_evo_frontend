@@ -47,9 +47,9 @@
 		<div v-if="!firstLoading">
 			<transition-group name="quick-bounce">
 				<ExerciseEditorWrapper
-					v-for="(exercise, index) in mainStore.exercises"
+					v-for="exercise in mainStore.exercises"
 					:key="'course-' + courseId + '-exercise-' + exercise.id"
-					v-model="mainStore.exercises[index]"
+					:exercise="exercise"
 					:ref="'course-' + courseId + '-exercise-' + exercise.id"
 					:id="'course-' + courseId + '-exercise-' + exercise.id"
 					@delete="onDeleteExercise(exercise)"
@@ -58,10 +58,10 @@
 			></transition-group>
 		</div>
 		<div class="flex flex-col space-y-4" v-else>
-			<ExerciseEditorWrapperSkeleton></ExerciseEditorWrapperSkeleton>
-			<ExerciseEditorWrapperSkeleton></ExerciseEditorWrapperSkeleton>
-			<ExerciseEditorWrapperSkeleton></ExerciseEditorWrapperSkeleton>
-			<ExerciseEditorWrapperSkeleton></ExerciseEditorWrapperSkeleton>
+			<ExerciseEditorWrapperSkeleton />
+			<ExerciseEditorWrapperSkeleton />
+			<ExerciseEditorWrapperSkeleton />
+			<ExerciseEditorWrapperSkeleton />
 		</div>
 		<div
 			class="flex flex-col w-full mt-12 mb-12 text-center select-none"
@@ -159,6 +159,7 @@ import DropdownMenu from "@/components/ui/DropdownMenu.vue";
 import { getExercises } from "@/api";
 import { mapStores } from "pinia";
 import { useMainStore } from "@/stores/mainStore";
+import { useMetaStore } from "@/stores/metaStore";
 export default defineComponent({
 	name: "CourseExercises",
 	props: {
@@ -259,7 +260,7 @@ export default defineComponent({
 						exercises: this.importedExercises,
 					});
 					this.importLoading = false;
-					this.$store.commit("shared/showSuccessFeedback");
+					this.metaStore.showSuccessFeedback();
 					this.importedExercises = [];
 					this.showExerciseImporter = false;
 				},
@@ -288,7 +289,7 @@ export default defineComponent({
 		async onCloneExercise(exercise: Exercise) {
 			const newExercise = await this.onAddExercise(getClonedExercise(exercise));
 			// show notification
-			this.$store.commit("shared/showSuccessFeedback");
+			this.metaStore.showSuccessFeedback();
 			// open new editor
 			document
 				.getElementById("course-" + this.courseId + "-exercise-" + newExercise.id)
@@ -337,7 +338,7 @@ export default defineComponent({
 		},
 	},
 	computed: {
-		...mapStores(useMainStore),
+		...mapStores(useMainStore, useMetaStore),
 		emptyFilters() {
 			return isEmptyFilter(this.searchFilter);
 		},

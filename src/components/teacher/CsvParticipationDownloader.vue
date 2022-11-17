@@ -3,7 +3,7 @@
 		<Btn
 			@click="showDialog = true"
 			:outline="true"
-			:disabled="(eventParticipations?.length ?? 0) === 0"
+			:disabled="(mainStore.eventParticipations?.length ?? 0) === 0"
 			><span class="mr-1 material-icons-outlined"> file_download </span
 			>{{ $t("misc.download_results") }}</Btn
 		>
@@ -80,14 +80,14 @@ import {
 import { getParticipationsAsCsv } from "@/reports/csv";
 import { forceFileDownload } from "@/utils";
 import { defineComponent, PropType } from "@vue/runtime-core";
-import { createNamespacedHelpers } from "vuex";
 import Btn from "../ui/Btn.vue";
 import Dialog from "../ui/Dialog.vue";
 import RadioGroup from "../ui/RadioGroup.vue";
 import SegmentedControls from "../ui/SegmentedControls.vue";
 import CheckboxGroup from "../ui/CheckboxGroup.vue";
 import { EventParticipation } from "@/models";
-const { mapState, mapActions, mapGetters } = createNamespacedHelpers("teacher");
+import { mapStores } from "pinia";
+import { useMainStore } from "@/stores/mainStore";
 
 const LOCAL_STORAGE_SETTINGS_KEY = "report_settings";
 const CUSTOM_SETTINGS_KEY = "custom_settings";
@@ -149,7 +149,6 @@ export default defineComponent({
 		};
 	},
 	methods: {
-		...mapActions(["getEventParticipations"]),
 		async onDownload() {
 			this.loadingReport = true;
 			try {
@@ -157,7 +156,7 @@ export default defineComponent({
 				const fileContents = this.formatDataForReportType(participations);
 				this.downloadReportFile(
 					fileContents,
-					this.event(this.eventId).name +
+					this.mainStore.getEventById(this.eventId).name +
 						(this.reportType === ReportType.CSV ? ".csv" : ".pdf"),
 				);
 			} finally {
@@ -166,8 +165,7 @@ export default defineComponent({
 		},
 		async getReportData() {
 			try {
-				// TODO download to local data instead of saving to store
-				const participations = await this.getEventParticipations({
+				const participations = await this.mainStore.getEventParticipations({
 					courseId: this.courseId,
 					eventId: this.eventId,
 					includeDetails: true,
@@ -177,6 +175,7 @@ export default defineComponent({
 				return participations;
 			} catch (e) {
 				this.setErrorNotification(e);
+				return [];
 			}
 		},
 		formatDataForReportType(data: any) {
@@ -199,8 +198,7 @@ export default defineComponent({
 		},
 	},
 	computed: {
-		...mapState(["eventParticipations"]),
-		...mapGetters(["event"]),
+		...mapStores(useMainStore),
 		settingsAsJson(): string {
 			return JSON.stringify({
 				reportType: this.reportType,

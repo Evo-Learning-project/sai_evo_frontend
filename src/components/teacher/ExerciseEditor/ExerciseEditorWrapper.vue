@@ -1,5 +1,5 @@
 <template>
-	<div class="relative my-4" :id="'editor-' + modelValue.id">
+	<div class="relative my-4" :id="'editor-' + exercise.id">
 		<div
 			style="z-index: 50"
 			class="absolute bottom-0 right-0 hidden mr-1 -mb-2"
@@ -18,7 +18,7 @@
 		</div>
 
 		<MinimalExercisePreview
-			:exercise="modelValue"
+			:exercise="exercise"
 			v-show="!showEditor"
 			:hoverable="true"
 			:selectable="false"
@@ -30,7 +30,7 @@
 			:saving="saving"
 			v-if="showEditor"
 			@close="toggleExpand()"
-			:modelValue="modelValue"
+			:modelValue="exercise"
 			@delete="$emit('delete')"
 			@cloneExercise="onClone"
 		></ExerciseEditor>
@@ -58,7 +58,7 @@ export default defineComponent({
 	},
 	mixins: [texMixin],
 	props: {
-		modelValue: {
+		exercise: {
 			type: Object as PropType<Exercise>,
 			required: true,
 		},
@@ -87,23 +87,13 @@ export default defineComponent({
 				confirm(
 					getTranslatedString("exercise_editor.clone_confirm") +
 						" " +
-						getExerciseTitle(this.modelValue) +
+						getExerciseTitle(this.exercise) +
 						"?",
 				)
 			) {
 				this.$emit("cloneExercise");
 			}
 		},
-	},
-	computed: {
-		// proxyModelValue: {
-		//   get (): Exercise {
-		//     return this.modelValue
-		//   },
-		//   set (val: Exercise) {
-		//     this.$emit('update:modelValue', val)
-		//   }
-		// }
 	},
 });
 </script>

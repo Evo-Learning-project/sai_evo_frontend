@@ -1222,10 +1222,10 @@
 
 	.toggle-checkbox:checked {
 		left: 50%;
-		border-color: rgba(72, 91, 202, 1);
+		@apply border-primary;
 	}
 	.toggle-checkbox:checked ~ .toggle-rail {
-		background-color: rgba(48, 63, 159, 0.4) !important;
+		@apply bg-primary bg-opacity-30;
 	}
 	.toggle-checkbox,
 	.toggle-mark {

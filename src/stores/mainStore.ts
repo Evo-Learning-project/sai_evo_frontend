@@ -610,7 +610,7 @@ export const useMainStore = defineStore("main", {
 		async partialUpdateCurrentEventParticipation({
 			courseId,
 			changes,
-		}: ParticipationIdActionPayload & { changes: Partial<EventParticipation> }) {
+		}: CourseIdActionPayload & { changes: Partial<EventParticipation> }) {
 			if (!this.currentEventParticipation) {
 				throw new Error(
 					"partialUpdateCurrentEventParticipation called with null currentParticipation",
@@ -618,6 +618,7 @@ export const useMainStore = defineStore("main", {
 			}
 			const response = await partialUpdateEventParticipation(
 				courseId,
+				// TODO assumes currentEventParticipation contains Event
 				this.currentEventParticipation.event.id,
 				this.currentEventParticipation.id,
 				changes,
@@ -685,9 +686,11 @@ export const useMainStore = defineStore("main", {
 			// true if action mutates the store state to reflect changes,
 			//false if action only dispatches api call
 			mutate = true,
-		}: ParticipationSlotIdActionPayload & {
+			forceStudent,
+		}: CourseIdActionPayload & { slotId: string } & {
 			changes: Partial<EventParticipationSlot>;
 			mutate: boolean;
+			forceStudent: boolean;
 		}) {
 			if (!this.currentEventParticipation) {
 				throw new Error(
@@ -696,11 +699,12 @@ export const useMainStore = defineStore("main", {
 			}
 			const response = await partialUpdateEventParticipationSlot(
 				courseId,
+				// TODO assumes currentEventParticipation contains Event
 				this.currentEventParticipation.event.id,
 				this.currentEventParticipation.id,
 				slotId,
 				changes,
-				true,
+				forceStudent,
 			);
 			if (mutate) {
 				this.setCurrentEventParticipationSlot(response);

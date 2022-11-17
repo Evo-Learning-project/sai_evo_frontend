@@ -4,7 +4,7 @@
 			<CourseSearchFilters class="mb-8" v-model="searchFilters"></CourseSearchFilters>
 			<div
 				class="mb-4 banner banner-danger"
-				v-if="!user.is_teacher && !user.mat && !isDemoMode"
+				v-if="!metaStore.user.is_teacher && !metaStore.user.mat && !isDemoMode"
 			>
 				<!-- <span class="material-icons-two-tone two-tone-danger"> school </span> -->
 				<div class="w-full">
@@ -14,7 +14,9 @@
 							<p class="font-semibold text-danger-dark">
 								{{ $t("student_data.you_havent_yet") }}
 
-								<span v-if="!user.mat">{{ $t("student_data.missing_mat") }}</span>
+								<span v-if="!metaStore.user.mat">{{
+									$t("student_data.missing_mat")
+								}}</span>
 							</p>
 							<p class="text-danger-dark">
 								{{ $t("student_data.insert_mat_and_course") }}
@@ -48,16 +50,16 @@
 			</div>
 		</div>
 		<div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4" v-else>
-			<CourseListItemSkeleton></CourseListItemSkeleton>
-			<CourseListItemSkeleton></CourseListItemSkeleton>
-			<CourseListItemSkeleton></CourseListItemSkeleton>
-			<CourseListItemSkeleton></CourseListItemSkeleton>
-			<CourseListItemSkeleton></CourseListItemSkeleton>
-			<CourseListItemSkeleton></CourseListItemSkeleton>
+			<CourseListItemSkeleton />
+			<CourseListItemSkeleton />
+			<CourseListItemSkeleton />
+			<CourseListItemSkeleton />
+			<CourseListItemSkeleton />
+			<CourseListItemSkeleton />
 		</div>
 		<div
 			class="flex flex-col w-full text-center select-none mt-28"
-			v-if="!firstLoading && courses.length === 0"
+			v-if="!firstLoading && mainStore.courses.length === 0"
 		>
 			<span style="font-size: 5rem" class="mr-auto material-icons-outlined opacity-10">
 				west
@@ -69,7 +71,7 @@
 		</div>
 		<div
 			class="flex flex-col w-full text-center select-none mt-28"
-			v-if="!firstLoading && courses.length > 0 && coursesFiltered.length === 0"
+			v-if="!firstLoading && mainStore.courses.length > 0 && coursesFiltered.length === 0"
 		>
 			<p style="font-size: 10rem" class="-mt-12 material-icons-outlined opacity-10">
 				search_off
@@ -90,7 +92,6 @@
 import { defineComponent } from "@vue/runtime-core";
 import CourseListItem from "@/components/shared/CourseListItem.vue";
 
-import { createNamespacedHelpers } from "vuex";
 import { loadingMixin } from "@/mixins";
 import CourseListItemSkeleton from "@/components/ui/skeletons/CourseListItemSkeleton.vue";
 import NumberInput from "@/components/ui/NumberInput.vue";
@@ -101,7 +102,9 @@ import { CourseSearchFilter } from "@/api/interfaces";
 import CourseSearchFilters from "@/components/shared/CourseSearchFilters.vue";
 import { demoCourseTourSteps, tourOptions } from "@/const";
 import { isDemoMode } from "@/utils";
-const { mapState, mapActions } = createNamespacedHelpers("shared");
+import { mapStores } from "pinia";
+import { useMainStore } from "@/stores/mainStore";
+import { useMetaStore } from "@/stores/metaStore";
 
 const DEMO_COURSES_TOUR_KEY = "courses_tour_taken";
 
@@ -116,9 +119,9 @@ export default defineComponent({
 		CourseSearchFilters,
 	},
 	async created() {
-		await this.withFirstLoading(async () => this.$store.dispatch("shared/getCourses"));
-		this.searchFilters.withPrivileges = this.user.is_teacher;
-		this.searchFilters.hidden = this.user.is_teacher;
+		await this.withFirstLoading(async () => this.mainStore.getCourses());
+		this.searchFilters.withPrivileges = this.metaStore.user.is_teacher;
+		this.searchFilters.hidden = this.metaStore.user.is_teacher;
 
 		if (isDemoMode() && !(DEMO_COURSES_TOUR_KEY in localStorage)) {
 			setTimeout(() => ((this as any).$tours["demoCourseTour"] as any).start(), 50);
@@ -140,23 +143,22 @@ export default defineComponent({
 		// },
 	},
 	methods: {
-		...mapActions(["updateUser"]),
 		async onSaveMat() {
 			await this.withLocalLoading(async () =>
-				this.updateUser({
-					userId: this.user.id,
+				this.metaStore.patchUser({
+					userId: this.metaStore.user.id,
 					changes: { mat: this.dirtyMat },
 				}),
 			);
-			this.$store.commit("shared/showSuccessFeedback");
+			this.metaStore.showSuccessFeedback();
 		},
 	},
 	computed: {
-		...mapState(["courses", "user"]),
+		...mapStores(useMainStore, useMetaStore),
 		isDemoMode() {
 			return isDemoMode();
 		},
-		coursesFiltered(): Course[] {
+		coursesFiltered() {
 			const filters = this.searchFilters;
 			return this.coursesSorted.filter(
 				c =>
@@ -166,13 +168,13 @@ export default defineComponent({
 					(filters.hidden || !c.hidden),
 			);
 		},
-		coursesSorted(): Course[] {
-			return ([...this.courses] as Course[]).sort((a, b) => {
-				if (a.creator?.id == this.user.id) {
+		coursesSorted() {
+			return [...this.mainStore.courses].sort((a, b) => {
+				if (a.creator?.id == this.metaStore.user.id) {
 					// courses the user is creator of go first
-					return b.creator?.id == this.user.id ? 0 : -1;
+					return b.creator?.id == this.metaStore.user.id ? 0 : -1;
 				}
-				return b.creator?.id == this.user.id
+				return b.creator?.id == this.metaStore.user.id
 					? 1
 					: // then come the courses that user has privileges over
 					  (b.privileges?.length ?? 0) - (a.privileges?.length ?? 0) ||

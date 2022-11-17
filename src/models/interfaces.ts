@@ -191,7 +191,7 @@ export interface EventParticipation {
 	user: User;
 	state: EventParticipationState;
 	slots: EventParticipationSlot[];
-	score?: string;
+	score?: string | null;
 	max_score?: number;
 	last_slot_number?: number;
 	begin_timestamp: string;

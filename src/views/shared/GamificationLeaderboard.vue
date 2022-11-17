@@ -59,14 +59,17 @@
 </template>
 
 <script lang="ts">
+// TODO test this component after migrating to pinia
 import { getCourseLeaderboard, PaginatedData } from "@/api";
 import { courseIdMixin, loadingMixin } from "@/mixins";
 import { GamificationUser } from "@/models";
 import { defineComponent, PropType } from "@vue/runtime-core";
-import { mapState, mapActions } from "vuex";
 import SlotSkeleton from "@/components/ui/skeletons/SlotSkeleton.vue";
 import Btn from "@/components/ui/Btn.vue";
 import { logAnalyticsEvent } from "@/utils";
+import { mapStores } from "pinia";
+import { useMetaStore } from "@/stores/metaStore";
+import { useMainStore } from "@/stores/mainStore";
 
 export default defineComponent({
 	name: "GamificationLeaderboard",
@@ -74,10 +77,10 @@ export default defineComponent({
 	mixins: [loadingMixin, courseIdMixin],
 	async created() {
 		await this.withFirstLoading(async () => {
-			await this.getCourseGamificationContext({ courseId: this.courseId });
-			if (this.gamificationContext) {
+			await this.mainStore.getCourseGamificationContext({ courseId: this.courseId });
+			if (this.mainStore.gamificationContext) {
 				this.paginatedUsers = await getCourseLeaderboard(
-					this.gamificationContext.id,
+					this.mainStore.gamificationContext.id,
 					this.pageNumber,
 				);
 				this.pageSize = this.paginatedUsers.data.length;
@@ -88,17 +91,15 @@ export default defineComponent({
 	watch: {
 		async pageNumber() {
 			await this.withLoading(async () => {
-				await this.getCourseGamificationContext({ courseId: this.courseId });
+				await this.mainStore.getCourseGamificationContext({ courseId: this.courseId });
 				this.paginatedUsers = await getCourseLeaderboard(
-					this.gamificationContext.id,
+					this.mainStore.gamificationContext?.id ?? "",
 					this.pageNumber,
 				);
 			});
 		},
 	},
-	methods: {
-		...mapActions("shared", ["getCourseGamificationContext"]),
-	},
+	methods: {},
 	data() {
 		return {
 			paginatedUsers: null as PaginatedData<GamificationUser> | null,
@@ -107,7 +108,7 @@ export default defineComponent({
 		};
 	},
 	computed: {
-		...mapState("shared", ["user", "gamificationContext"]),
+		...mapStores(useMainStore, useMetaStore),
 		lastPageNumber() {
 			return Math.ceil((this.paginatedUsers?.count ?? 0) / this.pageSize);
 		},
