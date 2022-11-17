@@ -91,7 +91,7 @@ export const getBlankExam = (): Event => ({
 	randomize_rule_order: false,
 	access_rule: EventAccessRule.ALLOW_ACCESS,
 	access_rule_exceptions: [],
-	template: { rules: [] },
+	template: { id: "", rules: [] },
 	time_limit_seconds: null,
 });
 
@@ -110,6 +110,7 @@ export const getBlankPractice = (): Event => ({
 });
 
 export const getBlankEventTemplate = (): EventTemplate => ({
+	id: "",
 	rules: [],
 	name: "",
 });

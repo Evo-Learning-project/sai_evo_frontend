@@ -146,13 +146,10 @@ import { courseIdMixin, loadingMixin, mediaQueryMixin } from "@/mixins";
 
 import draggable from "vuedraggable";
 
-import { createNamespacedHelpers } from "vuex";
 import { AutoSaveManager } from "@/autoSave";
-const { mapActions, mapMutations } = createNamespacedHelpers("teacher");
 
 import { eventTemplateValidation } from "@/validation/models";
 import useVuelidate from "@vuelidate/core";
-//import Card from "@/components/ui/Card.vue";
 import { getTranslatedString as _ } from "@/i18n";
 import DropdownMenu from "@/components/ui/DropdownMenu.vue";
 import NumberInput from "@/components/ui/NumberInput.vue";
@@ -160,6 +157,8 @@ import ArticleHandle from "@/components/shared/HelpCenter/ArticleHandle.vue";
 import SegmentedControls from "@/components/ui/SegmentedControls.vue";
 import { SelectableOption } from "@/interfaces";
 import { logAnalyticsEvent } from "@/utils";
+import { mapStores } from "pinia";
+import { useMainStore } from "@/stores/mainStore";
 export default defineComponent({
 	setup() {
 		return {
@@ -226,21 +225,11 @@ export default defineComponent({
 		};
 	},
 	methods: {
-		...mapActions([
-			"addEventTemplateRule",
-			"getEventTemplateRule",
-			"partialUpdateEventTemplateRule",
-			"addEventTemplateRuleClause",
-			"updateEventTemplateRuleClause",
-			"deleteEventTemplateRule",
-			"deleteEventTemplateRuleClause",
-		]),
-		...mapMutations(["patchEventTemplateRule", "patchEventTemplateRuleClause"]),
 		instantiateRuleAutoSaveManager(rule: EventTemplateRule) {
 			this.rulesAutoSaveInstances[rule.id] = new AutoSaveManager<EventTemplateRule>(
 				rule,
 				async changes =>
-					await this.partialUpdateEventTemplateRule({
+					await this.mainStore.partialUpdateEventTemplateRule({
 						changes,
 						ruleId: rule.id,
 						templateId: this.modelValue.id,
@@ -249,7 +238,7 @@ export default defineComponent({
 						reFetch: typeof changes._ordering !== "undefined",
 					}),
 				changes =>
-					this.patchEventTemplateRule({
+					this.mainStore.patchEventTemplateRule({
 						payload: changes,
 						ruleId: rule.id,
 						templateId: this.modelValue.id,
@@ -276,14 +265,14 @@ export default defineComponent({
 				new AutoSaveManager<EventTemplateRuleClause>(
 					clause,
 					async changes =>
-						await this.updateEventTemplateRuleClause({
+						await this.mainStore.updateEventTemplateRuleClause({
 							courseId: this.courseId,
 							templateId: this.modelValue.id,
 							ruleId,
 							clause: { ...clause, ...changes },
 						}),
 					changes =>
-						this.patchEventTemplateRuleClause({
+						this.mainStore.patchEventTemplateRuleClause({
 							ruleId,
 							templateId: this.modelValue.id,
 							clauseId: clause.id,
@@ -308,7 +297,7 @@ export default defineComponent({
 		},
 		async onAddRule(amount = 1) {
 			await this.withLocalLoading(async () => {
-				const newRule = await this.addEventTemplateRule({
+				const newRule = await this.mainStore.createEventTemplateRule({
 					courseId: this.courseId,
 					templateId: this.modelValue.id,
 					rule: getBlankEventTemplateRule(
@@ -342,19 +331,18 @@ export default defineComponent({
 		},
 		async onRuleAddClause(rule: EventTemplateRule) {
 			await this.withLocalLoading(async () => {
-				const newClause = (await this.addEventTemplateRuleClause({
+				const newClause = await this.mainStore.createEventTemplateRuleClause({
 					courseId: this.courseId,
-					eventId: this.eventId,
 					templateId: this.modelValue.id,
 					ruleId: rule.id,
 					clause: getBlankTagBasedEventTemplateRuleClause(),
-				})) as EventTemplateRuleClause;
+				});
 				this.instantiateRuleClauseAutoSaveManager(rule.id, newClause);
 
 				// reload rule to change "satisfying" preview
 				await this.withLocalLoading(
 					async () =>
-						await this.getEventTemplateRule({
+						await this.mainStore.getEventTemplateRule({
 							courseId: this.courseId,
 							templateId: this.modelValue.id,
 							ruleId: rule.id,
@@ -365,7 +353,7 @@ export default defineComponent({
 		async onRuleDelete(rule: EventTemplateRule) {
 			if (confirm(_("event_template_editor.confirm_delete_rule"))) {
 				await this.withLocalLoading(async () =>
-					this.deleteEventTemplateRule({
+					this.mainStore.deleteEventTemplateRule({
 						courseId: this.courseId,
 						templateId: this.modelValue.id,
 						ruleId: rule.id,
@@ -382,7 +370,7 @@ export default defineComponent({
 			// reload rule to update "satisfying" preview
 			await this.withLocalLoading(
 				async () =>
-					await this.getEventTemplateRule({
+					await this.mainStore.getEventTemplateRule({
 						courseId: this.courseId,
 						templateId: this.modelValue.id,
 						ruleId: rule.id,
@@ -391,7 +379,7 @@ export default defineComponent({
 		},
 		async onRuleDeleteClause(rule: EventTemplateRule, clauseId: string) {
 			if (confirm(_("event_template_editor.confirm_delete_rule_clause"))) {
-				await this.deleteEventTemplateRuleClause({
+				await this.mainStore.deleteEventTemplateRuleClause({
 					courseId: this.courseId,
 					templateId: this.modelValue.id,
 					ruleId: rule.id,
@@ -401,7 +389,7 @@ export default defineComponent({
 				// reload rule to update "satisfying" preview
 				await this.withLocalLoading(
 					async () =>
-						await this.getEventTemplateRule({
+						await this.mainStore.getEventTemplateRule({
 							courseId: this.courseId,
 							templateId: this.modelValue.id,
 							ruleId: rule.id,
@@ -411,6 +399,7 @@ export default defineComponent({
 		},
 	},
 	computed: {
+		...mapStores(useMainStore),
 		selectedExercises(): string[] {
 			return this.modelValue.rules
 				.filter(r => r.rule_type == EventTemplateRuleType.ID_BASED)

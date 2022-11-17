@@ -354,6 +354,8 @@ import { csvToArray, getFileContent, setErrorNotification } from "@/utils";
 import NumberInput from "@/components/ui/NumberInput.vue";
 import { mediaQueryMixin } from "@/mixins";
 import { isDemoMode } from "@/utils";
+import { mapStores } from "pinia";
+import { useMetaStore } from "@/stores/metaStore";
 
 export default defineComponent({
 	name: "EventMetaEditor",
@@ -475,7 +477,7 @@ export default defineComponent({
 						e => e[EMAIL_HEADER_NAME]?.slice(1, -1) ?? "", // remove quotes
 					),
 				);
-				this.$store.commit("shared/showSuccessFeedback");
+				this.metaStore.showSuccessFeedback();
 			} catch (e) {
 				setErrorNotification(_("misc.wrong_file_format"), true);
 				throw e;
@@ -485,6 +487,7 @@ export default defineComponent({
 		},
 	},
 	computed: {
+		...mapStores(useMetaStore),
 		isDemoMode() {
 			return isDemoMode();
 		},

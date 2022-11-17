@@ -5,7 +5,7 @@
 		</p>
 		<div
 			class="flex flex-col mb-12"
-			v-if="showTeacherIntroductionText && tags.length === 0"
+			v-if="showTeacherIntroductionText && mainStore.tags.length === 0"
 		>
 			<!-- TODO make nicer empty state -->
 			<p class="mb-2 text-muted text-danger-dark">
@@ -17,19 +17,22 @@
 				}}</Btn></router-link
 			>
 		</div>
-		<div class="flex flex-col" v-if="!showTeacherIntroductionText && tags.length === 0">
+		<div
+			class="flex flex-col"
+			v-if="!showTeacherIntroductionText && mainStore.tags.length === 0"
+		>
 			<p class="mb-2 text-muted text-danger-dark">
 				{{ $t("event_template_rule_editor.no_tags_student") }}
 			</p>
 		</div>
 		<div
 			:class="{
-				'opacity-50 cursor-not-allowed pointer-events-none': tags.length === 0,
+				'opacity-50 cursor-not-allowed pointer-events-none': mainStore.tags.length === 0,
 			}"
 			class="flex flex-col items-start space-y-4 md:flex-row md:space-y-0"
 		>
 			<div
-				v-if="showTeacherIntroductionText || tags.length > 0"
+				v-if="showTeacherIntroductionText || mainStore.tags.length > 0"
 				class="flex flex-col w-full"
 			>
 				<div
@@ -54,7 +57,7 @@
 							:alwaysShowAutocomplete="!allowCreateMoreClauses"
 							@addTag="onAddTag(clause, $event)"
 							@removeTag="onRemoveTag(clause, $event)"
-							:choices="tags"
+							:choices="mainStore.tags"
 							:existingOnly="true"
 							class="w-full"
 						></TagInput>
@@ -160,11 +163,11 @@ import { courseIdMixin, eventIdMixin, loadingMixin } from "@/mixins";
 import { EventTemplateRuleClause, Exercise, Tag } from "@/models";
 import { defineComponent, PropType } from "@vue/runtime-core";
 
-import { createNamespacedHelpers } from "vuex";
 import MinimalExercisePreview from "../ExerciseEditor/MinimalExercisePreview.vue";
 import Spinner from "@/components/ui/Spinner.vue";
 import Btn from "@/components/ui/Btn.vue";
-const { mapState } = createNamespacedHelpers("shared");
+import { mapStores } from "pinia";
+import { useMainStore } from "@/stores/mainStore";
 
 export default defineComponent({
 	components: { TagInput, MinimalExercisePreview, Spinner, Btn },
@@ -205,7 +208,6 @@ export default defineComponent({
 		},
 		onAddTag(clause: EventTemplateRuleClause, newTagName: string) {
 			const newTag = tagNamesToTags([newTagName])[0];
-
 			this.$emit("updateClause", {
 				...clause,
 				tags: [...clause.tags, newTag],
@@ -213,7 +215,6 @@ export default defineComponent({
 		},
 		onRemoveTag(clause: EventTemplateRuleClause, removedTagName: string) {
 			const removedTag = tagNamesToTags([removedTagName])[0];
-
 			this.$emit("updateClause", {
 				...clause,
 				tags: clause.tags.filter(t => t.id != removedTag.id),
@@ -221,7 +222,7 @@ export default defineComponent({
 		},
 	},
 	computed: {
-		...mapState(["tags"]),
+		...mapStores(useMainStore),
 	},
 });
 </script>

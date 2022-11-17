@@ -158,7 +158,7 @@ export interface Event extends Lockable {
 }
 
 export interface EventTemplate {
-	id?: string;
+	id: string;
 	name?: string;
 	public?: boolean;
 	creator?: string;

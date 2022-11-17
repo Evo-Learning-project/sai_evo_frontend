@@ -398,6 +398,35 @@ export default defineComponent({
 	validations() {
 		return { modelValue: eventTemplateRuleValidation };
 	},
+	watch: {
+		"modelValue.exercises": {
+			deep: true,
+			async handler(newVal: string[]) {
+				console.log("Changed", newVal);
+				// keep local exercises synced with rule's exercises
+				const strNewVal = newVal.map(i => String(i));
+				const localExercisesIds = this.previewExercises.map(e => String(e.id));
+
+				const toFetch = strNewVal.filter(i => !localExercisesIds.includes(i));
+				const toRemove = localExercisesIds.filter(i => !strNewVal.includes(i));
+
+				try {
+					this.loadingPreview = true;
+					if (toFetch.length > 0) {
+						const fetched = await getExercisesById(this.courseId, toFetch);
+						this.previewExercises.push(...fetched);
+					}
+					this.loadingPreview = false;
+				} catch (e) {
+					this.setErrorNotification(e);
+				}
+
+				this.previewExercises = this.previewExercises.filter(
+					e => !toRemove.includes(String(e.id)),
+				);
+			},
+		},
+	},
 	props: {
 		modelValue: {
 			type: Object as PropType<EventTemplateRule>,
@@ -429,25 +458,25 @@ export default defineComponent({
 		},
 	},
 	mixins: [courseIdMixin, loadingMixin],
-	async created() {
-		// fetch exercises related to this rule
-		if (
-			this.modelValue.rule_type == EventTemplateRuleType.ID_BASED &&
-			(this.modelValue.exercises?.length ?? 0) > 0
-		) {
-			this.loadingPreview = true;
-			try {
-				this.previewExercises = await getExercisesById(
-					this.courseId,
-					this.modelValue.exercises as string[],
-				);
-			} catch (e) {
-				this.setErrorNotification(e);
-			} finally {
-				this.loadingPreview = false;
-			}
-		}
-	},
+	// async created() {
+	// 	// fetch exercises related to this rule
+	// 	if (
+	// 		this.modelValue.rule_type == EventTemplateRuleType.ID_BASED &&
+	// 		(this.modelValue.exercises?.length ?? 0) > 0
+	// 	) {
+	// 		this.loadingPreview = true;
+	// 		try {
+	// 			this.previewExercises = await getExercisesById(
+	// 				this.courseId,
+	// 				this.modelValue.exercises as string[],
+	// 			);
+	// 		} catch (e) {
+	// 			this.setErrorNotification(e);
+	// 		} finally {
+	// 			this.loadingPreview = false;
+	// 		}
+	// 	}
+	// },
 	data() {
 		return {
 			showDialog: false,
@@ -476,12 +505,12 @@ export default defineComponent({
 			} else {
 				this.emitUpdate("exercises", [
 					exercise.id,
-					...(this.modelValue?.exercises as string[]),
+					...(this.modelValue.exercises as string[]),
 				]);
 			}
 			// fetch exercise from server and add to local array for preview
-			const preview = await getExercisesById(this.courseId, [exercise.id]);
-			this.previewExercises.push(...preview);
+			// const preview = await getExercisesById(this.courseId, [exercise.id]);
+			// this.previewExercises.push(...preview);
 		},
 		onRemoveExercise(exercise: Exercise) {
 			// emit modelValue update of new exercise list without removed one
@@ -490,7 +519,7 @@ export default defineComponent({
 				this.modelValue?.exercises?.filter(e => e != exercise.id),
 			);
 			// remove exercise from local array of exercises for preview
-			this.previewExercises = this.previewExercises.filter(e => e.id != exercise.id);
+			//this.previewExercises = this.previewExercises.filter(e => e.id != exercise.id);
 		},
 		showRuleDialog() {
 			this.showDialog = true;

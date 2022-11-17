@@ -6,16 +6,18 @@ import {
 	ExerciseSolutionSearchFilter,
 	PaginatedData,
 } from "./interfaces";
-import store from "@/store";
 import { EventTemplateRule, EventTemplateRuleType, Tag } from "@/models";
-import { filter } from "lodash";
+import { useMainStore } from "@/stores/mainStore";
 
-export const tagNamesToTags = (names: string[]): Tag[] =>
-	// converts a list of tag names to a list of Tag objects
-	names.map(n => store.getters["shared/tagByName"](n));
-
+// converts a list of tag names to a list of Tag objects
+export const tagNamesToTags = (names: string[]): Tag[] => {
+	const mainStore = useMainStore();
+	return names.map(n => mainStore.getTagByName(n));
+};
+// converts a list of tag id's to a list of Tag objects
 export const tagIdsToTags = (ids: string[]): Tag[] => {
-	return ids.map(i => store.getters["shared/tagById"](i) as Tag);
+	const mainStore = useMainStore();
+	return ids.map(i => mainStore.getTagById(i));
 };
 
 export const getEventUrlQueryParams = (filters: EventSearchFilter | null): string => {

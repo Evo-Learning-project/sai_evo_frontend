@@ -100,6 +100,7 @@ import {
 	ExerciseSolutionComment,
 	ExerciseSolutionVote,
 	CoursePrivilege,
+	getBlankTag,
 } from "@/models";
 import {
 	CourseIdActionPayload,
@@ -175,6 +176,10 @@ export const useMainStore = defineStore("main", {
 		getEventByTemplateId: state => (templateId: string) =>
 			state.events.find(e => e.template?.id == templateId),
 		exercises: state => state.paginatedExercises?.data ?? [],
+		getTagById: state => (tagId: string) =>
+			state.tags.find(t => t.id == tagId) ?? getBlankTag(),
+		getTagByName: state => (tagName: string) =>
+			state.tags.find(t => t.name == tagName) ?? getBlankTag(),
 		getExerciseById: state => (exerciseId: string) => {
 			const flattenedExercises = (state.paginatedExercises?.data ?? [])
 				.map(e => [e, ...(e.sub_exercises ?? [])])
@@ -367,7 +372,7 @@ export const useMainStore = defineStore("main", {
 		}: {
 			templateId: string;
 			ruleId: string;
-			payload: EventTemplateRule;
+			payload: Partial<EventTemplateRule>;
 		}) {
 			const event = this.getEventByTemplateId(templateId);
 			const targetTemplate = event?.template;
@@ -1378,7 +1383,7 @@ export const useMainStore = defineStore("main", {
 				payload: rule,
 			});
 		},
-		async addEventTemplateRule({
+		async createEventTemplateRule({
 			courseId,
 			templateId,
 			rule,
@@ -1394,7 +1399,7 @@ export const useMainStore = defineStore("main", {
 			rules.push(newRule);
 			return newRule;
 		},
-		async addEventTemplateRuleClause({
+		async createEventTemplateRuleClause({
 			courseId,
 			templateId,
 			ruleId,
@@ -1434,7 +1439,7 @@ export const useMainStore = defineStore("main", {
 				ruleId,
 				clause,
 			);
-			return updatedClause;
+			//return updatedClause;
 		},
 
 		/** CRUD on users */

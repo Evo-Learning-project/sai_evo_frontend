@@ -204,23 +204,23 @@ import { courseIdMixin, eventIdMixin, loadingMixin, savingMixin } from "@/mixins
 import Dialog from "@/components/ui/Dialog.vue";
 import { getTranslatedString as _ } from "@/i18n";
 
-import { createNamespacedHelpers, mapActions, mapState } from "vuex";
 import { AutoSaveManager } from "@/autoSave";
 import {
 	EVENT_AUTO_SAVE_DEBOUNCED_FIELDS,
 	EVENT_AUTO_SAVE_DEBOUNCE_TIME_MS,
 } from "@/const";
 
-import { subscribeToEventChanges } from "@/ws/modelSubscription";
 import Toggle from "@/components/ui/Toggle.vue";
 import Btn from "@/components/ui/Btn.vue";
 import { getEventInstances, heartbeatEvent, unlockEvent } from "@/api/events";
 import EventInstancesPreview from "./EventInstancesPreview.vue";
-const { mapGetters, mapMutations } = createNamespacedHelpers("teacher");
 import useVuelidate from "@vuelidate/core";
 import { eventValidation } from "@/validation/models";
 import NumberInput from "@/components/ui/NumberInput.vue";
 import { getCurrentUserId, roundToTwoDecimals } from "@/utils";
+import { mapStores } from "pinia";
+import { useMainStore } from "@/stores/mainStore";
+import { useMetaStore } from "@/stores/metaStore";
 
 export default defineComponent({
 	setup() {
@@ -263,14 +263,17 @@ export default defineComponent({
 	// },
 	async created() {
 		await this.withLoading(async () => {
-			await this.getTags({ courseId: this.courseId });
-			await this.getEvent({
+			await this.mainStore.getTags({
+				courseId: this.courseId,
+				includeExerciseCount: false,
+			});
+			await this.mainStore.getEvent({
 				courseId: this.courseId,
 				eventId: this.eventId,
 				includeDetails: true,
 			});
-			//? is it necessary?
-			await this.getExercises({ courseId: this.courseId });
+			// TODO is it necessary?
+			// await this.mainStore.getExercises({ courseId: this.courseId, filters: null, fromFirstPage: true });
 		}, this.setPageWideError);
 
 		// ! this.ws = await subscribeToEventChanges(this.eventId);
@@ -302,15 +305,6 @@ export default defineComponent({
 		};
 	},
 	methods: {
-		...mapActions("shared", ["getTags"]),
-		...mapActions("teacher", [
-			"getEvent",
-			"getExercises",
-			"partialUpdateEvent",
-			"updateEvent",
-			"lockEvent",
-		]),
-		...mapMutations(["setEvent"]),
 		invalidateExamples() {
 			this.instances = [];
 		},
@@ -330,25 +324,24 @@ export default defineComponent({
 				));
 
 			try {
-				console.log("locking...");
-				await this.lockEvent({ courseId: this.courseId, eventId: this.modelValue.id });
+				await this.mainStore.lockEvent({
+					courseId: this.courseId,
+					eventId: this.modelValue.id,
+				});
 				setUpHeartbeatPollingFn();
-				console.log("locked!");
 			} catch (e: any) {
 				if (e.response?.status === 403) {
 					// if lock can't be acquired at the moment, periodically
 					// poll to see if the object is still locked, stopping
 					// once the lock has been acquired by the requesting user
 					this.lockPollingHandle = setInterval(async () => {
-						console.log("polling...");
-						await this.getEvent({
+						await this.mainStore.getEvent({
 							courseId: this.courseId,
 							eventId: this.eventId,
 							includeDetails: true,
 						});
 						// user has finally acquired the lock; stop polling
 						if (this.modelValue.locked_by?.id === getCurrentUserId()) {
-							console.log("acquired lock!");
 							clearInterval(this.lockPollingHandle as number);
 							setUpHeartbeatPollingFn();
 							this.lockPollingHandle = null;
@@ -373,20 +366,20 @@ export default defineComponent({
 			this.autoSaveManager = new AutoSaveManager<Event>(
 				this.modelValue,
 				async changes => {
-					await this.partialUpdateEvent({
+					await this.mainStore.partialUpdateEvent({
 						courseId: this.courseId,
 						eventId: this.modelValue.id,
 						changes,
+						mutate: false,
 					});
 					if (changes.state === EventState.PLANNED) {
-						this.$store.commit("shared/showSuccessFeedback");
+						this.metaStore.showSuccessFeedback();
 					}
 				},
 				changes => {
 					this.saving = true;
 					this.savingError = false;
-					//this.$store.state.shared.localLoading = true;
-					this.setEvent({
+					this.mainStore.setEvent({
 						eventId: this.eventId,
 						payload: { ...this.modelValue, ...changes },
 					});
@@ -396,7 +389,6 @@ export default defineComponent({
 				undefined,
 				() => (this.savingError = true),
 				() => {
-					//this.$store.state.shared.localLoading = false;
 					this.saving = false;
 				},
 			);
@@ -439,10 +431,9 @@ export default defineComponent({
 		},
 	},
 	computed: {
-		...mapGetters(["event"]),
-		...mapState("shared", ["user"]),
+		...mapStores(useMainStore, useMetaStore),
 		modelValue(): Event {
-			return this.event(this.eventId);
+			return this.mainStore.getEventById(this.eventId);
 		},
 		computedMaxScore(): number {
 			return roundToTwoDecimals(
@@ -453,7 +444,7 @@ export default defineComponent({
 		},
 		modelValueTemplate(): EventTemplate {
 			// return a blank object until the event has been retrieved
-			return this.modelValue?.template ?? { rules: [] };
+			return this.modelValue?.template ?? { id: "", rules: [] };
 		},
 		usedRandomization(): boolean {
 			return (
@@ -468,7 +459,10 @@ export default defineComponent({
 			);
 		},
 		examLocked(): boolean {
-			return !!this.modelValue.locked_by && this.modelValue.locked_by.id != this.user.id;
+			return (
+				!!this.modelValue.locked_by &&
+				this.modelValue.locked_by.id != this.metaStore.user.id
+			);
 		},
 	},
 });

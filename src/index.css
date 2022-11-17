@@ -718,7 +718,7 @@
 
 	.ti-autocomplete {
 		z-index: 9999 !important;
-		@apply px-2 py-1 absolute bg-gray-50 rounded-md mt-2 shadow-popup !important;
+		@apply px-2 py-1 absolute bg-gray-50 opacity-100 rounded-md mt-2 shadow-popup !important;
 	}
 
 	.ti-selected-item {

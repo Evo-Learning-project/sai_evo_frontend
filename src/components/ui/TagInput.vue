@@ -1,7 +1,8 @@
 <template>
 	<div class="relative">
 		<label class="absolute top-2 z-10 left-1.5 origin-0 fixed-label"><slot></slot></label>
-		<div class="tags-input-container darken-on-hover">
+		<div class="tags-input-container">
+			<!-- darken-on-hover -->
 			<VueTagsInput
 				:add-only-from-autocomplete="existingOnly"
 				v-model="tag"
