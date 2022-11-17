@@ -428,7 +428,7 @@
 					<!-- tags -->
 					<div v-if="!subExercise" class="mb-6">
 						<TagInput
-							:choices="tags"
+							:choices="mainStore.tags"
 							:modelValue="modelValue.public_tags ?? []"
 							:allow-edit-tags="false"
 							:placeholder="$t('exercise_editor.exercise_public_tags')"
@@ -445,7 +445,7 @@
 
 					<div v-if="!subExercise">
 						<TagInput
-							:choices="tags"
+							:choices="mainStore.tags"
 							:modelValue="modelValue.private_tags ?? []"
 							:allow-edit-tags="false"
 							:placeholder="$t('exercise_editor.exercise_private_tags')"
@@ -597,7 +597,9 @@
 					>
 						<template #item="{ element }">
 							<TestCaseEditor
-								:attachments="exerciseTestCaseAttachmentsByTestCaseId[element.id] ?? []"
+								:attachments="
+									mainStore.exerciseTestCaseAttachmentsByTestCaseId[element.id] ?? []
+								"
 								:executingSolution="testCaseAutoSaveManagers[element.id].isPending()"
 								:testCaseType="modelValue.exercise_type"
 								@blur="onBlurTestCase(element.id)"
@@ -735,7 +737,6 @@ import useVuelidate from "@vuelidate/core";
 import TextEditor from "@/components/ui/TextEditor.vue";
 import TextInput from "@/components/ui/TextInput.vue";
 import Btn from "@/components/ui/Btn.vue";
-import Spinner from "@/components/ui/Spinner.vue";
 import TagInput from "@/components/ui/TagInput.vue";
 
 import ChoiceEditor from "@/components/teacher/ExerciseEditor/ChoiceEditor.vue";
@@ -743,7 +744,6 @@ import CloudSaveStatus from "@/components/ui/CloudSaveStatus.vue";
 import { courseIdMixin, loadingMixin, savingMixin } from "@/mixins";
 import { DialogData } from "@/interfaces";
 
-import { createNamespacedHelpers, mapActions, mapMutations } from "vuex";
 import { AutoSaveManager } from "@/autoSave";
 import {
 	exerciseStateOptions,
@@ -780,7 +780,9 @@ import {
 import { ExerciseSolutionSearchFilter } from "@/api/interfaces";
 import SlotSkeleton from "@/components/ui/skeletons/SlotSkeleton.vue";
 import { forceFileDownload, getCurrentUserId } from "@/utils";
-const { mapState } = createNamespacedHelpers("shared");
+import { mapStores } from "pinia";
+import { useMainStore } from "@/stores/mainStore";
+import { useMetaStore } from "@/stores/metaStore";
 
 export default defineComponent({
 	name: "ExerciseEditor",
@@ -848,7 +850,7 @@ export default defineComponent({
 				this.fetchingExercise = true;
 				// TODO overwriting the whole exercise isn't necessary, what we really want is locked_by
 				try {
-					await this.getExercise({
+					await this.mainStore.getExercise({
 						courseId: this.courseId,
 						exerciseId: this.modelValue.id,
 					});
@@ -865,14 +867,14 @@ export default defineComponent({
 		this.autoSaveManager = new AutoSaveManager<Exercise>(
 			this.modelValue,
 			async changes =>
-				await this.updateExercise({
+				await this.mainStore.updateExercise({
 					courseId: this.courseId,
 					exercise: { ...this.modelValue, ...changes },
 				}),
 			changes => {
 				this.saving = true;
 				this.savingError = false;
-				this.setExercise({ ...this.modelValue, ...changes });
+				this.mainStore.setExercise({ ...this.modelValue, ...changes });
 			},
 			EXERCISE_AUTO_SAVE_DEBOUNCED_FIELDS,
 			EXERCISE_AUTO_SAVE_DEBOUNCE_TIME_MS,
@@ -890,7 +892,7 @@ export default defineComponent({
 		// for test cases, also fetch attachments
 		this.modelValue.testcases?.forEach(t => {
 			this.instantiateTestCaseAutoSaveManager(t);
-			this.getExerciseTestCaseAttachments({
+			this.mainStore.getExerciseTestCaseAttachments({
 				courseId: this.courseId,
 				exerciseId: this.modelValue.id,
 				testcaseId: t.id,
@@ -899,9 +901,10 @@ export default defineComponent({
 
 		this.loadingSolutions = true;
 		try {
-			await this.getSolutionsByExercise({
+			await this.mainStore.getSolutionsByExercise({
 				courseId: this.courseId,
 				exerciseId: this.modelValue.id,
+				fromFirstPage: true, // TODO handle solutions on multiple pages
 				filter: {
 					states: [ExerciseSolutionState.APPROVED],
 				} as ExerciseSolutionSearchFilter,
@@ -955,26 +958,6 @@ export default defineComponent({
 		};
 	},
 	methods: {
-		...mapActions("teacher", [
-			"addExerciseChild",
-			"updateExercise",
-			"addExerciseTag",
-			"removeExerciseTag",
-			"deleteExerciseChild",
-			"lockExercise",
-			"getExercise",
-		]),
-		...mapActions("student", ["addExerciseSolution", "deleteExerciseSolution"]),
-		...mapActions("shared", [
-			"getTags",
-			"updateExerciseChild",
-			"getSolutionsByExercise",
-			"getExerciseTestCaseAttachments",
-			"createExerciseTestCaseAttachment",
-			"deleteExerciseTestCaseAttachment",
-		]),
-		...mapMutations("teacher", ["setExercise", "setExerciseChild"]),
-		...mapMutations("shared", ["setExerciseSolution"]),
 		async onChoiceDragEnd(event: { oldIndex: number; newIndex: number }) {
 			const draggedChoice = (this.modelValue.choices as ExerciseChoice[])[event.oldIndex];
 
@@ -1000,8 +983,7 @@ export default defineComponent({
 				));
 
 			try {
-				console.log("locking...");
-				await this.lockExercise({
+				await this.mainStore.lockExercise({
 					courseId: this.courseId,
 					exerciseId: this.modelValue.id,
 				});
@@ -1014,7 +996,7 @@ export default defineComponent({
 					// once the lock has been acquired by the requesting user
 					this.lockPollingHandle = setInterval(async () => {
 						console.log("polling...");
-						await this.getExercise({
+						await this.mainStore.getExercise({
 							courseId: this.courseId,
 							exerciseId: this.modelValue.id,
 						});
@@ -1115,7 +1097,7 @@ export default defineComponent({
 		},
 		/* CRUD on related objects */
 		async onAddSolution() {
-			const newSolution: ExerciseSolution = await this.addExerciseSolution({
+			const newSolution: ExerciseSolution = await this.mainStore.createExerciseSolution({
 				courseId: this.courseId,
 				exerciseId: this.modelValue.id,
 				solution: getBlankExerciseSolution(ExerciseSolutionState.APPROVED),
@@ -1136,7 +1118,7 @@ export default defineComponent({
 			await this.solutionAutoSaveManagers[solutionId].flush();
 		},
 		async onAddChoice() {
-			const newChoice: ExerciseChoice = await this.addExerciseChild({
+			const newChoice: ExerciseChoice = await this.mainStore.createExerciseChild({
 				courseId: this.courseId,
 				exerciseId: this.modelValue.id,
 				childType: "choice",
@@ -1161,7 +1143,7 @@ export default defineComponent({
 			if (confirm(_("exercise_editor.confirm_delete_choice"))) {
 				await this.withLoading(
 					async () =>
-						await this.deleteExerciseChild({
+						await this.mainStore.deleteExerciseChild({
 							courseId: this.courseId,
 							exerciseId: this.modelValue.id,
 							childType: "choice",
@@ -1175,7 +1157,7 @@ export default defineComponent({
 			if (confirm(_("exercise_editor.confirm_delete_solution"))) {
 				await this.withLoading(
 					async () =>
-						await this.deleteExerciseSolution({
+						await this.mainStore.deleteExerciseSolution({
 							courseId: this.courseId,
 							exerciseId: this.modelValue.id,
 							solutionId,
@@ -1185,7 +1167,7 @@ export default defineComponent({
 			}
 		},
 		async onAddSubExercise() {
-			const newSubExercise: Exercise = await this.addExerciseChild({
+			const newSubExercise: Exercise = await this.mainStore.createExerciseChild({
 				courseId: this.courseId,
 				exerciseId: this.modelValue.id,
 				childType: "sub_exercise",
@@ -1197,7 +1179,7 @@ export default defineComponent({
 			if (confirm(_("exercise_editor.confirm_delete_sub_exercise"))) {
 				await this.withLoading(
 					async () =>
-						await this.deleteExerciseChild({
+						await this.mainStore.deleteExerciseChild({
 							courseId: this.courseId,
 							exerciseId: this.modelValue.id,
 							childType: "sub_exercise",
@@ -1208,7 +1190,7 @@ export default defineComponent({
 			}
 		},
 		async onAddTestCase() {
-			const newTestcase: ExerciseTestCase = await this.addExerciseChild({
+			const newTestcase: ExerciseTestCase = await this.mainStore.createExerciseChild({
 				courseId: this.courseId,
 				exerciseId: this.modelValue.id,
 				childType: "testcase",
@@ -1233,7 +1215,7 @@ export default defineComponent({
 			if (confirm(_("exercise_editor.confirm_delete_testcase"))) {
 				await this.withLoading(
 					async () =>
-						await this.deleteExerciseChild({
+						await this.mainStore.deleteExerciseChild({
 							courseId: this.courseId,
 							exerciseId: this.modelValue.id,
 							childType: "testcase",
@@ -1244,7 +1226,7 @@ export default defineComponent({
 			}
 		},
 		async onTestCaseCreateAttachment(testcaseId: string, attachment: Blob) {
-			await this.createExerciseTestCaseAttachment({
+			await this.mainStore.createExerciseTestCaseAttachment({
 				courseId: this.courseId,
 				exerciseId: this.modelValue.id,
 				testcaseId,
@@ -1265,7 +1247,7 @@ export default defineComponent({
 			) {
 				return;
 			}
-			await this.deleteExerciseTestCaseAttachment({
+			await this.mainStore.deleteExerciseTestCaseAttachment({
 				courseId: this.courseId,
 				exerciseId: this.modelValue.id,
 				testcaseId,
@@ -1289,16 +1271,19 @@ export default defineComponent({
 			);
 		},
 		async onAddTag(tag: string, isPublic: boolean) {
-			await this.addExerciseTag({
+			await this.mainStore.addExerciseTag({
 				courseId: this.courseId,
 				exerciseId: this.modelValue.id,
 				tag,
 				isPublic,
 			});
-			await this.getTags({ courseId: this.courseId });
+			await this.mainStore.getTags({
+				courseId: this.courseId,
+				includeExerciseCount: false,
+			});
 		},
 		async onRemoveTag(tag: string, isPublic: boolean) {
-			await this.removeExerciseTag({
+			await this.mainStore.removeExerciseTag({
 				courseId: this.courseId,
 				exerciseId: this.modelValue.id,
 				tag,
@@ -1361,7 +1346,7 @@ export default defineComponent({
 				async changes => {
 					// if choices are re-ordered, re-fetch them from server
 					const reFetch = Object.keys(changes).includes("_ordering");
-					await this.updateExerciseChild({
+					await this.mainStore.updateExerciseChild({
 						childType: "choice",
 						courseId: this.courseId,
 						exerciseId: this.modelValue.id,
@@ -1372,7 +1357,7 @@ export default defineComponent({
 				changes => {
 					this.saving = true;
 					this.savingError = false;
-					this.setExerciseChild({
+					this.mainStore.setExerciseChild({
 						childType: "choice",
 						exerciseId: this.modelValue.id,
 						payload: { ...choice, ...changes },
@@ -1389,17 +1374,15 @@ export default defineComponent({
 			this.solutionAutoSaveManagers[solution.id] = new AutoSaveManager<ExerciseSolution>(
 				solution,
 				async changes =>
-					await this.updateExerciseChild({
-						childType: "solution",
+					await this.mainStore.updateExerciseSolution({
 						courseId: this.courseId,
 						exerciseId: this.modelValue.id,
-						payload: { ...solution, ...changes },
-						reFetch: false,
+						solution: { ...solution, ...changes },
 					}),
 				changes => {
 					this.saving = true;
 					this.savingError = false;
-					this.setExerciseSolution({
+					this.mainStore.setExerciseSolution({
 						exerciseId: this.modelValue.id,
 						payload: { ...solution, ...changes },
 					});
@@ -1417,7 +1400,7 @@ export default defineComponent({
 				async changes => {
 					// if choices are re-ordered, re-fetch them from server
 					const reFetch = Object.keys(changes).includes("_ordering");
-					await this.updateExerciseChild({
+					await this.mainStore.updateExerciseChild({
 						childType: "testcase",
 						courseId: this.courseId,
 						exerciseId: this.modelValue.id,
@@ -1429,7 +1412,7 @@ export default defineComponent({
 				changes => {
 					this.saving = true;
 					this.savingError = false;
-					this.setExerciseChild({
+					this.mainStore.setExerciseChild({
 						childType: "testcase",
 						exerciseId: this.modelValue.id,
 						payload: { ...testcase, ...changes },
@@ -1444,14 +1427,9 @@ export default defineComponent({
 		},
 	},
 	computed: {
-		...mapState([
-			"tags",
-			"user",
-			"paginatedSolutionsByExerciseId",
-			"exerciseTestCaseAttachmentsByTestCaseId",
-		]),
-		solutions(): ExerciseSolution[] {
-			return this.paginatedSolutionsByExerciseId[this.modelValue.id]?.data ?? [];
+		...mapStores(useMainStore, useMetaStore),
+		solutions() {
+			return this.mainStore.getPaginatedSolutionsByExerciseId(this.modelValue.id).data;
 		},
 		showNoChoicePenaltyWarning(): boolean {
 			return (
@@ -1477,7 +1455,10 @@ export default defineComponent({
 			);
 		},
 		exerciseLocked(): boolean {
-			return !!this.modelValue.locked_by && this.modelValue.locked_by.id != this.user.id;
+			return (
+				!!this.modelValue.locked_by &&
+				this.modelValue.locked_by.id != this.metaStore.user.id
+			);
 		},
 		editingCloze(): Exercise | null {
 			if (this.editingClozePosition === null) {

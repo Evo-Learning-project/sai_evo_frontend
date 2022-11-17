@@ -9,8 +9,6 @@ import {
 	ExerciseType,
 	EventTemplateRule,
 } from "@/models";
-import store from "@/store";
-import { SharedState } from "@/store/types";
 import { useMainStore } from "@/stores/mainStore";
 
 export const courseNameUnique = (name: string, course: Course): boolean => {

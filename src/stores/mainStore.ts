@@ -61,6 +61,7 @@ import {
 	updateEventTemplateRuleClause,
 	updateExercise,
 	updateExerciseChoice,
+	updateExerciseSolution,
 	updateExerciseSubExercise,
 	updateExerciseTestCase,
 	updateUserCoursePrivileges,
@@ -775,6 +776,19 @@ export const useMainStore = defineStore("main", {
 			}
 			exerciseSolutions.push(newSolution);
 			return newSolution;
+		},
+		async updateExerciseSolution({
+			courseId,
+			exerciseId,
+			solution,
+		}: ExerciseIdActionPayload & ExerciseSolutionActionPayload) {
+			const updatedSolution = await updateExerciseSolution(
+				courseId,
+				exerciseId,
+				solution.id,
+				solution,
+			);
+			//this.setExerciseSolution({ exerciseId, solution: updatedSolution });
 		},
 		async getSolutionsByExercise({
 			courseId,
