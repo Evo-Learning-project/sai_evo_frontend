@@ -208,11 +208,9 @@ export default defineComponent({
 			if (this.$route.hash) {
 				// TODO refactor and also handle possibility of editing exercises that are not in view
 				const expandId = this.$route.hash.split(/#editor-(.*)/)[1];
-				const editorRef = this.$refs[
-					"course-" + this.courseId + "-exercise-" + expandId
-				] as {
-					showEditor: boolean;
-				};
+
+				const editorRef: any =
+					this.$refs["course-" + this.courseId + "-exercise-" + expandId]?.[0];
 				if (editorRef) {
 					editorRef.showEditor = true;
 				}
@@ -303,11 +301,11 @@ export default defineComponent({
 					courseId: this.courseId,
 					exercise: cloned ?? getBlankExercise(),
 				});
-				(
-					this.$refs["course-" + this.courseId + "-exercise-" + newExercise.id] as {
-						showEditor: boolean;
-					}
-				).showEditor = true;
+
+				const editorRef: any =
+					this.$refs["course-" + this.courseId + "-exercise-" + newExercise.id]?.[0];
+				editorRef.showEditor = true;
+
 				return newExercise;
 			})) as Exercise;
 		},
