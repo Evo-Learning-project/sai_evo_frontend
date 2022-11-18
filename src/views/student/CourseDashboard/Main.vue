@@ -45,11 +45,11 @@
 					class="mobile-sidebar-header p-4 mt-4 rounded bg-primary-light bg-opacity-10"
 				>
 					<div class="mx-auto flex space-x-2 items-center">
-						<Avatar :user="user" :size="'lg'" />
+						<Avatar :user="metaStore.user" :size="'lg'" />
 						<div class="flex flex-col">
-							<p class="text-sm mb-0">{{ $store.getters["shared/email"] }}</p>
+							<p class="text-sm mb-0">{{ metaStore.email }}</p>
 							<p class="text-xs text-muted -mt-0.5">
-								{{ $store.state.shared.user?.mat }}
+								{{ metaStore.user.mat }}
 							</p>
 						</div>
 					</div>
@@ -119,35 +119,44 @@
 				<template v-slot:header>
 					<div class="vsm--header">
 						<div class="mx-auto flex space-x-2 items-center">
-							<Avatar :user="user" :size="'lg'" />
+							<Avatar :user="metaStore.user" :size="'lg'" />
 							<div class="flex flex-col">
-								<p class="text-sm mb-0">{{ $store.getters["shared/email"] }}</p>
+								<p class="text-sm mb-0">{{ metaStore.email }}</p>
 								<p class="text-xs text-muted -mt-0.5">
-									{{ $store.state.shared.user?.mat }}
+									{{ metaStore.user.mat }}
 								</p>
 							</div>
 						</div>
-						<div class="relative flex items-center mt-3 ml-1" v-if="gamificationContext">
+						<div
+							class="relative flex items-center mt-3 ml-1"
+							v-if="mainStore.gamificationContext"
+						>
 							<p class="material-icons mr-1.5 text-primary text-base">auto_awesome</p>
-							<p class="font-semibold">{{ gamificationContext?.reputation ?? 0 }}</p>
+							<p class="font-semibold">
+								{{ mainStore.gamificationContext?.reputation ?? 0 }}
+							</p>
 							<div
 								class="flex items-center space-x-1"
 								v-if="
-									gamificationContext && gamificationContext.leaderboard_position !== null
+									mainStore.gamificationContext &&
+									mainStore.gamificationContext.leaderboard_position !== null
 								"
 							>
 								<p class="ml-3 material-icons-outlined text-primary text-base">
 									leaderboard
 								</p>
 								<p class="">
-									{{ gamificationContext.leaderboard_position }}
+									{{ mainStore.gamificationContext.leaderboard_position }}
 								</p>
 								<p
-									v-if="gamificationContext.leaderboard_position <= 3"
+									v-if="mainStore.gamificationContext.leaderboard_position <= 3"
 									:class="{
-										'text-yellow-400': gamificationContext.leaderboard_position === 1,
-										'text-gray-400': gamificationContext.leaderboard_position === 2,
-										'text-yellow-900': gamificationContext.leaderboard_position === 3,
+										'text-yellow-400':
+											mainStore.gamificationContext.leaderboard_position === 1,
+										'text-gray-400':
+											mainStore.gamificationContext.leaderboard_position === 2,
+										'text-yellow-900':
+											mainStore.gamificationContext.leaderboard_position === 3,
 									}"
 								>
 									<svg style="width: 18px; height: 18px" viewBox="0 0 24 24">
@@ -253,7 +262,7 @@ const SIDEBAR_WIDTH_EXPANDED = "270px";
 import { logOut } from "@/utils";
 
 import { SidebarOption, studentDashboardSidebarOptions } from "@/navigation/sidebar";
-import { defineComponent, PropType } from "@vue/runtime-core";
+import { defineComponent } from "@vue/runtime-core";
 import BreadCrumbs from "@/components/ui/BreadCrumbs.vue";
 import {
 	ROUTE_TITLE_COURSE_NAME_TOKEN,
@@ -269,11 +278,12 @@ import { SidebarMenu } from "vue3-sidebar-menu";
 import "vue3-sidebar-menu/dist/vue-sidebar-menu.css";
 import { internalSidebarOptionsToSidebarMenuOptions } from "@/navigation/utils";
 import Avatar from "@/components/ui/Avatar.vue";
-import { mapState, mapActions } from "vuex";
 import Btn from "@/components/ui/Btn.vue";
-import { Course } from "@/models";
 import GamificationContextPanel from "@/components/student/GamificationContextPanel.vue";
 import DraggablePopup from "@/components/ui/DraggablePopup.vue";
+import { mapStores } from "pinia";
+import { useMainStore } from "@/stores/mainStore";
+import { useMetaStore } from "@/stores/metaStore";
 export default defineComponent({
 	name: "Main",
 	props: {},
@@ -291,9 +301,11 @@ export default defineComponent({
 		},
 	},
 	async created() {
-		await this.getCourseGamificationContext({ courseId: this.courseId });
-		if (this.gamificationContext) {
-			await this.getGamificationContextGoals({ contextId: this.gamificationContext.id });
+		await this.mainStore.getCourseGamificationContext({ courseId: this.courseId });
+		if (this.mainStore.gamificationContext) {
+			await this.mainStore.getGamificationContextGoals({
+				contextId: this.mainStore.gamificationContext.id,
+			});
 		}
 	},
 	mounted() {
@@ -301,10 +313,6 @@ export default defineComponent({
 	},
 	methods: {
 		logOut,
-		...mapActions("shared", [
-			"getCourseGamificationContext",
-			"getGamificationContextGoals",
-		]),
 		isRouteActive(option: SidebarOption) {
 			return (
 				option.routeName === this.$route.name ||
@@ -326,7 +334,7 @@ export default defineComponent({
 		};
 	},
 	computed: {
-		...mapState("shared", ["user", "gamificationContext", "gamificationGoals"]),
+		...mapStores(useMainStore, useMetaStore),
 		routeTitle(): string {
 			return this.replaceTitleTokens(this.$route.meta.routeTitle as string);
 		},
@@ -341,7 +349,7 @@ export default defineComponent({
 					)[0],
 					// override path for course list for teachers so it goes to /teacher/courses
 					// instead of /student/courses
-					...(this.user.is_teacher ? { routeName: "TeacherCourseList" } : {}),
+					...(this.metaStore.user.is_teacher ? { routeName: "TeacherCourseList" } : {}),
 				},
 			];
 		},

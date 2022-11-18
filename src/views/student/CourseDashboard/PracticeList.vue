@@ -4,7 +4,9 @@
 			<!-- top buttons -->
 			<div class="flex items-center -mt-12">
 				<Btn
-					:class="{ 'opacity-0': firstLoading || practiceParticipations.length <= 3 }"
+					:class="{
+						'opacity-0': firstLoading || mainStore.practiceParticipations.length <= 3,
+					}"
 					:variant="'icon'"
 					:outline="true"
 					class="ml-auto"
@@ -19,21 +21,6 @@
 						>bookmarks</span
 					></Btn
 				>
-				<!-- <Btn
-					:class="{ 'opacity-0': firstLoading || practiceParticipations.length <= 3 }"
-					:variant="'icon'"
-					:outline="true"
-					class=""
-					@click="showNotRecent = !showNotRecent"
-					:tooltip="
-						showNotRecent
-							? $t('misc.show_recent')
-							: $t('student_course_dashboard.show_all_practices')
-					"
-					><span :class="[showNotRecent ? 'material-icons' : 'material-icons-outlined']"
-						>visibility</span
-					></Btn
-				> -->
 			</div>
 
 			<div
@@ -194,17 +181,17 @@
 
 		<!-- editor dialog-->
 		<Dialog
-			@no="setEditingEvent(null)"
-			@yes="onBeginPractice(editingEvent)"
+			@no="mainStore.setEditingEvent(null)"
+			@yes="onBeginPractice(mainStore.editingEvent)"
 			:noText="$t('dialog.default_cancel_text')"
 			:yesText="$t('practice_template_editor.begin_practice')"
-			:large="(tags?.length ?? 0) > 0"
+			:large="mainStore.tags.length > 0"
 			:disableOk="
 				totalRuleAmount < 1 ||
 				totalRuleAmount > MAX_PRACTICE_EXERCISE_COUNT ||
 				isEditingRule
 			"
-			:showDialog="!!editingEvent"
+			:showDialog="!!mainStore.editingEvent"
 		>
 			<template v-slot:title>
 				{{
@@ -216,16 +203,16 @@
 			<template v-slot:body>
 				<p class="mb-4 text-muted">
 					{{
-						(tags?.length ?? 0) > 0
+						mainStore.tags.length > 0
 							? $t("practice_template_editor.choose_tags_text")
 							: $t("practice_template_editor.choose_exercises_no_tag_text")
 					}}
 				</p>
 				<PracticeTemplateEditor
 					class="mt-6"
-					v-if="editingEvent"
+					v-if="mainStore.editingEvent"
 					@isEditingRule="isEditingRule = $event"
-					:modelValue="editingEvent.template"
+					:modelValue="mainStore.editingEvent.template"
 				></PracticeTemplateEditor>
 				<p
 					v-if="totalRuleAmount > MAX_PRACTICE_EXERCISE_COUNT && !isEditingRule"
@@ -251,7 +238,6 @@
 import { adComponentMixin, courseIdMixin, loadingMixin } from "@/mixins";
 import { defineComponent } from "@vue/runtime-core";
 
-import { mapGetters, mapActions, mapMutations, mapState } from "vuex";
 import EventParticipationPreview from "@/components/student/EventParticipationPreview.vue";
 import SkeletonCard from "@/components/ui/SkeletonCard.vue";
 import Card from "@/components/ui/Card.vue";
@@ -268,6 +254,8 @@ import { LoadAction } from "@ts-pro/vue-eternal-loading";
 import { EventParticipationSearchFilter } from "@/api";
 import { isDemoMode } from "@/utils";
 import { logAnalyticsEvent } from "@/utils";
+import { mapStores } from "pinia";
+import { useMainStore } from "@/stores/mainStore";
 
 const DEMO_TOUR_KEY = "demo_student_tour_taken";
 
@@ -286,12 +274,12 @@ export default defineComponent({
 	mixins: [courseIdMixin, loadingMixin, adComponentMixin],
 	async created() {
 		await this.withFirstLoading(async () => {
-			await this.getTags({
+			await this.mainStore.getTags({
 				courseId: this.courseId,
 				includeExerciseCount: true,
 			});
-			await this.getCourse({ courseId: this.courseId });
-			await this.getCourseEventParticipations({
+			await this.mainStore.getCourse({ courseId: this.courseId });
+			await this.mainStore.getCourseEventParticipations({
 				courseId: this.courseId,
 				fromFirstPage: true,
 				filter: {
@@ -323,17 +311,9 @@ export default defineComponent({
 		};
 	},
 	methods: {
-		...mapActions("shared", ["getCourse", "getTags"]),
-		...mapActions("student", [
-			"createEvent",
-			"partialUpdateEventParticipation",
-			"getCourseEventParticipations",
-		]),
-		//...mapActions("teacher", ["partialUpdateEventParticipation"]),
-		...mapMutations("student", ["setEditingEvent"]),
 		async onLoadMore({ loaded, noMore, error }: LoadAction) {
 			try {
-				const moreResults = await this.getCourseEventParticipations({
+				const moreResults = await this.mainStore.getCourseEventParticipations({
 					courseId: this.courseId,
 					fromFirstPage: false,
 					filter: {
@@ -352,7 +332,7 @@ export default defineComponent({
 		},
 		onBeginPractice(event: Event) {
 			logAnalyticsEvent("beginPractice", { courseId: this.courseId });
-			this.setEditingEvent(null);
+			this.mainStore.setEditingEvent(null);
 			this.$router.push({
 				name: "PracticeParticipationPage",
 				params: {
@@ -361,14 +341,15 @@ export default defineComponent({
 			});
 		},
 		onResumePractice(event: Event) {
-			this.setEditingEvent(event);
+			this.mainStore.setEditingEvent(event);
 		},
 		async onBookmark(participation: EventParticipation) {
 			try {
 				logAnalyticsEvent("bookmarkedPractice", { courseId: this.courseId });
 				this.loadingParticipations.add(participation.id);
-				await this.partialUpdateEventParticipation({
+				await this.mainStore.partialUpdateEventParticipation({
 					courseId: this.courseId,
+					// TODO assumes participation contains Event
 					eventId: participation.event.id,
 					participationId: participation.id,
 					changes: {
@@ -394,22 +375,18 @@ export default defineComponent({
 				return;
 			}
 			await this.withLoading(async () => {
-				const newPracticeEvent = await this.createEvent({
+				const newPracticeEvent = await this.mainStore.createEvent({
 					courseId: this.courseId,
 					event: getBlankPractice(),
 				});
-				this.setEditingEvent(newPracticeEvent);
+				this.mainStore.setEditingEvent(newPracticeEvent);
 			}, this.setErrorNotification);
 		},
 	},
 	computed: {
-		...mapGetters("student", ["examParticipations", "practiceParticipations"]),
-		...mapGetters("shared", ["course"]),
-		// ! only use of editingEvent in the app
-		...mapState("student", ["editingEvent"]),
-		...mapState("shared", ["tags"]),
+		...mapStores(useMainStore),
 		filteredPracticeParticipations() {
-			return (this.practiceParticipations as EventParticipation[]).filter(
+			return this.mainStore.practiceParticipations.filter(
 				(p, i) =>
 					(this.showNotRecent || i < 3 || (p.bookmarked && this.showBookmarkedOnly)) &&
 					(!this.showBookmarkedOnly || p.bookmarked),
@@ -417,15 +394,18 @@ export default defineComponent({
 		},
 		isResumingUnstartedPractice(): boolean {
 			return (
-				this.editingEvent?.id === this.currentCourse.unstarted_practice_events?.[0]?.id
+				this.mainStore.editingEvent?.id ===
+				this.currentCourse.unstarted_practice_events?.[0]?.id
 			);
 		},
 		totalRuleAmount(): number {
-			if (!this.editingEvent) {
+			if (!this.mainStore.editingEvent) {
 				return 0;
 			}
 			return sum(
-				(this.editingEvent as Event).template?.rules.map(r => parseInt(String(r.amount))),
+				(this.mainStore.editingEvent as Event).template?.rules.map(r =>
+					parseInt(String(r.amount)),
+				),
 			);
 		},
 	},

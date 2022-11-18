@@ -12,7 +12,6 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
 @layer base {
 	body {
 		font-size: 16px;
@@ -30,7 +29,7 @@
 		/* @apply font-medium text-2.5xl mb-6 */
 	}
 	h2 {
-		font-size: 25px;
+		font-size: 25px !important;
 		@apply mb-4;
 		/* @apply font-medium text-2xl mb-4*/
 	}
@@ -1262,6 +1261,15 @@
 		@apply hidden !important;
 	}
 
+	.thumbnail-slot pre {
+		font-size: 5px !important;
+		white-space: pre-wrap;
+	}
+
+	.thumbnail-slot button {
+		@apply hidden !important;
+	}
+
 	.thumbnail-slot .programming-exercise-text {
 		@apply mx-0 !important;
 	}
@@ -1274,11 +1282,12 @@
 		@apply duration-300 transform scale-100 -translate-y-2.5 text-primary !important;
 	}
 	.thumbnail-slot .fixed-label {
-		@apply top-0 text-gray-500 duration-300 transform scale-100 -translate-y-2.5 !important;
+		@apply top-2 -ml-1 text-gray-500 duration-300 transform scale-100 -translate-y-2.5 !important;
 	}
 
 	.thumbnail-slot .ql-floating-label {
-		font-size: 6.05px !important;
+		font-size: 5.05px !important;
+		@apply -mt-1 !important;
 	}
 
 	.thumbnail-slot input {
@@ -1300,7 +1309,7 @@
 	}
 
 	.thumbnail-slot .user-content {
-		@apply py-1.5 pl-2 pr-0.5 border-l-2 bg-gray-50 border-secondary mb-2.5 !important;
+		@apply py-1.5 pl-2 pr-0.5 border-l-2 bg-gray-50 border-secondary mb-2 !important;
 		border-radius: 0.4px !important;
 	}
 	.thumbnail-slot h5,
@@ -1320,6 +1329,11 @@
 	.thumbnail-slot .radio-item,
 	.thumbnail-slot .user-content {
 		font-size: 5.5px !important;
+	}
+
+	.thumbnail-slot .checkbox-item,
+	.thumbnail-slot .radio-item {
+		@apply -ml-1.5 !important;
 	}
 
 	.thumbnail-slot .ql-container {

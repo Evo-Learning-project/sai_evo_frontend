@@ -1,17 +1,17 @@
 <template>
 	<div class="mb-4">
-		<div class="mb-8" v-if="firstLoading || examParticipations.length > 0">
+		<div class="mb-8" v-if="firstLoading || mainStore.examParticipations.length > 0">
 			<div class="grid gap-4 xl:gap-8 md:grid-cols-2 lg:grid-cols-3" v-if="!firstLoading">
 				<EventParticipationPreview
-					v-for="participation in examParticipations"
+					v-for="participation in mainStore.examParticipations"
 					:key="'exam-participation-' + participation.id"
 					:participation="participation"
-				></EventParticipationPreview>
+				/>
 			</div>
 			<div class="grid grid-cols-1 gap-4 xl:gap-8 lg:grid-cols-3" v-else>
-				<SkeletonCard class="h-44"></SkeletonCard>
-				<SkeletonCard class="h-44"></SkeletonCard>
-				<SkeletonCard class="h-44"></SkeletonCard>
+				<SkeletonCard class="h-44" />
+				<SkeletonCard class="h-44" />
+				<SkeletonCard class="h-44" />
 			</div>
 			<VueEternalLoading
 				v-if="!firstLoading"
@@ -42,23 +42,20 @@
 </template>
 
 <script lang="ts">
-/* eslint-disable @typescript-eslint/no-extra-semi */
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 import { courseIdMixin, loadingMixin } from "@/mixins";
 import { defineComponent } from "@vue/runtime-core";
 
-import { mapGetters, mapActions, mapMutations, mapState } from "vuex";
 import EventParticipationPreview from "@/components/student/EventParticipationPreview.vue";
 import SkeletonCard from "@/components/ui/SkeletonCard.vue";
-import { Event, EventParticipation, EventType, getBlankPractice } from "@/models";
+import { EventType } from "@/models";
 import { getTranslatedString as _ } from "@/i18n";
-import { sum } from "lodash";
 import { MAX_PRACTICE_EXERCISE_COUNT } from "@/const";
 import { LoadAction } from "@ts-pro/vue-eternal-loading";
 import VueEternalLoading from "@ts-pro/vue-eternal-loading/src/components/VueEternalLoading/VueEternalLoading.vue";
 import { EventParticipationSearchFilter } from "@/api";
 import Spinner from "@/components/ui/Spinner.vue";
+import { mapStores } from "pinia";
+import { useMainStore } from "@/stores/mainStore";
 
 export default defineComponent({
 	components: {
@@ -71,12 +68,13 @@ export default defineComponent({
 	mixins: [courseIdMixin, loadingMixin],
 	async created() {
 		await this.withFirstLoading(async () => {
-			await this.getTags({
+			await this.mainStore.getTags({
+				// TODO is this necessary?
 				courseId: this.courseId,
 				includeExerciseCount: true,
 			});
-			await this.getCourse({ courseId: this.courseId });
-			await this.getCourseEventParticipations({
+			await this.mainStore.getCourse({ courseId: this.courseId }); // TODO is this necessary?
+			await this.mainStore.getCourseEventParticipations({
 				courseId: this.courseId,
 				fromFirstPage: true,
 				filter: { event_type: EventType.EXAM } as EventParticipationSearchFilter,
@@ -94,20 +92,13 @@ export default defineComponent({
 		};
 	},
 	methods: {
-		...mapActions("shared", ["getCourse", "getTags"]),
-		...mapActions("student", [
-			"createEvent",
-			"partialUpdateEventParticipation",
-			"getCourseEventParticipations",
-		]),
 		async onLoadMore({ loaded, noMore, error }: LoadAction) {
 			try {
-				const moreResults = await this.getCourseEventParticipations({
+				const moreResults = await this.mainStore.getCourseEventParticipations({
 					courseId: this.courseId,
 					fromFirstPage: false,
 					filter: { event_type: EventType.EXAM } as EventParticipationSearchFilter,
 				});
-
 				if (!moreResults) {
 					noMore();
 				} else {
@@ -119,9 +110,7 @@ export default defineComponent({
 		},
 	},
 	computed: {
-		...mapGetters("student", ["examParticipations"]),
-		...mapGetters("shared", ["course"]),
-		...mapState("shared", ["tags"]),
+		...mapStores(useMainStore),
 	},
 });
 </script>

@@ -233,6 +233,9 @@ export const useMainStore = defineStore("main", {
 			}
 		},
 		/** Previous teacher mutations */
+		setEditingEvent(payload: Event | null) {
+			this.editingEvent = payload;
+		},
 		// update an event in memory with the given payload
 		setEvent({ eventId, payload }: { eventId: string; payload: Event }) {
 			Object.assign(this.getEventById(eventId), payload);

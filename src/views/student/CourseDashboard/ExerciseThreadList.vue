@@ -10,7 +10,7 @@
 		/>
 		<div
 			class="flex flex-col w-full mt-12 mb-12 text-center select-none"
-			v-if="!firstLoading && !loading && exercises.length === 0"
+			v-if="!firstLoading && !loading && mainStore.exercises.length === 0"
 		>
 			<p style="font-size: 10rem" class="material-icons-outlined opacity-10">
 				search_off
@@ -20,7 +20,11 @@
 			</h2>
 		</div>
 		<div v-if="!firstLoading">
-			<div class="mb-14" v-for="exercise in exercises" :key="'e-' + exercise.id">
+			<div
+				class="mb-14"
+				v-for="exercise in mainStore.exercises"
+				:key="'e-' + exercise.id"
+			>
 				<!-- <div class="flex w-full -mb-4">
 					<div class="ml-auto">
 						<Btn :variant="'icon'" :outline="true">
@@ -43,8 +47,10 @@
 						showSolutionsByExercise[exercise.id] ||
 						getSolutionCountForExercise(exercise) === 0
 					"
-					:solutions="getSolutionsForExercise(exercise)"
-					:canLoadMore="!(getPaginatedSolutionsForExercise(exercise)?.isLastPage ?? true)"
+					:solutions="mainStore.getPaginatedSolutionsByExerciseId(exercise.id).data"
+					:canLoadMore="
+						!mainStore.getPaginatedSolutionsByExerciseId(exercise.id).isLastPage
+					"
 					@loadMore="loadMore(exercise)"
 				></ExerciseSolutionContainer>
 				<div v-else class="w-full mt-4 h-4 mb-2 skeleton-unit"></div>
@@ -97,12 +103,9 @@
 </template>
 
 <script lang="ts">
-import { ExerciseSearchFilter, PaginatedData } from "@/api";
 import { courseIdMixin, loadingMixin } from "@/mixins";
-import { Exercise as IExercise, ExerciseSolution } from "@/models";
-import { defineComponent, PropType } from "@vue/runtime-core";
-import { mapActions, mapGetters, mapState } from "vuex";
-import Exercise from "@/components/shared/Exercise/Exercise.vue";
+import { Exercise as IExercise } from "@/models";
+import { defineComponent } from "@vue/runtime-core";
 import ExerciseSolutionContainer from "@/components/shared/ExerciseSolution/ExerciseSolutionContainer.vue";
 import SlotSkeleton from "@/components/ui/skeletons/SlotSkeleton.vue";
 import Spinner from "@/components/ui/Spinner.vue";
@@ -113,6 +116,8 @@ import ExerciseSearchFilters from "@/components/teacher/ExerciseSearchFilters.vu
 import Btn from "@/components/ui/Btn.vue";
 import { getDebouncedForFilter } from "@/utils";
 import FullExercise from "@/components/shared/FullExercise.vue";
+import { mapStores } from "pinia";
+import { useMainStore } from "@/stores/mainStore";
 export default defineComponent({
 	name: "ExerciseThreadList",
 	mixins: [courseIdMixin, loadingMixin],
@@ -128,11 +133,14 @@ export default defineComponent({
 	async created() {
 		this.onFilterChange = getDebouncedForFilter(this.onFilterChange);
 		this.withFirstLoading(async () => {
-			await this.getTags({ courseId: this.courseId });
-			await this.getExercises({
+			await this.mainStore.getTags({
+				courseId: this.courseId,
+				includeExerciseCount: false,
+			});
+			await this.mainStore.getExercises({
 				courseId: this.courseId,
 				fromFirstPage: true,
-				filters: { by_popularity: true } as ExerciseSearchFilter,
+				filters: null, //{ by_popularity: true },
 			});
 			this.fetchSolutionsForNewExercises(true);
 		});
@@ -146,56 +154,51 @@ export default defineComponent({
 		};
 	},
 	methods: {
-		...mapActions("teacher", ["getExercises"]),
-		...mapActions("shared", ["getSolutionsByExercise", "getTags"]),
 		getBlankExerciseSearchFilters,
 		async onFilterChange() {
 			this.isInitialInfiniteLoad = true;
 			await this.withLoading(
 				async () =>
-					await this.getExercises({
+					await this.mainStore.getExercises({
 						courseId: this.courseId,
 						fromFirstPage: true,
 						filters: {
 							by_popularity: true,
 							...this.searchFilter,
-						} as ExerciseSearchFilter,
+						},
 					}),
 			);
 			this.fetchSolutionsForNewExercises();
 		},
-		getPaginatedSolutionsForExercise(
-			exercise: IExercise,
-		): PaginatedData<ExerciseSolution> | undefined {
-			return this.paginatedSolutionsByExerciseId[exercise.id];
-		},
-		getSolutionsForExercise(exercise: IExercise): ExerciseSolution[] {
-			return this.getPaginatedSolutionsForExercise(exercise)?.data ?? [];
-		},
 		getSolutionCountForExercise(exercise: IExercise): number {
-			return this.getPaginatedSolutionsForExercise(exercise)?.count ?? 0;
+			return this.mainStore.getPaginatedSolutionsByExerciseId(exercise.id).count;
 		},
 		async loadMore(exercise: IExercise) {
 			await this.withLoading(
 				async () =>
-					await this.getSolutionsByExercise({
+					await this.mainStore.getSolutionsByExercise({
 						courseId: this.courseId,
 						exerciseId: exercise.id,
 						fromFirstPage: false,
+						filter: null,
 					}),
 			);
 		},
 		fetchSolutionsForNewExercises(force = false) {
-			(this.exercises as IExercise[])
+			this.mainStore.exercises
 				.filter(
-					e => force || typeof this.paginatedSolutionsByExerciseId[e.id] === "undefined",
+					e =>
+						force ||
+						typeof this.mainStore.paginatedSolutionsByExerciseId[e.id] === "undefined",
 				)
 				.forEach(async e => {
 					this.loadingSolutionsByExercise[e.id] = true;
 					try {
-						await this.getSolutionsByExercise({
+						await this.mainStore.getSolutionsByExercise({
 							courseId: this.courseId,
 							exerciseId: e.id,
+							fromFirstPage: true,
+							filter: null,
 						});
 					} catch (e) {
 						this.setErrorNotification(e);
@@ -206,10 +209,10 @@ export default defineComponent({
 		},
 		async onLoadMore({ loaded, noMore, error }: LoadAction) {
 			try {
-				const moreResults = await this.getExercises({
+				const moreResults = await this.mainStore.getExercises({
 					courseId: this.courseId,
 					fromFirstPage: false,
-					filters: { by_popularity: true, ...this.searchFilter } as ExerciseSearchFilter,
+					filters: { by_popularity: true, ...this.searchFilter },
 				});
 				if (!moreResults) {
 					noMore();
@@ -223,9 +226,7 @@ export default defineComponent({
 		},
 	},
 	computed: {
-		...mapGetters("teacher", ["exercises"]),
-		...mapState("teacher", ["paginatedExercises"]),
-		...mapState("shared", ["paginatedSolutionsByExerciseId"]),
+		...mapStores(useMainStore),
 	},
 	components: {
 		SlotSkeleton,
