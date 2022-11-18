@@ -33,11 +33,8 @@ import {
 	courseListSidebarOptions,
 } from "@/navigation/sidebar";
 import { getTranslatedString as _ } from "@/i18n";
-import store from "@/store";
-import { SharedState } from "@/store/types";
 import {
 	courseDashBoardBreadCrumbs,
-	courseListBreadCrumbs,
 	examAssessmentBreadCrumbs,
 	examParticipationBreadCrumbs,
 	examsListBreadCrumbs,
@@ -50,7 +47,6 @@ import {
 	studentFavoritesBreadCrumbs,
 	submissionReviewBreadCrumbs,
 } from "@/navigation/breadcrumbs";
-import { getCourse } from "@/api/courses";
 import { exerciseSolutionThreadBeforeGuard } from "./guards";
 import { useMetaStore } from "@/stores/metaStore";
 

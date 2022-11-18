@@ -223,7 +223,6 @@
 
 <script lang="ts">
 import { defineComponent } from "@vue/runtime-core";
-import { createNamespacedHelpers } from "vuex";
 import { courseIdMixin, coursePrivilegeMixin, loadingMixin } from "@/mixins";
 import EventEditorPreview from "@/components/teacher/EventEditor/EventEditorPreview.vue";
 import { Course, CoursePrivilege, Event, EventType, Exercise } from "@/models";

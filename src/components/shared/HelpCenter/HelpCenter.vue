@@ -135,7 +135,6 @@ import { getArticle, getArticles, HelpCenterArticle } from "@/helpCenter";
 import HelpCenterArticleFull from "./HelpCenterArticleFull.vue";
 import Btn from "@/components/ui/Btn.vue";
 import { courseIdMixin, mediaQueryMixin } from "@/mixins";
-import { createNamespacedHelpers } from "vuex";
 import { isDemoMode } from "@/utils";
 import { logAnalyticsEvent } from "@/utils";
 import { mapStores } from "pinia";
