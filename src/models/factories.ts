@@ -1,4 +1,4 @@
-import { ExerciseTestCase, User } from "./interfaces";
+import { EventParticipation, ExerciseTestCase, User } from "./interfaces";
 import {
 	Course,
 	Event,
@@ -20,7 +20,12 @@ import {
 	ExerciseType,
 	Tag,
 } from ".";
-import { EventAccessRule, ExerciseSolutionState, VoteType } from "./types";
+import {
+	EventAccessRule,
+	EventParticipationState,
+	ExerciseSolutionState,
+	VoteType,
+} from "./types";
 
 export const getBlankUser = (): User => ({
 	id: "",
@@ -113,6 +118,15 @@ export const getBlankEventTemplate = (): EventTemplate => ({
 	id: "",
 	rules: [],
 	name: "",
+});
+
+export const getBlankEventParticipation = (): EventParticipation => ({
+	begin_timestamp: "",
+	event: getBlankExam(),
+	id: "",
+	slots: [],
+	state: EventParticipationState.IN_PROGRESS,
+	user: getBlankUser(),
 });
 
 export const getBlankEventTemplateRule = (

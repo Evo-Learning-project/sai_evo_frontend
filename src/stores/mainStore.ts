@@ -710,14 +710,17 @@ export const useMainStore = defineStore("main", {
 				this.setCurrentEventParticipationSlot(response);
 			}
 		},
-		async runEventParticipationSlotCode({
+		async runCurrentEventParticipationSlotCode({
 			courseId,
-			eventId,
-			participationId,
 			slot,
-		}: ParticipationIdActionPayload & {
+		}: CourseIdActionPayload & {
 			slot: EventParticipationSlot;
 		}) {
+			if (!this.currentEventParticipation) {
+				throw new Error(
+					"runCurrentEventParticipationSlotCode called with null currentParticipation",
+				);
+			}
 			const previousExecutionResults = slot.execution_results;
 			try {
 				// immediately mark slot as running
@@ -728,8 +731,9 @@ export const useMainStore = defineStore("main", {
 				// schedule running on the server-side
 				const response = await runEventParticipationSlotCode(
 					courseId,
-					eventId,
-					participationId,
+					// TODO assumes currentEventParticipation contains Event
+					this.currentEventParticipation.event.id,
+					this.currentEventParticipation.id,
 					slot.id,
 				);
 				this.setCurrentEventParticipationSlot(response);

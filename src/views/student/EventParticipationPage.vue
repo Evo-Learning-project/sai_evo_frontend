@@ -63,12 +63,13 @@
 			v-else
 			:class="{
 				'flex-grow': oneExerciseAtATime,
-				'mb-10 pb-10': index !== proxyModelValue.slots.length - 1 && !oneExerciseAtATime,
-				'pb-0 border-b-0': index === proxyModelValue.slots.length - 1,
+				'mb-10 pb-10':
+					index !== currentEventParticipation.slots.length - 1 && !oneExerciseAtATime,
+				'pb-0 border-b-0': index === currentEventParticipation.slots.length - 1,
 			}"
 			class=""
-			v-for="(slot, index) in proxyModelValue.slots"
-			:key="'p-' + proxyModelValue.id + '-s-' + slot.id"
+			v-for="(slot, index) in currentEventParticipation.slots"
+			:key="'p-' + currentEventParticipation.id + '-s-' + slot.id"
 		>
 			<div
 				v-show="ads3Code || adsMobileCode"
@@ -112,7 +113,7 @@
 					{{ slot.slot_number + 1 }}
 					<span v-if="oneExerciseAtATime"
 						>{{ $t("event_participation_page.of") }}
-						{{ proxyModelValue.last_slot_number + 1 }}
+						{{ currentEventParticipation.last_slot_number + 1 }}
 					</span>
 				</h4>
 			</AbstractEventParticipationSlot>
@@ -124,7 +125,11 @@
 				@click="onGoBack"
 				v-if="goingBackAllowed"
 				:disabled="
-					!canGoBack || goingBack || goingForward || loading || schedulingCodeRun
+					!canGoBack ||
+					goingBack ||
+					goingForward ||
+					metaStore.loading ||
+					schedulingCodeRun
 				"
 			>
 				<span class="material-icons-outlined mt-0.5 mr-0.5 text-base">
@@ -138,7 +143,7 @@
 				class="ml-auto"
 				@click="goingBackAllowed ? onGoForward() : confirmGoForward()"
 				v-if="canGoForward"
-				:disabled="goingForward || goingBack || loading || schedulingCodeRun"
+				:disabled="goingForward || goingBack || metaStore.loading || schedulingCodeRun"
 				>{{
 					goingForward ? $t("misc.wait") : $t("event_participation_page.next_exercise")
 				}}
@@ -151,7 +156,7 @@
 				@click="confirmTurnIn"
 				v-else-if="canTurnIn"
 				:variant="'success'"
-				:disabled="loading || goingBack || turningIn"
+				:disabled="metaStore.loading || goingBack || turningIn"
 			>
 				<span class="material-icons-outlined mt-0.5 text-base mr-1"> check </span
 				>{{ turningIn ? $t("misc.wait") : $t("event_participation_page.turn_in") }}
@@ -194,13 +199,13 @@ import {
 	EventParticipationState,
 	EventType,
 	ExerciseType,
+	getBlankEventParticipation,
 	programmingExerciseTypes,
 } from "@/models";
 import { defineComponent } from "@vue/runtime-core";
 import { getTranslatedString as _ } from "@/i18n";
 import { DialogData } from "@/interfaces";
 
-import { createNamespacedHelpers, mapState } from "vuex";
 import { AutoSaveManager } from "@/autoSave";
 import {
 	EVENT_PARTICIPATION_SLOT_DEBOUNCED_FIELDS,
@@ -213,7 +218,9 @@ import {
 import SlotSkeleton from "@/components/ui/skeletons/SlotSkeleton.vue";
 import Countdown from "@/components/ui/Countdown.vue";
 import { getParticipationRemainingTime } from "@/utils";
-const { mapActions, mapMutations } = createNamespacedHelpers("student");
+import { mapStores } from "pinia";
+import { useMainStore } from "@/stores/mainStore";
+import { useMetaStore } from "@/stores/metaStore";
 
 export default defineComponent({
 	components: {
@@ -227,7 +234,7 @@ export default defineComponent({
 	name: "EventParticipationPage",
 	mixins: [courseIdMixin, eventIdMixin, savingMixin, loadingMixin, adComponentMixin],
 	watch: {
-		"proxyModelValue.slots"(newVal: EventParticipationSlot[]) {
+		"currentEventParticipation.slots"(newVal: EventParticipationSlot[]) {
 			// TODO be more sophisticated to track new slots, old slots leaving etc.
 			newVal.forEach(s => this.instantiateSlotAutoSaveManager(s));
 		},
@@ -240,17 +247,18 @@ export default defineComponent({
 	async created() {
 		await this.withFirstLoading(
 			async () =>
-				await this.participateInEvent({
+				await this.mainStore.participateInEvent({
 					courseId: this.courseId,
 					eventId: this.eventId,
 				}),
 		);
 
 		// already turned in, redirect to submission review page
-		if (this.proxyModelValue.state === EventParticipationState.TURNED_IN) {
+		if (this.currentEventParticipation.state === EventParticipationState.TURNED_IN) {
 			this.$router.push({
 				name:
-					this.proxyModelValue.event.event_type === EventType.SELF_SERVICE_PRACTICE
+					this.currentEventParticipation.event.event_type ===
+					EventType.SELF_SERVICE_PRACTICE
 						? "PracticeSummaryPage"
 						: "SubmissionReviewPage",
 				params: {
@@ -259,23 +267,6 @@ export default defineComponent({
 			});
 			return;
 		}
-
-		// TODO if user leaves page while this participation is still loading,
-		// the participation becomes null & an error occurs
-		// see: https://sentry.io/organizations/samuele/issues/3698964231/?project=6265941
-		/*
-		Apparently, if the component is unloaded during the execution of this method,
-		the state mapped with mapState becomes out of sync: the participation is stored
-		in vuex, and is accessible via this.$store, but the version mapped with mapState
-		stays null.
-
-		To test, print: console.log({
-			fromMappedState: this.currentEventParticipation,
-			fromStore: this.$store.state.student.currentEventParticipation,
-		});
-		The first will be null, the second will contain a valid object
-		This is probably a bug in vue/vuex, see if it's worth it to find a workaround
-		*/
 
 		// set up timer, if there is a time limit
 		const remainingTime = getParticipationRemainingTime(
@@ -289,7 +280,7 @@ export default defineComponent({
 
 		// poll for any slots whose execution results is running (for example,
 		// if the user refreshed the page while a programming exercise was running)
-		this.proxyModelValue.slots
+		this.currentEventParticipation.slots
 			.filter(s => s.execution_results && s.execution_results.state === "running")
 			.forEach(s => this.pollForExecutionResults(s.id));
 	},
@@ -322,18 +313,6 @@ export default defineComponent({
 		};
 	},
 	methods: {
-		...mapActions([
-			"participateInEvent",
-			"moveEventParticipationCurrentSlotCursorForward",
-			"moveEventParticipationCurrentSlotCursorBack",
-			"partialUpdateEventParticipationSlot",
-			"partialUpdateEventParticipation",
-			"runEventParticipationSlotCode",
-		]),
-		...mapMutations([
-			"setCurrentEventParticipationSlot",
-			"patchCurrentEventParticipationSlot",
-		]),
 		async onUpdateSubmission(
 			slot: EventParticipationSlot,
 			change: [keyof EventParticipationSlotSubmission, any],
@@ -361,13 +340,10 @@ export default defineComponent({
 				// temporarily block forward/go buttons to prevent issues with setCurrentEventParticipationSlot
 				this.schedulingCodeRun = true;
 				// send request to run code
-				await this.runEventParticipationSlotCode({
+				await this.mainStore.runCurrentEventParticipationSlotCode({
 					courseId: this.courseId,
-					eventId: this.eventId,
-					participationId: this.currentEventParticipation.id,
 					slot,
 				});
-
 				// poll until execution is complete
 				this.pollForExecutionResults(slot.id);
 			} catch (e) {
@@ -385,13 +361,13 @@ export default defineComponent({
 				const executionResults = await getEventParticipationSlotExecutionResults(
 					this.courseId,
 					this.eventId,
-					this.proxyModelValue.id,
+					this.currentEventParticipation.id,
 					slotId,
 				);
 				if (executionResults.state !== "running") {
 					try {
-						// slot might not exist anymore is user has gone forward/back or has turned in
-						this.patchCurrentEventParticipationSlot({
+						// slot might not exist anymore if user has gone forward/back or has turned in
+						this.mainStore.patchCurrentEventParticipationSlot({
 							slotId,
 							changes: { execution_results: executionResults },
 						});
@@ -408,13 +384,13 @@ export default defineComponent({
 			this.showConfirmDialog = false;
 
 			// assumption: going forward is only allowed when showing one slot at a time
-			const currentSlot = this.proxyModelValue.slots[0];
+			const currentSlot = this.currentEventParticipation.slots[0];
 			this.goingForward = true;
 			await this.withLoading(
 				async () => {
 					// flush queued changes before moving on to next slot
 					await this.slotAutoSaveManagers[currentSlot.id].flush();
-					await this.moveEventParticipationCurrentSlotCursorForward({
+					await this.mainStore.moveEventParticipationCurrentSlotCursorForward({
 						courseId: this.courseId,
 					});
 				},
@@ -424,13 +400,13 @@ export default defineComponent({
 		},
 		async onGoBack() {
 			// assumption: going back is only allowed when showing one slot at a time
-			const currentSlot = this.proxyModelValue.slots[0];
+			const currentSlot = this.currentEventParticipation.slots[0];
 			this.goingBack = true;
 			await this.withLoading(
 				async () => {
 					// flush queued changes before moving on to next slot
 					await this.slotAutoSaveManagers[currentSlot.id].flush();
-					await this.moveEventParticipationCurrentSlotCursorBack({
+					await this.mainStore.moveEventParticipationCurrentSlotCursorBack({
 						courseId: this.courseId,
 					});
 				},
@@ -463,7 +439,7 @@ export default defineComponent({
 					}
 				}
 				try {
-					await this.partialUpdateEventParticipation({
+					await this.mainStore.partialUpdateCurrentEventParticipation({
 						courseId: this.courseId,
 						changes: {
 							state: EventParticipationState.TURNED_IN,
@@ -471,7 +447,8 @@ export default defineComponent({
 					});
 					this.$router.push({
 						name:
-							this.proxyModelValue.event.event_type === EventType.SELF_SERVICE_PRACTICE
+							this.currentEventParticipation.event.event_type ===
+							EventType.SELF_SERVICE_PRACTICE
 								? "PracticeSummaryPage"
 								: "SubmissionReviewPage",
 						params: {
@@ -479,7 +456,7 @@ export default defineComponent({
 							showSubmissionConfirmationMessage: 1, // should be `true`, but TS complains about type
 						},
 					});
-					this.$store.commit("shared/showSuccessFeedback");
+					this.metaStore.showSuccessFeedback();
 				} catch (e) {
 					this.setErrorNotification(e);
 				}
@@ -512,7 +489,7 @@ export default defineComponent({
 			await partialUpdateEventParticipationSlot(
 				this.courseId,
 				this.eventId,
-				this.proxyModelValue.id,
+				this.currentEventParticipation.id,
 				slot.id,
 				formData as any,
 				true,
@@ -539,17 +516,17 @@ export default defineComponent({
 				slot,
 				async changes => {
 					try {
-						await this.partialUpdateEventParticipationSlot({
+						await this.mainStore.partialUpdateCurrentEventParticipationSlot({
 							courseId: this.courseId,
-							eventId: this.eventId,
-							participationId: this.proxyModelValue.id,
 							slotId: slot.id,
 							changes,
+							mutate: true,
+							forceStudent: true,
 						});
 					} catch (e) {
 						// investigate https://sentry.io/organizations/samuele/issues/3683654671/?project=6265941
 						console.error(
-							"partialUpdateEventParticipationSlot failed when called with args",
+							"partialUpdateCurrentEventParticipationSlot failed when called with args",
 							slot.id,
 							JSON.stringify(changes),
 						);
@@ -561,10 +538,10 @@ export default defineComponent({
 						// TODO find a way not to block multiple choice questions while open answer exercises are saving
 						this.saving = true;
 						this.savingError = false;
-						this.$store.state.shared.localLoading = true;
+						this.metaStore.localLoading = true;
 					}
 					try {
-						this.setCurrentEventParticipationSlot({ ...slot, ...changes });
+						this.mainStore.setCurrentEventParticipationSlot({ ...slot, ...changes });
 					} catch (e) {
 						// investigating https://sentry.io/organizations/samuele/issues/3603878793
 						console.error(
@@ -581,7 +558,7 @@ export default defineComponent({
 				undefined,
 				() => (this.savingError = true),
 				() => {
-					this.$store.state.shared.localLoading = false;
+					this.metaStore.localLoading = false;
 					this.saving = false;
 				},
 				true,
@@ -590,45 +567,41 @@ export default defineComponent({
 		},
 	},
 	computed: {
-		...mapState("student", ["currentEventParticipation"]),
-		...mapState("shared", ["loading"]),
-		proxyModelValue: {
-			get(): EventParticipation {
-				return this.currentEventParticipation ?? {};
-			},
-			async set(val: EventParticipation) {
-				// await this.onChange(val);
-			},
+		...mapStores(useMainStore, useMetaStore),
+		currentEventParticipation() {
+			return this.mainStore.currentEventParticipation ?? getBlankEventParticipation();
 		},
 		oneExerciseAtATime(): boolean {
-			return (this.proxyModelValue.event?.exercises_shown_at_a_time ?? 0) === 1;
+			// TODO this assumes the participation contains Event
+			return (this.currentEventParticipation.event?.exercises_shown_at_a_time ?? 0) === 1;
 		},
 		canGoForward(): boolean {
 			return (
 				this.oneExerciseAtATime &&
-				(this.proxyModelValue.slots?.length ?? 0) > 0 &&
-				!this.proxyModelValue.slots[0].is_last
+				this.currentEventParticipation.slots.length > 0 &&
+				!this.currentEventParticipation.slots[0]?.is_last
 			);
 		},
 		canGoBack(): boolean {
 			return (
 				this.oneExerciseAtATime &&
-				(this.proxyModelValue.slots?.length ?? 0) > 0 &&
-				!this.proxyModelValue.slots[0].is_first
+				(this.currentEventParticipation.slots?.length ?? 0) > 0 &&
+				!this.currentEventParticipation.slots[0].is_first
 			);
 		},
 		canTurnIn(): boolean {
 			return (
 				!this.firstLoading &&
 				(!this.oneExerciseAtATime ||
-					((this.proxyModelValue.slots?.length ?? 0) > 0 &&
-						(this.proxyModelValue.slots[0].is_last ?? false))) &&
-				this.proxyModelValue.state !== EventParticipationState.TURNED_IN
+					(this.currentEventParticipation.slots.length > 0 &&
+						(this.currentEventParticipation.slots[0]?.is_last ?? false))) &&
+				this.currentEventParticipation.state !== EventParticipationState.TURNED_IN
 			);
 		},
 		goingBackAllowed(): boolean {
 			return (
-				this.oneExerciseAtATime && (this.proxyModelValue.event?.allow_going_back ?? false)
+				// TODO this assumes the participation contains Event
+				this.oneExerciseAtATime && this.currentEventParticipation.event.allow_going_back
 			);
 		},
 	},
