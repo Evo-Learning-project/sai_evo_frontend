@@ -14,17 +14,17 @@
 					</div>
 					<div v-if="!$route.meta.hideUserInfoFromNav" class="">
 						<div
-							v-if="$store.getters['shared/isAuthenticated']"
+							v-if="metaStore.isAuthenticated"
 							class="flex items-center ml-4 space-x-2 md:ml-6"
 						>
 							<p class="text-xs text-lightText md:text-base">
-								{{ $store.getters["shared/email"] }}
+								{{ metaStore.email }}
 							</p>
 							<p
 								@click="onShowMatEdit"
 								class="hidden text-xs cursor-pointer md:block text-lightText md:text-sm"
 							>
-								{{ $store.state.shared.user?.mat }}
+								{{ metaStore.user.mat }}
 							</p>
 							<Btn @click="logOut()" :variant="'icon'" :outline="true"
 								><span class="text-lg text-lightText material-icons-outlined">
@@ -70,14 +70,14 @@
 		</header>
 		<main class="flex-grow bg-white md:px-8 lg:px-12">
 			<div class="h-full mx-auto lg:px-8" :class="{ 'px-4': showSecondaryHeader }">
-				<ErrorView v-if="!!$store.state.shared.pageWideErrorData"></ErrorView>
+				<ErrorView v-if="metaStore.pageWideErrorData"></ErrorView>
 				<router-view class="" v-else />
 				<transition name="quick-bounce"
 					><SnackBar
 						class="w-full px-4"
-						v-if="$store.state.shared.errorNotificationData"
-						:icon="$store.state.shared.errorNotificationData.icon"
-						:message="$store.state.shared.errorNotificationData.title"
+						v-if="metaStore.errorNotificationData"
+						:icon="metaStore.errorNotificationData.icon"
+						:message="metaStore.errorNotificationData.title"
 					></SnackBar
 				></transition>
 			</div>
@@ -114,9 +114,10 @@ import BreadCrumbs from "@/components/ui/BreadCrumbs.vue";
 import Btn from "@/components/ui/Btn.vue";
 import { isDemoMode, logOut } from "@/utils";
 import Dialog from "@/components/ui/Dialog.vue";
-import { createNamespacedHelpers } from "vuex";
 import NumberInput from "@/components/ui/NumberInput.vue";
-const { mapState, mapActions } = createNamespacedHelpers("shared");
+import { mapStores } from "pinia";
+import { useMainStore } from "@/stores/mainStore";
+import { useMetaStore } from "@/stores/metaStore";
 
 export default defineComponent({
 	name: "MainStudent",
@@ -128,30 +129,29 @@ export default defineComponent({
 	},
 	mixins: [courseIdMixin, eventIdMixin, loadingMixin],
 	methods: {
-		...mapActions(["updateUser"]),
 		replaceTitleTokens(str: string) {
 			return str
 				?.replace(ROUTE_TITLE_COURSE_NAME_TOKEN, this.currentCourse.name)
 				?.replace(ROUTE_TITLE_EVENT_NAME_TOKEN, this.currentEvent);
 		},
 		onShowMatEdit() {
-			this.dirtyMat = this.user.mat;
+			this.dirtyMat = this.metaStore.user.mat;
 			this.editingMat = true;
 		},
 		async onSaveMat() {
 			await this.withLoading(async () =>
-				this.updateUser({
-					userId: this.user.id,
+				this.metaStore.patchUser({
+					userId: this.metaStore.user.id,
 					changes: { mat: this.dirtyMat },
 				}),
 			);
 			this.editingMat = false;
-			this.$store.commit("shared/showSuccessFeedback");
+			this.metaStore.showSuccessFeedback();
 		},
 		logOut,
 	},
 	computed: {
-		...mapState(["user"]),
+		...mapStores(useMainStore, useMetaStore),
 		isDemoMode() {
 			return isDemoMode();
 		},

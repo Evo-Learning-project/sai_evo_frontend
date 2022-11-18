@@ -1,30 +1,34 @@
 <template>
 	<div class="h-full pb-4">
 		<div v-if="firstLoading" class="mt-4">
-			<SlotSkeleton></SlotSkeleton>
-			<SlotSkeleton></SlotSkeleton>
+			<SlotSkeleton />
+			<SlotSkeleton />
 		</div>
-		<div class="flex flex-col h-full" v-else-if="previewingEvent">
-			<h2>{{ previewingEvent.name }}</h2>
+		<div class="flex flex-col h-full" v-else-if="mainStore.previewingEvent">
+			<h2>{{ mainStore.previewingEvent.name }}</h2>
 			<div
-				v-if="previewingEvent.instructions.length > 0"
+				v-if="mainStore.previewingEvent.instructions.length > 0"
 				class="mb-2 overflow-hidden overflow-ellipsis"
-				v-html="previewingEvent.instructions"
+				v-html="mainStore.previewingEvent.instructions"
 			></div>
 			<div class="mt-1 mb-4 space-y-1 text-sm">
-				<div class="flex space-x-1" v-if="previewingEvent.begin_timestamp">
+				<div class="flex space-x-1" v-if="mainStore.previewingEvent.begin_timestamp">
 					<p class="text-muted">{{ $t("event_editor.begin_timestamp") }}:</p>
-					<Timestamp :value="previewingEvent.begin_timestamp"></Timestamp>
+					<Timestamp :value="mainStore.previewingEvent.begin_timestamp"></Timestamp>
 				</div>
-				<div class="flex space-x-1" v-if="previewingEvent.end_timestamp">
+				<div class="flex space-x-1" v-if="mainStore.previewingEvent.end_timestamp">
 					<p class="text-muted">{{ $t("event_editor.end_timestamp") }}:</p>
-					<Timestamp :value="previewingEvent.end_timestamp"></Timestamp>
+					<Timestamp :value="mainStore.previewingEvent.end_timestamp"></Timestamp>
 				</div>
 			</div>
 			<div class="mt-auto">
 				<div
 					class="w-full mb-4 banner banner-danger"
-					v-if="!user.is_teacher && !isDemoMode && (!user.mat || !user.course)"
+					v-if="
+						!metaStore.user.is_teacher &&
+						!isDemoMode &&
+						(!metaStore.user.mat || !metaStore.user.course)
+					"
 				>
 					<div class="w-full">
 						<div class="flex items-center space-x-3">
@@ -33,11 +37,15 @@
 								<p class="font-semibold text-danger-dark">
 									{{ $t("student_data.you_havent_yet") }}
 
-									<span v-if="!user.mat">{{ $t("student_data.missing_mat") }}</span>
-									<span v-if="!user.mat && !user.course"
+									<span v-if="!metaStore.user.mat">{{
+										$t("student_data.missing_mat")
+									}}</span>
+									<span v-if="!metaStore.user.mat && !metaStore.user.course"
 										>&nbsp;{{ $t("student_data.and") }}&nbsp;</span
 									>
-									<span v-if="!user.course">{{ $t("student_data.missing_course") }}</span>
+									<span v-if="!metaStore.user.course">{{
+										$t("student_data.missing_course")
+									}}</span>
 								</p>
 								<p class="text-danger-dark">
 									{{ $t("student_data.insert_mat_and_course") }}
@@ -71,19 +79,22 @@
 				</div>
 				<p
 					class="mb-1 mr-auto text-muted text-danger-dark"
-					v-if="previewingEvent.state === EventState.PLANNED"
+					v-if="mainStore.previewingEvent.state === EventState.PLANNED"
 				>
 					{{ $t("event_participation_page.exam_not_yet_begun") }}
 				</p>
 				<p
 					class="mb-1 mr-auto text-muted text-danger-dark"
-					v-else-if="previewingEvent.state === EventState.CLOSED"
+					v-else-if="mainStore.previewingEvent.state === EventState.CLOSED"
 				>
 					{{ $t("event_participation_page.exam_is_over") }}
 				</p>
 				<router-link
 					v-if="
-						canParticipate && (user.is_teacher || isDemoMode || (user.mat && user.course))
+						canParticipate &&
+						(metaStore.user.is_teacher ||
+							isDemoMode ||
+							(metaStore.user.mat && metaStore.user.course))
 					"
 					:to="{
 						name: 'ExamParticipationPage',
@@ -112,12 +123,14 @@ import { courseIdMixin, eventIdMixin, loadingMixin } from "@/mixins";
 import { Event, EventState } from "@/models";
 import { defineComponent } from "@vue/runtime-core";
 
-import { createNamespacedHelpers, mapState, mapActions } from "vuex";
 import SlotSkeleton from "@/components/ui/skeletons/SlotSkeleton.vue";
 import NumberInput from "@/components/ui/NumberInput.vue";
 import { courseSelectionOptions } from "@/const";
 import RadioGroup from "@/components/ui/RadioGroup.vue";
 import { isDemoMode } from "@/utils";
+import { mapStores } from "pinia";
+import { useMainStore } from "@/stores/mainStore";
+import { useMetaStore } from "@/stores/metaStore";
 export default defineComponent({
 	name: "ExamPreview",
 	mixins: [courseIdMixin, eventIdMixin, loadingMixin],
@@ -130,17 +143,18 @@ export default defineComponent({
 	},
 	async created() {
 		await this.withFirstLoading(async () => {
-			await this.getCourses();
-			await this.getEvent({
+			await this.mainStore.getCourses(); // TODO is this necessary?
+			await this.mainStore.getEvent({
 				courseId: this.courseId,
 				eventId: this.eventId,
+				includeDetails: true,
 			});
 		});
 
-		this.dirtyCourse = this.user.course;
-		this.dirtyMat = this.user.mat;
+		this.dirtyCourse = this.metaStore.user.course;
+		this.dirtyMat = this.metaStore.user.mat;
 
-		if ((this.previewingEvent as Event)?.participation_exists) {
+		if (this.mainStore.previewingEvent?.participation_exists) {
 			this.$router.push({
 				name: "ExamParticipationPage",
 				params: {
@@ -158,28 +172,25 @@ export default defineComponent({
 		};
 	},
 	methods: {
-		...mapActions("student", ["getEvent"]),
-		...mapActions("shared", ["updateUser", "getCourses"]),
 		async onSaveStudentData() {
 			await this.withLocalLoading(async () =>
-				this.updateUser({
-					userId: this.user.id,
+				this.metaStore.patchUser({
+					userId: this.metaStore.user.id,
 					changes: { mat: this.dirtyMat, course: this.dirtyCourse },
 				}),
 			);
-			this.$store.commit("shared/showSuccessFeedback");
+			this.metaStore.showSuccessFeedback();
 		},
 	},
 	computed: {
-		...mapState("student", ["previewingEvent"]),
-		...mapState("shared", ["user"]),
+		...mapStores(useMainStore, useMetaStore),
 		isDemoMode() {
 			return isDemoMode();
 		},
-		canParticipate(): boolean {
+		canParticipate() {
 			return (
-				this.previewingEvent.state !== EventState.PLANNED &&
-				this.previewingEvent.state !== EventState.CLOSED
+				this.mainStore.previewingEvent?.state !== EventState.PLANNED &&
+				this.mainStore.previewingEvent?.state !== EventState.CLOSED
 			);
 		},
 	},
