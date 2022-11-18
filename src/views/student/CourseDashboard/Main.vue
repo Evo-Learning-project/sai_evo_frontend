@@ -3,9 +3,9 @@
 		<Btn
 			:variant="'icon'"
 			:outline="true"
-			class="ml-auto md:hidden"
+			class="md:hidden"
 			@click="showMobileSidebar = true"
-			><span class="material-icons-outlined text-lightText"> menu </span></Btn
+			><span class="material-icons-outlined text-darkText"> menu </span></Btn
 		></teleport
 	>
 	<div class="h-full">

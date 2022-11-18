@@ -5,7 +5,12 @@
 			@close="metaStore.setHelpCenterVisibility(false)"
 			v-if="metaStore.helpCenterOpen"
 		></HelpCenter>
-		<nav
+		<AppBar
+			:showToggleSideBar="true"
+			@toggleFixSideBar="toggleFixSideBar()"
+			@logout="logOut()"
+		/>
+		<!-- <nav
 			style="z-index: 100"
 			class="
 				sticky
@@ -44,9 +49,9 @@
 				</div>
 				<div class="">
 					<div v-if="metaStore.isAuthenticated" class="flex items-center ml-4 md:ml-6">
-						<!-- <Btn :variant="'icon'" :outline="true"
+						<Btn :variant="'icon'" :outline="true"
 							><span class="material-icons-outlined">brightness_4</span></Btn
-						> -->
+						>
 						<LocaleSelector v-if="true"></LocaleSelector>
 						<DropdownMenu
 							:placement="'left'"
@@ -94,7 +99,7 @@
 					</div>
 				</div>
 			</div>
-		</nav>
+		</nav> -->
 		<div class="relative flex flex-col flex-no-wrap flex-grow md:flex-row">
 			<transition name="fade"
 				><div
@@ -103,7 +108,6 @@
 					v-show="showMobileSidebar"
 				></div
 			></transition>
-			<!-- bg-gray-500 -->
 			<nav
 				style="z-index: 999"
 				class="
@@ -426,6 +430,7 @@ import DropdownMenu from "@/components/ui/DropdownMenu.vue";
 import { mapStores } from "pinia";
 import { useMetaStore } from "@/stores/metaStore";
 import { useMainStore } from "@/stores/mainStore";
+import AppBar from "@/components/ui/AppBar.vue";
 
 const LOCAL_STORAGE_FIX_SIDEBAR_KEY = "sai_evo_fix_sidebar";
 
@@ -556,7 +561,15 @@ export default defineComponent({
 			};
 		},
 	},
-	components: { ErrorView, SnackBar, Btn, HelpCenter, LocaleSelector, DropdownMenu },
+	components: {
+		ErrorView,
+		SnackBar,
+		Btn,
+		HelpCenter,
+		// LocaleSelector,
+		// DropdownMenu,
+		AppBar,
+	},
 });
 </script>
 

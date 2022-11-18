@@ -1,6 +1,13 @@
 <template>
 	<div class="flex flex-col flex-grow">
-		<nav
+		<AppBar
+			:showToggleSideBar="false"
+			:showHelpCenterButton="false"
+			:sticky="!showSecondaryHeader"
+			:fixSideBar="false"
+			@logout="logOut()"
+		/>
+		<!-- <nav
 			:class="{ sticky: !showSecondaryHeader }"
 			class="shadow-elevation py-0.5 md:px-2 top-0 lg:px-12 bg-primary"
 			style="z-index: 1000"
@@ -36,7 +43,7 @@
 					<div class="ml-auto md:hidden" id="main-student-nav-right"></div>
 				</div>
 			</div>
-		</nav>
+		</nav> -->
 		<header
 			v-if="showSecondaryHeader"
 			class="
@@ -118,6 +125,7 @@ import NumberInput from "@/components/ui/NumberInput.vue";
 import { mapStores } from "pinia";
 import { useMainStore } from "@/stores/mainStore";
 import { useMetaStore } from "@/stores/metaStore";
+import AppBar from "@/components/ui/AppBar.vue";
 
 export default defineComponent({
 	name: "MainStudent",
@@ -172,7 +180,15 @@ export default defineComponent({
 			return !this.$route.matched.map(m => m.name).includes("StudentCourseDashboard");
 		},
 	},
-	components: { ErrorView, SnackBar, BreadCrumbs, Btn, Dialog, NumberInput },
+	components: {
+		ErrorView,
+		SnackBar,
+		BreadCrumbs,
+		// Btn,
+		Dialog,
+		NumberInput,
+		AppBar,
+	},
 });
 </script>
 
