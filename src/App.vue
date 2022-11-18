@@ -73,7 +73,7 @@ export default defineComponent({
 		};
 	},
 	beforeCreate(): void {
-		this.$store.commit("shared/initStore");
+		//this.$store.commit("shared/initStore");
 		this.metaStore.initStore();
 	},
 	beforeUnmount() {
@@ -85,9 +85,8 @@ export default defineComponent({
 		Tooltip,
 	},
 	async created() {
-		if (this.$store.getters["shared/isAuthenticated"]) {
+		if (this.metaStore.isAuthenticated) {
 			try {
-				//await this.$store.dispatch("shared/getCourses"); // TODO remove
 				await this.mainStore.getCourses();
 				if (!this.hasAnyPrivileges && this.isTeacherRoute) {
 					this.$router.push(

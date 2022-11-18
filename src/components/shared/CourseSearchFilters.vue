@@ -10,7 +10,9 @@
 				:leftIcon="'search'"
 				:placeholder="$t('course_list.filter_courses')"
 				:class="[
-					!anyCourseHasPrivileges && !user.is_teacher ? 'w-full' : 'w-full  md:w-1/2',
+					!anyCourseHasPrivileges && !metaStore.user.is_teacher
+						? 'w-full'
+						: 'w-full  md:w-1/2',
 					'mt-2 mr-auto',
 				]"
 				:modelValue="modelValue.name"
@@ -26,7 +28,7 @@
 				{{ $t("course_list.courses_i_teach") }}
 			</Toggle>
 			<Toggle
-				v-if="user.is_teacher"
+				v-if="metaStore.user.is_teacher"
 				class="mt-2 md:mt-4 lg:mt-2"
 				:label-on-left="true"
 				:modelValue="modelValue.hidden"
@@ -40,9 +42,10 @@
 
 <script lang="ts">
 import { CourseSearchFilter } from "@/api/interfaces";
-import { Course } from "@/models";
+import { useMainStore } from "@/stores/mainStore";
+import { useMetaStore } from "@/stores/metaStore";
 import { defineComponent, PropType } from "@vue/runtime-core";
-import { mapState } from "vuex";
+import { mapStores } from "pinia";
 import TextInput from "../ui/TextInput.vue";
 import Toggle from "../ui/Toggle.vue";
 export default defineComponent({
@@ -62,11 +65,11 @@ export default defineComponent({
 		},
 	},
 	computed: {
-		...mapState("shared", ["courses", "user"]),
+		...mapStores(useMainStore, useMetaStore),
 		anyCourseHasPrivileges(): boolean {
 			return (
-				this.user.is_teacher ||
-				(this.courses as Course[]).some(c => (c.privileges?.length ?? 0) > 0)
+				this.metaStore.user.is_teacher ||
+				this.mainStore.courses.some(c => (c.privileges?.length ?? 0) > 0)
 			);
 		},
 	},

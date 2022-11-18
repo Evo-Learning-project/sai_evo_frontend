@@ -157,7 +157,6 @@ import {
 import { defineComponent } from "@vue/runtime-core";
 import { PropType } from "vue";
 
-import { createNamespacedHelpers, mapState } from "vuex";
 import Btn from "../ui/Btn.vue";
 import { AutoSaveManager } from "@/autoSave";
 import Chipset from "../ui/Chipset.vue";
@@ -165,7 +164,8 @@ import { SelectableOption } from "@/interfaces";
 import NumberInput from "../ui/NumberInput.vue";
 import Tag from "../ui/Tag.vue";
 import { getTranslatedString as _ } from "@/i18n";
-const { mapActions, mapMutations } = createNamespacedHelpers("student");
+import { mapStores } from "pinia";
+import { useMainStore } from "@/stores/mainStore";
 
 export default defineComponent({
 	name: "PracticeTemplateEditor",
@@ -183,10 +183,10 @@ export default defineComponent({
 		},
 	},
 	async created() {
-		if ((this.tags?.length ?? 0) === 0 && this.modelValue.rules.length === 0) {
+		if (this.mainStore.tags.length === 0 && this.modelValue.rules.length === 0) {
 			// if there are no tags, create a rule with type FULLY_RANDOM to allow user
 			// to at least get a selection of random public exercises
-			await this.addEventTemplateRule({
+			await this.mainStore.createEventTemplateRule({
 				courseId: this.courseId,
 				templateId: this.modelValue.id,
 				rule: getBlankEventTemplateRule(EventTemplateRuleType.FULLY_RANDOM),
@@ -216,18 +216,6 @@ export default defineComponent({
 		};
 	},
 	methods: {
-		...mapActions([
-			"addEventTemplateRule",
-			"partialUpdateEventTemplateRule",
-			"addEventTemplateRuleClause",
-			"updateEventTemplateRuleClause",
-		]),
-		...mapMutations([
-			"setEditingEventTemplate",
-			"patchEditingEventTemplateRule",
-			"setEditingEventTemplateRule",
-			"setEditingEventTemplateRuleClause",
-		]),
 		async saveRule() {
 			await this.rulesAutoSaveInstances[this.editingRule as string].onChange({
 				field: "amount",
@@ -257,18 +245,18 @@ export default defineComponent({
 			});
 		},
 		async onRuleAddClause(rule: EventTemplateRule, tagId: string) {
-			await this.addEventTemplateRuleClause({
+			await this.mainStore.createEventTemplateRuleClause({
 				courseId: this.courseId,
 				templateId: this.modelValue.id,
 				ruleId: rule.id,
 				clause: getBlankTagBasedEventTemplateRuleClause(
-					(this.tags as ITag[]).find(t => t.id == tagId),
+					this.mainStore.tags.find(t => t.id == tagId),
 				),
 			});
 		},
 		async onAddRule(tagId: string): Promise<EventTemplateRule> {
 			return (await this.withLoading(async () => {
-				const newRule = await this.addEventTemplateRule({
+				const newRule = await this.mainStore.createEventTemplateRule({
 					courseId: this.courseId,
 					templateId: this.modelValue.id,
 					rule: getBlankEventTemplateRule(EventTemplateRuleType.TAG_BASED),
@@ -286,14 +274,15 @@ export default defineComponent({
 				rule,
 				// TODO investigate https://sentry.io/organizations/samuele/issues/3431902052/?project=6265941&query=is%3Aunresolved
 				async changes =>
-					await this.partialUpdateEventTemplateRule({
+					await this.mainStore.partialUpdateEventTemplateRule({
 						changes,
 						ruleId: rule.id,
 						templateId: this.modelValue.id,
 						courseId: this.courseId,
+						reFetch: false,
 					}),
 				changes =>
-					this.patchEditingEventTemplateRule({
+					this.mainStore.patchEditingEventTemplateRule({
 						changes,
 						ruleId: rule.id,
 					}),
@@ -303,13 +292,9 @@ export default defineComponent({
 		},
 	},
 	computed: {
-		...mapState("student", ["editingEventTemplate"]),
-		...mapState("shared", ["tags", "course"]),
+		...mapStores(useMainStore),
 		tagsAsSelectableOptions(): SelectableOption[] {
-			if (!this.tags?.length) {
-				return [];
-			}
-			return [...(this.tags as ITag[])]
+			return [...this.mainStore.tags]
 				.sort((a, b) => (b.public_exercises ?? 0) - (a.public_exercises ?? 0))
 				.map(t => ({
 					value: String(t.id),
@@ -362,7 +347,7 @@ export default defineComponent({
 			return ret;
 		},
 		editingRuleTag(): ITag | undefined {
-			return (this.tags as ITag[]).find(
+			return this.mainStore.tags.find(
 				t =>
 					t.id ==
 					this.modelValue.rules.find(r => r.id == this.editingRule)?.clauses?.[0].tags[0]

@@ -18,7 +18,7 @@ export enum ArticleTag {
 	GENERAL,
 }
 
-export const getArticles = (): HelpCenterArticle[] => articlesIt;
+export const getArticles = (): HelpCenterArticle[] => articlesIt; // TODO don't hard-code language
 export const getArticle = (id: string): HelpCenterArticle | undefined =>
 	articlesIt.find(a => a.id === id);
 

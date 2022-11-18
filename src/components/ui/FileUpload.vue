@@ -124,6 +124,8 @@ import Btn from "./Btn.vue";
 import AnimatedIcon from "./AnimatedIcon.vue";
 import { loadingMixin } from "@/mixins";
 import { v4 as uuid4 } from "uuid";
+import { mapStores } from "pinia";
+import { useMetaStore } from "@/stores/metaStore";
 
 export default defineComponent({
 	name: "FileUpload",
@@ -157,7 +159,7 @@ export default defineComponent({
 	},
 	watch: {
 		uploading(newVal) {
-			this.$store.state.shared.loading = newVal;
+			this.metaStore.loading = newVal;
 			if (!newVal) {
 				this.showUpload = false;
 			}
@@ -311,6 +313,7 @@ export default defineComponent({
 		},
 	},
 	computed: {
+		...mapStores(useMetaStore),
 		uploading(): boolean {
 			return !!(this.$refs as any).upload?.active;
 		},

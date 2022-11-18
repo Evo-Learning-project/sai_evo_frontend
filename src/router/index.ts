@@ -52,6 +52,7 @@ import {
 } from "@/navigation/breadcrumbs";
 import { getCourse } from "@/api/courses";
 import { exerciseSolutionThreadBeforeGuard } from "./guards";
+import { useMetaStore } from "@/stores/metaStore";
 
 const routes: Array<RouteRecordRaw> = [
 	{
@@ -428,22 +429,19 @@ const router = createRouter({
 // });
 
 router.beforeEach((to, from, next) => {
-	const sharedState = (store.state as { shared: SharedState }).shared;
+	const metaStore = useMetaStore();
 
-	if (store.getters["shared/unsavedChanges"]) {
+	if (metaStore.unsavedChanges) {
 		if (!confirm(_("misc.confirm_exiting_unsaved_changes"))) {
 			return false;
 		} else {
-			sharedState.saving = false;
-			sharedState.savingError = false;
+			metaStore.saving = false;
+			metaStore.savingError = false;
 		}
 	}
-	if (!store.getters["shared/isAuthenticated"] && to.name !== "Login") {
+	if (!metaStore.isAuthenticated && to.name !== "Login") {
 		next({ name: "Login", query: { redirect: to.fullPath } });
-	} else if (
-		to.meta.teachersOnly &&
-		!(store.state as { shared: SharedState }).shared.user.is_teacher
-	) {
+	} else if (to.meta.teachersOnly && !metaStore.user.is_teacher) {
 		next({ name: "StudentCourseList" });
 	} else {
 		next();
@@ -451,8 +449,8 @@ router.beforeEach((to, from, next) => {
 });
 
 router.afterEach(() => {
-	const sharedState = (store.state as { shared: SharedState }).shared;
-	sharedState.pageWideErrorData = null;
+	const metaStore = useMetaStore();
+	metaStore.pageWideErrorData = null;
 });
 
 export default router;

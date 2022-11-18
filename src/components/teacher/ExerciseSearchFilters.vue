@@ -137,7 +137,8 @@ import { icons as exerciseTypesIcons } from "@/assets/exerciseTypesIcons";
 import { icons as exerciseStatesIcons } from "@/assets/exerciseStatesIcons";
 import TextInput from "../ui/TextInput.vue";
 import { isEmptyFilter } from "@/api/utils";
-import { mapState } from "vuex";
+import { mapStores } from "pinia";
+import { useMainStore } from "@/stores/mainStore";
 export default defineComponent({
 	name: "ExerciseSearchFilters",
 	components: {
@@ -177,12 +178,12 @@ export default defineComponent({
 		},
 	},
 	computed: {
-		...mapState("shared", ["tags"]),
+		...mapStores(useMainStore),
 		emptyFilters() {
 			return isEmptyFilter(this.modelValue);
 		},
 		tagsOptions() {
-			return this.tags?.map((t: Tag) => ({
+			return this.mainStore.tags.map((t: Tag) => ({
 				icons: this.modelValue.tags.includes(t.id as string) ? ["done-sm"] : null,
 				value: t.id,
 				content: t.name,

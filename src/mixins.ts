@@ -1,13 +1,8 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import { mapStores } from "pinia";
-import { mapState } from "vuex";
 import { getTranslatedString as _ } from "./i18n";
 import { DialogData } from "./interfaces";
 import { Course, CoursePrivilege, getBlankCourse } from "./models";
 import router from "./router";
-import store from "./store/index";
-import { SharedState, StudentState } from "./store/types";
 import { useMainStore } from "./stores/mainStore";
 import { useMetaStore } from "./stores/metaStore";
 import { setErrorNotification, setPageWideError } from "./utils";
@@ -25,19 +20,15 @@ export const courseIdMixin = {
 
 export const eventIdMixin = {
 	computed: {
+		...mapStores(useMainStore),
 		eventId(): string {
 			return router.currentRoute.value.params.examId as string;
 		},
 		currentEvent(): string {
-			return (
-				(store.state as { student: StudentState }).student.currentEventParticipation
-					?.event?.name ?? ""
-			);
+			return (this.mainStore as any).currentEventParticipation?.event?.name ?? "";
 		},
 		previewingEvent(): string {
-			return (
-				(store.state as { student: StudentState }).student.previewingEvent?.name ?? ""
-			);
+			return (this.mainStore as any).previewingEvent?.name ?? "";
 		},
 	},
 };

@@ -11,10 +11,10 @@
 <script lang="ts">
 import { getArticles } from "@/helpCenter";
 import { getTranslatedString as _ } from "@/i18n";
-import { defineComponent, PropType } from "@vue/runtime-core";
-import { createNamespacedHelpers } from "vuex";
+import { useMetaStore } from "@/stores/metaStore";
+import { defineComponent } from "@vue/runtime-core";
+import { mapStores } from "pinia";
 
-const { mapMutations } = createNamespacedHelpers("shared");
 export default defineComponent({
 	name: "ArticleHandle",
 	props: {
@@ -33,13 +33,14 @@ export default defineComponent({
 		},
 	},
 	methods: {
-		...mapMutations(["setHelpCenterVisibility", "setHelpCenterArticleId"]),
 		onClick() {
-			this.setHelpCenterVisibility(true);
-			this.setHelpCenterArticleId(this.articleId);
+			this.metaStore.setHelpCenterVisibility(true);
+			this.metaStore.setHelpCenterArticleId(this.articleId);
 		},
 	},
-	computed: {},
+	computed: {
+		...mapStores(useMetaStore),
+	},
 });
 </script>
 

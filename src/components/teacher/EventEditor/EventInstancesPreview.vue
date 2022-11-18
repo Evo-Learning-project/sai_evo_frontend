@@ -66,7 +66,6 @@
 import { defineComponent, PropType } from "@vue/runtime-core";
 import Dialog from "@/components/ui/Dialog.vue";
 import {
-	Event,
 	EventParticipationSlot,
 	Exercise,
 	getFakeEventParticipationSlot,
@@ -79,7 +78,8 @@ import html2pdf from "html2pdf.js";
 import Btn from "@/components/ui/Btn.vue";
 import { setErrorNotification } from "@/utils";
 import { eventIdMixin } from "@/mixins";
-import { mapGetters } from "vuex";
+import { mapStores } from "pinia";
+import { useMainStore } from "@/stores/mainStore";
 
 export default defineComponent({
 	name: "EventInstancesPreview",
@@ -138,9 +138,9 @@ export default defineComponent({
 		},
 	},
 	computed: {
-		...mapGetters("teacher", ["event"]),
+		...mapStores(useMainStore),
 		eventName(): string {
-			return (this.event(this.eventId) as Event).name;
+			return this.mainStore.getEventById(this.eventId).name;
 		},
 		instancesAsSlotArrays(): EventParticipationSlot[][] {
 			return this.instances.map(i => i.map(e => getFakeEventParticipationSlot(e)));

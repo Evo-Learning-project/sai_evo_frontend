@@ -144,7 +144,7 @@
 										:value="solution.content"
 										class="rounded-tr rounded-none flex-grow bg-dark"
 									/>
-									<div
+									<!-- <div
 										v-show="false && !collapsed"
 										class="bg-gray-50 px-2 py-2 w-64"
 										:style="
@@ -214,7 +214,7 @@
 											:executionResults="executionResults"
 											:testCases="exercise.testcases ?? []"
 										/>
-									</div>
+									</div> -->
 								</div>
 								<div
 									v-if="collapsed"
@@ -305,7 +305,7 @@
 
 					<!-- add comment -->
 					<div class="flex items-center w-full mt-4 space-x-2">
-						<Avatar class="px-3 my-auto" :user="user" />
+						<Avatar class="px-3 my-auto" :user="metaStore.user" />
 						<TextInput
 							class="w-full"
 							v-model="draftComment"
@@ -333,7 +333,6 @@ import {
 	Exercise,
 	ExerciseSolution,
 	ExerciseSolutionState,
-	ExerciseType,
 	getComment,
 	getVote,
 	ProgrammingExerciseType,
@@ -344,7 +343,6 @@ import { defineComponent, PropType } from "@vue/runtime-core";
 import Btn from "@/components/ui/Btn.vue";
 import TextInput from "@/components/ui/TextInput.vue";
 import Avatar from "@/components/ui/Avatar.vue";
-import { mapActions, mapState } from "vuex";
 import ExerciseSolutionComment from "./ExerciseSolutionComment.vue";
 import ProcessedTextFragment from "@/components/ui/ProcessedTextFragment.vue";
 import { courseIdMixin, coursePrivilegeMixin, mediaQueryMixin, texMixin } from "@/mixins";
@@ -354,10 +352,9 @@ import { getExerciseSolutionThreadRoute } from "./utils";
 import { getTranslatedString as _ } from "@/i18n";
 import CodeFragment from "@/components/ui/CodeFragment.vue";
 import Tooltip from "@/components/ui/Tooltip.vue";
-import CodeExecutionResults from "../CodeExecutionResults.vue";
-import { openAuthenticatedWsConnection } from "@/ws/utils";
-import Spinner from "@/components/ui/Spinner.vue";
-import { v4 as uuid4 } from "uuid";
+import { mapStores } from "pinia";
+import { useMetaStore } from "@/stores/metaStore";
+import { useMainStore } from "@/stores/mainStore";
 
 export default defineComponent({
 	name: "ExerciseSolution",
@@ -441,33 +438,28 @@ export default defineComponent({
 		};
 	},
 	methods: {
-		...mapActions("student", [
-			"addExerciseSolutionComment",
-			"addExerciseSolutionVote",
-			"setExerciseSolutionBookmark",
-		]),
-		async runCode() {
-			const taskId = uuid4();
-			const taskMessage = {
-				task_id: taskId,
-				exercise_id: this.exercise.id,
-				code: this.solution.content,
-				action: "run_code",
-			};
-			this.runningCode = true;
-			this.ws = await openAuthenticatedWsConnection(
-				"code_runner",
-				s => s.send(JSON.stringify(taskMessage)),
-				m => {
-					const payload = JSON.parse(m.data);
-					if (payload.action === "execution_results") {
-						this.executionResults = JSON.parse(payload.data);
-						this.runningCode = false;
-						this.ws?.close();
-					}
-				},
-			);
-		},
+		// async runCode() {
+		// 	const taskId = uuid4();
+		// 	const taskMessage = {
+		// 		task_id: taskId,
+		// 		exercise_id: this.exercise.id,
+		// 		code: this.solution.content,
+		// 		action: "run_code",
+		// 	};
+		// 	this.runningCode = true;
+		// 	this.ws = await openAuthenticatedWsConnection(
+		// 		"code_runner",
+		// 		s => s.send(JSON.stringify(taskMessage)),
+		// 		m => {
+		// 			const payload = JSON.parse(m.data);
+		// 			if (payload.action === "execution_results") {
+		// 				this.executionResults = JSON.parse(payload.data);
+		// 				this.runningCode = false;
+		// 				this.ws?.close();
+		// 			}
+		// 		},
+		// 	);
+		// },
 		async onVote(voteType: VoteType) {
 			if (this.voting) {
 				return;
@@ -480,7 +472,7 @@ export default defineComponent({
 						? undefined // removing vote
 						: getVote(voteType); // adding/updating vote
 
-				await this.addExerciseSolutionVote({
+				await this.mainStore.createExerciseSolutionVote({
 					courseId: this.courseId,
 					exerciseId: this.exercise.id,
 					solutionId: this.solution.id,
@@ -502,7 +494,7 @@ export default defineComponent({
 		async onAddComment() {
 			this.postingComment = true;
 			try {
-				await this.addExerciseSolutionComment({
+				await this.mainStore.createExerciseSolutionComment({
 					courseId: this.courseId,
 					exerciseId: this.exercise.id,
 					solutionId: this.solution.id,
@@ -518,7 +510,7 @@ export default defineComponent({
 		async onToggleBookmark() {
 			this.bookmarking = true;
 			try {
-				await this.setExerciseSolutionBookmark({
+				await this.mainStore.setExerciseSolutionBookmark({
 					courseId: this.courseId,
 					exerciseId: this.exercise.id,
 					solutionId: this.solution.id,
@@ -535,7 +527,7 @@ export default defineComponent({
 		},
 	},
 	computed: {
-		...mapState("shared", ["user"]),
+		...mapStores(useMetaStore, useMainStore),
 		// TODO extract to utils
 		solutionType() {
 			const code =
@@ -548,7 +540,7 @@ export default defineComponent({
 			return this.solution.user?.full_name ?? _("exercise_solution.default_author");
 		},
 		isOwnSolution(): boolean {
-			return (this.solution.user?.id ?? "") == this.user.id;
+			return (this.solution.user?.id ?? "") == this.metaStore.user.id;
 		},
 		canEdit(): boolean {
 			return this.isOwnSolution || this.hasAnyPrivileges();
@@ -575,8 +567,6 @@ export default defineComponent({
 		CopyToClipboard,
 		CodeFragment,
 		Tooltip,
-		CodeExecutionResults,
-		Spinner,
 	},
 });
 </script>

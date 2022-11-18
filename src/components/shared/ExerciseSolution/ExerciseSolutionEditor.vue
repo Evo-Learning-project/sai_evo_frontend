@@ -56,11 +56,10 @@
 					/>
 					<CodeEditor
 						v-else
-						:showRunButton="false && true"
+						:showRunButton="false"
 						:runCoolDown="runCoolDown"
 						:running="runningCode || runCoolDown > 0"
 						:size="'lg'"
-						@run="runCode()"
 						:modelValue="modelValue.content"
 						@update:modelValue="onUpdate('content', $event)"
 						:language="editorType"
@@ -162,8 +161,6 @@ import Btn from "@/components/ui/Btn.vue";
 import CloudSaveStatus from "@/components/ui/CloudSaveStatus.vue";
 import { mediaQueryMixin, texMixin } from "@/mixins";
 import CodeEditor from "@/components/ui/CodeEditor.vue";
-import { v4 as uuid4 } from "uuid";
-import { openAuthenticatedWsConnection } from "@/ws/utils";
 import FullExercise from "../FullExercise.vue";
 import { ProgrammingExerciseTabs, programmingExerciseTabsOptions } from "@/const";
 import CodeExecutionResults from "../CodeExecutionResults.vue";
@@ -228,36 +225,36 @@ export default defineComponent({
 					: this.modelValue.state,
 			);
 		},
-		async runCode() {
-			const taskId = uuid4();
-			const taskMessage = {
-				task_id: taskId,
-				exercise_id: this.exercise.id,
-				code: this.modelValue.content,
-				action: "run_code",
-			};
-			this.runCoolDown = RUN_COOL_DOWN;
-			this.intervalHandle = setInterval(() => {
-				this.runCoolDown--;
-				if (this.runCoolDown === 0) {
-					clearInterval(this.intervalHandle as number);
-					this.intervalHandle = null;
-				}
-			}, 1000);
-			this.runningCode = true;
-			this.ws = await openAuthenticatedWsConnection(
-				"code_runner",
-				s => s.send(JSON.stringify(taskMessage)),
-				m => {
-					const payload = JSON.parse(m.data);
-					if (payload.action === "execution_results") {
-						this.executionResults = JSON.parse(payload.data);
-						this.runningCode = false;
-						this.currentTab = ProgrammingExerciseTabs.EXECUTION_RESULTS;
-					}
-				},
-			);
-		},
+		// async runCode() {
+		// 	const taskId = uuid4();
+		// 	const taskMessage = {
+		// 		task_id: taskId,
+		// 		exercise_id: this.exercise.id,
+		// 		code: this.modelValue.content,
+		// 		action: "run_code",
+		// 	};
+		// 	this.runCoolDown = RUN_COOL_DOWN;
+		// 	this.intervalHandle = setInterval(() => {
+		// 		this.runCoolDown--;
+		// 		if (this.runCoolDown === 0) {
+		// 			clearInterval(this.intervalHandle as number);
+		// 			this.intervalHandle = null;
+		// 		}
+		// 	}, 1000);
+		// 	this.runningCode = true;
+		// 	this.ws = await openAuthenticatedWsConnection(
+		// 		"code_runner",
+		// 		s => s.send(JSON.stringify(taskMessage)),
+		// 		m => {
+		// 			const payload = JSON.parse(m.data);
+		// 			if (payload.action === "execution_results") {
+		// 				this.executionResults = JSON.parse(payload.data);
+		// 				this.runningCode = false;
+		// 				this.currentTab = ProgrammingExerciseTabs.EXECUTION_RESULTS;
+		// 			}
+		// 		},
+		// 	);
+		// },
 	},
 	data() {
 		return {

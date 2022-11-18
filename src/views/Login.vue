@@ -159,6 +159,8 @@ import { loadingMixin } from "@/mixins";
 import { isDemoMode, logAnalyticsEvent, redirectToMainView } from "@/utils";
 import { getTranslatedString } from "@/i18n";
 import { demoLoginTourSteps, tourOptions } from "@/const";
+import { mapStores } from "pinia";
+import { useMetaStore } from "@/stores/metaStore";
 
 const DEMO_TOUR_KEY = "demo_tour_taken";
 
@@ -203,8 +205,8 @@ export default defineComponent({
 						}
 						this.user = googleUser.getBasicProfile().getEmail();
 						const token = googleUser.getAuthResponse().access_token;
-						await this.$store.dispatch("shared/convertToken", token);
-						await this.$store.dispatch("shared/getUserData");
+						await this.metaStore.convertToken(token);
+						await this.metaStore.getUserData();
 						redirectToMainView();
 						this.setErrorNotification(getTranslatedString("misc.logged_in"), true);
 					},
@@ -228,12 +230,12 @@ export default defineComponent({
 		};
 	},
 	created() {
-		//this.$store.commit("shared/resetToken");
-		if (this.$store.getters["shared/isAuthenticated"]) {
+		if (this.metaStore.isAuthenticated) {
 			this.redirectToMainView();
 		}
 	},
 	computed: {
+		...mapStores(useMetaStore),
 		googleOauthReady() {
 			return (this as any).Vue3GoogleOauth.isInit;
 		},

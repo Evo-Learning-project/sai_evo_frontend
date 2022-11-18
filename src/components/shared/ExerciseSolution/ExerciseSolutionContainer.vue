@@ -94,7 +94,6 @@ import {
 	Exercise as IExercise,
 	ExerciseSolution as IExerciseSolution,
 	ExerciseSolutionState,
-	ExerciseType,
 	getBlankExerciseSolution,
 	ProgrammingExerciseType,
 	programmingExerciseTypeToLanguageId,
@@ -103,18 +102,17 @@ import { defineComponent, PropType } from "@vue/runtime-core";
 import Btn from "@/components/ui/Btn.vue";
 import ExerciseSolution from "./ExerciseSolution.vue";
 import ExerciseSolutionEditor from "./ExerciseSolutionEditor.vue";
-import { createExerciseSolution } from "@/api/exercises";
 import { courseIdMixin, loadingMixin, savingMixin } from "@/mixins";
 import { logAnalyticsEvent, setErrorNotification } from "@/utils";
-import Exercise from "../Exercise/Exercise.vue";
 import { AutoSaveManager } from "@/autoSave";
-import { mapActions, mapMutations } from "vuex";
 import {
 	EXERCISE_SOLUTION_AUTO_SAVE_DEBOUNCE_FIELDS,
 	EXERCISE_SOLUTION_AUTO_SAVE_DEBOUNCE_TIME_MS,
 } from "@/const";
-//import FullExercise from "../FullExercise.vue";
 import { getTranslatedString } from "@/i18n";
+import { mapStores } from "pinia";
+import { useMetaStore } from "@/stores/metaStore";
+import { useMainStore } from "@/stores/mainStore";
 export default defineComponent({
 	name: "ExerciseSolutionContainer",
 	props: {
@@ -169,9 +167,6 @@ export default defineComponent({
 	},
 	mixins: [courseIdMixin, savingMixin, loadingMixin],
 	methods: {
-		...mapActions("shared", ["updateExerciseChild"]),
-		...mapActions("student", ["addExerciseSolution", "deleteExerciseSolution"]),
-		...mapMutations("student", ["setExerciseSolution"]),
 		onClose() {
 			this.editingSolutionId = null;
 			this.editingSolutionDeepCopy = null;
@@ -243,22 +238,19 @@ export default defineComponent({
 					if ("state" in changes) {
 						this.publishing = true;
 					}
-					await this.updateExerciseChild({
-						childType: "solution",
+					await this.mainStore.updateExerciseSolution({
 						courseId: this.courseId,
 						exerciseId: this.exercise.id,
-						payload: { ...solution, ...changes },
-						reFetch: false,
+						solution: { ...solution, ...changes },
 					});
 					if ("state" in changes) {
-						this.onDraftSolutionSubmitted();
+						this.onSolutionStateChange();
 					}
 				},
 				changes => {
 					this.saving = true;
 					this.savingError = false;
-					console.log("manager");
-					this.setExerciseSolution({
+					this.mainStore.setExerciseSolution({
 						exerciseId: this.exercise.id,
 						payload: {
 							...solution,
@@ -304,7 +296,7 @@ export default defineComponent({
 			}
 			await this.withLoading(
 				async () =>
-					await this.deleteExerciseSolution({
+					await this.mainStore.deleteExerciseSolution({
 						courseId: this.courseId,
 						exerciseId: this.exercise.id,
 						solutionId: solution.id,
@@ -319,7 +311,7 @@ export default defineComponent({
 			if (this.draftSolutions.length > 0) {
 				this.editingSolutionId = this.draftSolutions[0].id;
 			} else {
-				const newSolution: IExerciseSolution = await this.addExerciseSolution({
+				const newSolution = await this.mainStore.createExerciseSolution({
 					courseId: this.courseId,
 					exerciseId: this.exercise.id,
 					solution: getBlankExerciseSolution(
@@ -331,29 +323,27 @@ export default defineComponent({
 			}
 			return true;
 		},
-		onDraftSolutionSubmitted() {
+		onSolutionStateChange() {
 			this.editingSolutionId = null;
 			this.autoSaveManager = null;
-			this.$store.commit("shared/showSuccessFeedback");
+			this.metaStore.showSuccessFeedback();
 		},
 		async onDoneEditing() {
 			this.publishing = true;
 			try {
-				await this.updateExerciseChild({
-					childType: "solution",
+				await this.mainStore.updateExerciseSolution({
 					courseId: this.courseId,
 					exerciseId: this.exercise.id,
-					payload: this.editingSolutionDeepCopy,
-					reFetch: false,
+					solution: this.editingSolutionDeepCopy as IExerciseSolution,
 				});
-				this.setExerciseSolution({
+				this.mainStore.setExerciseSolution({
 					exerciseId: this.exercise.id,
-					payload: this.editingSolutionDeepCopy,
+					payload: this.editingSolutionDeepCopy as IExerciseSolution,
 				});
 				this.editingSolutionId = null;
 				this.editingSolutionDeepCopy = null;
 				this.autoSaveManager = null;
-				this.$store.commit("shared/showSuccessFeedback");
+				this.metaStore.showSuccessFeedback();
 			} catch (e) {
 				setErrorNotification(e);
 			} finally {
@@ -375,6 +365,7 @@ export default defineComponent({
 		};
 	},
 	computed: {
+		...mapStores(useMetaStore, useMainStore),
 		canShowMore() {
 			return (
 				this.allowShowMore &&
@@ -421,7 +412,6 @@ export default defineComponent({
 		Btn,
 		ExerciseSolution,
 		ExerciseSolutionEditor,
-		//FullExercise,
 	},
 });
 </script>

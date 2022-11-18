@@ -7,8 +7,6 @@ import "moment/locale/it";
 import { getTranslatedString as _ } from "./i18n";
 import { ErrorMessage } from "./interfaces";
 import router from "./router";
-import store from "./store";
-import { SharedState } from "./store/types";
 import { ExerciseState } from "./models";
 
 const EDITOR_DEBOUNCE_TIME_MS = 1500;
@@ -20,11 +18,12 @@ const SEARCH_DEBOUNCE_MAX_WAIT_MS = 1000;
 const STUDENT_DEBOUNCE_TEXT_TIME_MS = 5000;
 const STUDENT_DEBOUNCE_TEXT_MAX_WAIT_MS = 10000;
 
-export const getCurrentUserId = () =>
-	(store.state as { shared: SharedState }).shared.user.id;
+export const getCurrentUserId = () => useMetaStore().user.id;
 
 export const logOut = (showMessage = true, redirect = ""): void => {
-	store.commit("shared/resetToken");
+	const metaStore = useMetaStore();
+	metaStore.resetToken();
+
 	router.push({
 		name: "Login",
 		params: {
@@ -38,9 +37,11 @@ export const logOut = (showMessage = true, redirect = ""): void => {
 };
 
 export const redirectToMainView = (): void => {
+	const metaStore = useMetaStore();
+
 	if (router.currentRoute.value.query.redirect) {
 		router.push(router.currentRoute.value.query.redirect as string);
-	} else if ((store.state as { shared: SharedState }).shared.user.is_teacher) {
+	} else if (metaStore.user.is_teacher) {
 		router.push("/teacher/courses");
 	} else {
 		router.push("/student/courses");
@@ -102,11 +103,11 @@ export const getErrorData = (e: any, useAsIs = false): ErrorMessage => {
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const setPageWideError = (e: any) => {
+	const metaStore = useMetaStore();
 	// if the error is a 401 response, don't set the global
 	// error message to allow for redirecting to the login view
 	if (typeof e !== "object" || e?.response?.status !== 401) {
-		const sharedState = (store.state as { shared: SharedState }).shared;
-		sharedState.pageWideErrorData = getErrorData(e);
+		metaStore.pageWideErrorData = getErrorData(e);
 	}
 	console.error("setPageWideError", e);
 	throw e;
