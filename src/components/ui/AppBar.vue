@@ -18,19 +18,19 @@
 	>
 		<div class="flex items-center h-14 z-999">
 			<div
-				v-if="showToggleSideBar"
+				v-if="showCollapseSideBarButton"
 				class="flex items-center mt-4 mb-4 hidden lg:block -ml-4.5 mr-8"
 			>
 				<Btn
 					id="toggle-sidebar"
-					:tooltip="fixSideBar ? $t('misc.unfix_sidebar') : $t('misc.fix_sidebar')"
+					:tooltip="!sidebarCollapsed ? $t('misc.unfix_sidebar') : $t('misc.fix_sidebar')"
 					:variant="'icon'"
 					:outline="true"
-					@click="$emit('toggleFixSideBar')"
+					@click="$emit('toggleSidebarCollapsed')"
 					class="hidden lg:block"
 				>
 					<span class="material-icons-outlined">{{
-						fixSideBar ? "menu_open" : "menu"
+						!sidebarCollapsed ? "menu_open" : "menu"
 					}}</span>
 				</Btn>
 			</div>
@@ -90,16 +90,24 @@
 					>
 				</div>
 			</div>
-			<div class="md:hidden" id="main-student-nav-right"></div>
+			<div class="md:hidden" v-if="showMobileSidebarButton">
+				<Btn
+					:variant="'icon'"
+					:outline="true"
+					class="md:hidden"
+					@click="$emit('toggleMobileSidebar')"
+					><span class="material-icons-outlined text-darkText"> menu </span></Btn
+				>
+			</div>
 		</div>
 	</nav>
 </template>
 
 <script lang="ts">
-import { useMetaStore } from "@/stores/metaStore";
+//import { useMetaStore } from "@/stores/metaStore";
 import { isDemoMode, logAnalyticsEvent } from "@/utils";
 import { defineComponent, PropType } from "@vue/runtime-core";
-import { mapStores } from "pinia";
+//import { mapStores } from "pinia";
 import Btn from "./Btn.vue";
 import DropdownMenu from "./DropdownMenu.vue";
 import LocaleSelector from "./LocaleSelector.vue";
@@ -114,11 +122,11 @@ export default defineComponent({
 			type: Boolean,
 			default: true,
 		},
-		fixSideBar: {
+		sidebarCollapsed: {
 			type: Boolean,
 			required: true,
 		},
-		showToggleSideBar: {
+		showCollapseSideBarButton: {
 			type: Boolean,
 			required: true,
 		},
@@ -130,6 +138,20 @@ export default defineComponent({
 			type: Boolean,
 			default: true,
 		},
+		showMobileSidebarButton: {
+			type: Boolean,
+			required: true,
+		},
+	},
+	setup() {
+		// TODO temporary workaround for a werid issue: if use import like this:
+		//import { useMainStore } from "./stores/mainStore";
+		// the app won't render as useMainStore will be undefined in other components; investigate
+		const useMetaStore = require("../../stores/metaStore").useMetaStore;
+		const metaStore = useMetaStore();
+		return {
+			metaStore,
+		};
 	},
 	data() {
 		return {
@@ -145,7 +167,7 @@ export default defineComponent({
 		},
 	},
 	computed: {
-		...mapStores(useMetaStore),
+		//...mapStores(useMetaStore),
 		isDemoMode() {
 			return isDemoMode();
 		},

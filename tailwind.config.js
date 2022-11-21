@@ -125,5 +125,5 @@ module.exports = {
 		},
 	},
 	// eslint-disable-next-line @typescript-eslint/no-var-requires
-	plugins: [require("tailwindcss-ripple")()],
+	//plugins: [require("tailwindcss-ripple")()],
 };

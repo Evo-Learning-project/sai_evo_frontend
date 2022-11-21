@@ -31,6 +31,7 @@ import CourseCreationForm from "../views/teacher/CourseCreationForm.vue";
 import {
 	courseDashboardSidebarOptions,
 	courseListSidebarOptions,
+	studentDashboardSidebarOptions,
 } from "@/navigation/sidebar";
 import { getTranslatedString as _ } from "@/i18n";
 import {
@@ -279,6 +280,7 @@ const routes: Array<RouteRecordRaw> = [
 					routeTitle: _("headings.course_title"),
 					breadcrumbs: courseDashBoardBreadCrumbs,
 					hideUserInfoFromNav: true,
+					sidebarOptions: studentDashboardSidebarOptions,
 				},
 				redirect: { name: "CourseDashBoardPracticeSessionList" },
 				children: [
@@ -289,6 +291,7 @@ const routes: Array<RouteRecordRaw> = [
 						meta: {
 							routeTitle: _("student_course_dashboard.exams_you_participated_in"),
 							breadcrumbs: examsListBreadCrumbs,
+							sidebarOptions: studentDashboardSidebarOptions,
 						},
 					},
 					{
@@ -298,6 +301,7 @@ const routes: Array<RouteRecordRaw> = [
 						meta: {
 							routeTitle: _("student_course_dashboard.your_practice_events"),
 							breadcrumbs: practicesListBreadCrumbs,
+							sidebarOptions: studentDashboardSidebarOptions,
 						},
 					},
 					{
@@ -307,6 +311,7 @@ const routes: Array<RouteRecordRaw> = [
 						meta: {
 							routeTitle: _("headings.student_exercise_solution_threads"),
 							breadcrumbs: exerciseThreadsBreadCrumbs,
+							sidebarOptions: studentDashboardSidebarOptions,
 						},
 					},
 					{
@@ -316,6 +321,7 @@ const routes: Array<RouteRecordRaw> = [
 						meta: {
 							routeTitle: _("headings.student_course_leaderboard"),
 							breadcrumbs: leaderboardBreadCrumbs,
+							sidebarOptions: studentDashboardSidebarOptions,
 						},
 					},
 					{
@@ -325,6 +331,7 @@ const routes: Array<RouteRecordRaw> = [
 						meta: {
 							routeTitle: _("headings.student_favorites"),
 							breadcrumbs: studentFavoritesBreadCrumbs,
+							sidebarOptions: studentDashboardSidebarOptions,
 						},
 					},
 					{
@@ -334,6 +341,7 @@ const routes: Array<RouteRecordRaw> = [
 						meta: {
 							routeTitle: _("headings.student_exercise_solution_thread"),
 							breadcrumbs: exerciseSolutionThreadBreadCrumbs,
+							sidebarOptions: studentDashboardSidebarOptions,
 						},
 					},
 				],

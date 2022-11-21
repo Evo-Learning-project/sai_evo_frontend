@@ -1,49 +1,6 @@
 <template>
-	<div class="flex flex-col flex-grow">
-		<AppBar
-			:showToggleSideBar="false"
-			:showHelpCenterButton="false"
-			:sticky="!showSecondaryHeader"
-			:fixSideBar="false"
-			@logout="logOut()"
-		/>
-		<!-- <nav
-			:class="{ sticky: !showSecondaryHeader }"
-			class="shadow-elevation py-0.5 md:px-2 top-0 lg:px-12 bg-primary"
-			style="z-index: 1000"
-		>
-			<div class="px-4 mx-auto sm:px-6 lg:px-8">
-				<div class="flex items-center justify-between h-14">
-					<div class="flex items-center">
-						<div class="flex-shrink-0">
-							<img :class="[isDemoMode ? 'w-40 ml-2' : 'w-32 -ml-1']" :src="logoUrl" />
-						</div>
-					</div>
-					<div v-if="!$route.meta.hideUserInfoFromNav" class="">
-						<div
-							v-if="metaStore.isAuthenticated"
-							class="flex items-center ml-4 space-x-2 md:ml-6"
-						>
-							<p class="text-xs text-lightText md:text-base">
-								{{ metaStore.email }}
-							</p>
-							<p
-								@click="onShowMatEdit"
-								class="hidden text-xs cursor-pointer md:block text-lightText md:text-sm"
-							>
-								{{ metaStore.user.mat }}
-							</p>
-							<Btn @click="logOut()" :variant="'icon'" :outline="true"
-								><span class="text-lg text-lightText material-icons-outlined">
-									logout
-								</span></Btn
-							>
-						</div>
-					</div>
-					<div class="ml-auto md:hidden" id="main-student-nav-right"></div>
-				</div>
-			</div>
-		</nav> -->
+	<div class="w-full flex flex-col">
+		<!-- secondary app bar containing header and route title-->
 		<header
 			v-if="showSecondaryHeader"
 			class="
@@ -75,20 +32,28 @@
 				</div>
 			</div>
 		</header>
-		<main class="flex-grow bg-white md:px-8 lg:px-12">
+
+		<router-view class="w-full" />
+
+		<!-- main pane containing current view -->
+		<!-- <main class="w-full bg-white md:px-8">
 			<div class="h-full mx-auto lg:px-8" :class="{ 'px-4': showSecondaryHeader }">
 				<ErrorView v-if="metaStore.pageWideErrorData"></ErrorView>
+
 				<router-view class="" v-else />
-				<transition name="quick-bounce"
-					><SnackBar
+
+				<transition name="quick-bounce">
+					<SnackBar
 						class="w-full px-4"
 						v-if="metaStore.errorNotificationData"
 						:icon="metaStore.errorNotificationData.icon"
 						:message="metaStore.errorNotificationData.title"
-					></SnackBar
-				></transition>
+					/>
+				</transition>
 			</div>
-		</main>
+		</main> -->
+
+		<!-- dialog for editing mat number -->
 		<Dialog
 			:show-dialog="editingMat"
 			@no="editingMat = false"
@@ -169,9 +134,9 @@ export default defineComponent({
 			}
 			return require("../../../public/evo_logo.png");
 		},
-		sidebarOptions(): SidebarOption[] {
-			return (this.$route.meta?.sidebarOptions ?? []) as SidebarOption[];
-		},
+		// sidebarOptions(): SidebarOption[] {
+		// 	return (this.$route.meta?.sidebarOptions ?? []) as SidebarOption[];
+		// },
 		routeTitle(): string {
 			return this.replaceTitleTokens(this.$route.meta.routeTitle as string);
 		},
@@ -181,13 +146,11 @@ export default defineComponent({
 		},
 	},
 	components: {
-		ErrorView,
-		SnackBar,
+		// ErrorView,
+		// SnackBar,
 		BreadCrumbs,
-		// Btn,
 		Dialog,
 		NumberInput,
-		AppBar,
 	},
 });
 </script>

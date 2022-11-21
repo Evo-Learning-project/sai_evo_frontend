@@ -29,7 +29,7 @@
 				'hover:bg-light hover:shadow-inner': variant === 'light',
 				'text-primary bg-transparent hover:bg-primary hover:bg-opacity-5 border-primary border-1.5 ':
 					outline && variant === 'primary',
-				'text-lg font-semibold text-primary hover:bg-light ':
+				'text-lg font-medium text-primary hover:bg-light ':
 					variant === 'primary-borderless',
 				'px-6': variant === 'primary-borderless' && size !== 'xs',
 				'text-lg font-bold text-secondary hover:bg-light px-6 focus:bg-secondary-light focus:bg-opacity-30':
@@ -90,7 +90,7 @@
 			'hover:bg-light hover:shadow-inner': variant === 'light',
 			'text-primary bg-transparent hover:bg-primary hover:bg-opacity-5 border-primary border-1.5 ':
 				outline && variant === 'primary',
-			'text-lg font-semibold text-primary hover:bg-light ':
+			'text-lg font-medium text-primary hover:bg-light ':
 				variant === 'primary-borderless',
 			'px-6': variant === 'primary-borderless' && size !== 'xs',
 			'text-lg font-bold text-secondary hover:bg-light px-6 focus:bg-secondary-light focus:bg-opacity-30':

@@ -109,7 +109,7 @@ export default defineComponent({
 		window.addEventListener(
 			`${LOCALSTORAGE_DARK_THEME_KEY}-localstorage-changed`,
 			(event: any) => {
-				console.log("ev", event.detail);
+				//console.log("ev", event.detail);
 				this.updateDark(event.detail.storage);
 			},
 		);
@@ -158,10 +158,11 @@ export default defineComponent({
 			const activeTheme = value ? themeTitles[0] : themeTitles[1];
 			const removeTheme = value ? themeTitles[1] : themeTitles[0];
 			this.dark = value;
-			console.log(
-				document.querySelector(`link[title="${activeTheme}"]`),
-				document.querySelector(`link[title="${removeTheme}"]`),
-			);
+
+			// console.log(
+			// 	document.querySelector(`link[title="${activeTheme}"]`),
+			// 	document.querySelector(`link[title="${removeTheme}"]`),
+			// );
 
 			// TODO have some transition
 			document.querySelector(`link[title="${activeTheme}"]`)?.removeAttribute("disabled");

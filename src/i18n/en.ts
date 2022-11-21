@@ -1,4 +1,8 @@
 import { ExerciseState, ExerciseType, EventState, ExerciseTestCaseType } from "@/models";
+import {
+	ROUTE_TITLE_COURSE_NAME_TOKEN,
+	ROUTE_TITLE_EVENT_NAME_TOKEN,
+} from "@/navigation/const";
 
 export const en = {
 	dialog: {
@@ -12,6 +16,44 @@ export const en = {
 			"Select the tags you're interested in in order to create your practice session.",
 		rule_amount_1: "How many exercises with tag",
 		rule_amount_2: "do you want to see?",
+	},
+	headings: {
+		exercise_solution_threads: "Soluzioni esercizi " + ROUTE_TITLE_COURSE_NAME_TOKEN,
+		login: "Login",
+		course_title: ROUTE_TITLE_COURSE_NAME_TOKEN,
+		new_course: "Nuovo corso",
+		exercise_solution_thread_detail: "Discussione esercizio",
+		course_dashboard: "Dashboard " + ROUTE_TITLE_COURSE_NAME_TOKEN,
+		course_exercises: "Esercizi " + ROUTE_TITLE_COURSE_NAME_TOKEN,
+		course_exams: "Esami " + ROUTE_TITLE_COURSE_NAME_TOKEN,
+		course_permissions: "Permessi " + ROUTE_TITLE_COURSE_NAME_TOKEN,
+		course_insights: "Statistiche " + ROUTE_TITLE_COURSE_NAME_TOKEN,
+		course_list: "Corsi",
+		exam_progress: "Progresso " + ROUTE_TITLE_EVENT_NAME_TOKEN,
+		exam_results: "Risultati " + ROUTE_TITLE_EVENT_NAME_TOKEN,
+		ongoing_practice: "Practice",
+		ongoing_exam: "Esame " + ROUTE_TITLE_EVENT_NAME_TOKEN + " in corso",
+		exam_preview: "Anteprima esame",
+		review_submission: "Revisione risposte",
+		review_assessment: "Correzione risposte",
+		practice_summary: "Riepilogo esercitazione",
+		student_exercise_solution_thread: "Discussione esercizio",
+		student_exercise_solution_threads: "Esercizi popolari",
+		student_favorites: "Contenuti salvati",
+		student_course_leaderboard: "Classifica",
+	},
+	breadcrumbs: {
+		course_list: "Courses",
+		course_dashboard: ROUTE_TITLE_COURSE_NAME_TOKEN,
+		exam_participation_page: ROUTE_TITLE_EVENT_NAME_TOKEN,
+		practice_participation_page: "Practice",
+		submission_review: "Review " + ROUTE_TITLE_EVENT_NAME_TOKEN,
+		practice_review: "Review practice",
+		exam_assessment: "Assessment " + ROUTE_TITLE_EVENT_NAME_TOKEN,
+		exercise_solution_thread: "Exercise discussion",
+		exercise_solution_threads: "Popular exercises",
+		student_favorites: "Saved content",
+		student_course_leaderboard: "Leaderboard",
 	},
 	programming_exercise: {
 		open_text_popup: "Open as popup",

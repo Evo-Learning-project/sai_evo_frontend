@@ -1,411 +1,37 @@
 <template>
-	<div class="relative flex flex-col flex-grow">
+	<div class="relative flex flex-col w-full">
 		<HelpCenter
 			@startTour="startTour()"
 			@close="metaStore.setHelpCenterVisibility(false)"
 			v-if="metaStore.helpCenterOpen"
 		></HelpCenter>
-		<AppBar
-			:showToggleSideBar="true"
-			@toggleFixSideBar="toggleFixSideBar()"
-			@logout="logOut()"
-		/>
-		<!-- <nav
-			style="z-index: 100"
-			class="
-				sticky
-				hidden
-				md:block
-				top-0
-				py-0.5
-				md:px-12
-				text-gray-700
-				bg-white
-				px-4
-				shadow-elevation
-				mx-auto
-				sm:px-6
-				lg:px-8
-				w-full
-			"
-		>
-			<div class="flex items-center h-14 z-999">
-				<div class="flex items-center mt-4 mb-4 -ml-4.5">
-					<Btn
-						id="toggle-sidebar"
-						:tooltip="fixSideBar ? $t('misc.unfix_sidebar') : $t('misc.fix_sidebar')"
-						:variant="'icon'"
-						:outline="true"
-						@click="toggleFixSideBar()"
-						class="hidden lg:block"
-					>
-						<span class="material-icons-outlined">{{
-							fixSideBar ? "menu_open" : "menu"
-						}}</span>
-					</Btn>
-				</div>
-				<div class="flex items-center mr-auto lg:ml-10">
-					<img class="w-56 -ml-1" :src="logoUrl" />
-				</div>
-				<div class="">
-					<div v-if="metaStore.isAuthenticated" class="flex items-center ml-4 md:ml-6">
-						<Btn :variant="'icon'" :outline="true"
-							><span class="material-icons-outlined">brightness_4</span></Btn
-						>
-						<LocaleSelector v-if="true"></LocaleSelector>
-						<DropdownMenu
-							:placement="'left'"
-							class="text-lightText"
-							:expanded="donateExpanded"
-							@toggleExpanded="onToggleDonate()"
-							v-if="isDemoMode"
-							><template v-slot:icon>
-								<span class="material-icons-outlined text-lightText"
-									>volunteer_activism</span
-								>
-							</template>
-							<div class="w-72 text-center">
-								<h3>{{ $t("donate.donate_title") }}</h3>
-								<p class="mb-4">{{ $t("donate.donate_content") }}</p>
-								<a href="https://paypal.me/bsamusp00?country.x=IT&locale.x=it_IT">
-									<Btn>{{ $t("donate.donate_now") }}</Btn>
-								</a>
-							</div>
-						</DropdownMenu>
-						<Btn
-							:tooltip="$t('help.help_guide_label')"
-							@click="metaStore.setHelpCenterVisibility(true)"
-							id="help-center"
-							:variant="'icon'"
-							:outline="true"
-							><span class="text-lg material-icons-outlined"> help_outline </span></Btn
-						>
-						<p class="ml-4 mr-1 text-xs md:text-base">
-							{{ metaStore.email }}
-						</p>
-						<p
-							@click="onShowMatEdit"
-							class="hidden text-xs cursor-pointer md:block md:text-sm"
-						>
-							{{ metaStore.user?.mat }}
-						</p>
-						<Btn
-							:tooltip="$t('misc.logout')"
-							@click="logOut()"
-							:variant="'icon'"
-							:outline="true"
-							><span class="text-lg material-icons-outlined"> logout </span></Btn
-						>
-					</div>
-				</div>
-			</div>
-		</nav> -->
-		<div class="relative flex flex-col flex-no-wrap flex-grow md:flex-row">
-			<transition name="fade"
-				><div
-					@click="showMobileSidebar = false"
-					class="absolute z-50 w-full h-full opacity-50 bg-dark"
-					v-show="showMobileSidebar"
-				></div
-			></transition>
-			<nav
-				style="z-index: 999"
-				class="
-					sticky
-					top-0
-					flex
-					items-center
-					w-full
-					px-3
-					py-2
-					shadow-elevation-2
-					md:hidden
-					bg-primary
-				"
-			>
-				<img :class="[isDemoMode ? 'w-40' : 'w-32']" :src="logoUrl" />
-				<Btn
-					:variant="'icon'"
-					:outline="true"
-					class="ml-auto"
-					@click="showMobileSidebar = true"
-					><span class="material-icons-outlined text-lightText"> menu </span></Btn
-				>
-			</nav>
-			<!-- Sidebar starts -->
-			<!-- FIXME review shadow here and in the other two spots in this file -->
-			<div
-				:style="
-					'' +
-					(hoveringSidebar && !fixSideBar
-						? 'box-shadow: 2px 5px 5px rgba(0, 0, 0, 0.3); z-index: 50'
-						: '')
-				"
-				class="flex-col hidden h-full md:block bg-light"
-				:class="{
-					'absolute top-0': true || !fixSideBar,
-					'w-18': !hoveringSidebar && !fixSideBar,
-					'lg:w-2/12 w-4/12 hovering-sidebar': hoveringSidebar || fixSideBar,
-					'transition-width duration-200 ease-in-out': !unfixingSideBar,
-				}"
-				id="desktop-nav"
-			>
-				<div class="fixed h-full pr-2" style="width: inherit; z-index: 100">
-					<div
-						class="h-full"
-						@mouseover="onSideBarHover($event)"
-						@mouseleave="onSideBarLeave()"
-					>
-						<transition name="fade-quick">
-							<div
-								:class="[hoveringSidebar || fixSideBar ? 'opacity-100' : 'opacity-0']"
-								class="
-									flex
-									items-center
-									hidden
-									w-full
-									pl-10
-									pr-8
-									mt-4
-									overflow-visible
-									whitespace-pre
-								"
-							>
-								<img :class="[isDemoMode ? 'w-40' : 'w-32']" :src="logoUrl" /></div
-						></transition>
 
-						<transition name="fade-quick">
-							<div
-								v-if="false && metaStore.isAuthenticated"
-								:class="[hoveringSidebar || fixSideBar ? 'opacity-100' : 'opacity-0']"
-								class="
-									flex
-									items-center
-									justify-center
-									w-full
-									pl-2
-									mx-auto
-									mt-8
-									mb-4
-									space-x-1
-									text-sm
-									whitespace-pre
-									text-light
-								"
-							>
-								<p>{{ metaStore.email }}</p>
-								<Btn @click="logOut()" :variant="'icon'" :outline="true"
-									><span class="text-lg text-lightText material-icons-outlined">
-										logout
-									</span></Btn
-								>
-							</div></transition
-						>
-						<ul class="flex flex-col w-full h-full mt-6">
-							<router-link
-								v-wave="{
-									color: '#6a16f0',
-								}"
-								class="relative overflow-hidden rounded-r-full"
-								v-for="(option, index) in allowedSidebarOptions"
-								:key="'sidebar-' + option.label"
-								:to="{ name: option.routeName }"
-								:class="{
-									'mt-auto mb-44': false && index == sidebarOptions.length - 1,
-									'pl-1.25px': true || (!hoveringSidebar && !fixSideBar),
-								}"
-							>
-								<li
-									:id="'sidebar-option-' + index"
-									style="padding-top: 11px; padding-bottom: 11px"
-									class="
-										flex
-										items-center
-										justify-between
-										px-4
-										cursor-pointer
-										sidebar-link-container
-										hover:transition-colors
-										text-darkText
-										hover:bg-primary-light hover:bg-opacity-10 hover:duration-100
-									"
-									:class="{
-										'md:w-full': true || !fixSideBar,
-										'md:w-11/12': false && fixSideBar,
-										'rounded-r-full pl-5 -ml-1.25px': hoveringSidebar || fixSideBar,
-										'rounded-full ml-1': !hoveringSidebar && !fixSideBar,
-										'bg-primary-light bg-opacity-20 pointer-events-none':
-											isRouteActive(option),
-									}"
-								>
-									<div class="flex items-center space-x-2.5">
-										<span
-											:class="[
-												'text-2xl  material-icons-outlined',
-												isRouteActive(option)
-													? 'text-primary'
-													: 'opacity-60 text-darkText',
-											]"
-										>
-											{{ option.icon }}
-										</span>
-										<transition name="fade-quick">
-											<span
-												v-show="hoveringSidebar || fixSideBar"
-												class="ml-4 whitespace-pre sidebar-link-label"
-												:class="{
-													'delay-0': hoveringSidebar,
-													'text-primary font-semibold': isRouteActive(option),
-													'opacity-80': !isRouteActive(option),
-												}"
-												>{{ option.label }}</span
-											></transition
-										>
-									</div>
-								</li>
-							</router-link>
-						</ul>
-					</div>
-				</div>
-			</div>
-			<!--Mobile responsive sidebar-->
-			<div
-				style="z-index: 99999"
-				class="
-					fixed
-					flex-col
-					justify-between
-					block
-					w-9/12
-					h-full
-					overflow-y-auto
-					transition-transform
-					duration-300
-					ease-in-out
-					transform
-					md:hidden
-					bg-primary
-				"
-				id="mobile-nav"
-				:class="{
-					'-translate-x-full': !showMobileSidebar,
-					'translate-x-0 shadow-all-around': showMobileSidebar,
-				}"
-			>
-				<div class="w-full h-full px-2">
-					<div class="flex items-center w-full mt-4">
-						<img :class="[isDemoMode ? 'w-40' : 'w-32', 'mx-auto']" :src="logoUrl" />
-					</div>
-					<div
-						v-if="metaStore.isAuthenticated"
-						class="
-							flex
-							items-center
-							justify-center
-							w-full
-							mx-auto
-							mt-8
-							mb-4
-							space-x-1
-							text-sm text-light
-						"
-					>
-						<p>{{ metaStore.email }}</p>
-						<Btn @click="logOut()" :variant="'icon'" :outline="true"
-							><span class="text-lg text-lightText material-icons-outlined">
-								logout
-							</span></Btn
-						>
-					</div>
-					<ul class="flex flex-col w-full h-full mt-6">
-						<router-link
-							class="relative my-1 overflow-hidden rounded-md"
-							v-for="(option, index) in allowedSidebarOptions"
-							:key="'sidebar-' + option.label"
-							:to="{ name: option.routeName }"
-							:class="{
-								'mt-auto mb-44': false && index == sidebarOptions.length - 1,
-							}"
-						>
-							<li
-								:id="'sidebar-option-' + index"
-								class="
-									flex
-									items-center
-									justify-between
-									w-full
-									px-3
-									md:px-2
-									py-2.5
-									rounded-md
-									cursor-pointer
-									hover:transition-colors
-									text-lightText
-									hover:bg-primary-dark hover:duration-100
-								"
-								:class="{
-									'bg-primary-dark pointer-events-none': isRouteActive(option),
-								}"
-							>
-								<div class="flex items-center space-x-2.5">
-									<span class="text-2xl text-gray-200 material-icons-outlined opacity-80">
-										{{ option.icon }}
-									</span>
-									<span class="ml-4 md:inline">{{ option.label }}</span>
-								</div>
-							</li>
-						</router-link>
-					</ul>
-				</div>
-			</div>
-			<!-- Sidebar ends -->
+		<h1 v-if="routeTitle?.length > 0" class="">
+			{{ routeTitle }}
+		</h1>
 
-			<!-- Desktop -->
-			<div
-				class="flex flex-col py-6"
-				:style="
-					!fixSideBar && mediaQueryMd
-						? 'width: 97%; padding-left: ' +
-						  Math.max(routerViewPaddingLeft + 30, 100) +
-						  'px; padding-right: 30px'
-						: (fixSideBar && mediaQueryMd
-								? 'padding-left: calc(16.66667% + 30px); width: 100%; padding-right: 30px'
-								: '') +
-						  (!mediaQueryMd
-								? 'width: 100%; padding-left: 12px; padding-right: 12px'
-								: '')
-				"
-				:class="{
-					// TODO REMOVE
-					'mx-auto px-2': !fixSideBar,
-					'md:w-10/12 mx-auto md:px-10': fixSideBar,
-				}"
-			>
+		<router-view class=""></router-view>
+
+		<!-- <div class="relative flex flex-col flex-no-wrap flex-grow md:flex-row">
+			<div class="flex flex-col py-6 lg:px-10 px-4 flex-grow">
 				<h1 v-if="routeTitle?.length > 0" class="">
 					{{ routeTitle }}
 				</h1>
+
 				<ErrorView v-if="!!metaStore.pageWideErrorData"></ErrorView>
+
 				<router-view v-else class="flex-grow"></router-view>
-				<transition name="quick-bounce"
-					><SnackBar
+
+				<transition name="quick-bounce">
+					<SnackBar
 						class="w-full px-4"
 						v-if="metaStore.errorNotificationData"
 						:icon="metaStore.errorNotificationData.icon"
 						:message="metaStore.errorNotificationData.title"
-					></SnackBar
-				></transition>
+					/>
+				</transition>
 			</div>
-		</div>
-		<!-- <v-tour
-			name="helpCenterTour"
-			:steps="teacherTourSteps"
-			:options="tourOptions"
-		></v-tour> -->
-		<!-- <v-tour
-			name="newSideBarTour"
-			:steps="newSidebarHelpCenterTourSteps"
-			:options="tourOptions"
-		></v-tour> -->
+		</div> -->
 	</div>
 </template>
 
@@ -456,7 +82,8 @@ export default defineComponent({
 				localStorage.getItem(LOCAL_STORAGE_FIX_SIDEBAR_KEY) ?? "false",
 			);
 			this.unfixingSideBar = true;
-			this.fixSideBar = fixSideBar;
+			// TODO adjust all paddings
+			this.fixSideBar = true; //!fixSideBar;
 			this.$nextTick(() => (this.unfixingSideBar = false));
 		}, 1);
 		// adjust router view padding and width according to screen size breakpoint
@@ -562,13 +189,9 @@ export default defineComponent({
 		},
 	},
 	components: {
-		ErrorView,
-		SnackBar,
-		Btn,
+		// ErrorView,
+		// SnackBar,
 		HelpCenter,
-		// LocaleSelector,
-		// DropdownMenu,
-		AppBar,
 	},
 });
 </script>

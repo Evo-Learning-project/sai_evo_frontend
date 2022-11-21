@@ -12,6 +12,11 @@ export const internalSidebarOptionsToSidebarMenuOptions = (opts: SidebarOption[]
 			class: "material-icons-outlined",
 			text: o.icon ?? "",
 		},
+		children: o.children?.map(c => ({
+			href: {
+				name: c,
+			},
+		})),
 		// child: (o.children ?? []).flatMap(c =>
 		// 	internalSidebarOptionsToSidebarMenuOptions([
 		// 		{ routeName: c, label: "", requiredPrivileges: [] },
