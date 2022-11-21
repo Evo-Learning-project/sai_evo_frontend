@@ -31,6 +31,7 @@ import CourseCreationForm from "../views/teacher/CourseCreationForm.vue";
 import {
 	courseDashboardSidebarOptions,
 	courseListSidebarOptions,
+	studentCourseListSidebarOptions,
 	studentDashboardSidebarOptions,
 } from "@/navigation/sidebar";
 import { getTranslatedString as _ } from "@/i18n";
@@ -261,6 +262,7 @@ const routes: Array<RouteRecordRaw> = [
 				meta: {
 					routeTitle: _("headings.course_list"),
 					hideBreadcrumbs: true,
+					sidebarOptions: studentCourseListSidebarOptions,
 				},
 			},
 			// {

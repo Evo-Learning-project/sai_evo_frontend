@@ -1,5 +1,5 @@
 <template>
-	<div class="relative flex flex-col">
+	<div class="relative flex flex-col flex-grow">
 		<!-- insights button -->
 		<div v-if="!firstLoading && resultsMode" class="z-50 flex flex-col mb-2 -mt-8">
 			<router-link class="ml-auto" :to="{ name: 'ExamStats' }">

@@ -25,6 +25,15 @@ export const courseListSidebarOptions: SidebarOption[] = [
 	},
 ];
 
+export const studentCourseListSidebarOptions: SidebarOption[] = [
+	{
+		label: _("sidebar_labels.course_list_courses"),
+		icon: "list",
+		routeName: "StudentCourseList",
+		requiredPrivileges: [],
+	},
+];
+
 export const courseDashboardSidebarOptions: SidebarOption[] = [
 	{
 		label: _("sidebar_labels.course_dashboard_dashboard"),

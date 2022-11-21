@@ -12,17 +12,40 @@
 		</transition>
 		<div class="flex flex-col flex-grow">
 			<!-- top app bar -->
-			<AppBar
-				:showCollapseSideBarButton="showSidebar"
-				:showMobileSidebarButton="showSidebar"
-				@toggleSidebarCollapsed="onToggleCollapseSidebar()"
-				@toggleMobileSidebar="onToggleMobileSidebar()"
-				:showHelpCenterButton="showHelpCenterButton"
-				:showLocaleSelector="showLocaleSelector"
-				:sidebarCollapsed="sidebarCollapsed"
-				@logout="logOut()"
-				:sticky="!showSecondaryHeader"
-			/>
+			<div class="sticky top-0" style="z-index: 1000">
+				<AppBar
+					:showCollapseSideBarButton="showSidebar"
+					:showMobileSidebarButton="showSidebar"
+					@toggleSidebarCollapsed="onToggleCollapseSidebar()"
+					@toggleMobileSidebar="onToggleMobileSidebar()"
+					:showHelpCenterButton="showHelpCenterButton"
+					:showLocaleSelector="showLocaleSelector"
+					:sidebarCollapsed="sidebarCollapsed"
+					@logout="logOut()"
+					:sticky="false"
+				/>
+				<header
+					style="min-height: 1.75rem"
+					v-if="showSecondaryHeader"
+					class="shadow-elevation mb-4 bg-gray-100 flex items-center"
+				>
+					<div class="flex w-full px-4 mx-auto md:items-center sm:px-6 lg:px-8">
+						<div class="md:items-center md:flex-row">
+							<!-- <h2 class="mb-0 text-lg md:mr-6 md:text-2xl">
+						{{ routeTitle }}
+					</h2> -->
+							<BreadCrumbs
+								v-if="$route.meta?.breadcrumbs && !$route.meta?.hideBreadcrumbs"
+								:route="$route"
+								class="mt-1 md:ml-0"
+							></BreadCrumbs>
+						</div>
+						<div class="flex ml-auto md:w-80">
+							<div class="ml-auto" id="main-student-header-right"></div>
+						</div>
+					</div>
+				</header>
+			</div>
 
 			<!-- main pane containing sidebar & current view-->
 			<div class="flex relative flex-grow">
@@ -164,7 +187,7 @@
 					:style="
 						showSidebar
 							? sidebarCollapsed && mediaQueryMd
-								? 'width: 97%; padding-left: ' +
+								? 'width: 100%; padding-left: ' +
 								  Math.max(routerViewPaddingLeft + 30, 100) +
 								  'px; padding-right: 30px'
 								: (!sidebarCollapsed && mediaQueryMd
@@ -234,6 +257,8 @@ import AppBar from "./components/ui/AppBar.vue";
 import SnackBar from "./components/ui/SnackBar.vue";
 import ErrorView from "./views/shared/ErrorView.vue";
 import Btn from "./components/ui/Btn.vue";
+import { Breadcrumbs } from "@sentry/browser/dist/integrations";
+import BreadCrumbs from "./components/ui/BreadCrumbs.vue";
 
 //import { typesetTex } from "./utils";
 const SIDEBAR_COLLASPED_LOCALSTORAGE = "sidebar_collapsed";
@@ -305,6 +330,7 @@ export default defineComponent({
 		SnackBar,
 		ErrorView,
 		Btn,
+		BreadCrumbs,
 	},
 	async created() {
 		if (this.metaStore.isAuthenticated) {
@@ -445,7 +471,8 @@ export default defineComponent({
 			// hide header in routes that have a sidebar
 			return (
 				!this.$route.matched.map(m => m.name).includes("StudentCourseDashboard") &&
-				!this.isTeacherRoute
+				!this.isTeacherRoute &&
+				this.$route.name !== "StudentCourseList"
 			);
 		},
 	},

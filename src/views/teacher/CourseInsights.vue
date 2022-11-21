@@ -1,5 +1,5 @@
 <template>
-	<div class="relative flex flex-col">
+	<div class="relative flex flex-col flex-grow">
 		<div class="-mt-4 flex w-full flex-col">
 			<!-- exam checkboxes-->
 			<div

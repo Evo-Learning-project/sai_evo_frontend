@@ -1,26 +1,23 @@
 <template>
 	<div class="w-full flex flex-col">
 		<!-- secondary app bar containing header and route title-->
-		<header
+		<!-- <header
 			v-if="showSecondaryHeader"
 			class="
 				sticky
-				top-0
-				z-50
-				mb-6
-				shadow
+				top-20
+				z-20
+				mb-4
 				bg-light bg-opacity-100 bg-fallback-firefox
-				md:px-2
+				md:-mx-10 md:-mt-4
 				backdrop-blur-sm backdrop-filter
 			"
 		>
-			<div
-				class="flex bg-light w-full px-4 py-4 mx-auto md:items-center sm:px-18 lg:px-20"
-			>
+			<div class="flex bg-light w-full px-4 mx-auto md:items-center sm:px-18 lg:px-20">
 				<div class="md:items-center md:flex-row">
-					<h2 class="mb-0 text-lg md:mr-6 md:text-2xl">
+					 <h2 class="mb-0 text-lg md:mr-6 md:text-2xl">
 						{{ routeTitle }}
-					</h2>
+					</h2> 
 					<BreadCrumbs
 						v-if="!$route.meta.hideBreadcrumbs"
 						:route="$route"
@@ -31,7 +28,7 @@
 					<div class="ml-auto" id="main-student-header-right"></div>
 				</div>
 			</div>
-		</header>
+		</header> -->
 
 		<router-view class="w-full" />
 
@@ -148,7 +145,7 @@ export default defineComponent({
 	components: {
 		// ErrorView,
 		// SnackBar,
-		BreadCrumbs,
+		//BreadCrumbs,
 		Dialog,
 		NumberInput,
 	},

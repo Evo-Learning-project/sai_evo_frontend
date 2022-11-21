@@ -156,7 +156,12 @@ import { inject, toRefs } from "vue";
 import Spinner from "@/components/ui/Spinner.vue";
 import { defineComponent } from "@vue/runtime-core";
 import { loadingMixin } from "@/mixins";
-import { isDemoMode, logAnalyticsEvent, redirectToMainView } from "@/utils";
+import {
+	isDemoMode,
+	logAnalyticsEvent,
+	redirectToMainView,
+	setErrorNotification,
+} from "@/utils";
 import { getTranslatedString } from "@/i18n";
 import { demoLoginTourSteps, tourOptions } from "@/const";
 import { mapStores } from "pinia";
@@ -189,7 +194,6 @@ export default defineComponent({
 	},
 	mixins: [loadingMixin],
 	methods: {
-		redirectToMainView,
 		onTourFinish() {
 			this.disableLogin = false;
 			localStorage.setItem(DEMO_TOUR_KEY, "true");
@@ -207,8 +211,11 @@ export default defineComponent({
 						const token = googleUser.getAuthResponse().access_token;
 						await this.metaStore.convertToken(token);
 						await this.metaStore.getUserData();
+						console.log("main", redirectToMainView, "err", setErrorNotification);
+
 						redirectToMainView();
-						this.setErrorNotification(getTranslatedString("misc.logged_in"), true);
+						// TODO if you use this.setErroNotification, this is undefined - investigate (hint: it has to do something with the mixin and possibily the store)
+						setErrorNotification(getTranslatedString("misc.logged_in"), true);
 					},
 					isDemoMode() ? this.redirectToDemoPage : this.setErrorNotification,
 				);
@@ -231,7 +238,7 @@ export default defineComponent({
 	},
 	created() {
 		if (this.metaStore.isAuthenticated) {
-			this.redirectToMainView();
+			redirectToMainView();
 		}
 	},
 	computed: {

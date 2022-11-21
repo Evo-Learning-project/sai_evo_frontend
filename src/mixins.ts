@@ -108,8 +108,6 @@ export const loadingMixin = {
 			onError?: (e?: unknown) => unknown,
 			onSuccess?: () => void,
 		) {
-			const sharedState = useMetaStore();
-
 			(this as any).metaStore.loading = true;
 			try {
 				const ret = await callback();
