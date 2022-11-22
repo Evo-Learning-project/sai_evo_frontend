@@ -1,6 +1,6 @@
 <template>
 	<div class="h-full pb-4">
-		<div v-if="firstLoading" class="mt-4">
+		<div v-if="metaStore.firstLoading" class="mt-4">
 			<SlotSkeleton />
 			<SlotSkeleton />
 		</div>
@@ -113,6 +113,7 @@
 				>
 			</div>
 		</div>
+		<!-- <div v-else>error</div> -->
 	</div>
 </template>
 
@@ -144,10 +145,9 @@ export default defineComponent({
 	async created() {
 		await this.withFirstLoading(async () => {
 			await this.mainStore.getCourses(); // TODO is this necessary?
-			await this.mainStore.getEvent({
+			await this.mainStore.getEventPreview({
 				courseId: this.courseId,
 				eventId: this.eventId,
-				includeDetails: true,
 			});
 		});
 

@@ -68,6 +68,7 @@ const routes: Array<RouteRecordRaw> = [
 				name: "Login",
 				component: Login,
 			},
+			// TODO move CourseList here
 		],
 	},
 	{
@@ -90,7 +91,7 @@ const routes: Array<RouteRecordRaw> = [
 				name: "TeacherCourseList",
 				component: CourseList,
 				meta: {
-					teachersOnly: true,
+					requireTeacher: true,
 					routeTitle: _("headings.course_list"),
 					sidebarOptions: courseListSidebarOptions,
 					tags: ["general"],
@@ -101,7 +102,7 @@ const routes: Array<RouteRecordRaw> = [
 				name: "CourseCreationForm",
 				component: CourseCreationForm,
 				meta: {
-					teachersOnly: true,
+					requireTeacher: true,
 					routeTitle: _("headings.new_course"),
 					sidebarOptions: courseListSidebarOptions,
 					tags: ["general"],
@@ -265,15 +266,6 @@ const routes: Array<RouteRecordRaw> = [
 					sidebarOptions: studentCourseListSidebarOptions,
 				},
 			},
-			// {
-			// 	path: "courses/:courseId",
-			// 	name: "StudentCourseDashboard",
-			// 	component: StudentCourseDashboard,
-			// 	meta: {
-			// 		routeTitle: _("headings.course_title"),
-			// 		breadcrumbs: courseDashBoardBreadCrumbs,
-			// 	},
-			// },
 			{
 				path: "courses/:courseId",
 				name: "StudentCourseDashboard",
@@ -447,7 +439,8 @@ router.beforeEach((to, from, next) => {
 	}
 	if (!metaStore.isAuthenticated && to.name !== "Login") {
 		next({ name: "Login", query: { redirect: to.fullPath } });
-	} else if (to.meta.teachersOnly && !metaStore.user.is_teacher) {
+	} else if (to.meta.requireTeacher && !metaStore.user.is_teacher) {
+		// TODO redirect to CourseList
 		next({ name: "StudentCourseList" });
 	} else {
 		next();

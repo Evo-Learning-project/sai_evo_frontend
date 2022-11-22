@@ -8,6 +8,7 @@ export interface SidebarOption {
 	children?: string[];
 	icon?: string;
 	requiredPrivileges: CoursePrivilege[];
+	requiresTeacher?: boolean;
 }
 
 export const courseListSidebarOptions: SidebarOption[] = [
