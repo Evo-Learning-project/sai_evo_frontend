@@ -57,14 +57,22 @@
 		</div>
 
 		<!-- body -->
-		<div class="mx-18 mt-8">
-			<ProcessedTextFragment :value="node.body" />
-		</div>
+		<div class="mx-18">
+			<div class="mt-8">
+				<ProcessedTextFragment :value="node.body" />
+			</div>
 
-		<!-- children -->
-		<div>
-			<div v-for="child in children" :key="child.id">
-				<CourseTreeNode v-bind="$props" :node="child"></CourseTreeNode>
+			<!-- children -->
+			<div class="mt-12">
+				<div v-if="localLoading">
+					<SlotSkeleton />
+					<SlotSkeleton />
+				</div>
+				<div class="grid grid-cols-2 gap-8">
+					<div class="" v-for="child in children" :key="child.id">
+						<CourseTreeNode v-bind="$props" :node="child"></CourseTreeNode>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -95,8 +103,20 @@ export default defineComponent({
 		},
 		...nodeProps,
 	},
-	methods: {},
-	computed: {},
+	created() {
+		this.$emit("loadChildren");
+	},
+	methods: {
+		onEdit() {
+			console.log("edit");
+		},
+	},
+	computed: {
+		permalink() {
+			// TODO implement generic permalink for any node type
+			return "";
+		},
+	},
 	components: {
 		Timestamp,
 		ProcessedTextFragment,

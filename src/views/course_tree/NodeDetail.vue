@@ -1,5 +1,11 @@
 <template>
-	<component :is="componentName" v-bind="passDownProps" :node="node"></component>
+	<component
+		@loadChildren="onLoadChildren"
+		:children="nodeChildren"
+		:is="componentName"
+		v-bind="passDownProps"
+		:node="node"
+	></component>
 </template>
 
 <script lang="ts">
@@ -38,11 +44,28 @@ export default defineComponent({
 			}),
 		);
 	},
-	methods: {},
+	methods: {
+		onEdit() {
+			console.log("edit");
+		},
+		async onLoadChildren() {
+			console.log("loading children!");
+			await this.withLocalLoading(async () => {
+				await this.mainStore.getCourseTreeNodeChildren({
+					courseId: this.courseId,
+					nodeId: this.nodeId,
+					fromFirstPage: true,
+				});
+			});
+		},
+	},
 	computed: {
 		...mapStores(useMainStore),
 		node() {
 			return this.mainStore.currentCourseTreeNode; // this.mainStore.getCourseTreeNodeById(this.nodeId);
+		},
+		nodeChildren() {
+			return this.mainStore.paginatedChildrenByNodeId[this.node?.id ?? ""]?.data ?? [];
 		},
 		passDownProps() {
 			return { ...this.$props, canEdit: this.canEdit };

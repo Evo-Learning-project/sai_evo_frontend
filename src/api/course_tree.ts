@@ -27,7 +27,7 @@ export async function getNodeChildren(
 	pageNumber: number,
 ): Promise<PaginatedData<CourseTreeNode>> {
 	const response = await axios.get(
-		`/courses/${courseId}/nodes/${nodeId}/?page=${pageNumber}`,
+		`/courses/${courseId}/nodes/${nodeId}/children/?page=${pageNumber}`,
 	);
 	return convertPaginatedResponseToLocalPaginatedData(response.data, pageNumber);
 }

@@ -40,7 +40,7 @@
 			</div>
 			<div class="flex flex-col -space-y-2">
 				<router-link :to="{ name: 'NodeDetail', params: { nodeId: node.id } }">
-					<h3 class="mb-0 hover:text-primary hover:underline">{{ node.title }}</h3>
+					<h2 class="mb-0 hover:text-primary hover:underline">{{ node.title }}</h2>
 				</router-link>
 				<Timestamp :date-only="true" class="text-sm text-muted" :value="node.created" />
 			</div>

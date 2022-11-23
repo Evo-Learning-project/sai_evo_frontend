@@ -1,7 +1,11 @@
 <template>
 	<div>
 		<div class="my-4" v-for="node in topLevelNodes" :key="node.id">
-			<CourseTreeNode :can-edit="canEditNodes" :node="node" />
+			<CourseTreeNode
+				@loadChildren="onLoadChildren(node)"
+				:canEdit="canEditNodes"
+				:node="node"
+			/>
 		</div>
 	</div>
 </template>
@@ -28,7 +32,11 @@ export default defineComponent({
 	data() {
 		return {};
 	},
-	methods: {},
+	methods: {
+		onLoadChildren(node) {
+			console.log("course tree on load children");
+		},
+	},
 	computed: {
 		...mapStores(useMainStore, useMetaStore),
 		topLevelNodes() {
