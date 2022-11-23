@@ -68,6 +68,11 @@ import {
 	voteExerciseSolution,
 } from "@/api";
 import {
+	getCourseNode,
+	getCourseTopLevelNodes,
+	getNodeChildren,
+} from "@/api/course_tree";
+import {
 	deleteByIdFromPaginatedData,
 	prependToPaginatedData,
 	updatePaginatedData,
@@ -118,13 +123,14 @@ import {
 	TemplateRuleIdActionPayload,
 	TemplateIdPayload,
 	TemplateRuleClauseIdActionPayload,
+	CourseTreeNodeIdActionPayload,
 } from "@/store/types";
 import { defineStore } from "pinia";
 
 export const useMainStore = defineStore("main", {
 	state: () => ({
 		courses: [] as Course[], // global list of courses
-		paginatedCourseTreeNodes: null as null | PaginatedData<CourseTreeNode>,
+		paginatedTopLevelCourseTreeNodes: null as null | PaginatedData<CourseTreeNode>,
 		tags: [] as Tag[], // tags of current course
 		users: [] as User[], // users currently displayed (e.g. course insights page)
 		paginatedExercises: {
@@ -154,6 +160,8 @@ export const useMainStore = defineStore("main", {
 
 		// event participation currently displayed (e.g. during an exam or when reviewing answers)
 		currentEventParticipation: null as EventParticipation | null,
+		// course tree node currently viewed in detail mode
+		currentCourseTreeNode: null as CourseTreeNode | null,
 
 		// event currently being edited
 		editingEvent: null as Event | null, // ! see if this is really necessary here
@@ -221,8 +229,80 @@ export const useMainStore = defineStore("main", {
 				.map(e => [e, ...(e.sub_slots ?? [])])
 				.flat(10);
 		},
+		/* Course tree */
+		flatCourseTreeNodes: state => {
+			const ret = [...(state.paginatedTopLevelCourseTreeNodes?.data ?? [])];
+			// flatten children
+			Object.values(state.paginatedChildrenByNodeId).forEach(p => {
+				const children = p.data;
+				ret.push(...children);
+			});
+			return ret;
+		},
+		getCourseTreeNodeById() {
+			return (nodeId: string) => this.flatCourseTreeNodes.find(n => n.id == nodeId);
+		},
 	},
 	actions: {
+		/** Course tree */
+		async getCourseTreeNodeDetail({
+			courseId,
+			nodeId,
+		}: CourseIdActionPayload & CourseTreeNodeIdActionPayload) {
+			const node = await getCourseNode(courseId, nodeId);
+			this.currentCourseTreeNode = node;
+		},
+		async getCourseTopLevelNodes({
+			courseId,
+			fromFirstPage,
+		}: CourseIdActionPayload & {
+			fromFirstPage: boolean;
+		}) {
+			const nodes = await getCourseTopLevelNodes(
+				courseId,
+				fromFirstPage ? 1 : (this.paginatedTopLevelCourseTreeNodes?.pageNumber ?? 0) + 1,
+			);
+			if (fromFirstPage || !this.paginatedTopLevelCourseTreeNodes) {
+				this.paginatedTopLevelCourseTreeNodes = nodes;
+			} else {
+				this.paginatedTopLevelCourseTreeNodes = updatePaginatedData(
+					this.paginatedTopLevelCourseTreeNodes,
+					nodes,
+					false,
+				);
+			}
+			return !nodes.isLastPage;
+		},
+		async getCourseTreeNodeChildren({
+			courseId,
+			nodeId,
+			fromFirstPage,
+		}: CourseIdActionPayload &
+			CourseTreeNodeIdActionPayload & {
+				fromFirstPage: boolean;
+			}) {
+			const existingChildren = this.paginatedChildrenByNodeId[nodeId] ?? {
+				count: 0,
+				data: [],
+				isLastPage: true,
+				pageNumber: 1,
+			};
+			const nodes = await getNodeChildren(
+				courseId,
+				nodeId,
+				fromFirstPage ? 1 : existingChildren.pageNumber + 1,
+			);
+			if (fromFirstPage || !this.paginatedChildrenByNodeId[nodeId]) {
+				this.paginatedChildrenByNodeId[nodeId] = nodes;
+			} else {
+				this.paginatedChildrenByNodeId[nodeId] = updatePaginatedData(
+					this.paginatedChildrenByNodeId[nodeId],
+					nodes,
+					false,
+				);
+			}
+			return !nodes.isLastPage;
+		},
 		/** Previous shared mutations */
 		setCourse(course: Course) {
 			const target = this.courses.find(c => c.id == course.id);

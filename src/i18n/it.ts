@@ -963,6 +963,9 @@ export const it = {
 		500: "Si è verificato un errore interno",
 		unknown_error: "Si è verificato un errore sconosciuto",
 	},
+	course_tree: {
+		back_to_tree: "Torna al materiale",
+	},
 	breadcrumbs: {
 		course_list: "Corsi",
 		course_dashboard: ROUTE_TITLE_COURSE_NAME_TOKEN,

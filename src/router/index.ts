@@ -12,6 +12,7 @@ import FavoriteContentsList from "../views/student/CourseDashboard/FavoriteConte
 //import StudentCourseDashboard from "../views/student/CourseDashboard.vue";
 import CourseExercises from "../views/teacher/CourseExercises.vue";
 import CourseTree from "../views/course_tree/CourseTree.vue";
+import NodeDetail from "../views/course_tree/NodeDetail.vue";
 import CourseExams from "../views/teacher/CourseExams.vue";
 import CourseInsights from "../views/teacher/CourseInsights.vue";
 import CoursePermissions from "../views/teacher/CoursePermissions.vue";
@@ -121,11 +122,21 @@ const routes: Array<RouteRecordRaw> = [
 			},
 			/* TODO rework routes */
 			{
-				path: "courses/:courseId/nodes",
+				path: "courses/:courseId/material",
 				name: "CourseTree",
 				component: CourseTree,
 				meta: {
-					routeTitle: _("headings.course_permissions"),
+					routeTitle: _("headings.course_tree"),
+					sidebarOptions: courseDashboardSidebarOptions,
+					tags: ["permissions"],
+				},
+			},
+			{
+				path: "courses/:courseId/material/:nodeId",
+				name: "NodeDetail",
+				component: NodeDetail,
+				meta: {
+					//routeTitle: _("headings.course_tree_node"),
 					sidebarOptions: courseDashboardSidebarOptions,
 					tags: ["permissions"],
 				},

@@ -18,6 +18,24 @@ export const courseIdMixin = {
 	},
 };
 
+// export const nodeMixin = {
+// 	computed: {
+// 			// props passed from a node to its children, independent of the resource type of either
+// 		passThroughProps() {
+// 			return (this as any).
+// 		}
+
+// 	}
+// }
+
+export const nodeIdMixin = {
+	computed: {
+		nodeId(): string {
+			return router.currentRoute.value.params.nodeId as string;
+		},
+	},
+};
+
 export const eventIdMixin = {
 	computed: {
 		...mapStores(useMainStore),

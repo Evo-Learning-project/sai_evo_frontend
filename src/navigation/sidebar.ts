@@ -64,8 +64,9 @@ export const courseDashboardSidebarOptions: SidebarOption[] = [
 	{
 		label: _("sidebar_labels.course_dashboard_material"),
 		icon: "class",
-		routeName: "CourseExercises",
-		requiredPrivileges: [CoursePrivilege.ACCESS_EXERCISES],
+		routeName: "CourseTree",
+		children: ["NodeDetail"],
+		requiredPrivileges: [], //TODO [CoursePrivilege.ACCESS_EXERCISES],
 	},
 	{
 		label: _("sidebar_labels.exercise_solution_threads"),

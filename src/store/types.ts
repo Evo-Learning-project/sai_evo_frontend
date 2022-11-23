@@ -168,6 +168,7 @@ export type MutationPayload<T> = Partial<StoreOperationParameters<T>> & {
 };
 
 export type CourseIdActionPayload = { courseId: string };
+export type CourseTreeNodeIdActionPayload = { nodeId: string };
 export type EventIdActionPayload = CourseIdActionPayload & { eventId: string };
 export type ExerciseIdActionPayload = CourseIdActionPayload & { exerciseId: string };
 export type ExerciseSolutionIdActionPayload = ExerciseIdActionPayload & {

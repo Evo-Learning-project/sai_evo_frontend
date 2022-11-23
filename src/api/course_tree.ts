@@ -13,6 +13,14 @@ export async function getCourseTopLevelNodes(
 	return convertPaginatedResponseToLocalPaginatedData(response.data, pageNumber);
 }
 
+export async function getCourseNode(
+	courseId: string,
+	nodeId: string,
+): Promise<CourseTreeNode> {
+	const response = await axios.get(`/courses/${courseId}/nodes/${nodeId}/`);
+	return response.data;
+}
+
 export async function getNodeChildren(
 	courseId: string,
 	nodeId: string,
