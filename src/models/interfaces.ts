@@ -300,12 +300,15 @@ interface BaseNodeFields {
 	id: string;
 	parent_id: string;
 	created: string;
-	creator: User;
+	creator?: User;
 	// children: PaginatedData<CourseTreeNode>;
 }
 
 export interface FileNode extends BaseNodeFields {
-	file: any; // TODO
+	file: {
+		name: string;
+		size: number;
+	};
 	resourcetype: "FileNode";
 }
 

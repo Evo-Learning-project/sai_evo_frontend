@@ -1,5 +1,19 @@
 <template>
-	<div class="card-border grid grid-cols-12">
+	<div
+		tabindex="0"
+		@click="$emit('showFileNode')"
+		@keyup.enter="$emit('showFileNode')"
+		v-wave="{ initialOpacity: 0.25 }"
+		class="
+			cursor-pointer
+			card-border
+			grid grid-cols-12
+			hover:bg-light
+			transition-colors
+			duration-75
+			ease
+		"
+	>
 		<div class="col-span-3 h-32 bg-gray-200 flex">
 			<svg
 				class="text-gray-600 m-auto"
@@ -13,17 +27,35 @@
 			</svg>
 			<!-- <span class="material-icons text-lightText">file</span> -->
 		</div>
-		<div class="flex col-span-7"><h4 class="m-auto">Allegato 1</h4></div>
+		<div class="flex col-span-7 p-4">
+			<div class="my-auto">
+				<h4>{{ node.file.name }}</h4>
+				<p class="text-muted text-sm">{{ humanReadableFileSize }}</p>
+			</div>
+		</div>
 	</div>
 </template>
 
 <script lang="ts">
+import { FileNode } from "@/models";
+import { getHumanFileSize } from "@/utils";
 import { defineComponent, PropType } from "@vue/runtime-core";
+import { nodeProps } from "../shared";
 export default defineComponent({
 	name: "FileNode",
-	props: {},
+	props: {
+		node: {
+			type: Object as PropType<FileNode>,
+			required: true,
+		},
+		...nodeProps,
+	},
 	methods: {},
-	computed: {},
+	computed: {
+		humanReadableFileSize() {
+			return getHumanFileSize(this.node.file.size);
+		},
+	},
 });
 </script>
 

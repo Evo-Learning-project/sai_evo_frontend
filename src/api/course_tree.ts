@@ -31,3 +31,10 @@ export async function getNodeChildren(
 	);
 	return convertPaginatedResponseToLocalPaginatedData(response.data, pageNumber);
 }
+
+export async function downloadFileNode(courseId: string, nodeId: string): Promise<Blob> {
+	const response = await axios.get(`/courses/${courseId}/nodes/${nodeId}/download/`, {
+		responseType: "arraybuffer",
+	});
+	return response.data;
+}

@@ -15,7 +15,10 @@
 		</div>
 		<!-- header -->
 		<div class="flex items-center">
-			<div class="flex rounded-full w-14 h-14 bg-primary bg-opacity-15 mr-3">
+			<div
+				style="min-width: 3.5rem; max-width: 3.5rem"
+				class="flex rounded-full w-14 h-14 bg-primary bg-opacity-15 mr-3"
+			>
 				<span
 					style="font-size: 32px !important"
 					class="m-auto material-icons-outlined text-primary"
@@ -23,9 +26,18 @@
 				>
 			</div>
 			<div class="flex space-x-2">
-				<div class="flex flex-col -space-y-2">
-					<h1 class="mb-0">{{ node.title }}</h1>
-					<Timestamp :date-only="true" class="text-sm text-muted" :value="node.created" />
+				<div class="flex flex-col">
+					<h1 style="line-height: 1.1" class="mb-0">{{ node.title }}</h1>
+					<div class="flex space-x-2 ml-0.5">
+						<p v-if="node.creator" class="text-sm">
+							{{ node.creator.full_name }}
+						</p>
+						<Timestamp
+							:date-only="true"
+							class="text-sm text-muted"
+							:value="node.created"
+						/>
+					</div>
 				</div>
 				<!-- teacher actions-->
 				<div class="ml-auto flex items-center">
@@ -70,11 +82,20 @@
 				</div>
 				<div class="grid grid-cols-2 gap-8">
 					<div class="" v-for="child in children" :key="child.id">
-						<CourseTreeNode v-bind="$props" :node="child"></CourseTreeNode>
+						<CourseTreeNode
+							v-bind="$props"
+							:node="child"
+							@showFileNode="onShowFileNode(child)"
+						></CourseTreeNode>
 					</div>
 				</div>
 			</div>
 		</div>
+		<FileNodeDetail
+			@viewerClose="openedNode = null"
+			v-if="openedNode"
+			:node="openedNode"
+		/>
 	</div>
 </template>
 
@@ -85,10 +106,11 @@ import ProcessedTextFragment from "@/components/ui/ProcessedTextFragment.vue";
 import SlotSkeleton from "@/components/ui/skeletons/SlotSkeleton.vue";
 import Timestamp from "@/components/ui/Timestamp.vue";
 import { loadingMixin } from "@/mixins";
-import { CourseTreeNode as ICourseTreeNode, LessonNode } from "@/models";
+import { CourseTreeNode as ICourseTreeNode, FileNode, LessonNode } from "@/models";
 import { defineComponent, PropType } from "@vue/runtime-core";
 import CourseTreeNode from "../node/CourseTreeNode.vue";
 import { nodeProps } from "../shared";
+import FileNodeDetail from "./FileNodeDetail.vue";
 export default defineComponent({
 	name: "LessonNodeDetail",
 	mixins: [loadingMixin],
@@ -106,9 +128,18 @@ export default defineComponent({
 	created() {
 		this.$emit("loadChildren");
 	},
+	data() {
+		return {
+			openedNode: null as null | FileNode,
+		};
+	},
 	methods: {
 		onEdit() {
 			console.log("edit");
+		},
+		onShowFileNode(node: FileNode) {
+			console.log("showed", node);
+			this.openedNode = node;
 		},
 	},
 	computed: {
@@ -124,6 +155,7 @@ export default defineComponent({
 		SlotSkeleton,
 		CourseTreeNode,
 		CopyToClipboard,
+		FileNodeDetail,
 	},
 });
 </script>

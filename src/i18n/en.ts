@@ -18,6 +18,7 @@ export const en = {
 		rule_amount_2: "do you want to see?",
 	},
 	headings: {
+		course_tree: "Materiale " + ROUTE_TITLE_COURSE_NAME_TOKEN,
 		exercise_solution_threads: "Soluzioni esercizi " + ROUTE_TITLE_COURSE_NAME_TOKEN,
 		login: "Login",
 		course_title: ROUTE_TITLE_COURSE_NAME_TOKEN,

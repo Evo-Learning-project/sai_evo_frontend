@@ -51,6 +51,7 @@ export const it = {
 		enable_third_party_cookies_2: "cookie di terze parti",
 	},
 	headings: {
+		course_tree: "Materiale " + ROUTE_TITLE_COURSE_NAME_TOKEN,
 		exercise_solution_threads: "Soluzioni esercizi " + ROUTE_TITLE_COURSE_NAME_TOKEN,
 		login: "Login",
 		course_title: ROUTE_TITLE_COURSE_NAME_TOKEN,

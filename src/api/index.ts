@@ -6,3 +6,4 @@ export * from "./users";
 export * from "./converters";
 export * from "./gamification";
 export * from "./users";
+export * from "./course_tree";

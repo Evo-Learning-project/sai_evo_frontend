@@ -1,3 +1,5 @@
+declare const Buffer;
+
 import { EventParticipation, Event, Exercise } from "@/models";
 import { getTranslatedString } from "./i18n/index";
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -288,3 +290,26 @@ export function logAnalyticsEvent(eventName: string, params: Record<string, any>
 export const isDemoMode = () => JSON.parse(process.env.VUE_APP_DEMO_MODE ?? "false");
 export const isMaintenanceMode = () =>
 	JSON.parse(process.env.VUE_APP_MAINTENANCE_MODE ?? "false");
+
+export function getHumanFileSize(bytes: number) {
+	const thresh = 1024;
+
+	if (Math.abs(bytes) < thresh) {
+		return bytes + " B";
+	}
+
+	const units = ["kB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
+	let u = -1;
+	const r = 10;
+
+	do {
+		bytes /= thresh;
+		++u;
+	} while (Math.round(Math.abs(bytes) * r) / r >= thresh && u < units.length - 1);
+
+	return bytes.toFixed(1) + " " + units[u];
+}
+
+export function arraybufferToBase64(data: any): string {
+	return Buffer.from(data, "binary").toString("base64");
+}

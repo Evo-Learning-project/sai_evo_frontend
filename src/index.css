@@ -402,6 +402,12 @@
 		filter: brightness(0.975);
 	}
 
+	.darken-on-hover-severe:hover,
+	.darken-on-hover-severe:focus,
+	.darken-on-hover-severe:focus-within {
+		filter: brightness(0.945);
+	}
+
 	.ql-editor,
 	.ql-clipboard {
 		white-space: pre-wrap !important;
