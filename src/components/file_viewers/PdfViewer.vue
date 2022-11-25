@@ -33,7 +33,13 @@
 			</p>
 		</div>
 		<div class="ml-auto">
-			<Btn class="mr-2" :variant="'icon'" :outline="true" @click="$emit('download')">
+			<Btn
+				class="mr-2"
+				:loading="downloading"
+				:variant="'icon'"
+				:outline="true"
+				@click="$emit('download')"
+			>
 				<span class="material-icons-outlined text-lightText">file_download</span>
 			</Btn>
 			<Btn class="" :variant="'icon'" :outline="true" @click="onZoom(100)">
@@ -58,18 +64,16 @@
 		"
 	>
 		<div class="relative">
-			<Spinner
-				v-if="isLoading"
-				:dark="true"
-				style="z-index: 9999999"
-				:size="'lg'"
-				class="fixed top-1/2 left-1/2 transform -translate-x-1/ -translate-y-1/2"
-			/>
+			<transition name="fade">
+				<LinearProgress v-if="isLoading" class="z-50 absolute top-0" />
+			</transition>
 			<vue-pdf-embed
+				:id="id"
 				:width="width"
 				ref="pdfRef"
 				:source="base64Source"
 				:page="page"
+				@progress="onProgress($event)"
 				@rendered="handleDocumentRender"
 			/>
 		</div>
@@ -81,23 +85,17 @@ import VuePdfEmbed from "vue-pdf-embed";
 
 import { defineComponent, PropType } from "@vue/runtime-core";
 import Btn from "../ui/Btn.vue";
-import Spinner from "../ui/Spinner.vue";
+import LinearProgress from "../ui/LinearProgress.vue";
+import { fileViewerProps } from "./shared";
 export default defineComponent({
 	name: "PdfViewer",
 	props: {
-		source: {
-			type: String, //Object as PropType<Blob>,
-			required: true,
-		},
-		filename: {
-			type: String,
-			required: true,
-		},
+		...fileViewerProps,
 	},
 	components: {
 		VuePdfEmbed,
 		Btn,
-		Spinner,
+		LinearProgress,
 	},
 	mounted() {
 		const bodyContainsOverflowHidden =
@@ -137,6 +135,9 @@ export default defineComponent({
 			} else {
 				this.width = Math.max(MIN_WIDTH, this.width + amount);
 			}
+		},
+		onProgress(evt: any) {
+			console.log("prog", evt);
 		},
 		handleDocumentRender() {
 			this.isLoading = false;

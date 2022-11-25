@@ -2,8 +2,7 @@
 	<div>
 		<component
 			:is="viewerComponentName"
-			:source="source"
-			:filename="filename"
+			v-bind="$props"
 			@viewerClose="$emit('viewerClose')"
 			@download="$emit('fileDownload')"
 		/>
@@ -13,23 +12,19 @@
 <script lang="ts">
 import { defineComponent, PropType } from "@vue/runtime-core";
 import PdfViewer from "./PdfViewer.vue";
+import { fileViewerProps } from "./shared";
 export default defineComponent({
 	name: "FileViewer",
 	props: {
-		// TODO extract shared props
-		source: {
-			type: String, //Object as PropType<Blob>,
-			required: true,
-		},
-		filename: {
-			type: String,
-			required: true,
-		},
+		...fileViewerProps,
 	},
 	methods: {},
 	computed: {
 		viewerComponentName() {
-			return "PdfViewer";
+			if (this.filename.slice(-3) === "pdf") {
+				return "PdfViewer";
+			}
+			return "VideoViewer";
 		},
 	},
 	components: { PdfViewer },

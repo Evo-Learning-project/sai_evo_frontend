@@ -1,4 +1,5 @@
 import { CourseTreeNode } from "@/models";
+import { forceFileDownload } from "@/utils";
 import axios from "axios";
 import { convertPaginatedResponseToLocalPaginatedData } from "./converters";
 import { PaginatedData } from "./interfaces";
@@ -32,9 +33,26 @@ export async function getNodeChildren(
 	return convertPaginatedResponseToLocalPaginatedData(response.data, pageNumber);
 }
 
+export function getFileNodeUrl(courseId: string, nodeId: string): string {
+	return `${axios.defaults.baseURL}/courses/${courseId}/nodes/${nodeId}/download/`;
+}
+
 export async function downloadFileNode(courseId: string, nodeId: string): Promise<Blob> {
 	const response = await axios.get(`/courses/${courseId}/nodes/${nodeId}/download/`, {
 		responseType: "arraybuffer",
 	});
 	return response.data;
+}
+
+export async function downloadFileNodeAsAttachment(
+	courseId: string,
+	nodeId: string,
+): Promise<void> {
+	const response = await axios.get(`/courses/${courseId}/nodes/${nodeId}/download/`, {
+		responseType: "arraybuffer",
+	});
+	const fileName = response.headers["content-disposition"]
+		.split(/.*filename=(.*)/)[1]
+		.replace(/"/g, "");
+	forceFileDownload(response, fileName);
 }

@@ -5,6 +5,10 @@
 			v-if="base64Contents !== null"
 			:source="base64Contents"
 			:filename="node.file.name"
+			@fileDownload="onDownload()"
+			:url="fileUrl"
+			:id="node.id + '-viewer'"
+			:downloading="downloading"
 		/>
 	</div>
 </template>
@@ -14,9 +18,9 @@ import { FileNode } from "@/models";
 import { defineComponent, PropType } from "@vue/runtime-core";
 import { nodeProps } from "../shared";
 import FileViewer from "@/components/file_viewers/FileViewer.vue";
-import { downloadFileNode } from "@/api";
+import { downloadFileNode, downloadFileNodeAsAttachment, getFileNodeUrl } from "@/api";
 import { courseIdMixin } from "@/mixins";
-import { arraybufferToBase64 } from "@/utils";
+import { arraybufferToBase64, setErrorNotification } from "@/utils";
 
 export default defineComponent({
 	name: "FileNodeDetail",
@@ -37,6 +41,7 @@ export default defineComponent({
 	data() {
 		return {
 			base64Contents: null as null | string,
+			downloading: false,
 		};
 	},
 	methods: {
@@ -45,8 +50,22 @@ export default defineComponent({
 			console.log("BLOB", fileBlob);
 			this.base64Contents = arraybufferToBase64(fileBlob);
 		},
+		async onDownload() {
+			this.downloading = true;
+			try {
+				await downloadFileNodeAsAttachment(this.courseId, this.node.id);
+			} catch (e) {
+				setErrorNotification(e);
+			} finally {
+				this.downloading = false;
+			}
+		},
 	},
-	computed: {},
+	computed: {
+		fileUrl() {
+			return getFileNodeUrl(this.courseId, this.node.id);
+		},
+	},
 });
 </script>
 

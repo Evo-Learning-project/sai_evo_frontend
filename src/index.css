@@ -1682,3 +1682,8 @@
 		width: 10%;
 	}
 }
+
+/** pdf */
+.vue-pdf-embed > div {
+	@apply my-3;
+}

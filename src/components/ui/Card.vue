@@ -10,9 +10,8 @@
 		}"
 	>
 		<transition name="fade">
-			<div v-if="loading" class="linear-activity absolute top-0 left-0 rounded-t">
-				<div class="indeterminate"></div></div
-		></transition>
+			<LinearProgress class="absolute top-0 left-0 rounded-t" v-if="loading" />
+		</transition>
 
 		<!-- FIXME review shadow -->
 		<div class="flex flex-col flex-grow w-full">
@@ -46,6 +45,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from "@vue/runtime-core";
+import LinearProgress from "./LinearProgress.vue";
 
 export default defineComponent({
 	name: "Card",
@@ -87,6 +87,7 @@ export default defineComponent({
 			default: true,
 		},
 	},
+	components: { LinearProgress },
 });
 </script>
 
