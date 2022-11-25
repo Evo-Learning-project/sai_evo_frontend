@@ -413,6 +413,7 @@
 		white-space: pre-wrap !important;
 	}
 
+	.bg-dark .icon-btn,
 	.bg-dark .copy-btn,
 	.ssh-pre--dark .copy-btn {
 		@apply bg-opacity-20 !important; /*TODO make work*/

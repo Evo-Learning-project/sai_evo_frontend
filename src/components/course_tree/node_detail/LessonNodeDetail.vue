@@ -14,10 +14,10 @@
 			>
 		</div>
 		<!-- header -->
-		<div class="flex items-center">
+		<div class="flex md:flex-row flex-col items-center">
 			<div
 				style="min-width: 3.5rem; max-width: 3.5rem"
-				class="flex rounded-full w-14 h-14 bg-primary bg-opacity-15 mr-3"
+				class="hidden md:flex rounded-full w-14 h-14 bg-primary bg-opacity-15 mr-3"
 			>
 				<span
 					style="font-size: 32px !important"
@@ -25,9 +25,10 @@
 					>book</span
 				>
 			</div>
-			<div class="flex space-x-2">
+			<div class="flex md:flex-row flex-col md:space-x-2">
 				<div class="flex flex-col">
-					<h1 style="line-height: 1.1" class="mb-0">{{ node.title }}</h1>
+					<h1 style="line-height: 1.1" class="mb-0 hidden md:block">{{ node.title }}</h1>
+					<h3 style="line-height: 1.1" class="mb-0 md:hidden">{{ node.title }}</h3>
 					<div class="flex space-x-2 ml-0.5">
 						<p v-if="node.creator" class="text-sm">
 							{{ node.creator.full_name }}
@@ -69,7 +70,7 @@
 		</div>
 
 		<!-- body -->
-		<div class="mx-18">
+		<div class="mx-4 md:mx-18">
 			<div class="mt-8">
 				<ProcessedTextFragment :value="node.body" />
 			</div>
@@ -80,7 +81,7 @@
 					<SlotSkeleton />
 					<SlotSkeleton />
 				</div>
-				<div class="grid grid-cols-2 gap-8">
+				<div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
 					<div class="" v-for="child in children" :key="child.id">
 						<CourseTreeNode
 							v-bind="$props"
@@ -91,11 +92,12 @@
 				</div>
 			</div>
 		</div>
-		<FileNodeDetail
-			@viewerClose="openedNode = null"
-			v-if="openedNode"
-			:node="openedNode"
-		/>
+		<transition name="fade">
+			<FileNodeDetail
+				@viewerClose="openedNode = null"
+				v-if="openedNode"
+				:node="openedNode"
+		/></transition>
 	</div>
 </template>
 

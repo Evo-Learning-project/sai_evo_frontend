@@ -4,6 +4,7 @@
 			@viewerClose="$emit('viewerClose')"
 			v-if="base64Contents !== null"
 			:source="base64Contents"
+			:filename="node.file.name"
 		/>
 	</div>
 </template>
@@ -42,7 +43,7 @@ export default defineComponent({
 		async downloadNodeFile() {
 			const fileBlob = await downloadFileNode(this.courseId, this.node.id);
 			console.log("BLOB", fileBlob);
-			this.base64Contents = await arraybufferToBase64(fileBlob);
+			this.base64Contents = arraybufferToBase64(fileBlob);
 		},
 	},
 	computed: {},
