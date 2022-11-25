@@ -13,6 +13,7 @@
 import { defineComponent, PropType } from "@vue/runtime-core";
 import PdfViewer from "./PdfViewer.vue";
 import { fileViewerProps } from "./shared";
+import VideoViewer from "./VideoViewer.vue";
 export default defineComponent({
 	name: "FileViewer",
 	props: {
@@ -27,7 +28,7 @@ export default defineComponent({
 			return "VideoViewer";
 		},
 	},
-	components: { PdfViewer },
+	components: { PdfViewer, VideoViewer },
 });
 </script>
 

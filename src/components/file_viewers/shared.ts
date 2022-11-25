@@ -1,10 +1,11 @@
 export const fileViewerProps = {
 	// base64 source of the file
-	source: {
-		type: String, //Object as PropType<Blob>,
-		default: "" as const,
-	},
-	// url to fetch the file - alternative to the source prop depending on the viewer
+	// source: {
+	// 	type: String, //Object as PropType<Blob>,
+	// 	default: "" as const,
+	// },
+
+	// url to fetch the file
 	url: {
 		type: String,
 		default: "" as const,

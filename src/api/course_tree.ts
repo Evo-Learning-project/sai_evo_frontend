@@ -37,8 +37,8 @@ export function getFileNodeUrl(courseId: string, nodeId: string): string {
 	return `${axios.defaults.baseURL}/courses/${courseId}/nodes/${nodeId}/download/`;
 }
 
-export async function downloadFileNode(courseId: string, nodeId: string): Promise<Blob> {
-	const response = await axios.get(`/courses/${courseId}/nodes/${nodeId}/download/`, {
+export async function downloadFileNode(url: string): Promise<Blob> {
+	const response = await axios.get(url, {
 		responseType: "arraybuffer",
 	});
 	return response.data;

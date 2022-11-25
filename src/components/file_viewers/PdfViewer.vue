@@ -65,7 +65,7 @@
 	>
 		<div class="relative">
 			<transition name="fade">
-				<LinearProgress v-if="isLoading" class="z-50 absolute top-0" />
+				<LinearProgress v-if="isLoading || downloading" class="z-50 absolute top-0" />
 			</transition>
 			<vue-pdf-embed
 				:id="id"
@@ -87,6 +87,8 @@ import { defineComponent, PropType } from "@vue/runtime-core";
 import Btn from "../ui/Btn.vue";
 import LinearProgress from "../ui/LinearProgress.vue";
 import { fileViewerProps } from "./shared";
+import { arraybufferToBase64 } from "@/utils";
+import { downloadFileNode } from "@/api";
 export default defineComponent({
 	name: "PdfViewer",
 	props: {
@@ -98,6 +100,7 @@ export default defineComponent({
 		LinearProgress,
 	},
 	mounted() {
+		this.downloadNodeFile();
 		const bodyContainsOverflowHidden =
 			document.body.classList.contains("overflow-y-hidden");
 		if (!bodyContainsOverflowHidden) {
@@ -113,6 +116,7 @@ export default defineComponent({
 	},
 	data() {
 		return {
+			downloading: true,
 			isLoading: true,
 			reRendering: false,
 			page: null,
@@ -120,9 +124,16 @@ export default defineComponent({
 			//pdfSource: "http://127.0.0.1:8000/courses/20/nodes/8/download",
 			showAllPages: true,
 			width: 800,
+			source: "",
 		};
 	},
 	methods: {
+		async downloadNodeFile() {
+			const fileBlob = await downloadFileNode(this.url);
+			console.log("BLOB", fileBlob);
+			this.source = arraybufferToBase64(fileBlob);
+			this.downloading = false;
+		},
 		onZoom(amount: number) {
 			if (this.reRendering) {
 				return;

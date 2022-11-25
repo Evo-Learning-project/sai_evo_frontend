@@ -2,14 +2,14 @@
 	<div>
 		<FileViewer
 			@viewerClose="$emit('viewerClose')"
-			v-if="base64Contents !== null"
-			:source="base64Contents"
 			:filename="node.file.name"
 			@fileDownload="onDownload()"
 			:url="fileUrl"
 			:id="node.id + '-viewer'"
 			:downloading="downloading"
 		/>
+		<!-- 			v-if="base64Contents !== null"
+			:source="base64Contents"-->
 	</div>
 </template>
 
@@ -36,20 +36,14 @@ export default defineComponent({
 		FileViewer,
 	},
 	async created() {
-		await this.downloadNodeFile();
+		//await this.downloadNodeFile();
 	},
 	data() {
 		return {
-			base64Contents: null as null | string,
 			downloading: false,
 		};
 	},
 	methods: {
-		async downloadNodeFile() {
-			const fileBlob = await downloadFileNode(this.courseId, this.node.id);
-			console.log("BLOB", fileBlob);
-			this.base64Contents = arraybufferToBase64(fileBlob);
-		},
 		async onDownload() {
 			this.downloading = true;
 			try {
