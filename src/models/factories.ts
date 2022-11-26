@@ -1,4 +1,11 @@
-import { EventParticipation, ExerciseTestCase, User } from "./interfaces";
+import {
+	EventParticipation,
+	ExerciseTestCase,
+	FileNode,
+	LessonNode,
+	TopicNode,
+	User,
+} from "./interfaces";
 import {
 	Course,
 	Event,
@@ -21,9 +28,11 @@ import {
 	Tag,
 } from ".";
 import {
+	CourseTreeNodeType,
 	EventAccessRule,
 	EventParticipationState,
 	ExerciseSolutionState,
+	LessonNodeState,
 	VoteType,
 } from "./types";
 
@@ -178,4 +187,30 @@ export const getComment = (content: string): ExerciseSolutionComment => ({
 	id: "",
 	user: getBlankUser(),
 	content,
+});
+
+export const getBlankLessonNode = (parentId: string | null): LessonNode => ({
+	parent_id: parentId,
+	title: "",
+	body: "",
+	created: "",
+	state: LessonNodeState.DRAFT,
+	id: "",
+	resourcetype: CourseTreeNodeType.LessonNode,
+});
+
+export const getBlankTopicNode = (parentId: string | null): TopicNode => ({
+	parent_id: parentId,
+	name: "",
+	created: "",
+	id: "",
+	resourcetype: CourseTreeNodeType.TopicNode,
+});
+
+export const getBlankFileNode = (parentId: string | null): FileNode => ({
+	parent_id: parentId,
+	file: null,
+	created: "",
+	id: "",
+	resourcetype: CourseTreeNodeType.FileNode,
 });

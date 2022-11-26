@@ -1,5 +1,6 @@
 <template>
 	<div
+		:class="{ 'bg-light': node.state === LessonNodeState.DRAFT }"
 		class="
 			group
 			card card-border card-hoverable
@@ -31,16 +32,34 @@
 		</span>
 		<!-- header -->
 		<div class="flex items-center">
-			<div class="flex rounded-full w-10 h-10 bg-primary bg-opacity-15 mr-3">
+			<div
+				class="flex rounded-full mr-3"
+				:class="{
+					'bg-gray-200': node.state === LessonNodeState.DRAFT,
+					'bg-primary  bg-opacity-15': node.state === LessonNodeState.PUBLISHED,
+				}"
+				style="
+					min-width: 2.5rem;
+					max-width: 2.5rem;
+					min-height: 2.5rem;
+					max-height: 2.5rem;
+				"
+			>
 				<span
 					style="font-size: 28px !important"
-					class="m-auto material-icons-outlined text-primary"
+					:class="{
+						'text-gray-500': node.state === LessonNodeState.DRAFT,
+						'text-primary': node.state === LessonNodeState.PUBLISHED,
+					}"
+					class="m-auto material-icons-outlined"
 					>book</span
 				>
 			</div>
 			<div class="flex flex-col -space-y-2">
 				<router-link :to="{ name: 'NodeDetail', params: { nodeId: node.id } }">
-					<h2 class="mb-0 hover:text-primary hover:underline">{{ node.title }}</h2>
+					<h2 style="line-height: 0.95" class="mb-2 hover:text-primary hover:underline">
+						{{ lessonTitle }}
+					</h2>
 				</router-link>
 				<Timestamp :date-only="true" class="text-sm text-muted" :value="node.created" />
 			</div>
@@ -57,6 +76,9 @@
 					items-center
 				"
 			>
+				<p class="text-muted mr-4" v-if="node.state === LessonNodeState.DRAFT">
+					{{ $t("course_tree.draft") }}
+				</p>
 				<Btn
 					v-if="canEdit"
 					@click="onEdit"
@@ -99,7 +121,8 @@ import Btn from "@/components/ui/Btn.vue";
 import CopyToClipboard from "@/components/ui/CopyToClipboard.vue";
 import ProcessedTextFragment from "@/components/ui/ProcessedTextFragment.vue";
 import Timestamp from "@/components/ui/Timestamp.vue";
-import { LessonNode } from "@/models";
+import { getTranslatedString as _ } from "@/i18n";
+import { LessonNode, LessonNodeState } from "@/models";
 import { defineComponent, PropType } from "@vue/runtime-core";
 import { nodeProps } from "../shared";
 export default defineComponent({
@@ -111,12 +134,20 @@ export default defineComponent({
 		},
 		...nodeProps,
 	},
+	data() {
+		return {
+			LessonNodeState,
+		};
+	},
 	methods: {
 		onEdit() {
-			console.log("onedit");
+			this.$emit("editLesson");
 		},
 	},
 	computed: {
+		lessonTitle() {
+			return this.node.title || _("course_tree.unnamed_lesson");
+		},
 		bodyPreview() {
 			return this.node.body;
 		},

@@ -1,3 +1,14 @@
+export enum CourseTreeNodeType {
+	LessonNode = "LessonNode",
+	FileNode = "FileNode",
+	TopicNode = "TopicNode",
+}
+
+export enum LessonNodeState {
+	DRAFT,
+	PUBLISHED,
+}
+
 export enum ExerciseType {
 	MULTIPLE_CHOICE_SINGLE_POSSIBLE,
 	MULTIPLE_CHOICE_MULTIPLE_POSSIBLE,

@@ -1,5 +1,5 @@
 <template>
-	<div class="w-full">
+	<div class="w-full darken-on-hover">
 		<div class="w-full relative">
 			<div
 				v-if="disabled"
@@ -81,7 +81,7 @@
 							</div>
 							<AnimatedIcon
 								class="absolute top-0 right-0 mt-2 mr-3"
-								v-if="file.success"
+								v-if="false && file.success"
 							></AnimatedIcon>
 							<img
 								class=""

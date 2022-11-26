@@ -3,10 +3,23 @@
 		class="relative"
 		v-click-outside="() => (expanded ? $emit('toggleExpanded') : undefined)"
 	>
-		<Btn :variant="'icon'" :outline="true" @click="$emit('toggleExpanded')">
+		<Btn
+			:variant="label ? 'primary' : 'icon'"
+			:outline="!label"
+			@click="$emit('toggleExpanded')"
+		>
 			<!-- :tooltip="!expanded ? tooltip : ''" -->
 			<slot name="icon"></slot>
 			<span v-if="!$slots.icon?.()" class="material-icons-outlined">{{ icon }}</span>
+			<span class="ml-1" v-if="label">{{ label }}</span>
+			<div
+				v-if="trailingIcon"
+				class="h-full w-0 opacity-30"
+				style="border-width: 0.5px; margin-left: 10px; margin-right: 5px"
+			></div>
+			<span v-if="trailingIcon" class="material-icons-outlined -mr-4">{{
+				trailingIcon
+			}}</span>
 		</Btn>
 		<div
 			class="
@@ -44,9 +57,17 @@ export default defineComponent({
 			type: String,
 			default: "",
 		},
+		label: {
+			type: String,
+			default: "",
+		},
 		icon: {
 			type: String,
 			default: "more_vert",
+		},
+		trailingIcon: {
+			type: String,
+			default: "",
 		},
 		expanded: {
 			type: Boolean,

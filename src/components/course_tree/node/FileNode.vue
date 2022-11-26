@@ -5,6 +5,8 @@
 		@keyup.enter="$emit('showFileNode')"
 		v-wave="{ initialOpacity: 0.25 }"
 		class="
+			rounded-sm
+			relative
 			cursor-pointer
 			card-border
 			grid grid-cols-12
@@ -14,6 +16,10 @@
 			ease
 		"
 	>
+		<LinearProgress
+			class="absolute w-full top-0 left-0 rounded-t-sm"
+			v-if="loadingFile"
+		/>
 		<div class="col-span-3 h-32 bg-gray-200 flex">
 			<svg
 				class="text-gray-600 m-auto"
@@ -28,7 +34,7 @@
 			<!-- <span class="material-icons text-lightText">file</span> -->
 		</div>
 		<div class="flex col-span-7 p-4">
-			<div class="my-auto">
+			<div class="my-auto" v-if="node.file">
 				<h4>{{ node.file.name }}</h4>
 				<p class="text-muted text-sm">{{ humanReadableFileSize }}</p>
 			</div>
@@ -37,6 +43,7 @@
 </template>
 
 <script lang="ts">
+import LinearProgress from "@/components/ui/LinearProgress.vue";
 import { FileNode } from "@/models";
 import { getHumanFileSize } from "@/utils";
 import { defineComponent, PropType } from "@vue/runtime-core";
@@ -48,14 +55,19 @@ export default defineComponent({
 			type: Object as PropType<FileNode>,
 			required: true,
 		},
+		loadingFile: {
+			type: Boolean,
+			default: false,
+		},
 		...nodeProps,
 	},
 	methods: {},
 	computed: {
 		humanReadableFileSize() {
-			return getHumanFileSize(this.node.file.size);
+			return getHumanFileSize(this.node.file?.size ?? 0);
 		},
 	},
+	components: { LinearProgress },
 });
 </script>
 

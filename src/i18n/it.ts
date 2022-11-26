@@ -11,6 +11,7 @@ import {
 	ExerciseState,
 	ExerciseType,
 	ExerciseValidationError,
+	CourseTreeNodeType,
 } from "@/models";
 import {
 	ROUTE_TITLE_COURSE_NAME_TOKEN,
@@ -967,7 +968,22 @@ export const it = {
 		unknown_error: "Si è verificato un errore sconosciuto",
 	},
 	course_tree: {
+		unnamed_lesson: "Lezione senza titolo",
 		back_to_tree: "Torna al materiale",
+		new: "Nuovo",
+		lesson_title: "Titolo",
+		lesson_body: "Contenuti",
+		lesson_editor_title: "Editor lezione",
+		draft: "Bozza",
+		publish_lesson: "Pubblica",
+		lesson_creation_date: "Creata il",
+		lesson_attachments: "Allegati",
+		add_attachment: "Aggiungi allegato",
+	},
+	course_tree_node_types: {
+		[CourseTreeNodeType.FileNode]: "File",
+		[CourseTreeNodeType.TopicNode]: "Sezione",
+		[CourseTreeNodeType.LessonNode]: "Lezione",
 	},
 	breadcrumbs: {
 		course_list: "Corsi",

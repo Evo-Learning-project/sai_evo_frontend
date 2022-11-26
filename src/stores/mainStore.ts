@@ -68,9 +68,13 @@ import {
 	voteExerciseSolution,
 } from "@/api";
 import {
+	createCourseNode,
 	getCourseNode,
+	getCourseRootNodeId,
 	getCourseTopLevelNodes,
 	getNodeChildren,
+	partialUpdateCourseNode,
+	uploadNodeFile,
 } from "@/api/course_tree";
 import {
 	deleteByIdFromPaginatedData,
@@ -140,6 +144,9 @@ export const useMainStore = defineStore("main", {
 			pageNumber: 1,
 		} as PaginatedData<Exercise>, // exercises currently displayed
 		events: [] as Event[], // events currently displayed (e.g. course exam list)
+
+		// maps id's of courses to id's of root nodes
+		courseIdToTreeRootId: {} as Record<string, string>,
 
 		// event participations of the user
 		// ! used on the home page for student dashboard, with the Event nested inside; improve
@@ -244,6 +251,85 @@ export const useMainStore = defineStore("main", {
 		},
 	},
 	actions: {
+		async isTopLevelNode({
+			courseId,
+			node,
+		}: CourseIdActionPayload & { node: CourseTreeNode }) {
+			const rootId = await this.getCourseRootId({ courseId });
+			return node.parent_id == rootId;
+		},
+		async getCourseRootId({ courseId }: CourseIdActionPayload) {
+			if (typeof this.courseIdToTreeRootId[courseId] === "undefined") {
+				this.courseIdToTreeRootId[courseId] = await getCourseRootNodeId(courseId);
+			}
+			const rootId = this.courseIdToTreeRootId[courseId];
+			return rootId;
+		},
+		async createCourseTreeNode({
+			courseId,
+			node,
+		}: CourseIdActionPayload & { node: CourseTreeNode }) {
+			if (node.parent_id === null) {
+				// creating a top-level node
+				node.parent_id = await this.getCourseRootId({ courseId });
+			}
+			const createdNode = await createCourseNode(courseId, node);
+			if (await this.isTopLevelNode({ courseId, node: createdNode })) {
+				this.paginatedTopLevelCourseTreeNodes = prependToPaginatedData(
+					this.paginatedTopLevelCourseTreeNodes ?? {
+						data: [],
+						count: 0,
+						isLastPage: true,
+						pageNumber: 1,
+					},
+					createdNode,
+				);
+			} else {
+				// child of some other node
+				const currentChildren = this.paginatedChildrenByNodeId[
+					createdNode.parent_id as string
+				] ?? {
+					count: 0,
+					data: [],
+					isLastPage: true,
+					pageNumber: 1,
+				};
+				this.paginatedChildrenByNodeId[createdNode.parent_id as string] =
+					prependToPaginatedData(currentChildren, createdNode);
+			}
+			return createdNode;
+		},
+		async partialUpdateCourseTreeNode({
+			courseId,
+			nodeId,
+			changes,
+		}: CourseIdActionPayload &
+			CourseTreeNodeIdActionPayload & { changes: Partial<CourseTreeNode> }) {
+			const updatedNode = await partialUpdateCourseNode(courseId, nodeId, changes);
+			return updatedNode;
+		},
+		patchCourseTreeNode({
+			nodeId,
+			changes,
+		}: CourseTreeNodeIdActionPayload & { changes: Partial<CourseTreeNode> }) {
+			const target = this.flatCourseTreeNodes.find(n => n.id == nodeId);
+			if (!target) {
+				throw new Error("patchCourseTreeNode couldn't find node with id " + nodeId);
+			}
+			Object.assign(target, { ...target, ...changes });
+		},
+		async uploadCourseTreeNodeFile({
+			courseId,
+			nodeId,
+			file,
+		}: CourseIdActionPayload & CourseTreeNodeIdActionPayload & { file: Blob }) {
+			const updatedNode = await uploadNodeFile(courseId, nodeId, file);
+			const target = this.getCourseTreeNodeById(nodeId);
+			if (!target) {
+				throw new Error("uploadCourseTreeNodeFile couldn't find node with id " + nodeId);
+			}
+			Object.assign(target, updatedNode);
+		},
 		/** Course tree */
 		async getCourseTreeNodeDetail({
 			courseId,

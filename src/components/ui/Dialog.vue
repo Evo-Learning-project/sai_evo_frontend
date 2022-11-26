@@ -25,7 +25,7 @@
 					"
 					:class="{
 						'md:max-w-4xl md:min-w-md': !large,
-						'md:w-full md:mx-4': large,
+						'w-full md:w-full md:mx-4': large,
 					}"
 					:style="fullHeight ? 'height: calc(100vh - 10px)' : ''"
 				>

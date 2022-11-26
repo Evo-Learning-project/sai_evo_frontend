@@ -1,5 +1,5 @@
 <template>
-	<component v-bind="$props" :is="componentName" />
+	<component v-bind="$props" :is="componentName" @editLesson="$emit('editLesson')" />
 </template>
 
 <script lang="ts">

@@ -1,8 +1,10 @@
 import {
+	CourseTreeNodeType,
 	EventAccessRule,
 	EventTimeLimitRule,
 	ExerciseSolutionState,
 	ExerciseTestCaseType,
+	LessonNodeState,
 	VoteType,
 } from "./types";
 import {
@@ -298,7 +300,7 @@ export interface GamificationUser {
 
 interface BaseNodeFields {
 	id: string;
-	parent_id: string;
+	parent_id: string | null;
 	created: string;
 	creator?: User;
 	// children: PaginatedData<CourseTreeNode>;
@@ -308,19 +310,20 @@ export interface FileNode extends BaseNodeFields {
 	file: {
 		name: string;
 		size: number;
-	};
-	resourcetype: "FileNode";
+	} | null;
+	resourcetype: CourseTreeNodeType.FileNode;
 }
 
 export interface LessonNode extends BaseNodeFields {
 	title: string;
 	body: string;
-	resourcetype: "LessonNode";
+	state: LessonNodeState;
+	resourcetype: CourseTreeNodeType.LessonNode;
 }
 
 export interface TopicNode extends BaseNodeFields {
 	name: string;
-	resourcetype: "TopicNode";
+	resourcetype: CourseTreeNodeType.TopicNode;
 }
 
 export type CourseTreeNode = FileNode | LessonNode | TopicNode;
