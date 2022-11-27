@@ -307,10 +307,13 @@ interface BaseNodeFields {
 }
 
 export interface FileNode extends BaseNodeFields {
-	file: {
-		name: string;
-		size: number;
-	} | null;
+	file:
+		| {
+				name: string;
+				size: number;
+		  }
+		| Blob
+		| null;
 	resourcetype: CourseTreeNodeType.FileNode;
 }
 

@@ -5,13 +5,11 @@
 		@keyup.enter="showDetails = true"
 		v-wave="{ initialOpacity: 0.25 }"
 		class="
-			rounded-sm
 			relative
 			cursor-pointer
 			card-border
 			flex
-			card
-			items-center
+			rounded
 			hover:bg-light
 			transition-colors
 			duration-75
@@ -23,16 +21,16 @@
 			v-if="loadingFile"
 		/>
 		<div
-			class="flex rounded-full mr-3 bg-primary bg-opacity-15"
+			class="ml-4 my-auto flex rounded-full mr-3 bg-primary bg-opacity-15"
 			style="min-width: 2.5rem; max-width: 2.5rem; min-height: 2.5rem; max-height: 2.5rem"
 		>
 			<span
 				style="font-size: 28px !important"
 				class="m-auto material-icons-outlined text-primary"
-				>insert_drive_file</span
+				>file_present</span
 			>
 		</div>
-		<div class="flex">
+		<div class="flex py-4">
 			<div class="my-auto" v-if="node.file">
 				<h4>{{ node.file.name }}</h4>
 				<p class="text-muted text-sm">
@@ -45,12 +43,20 @@
 				</p>
 			</div>
 		</div>
+		<div class="bg-gray-300 w-72 ml-auto">
+			<!-- TODO thumbnail -->
+			<img
+				class=""
+				style="width: 4rem !important"
+				src="../../../../public/pdf_thmb.png"
+			/>
+		</div>
 		<!-- TODO file preview -->
 		<!-- <div class="ml-auto bg-gray-200 -my-8 h-full"></div> -->
 	</div>
-	<transition name="fade">
-		<FileNodeDetail @viewerClose="showDetails = false" v-if="showDetails" :node="node"
-	/></transition>
+	<!-- <transition name="fade"> -->
+	<FileNodeDetail @viewerClose="showDetails = false" v-if="showDetails" :node="node" />
+	<!-- </transition> -->
 </template>
 
 <script lang="ts">

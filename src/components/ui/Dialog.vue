@@ -80,6 +80,7 @@
 
 					<!-- footer -->
 					<div
+						v-if="showActions"
 						class="z-50 flex flex-col pt-2 pb-2 pr-2 mt-auto md:flex-row"
 						:class="{
 							'border-t border-gray-200': footerBorder,
@@ -176,6 +177,10 @@ export default defineComponent({
 		noPadding: {
 			type: Boolean,
 			default: false,
+		},
+		showActions: {
+			type: Boolean,
+			default: true,
 		},
 		confirmOnly: Boolean,
 		disableOk: Boolean,

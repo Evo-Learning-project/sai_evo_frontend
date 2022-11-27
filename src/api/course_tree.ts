@@ -1,4 +1,4 @@
-import { Course, CourseTreeNode, FileNode } from "@/models";
+import { Course, CourseTreeNode, CourseTreeNodeType, FileNode } from "@/models";
 import { forceFileDownload } from "@/utils";
 import axios from "axios";
 import { convertPaginatedResponseToLocalPaginatedData } from "./converters";
@@ -44,6 +44,13 @@ export async function createCourseNode(
 	courseId: string,
 	node: CourseTreeNode,
 ): Promise<CourseTreeNode> {
+	// use FormData if uploading a file together with the rest of the payload
+	if (node.resourcetype === CourseTreeNodeType.FileNode && node.file !== null) {
+		const formData = new FormData();
+		Object.entries(node).forEach(([k, v]) => formData.append(k, v));
+		const response = await axios.post(`/courses/${courseId}/nodes/`, formData);
+		return response.data;
+	}
 	const response = await axios.post(`/courses/${courseId}/nodes/`, node);
 	return response.data;
 }

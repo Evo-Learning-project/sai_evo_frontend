@@ -49,19 +49,34 @@
 				@editLesson="onEditLesson(node)"
 			/>
 		</div>
+		<div v-if="!loading && topLevelNodes.length === 0" class="flex w-full h-full mt-12">
+			<div class="m-auto flex flex-col">
+				<p style="font-size: 10rem" class="material-icons-outlined opacity-10 mx-auto">
+					book
+				</p>
+				<h2 class="opacity-40 mx-auto">
+					{{ $t("course_tree.no_nodes") }}
+				</h2>
+			</div>
+		</div>
 
 		<Dialog
 			:fullHeight="true"
 			:large="true"
 			@no="showEditorDialog = false"
 			:showDialog="showEditorDialog"
+			:showActions="false"
 		>
 			<template v-slot:body>
+				<!-- editing lesson node -->
 				<LessonNodeEditor
 					class="text-darkText"
-					:modelValue="editingNode"
-					v-if="editingNode"
+					:modelValue="editingLessonNode"
+					@closeEditor="onCloseLessonEditor()"
+					v-if="editingLessonNode"
 				/>
+				<!-- creating  file node -->
+				<div v-if="creatingFileNode"></div>
 			</template>
 		</Dialog>
 	</div>
@@ -103,13 +118,18 @@ export default defineComponent({
 			CourseTreeNodeType,
 			createMenuExpanded: false,
 			showEditorDialog: false,
-			editingNode: null as null | ICourseTreeNode,
+			editingLessonNode: null as null | ICourseTreeNode,
+			creatingFileNode: false,
 		};
 	},
 	methods: {
 		onEditLesson(node: LessonNode) {
-			this.editingNode = node;
+			this.editingLessonNode = node;
 			this.showEditorDialog = true;
+		},
+		onCloseLessonEditor() {
+			this.showEditorDialog = false;
+			this.editingLessonNode = null;
 		},
 		async onCreateNode(nodeType: CourseTreeNodeType) {
 			if (nodeType === CourseTreeNodeType.TopicNode) {
@@ -118,7 +138,7 @@ export default defineComponent({
 				// TODO create node, insert it immediately & show dialog with editor
 				await this.withLoading(
 					async () =>
-						(this.editingNode = await this.mainStore.createCourseTreeNode({
+						(this.editingLessonNode = await this.mainStore.createCourseTreeNode({
 							courseId: this.courseId,
 							node: getBlankLessonNode(null),
 						})),

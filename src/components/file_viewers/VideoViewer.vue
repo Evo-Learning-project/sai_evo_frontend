@@ -61,9 +61,20 @@ export default defineComponent({
 		...fileViewerProps,
 	},
 	mounted() {
-		addEventListener("fetch", event => alert("test"));
-
 		setTimeout(() => (this.show = true), 50);
+
+		const bodyContainsOverflowHidden =
+			document.body.classList.contains("overflow-y-hidden");
+		if (!bodyContainsOverflowHidden) {
+			document.body.classList.add("overflow-y-hidden");
+		}
+	},
+	beforeUnmount() {
+		const bodyContainsOverflowHidden =
+			document.body.classList.contains("overflow-y-hidden");
+		if (bodyContainsOverflowHidden) {
+			document.body.classList.remove("overflow-y-hidden");
+		}
 	},
 	data() {
 		return {

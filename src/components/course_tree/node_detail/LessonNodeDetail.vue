@@ -27,8 +27,8 @@
 			</div>
 			<div class="flex md:flex-row flex-col md:space-x-2">
 				<div class="flex flex-col">
-					<h1 style="line-height: 1.1" class="mb-0 hidden md:block">{{ node.title }}</h1>
-					<h3 style="line-height: 1.1" class="mb-0 md:hidden">{{ node.title }}</h3>
+					<h1 style="line-height: 1.1" class="mb-0 hidden md:block">{{ lessonTitle }}</h1>
+					<h3 style="line-height: 1.1" class="mb-0 md:hidden">{{ lessonTitle }}</h3>
 					<div class="flex space-x-2 ml-0.5">
 						<p v-if="node.creator" class="text-sm">
 							{{ node.creator.full_name }}
@@ -92,18 +92,37 @@
 				</div>
 			</div>
 		</div>
+		<Dialog
+			:fullHeight="true"
+			:large="true"
+			@no="editing = false"
+			:showDialog="editing"
+			:showActions="false"
+		>
+			<template v-slot:body>
+				<LessonNodeEditor
+					class="text-darkText"
+					:modelValue="node"
+					@closeEditor="editing = false"
+					v-if="editing"
+				/>
+			</template>
+		</Dialog>
 	</div>
 </template>
 
 <script lang="ts">
 import Btn from "@/components/ui/Btn.vue";
 import CopyToClipboard from "@/components/ui/CopyToClipboard.vue";
+import Dialog from "@/components/ui/Dialog.vue";
 import ProcessedTextFragment from "@/components/ui/ProcessedTextFragment.vue";
 import SlotSkeleton from "@/components/ui/skeletons/SlotSkeleton.vue";
 import Timestamp from "@/components/ui/Timestamp.vue";
+import { getTranslatedString as _ } from "@/i18n";
 import { loadingMixin } from "@/mixins";
 import { CourseTreeNode as ICourseTreeNode, FileNode, LessonNode } from "@/models";
 import { defineComponent, PropType } from "@vue/runtime-core";
+import LessonNodeEditor from "../editors/LessonNodeEditor.vue";
 import CourseTreeNode from "../node/CourseTreeNode.vue";
 import { nodeProps } from "../shared";
 export default defineComponent({
@@ -126,11 +145,12 @@ export default defineComponent({
 	data() {
 		return {
 			openedNode: null as null | FileNode,
+			editing: false,
 		};
 	},
 	methods: {
 		onEdit() {
-			console.log("edit");
+			this.editing = true;
 		},
 		onShowFileNode(node: FileNode) {
 			console.log("showed", node);
@@ -138,6 +158,9 @@ export default defineComponent({
 		},
 	},
 	computed: {
+		lessonTitle() {
+			return this.node.title || _("course_tree.unnamed_lesson");
+		},
 		permalink() {
 			// TODO implement generic permalink for any node type
 			return "";
@@ -150,6 +173,8 @@ export default defineComponent({
 		SlotSkeleton,
 		CourseTreeNode,
 		CopyToClipboard,
+		LessonNodeEditor,
+		Dialog,
 	},
 });
 </script>

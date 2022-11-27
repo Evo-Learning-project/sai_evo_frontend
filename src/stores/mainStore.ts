@@ -244,7 +244,10 @@ export const useMainStore = defineStore("main", {
 				const children = p.data;
 				ret.push(...children);
 			});
-			return ret;
+			const currentNode = state.currentCourseTreeNode
+				? [state.currentCourseTreeNode]
+				: [];
+			return [...currentNode, ...ret];
 		},
 		getCourseTreeNodeById() {
 			return (nodeId: string) => this.flatCourseTreeNodes.find(n => n.id == nodeId);

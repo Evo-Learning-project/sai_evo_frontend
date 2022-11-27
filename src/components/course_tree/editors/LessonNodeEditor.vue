@@ -1,8 +1,13 @@
 <template>
 	<div>
 		<!-- top row -->
-		<div class="flex w-full items-center mb-8">
-			<h1>{{ $t("course_tree.lesson_editor_title") }}</h1>
+		<div class="flex w-full items-center mb-12">
+			<Btn :variant="'icon'" :outline="true" class="-ml-2"
+				><span class="material-icons-outlined" @click="$emit('closeEditor')">
+					close</span
+				></Btn
+			>
+			<h1 class="mb-0 ml-2">{{ $t("course_tree.lesson_editor_title") }}</h1>
 			<CloudSaveStatus
 				:saving="saving"
 				:hadError="savingError"
@@ -27,8 +32,8 @@
 			>
 				{{ $t("course_tree.lesson_title") }}
 			</TextInput>
-			<div class="w-1/5 text-muted flex items-center">
-				<span style="font-size: 14px !important" class="material-icons"
+			<div class="w-1/4 text-muted flex items-center">
+				<span style="font-size: 14px !important" class="ml-auto material-icons"
 					>calendar_today</span
 				>
 				<p class="ml-1 text-sm">
@@ -51,7 +56,7 @@
 		<!-- attachments -->
 		<div class="mt-8">
 			<h3 class="mb-4">{{ $t("course_tree.lesson_attachments") }}</h3>
-			<div class="grid md:grid-cols-2 md:gap-6 gap-4 grid-cols-1">
+			<div class="grid lg:grid-cols-2 lg:gap-6 gap-4 grid-cols-1">
 				<div v-for="fileNode in fileChildren" :key="fileNode.id">
 					<FileNode
 						:loadingFile="loadingAttachmentChild[fileNode.id]"
@@ -154,20 +159,20 @@ export default defineComponent({
 			console.log("create", file);
 			const fileNode = await this.mainStore.createCourseTreeNode({
 				courseId: this.courseId,
-				node: getBlankFileNode(this.modelValue.id),
+				node: { ...getBlankFileNode(this.modelValue.id), file },
 			});
-			this.loadingAttachmentChild[fileNode.id] = true;
-			try {
-				await this.mainStore.uploadCourseTreeNodeFile({
-					courseId: this.courseId,
-					nodeId: fileNode.id,
-					file,
-				});
-			} catch (e) {
-				setErrorNotification(e);
-			} finally {
-				this.loadingAttachmentChild[fileNode.id] = false;
-			}
+			// this.loadingAttachmentChild[fileNode.id] = true;
+			// try {
+			// 	await this.mainStore.uploadCourseTreeNodeFile({
+			// 		courseId: this.courseId,
+			// 		nodeId: fileNode.id,
+			// 		file,
+			// 	});
+			// } catch (e) {
+			// 	setErrorNotification(e);
+			// } finally {
+			// 	this.loadingAttachmentChild[fileNode.id] = false;
+			// }
 		},
 	},
 	computed: {

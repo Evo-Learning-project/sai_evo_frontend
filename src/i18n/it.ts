@@ -968,6 +968,7 @@ export const it = {
 		unknown_error: "Si è verificato un errore sconosciuto",
 	},
 	course_tree: {
+		no_nodes: "Non c'è ancora materiale",
 		unnamed_lesson: "Lezione senza titolo",
 		back_to_tree: "Torna al materiale",
 		new: "Nuovo",

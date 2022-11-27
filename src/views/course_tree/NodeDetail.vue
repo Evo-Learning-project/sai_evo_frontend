@@ -6,10 +6,16 @@
 		v-bind="passDownProps"
 		:node="node"
 	></component>
+	<div v-if="firstLoading">
+		<SlotSkeleton />
+		<SlotSkeleton />
+		<SlotSkeleton />
+	</div>
 </template>
 
 <script lang="ts">
 import { nodeProps } from "@/components/course_tree/shared";
+import SlotSkeleton from "@/components/ui/skeletons/SlotSkeleton.vue";
 import { courseIdMixin, loadingMixin, nodeIdMixin } from "@/mixins";
 import { CourseTreeNode } from "@/models";
 import { useMainStore } from "@/stores/mainStore";
@@ -86,7 +92,7 @@ export default defineComponent({
 			return mapping[this.node.resourcetype];
 		},
 	},
-	components: {},
+	components: { SlotSkeleton },
 });
 </script>
 
