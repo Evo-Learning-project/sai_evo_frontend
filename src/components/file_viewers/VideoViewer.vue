@@ -11,7 +11,7 @@
 	<div
 		style="z-index: 1000"
 		class="
-			absolute
+			fixed
 			top-1/2
 			left-1/2
 			transform

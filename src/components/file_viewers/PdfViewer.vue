@@ -54,7 +54,7 @@
 		style="z-index: 1001"
 		class="
 			mt-14
-			absolute
+			fixed
 			top-1/2
 			transform
 			-translate-y-1/2 -translate-x-1/2

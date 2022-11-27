@@ -1,15 +1,17 @@
 <template>
 	<div
 		tabindex="0"
-		@click="$emit('showFileNode')"
-		@keyup.enter="$emit('showFileNode')"
+		@click="showDetails = true"
+		@keyup.enter="showDetails = true"
 		v-wave="{ initialOpacity: 0.25 }"
 		class="
 			rounded-sm
 			relative
 			cursor-pointer
 			card-border
-			grid grid-cols-12
+			flex
+			card
+			items-center
 			hover:bg-light
 			transition-colors
 			duration-75
@@ -20,33 +22,44 @@
 			class="absolute w-full top-0 left-0 rounded-t-sm"
 			v-if="loadingFile"
 		/>
-		<div class="col-span-3 h-32 bg-gray-200 flex">
-			<svg
-				class="text-gray-600 m-auto"
-				style="width: 60px; height: 60px"
-				viewBox="0 0 24 24"
+		<div
+			class="flex rounded-full mr-3 bg-primary bg-opacity-15"
+			style="min-width: 2.5rem; max-width: 2.5rem; min-height: 2.5rem; max-height: 2.5rem"
+		>
+			<span
+				style="font-size: 28px !important"
+				class="m-auto material-icons-outlined text-primary"
+				>insert_drive_file</span
 			>
-				<path
-					fill="currentColor"
-					d="M13,9V3.5L18.5,9M6,2C4.89,2 4,2.89 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2H6Z"
-				/>
-			</svg>
-			<!-- <span class="material-icons text-lightText">file</span> -->
 		</div>
-		<div class="flex col-span-7 p-4">
+		<div class="flex">
 			<div class="my-auto" v-if="node.file">
 				<h4>{{ node.file.name }}</h4>
-				<p class="text-muted text-sm">{{ humanReadableFileSize }}</p>
+				<p class="text-muted text-sm">
+					<Timestamp
+						:date-only="true"
+						class="text-sm text-muted mr-2"
+						:value="node.created"
+					/>
+					{{ humanReadableFileSize }}
+				</p>
 			</div>
 		</div>
+		<!-- TODO file preview -->
+		<!-- <div class="ml-auto bg-gray-200 -my-8 h-full"></div> -->
 	</div>
+	<transition name="fade">
+		<FileNodeDetail @viewerClose="showDetails = false" v-if="showDetails" :node="node"
+	/></transition>
 </template>
 
 <script lang="ts">
 import LinearProgress from "@/components/ui/LinearProgress.vue";
+import Timestamp from "@/components/ui/Timestamp.vue";
 import { FileNode } from "@/models";
 import { getHumanFileSize } from "@/utils";
 import { defineComponent, PropType } from "@vue/runtime-core";
+import FileNodeDetail from "../node_detail/FileNodeDetail.vue";
 import { nodeProps } from "../shared";
 export default defineComponent({
 	name: "FileNode",
@@ -61,13 +74,16 @@ export default defineComponent({
 		},
 		...nodeProps,
 	},
+	data() {
+		return { showDetails: false };
+	},
 	methods: {},
 	computed: {
 		humanReadableFileSize() {
 			return getHumanFileSize(this.node.file?.size ?? 0);
 		},
 	},
-	components: { LinearProgress },
+	components: { LinearProgress, FileNodeDetail, Timestamp },
 });
 </script>
 

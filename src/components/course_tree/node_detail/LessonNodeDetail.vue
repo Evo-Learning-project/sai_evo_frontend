@@ -92,12 +92,6 @@
 				</div>
 			</div>
 		</div>
-		<transition name="fade">
-			<FileNodeDetail
-				@viewerClose="openedNode = null"
-				v-if="openedNode"
-				:node="openedNode"
-		/></transition>
 	</div>
 </template>
 
@@ -112,7 +106,6 @@ import { CourseTreeNode as ICourseTreeNode, FileNode, LessonNode } from "@/model
 import { defineComponent, PropType } from "@vue/runtime-core";
 import CourseTreeNode from "../node/CourseTreeNode.vue";
 import { nodeProps } from "../shared";
-import FileNodeDetail from "./FileNodeDetail.vue";
 export default defineComponent({
 	name: "LessonNodeDetail",
 	mixins: [loadingMixin],
@@ -157,7 +150,6 @@ export default defineComponent({
 		SlotSkeleton,
 		CourseTreeNode,
 		CopyToClipboard,
-		FileNodeDetail,
 	},
 });
 </script>
