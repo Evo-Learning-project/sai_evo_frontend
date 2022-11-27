@@ -1,6 +1,7 @@
 <template>
 	<div class="w-full darken-on-hover">
 		<div class="w-full relative">
+			<LinearProgress v-if="uploading" class="rounded-t absolute top-0 z-10" />
 			<div
 				v-if="disabled"
 				class="absolute top-0 w-full h-44 z-10 bg-red-500 bg-opacity-0"
@@ -126,6 +127,7 @@ import { loadingMixin } from "@/mixins";
 import { v4 as uuid4 } from "uuid";
 import { mapStores } from "pinia";
 import { useMetaStore } from "@/stores/metaStore";
+import LinearProgress from "./LinearProgress.vue";
 
 export default defineComponent({
 	name: "FileUpload",
@@ -134,6 +136,7 @@ export default defineComponent({
 		VueUploadComponent,
 		Btn,
 		AnimatedIcon,
+		LinearProgress,
 	},
 	props: {
 		small: {
@@ -156,10 +159,23 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+		uploading: {
+			type: Boolean,
+			default: false,
+		},
+		clearImmediately: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	watch: {
 		uploading(newVal) {
-			this.metaStore.loading = newVal;
+			if (!newVal && this.clearImmediately) {
+				this.files = [];
+			}
+		},
+		// TODO probably useless
+		refUploading(newVal) {
 			if (!newVal) {
 				this.showUpload = false;
 			}
@@ -274,7 +290,6 @@ export default defineComponent({
 				response: { id: any };
 			},
 		) {
-			console.log("INPUT FILE", newFile);
 			if (newFile && oldFile) {
 				this.showUpload = true;
 				// update
@@ -304,7 +319,9 @@ export default defineComponent({
 			}
 			// Automatically activate upload
 			if (Boolean(newFile) !== Boolean(oldFile) || oldFile.error !== newFile.error) {
-				this.showUpload = true;
+				if (!this.autoUpload) {
+					this.showUpload = true;
+				}
 
 				if (this.autoUpload && !(this.$refs as any).upload.active) {
 					(this.$refs as any).upload.active = true;
@@ -314,7 +331,7 @@ export default defineComponent({
 	},
 	computed: {
 		...mapStores(useMetaStore),
-		uploading(): boolean {
+		refUploading(): boolean {
 			return !!(this.$refs as any).upload?.active;
 		},
 	},

@@ -75,8 +75,25 @@
 					@closeEditor="onCloseLessonEditor()"
 					v-if="editingLessonNode"
 				/>
-				<!-- creating  file node -->
-				<div v-if="creatingFileNode"></div>
+			</template>
+		</Dialog>
+
+		<Dialog
+			:large="true"
+			@yes="creatingFileNode = false"
+			:showDialog="creatingFileNode"
+			:confirmOnly="true"
+			:yesText="$t('dialog.default_cancel_text')"
+		>
+			<template v-slot:title>
+				<h1>{{ $t("course_tree.create_file_node_title") }}</h1>
+			</template>
+			<template v-slot:body>
+				<div class="flex">
+					<div class="m-auto w-2/3">
+						<FileUpload :uploading="uploadingFile" v-model="fileUploadProxy" />
+					</div>
+				</div>
 			</template>
 		</Dialog>
 	</div>
@@ -90,6 +107,7 @@ import { courseIdMixin, loadingMixin } from "@/mixins";
 import {
 	CourseTreeNode as ICourseTreeNode,
 	CourseTreeNodeType,
+	getBlankFileNode,
 	getBlankLessonNode,
 	LessonNode,
 } from "@/models";
@@ -101,6 +119,8 @@ import { icons as courseTreeNodeTypeIcons } from "@/assets/courseTreeNodeTypeIco
 import { getTranslatedString as _ } from "@/i18n";
 import Dialog from "@/components/ui/Dialog.vue";
 import LessonNodeEditor from "@/components/course_tree/editors/LessonNodeEditor.vue";
+import FileUpload from "@/components/ui/FileUpload.vue";
+import { setErrorNotification } from "@/utils";
 export default defineComponent({
 	name: "CourseTree",
 	props: {},
@@ -120,6 +140,7 @@ export default defineComponent({
 			showEditorDialog: false,
 			editingLessonNode: null as null | ICourseTreeNode,
 			creatingFileNode: false,
+			uploadingFile: false,
 		};
 	},
 	methods: {
@@ -131,11 +152,26 @@ export default defineComponent({
 			this.showEditorDialog = false;
 			this.editingLessonNode = null;
 		},
+		async createFileNode(file: Blob) {
+			this.uploadingFile = true;
+			try {
+				await this.mainStore.createCourseTreeNode({
+					courseId: this.courseId,
+					node: { ...getBlankFileNode(null), file },
+				});
+				this.metaStore.showSuccessFeedback();
+				this.creatingFileNode = false;
+			} catch (e) {
+				setErrorNotification(e);
+			} finally {
+				this.uploadingFile = false;
+			}
+		},
 		async onCreateNode(nodeType: CourseTreeNodeType) {
 			if (nodeType === CourseTreeNodeType.TopicNode) {
 				// TODO create node, insert it immediately & toggle editing on it
 			} else if (nodeType === CourseTreeNodeType.LessonNode) {
-				// TODO create node, insert it immediately & show dialog with editor
+				// create lesson node & open editor dialog
 				await this.withLoading(
 					async () =>
 						(this.editingLessonNode = await this.mainStore.createCourseTreeNode({
@@ -145,9 +181,9 @@ export default defineComponent({
 				);
 				this.showEditorDialog = true;
 			} else if (nodeType === CourseTreeNodeType.FileNode) {
-				// TODO create node and show dialog with upload component
+				// open dialog to create file node
+				this.creatingFileNode = true;
 			}
-			//this.showEditorDialog = true;
 		},
 		onLoadChildren(node) {
 			console.log("course tree on load children");
@@ -170,6 +206,14 @@ export default defineComponent({
 					}))
 			);
 		},
+		fileUploadProxy: {
+			get() {
+				return [];
+			},
+			async set(val: Blob) {
+				await this.createFileNode(val);
+			},
+		},
 		topLevelNodes() {
 			return this.mainStore.paginatedTopLevelCourseTreeNodes?.data ?? [];
 		},
@@ -180,7 +224,7 @@ export default defineComponent({
 			return true;
 		},
 	},
-	components: { CourseTreeNode, DropdownMenu, Dialog, LessonNodeEditor },
+	components: { CourseTreeNode, DropdownMenu, Dialog, LessonNodeEditor, FileUpload },
 });
 </script>
 

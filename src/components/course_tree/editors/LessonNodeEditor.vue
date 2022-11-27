@@ -58,13 +58,14 @@
 			<h3 class="mb-4">{{ $t("course_tree.lesson_attachments") }}</h3>
 			<div class="grid lg:grid-cols-2 lg:gap-6 gap-4 grid-cols-1">
 				<div v-for="fileNode in fileChildren" :key="fileNode.id">
-					<FileNode
-						:loadingFile="loadingAttachmentChild[fileNode.id]"
-						:canEdit="true"
-						:node="fileNode"
-					/>
+					<FileNode :canEdit="true" :node="fileNode" />
 				</div>
-				<FileUpload v-model="attachmentProxy" :autoUpload="true" />
+				<FileUpload
+					:uploading="creatingAttachment"
+					v-model="attachmentProxy"
+					:autoUpload="true"
+					:clearImmediately="true"
+				/>
 			</div>
 		</div>
 	</div>
@@ -107,7 +108,7 @@ export default defineComponent({
 			autoSaveManager: null as AutoSaveManager<LessonNode> | null,
 			saving: false,
 			savingError: false,
-			loadingAttachmentChild: {} as Record<string, boolean>,
+			creatingAttachment: false,
 		};
 	},
 	created() {
@@ -156,23 +157,17 @@ export default defineComponent({
 			this.metaStore.showSuccessFeedback();
 		},
 		async onCreateAttachment(file) {
-			console.log("create", file);
-			const fileNode = await this.mainStore.createCourseTreeNode({
-				courseId: this.courseId,
-				node: { ...getBlankFileNode(this.modelValue.id), file },
-			});
-			// this.loadingAttachmentChild[fileNode.id] = true;
-			// try {
-			// 	await this.mainStore.uploadCourseTreeNodeFile({
-			// 		courseId: this.courseId,
-			// 		nodeId: fileNode.id,
-			// 		file,
-			// 	});
-			// } catch (e) {
-			// 	setErrorNotification(e);
-			// } finally {
-			// 	this.loadingAttachmentChild[fileNode.id] = false;
-			// }
+			this.creatingAttachment = true;
+			try {
+				await this.mainStore.createCourseTreeNode({
+					courseId: this.courseId,
+					node: { ...getBlankFileNode(this.modelValue.id), file },
+				});
+			} catch (e) {
+				setErrorNotification(e);
+			} finally {
+				this.creatingAttachment = false;
+			}
 		},
 	},
 	computed: {
