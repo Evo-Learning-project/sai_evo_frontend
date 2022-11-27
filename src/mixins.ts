@@ -1,11 +1,12 @@
 import { mapStores } from "pinia";
+import { downloadFileNode } from "./api";
 import { getTranslatedString as _ } from "./i18n";
 import { DialogData } from "./interfaces";
 import { Course, CoursePrivilege, getBlankCourse } from "./models";
 import router from "./router";
 import { useMainStore } from "./stores/mainStore";
 import { useMetaStore } from "./stores/metaStore";
-import { setErrorNotification, setPageWideError } from "./utils";
+import { arraybufferToBase64, setErrorNotification, setPageWideError } from "./utils";
 export const courseIdMixin = {
 	computed: {
 		courseId(): string {
@@ -27,6 +28,20 @@ export const courseIdMixin = {
 
 // 	}
 // }
+
+export const fileViewerMixin = {
+	data() {
+		return { downloading: true, source: "" };
+	},
+	methods: {
+		async downloadNodeFile() {
+			const self = this as any;
+			const fileBlob = await downloadFileNode(self.url);
+			self.source = arraybufferToBase64(fileBlob);
+			self.downloading = false;
+		},
+	},
+};
 
 export const nodeIdMixin = {
 	computed: {

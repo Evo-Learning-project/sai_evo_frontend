@@ -13,6 +13,7 @@
 import { defineComponent, PropType } from "@vue/runtime-core";
 import PdfViewer from "./PdfViewer.vue";
 import { fileViewerProps } from "./shared";
+import SourceCodeViewer from "./SourceCodeViewer.vue";
 import VideoViewer from "./VideoViewer.vue";
 export default defineComponent({
 	name: "FileViewer",
@@ -25,10 +26,10 @@ export default defineComponent({
 			if (this.filename.slice(-3) === "pdf") {
 				return "PdfViewer";
 			}
-			return "VideoViewer";
+			return "SourceCodeViewer"; //"VideoViewer";
 		},
 	},
-	components: { PdfViewer, VideoViewer },
+	components: { PdfViewer, VideoViewer, SourceCodeViewer },
 });
 </script>
 

@@ -81,7 +81,7 @@
 					<SlotSkeleton />
 					<SlotSkeleton />
 				</div>
-				<div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+				<div class="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
 					<div class="" v-for="child in children" :key="child.id">
 						<CourseTreeNode
 							v-bind="$props"

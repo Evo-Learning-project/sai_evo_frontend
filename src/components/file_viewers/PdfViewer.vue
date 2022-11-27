@@ -89,6 +89,7 @@ import LinearProgress from "../ui/LinearProgress.vue";
 import { fileViewerProps } from "./shared";
 import { arraybufferToBase64 } from "@/utils";
 import { downloadFileNode } from "@/api";
+import { fileViewerMixin } from "@/mixins";
 export default defineComponent({
 	name: "PdfViewer",
 	props: {
@@ -99,6 +100,7 @@ export default defineComponent({
 		Btn,
 		LinearProgress,
 	},
+	mixins: [fileViewerMixin],
 	mounted() {
 		this.downloadNodeFile();
 		const bodyContainsOverflowHidden =
@@ -116,24 +118,23 @@ export default defineComponent({
 	},
 	data() {
 		return {
-			downloading: true,
+			//downloading: true,
 			isLoading: true,
 			reRendering: false,
 			page: null,
 			pageCount: null as null | number,
-			//pdfSource: "http://127.0.0.1:8000/courses/20/nodes/8/download",
 			showAllPages: true,
 			width: 800,
-			source: "",
+			//source: "",
 		};
 	},
 	methods: {
-		async downloadNodeFile() {
-			const fileBlob = await downloadFileNode(this.url);
-			console.log("BLOB", fileBlob);
-			this.source = arraybufferToBase64(fileBlob);
-			this.downloading = false;
-		},
+		// async downloadNodeFile() {
+		// 	const fileBlob = await downloadFileNode(this.url);
+		// 	console.log("BLOB", fileBlob);
+		// 	this.source = arraybufferToBase64(fileBlob);
+		// 	this.downloading = false;
+		// },
 		onZoom(amount: number) {
 			if (this.reRendering) {
 				return;
