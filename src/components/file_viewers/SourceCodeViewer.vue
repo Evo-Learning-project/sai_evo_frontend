@@ -62,6 +62,7 @@
 <script lang="ts">
 import { fileViewerMixin } from "@/mixins";
 import { defineComponent, PropType } from "@vue/runtime-core";
+import Btn from "../ui/Btn.vue";
 import CodeFragment from "../ui/CodeFragment.vue";
 import { fileViewerProps } from "./shared";
 export default defineComponent({
@@ -80,7 +81,7 @@ export default defineComponent({
 			return atob(this.source);
 		},
 	},
-	components: { CodeFragment },
+	components: { CodeFragment, Btn },
 });
 </script>
 
