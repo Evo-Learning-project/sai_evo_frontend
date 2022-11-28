@@ -1,11 +1,11 @@
 <template>
-	<div>ImageViewer</div>
+	<div>FallbackFileViewer</div>
 </template>
 
 <script lang="ts">
 import { defineComponent, PropType } from "@vue/runtime-core";
 export default defineComponent({
-	name: "ImageViewer",
+	name: "FallbackFileViewer",
 	props: {},
 	methods: {},
 	computed: {},

@@ -5,6 +5,7 @@
 			:filename="node.file.name"
 			@fileDownload="onDownload()"
 			:url="fileUrl"
+			:mimeType="node.mime_type"
 			:id="node.id + '-viewer'"
 			:downloading="downloading"
 		/>

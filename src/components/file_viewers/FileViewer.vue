@@ -11,10 +11,12 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from "@vue/runtime-core";
+import ImageViewer from "./ImageViewer.vue";
 import PdfViewer from "./PdfViewer.vue";
 import { fileViewerProps } from "./shared";
 import SourceCodeViewer from "./SourceCodeViewer.vue";
 import VideoViewer from "./VideoViewer.vue";
+import FallbackFileViewer from "./FallbackFileViewer.vue";
 export default defineComponent({
 	name: "FileViewer",
 	props: {
@@ -23,13 +25,30 @@ export default defineComponent({
 	methods: {},
 	computed: {
 		viewerComponentName() {
-			if (this.filename.slice(-3) === "pdf") {
+			const mimeTypePrefix = this.mimeType.split("/")[0];
+			const mimeTypeSuffix = this.mimeType.split("/")[1];
+			if (mimeTypePrefix === "text" || this.mimeType === "application/json") {
+				return "SourceCodeViewer";
+			}
+			if (mimeTypePrefix === "video" && ["mp4", "mov"].includes(mimeTypeSuffix)) {
+				return "VideoViewer";
+			}
+			if (this.mimeType === "application/pdf") {
 				return "PdfViewer";
 			}
-			return "SourceCodeViewer"; //"VideoViewer";
+			if (mimeTypePrefix === "image") {
+				return "ImageViewer";
+			}
+			return "FallbackFileViewer";
 		},
 	},
-	components: { PdfViewer, VideoViewer, SourceCodeViewer },
+	components: {
+		PdfViewer,
+		VideoViewer,
+		SourceCodeViewer,
+		ImageViewer,
+		FallbackFileViewer,
+	},
 });
 </script>
 
