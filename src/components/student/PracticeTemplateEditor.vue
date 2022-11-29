@@ -16,8 +16,7 @@
 						:modelValue="firstRule?.amount ?? 0"
 						@update:modelValue="
 							rulesAutoSaveInstances[firstRule?.id ?? '']?.onChange({
-								field: 'amount',
-								value: $event,
+								amount: $event,
 							})
 						"
 					>
@@ -218,8 +217,7 @@ export default defineComponent({
 	methods: {
 		async saveRule() {
 			await this.rulesAutoSaveInstances[this.editingRule as string].onChange({
-				field: "amount",
-				value: this.editingRuleDirtyAmount,
+				amount: this.editingRuleDirtyAmount,
 			});
 			this.editingRule = null;
 			if (this.pendingSelectedTags) {
@@ -231,8 +229,7 @@ export default defineComponent({
 		async discardRule() {
 			if (this.pendingSelectedTags != null) {
 				await this.rulesAutoSaveInstances[this.editingRule as string].onChange({
-					field: "amount",
-					value: 0,
+					amount: 0,
 				});
 				this.pendingSelectedTags = null;
 			}
@@ -240,8 +237,7 @@ export default defineComponent({
 		},
 		async onRuleUpdateClause(clause: EventTemplateRuleClause) {
 			await this.ruleClausesAutoSaveInstances[clause.id].onChange({
-				field: "tags",
-				value: clause.tags,
+				tags: clause.tags,
 			});
 		},
 		async onRuleAddClause(rule: EventTemplateRule, tagId: string) {
@@ -329,8 +325,7 @@ export default defineComponent({
 					// TODO get rule for removed tag and set its amount to 0
 					const removedTag = this.selectedTags.filter(t => !val.includes(t))[0];
 					await this.rulesAutoSaveInstances[this.tagsToRules[removedTag].id].onChange({
-						field: "amount",
-						value: 0,
+						amount: 0,
 					});
 					this.selectedTags = val;
 				}

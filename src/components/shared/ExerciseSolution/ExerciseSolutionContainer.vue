@@ -183,7 +183,7 @@ export default defineComponent({
 			key: K,
 			value: IExerciseSolution[K],
 		) {
-			await this.autoSaveManager?.onChange({ field: key, value });
+			await this.autoSaveManager?.onChange({ [key]: value });
 		},
 		async onSolutionStateUpdate(
 			solution: IExerciseSolution,
@@ -196,7 +196,7 @@ export default defineComponent({
 					courseId: this.courseId,
 					state: newState,
 				});
-				await this.autoSaveManager?.onChange({ field: "state", value: newState });
+				await this.autoSaveManager?.onChange({ state: newState });
 			} catch (e) {
 				setErrorNotification(e);
 			} finally {

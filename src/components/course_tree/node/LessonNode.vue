@@ -61,7 +61,12 @@
 						{{ lessonTitle }}
 					</h2>
 				</router-link>
-				<Timestamp :date-only="true" class="text-sm text-muted" :value="node.created" />
+				<div class="flex space-x-2 ml-0.5">
+					<p v-if="node.creator" class="text-sm">
+						{{ node.creator.full_name }}
+					</p>
+					<Timestamp :date-only="true" class="text-sm text-muted" :value="node.created" />
+				</div>
 			</div>
 			<!-- teacher actions-->
 			<div
@@ -124,7 +129,7 @@ import Timestamp from "@/components/ui/Timestamp.vue";
 import { getTranslatedString as _ } from "@/i18n";
 import { LessonNode, LessonNodeState } from "@/models";
 import { defineComponent, PropType } from "@vue/runtime-core";
-import { nodeProps } from "../shared";
+import { nodeEmits, nodeProps } from "../shared";
 export default defineComponent({
 	name: "LessonNode",
 	props: {
@@ -139,9 +144,12 @@ export default defineComponent({
 			LessonNodeState,
 		};
 	},
+	emits: {
+		...nodeEmits,
+	},
 	methods: {
 		onEdit() {
-			this.$emit("editLesson");
+			this.$emit("editNode", this.node);
 		},
 	},
 	computed: {

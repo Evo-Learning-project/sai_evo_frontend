@@ -103,3 +103,13 @@ export async function downloadFileNodeAsAttachment(
 		.replace(/"/g, "");
 	forceFileDownload(response, fileName);
 }
+
+export async function getFileNodeThumbnail(
+	courseId: string,
+	nodeId: string,
+): Promise<string> {
+	const response = await axios.get(`/courses/${courseId}/nodes/${nodeId}/thumbnail/`, {
+		responseType: "arraybuffer",
+	});
+	return response.data;
+}

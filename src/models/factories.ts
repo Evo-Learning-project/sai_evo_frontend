@@ -199,9 +199,9 @@ export const getBlankLessonNode = (parentId: string | null): LessonNode => ({
 	resourcetype: CourseTreeNodeType.LessonNode,
 });
 
-export const getBlankTopicNode = (parentId: string | null): TopicNode => ({
+export const getBlankTopicNode = (parentId: string | null, name = ""): TopicNode => ({
 	parent_id: parentId,
-	name: "",
+	name,
 	created: "",
 	id: "",
 	resourcetype: CourseTreeNodeType.TopicNode,
@@ -212,5 +212,7 @@ export const getBlankFileNode = (parentId: string | null): FileNode => ({
 	file: null,
 	created: "",
 	id: "",
+	mime_type: "",
+	thumbnail: "",
 	resourcetype: CourseTreeNodeType.FileNode,
 });

@@ -42,7 +42,7 @@
 					<!-- <Btn :variant="'icon'" :outline="true"
 							><span class="material-icons-outlined">brightness_4</span></Btn
 						> -->
-					<LocaleSelector v-if="showLocaleSelector"></LocaleSelector>
+					<LocaleSelector v-if="false && showLocaleSelector"></LocaleSelector>
 					<DropdownMenu
 						:placement="'left'"
 						class="text-lightText"

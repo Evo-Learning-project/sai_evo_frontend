@@ -969,7 +969,7 @@ export default defineComponent({
 			await this.autoSaveManager?.flush();
 		},
 		async onBaseExerciseChange<K extends keyof Exercise>(key: K, value: Exercise[K]) {
-			await this.autoSaveManager?.onChange({ field: key, value });
+			await this.autoSaveManager?.onChange({ [key]: value });
 		},
 		async lockEditingObject() {
 			const LOCK_POLLING_INTERVAL = 5000;
@@ -1110,8 +1110,7 @@ export default defineComponent({
 			value: ExerciseSolution[K],
 		) {
 			await this.solutionAutoSaveManagers[solutionId].onChange({
-				field: key,
-				value,
+				[key]: value,
 			});
 		},
 		async onBlurSolution(solutionId: string) {
@@ -1132,8 +1131,7 @@ export default defineComponent({
 			value: ExerciseChoice[K],
 		) {
 			await this.choiceAutoSaveManagers[choiceId].onChange({
-				field: key,
-				value,
+				[key]: value,
 			});
 		},
 		async onBlurChoice(choiceId: string) {
@@ -1204,8 +1202,7 @@ export default defineComponent({
 			value: ExerciseTestCase[K],
 		) {
 			await this.testCaseAutoSaveManagers[testCaseId].onChange({
-				field: key,
-				value,
+				[key]: value,
 			});
 		},
 		async onBlurTestCase(testcaseId: string) {

@@ -322,7 +322,7 @@ export default defineComponent({
 		) {
 			this.$emit("saving");
 			try {
-				await this.rulesAutoSaveInstances[rule.id].onChange({ field, value });
+				await this.rulesAutoSaveInstances[rule.id].onChange({ [field]: value });
 			} catch (e) {
 				this.setErrorNotification(e);
 			} finally {
@@ -363,8 +363,7 @@ export default defineComponent({
 		},
 		async onRuleUpdateClause(rule: EventTemplateRule, clause: EventTemplateRuleClause) {
 			await this.ruleClausesAutoSaveInstances[clause.id].onChange({
-				field: "tags",
-				value: clause.tags,
+				tags: clause.tags,
 			});
 
 			// reload rule to update "satisfying" preview

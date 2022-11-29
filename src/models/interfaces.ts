@@ -316,6 +316,7 @@ export interface FileNode extends BaseNodeFields {
 		| null;
 	resourcetype: CourseTreeNodeType.FileNode;
 	mime_type: string;
+	thumbnail: string | null;
 }
 
 export interface LessonNode extends BaseNodeFields {

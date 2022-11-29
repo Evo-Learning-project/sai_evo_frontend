@@ -72,6 +72,7 @@ import {
 	getCourseNode,
 	getCourseRootNodeId,
 	getCourseTopLevelNodes,
+	getFileNodeThumbnail,
 	getNodeChildren,
 	partialUpdateCourseNode,
 	uploadNodeFile,
@@ -110,6 +111,7 @@ import {
 	ExerciseSolutionVote,
 	CoursePrivilege,
 	getBlankTag,
+	FileNode,
 } from "@/models";
 import {
 	CourseIdActionPayload,
@@ -129,6 +131,7 @@ import {
 	TemplateRuleClauseIdActionPayload,
 	CourseTreeNodeIdActionPayload,
 } from "@/store/types";
+import { arraybufferToBase64 } from "@/utils";
 import { defineStore } from "pinia";
 
 export const useMainStore = defineStore("main", {
@@ -267,6 +270,19 @@ export const useMainStore = defineStore("main", {
 			}
 			const rootId = this.courseIdToTreeRootId[courseId];
 			return rootId;
+		},
+		async loadCourseTreeNodeThumbnail({
+			courseId,
+			nodeId,
+		}: CourseIdActionPayload & CourseTreeNodeIdActionPayload) {
+			const thumbnail = await getFileNodeThumbnail(courseId, nodeId);
+			const target = this.flatCourseTreeNodes.find(n => n.id == nodeId);
+			if (!target) {
+				throw new Error(
+					"loadCourseTreeNodeThumbnail couldn't find node with id " + nodeId,
+				);
+			}
+			Object.assign(target, { ...target, thumbnail: arraybufferToBase64(thumbnail) });
 		},
 		async createCourseTreeNode({
 			courseId,

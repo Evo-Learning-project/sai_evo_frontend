@@ -968,6 +968,11 @@ export const it = {
 		unknown_error: "Si è verificato un errore sconosciuto",
 	},
 	course_tree: {
+		create: "Crea",
+		topic_node_name: "Nome sezione",
+		new_topic_title: "Nuova sezione",
+		save: "Salva",
+		save_draft: "Salva bozza",
 		create_file_node_title: "Nuovo file",
 		no_nodes: "Non c'è ancora materiale",
 		unnamed_lesson: "Lezione senza titolo",

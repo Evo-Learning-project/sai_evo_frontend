@@ -1,11 +1,16 @@
 <template>
-	<component v-bind="$props" :is="componentName" @editLesson="$emit('editLesson')" />
+	<component
+		v-bind="$props"
+		:is="componentName"
+		@editNode="$emit('editNode', $event)"
+		@loadChildren="$emit('loadChildren', $event)"
+	/>
 </template>
 
 <script lang="ts">
 import { CourseTreeNode } from "@/models";
 import { defineComponent, PropType, defineAsyncComponent } from "@vue/runtime-core";
-import { nodeProps } from "../shared";
+import { nodeEmits, nodeProps } from "../shared";
 // import FileNode from "./FileNode.vue";
 // import TopicNode from "./TopicNode.vue";
 // import LessonNode from "./LessonNode.vue";
@@ -17,6 +22,9 @@ export default defineComponent({
 			required: true,
 		},
 		...nodeProps,
+	},
+	emits: {
+		...nodeEmits,
 	},
 	beforeCreate() {
 		// dynamically import specialized components to prevent circular imports

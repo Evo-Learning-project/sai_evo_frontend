@@ -402,7 +402,7 @@ export default defineComponent({
 			if (field === "randomize_rule_order") {
 				this.invalidateExamples();
 			}
-			await this.autoSaveManager?.onChange({ field, value });
+			await this.autoSaveManager?.onChange({ [field]: value });
 		},
 		async onBlur() {
 			await this.autoSaveManager?.flush();

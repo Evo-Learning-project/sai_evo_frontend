@@ -124,7 +124,7 @@ import { CourseTreeNode as ICourseTreeNode, FileNode, LessonNode } from "@/model
 import { defineComponent, PropType } from "@vue/runtime-core";
 import LessonNodeEditor from "../editors/LessonNodeEditor.vue";
 import CourseTreeNode from "../node/CourseTreeNode.vue";
-import { nodeProps } from "../shared";
+import { nodeEmits, nodeProps } from "../shared";
 export default defineComponent({
 	name: "LessonNodeDetail",
 	mixins: [loadingMixin],
@@ -139,8 +139,11 @@ export default defineComponent({
 		},
 		...nodeProps,
 	},
+	emits: {
+		...nodeEmits,
+	},
 	created() {
-		this.$emit("loadChildren");
+		this.$emit("loadChildren", { node: this.node, fromFirstPage: true });
 	},
 	data() {
 		return {

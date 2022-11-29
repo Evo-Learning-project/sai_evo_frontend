@@ -1,6 +1,6 @@
 <template>
 	<component
-		@loadChildren="onLoadChildren"
+		@loadChildren="onLoadChildren($event.node, $event.fromFirstPage)"
 		:children="nodeChildren"
 		:is="componentName"
 		v-bind="passDownProps"
@@ -54,13 +54,13 @@ export default defineComponent({
 		onEdit() {
 			console.log("edit");
 		},
-		async onLoadChildren() {
+		async onLoadChildren(node: CourseTreeNode, fromFirstPage: boolean) {
 			console.log("loading children!");
 			await this.withLocalLoading(async () => {
 				await this.mainStore.getCourseTreeNodeChildren({
 					courseId: this.courseId,
-					nodeId: this.nodeId,
-					fromFirstPage: true,
+					nodeId: node.id,
+					fromFirstPage,
 				});
 			});
 		},

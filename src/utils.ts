@@ -311,6 +311,5 @@ export function getHumanFileSize(bytes: number) {
 }
 
 export function arraybufferToBase64(data: any): string {
-	console.log("arr", data.text);
 	return Buffer.from(data, "binary").toString("base64");
 }

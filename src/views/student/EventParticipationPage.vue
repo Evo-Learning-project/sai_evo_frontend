@@ -509,7 +509,7 @@ export default defineComponent({
 				}
 			}
 			this.lastSlotChanged = slot;
-			await this.slotAutoSaveManagers[slot.id].onChange({ field, value });
+			await this.slotAutoSaveManagers[slot.id].onChange({ [field]: value });
 		},
 		instantiateSlotAutoSaveManager(slot: EventParticipationSlot) {
 			this.slotAutoSaveManagers[slot.id] = new AutoSaveManager<EventParticipationSlot>(

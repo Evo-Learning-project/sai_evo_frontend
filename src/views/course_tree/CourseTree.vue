@@ -43,11 +43,12 @@
 
 		<div class="my-4" v-for="node in topLevelNodes" :key="node.id">
 			<CourseTreeNode
-				@loadChildren="onLoadChildren(node)"
+				@loadChildren="onLoadChildren($event.node, $event.fromFirstPage)"
 				:canEdit="canEditNodes"
 				:node="node"
-				@editLesson="onEditLesson(node)"
+				@editNode="onEditNode($event)"
 			/>
+			<!-- TODO create generic onEdit event and handle it depending on node type-->
 		</div>
 		<div v-if="!loading && topLevelNodes.length === 0" class="flex w-full h-full mt-12">
 			<div class="m-auto flex flex-col">
@@ -63,17 +64,22 @@
 		<Dialog
 			:fullHeight="true"
 			:large="true"
-			@no="showEditorDialog = false"
+			@no="
+				showEditorDialog = false;
+				editingNode = null;
+			"
 			:showDialog="showEditorDialog"
 			:showActions="false"
 		>
 			<template v-slot:body>
-				<!-- editing lesson node -->
-				<LessonNodeEditor
-					class="text-darkText"
-					:modelValue="editingLessonNode"
-					@closeEditor="onCloseLessonEditor()"
-					v-if="editingLessonNode"
+				<CourseTreeNodeEditor
+					v-if="editingNode"
+					:modelValue="editingNode"
+					:autoSave="autoSaveEditingNode"
+					@closeEditor="
+						showEditorDialog = false;
+						editingNode = null;
+					"
 				/>
 			</template>
 		</Dialog>
@@ -96,6 +102,26 @@
 				</div>
 			</template>
 		</Dialog>
+
+		<Dialog
+			@yes="resolveBlockingDialog(true)"
+			@no="resolveBlockingDialog(false)"
+			:showDialog="showBlockingDialog"
+			:yesText="localLoading ? $t('misc.wait') : $t('course_tree.create')"
+			:noText="$t('dialog.default_cancel_text')"
+			:disableOk="editingTopicName.trim().length === 0 || localLoading"
+		>
+			<template v-slot:title>
+				<h1>{{ $t("course_tree.new_topic_title") }}</h1>
+			</template>
+			<template v-slot:body>
+				<div class="flex">
+					<TextInput class="w-full mx-auto" v-model="editingTopicName">{{
+						$t("course_tree.topic_node_name")
+					}}</TextInput>
+				</div>
+			</template>
+		</Dialog>
 	</div>
 </template>
 
@@ -103,13 +129,15 @@
 import CourseTreeNode from "@/components/course_tree/node/CourseTreeNode.vue";
 import DropdownMenu from "@/components/ui/DropdownMenu.vue";
 import { SelectableOption } from "@/interfaces";
-import { courseIdMixin, loadingMixin } from "@/mixins";
+import { blockingDialogMixin, courseIdMixin, loadingMixin } from "@/mixins";
 import {
 	CourseTreeNode as ICourseTreeNode,
 	CourseTreeNodeType,
 	getBlankFileNode,
 	getBlankLessonNode,
+	getBlankTopicNode,
 	LessonNode,
+	TopicNode,
 } from "@/models";
 import { useMainStore } from "@/stores/mainStore";
 import { useMetaStore } from "@/stores/metaStore";
@@ -121,10 +149,12 @@ import Dialog from "@/components/ui/Dialog.vue";
 import LessonNodeEditor from "@/components/course_tree/editors/LessonNodeEditor.vue";
 import FileUpload from "@/components/ui/FileUpload.vue";
 import { setErrorNotification } from "@/utils";
+import CourseTreeNodeEditor from "@/components/course_tree/editors/CourseTreeNodeEditor.vue";
+import TextInput from "@/components/ui/TextInput.vue";
 export default defineComponent({
 	name: "CourseTree",
 	props: {},
-	mixins: [courseIdMixin, loadingMixin],
+	mixins: [courseIdMixin, loadingMixin, blockingDialogMixin],
 	async created() {
 		await this.withLoading(async () =>
 			this.mainStore.getCourseTopLevelNodes({
@@ -138,19 +168,25 @@ export default defineComponent({
 			CourseTreeNodeType,
 			createMenuExpanded: false,
 			showEditorDialog: false,
-			editingLessonNode: null as null | ICourseTreeNode,
+			editingNode: null as null | ICourseTreeNode,
+			autoSaveEditingNode: true,
 			creatingFileNode: false,
 			uploadingFile: false,
+			editingTopicName: "",
 		};
 	},
 	methods: {
-		onEditLesson(node: LessonNode) {
-			this.editingLessonNode = node;
+		onEditNode(node: ICourseTreeNode) {
+			/* TODO make deep copy of editing node and await a blocking dialog
+			meanwhile, you save all changes in the deep copied object and if the user
+			saves, you flush everything in the autosave manager.
+
+			In order to be able to do this, you need to lift up the manager here
+			instead of using it in the editors. The editors will simply emit patchNode({key: val})
+			*/
+			this.autoSaveEditingNode = false;
+			this.editingNode = node;
 			this.showEditorDialog = true;
-		},
-		onCloseLessonEditor() {
-			this.showEditorDialog = false;
-			this.editingLessonNode = null;
 		},
 		async createFileNode(file: Blob) {
 			this.uploadingFile = true;
@@ -169,24 +205,42 @@ export default defineComponent({
 		},
 		async onCreateNode(nodeType: CourseTreeNodeType) {
 			if (nodeType === CourseTreeNodeType.TopicNode) {
-				// TODO create node, insert it immediately & toggle editing on it
+				const choice = await this.getBlockingBinaryDialogChoice();
+				if (!choice) {
+					this.showBlockingDialog = false;
+					return;
+				}
+				await this.withLocalLoading(
+					async () =>
+						await this.mainStore.createCourseTreeNode({
+							courseId: this.courseId,
+							node: getBlankTopicNode(null, this.editingTopicName.trim()),
+						}),
+				);
+				this.showBlockingDialog = false;
+				this.editingTopicName = "";
 			} else if (nodeType === CourseTreeNodeType.LessonNode) {
-				// create lesson node & open editor dialog
 				await this.withLoading(
 					async () =>
-						(this.editingLessonNode = await this.mainStore.createCourseTreeNode({
+						(this.editingNode = await this.mainStore.createCourseTreeNode({
 							courseId: this.courseId,
 							node: getBlankLessonNode(null),
 						})),
 				);
+				this.autoSaveEditingNode = true;
 				this.showEditorDialog = true;
 			} else if (nodeType === CourseTreeNodeType.FileNode) {
 				// open dialog to create file node
 				this.creatingFileNode = true;
 			}
 		},
-		onLoadChildren(node) {
-			console.log("course tree on load children");
+		async onLoadChildren(node, fromFirstPage: boolean) {
+			console.log("course tree on load children", fromFirstPage);
+			await this.mainStore.getCourseTreeNodeChildren({
+				courseId: this.courseId,
+				nodeId: node.id,
+				fromFirstPage,
+			});
 		},
 	},
 	computed: {
@@ -224,7 +278,14 @@ export default defineComponent({
 			return true;
 		},
 	},
-	components: { CourseTreeNode, DropdownMenu, Dialog, LessonNodeEditor, FileUpload },
+	components: {
+		CourseTreeNode,
+		DropdownMenu,
+		Dialog,
+		FileUpload,
+		CourseTreeNodeEditor,
+		TextInput,
+	},
 });
 </script>
 

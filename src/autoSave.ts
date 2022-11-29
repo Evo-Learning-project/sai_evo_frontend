@@ -1,16 +1,10 @@
-import { Exercise, ExerciseChoice, ExerciseTestCase } from "@/models";
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { debounce, DebouncedFunc } from "lodash";
-import {
-	EXERCISE_CHOICE_AUTO_SAVE_DEBOUNCED_FIELDS,
-	EXERCISE_CHOICE_AUTO_SAVE_DEBOUNCE_TIME_MS,
-} from "./const";
 
-type RemotePatchFunction<T> = (changes: FieldValuesObject<T>) => Promise<void>;
-type PatchFunction<T> = (changes: FieldValuesObject<T>, reverting?: boolean) => void;
+type RemotePatchFunction<T> = (changes: Partial<T>) => Promise<void>;
+type PatchFunction<T> = (changes: Partial<T>, reverting?: boolean) => void;
 export type FieldList<T> = (keyof T)[];
-type FieldValuesObject<T> = Partial<T>;
 
 enum AutoSaveManagerState {
 	UP_TO_DATE,
@@ -19,8 +13,8 @@ enum AutoSaveManagerState {
 }
 export class AutoSaveManager<T> {
 	instance: T;
-	unsavedChanges: FieldValuesObject<T>;
-	beforeChanges: FieldValuesObject<T>;
+	unsavedChanges: Partial<T>;
+	beforeChanges: Partial<T>;
 	remotePatchFunction: DebouncedFunc<RemotePatchFunction<T>>;
 	localPatchFunction: PatchFunction<T>;
 	errorFunction?: (e: any) => void;
@@ -60,34 +54,63 @@ export class AutoSaveManager<T> {
 		this.state = AutoSaveManagerState.UP_TO_DATE;
 	}
 
-	async onChange<K extends keyof T>({
-		field,
-		value,
-	}: {
-		field: K;
-		value: T[K];
-	}): Promise<void> {
+	// async onChange<K extends keyof T>({
+	// 	field,
+	// 	value,
+	// }: {
+	// 	field: K;
+	// 	value: T[K];
+	// }): Promise<void> {
+	// 	this.state = AutoSaveManagerState.PENDING;
+
+	// 	// record new change to field
+	// 	this.unsavedChanges[field] = value as any;
+
+	// 	// make deep copy of field about to change in case rollback becomes necessary
+	// 	// (only for non-debounced fields as it would be disconcerting to roll back
+	// 	// debounced changes like in text fields)
+	// 	if (!this.debouncedFields.includes(field)) {
+	// 		this.beforeChanges[field] = JSON.parse(JSON.stringify(this.instance[field]));
+	// 	}
+
+	// 	if (this.alwaysPatchLocal) {
+	// 		// instantly update in-memory instance
+	// 		this.localPatchFunction({ [field]: value } as any);
+	// 	}
+
+	// 	// dispatch update to backend
+	// 	await this.remotePatchFunction(this.unsavedChanges);
+	// 	if (!this.debouncedFields.includes(field)) {
+	// 		// field isn't to be debounced; call remote update immediately
+	// 		await this.remotePatchFunction.flush();
+	// 	}
+	// }
+
+	async onChange(changes: Partial<T>): Promise<void> {
 		this.state = AutoSaveManagerState.PENDING;
 
 		// record new change to field
-		this.unsavedChanges[field] = value as any;
+		this.unsavedChanges = { ...this.unsavedChanges, ...changes };
 
-		// make deep copy of field about to change in case rollback becomes necessary
+		// make deep copy of fields about to change in case rollback becomes necessary
 		// (only for non-debounced fields as it would be disconcerting to roll back
 		// debounced changes like in text fields)
-		if (!this.debouncedFields.includes(field)) {
-			this.beforeChanges[field] = JSON.parse(JSON.stringify(this.instance[field]));
-		}
+		Object.keys(changes)
+			.filter(k => !this.debouncedFields.includes(k as keyof T))
+			.forEach(
+				k => (this.beforeChanges[k] = JSON.parse(JSON.stringify(this.instance[k]))),
+			);
 
 		if (this.alwaysPatchLocal) {
 			// instantly update in-memory instance
-			this.localPatchFunction({ [field]: value } as any);
+			this.localPatchFunction(changes);
 		}
 
 		// dispatch update to backend
 		await this.remotePatchFunction(this.unsavedChanges);
-		if (!this.debouncedFields.includes(field)) {
-			// field isn't to be debounced; call remote update immediately
+
+		if (Object.keys(changes).some(k => !this.debouncedFields.includes(k as keyof T))) {
+			// at least one field isn't to be debounced; call remote update immediately
 			await this.remotePatchFunction.flush();
 		}
 	}
@@ -109,7 +132,7 @@ export class AutoSaveManager<T> {
 		 * Wraps the callback into a function that awaits the callback first, and
 		 * if it is successful, then empties the unsaved changes object
 		 */
-		return async (changes: FieldValuesObject<T>) => {
+		return async (changes: Partial<T>) => {
 			try {
 				await callback(changes);
 				if (!this.alwaysPatchLocal) {
