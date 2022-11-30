@@ -268,6 +268,7 @@ export default defineComponent({
 			}
 			return { ...this.modelValue, ...this.unsavedChanges };
 		},
+		// TODO refactor, duplicated with CourseTree
 		topicsAsOptions(): SelectableOption[] {
 			return [
 				{

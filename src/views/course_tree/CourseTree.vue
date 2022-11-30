@@ -95,7 +95,16 @@
 				<h1>{{ $t("course_tree.create_file_node_title") }}</h1>
 			</template>
 			<template v-slot:body>
-				<div class="flex">
+				<div class="flex flex-col space-y-4">
+					<div class="w-2/3 flex mx-auto">
+						<Dropdown
+							class="mr-auto w-1/2"
+							:options="topicsAsOptions"
+							v-model="selectedTopicId"
+							>{{ $t("course_tree.topic_label") }}</Dropdown
+						>
+					</div>
+
 					<div class="m-auto w-2/3">
 						<FileUpload :uploading="uploadingFile" v-model="fileUploadProxy" />
 					</div>
@@ -127,7 +136,6 @@
 
 <script lang="ts">
 import CourseTreeNode from "@/components/course_tree/node/CourseTreeNode.vue";
-import DropdownMenu from "@/components/ui/DropdownMenu.vue";
 import { SelectableOption } from "@/interfaces";
 import { blockingDialogMixin, courseIdMixin, loadingMixin } from "@/mixins";
 import {
@@ -151,6 +159,10 @@ import FileUpload from "@/components/ui/FileUpload.vue";
 import { setErrorNotification } from "@/utils";
 import CourseTreeNodeEditor from "@/components/course_tree/editors/CourseTreeNodeEditor.vue";
 import TextInput from "@/components/ui/TextInput.vue";
+import { getCourseTopicNodes } from "@/api";
+import DropdownMenu from "@/components/ui/DropdownMenu.vue";
+import Dropdown from "@/components/ui/Dropdown.vue";
+
 export default defineComponent({
 	name: "CourseTree",
 	props: {},
@@ -162,6 +174,9 @@ export default defineComponent({
 				fromFirstPage: true,
 			}),
 		);
+		await this.mainStore.getCourseRootId({ courseId: this.courseId });
+		this.topics = await getCourseTopicNodes(this.courseId);
+		this.selectedTopicId = this.mainStore.courseIdToTreeRootId[this.courseId];
 	},
 	data() {
 		return {
@@ -173,6 +188,8 @@ export default defineComponent({
 			creatingFileNode: false,
 			uploadingFile: false,
 			editingTopicName: "",
+			selectedTopicId: "",
+			topics: [] as TopicNode[],
 		};
 	},
 	methods: {
@@ -193,10 +210,11 @@ export default defineComponent({
 			try {
 				await this.mainStore.createCourseTreeNode({
 					courseId: this.courseId,
-					node: { ...getBlankFileNode(null), file },
+					node: { ...getBlankFileNode(this.selectedTopicId), file },
 				});
 				this.metaStore.showSuccessFeedback();
 				this.creatingFileNode = false;
+				this.selectedTopicId = this.mainStore.courseIdToTreeRootId[this.courseId];
 			} catch (e) {
 				setErrorNotification(e);
 			} finally {
@@ -245,6 +263,18 @@ export default defineComponent({
 	},
 	computed: {
 		...mapStores(useMainStore, useMetaStore),
+		topicsAsOptions(): SelectableOption[] {
+			return [
+				{
+					value: this.mainStore.courseIdToTreeRootId[this.courseId],
+					content: _("course_tree.no_topic"),
+				},
+				...this.topics.map(t => ({
+					value: t.id,
+					content: t.name,
+				})),
+			];
+		},
 		nodeTypesAsSelectableOptions(): SelectableOption[] {
 			return (
 				(Object.keys(CourseTreeNodeType) as any[])
@@ -285,6 +315,7 @@ export default defineComponent({
 		FileUpload,
 		CourseTreeNodeEditor,
 		TextInput,
+		Dropdown,
 	},
 });
 </script>
