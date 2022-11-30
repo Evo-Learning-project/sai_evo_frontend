@@ -21,7 +21,7 @@
 				</Btn>
 			</div>
 		</div>
-		<div v-for="child in children" :key="child.id" class="mx-2">
+		<div v-for="child in children" :key="child.id" class="mx-2 my-2">
 			<CourseTreeNode
 				@editNode="$emit('editNode', $event)"
 				:canEdit="canEdit"

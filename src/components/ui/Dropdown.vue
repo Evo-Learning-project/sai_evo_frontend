@@ -1,5 +1,6 @@
 <template>
 	<div class="relative">
+		<LinearProgress v-if="loading" class="absolute top-0 rounded-t-sm" />
 		<!-- floating label -->
 		<label class="absolute top-2 left-1.5 origin-0 fixed-label"><slot></slot></label>
 		<DropdownMenu :expanded="expanded" @toggleExpanded="expanded = !expanded">
@@ -186,6 +187,7 @@ import { v4 as uuid4 } from "uuid";
 import MultiIcon from "@/components/ui/MultiIcon.vue";
 import DropdownMenu from "./DropdownMenu.vue";
 import { SelectableOption } from "@/interfaces";
+import LinearProgress from "./LinearProgress.vue";
 
 export default defineComponent({
 	name: "Dropdown",
@@ -197,10 +199,15 @@ export default defineComponent({
 		modelValue: {
 			required: true,
 		},
+		loading: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	components: {
 		MultiIcon,
 		DropdownMenu,
+		LinearProgress,
 	},
 	created() {
 		this.id = uuid4();

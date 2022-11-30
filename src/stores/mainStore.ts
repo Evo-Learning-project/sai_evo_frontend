@@ -328,14 +328,70 @@ export const useMainStore = defineStore("main", {
 			return updatedNode;
 		},
 		patchCourseTreeNode({
+			courseId,
 			nodeId,
 			changes,
-		}: CourseTreeNodeIdActionPayload & { changes: Partial<CourseTreeNode> }) {
+		}: CourseIdActionPayload &
+			CourseTreeNodeIdActionPayload & { changes: Partial<CourseTreeNode> }) {
 			const target = this.flatCourseTreeNodes.find(n => n.id == nodeId);
 			if (!target) {
 				throw new Error("patchCourseTreeNode couldn't find node with id " + nodeId);
 			}
+			const oldParentId = target.parent_id;
 			Object.assign(target, { ...target, ...changes });
+			console.log({
+				oldParentId,
+				newP: changes.parent_id,
+				root: this.courseIdToTreeRootId[courseId],
+			});
+			if (changes.parent_id) {
+				if (oldParentId == this.courseIdToTreeRootId[courseId]) {
+					// remove node from children list of top-level nodes
+					this.paginatedTopLevelCourseTreeNodes = deleteByIdFromPaginatedData(
+						this.paginatedTopLevelCourseTreeNodes ?? {
+							count: 0,
+							data: [],
+							isLastPage: true,
+							pageNumber: 1,
+						},
+						{ id: nodeId },
+					);
+				} else {
+					// remove node from children list of old parent
+					const oldChildren = this.paginatedChildrenByNodeId[oldParentId as string] ?? {
+						count: 0,
+						data: [],
+						isLastPage: true,
+						pageNumber: 1,
+					};
+					// remove node from children list of old parent
+					this.paginatedChildrenByNodeId[oldParentId as string] =
+						deleteByIdFromPaginatedData(oldChildren, { id: nodeId });
+				}
+
+				// add to new list (either top-level or children list of new parent)
+				if (changes.parent_id == this.courseIdToTreeRootId[courseId]) {
+					this.paginatedTopLevelCourseTreeNodes = prependToPaginatedData(
+						this.paginatedTopLevelCourseTreeNodes ?? {
+							count: 0,
+							data: [],
+							isLastPage: true,
+							pageNumber: 1,
+						},
+						target,
+					);
+				} else {
+					this.paginatedChildrenByNodeId[changes.parent_id] = prependToPaginatedData(
+						this.paginatedChildrenByNodeId[changes.parent_id] ?? {
+							count: 0,
+							data: [],
+							isLastPage: true,
+							pageNumber: 1,
+						},
+						target,
+					);
+				}
+			}
 		},
 		async uploadCourseTreeNodeFile({
 			courseId,

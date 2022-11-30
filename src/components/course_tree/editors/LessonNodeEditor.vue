@@ -17,7 +17,7 @@
 			/>
 			<div
 				class="flex space-x-3 items-center"
-				v-if="modelValue.state === LessonNodeState.DRAFT"
+				v-if="computedModelValue.state === LessonNodeState.DRAFT"
 			>
 				<p class="text-muted">{{ $t("course_tree.draft") }}</p>
 				<Btn @click="onPublish()">{{ $t("course_tree.publish_lesson") }}</Btn>
@@ -25,11 +25,11 @@
 			<div v-if="!autoSave" class="ml-2">
 				<Btn
 					:disabled="blockingSaving"
-					:outline="modelValue.state === LessonNodeState.DRAFT"
+					:outline="computedModelValue.state === LessonNodeState.DRAFT"
 					@click="onSave()"
 				>
 					{{
-						modelValue.state === LessonNodeState.DRAFT
+						computedModelValue.state === LessonNodeState.DRAFT
 							? $t("course_tree.save_draft")
 							: $t("course_tree.save")
 					}}
@@ -40,14 +40,23 @@
 		<div class="mb-8 flex items-center space-x-8">
 			<TextInput
 				class="w-full"
-				:modelValue="modelValue.title"
+				:modelValue="computedModelValue.title"
 				:fixedLabel="true"
 				@blur="onBlur()"
 				@update:modelValue="onNodeChange('title', $event)"
 			>
 				{{ $t("course_tree.lesson_title") }}
 			</TextInput>
-			<div class="w-1/4 text-muted flex items-center">
+			<div class="w-1/3">
+				<Dropdown
+					:loading="loadingTopics"
+					:options="topicsAsOptions"
+					:modelValue="computedModelValue.parent_id"
+					@update:modelValue="onParentChange($event)"
+					>{{ $t("course_tree.topic_label") }}</Dropdown
+				>
+			</div>
+			<!-- <div class="w-1/4 text-muted flex items-center">
 				<span style="font-size: 14px !important" class="ml-auto material-icons"
 					>calendar_today</span
 				>
@@ -55,12 +64,12 @@
 					{{ $t("course_tree.lesson_creation_date") }}:
 					<Timestamp :value="modelValue.created" />
 				</p>
-			</div>
+			</div> -->
 		</div>
 		<!-- body -->
 		<div>
 			<TextEditor
-				:modelValue="modelValue.body"
+				:modelValue="computedModelValue.body"
 				:fixedLabel="true"
 				@blur="onBlur()"
 				@update:modelValue="onNodeChange('body', $event)"
@@ -87,14 +96,18 @@
 </template>
 
 <script lang="ts">
+import { getCourseTopicNodes } from "@/api";
 import { AutoSaveManager } from "@/autoSave";
 import Btn from "@/components/ui/Btn.vue";
 import CloudSaveStatus from "@/components/ui/CloudSaveStatus.vue";
+import Dropdown from "@/components/ui/Dropdown.vue";
 import FileUpload from "@/components/ui/FileUpload.vue";
 import LinearProgress from "@/components/ui/LinearProgress.vue";
 import TextEditor from "@/components/ui/TextEditor.vue";
 import TextInput from "@/components/ui/TextInput.vue";
 import Timestamp from "@/components/ui/Timestamp.vue";
+import { getTranslatedString as _ } from "@/i18n";
+import { SelectableOption } from "@/interfaces";
 import { courseIdMixin, savingMixin } from "@/mixins";
 import {
 	CourseTreeNodeType,
@@ -102,6 +115,7 @@ import {
 	getBlankFileNode,
 	LessonNode,
 	LessonNodeState,
+	TopicNode,
 } from "@/models";
 import { useMainStore } from "@/stores/mainStore";
 import { useMetaStore } from "@/stores/metaStore";
@@ -129,15 +143,42 @@ export default defineComponent({
 			creatingAttachment: false,
 			unsavedChanges: {},
 			blockingSaving: false,
+			topics: [] as TopicNode[],
+			loadingTopics: false,
+			loadingChildren: false,
 		};
 	},
-	created() {
+	async created() {
 		this.instantiateAutoSaveManager();
-		this.mainStore.getCourseTreeNodeChildren({
-			courseId: this.courseId,
-			nodeId: this.modelValue.id,
-			fromFirstPage: true,
-		});
+
+		await this.mainStore.getCourseRootId({ courseId: this.courseId });
+
+		await Promise.all([
+			(async () => {
+				this.loadingChildren = true;
+				try {
+					await this.mainStore.getCourseTreeNodeChildren({
+						courseId: this.courseId,
+						nodeId: this.modelValue.id,
+						fromFirstPage: true,
+					});
+				} catch (e) {
+					setErrorNotification(e);
+				} finally {
+					this.loadingChildren = false;
+				}
+			})(),
+			(async () => {
+				this.loadingTopics = true;
+				try {
+					this.topics = await getCourseTopicNodes(this.courseId);
+				} catch (e) {
+					setErrorNotification(e);
+				} finally {
+					this.loadingTopics = false;
+				}
+			})(),
+		]);
 	},
 	methods: {
 		instantiateAutoSaveManager() {
@@ -158,7 +199,11 @@ export default defineComponent({
 				changes => {
 					this.saving = true;
 					this.savingError = false;
-					this.mainStore.patchCourseTreeNode({ nodeId: this.modelValue.id, changes });
+					this.mainStore.patchCourseTreeNode({
+						courseId: this.courseId,
+						nodeId: this.modelValue.id,
+						changes,
+					});
 				},
 				["body", "title"],
 				2500,
@@ -188,6 +233,10 @@ export default defineComponent({
 		async onBlur() {
 			await this.autoSaveManager?.flush();
 		},
+		async onParentChange(parentId: string) {
+			console.log("PARENT CHANGE", parentId);
+			await this.onNodeChange("parent_id", parentId);
+		},
 		async onPublish() {
 			this.blockingSaving = true;
 			await this.onNodeChange("state", LessonNodeState.PUBLISHED);
@@ -212,6 +261,25 @@ export default defineComponent({
 	},
 	computed: {
 		...mapStores(useMainStore, useMetaStore),
+		computedModelValue() {
+			// when autosave is off, take into account unsaved changes too
+			if (this.autoSave) {
+				return this.modelValue;
+			}
+			return { ...this.modelValue, ...this.unsavedChanges };
+		},
+		topicsAsOptions(): SelectableOption[] {
+			return [
+				{
+					value: this.mainStore.courseIdToTreeRootId[this.courseId],
+					content: _("course_tree.no_topic"),
+				},
+				...this.topics.map(t => ({
+					value: t.id,
+					content: t.name,
+				})),
+			];
+		},
 		fileChildren(): IFileNode[] {
 			return (
 				this.mainStore.paginatedChildrenByNodeId[this.modelValue.id]?.data ?? []
@@ -231,10 +299,11 @@ export default defineComponent({
 		TextEditor,
 		CloudSaveStatus,
 		Btn,
-		Timestamp,
+		//Timestamp,
 		FileUpload,
 		FileNode,
 		LinearProgress,
+		Dropdown,
 	},
 });
 </script>

@@ -1,8 +1,14 @@
-import { Course, CourseTreeNode, CourseTreeNodeType, FileNode } from "@/models";
+import {
+	Course,
+	CourseTreeNode,
+	CourseTreeNodeType,
+	FileNode,
+	TopicNode,
+} from "@/models";
 import { forceFileDownload } from "@/utils";
 import axios from "axios";
 import { convertPaginatedResponseToLocalPaginatedData } from "./converters";
-import { PaginatedData } from "./interfaces";
+import { BackendPaginatedResponse, PaginatedData } from "./interfaces";
 
 export async function getCourseTopLevelNodes(
 	courseId: string,
@@ -12,6 +18,16 @@ export async function getCourseTopLevelNodes(
 		`/courses/${courseId}/nodes/?page=${pageNumber}&top_level=true`,
 	);
 	return convertPaginatedResponseToLocalPaginatedData(response.data, pageNumber);
+}
+
+export async function getCourseTopicNodes(courseId: string): Promise<TopicNode[]> {
+	const response = await axios.get(
+		`/courses/${courseId}/nodes/?page=1&resourcetype=${CourseTreeNodeType.TopicNode}&size=9999999`,
+	);
+	return convertPaginatedResponseToLocalPaginatedData(
+		response.data as BackendPaginatedResponse<TopicNode>,
+		1,
+	).data;
 }
 
 export async function getCourseNode(
