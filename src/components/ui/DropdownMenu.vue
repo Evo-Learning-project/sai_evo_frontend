@@ -3,7 +3,11 @@
 		class="relative"
 		v-click-outside="() => (expanded ? $emit('toggleExpanded') : undefined)"
 	>
+		<div v-if="$slots.activator?.()" @click="$emit('toggleExpanded')">
+			<slot name="activator"></slot>
+		</div>
 		<Btn
+			v-else
 			:variant="label ? 'primary' : 'icon'"
 			:outline="!label"
 			@click="$emit('toggleExpanded')"
@@ -24,10 +28,10 @@
 		<div
 			class="
 				absolute
-				z-20
-				overflow-hidden
+				z-50
+				overflow-y-auto
 				transition-all
-				duration-75
+				duration-100
 				ease-in
 				transform
 				bg-white
@@ -36,8 +40,8 @@
 				shadow-popup
 			"
 			:class="{
-				'max-h-0 opacity-0 scale-95 invisible': !expanded,
-				'max-h-52 opacity-100 scale-100': expanded,
+				'opacity-0 scale-95 invisible': !expanded,
+				'max-h-97 opacity-100 scale-100': expanded,
 				'origin-top-left left-0': placement === 'left',
 				'origin-top-right right-0': placement === 'right',
 			}"
