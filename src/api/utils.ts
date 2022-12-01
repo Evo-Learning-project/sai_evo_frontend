@@ -247,3 +247,10 @@ export const deleteByIdFromPaginatedData = <T extends { id: string }>(
 		d => !toDelete.map(t => String(t.id)).includes(String(d.id)),
 	),
 });
+
+export const getEmptyPaginatedData = <T extends any>(): PaginatedData<T> => ({
+	count: 0,
+	data: [],
+	isLastPage: true,
+	pageNumber: 1,
+});

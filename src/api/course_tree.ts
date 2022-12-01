@@ -92,7 +92,7 @@ export async function uploadNodeFile(
 }
 
 export async function deleteCourseNode(courseId: string, nodeId: string): Promise<void> {
-	const response = await axios.delete(`/courses/${courseId}/nodes/`);
+	const response = await axios.delete(`/courses/${courseId}/nodes/${nodeId}/`);
 	return response.data;
 }
 

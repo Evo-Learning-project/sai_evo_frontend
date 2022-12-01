@@ -94,6 +94,16 @@
 				>
 					<span class="text-xl material-icons"> edit </span>
 				</Btn>
+				<Btn
+					class="mr-4"
+					v-if="canEdit"
+					@click="onDelete"
+					:variant="'icon'"
+					:outline="true"
+					:tooltip="$t('misc.delete')"
+				>
+					<span class="text-xl material-icons"> delete </span>
+				</Btn>
 				<CopyToClipboard
 					:icon-only="true"
 					:tooltip="$t('exercise_solution.share')"
@@ -150,6 +160,9 @@ export default defineComponent({
 	methods: {
 		onEdit() {
 			this.$emit("editNode", this.node);
+		},
+		onDelete() {
+			this.$emit("deleteNode", this.node);
 		},
 	},
 	computed: {

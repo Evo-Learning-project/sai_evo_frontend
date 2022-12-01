@@ -69,6 +69,7 @@ import {
 } from "@/api";
 import {
 	createCourseNode,
+	deleteCourseNode,
 	getCourseNode,
 	getCourseRootNodeId,
 	getCourseTopLevelNodes,
@@ -79,6 +80,7 @@ import {
 } from "@/api/course_tree";
 import {
 	deleteByIdFromPaginatedData,
+	getEmptyPaginatedData,
 	prependToPaginatedData,
 	updatePaginatedData,
 } from "@/api/utils";
@@ -140,12 +142,7 @@ export const useMainStore = defineStore("main", {
 		paginatedTopLevelCourseTreeNodes: null as null | PaginatedData<CourseTreeNode>,
 		tags: [] as Tag[], // tags of current course
 		users: [] as User[], // users currently displayed (e.g. course insights page)
-		paginatedExercises: {
-			count: 0,
-			data: [],
-			isLastPage: true,
-			pageNumber: 1,
-		} as PaginatedData<Exercise>, // exercises currently displayed
+		paginatedExercises: getEmptyPaginatedData() as PaginatedData<Exercise>, // exercises currently displayed
 		events: [] as Event[], // events currently displayed (e.g. course exam list)
 
 		// maps id's of courses to id's of root nodes
@@ -185,8 +182,7 @@ export const useMainStore = defineStore("main", {
 	}),
 	getters: {
 		exams: state => state.events.filter(e => e.event_type == EventType.EXAM),
-		getPaginatedExercises: state =>
-			state.paginatedExercises ?? { count: 0, data: [], isLastPage: true, pageNumber: 1 },
+		getPaginatedExercises: state => state.paginatedExercises ?? getEmptyPaginatedData(),
 		getCourseById: state => (courseId: string) =>
 			state.courses.find(c => c.id == courseId),
 		getEventById: state => (eventId: string) =>
@@ -205,12 +201,7 @@ export const useMainStore = defineStore("main", {
 			return flattenedExercises.find(e => e.id == exerciseId) ?? getBlankExercise();
 		},
 		getPaginatedSolutionsByExerciseId: state => (exerciseId: string) =>
-			state.paginatedSolutionsByExerciseId[exerciseId] ?? {
-				count: 0,
-				data: [],
-				isLastPage: true,
-				pageNumber: 1,
-			},
+			state.paginatedSolutionsByExerciseId[exerciseId] ?? getEmptyPaginatedData(),
 		getEventParticipationById: state => (participationId: string) => {
 			const target = [
 				...state.eventParticipations,
@@ -295,28 +286,41 @@ export const useMainStore = defineStore("main", {
 			const createdNode = await createCourseNode(courseId, node);
 			if (await this.isTopLevelNode({ courseId, node: createdNode })) {
 				this.paginatedTopLevelCourseTreeNodes = prependToPaginatedData(
-					this.paginatedTopLevelCourseTreeNodes ?? {
-						data: [],
-						count: 0,
-						isLastPage: true,
-						pageNumber: 1,
-					},
+					this.paginatedTopLevelCourseTreeNodes ?? getEmptyPaginatedData(),
 					createdNode,
 				);
 			} else {
 				// child of some other node
-				const currentChildren = this.paginatedChildrenByNodeId[
-					createdNode.parent_id as string
-				] ?? {
-					count: 0,
-					data: [],
-					isLastPage: true,
-					pageNumber: 1,
-				};
+				const currentChildren =
+					this.paginatedChildrenByNodeId[createdNode.parent_id as string] ??
+					getEmptyPaginatedData();
 				this.paginatedChildrenByNodeId[createdNode.parent_id as string] =
 					prependToPaginatedData(currentChildren, createdNode);
 			}
 			return createdNode;
+		},
+		async deleteCourseTreeNode({
+			courseId,
+			nodeId,
+		}: CourseIdActionPayload & CourseTreeNodeIdActionPayload) {
+			const toDelete = this.getCourseTreeNodeById(nodeId);
+			if (!toDelete) {
+				throw new Error("deleteCourseTreeNode couldn't find node with id " + nodeId);
+			}
+			await deleteCourseNode(courseId, nodeId);
+			if (await this.isTopLevelNode({ courseId, node: toDelete })) {
+				this.paginatedTopLevelCourseTreeNodes = deleteByIdFromPaginatedData(
+					this.paginatedTopLevelCourseTreeNodes ?? getEmptyPaginatedData(),
+					{ id: nodeId },
+				);
+			} else {
+				this.paginatedChildrenByNodeId[toDelete.parent_id as string] =
+					deleteByIdFromPaginatedData(
+						this.paginatedChildrenByNodeId[toDelete.parent_id as string] ??
+							getEmptyPaginatedData(),
+						{ id: nodeId },
+					);
+			}
 		},
 		async partialUpdateCourseTreeNode({
 			courseId,
@@ -348,22 +352,14 @@ export const useMainStore = defineStore("main", {
 				if (oldParentId == this.courseIdToTreeRootId[courseId]) {
 					// remove node from children list of top-level nodes
 					this.paginatedTopLevelCourseTreeNodes = deleteByIdFromPaginatedData(
-						this.paginatedTopLevelCourseTreeNodes ?? {
-							count: 0,
-							data: [],
-							isLastPage: true,
-							pageNumber: 1,
-						},
+						this.paginatedTopLevelCourseTreeNodes ?? getEmptyPaginatedData(),
 						{ id: nodeId },
 					);
 				} else {
 					// remove node from children list of old parent
-					const oldChildren = this.paginatedChildrenByNodeId[oldParentId as string] ?? {
-						count: 0,
-						data: [],
-						isLastPage: true,
-						pageNumber: 1,
-					};
+					const oldChildren =
+						this.paginatedChildrenByNodeId[oldParentId as string] ??
+						getEmptyPaginatedData();
 					// remove node from children list of old parent
 					this.paginatedChildrenByNodeId[oldParentId as string] =
 						deleteByIdFromPaginatedData(oldChildren, { id: nodeId });
@@ -372,22 +368,12 @@ export const useMainStore = defineStore("main", {
 				// add to new list (either top-level or children list of new parent)
 				if (changes.parent_id == this.courseIdToTreeRootId[courseId]) {
 					this.paginatedTopLevelCourseTreeNodes = prependToPaginatedData(
-						this.paginatedTopLevelCourseTreeNodes ?? {
-							count: 0,
-							data: [],
-							isLastPage: true,
-							pageNumber: 1,
-						},
+						this.paginatedTopLevelCourseTreeNodes ?? getEmptyPaginatedData(),
 						target,
 					);
 				} else {
 					this.paginatedChildrenByNodeId[changes.parent_id] = prependToPaginatedData(
-						this.paginatedChildrenByNodeId[changes.parent_id] ?? {
-							count: 0,
-							data: [],
-							isLastPage: true,
-							pageNumber: 1,
-						},
+						this.paginatedChildrenByNodeId[changes.parent_id] ?? getEmptyPaginatedData(),
 						target,
 					);
 				}
@@ -442,12 +428,8 @@ export const useMainStore = defineStore("main", {
 			CourseTreeNodeIdActionPayload & {
 				fromFirstPage: boolean;
 			}) {
-			const existingChildren = this.paginatedChildrenByNodeId[nodeId] ?? {
-				count: 0,
-				data: [],
-				isLastPage: true,
-				pageNumber: 1,
-			};
+			const existingChildren =
+				this.paginatedChildrenByNodeId[nodeId] ?? getEmptyPaginatedData();
 			const nodes = await getNodeChildren(
 				courseId,
 				nodeId,

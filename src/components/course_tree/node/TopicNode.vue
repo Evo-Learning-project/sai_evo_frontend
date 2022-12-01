@@ -2,7 +2,7 @@
 	<div class="my-8">
 		<div class="py-2 px-6 mb-2 flex items-center roudned-sm bg-light group">
 			<h3 class="mb-0">{{ node.name }}</h3>
-			<div v-if="canEdit" class="ml-2">
+			<div v-if="canEdit" class="ml-2 flex flex-grow items-center">
 				<Btn
 					class="
 						icon-btn-primary
@@ -19,11 +19,37 @@
 				>
 					<span class="material-icons">edit</span>
 				</Btn>
+				<Btn
+					class="
+						ml-auto
+						opacity-50
+						group-hover:opacity-100
+						transition-opacity
+						duration-100
+						ease
+					"
+					v-if="canEdit"
+					@click="
+						children.length === 0 &&
+							$emit('deleteNode', node) /* TODO shouldn't emit when disabled */
+					"
+					:disabled="children.length > 0"
+					:variant="'icon'"
+					:outline="true"
+					:tooltip="
+						children.length > 0
+							? $t('course_tree.cannot_delete_nonempty_topic')
+							: $t('misc.delete')
+					"
+				>
+					<span class="text-xl material-icons"> delete </span>
+				</Btn>
 			</div>
 		</div>
 		<div v-for="child in children" :key="child.id" class="mx-2 my-2">
 			<CourseTreeNode
 				@editNode="$emit('editNode', $event)"
+				@deleteNode="$emit('deleteNode', $event)"
 				:canEdit="canEdit"
 				:node="child"
 			/>

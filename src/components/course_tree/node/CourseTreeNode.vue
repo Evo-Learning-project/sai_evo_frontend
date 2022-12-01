@@ -3,6 +3,7 @@
 		v-bind="$props"
 		:is="componentName"
 		@editNode="$emit('editNode', $event)"
+		@deleteNode="$emit('deleteNode', $event)"
 		@loadChildren="$emit('loadChildren', $event)"
 	/>
 </template>

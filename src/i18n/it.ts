@@ -968,6 +968,9 @@ export const it = {
 		unknown_error: "Si è verificato un errore sconosciuto",
 	},
 	course_tree: {
+		cannot_delete_nonempty_topic: "Sezione non vuota",
+		delete_node_confirm:
+			"Sei sicuro di voler eliminare questo elemento? Quest'azione è irreversibile.",
 		topic_label: "Sezione",
 		no_topic: "Nessuna sezione",
 		create: "Crea",

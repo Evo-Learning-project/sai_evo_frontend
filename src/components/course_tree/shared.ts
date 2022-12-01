@@ -11,6 +11,9 @@ export const nodeEmits = {
 	editNode(node: CourseTreeNode) {
 		return true;
 	},
+	deleteNode(node: CourseTreeNode) {
+		return true;
+	},
 	loadChildren({
 		node,
 		fromFirstPage,

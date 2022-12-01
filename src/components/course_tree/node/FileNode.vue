@@ -1,19 +1,13 @@
 <template>
 	<div
 		tabindex="0"
-		@click="showDetails = true"
-		@keyup.enter="showDetails = true"
-		v-wave="{ initialOpacity: 0.25 }"
 		class="
 			relative
-			cursor-pointer
-			card-border
 			flex
 			rounded
-			hover:bg-light
-			transition-colors
-			duration-75
-			ease
+			card-border card-hoverable
+			hover-shadow-elevation hover:border-transparent
+			group
 		"
 	>
 		<LinearProgress
@@ -30,9 +24,16 @@
 				>file_present</span
 			>
 		</div>
-		<div class="flex py-4">
+		<div class="flex w-full py-4">
 			<div class="my-auto" v-if="node.file">
-				<h4>{{ node.file.name }}</h4>
+				<h4
+					@click="showDetails = true"
+					@keyup.enter="showDetails = true"
+					style="line-height: 0.95"
+					class="mb-0.5 cursor-pointer hover:text-primary hover:underline"
+				>
+					{{ node.file.name }}
+				</h4>
 				<div class="flex space-x-2 ml-0.5">
 					<p v-if="node.creator" class="text-sm">
 						{{ node.creator.full_name }}
@@ -40,9 +41,52 @@
 					<Timestamp :date-only="true" class="text-sm text-muted" :value="node.created" />
 				</div>
 			</div>
+			<div
+				class="
+					z-10
+					mr-2
+					ml-auto
+					flex
+					items-center
+					group-hover:opacity-100
+					transition-opacity
+					duration-100
+					ease
+					opacity-50
+				"
+			>
+				<Btn
+					class="mr-4"
+					v-if="canEdit"
+					@click="$emit('deleteNode', node)"
+					:variant="'icon'"
+					:outline="true"
+					:tooltip="$t('misc.delete')"
+				>
+					<span class="text-xl material-icons"> delete </span>
+				</Btn>
+				<CopyToClipboard
+					:icon-only="true"
+					:tooltip="$t('exercise_solution.share')"
+					:value="permalink"
+				/>
+			</div>
 		</div>
 		<div
-			class="bg-gray-200 lg:w-56 w-40 flex ml-auto relative overflow-hidden"
+			@click="showDetails = true"
+			@keyup.enter="showDetails = true"
+			v-wave="{ initialOpacity: 0.25 }"
+			class="
+				bg-gray-200
+				lg:w-56
+				w-40
+				cursor-pointer
+				flex
+				rounded-tr-sm rounded-br-sm
+				ml-auto
+				relative
+				overflow-hidden
+			"
 			style="height: 120px !important"
 		>
 			<img
@@ -60,6 +104,8 @@
 </template>
 
 <script lang="ts">
+import Btn from "@/components/ui/Btn.vue";
+import CopyToClipboard from "@/components/ui/CopyToClipboard.vue";
 import LinearProgress from "@/components/ui/LinearProgress.vue";
 import Timestamp from "@/components/ui/Timestamp.vue";
 import { courseIdMixin } from "@/mixins";
@@ -69,7 +115,7 @@ import { getHumanFileSize } from "@/utils";
 import { defineComponent, PropType } from "@vue/runtime-core";
 import { mapStores } from "pinia";
 import FileNodeDetail from "../node_detail/FileNodeDetail.vue";
-import { nodeProps } from "../shared";
+import { nodeEmits, nodeProps } from "../shared";
 export default defineComponent({
 	name: "FileNode",
 	props: {
@@ -83,6 +129,7 @@ export default defineComponent({
 		},
 		...nodeProps,
 	},
+	emits: { ...nodeEmits },
 	mixins: [courseIdMixin],
 	async created() {
 		this.loadingThumbnail = true;
@@ -108,6 +155,10 @@ export default defineComponent({
 	methods: {},
 	computed: {
 		...mapStores(useMainStore),
+		permalink() {
+			// TODO implement
+			return "";
+		},
 		thumbnailPresent() {
 			return !this.loadingThumbnail && this.thumbnailLoaded && this.node.thumbnail;
 		},
@@ -121,7 +172,7 @@ export default defineComponent({
 			return getHumanFileSize(this.node.file?.size ?? 0);
 		},
 	},
-	components: { LinearProgress, FileNodeDetail, Timestamp },
+	components: { LinearProgress, FileNodeDetail, Timestamp, CopyToClipboard, Btn },
 });
 </script>
 

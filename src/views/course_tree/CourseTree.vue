@@ -47,6 +47,7 @@
 				:canEdit="canEditNodes"
 				:node="node"
 				@editNode="onEditNode($event)"
+				@deleteNode="onDeleteNode($event)"
 			/>
 			<!-- TODO create generic onEdit event and handle it depending on node type-->
 		</div>
@@ -204,6 +205,19 @@ export default defineComponent({
 			this.autoSaveEditingNode = false;
 			this.editingNode = node;
 			this.showEditorDialog = true;
+		},
+		async onDeleteNode(node: ICourseTreeNode) {
+			if (!confirm(_("course_tree.delete_node_confirm"))) {
+				return;
+			}
+			await this.withLoading(
+				async () =>
+					await this.mainStore.deleteCourseTreeNode({
+						courseId: this.courseId,
+						nodeId: node.id,
+					}),
+				setErrorNotification,
+			);
 		},
 		async createFileNode(file: Blob) {
 			this.uploadingFile = true;
