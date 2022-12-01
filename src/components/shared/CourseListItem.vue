@@ -92,6 +92,7 @@
 				style="line-height: 1.2rem; font-weight: 400; opacity: 0.8"
 				class="my-3 text-sm"
 				v-if="formattedDescription"
+				:title="course.description"
 			>
 				{{ formattedDescription }}
 			</p>
