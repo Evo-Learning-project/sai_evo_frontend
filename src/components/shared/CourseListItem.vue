@@ -5,7 +5,7 @@
 			px-6
 			py-6
 			overflow-x-hidden
-			md:min-h-21rem
+			md:min-h-13rem
 			lg:overflow-x-visible
 			card card-border card-hoverable
 			hover-shadow-elevation hover:border-transparent
@@ -26,11 +26,16 @@
 			<div>
 				<div class="flex items-start space-x-2">
 					<div
-						style="min-height: 2rem; min-width: 2rem"
-						class="w-8 h-8 flex mb-full rounded-full bg-primary bg-opacity-20"
+						style="
+							min-height: 2.8rem;
+							min-width: 2.8rem;
+							max-height: 2.8rem;
+							max-width: 2.8rem;
+						"
+						class="w-8 h-8 flex mb-full rounded-full bg-primary bg-opacity-15"
 					>
 						<span
-							style="font-size: 1.4rem"
+							style="font-size: 2.05rem"
 							class="m-auto text-primary material-icons-outlined icon-light"
 						>
 							book
@@ -74,7 +79,7 @@
 				</span>
 			</Tooltip>
 		</div>
-		<div class="mt-2">
+		<div class="my-1">
 			<!-- <div class="flex items-center px-0.5 mb-1 space-x-1 text-sm"> -->
 			<!-- <div class="flex items-center space-x-0.5 text-muted">
 					<span class="my-auto text-xl material-icons-outlined">person</span>
@@ -91,39 +96,63 @@
 				{{ formattedDescription }}
 			</p>
 		</div>
-		<div class="flex flex-col items-center mt-auto mb-2.5 space-y-2">
-			<router-link
-				class="w-full"
-				:to="{
-					name: 'StudentCourseDashboard',
-					params: { courseId: course.id },
-				}"
-			>
-				<Btn :variant="'primary'" :outline="true" class="w-full whitespace-nowrap">
-					<span class="mr-0.5 mt-0.5 text-lg material-icons-outlined">
+		<div class="mt-auto flex w-full">
+			<div class="flex flex-col mt-auto space-y-2.5">
+				<router-link
+					class="w-full"
+					:to="{
+						name: 'StudentCourseDashboard',
+						params: { courseId: course.id },
+					}"
+				>
+					<Btn
+						:size="'xs'"
+						:variant="'primary-borderless'"
+						:outline="true"
+						class="whitespace-nowrap font-medium"
+					>
+						<!-- <span class="mr-0.5 mt-0.5 text-lg material-icons-outlined">
 						chevron_right
-					</span>
-					<span class="text-base md:text-xs xl:text-base 2xl:text-lg">{{
-						metaStore.user.is_teacher
-							? $t("courses.access_as_student")
-							: $t("courses.go_to_course")
-					}}</span>
-				</Btn></router-link
-			>
-			<router-link
-				v-if="canAccessCoursePanel"
-				class="w-full"
-				:to="{
-					name: 'TeacherCourseDashboard',
-					params: { courseId: course.id },
-				}"
-				><Btn :outline="true" class="w-full">
-					<span class="mr-1 text-lg material-icons"> shield </span>
-					<span class="text-base md:text-xs xl:text-base 2xl:text-lg">{{
-						$t("courses.course_panel")
-					}}</span>
-				</Btn></router-link
-			>
+					</span> -->
+						<span class="text-base md:text-xs xl:text-base 2xl:text-lg">{{
+							metaStore.user.is_teacher
+								? $t("courses.access_as_student")
+								: $t("courses.go_to_course")
+						}}</span>
+					</Btn></router-link
+				>
+				<router-link
+					v-if="canAccessCoursePanel"
+					class=""
+					:to="{
+						name: 'TeacherCourseDashboard',
+						params: { courseId: course.id },
+					}"
+					><Btn
+						:size="'xs'"
+						:outline="true"
+						:variant="'primary-borderless'"
+						class="font-medium"
+					>
+						<span class="text-base md:text-xs xl:text-base 2xl:text-lg">{{
+							$t("courses.course_panel")
+						}}</span>
+						<!-- <span class="ml-1 text-lg material-icons-outlined"> shield </span> -->
+					</Btn></router-link
+				>
+			</div>
+			<div class="ml-auto flex items-center mt-auto">
+				<!-- TODO implement -->
+				<Btn :variant="'icon'" @click="$emit('toggleFavorite')" :outline="true"
+					><span class="material-icons">bookmark_outline</span></Btn
+				>
+				<CopyToClipboard
+					:iconOnly="true"
+					:tooltip="$t('misc.share')"
+					:confirmationMessage="$t('event_preview.copied_link')"
+					:value="permalink"
+				/>
+			</div>
 		</div>
 	</div>
 </template>
@@ -135,6 +164,7 @@ import { Course } from "@/models";
 import { useMetaStore } from "@/stores/metaStore";
 import { defineComponent, PropType } from "@vue/runtime-core";
 import { mapStores } from "pinia";
+import CopyToClipboard from "../ui/CopyToClipboard.vue";
 import Tooltip from "../ui/Tooltip.vue";
 export default defineComponent({
 	name: "CourseListItem",
@@ -151,9 +181,19 @@ export default defineComponent({
 		//Card,
 		Btn,
 		Tooltip,
+		CopyToClipboard,
 	},
 	computed: {
 		...mapStores(useMetaStore),
+		permalink() {
+			return (
+				window.location.origin +
+				this.$router.resolve({
+					name: "StudentCourseDashboard", // TODO review
+					params: { courseId: this.course.id },
+				}).fullPath
+			);
+		},
 		canAccessCoursePanel(): boolean {
 			return (
 				this.course.creator?.id === this.metaStore.user.id ||
