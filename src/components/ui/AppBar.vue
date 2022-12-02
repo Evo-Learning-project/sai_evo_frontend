@@ -35,7 +35,7 @@
 				</Btn>
 			</div>
 			<div class="flex items-center mr-auto">
-				<img class="w-56 -ml-1" :src="logoUrl" />
+				<img class="w-60 -ml-1" :src="logoUrl" />
 			</div>
 			<div class="">
 				<div v-if="metaStore.isAuthenticated" class="flex items-center ml-4 md:ml-6">
@@ -172,7 +172,7 @@ export default defineComponent({
 			return isDemoMode();
 		},
 		logoUrl() {
-			return require("../../assets/logo.png");
+			return require("../../assets/logonew.png");
 		},
 	},
 	components: { Btn, DropdownMenu, LocaleSelector },

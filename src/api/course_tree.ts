@@ -49,7 +49,17 @@ export async function getNodeChildren(
 	return convertPaginatedResponseToLocalPaginatedData(response.data, pageNumber);
 }
 
-// TODO create moveCourseNode
+export async function moveCourseNode(
+	courseId: string,
+	nodeId: string,
+	targetId: string,
+	position: "first-child" | "last-child" | "left" | "right",
+) {
+	const response = await axios.post(
+		`/courses/${courseId}/nodes/${nodeId}/move/?target=${targetId}&position=${position}`,
+	);
+	return response.data;
+}
 
 export async function getCourseRootNodeId(courseId: string): Promise<string> {
 	const response = await axios.get(`/courses/${courseId}/nodes/root_id/`);

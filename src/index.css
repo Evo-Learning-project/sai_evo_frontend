@@ -257,9 +257,9 @@
 		@apply opacity-0;
 	}
 
-	/* .dragging-element {
-      @apply
-    } */
+	.dragging-element {
+		@apply bg-light;
+	}
 
 	.flip-list-move {
 		transition: transform 0.5s;

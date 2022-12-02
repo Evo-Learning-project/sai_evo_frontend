@@ -148,8 +148,6 @@ import draggable from "vuedraggable";
 
 import { AutoSaveManager } from "@/autoSave";
 
-import { eventTemplateValidation } from "@/validation/models";
-import useVuelidate from "@vuelidate/core";
 import { getTranslatedString as _ } from "@/i18n";
 import DropdownMenu from "@/components/ui/DropdownMenu.vue";
 import NumberInput from "@/components/ui/NumberInput.vue";

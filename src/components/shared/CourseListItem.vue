@@ -98,7 +98,7 @@
 			</p>
 		</div>
 		<div class="mt-auto flex w-full">
-			<div class="flex flex-col mt-auto space-y-2.5">
+			<div class="flex flex-col mt-auto space-y-1.5">
 				<router-link
 					class="w-full"
 					:to="{

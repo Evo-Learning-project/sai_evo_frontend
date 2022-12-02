@@ -41,25 +41,16 @@
 			</DropdownMenu>
 		</div>
 
-		<draggable
-			:modelValue="topLevelNodes"
-			ghost-class="drag-ghost"
-			drag-class="dragging-element"
-			handle=".drag-handle"
-			item-key="id"
-			@end="onNodeDragEnd($event)"
-		>
+		<draggable :modelValue="[]" @end="onNodeDragEnd($event)">
 			<template #item="{ element }">
-				<div>
-					<CourseTreeNode
-						class="my-4"
-						@loadChildren="onLoadChildren($event.node, $event.fromFirstPage)"
-						:canEdit="canEditNodes"
-						:node="element"
-						@editNode="onEditNode($event)"
-						@deleteNode="onDeleteNode($event)"
-					/>
-				</div>
+				<CourseTreeNode
+					class="my-4"
+					@loadChildren="onLoadChildren($event.node, $event.fromFirstPage)"
+					:canEdit="canEditNodes"
+					:node="element"
+					@editNode="onEditNode($event)"
+					@deleteNode="onDeleteNode($event)"
+				/>
 			</template>
 		</draggable>
 
@@ -219,35 +210,25 @@ export default defineComponent({
 			console.log("node drag end", event);
 			const newIndex = event.newIndex;
 			const oldIndex = event.oldIndex;
-			if (oldIndex === newIndex) {
-				return;
-			}
 			const movedNode = this.topLevelNodes[oldIndex];
 			let moveArgs: {
 				target: string | null;
-				position: "first-child" | "last-child" | "left" | "right";
+				position: "first-child" | "last-child" | "left";
 			};
 			if (newIndex === 0) {
 				moveArgs = { target: movedNode.parent_id, position: "first-child" };
 			} else if (newIndex === this.topLevelNodes.length - 1) {
 				moveArgs = { target: movedNode.parent_id, position: "last-child" };
-			} else if (newIndex < oldIndex) {
-				const newRightSibling = this.topLevelNodes[newIndex];
-				moveArgs = { target: newRightSibling.id, position: "left" };
 			} else {
-				const newRightSibling = this.topLevelNodes[newIndex];
-				moveArgs = { target: newRightSibling.id, position: "right" };
+				const newRightSibling = this.topLevelNodes[newIndex + 1];
+				moveArgs = { target: newRightSibling.id, position: "left" };
 			}
-			try {
-				await this.mainStore.moveCourseTreeNode({
-					courseId: this.courseId,
-					node: movedNode,
-					targetId: moveArgs.target as string,
-					position: moveArgs.position,
-				});
-			} catch (e) {
-				setErrorNotification(e);
-			}
+			await this.mainStore.moveCourseTreeNode({
+				courseId: this.courseId,
+				nodeId: movedNode.id,
+				targetId: moveArgs.target as string,
+				position: moveArgs.position,
+			});
 		},
 		onEditNode(node: ICourseTreeNode) {
 			/* TODO make deep copy of editing node and await a blocking dialog

@@ -75,6 +75,7 @@ import {
 	getCourseTopLevelNodes,
 	getFileNodeThumbnail,
 	getNodeChildren,
+	moveCourseNode,
 	partialUpdateCourseNode,
 	uploadNodeFile,
 } from "@/api/course_tree";
@@ -298,6 +299,73 @@ export const useMainStore = defineStore("main", {
 					prependToPaginatedData(currentChildren, createdNode);
 			}
 			return createdNode;
+		},
+		async moveCourseTreeNode({
+			courseId,
+			node,
+			targetId,
+			position,
+		}: CourseIdActionPayload & {
+			node: CourseTreeNode;
+			targetId: string;
+			position: "first-child" | "last-child" | "left" | "right";
+		}) {
+			const target =
+				targetId == (await getCourseRootNodeId(courseId))
+					? null
+					: this.getCourseTreeNodeById(targetId);
+			console.log("TARGET", target);
+			if (typeof target === "undefined") {
+				throw new Error("moveCourseTreeNode didn't find target with id " + targetId);
+			}
+
+			const targetNodeList =
+				target === null
+					? this.paginatedTopLevelCourseTreeNodes?.data ?? []
+					: ["first-child", "last-child"].includes(position)
+					? // per django-mptt, if position is first-child or last-child, the target
+					  // is to be interpreted as the new parent
+					  this.paginatedChildrenByNodeId[targetId].data
+					: // otherwise, the target is to be interpreted as the node whose
+					// parent will become the new parent
+					(await this.isTopLevelNode({ courseId, node: target }))
+					? this.paginatedTopLevelCourseTreeNodes?.data ?? []
+					: this.paginatedChildrenByNodeId[target?.parent_id as string].data;
+
+			const currentNodeList = (await this.isTopLevelNode({ courseId, node }))
+				? this.paginatedTopLevelCourseTreeNodes?.data ?? []
+				: this.paginatedChildrenByNodeId[node.parent_id as string]?.data ?? [];
+
+			const newParentId = ["first-child", "last-child"].includes(position)
+				? targetId
+				: (target?.parent_id as string);
+
+			const targetNodeListBefore = [...targetNodeList];
+			const currentNodeListBefore = [...currentNodeList];
+			const parentIdBefore = node.parent_id;
+
+			const currentIndex = currentNodeList.findIndex(n => n.id == node.id);
+			const targetIndex =
+				position === "first-child"
+					? 0
+					: position === "last-child"
+					? targetNodeList.length - 1
+					: targetNodeList.findIndex(n => n.id == targetId);
+
+			// perform move locally
+			currentNodeList.splice(currentIndex, 1);
+			node.parent_id = newParentId;
+			targetNodeList.splice(targetIndex, 0, node);
+
+			try {
+				await moveCourseNode(courseId, node.id, targetId, position);
+			} catch (e) {
+				// roll back state
+				Object.assign(targetNodeList, targetNodeListBefore);
+				Object.assign(currentNodeList, currentNodeListBefore);
+				node.parent_id = parentIdBefore;
+				throw e;
+			}
 		},
 		async deleteCourseTreeNode({
 			courseId,
