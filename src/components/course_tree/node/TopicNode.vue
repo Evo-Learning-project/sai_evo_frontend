@@ -1,6 +1,29 @@
 <template>
 	<div class="my-8">
-		<div class="py-2 px-6 mb-2 flex items-center roudned-sm bg-light group">
+		<div
+			class="group py-2 relative px-6 mb-2 flex items-center roudned-sm bg-light group"
+		>
+			<span
+				v-if="isDraggable"
+				class="
+					opacity-0
+					group-hover:opacity-50
+					transition-opacity
+					duration-100
+					ease
+					absolute
+					top-1/2
+					transform
+					-translate-y-1/2
+					left-0
+					text-lg
+					cursor-move
+					drag-handle
+					material-icons-outlined
+				"
+			>
+				drag_indicator
+			</span>
 			<h3 class="mb-0">{{ node.name }}</h3>
 			<div v-if="canEdit" class="ml-2 flex flex-grow items-center">
 				<Btn
@@ -46,8 +69,13 @@
 				</Btn>
 			</div>
 		</div>
-		<div v-for="child in children" :key="child.id" class="mx-2 my-2">
+		<div
+			v-for="child in children"
+			:key="child.id"
+			class="mx-2 my-2 hidden-in-dragging-element"
+		>
 			<CourseTreeNode
+				:isDraggable="false"
 				@editNode="$emit('editNode', $event)"
 				@deleteNode="$emit('deleteNode', $event)"
 				:canEdit="canEdit"

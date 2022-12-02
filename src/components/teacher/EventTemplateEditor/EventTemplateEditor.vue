@@ -25,6 +25,7 @@
 				</div>
 			</div>
 			<draggable
+				animation="100"
 				:class="{
 					'grid grid-cols-2 2xl:grid-cols-3 gap-4 mb-10': viewMode === 'grid',
 				}"

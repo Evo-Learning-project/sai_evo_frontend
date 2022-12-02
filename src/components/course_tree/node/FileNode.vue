@@ -24,6 +24,27 @@
 				>file_present</span
 			>
 		</div>
+		<span
+			v-if="isDraggable"
+			class="
+				opacity-0
+				group-hover:opacity-50
+				transition-opacity
+				duration-100
+				ease
+				absolute
+				top-1/2
+				transform
+				-translate-y-1/2
+				left-0
+				text-lg
+				cursor-move
+				drag-handle
+				material-icons-outlined
+			"
+		>
+			drag_indicator
+		</span>
 		<div class="flex w-full py-4">
 			<div class="my-auto" v-if="node.file">
 				<h4

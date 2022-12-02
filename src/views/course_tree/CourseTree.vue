@@ -47,12 +47,16 @@
 			drag-class="dragging-element"
 			handle=".drag-handle"
 			item-key="id"
+			@start="onNodeDragStart($event)"
 			@end="onNodeDragEnd($event)"
+			animation="100"
 		>
 			<template #item="{ element }">
 				<div>
 					<CourseTreeNode
-						class="my-4"
+						:isDraggable="canEditNodes"
+						class="my-2"
+						:class="{ 'dragging-inside-collection': draggingNode }"
 						@loadChildren="onLoadChildren($event.node, $event.fromFirstPage)"
 						:canEdit="canEditNodes"
 						:node="element"
@@ -212,10 +216,16 @@ export default defineComponent({
 			editingTopicName: "",
 			selectedTopicId: "",
 			topics: [] as TopicNode[],
+			draggingNode: false,
 		};
 	},
 	methods: {
+		async onNodeDragStart() {
+			console.log("start");
+			this.draggingNode = true;
+		},
 		async onNodeDragEnd(event: { oldIndex: number; newIndex: number }) {
+			this.draggingNode = false;
 			console.log("node drag end", event);
 			const newIndex = event.newIndex;
 			const oldIndex = event.oldIndex;

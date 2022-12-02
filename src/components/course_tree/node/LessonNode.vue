@@ -8,9 +8,8 @@
 			relative
 		"
 	>
-		<!-- TODO hover group-->
 		<span
-			v-if="canEdit"
+			v-if="isDraggable"
 			class="
 				opacity-0
 				group-hover:opacity-50

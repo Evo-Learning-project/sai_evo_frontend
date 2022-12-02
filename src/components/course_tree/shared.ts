@@ -5,6 +5,10 @@ export const nodeProps = {
 		type: Boolean,
 		required: true as const,
 	},
+	isDraggable: {
+		type: Boolean,
+		required: true as const,
+	},
 };
 
 export const nodeEmits = {

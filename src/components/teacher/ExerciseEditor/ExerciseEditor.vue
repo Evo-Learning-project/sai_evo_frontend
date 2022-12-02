@@ -502,6 +502,7 @@
 						</p>
 					</div>
 					<draggable
+						animation="100"
 						handle=".drag-handle"
 						:modelValue="modelValue.choices"
 						@end="onChoiceDragEnd($event)"
@@ -553,6 +554,7 @@
 						</div>
 					</div>
 					<draggable
+						animation="100"
 						handle=".drag-handle"
 						:modelValue="modelValue.sub_exercises"
 						@end="onChoiceDragEnd($event)"
@@ -590,6 +592,7 @@
 						</p>
 					</div>
 					<draggable
+						animation="100"
 						:modelValue="modelValue.testcases"
 						ghost-class="drag-ghost"
 						handle=".drag-handle"

@@ -254,11 +254,21 @@
 	}
 
 	.drag-ghost {
-		@apply opacity-0;
+		@apply opacity-5 bg-light brightness-0 filter;
 	}
 
 	.dragging-element {
-		@apply bg-light;
+		@apply bg-light w-1/2;
+	}
+
+	.flip-list-move {
+		transition: transform 0.5s;
+	}
+
+	.dragging-inside-collection .hidden-in-dragging-element,
+	.dragging-element .hidden-in-dragging-element,
+	.drag-ghost .hidden-in-dragging-element {
+		@apply hidden;
 	}
 
 	.flip-list-move {
