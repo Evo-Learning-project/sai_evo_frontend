@@ -172,7 +172,7 @@ export default defineComponent({
 			return isDemoMode();
 		},
 		logoUrl() {
-			return require("../../assets/logonew.png");
+			return require("../../assets/logo.png");
 		},
 	},
 	components: { Btn, DropdownMenu, LocaleSelector },

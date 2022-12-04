@@ -27,6 +27,9 @@ export const nodeEmits = {
 	}) {
 		return true;
 	},
+	loadComments(node: CourseTreeNode) {
+		return true;
+	},
 };
 
 export const nodeEditorProps = {

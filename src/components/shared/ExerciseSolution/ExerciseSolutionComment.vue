@@ -6,7 +6,6 @@
 				{{ comment.user.full_name ?? "" }}
 			</p>
 		</div>
-
 		<p class="break-normal">{{ comment.content }}</p>
 	</div>
 </template>

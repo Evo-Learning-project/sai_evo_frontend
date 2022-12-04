@@ -1,6 +1,7 @@
 <template>
 	<component
 		@loadChildren="onLoadChildren($event.node, $event.fromFirstPage)"
+		@loadComments="onLoadComments($event)"
 		:children="nodeChildren"
 		:is="componentName"
 		v-bind="passDownProps"
@@ -61,6 +62,14 @@ export default defineComponent({
 					courseId: this.courseId,
 					nodeId: node.id,
 					fromFirstPage,
+				});
+			});
+		},
+		async onLoadComments(node: CourseTreeNode) {
+			await this.withLocalLoading(async () => {
+				await this.mainStore.getCourseTreeNodeComments({
+					courseId: this.courseId,
+					nodeId: node.id,
 				});
 			});
 		},

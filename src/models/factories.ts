@@ -3,6 +3,7 @@ import {
 	ExerciseTestCase,
 	FileNode,
 	LessonNode,
+	NodeComment,
 	TopicNode,
 	User,
 } from "./interfaces";
@@ -215,4 +216,12 @@ export const getBlankFileNode = (parentId: string | null): FileNode => ({
 	mime_type: "",
 	thumbnail: "",
 	resourcetype: CourseTreeNodeType.FileNode,
+});
+
+export const getBlankCourseTreeNodeComment = (comment: string): NodeComment => ({
+	comment,
+	user: getBlankUser(),
+	created: "",
+	is_edited: false,
+	id: "",
 });

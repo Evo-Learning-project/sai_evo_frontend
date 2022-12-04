@@ -3,6 +3,7 @@ import {
 	CourseTreeNode,
 	CourseTreeNodeType,
 	FileNode,
+	NodeComment,
 	TopicNode,
 } from "@/models";
 import { forceFileDownload } from "@/utils";
@@ -137,5 +138,25 @@ export async function getFileNodeThumbnail(
 	const response = await axios.get(`/courses/${courseId}/nodes/${nodeId}/thumbnail/`, {
 		responseType: "arraybuffer",
 	});
+	return response.data;
+}
+
+export async function getCourseNodeComments(
+	courseId: string,
+	nodeId: string,
+): Promise<NodeComment[]> {
+	const response = await axios.get(`/courses/${courseId}/nodes/${nodeId}/comments/`);
+	return response.data;
+}
+
+export async function createCourseNodeComment(
+	courseId: string,
+	nodeId: string,
+	comment: NodeComment,
+): Promise<NodeComment> {
+	const response = await axios.post(
+		`/courses/${courseId}/nodes/${nodeId}/comments/`,
+		comment,
+	);
 	return response.data;
 }

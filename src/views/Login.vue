@@ -5,7 +5,7 @@
 			<!-- <div class="flex items-center">
 				<img src="../assets/logo1.png" />
 				<img src="../assets/logo2.png" />
-			</div>
+			</div> -->
 			<div class="flex flex-col space-y-2 relative w-max">
 				<div
 					class="top-0 w-20 h-20 text-white absolute"
@@ -30,17 +30,53 @@
 					style="
 						width: 120px;
 						height: 80px;
-						bottom: 0;
-						right: -77px;
-						transform: rotate(125deg);
+						top: 15.5px;
+						right: -40.5px;
+						transform: rotate(90deg);
 					"
 				>
 					<svg
-						style="fill: rgba(255, 255, 255, 0.2)"
-						viewBox="0 0 10 5"
+						style="fill: rgba(255, 255, 255, 1)"
+						viewBox="0 0 100 100"
 						xmlns="http://www.w3.org/2000/svg"
 					>
-						<ellipse cx="5" cy="2" rx="5" ry="2" />
+						<ellipse cx="14.5" cy="14.5" rx="15.5" ry="10.5" />
+					</svg>
+				</div>
+				<div
+					class="top-0 w-20 h-20 text-white absolute"
+					style="
+						width: 120px;
+						height: 80px;
+						top: 88px;
+						right: -40.5px;
+						transform: rotate(90deg);
+					"
+				>
+					<svg
+						style="fill: rgba(255, 255, 255, 1)"
+						viewBox="0 0 100 100"
+						xmlns="http://www.w3.org/2000/svg"
+					>
+						<ellipse cx="14.5" cy="14.5" rx="15.5" ry="10.5" />
+					</svg>
+				</div>
+				<div
+					class="top-0 w-20 h-20 text-white absolute"
+					style="
+						width: 120px;
+						height: 35px;
+						top: 75px;
+						right: -22.5px;
+						transform: rotate(90deg);
+					"
+				>
+					<svg
+						style="fill: rgba(255, 255, 255, 1)"
+						viewBox="0 0 100 100"
+						xmlns="http://www.w3.org/2000/svg"
+					>
+						<ellipse cx="14.5" cy="14.5" rx="15.5" ry="10.5" />
 					</svg>
 				</div>
 				<div
@@ -48,17 +84,17 @@
 						width: 7.3rem;
 						background: url('https://www.evo-learning.com/img/hero-bg.png');
 					"
-					class="rounded-sm h-7 text-transparent"
+					class="rounded-sm rounded-l-full h-7 text-transparent"
 				></div>
 				<div
 					style="background-color: #5f21d4; width: 4.5rem"
-					class="rounded-sm h-7 text-transparent"
+					class="rounded-sm rounded-l-full h-7 text-transparent"
 				></div>
 				<div
 					style="width: 7.3rem; background-color: #5434dc"
-					class="rounded-sm h-7 text-transparent"
+					class="rounded-sm rounded-l-full h-7 text-transparent"
 				></div>
-			</div> -->
+			</div>
 			<h1 class="mb-0 mx-auto text-5xl text-center text-primary">Evo Learning</h1>
 			<div
 				class="

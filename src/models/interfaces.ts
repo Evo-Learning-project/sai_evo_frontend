@@ -332,3 +332,11 @@ export interface TopicNode extends BaseNodeFields {
 }
 
 export type CourseTreeNode = FileNode | LessonNode | TopicNode;
+
+export interface NodeComment {
+	id: string;
+	user: User;
+	comment: string;
+	created: string;
+	is_edited: boolean;
+}

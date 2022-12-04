@@ -49,7 +49,7 @@
 			item-key="id"
 			@start="onNodeDragStart($event)"
 			@end="onNodeDragEnd($event)"
-			animation="100"
+			animation="200"
 		>
 			<template #item="{ element }">
 				<div>

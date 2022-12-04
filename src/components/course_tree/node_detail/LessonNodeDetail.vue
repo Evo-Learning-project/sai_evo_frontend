@@ -20,7 +20,7 @@
 				class="hidden md:flex rounded-full w-14 h-14 bg-primary bg-opacity-15 mr-3"
 			>
 				<span
-					style="font-size: 32px !important"
+					style="font-size: 40px !important"
 					class="m-auto material-icons-outlined text-primary"
 					>book</span
 				>
@@ -70,7 +70,7 @@
 		</div>
 
 		<!-- body -->
-		<div class="mx-4 md:mx-18">
+		<div class="mx-2 md:mx-4">
 			<div class="mt-8">
 				<ProcessedTextFragment :value="node.body" />
 			</div>
@@ -91,6 +91,9 @@
 					</div>
 				</div>
 			</div>
+
+			<!-- comments -->
+			<CourseTreeNodeCommentSection class="mt-8" :nodeId="node.id" />
 		</div>
 		<Dialog
 			:fullHeight="true"
@@ -122,6 +125,7 @@ import { getTranslatedString as _ } from "@/i18n";
 import { loadingMixin } from "@/mixins";
 import { CourseTreeNode as ICourseTreeNode, FileNode, LessonNode } from "@/models";
 import { defineComponent, PropType } from "@vue/runtime-core";
+import CourseTreeNodeCommentSection from "../CourseTreeNodeCommentSection.vue";
 import LessonNodeEditor from "../editors/LessonNodeEditor.vue";
 import CourseTreeNode from "../node/CourseTreeNode.vue";
 import { nodeEmits, nodeProps } from "../shared";
@@ -144,6 +148,7 @@ export default defineComponent({
 	},
 	created() {
 		this.$emit("loadChildren", { node: this.node, fromFirstPage: true });
+		this.$emit("loadComments", this.node);
 	},
 	data() {
 		return {
@@ -178,6 +183,7 @@ export default defineComponent({
 		CopyToClipboard,
 		LessonNodeEditor,
 		Dialog,
+		CourseTreeNodeCommentSection,
 	},
 });
 </script>

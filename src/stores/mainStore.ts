@@ -69,8 +69,10 @@ import {
 } from "@/api";
 import {
 	createCourseNode,
+	createCourseNodeComment,
 	deleteCourseNode,
 	getCourseNode,
+	getCourseNodeComments,
 	getCourseRootNodeId,
 	getCourseTopLevelNodes,
 	getFileNodeThumbnail,
@@ -115,6 +117,7 @@ import {
 	CoursePrivilege,
 	getBlankTag,
 	FileNode,
+	NodeComment,
 } from "@/models";
 import {
 	CourseIdActionPayload,
@@ -148,6 +151,9 @@ export const useMainStore = defineStore("main", {
 
 		// maps id's of courses to id's of root nodes
 		courseIdToTreeRootId: {} as Record<string, string>,
+
+		// maps id's of course tree nodes to arrays of comments
+		commentsByCourseNodeId: {} as Record<string, NodeComment[]>,
 
 		// event participations of the user
 		// ! used on the home page for student dashboard, with the Event nested inside; improve
@@ -209,6 +215,9 @@ export const useMainStore = defineStore("main", {
 				...(state.paginatedEventParticipations?.data ?? []),
 			].find(p => p.id == participationId);
 			return target;
+		},
+		getCommentsByNodeId: state => (nodeId: string) => {
+			return state.commentsByCourseNodeId[nodeId] ?? [];
 		},
 		examParticipations: state =>
 			[
@@ -299,6 +308,24 @@ export const useMainStore = defineStore("main", {
 					prependToPaginatedData(currentChildren, createdNode);
 			}
 			return createdNode;
+		},
+		async createCourseTreeNodeComment({
+			courseId,
+			nodeId,
+			comment,
+		}: CourseIdActionPayload & CourseTreeNodeIdActionPayload & { comment: NodeComment }) {
+			const newComment = await createCourseNodeComment(courseId, nodeId, comment);
+			if (typeof this.commentsByCourseNodeId[nodeId] === "undefined") {
+				this.commentsByCourseNodeId[nodeId] = [];
+			}
+			this.commentsByCourseNodeId[nodeId].push(newComment);
+		},
+		async getCourseTreeNodeComments({
+			courseId,
+			nodeId,
+		}: CourseIdActionPayload & CourseTreeNodeIdActionPayload) {
+			const comments = await getCourseNodeComments(courseId, nodeId);
+			this.commentsByCourseNodeId[nodeId] = comments;
 		},
 		async moveCourseTreeNode({
 			courseId,

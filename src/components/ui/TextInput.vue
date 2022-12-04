@@ -18,6 +18,7 @@
 			"
 		>
 			<input
+				:maxlength="maxLength"
 				type="text"
 				:value="modelValue"
 				@blur="$emit('blur')"
@@ -69,6 +70,10 @@ export default defineComponent({
 		rightIcon: {
 			type: String,
 			default: "",
+		},
+		maxLength: {
+			type: Number,
+			default: -1,
 		},
 		leftIcon: {
 			type: String,

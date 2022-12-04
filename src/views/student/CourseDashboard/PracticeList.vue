@@ -252,7 +252,7 @@ import VueEternalLoading from "@ts-pro/vue-eternal-loading/src/components/VueEte
 import Spinner from "@/components/ui/Spinner.vue";
 import { LoadAction } from "@ts-pro/vue-eternal-loading";
 import { EventParticipationSearchFilter } from "@/api";
-import { isDemoMode } from "@/utils";
+import { isDemoMode, setErrorNotification } from "@/utils";
 import { logAnalyticsEvent } from "@/utils";
 import { mapStores } from "pinia";
 import { useMainStore } from "@/stores/mainStore";
@@ -368,10 +368,8 @@ export default defineComponent({
 				return;
 			}
 			if (this.currentCourse.public_exercises_count === 0) {
-				this.setErrorNotification(
-					_("student_course_dashboard.no_public_exercises"),
-					true,
-				);
+				// TODO if you use this.setErrorNotification, it's undefined - investigate
+				setErrorNotification(_("student_course_dashboard.no_public_exercises"), true);
 				return;
 			}
 			await this.withLoading(async () => {

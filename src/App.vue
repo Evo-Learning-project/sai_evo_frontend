@@ -204,7 +204,7 @@
 
 				<transition name="quick-bounce">
 					<SnackBar
-						class="w-full px-4"
+						class="w-full px-4 pb-10"
 						v-if="metaStore.errorNotificationData"
 						:icon="metaStore.errorNotificationData.icon"
 						:message="metaStore.errorNotificationData.title"
