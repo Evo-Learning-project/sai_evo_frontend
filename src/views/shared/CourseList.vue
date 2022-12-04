@@ -163,7 +163,10 @@ export default defineComponent({
 			return this.coursesSorted.filter(
 				c =>
 					(filters.name.length === 0 ||
-						c.name.toLowerCase().includes(filters.name.toLowerCase())) &&
+						c.name.toLowerCase().includes(filters.name.toLowerCase()) ||
+						(c.creator?.full_name ?? "")
+							.toLowerCase()
+							.includes(filters.name.toLowerCase())) &&
 					(!filters.withPrivileges || (c.privileges?.length ?? 0) > 0) &&
 					(filters.hidden || !c.hidden),
 			);

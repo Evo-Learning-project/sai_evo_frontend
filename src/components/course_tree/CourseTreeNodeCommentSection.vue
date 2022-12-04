@@ -37,6 +37,7 @@
 			<div class="flex items-center w-full mt-4 space-x-2">
 				<Avatar class="px-3 my-auto" :user="metaStore.user" />
 				<TextInput
+					@keyup.enter="onAddComment()"
 					:maxLength="500"
 					class="w-full"
 					v-model="draftComment"
@@ -84,6 +85,9 @@ export default defineComponent({
 	},
 	methods: {
 		async onAddComment() {
+			if (this.draftComment.trim().length === 0) {
+				return;
+			}
 			this.postingComment = true;
 			try {
 				await this.mainStore.createCourseTreeNodeComment({

@@ -6,7 +6,7 @@
 				<img src="../assets/logo1.png" />
 				<img src="../assets/logo2.png" />
 			</div> -->
-			<div class="flex flex-col space-y-2 relative w-max">
+			<!-- <div class="flex flex-col space-y-2 relative w-max">
 				<div
 					class="top-0 w-20 h-20 text-white absolute"
 					style="
@@ -25,13 +25,14 @@
 						<ellipse cx="5" cy="2" rx="5" ry="2" />
 					</svg>
 				</div>
+
 				<div
 					class="top-0 w-20 h-20 text-white absolute"
 					style="
 						width: 120px;
 						height: 80px;
-						top: 15.5px;
-						right: -40.5px;
+						top: 16px;
+						right: -45px;
 						transform: rotate(90deg);
 					"
 				>
@@ -49,7 +50,7 @@
 						width: 120px;
 						height: 80px;
 						top: 88px;
-						right: -40.5px;
+						right: -45px;
 						transform: rotate(90deg);
 					"
 				>
@@ -67,7 +68,7 @@
 						width: 120px;
 						height: 35px;
 						top: 75px;
-						right: -22.5px;
+						right: -22px;
 						transform: rotate(90deg);
 					"
 				>
@@ -79,22 +80,99 @@
 						<ellipse cx="14.5" cy="14.5" rx="15.5" ry="10.5" />
 					</svg>
 				</div>
+
 				<div
 					style="
 						width: 7.3rem;
 						background: url('https://www.evo-learning.com/img/hero-bg.png');
+						border-top-left-radius: 0.65rem /* 12px */;
+						border-bottom-left-radius: 0.65rem /* 12px */;
 					"
-					class="rounded-sm rounded-l-full h-7 text-transparent"
+					class="
+						border-4 border-primary-dark
+						rounded-l-xl rounded-sm
+						h-7
+						text-transparent
+					"
 				></div>
 				<div
-					style="background-color: #5f21d4; width: 4.5rem"
-					class="rounded-sm rounded-l-full h-7 text-transparent"
+					style="
+						background-color: #5f21d4;
+						width: 4.5rem;
+						border-top-left-radius: 0.65rem /* 12px */;
+						border-bottom-left-radius: 0.65rem /* 12px */;
+					"
+					class="
+						rounded-sm
+						border-4 border-primary-dark
+						rounded-l-xl
+						h-7
+						text-transparent
+					"
 				></div>
 				<div
-					style="width: 7.3rem; background-color: #5434dc"
-					class="rounded-sm rounded-l-full h-7 text-transparent"
-				></div>
-			</div>
+					style="
+						width: 7.3rem;
+						background-color: #5434dc;
+						border-top-left-radius: 0.65rem /* 12px */;
+						border-bottom-left-radius: 0.65rem /* 12px */;
+					"
+					class="
+						rounded-sm
+						border-4 border-primary-dark
+						rounded-l-xl
+						h-7
+						text-transparent
+					"
+				>
+					<div
+						class="absolute w-full bg-white"
+						style="top: 14px; height: 0.5px; opacity: 10%"
+					></div>
+					<div
+						class="absolute w-full bg-white"
+						style="top: 19px; height: 0.5px; opacity: 10%"
+					></div>
+					<div
+						class="absolute w-full bg-white"
+						style="top: 24px; height: 0.5px; opacity: 10%"
+					></div>
+					<div
+						class="absolute w-full bg-white"
+						style="top: 29px; height: 0.5px; opacity: 10%"
+					></div>
+
+					<div
+						class="absolute w-full bg-white"
+						style="top: 52px; height: 0.5px; opacity: 15%"
+					></div>
+					<div
+						class="absolute w-full bg-white"
+						style="top: 58px; height: 0.5px; opacity: 15%"
+					></div>
+					<div
+						class="absolute w-full bg-white"
+						style="top: 64px; height: 0.5px; opacity: 15%"
+					></div>
+
+					<div
+						class="absolute w-full bg-white"
+						style="top: 86px; height: 0.5px; opacity: 15%"
+					></div>
+					<div
+						class="absolute w-full bg-white"
+						style="top: 91px; height: 0.5px; opacity: 15%"
+					></div>
+					<div
+						class="absolute w-full bg-white"
+						style="top: 96px; height: 0.5px; opacity: 15%"
+					></div>
+					<div
+						class="absolute w-full bg-white"
+						style="top: 101px; height: 0.5px; opacity: 15%"
+					></div>
+				</div>
+			</div> -->
 			<h1 class="mb-0 mx-auto text-5xl text-center text-primary">Evo Learning</h1>
 			<div
 				class="
