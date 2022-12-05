@@ -164,7 +164,7 @@
 			:showDialog="showPreview"
 			@yes="showPreview = false"
 			:confirmOnly="true"
-			:large="true"
+			:fullWidth="true"
 			:dismissible="true"
 		>
 			<template v-slot:title>{{ $t("misc.exercise_preview_title") }}</template>

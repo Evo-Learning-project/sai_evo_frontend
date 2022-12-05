@@ -2,9 +2,16 @@ export enum CourseTreeNodeType {
 	LessonNode = "LessonNode",
 	FileNode = "FileNode",
 	TopicNode = "TopicNode",
+	AnnouncementNode = "AnnouncementNode",
+	PollNode = "PollNode",
 }
 
 export enum LessonNodeState {
+	DRAFT,
+	PUBLISHED,
+}
+
+export enum AnnouncementNodeState {
 	DRAFT,
 	PUBLISHED,
 }

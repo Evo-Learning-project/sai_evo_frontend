@@ -1,14 +1,10 @@
 <template>
 	<div
 		tabindex="0"
-		class="
-			relative
-			flex
-			rounded
-			card-border card-hoverable
-			hover-shadow-elevation hover:border-transparent
-			group
-		"
+		class="relative flex rounded card-border group"
+		:class="{
+			'card-hoverable hover-shadow-elevation hover:border-transparent': isDraggable,
+		}"
 	>
 		<LinearProgress
 			class="absolute w-full top-0 left-0 rounded-t-sm"

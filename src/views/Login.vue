@@ -31,8 +31,8 @@
 					style="
 						width: 120px;
 						height: 80px;
-						top: 16px;
-						right: -45px;
+						top: 16.5px;
+						right: -44px;
 						transform: rotate(90deg);
 					"
 				>
@@ -49,8 +49,8 @@
 					style="
 						width: 120px;
 						height: 80px;
-						top: 88px;
-						right: -45px;
+						top: 88.25px;
+						right: -44px;
 						transform: rotate(90deg);
 					"
 				>
@@ -127,49 +127,49 @@
 				>
 					<div
 						class="absolute w-full bg-white"
-						style="top: 14px; height: 0.5px; opacity: 10%"
+						style="top: 14.5px; height: 0.25px; left: 5.25px; opacity: 10%"
 					></div>
 					<div
 						class="absolute w-full bg-white"
-						style="top: 19px; height: 0.5px; opacity: 10%"
+						style="top: 19.5px; height: 0.25px; opacity: 10%"
 					></div>
 					<div
 						class="absolute w-full bg-white"
-						style="top: 24px; height: 0.5px; opacity: 10%"
+						style="top: 24.5px; height: 0.25px; opacity: 10%"
 					></div>
 					<div
 						class="absolute w-full bg-white"
-						style="top: 29px; height: 0.5px; opacity: 10%"
-					></div>
-
-					<div
-						class="absolute w-full bg-white"
-						style="top: 52px; height: 0.5px; opacity: 15%"
-					></div>
-					<div
-						class="absolute w-full bg-white"
-						style="top: 58px; height: 0.5px; opacity: 15%"
-					></div>
-					<div
-						class="absolute w-full bg-white"
-						style="top: 64px; height: 0.5px; opacity: 15%"
+						style="top: 29.5px; height: 0.25px; left: 5.35px; opacity: 10%"
 					></div>
 
 					<div
 						class="absolute w-full bg-white"
-						style="top: 86px; height: 0.5px; opacity: 15%"
+						style="top: 52.5px; height: 0.25px; left: 4.25px; opacity: 15%"
 					></div>
 					<div
 						class="absolute w-full bg-white"
-						style="top: 91px; height: 0.5px; opacity: 15%"
+						style="top: 58px; height: 0.25px; opacity: 15%"
 					></div>
 					<div
 						class="absolute w-full bg-white"
-						style="top: 96px; height: 0.5px; opacity: 15%"
+						style="top: 64px; height: 0.25px; left: 4.35px; opacity: 15%"
+					></div>
+
+					<div
+						class="absolute w-full bg-white"
+						style="top: 86.5px; left: 5.25px; height: 0.25px; opacity: 15%"
 					></div>
 					<div
 						class="absolute w-full bg-white"
-						style="top: 101px; height: 0.5px; opacity: 15%"
+						style="top: 91.5px; height: 0.25px; opacity: 15%"
+					></div>
+					<div
+						class="absolute w-full bg-white"
+						style="top: 96.5px; height: 0.25px; opacity: 15%"
+					></div>
+					<div
+						class="absolute w-full bg-white"
+						style="top: 101.5px; left: 5.35px; height: 0.25px; opacity: 15%"
 					></div>
 				</div>
 			</div> -->

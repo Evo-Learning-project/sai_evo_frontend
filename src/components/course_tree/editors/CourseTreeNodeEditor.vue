@@ -10,6 +10,7 @@
 import { CourseTreeNode, CourseTreeNodeType } from "@/models";
 import { defineComponent, PropType } from "@vue/runtime-core";
 import { nodeEditorProps } from "../shared";
+import AnnouncementNodeEditor from "./AnnouncementNodeEditor.vue";
 import FileNodeEditor from "./FileNodeEditor.vue";
 import LessonNodeEditor from "./LessonNodeEditor.vue";
 import TopicNodeEditor from "./TopicNodeEditor.vue";
@@ -29,11 +30,18 @@ export default defineComponent({
 				[CourseTreeNodeType.FileNode]: "FileNodeEditor",
 				[CourseTreeNodeType.LessonNode]: "LessonNodeEditor",
 				[CourseTreeNodeType.TopicNode]: "TopicNodeEditor",
+				[CourseTreeNodeType.PollNode]: "PollNodeEditor",
+				[CourseTreeNodeType.AnnouncementNode]: "AnnouncementNodeEditor",
 			};
 			return resourceTypeToEditorMapping[this.modelValue.resourcetype];
 		},
 	},
-	components: { FileNodeEditor, LessonNodeEditor, TopicNodeEditor },
+	components: {
+		FileNodeEditor,
+		LessonNodeEditor,
+		TopicNodeEditor,
+		AnnouncementNodeEditor,
+	},
 });
 </script>
 

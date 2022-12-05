@@ -185,7 +185,7 @@
 			@yes="onBeginPractice(mainStore.editingEvent)"
 			:noText="$t('dialog.default_cancel_text')"
 			:yesText="$t('practice_template_editor.begin_practice')"
-			:large="mainStore.tags.length > 0"
+			:fullWidth="mainStore.tags.length > 0"
 			:disableOk="
 				totalRuleAmount < 1 ||
 				totalRuleAmount > MAX_PRACTICE_EXERCISE_COUNT ||

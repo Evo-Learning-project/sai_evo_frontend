@@ -24,8 +24,9 @@
 						flex flex-col
 					"
 					:class="{
-						'md:max-w-4xl md:min-w-md': !large,
-						'w-full md:w-full md:mx-4': large,
+						'md:max-w-4xl md:min-w-md': !fullWidth && !large,
+						'w-4/5 md:w-3/4 md:mx-4': large,
+						'w-full md:w-full md:mx-4': fullWidth,
 					}"
 					:style="fullHeight ? 'height: calc(100vh - 10px)' : ''"
 				>
@@ -126,6 +127,14 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+		fullWidth: {
+			type: Boolean,
+			default: false,
+		},
+		large: {
+			type: Boolean,
+			default: false,
+		},
 		stickyHeader: {
 			type: Boolean,
 			default: false,
@@ -133,10 +142,6 @@ export default defineComponent({
 		showDialog: {
 			type: Boolean,
 			required: true,
-		},
-		large: {
-			type: Boolean,
-			default: false,
 		},
 		dismissible: {
 			type: Boolean,

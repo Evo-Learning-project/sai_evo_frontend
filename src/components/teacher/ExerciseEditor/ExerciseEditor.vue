@@ -623,7 +623,7 @@
 				</div>
 
 				<Dialog
-					:large="true"
+					:fullWidth="true"
 					:confirmOnly="true"
 					@yes="editingClozePosition = null"
 					v-if="modelValue.exercise_type === ExerciseType.COMPLETION"

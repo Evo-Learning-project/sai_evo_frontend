@@ -1,4 +1,5 @@
 import {
+	AnnouncementNodeState,
 	CourseTreeNodeType,
 	EventAccessRule,
 	EventTimeLimitRule,
@@ -331,7 +332,13 @@ export interface TopicNode extends BaseNodeFields {
 	resourcetype: CourseTreeNodeType.TopicNode;
 }
 
-export type CourseTreeNode = FileNode | LessonNode | TopicNode;
+export interface AnnouncementNode extends BaseNodeFields {
+	body: string;
+	state: AnnouncementNodeState;
+	resourcetype: CourseTreeNodeType.AnnouncementNode;
+}
+
+export type CourseTreeNode = FileNode | LessonNode | TopicNode | AnnouncementNode;
 
 export interface NodeComment {
 	id: string;

@@ -120,7 +120,7 @@
 					? $t('exercise_import.importing')
 					: $t('exercise_import.import')
 			"
-			:large="true"
+			:fullWidth="true"
 		>
 			<template v-slot:title>
 				{{ $t("course_exercises.import_exercises_title") }}</template

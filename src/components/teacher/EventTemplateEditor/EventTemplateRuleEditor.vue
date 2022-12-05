@@ -221,7 +221,7 @@
 		</div>
 		<Dialog
 			:showDialog="showDialog"
-			:large="true"
+			:fullWidth="true"
 			:fullHeight="modelValue.rule_type === EventTemplateRuleType.ID_BASED"
 			:headerBorder="modelValue.rule_type === EventTemplateRuleType.ID_BASED"
 			:stickyHeader="modelValue.rule_type === EventTemplateRuleType.ID_BASED"

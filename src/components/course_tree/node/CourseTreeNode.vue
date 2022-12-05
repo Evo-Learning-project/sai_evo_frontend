@@ -41,6 +41,10 @@ export default defineComponent({
 		(this.$options.components as any).FileNode = defineAsyncComponent(
 			() => import("./FileNode.vue"),
 		);
+
+		(this.$options.components as any).AnnouncementNode = defineAsyncComponent(
+			() => import("./AnnouncementNode.vue"),
+		);
 	},
 	methods: {},
 	computed: {
@@ -49,6 +53,7 @@ export default defineComponent({
 				FileNode: "FileNode",
 				LessonNode: "LessonNode",
 				TopicNode: "TopicNode",
+				AnnouncementNode: "AnnouncementNode",
 			};
 			return mapping[this.node.resourcetype];
 		},

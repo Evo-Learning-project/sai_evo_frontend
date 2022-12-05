@@ -266,7 +266,7 @@
 
 		<Dialog
 			:warning="!resultsMode && !editingSlot"
-			:large="!!editingSlot"
+			:fullWidth="!!editingSlot"
 			:showDialog="showAssessmentEditorDialog"
 			@no="showAssessmentEditorDialog = false"
 			@yes="dispatchAssessmentUpdate()"

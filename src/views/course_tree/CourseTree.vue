@@ -88,8 +88,9 @@
 		</div>
 
 		<Dialog
-			:fullHeight="true"
-			:large="true"
+			:fullHeight="fullScreenDialog"
+			:large="!fullScreenDialog"
+			:fullWidth="fullScreenDialog"
 			@no="
 				showEditorDialog = false;
 				editingNode = null;
@@ -111,7 +112,7 @@
 		</Dialog>
 
 		<Dialog
-			:large="true"
+			:fullWidth="true"
 			@yes="creatingFileNode = false"
 			:showDialog="creatingFileNode"
 			:confirmOnly="true"
@@ -169,6 +170,7 @@ import { blockingDialogMixin, courseIdMixin, loadingMixin } from "@/mixins";
 import {
 	CourseTreeNode as ICourseTreeNode,
 	CourseTreeNodeType,
+	getBlankAnnouncementNode,
 	getBlankFileNode,
 	getBlankLessonNode,
 	getBlankTopicNode,
@@ -316,19 +318,22 @@ export default defineComponent({
 				);
 				this.showBlockingDialog = false;
 				this.editingTopicName = "";
-			} else if (nodeType === CourseTreeNodeType.LessonNode) {
-				await this.withLoading(
-					async () =>
-						(this.editingNode = await this.mainStore.createCourseTreeNode({
-							courseId: this.courseId,
-							node: getBlankLessonNode(null),
-						})),
-				);
-				this.autoSaveEditingNode = true;
-				this.showEditorDialog = true;
 			} else if (nodeType === CourseTreeNodeType.FileNode) {
 				// open dialog to create file node
 				this.creatingFileNode = true;
+			} else {
+				const factories = {
+					[CourseTreeNodeType.LessonNode]: getBlankLessonNode,
+					[CourseTreeNodeType.AnnouncementNode]: getBlankAnnouncementNode,
+				};
+				await this.withLoading(async () => {
+					this.editingNode = await this.mainStore.createCourseTreeNode({
+						courseId: this.courseId,
+						node: factories[nodeType](null),
+					});
+					this.autoSaveEditingNode = true;
+					this.showEditorDialog = true;
+				}, setErrorNotification);
 			}
 		},
 		async onLoadChildren(node, fromFirstPage: boolean) {
@@ -342,6 +347,9 @@ export default defineComponent({
 	},
 	computed: {
 		...mapStores(useMainStore, useMetaStore),
+		fullScreenDialog() {
+			return this.editingNode?.resourcetype === CourseTreeNodeType.LessonNode;
+		},
 		topicsAsOptions(): SelectableOption[] {
 			return [
 				{

@@ -86,7 +86,7 @@
 						<CourseTreeNode
 							v-bind="$props"
 							:node="child"
-							@showFileNode="onShowFileNode(child)"
+							@deleteNode="$emit('deleteNode', $event)"
 						></CourseTreeNode>
 					</div>
 				</div>
@@ -97,7 +97,7 @@
 		</div>
 		<Dialog
 			:fullHeight="true"
-			:large="true"
+			:fullWidth="true"
 			@no="editing = false"
 			:showDialog="editing"
 			:showActions="false"
@@ -152,7 +152,7 @@ export default defineComponent({
 	},
 	data() {
 		return {
-			openedNode: null as null | FileNode,
+			// openedNode: null as null | FileNode,
 			editing: false,
 		};
 	},
@@ -160,10 +160,10 @@ export default defineComponent({
 		onEdit() {
 			this.editing = true;
 		},
-		onShowFileNode(node: FileNode) {
-			console.log("showed", node);
-			this.openedNode = node;
-		},
+		// onShowFileNode(node: FileNode) {
+		// 	console.log("showed", node);
+		// 	this.openedNode = node;
+		// },
 	},
 	computed: {
 		lessonTitle() {

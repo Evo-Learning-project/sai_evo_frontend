@@ -215,7 +215,7 @@
 			:showDialog="showAccessRuleDialog"
 			@yes="showAccessRuleDialog = false"
 			:confirmOnly="true"
-			:large="true"
+			:fullWidth="true"
 		>
 			<template v-slot:title>
 				{{ $t("event_editor.choose_allowed") }}
@@ -269,7 +269,7 @@
 			@yes="showTimeLimitDialog = false"
 			:showDialog="showTimeLimitDialog"
 			:confirmOnly="true"
-			:large="true"
+			:fullWidth="true"
 		>
 			<template v-slot:title>
 				{{ $t("event_editor.exceptions_to_time_limit") }}

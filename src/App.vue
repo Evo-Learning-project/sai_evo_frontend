@@ -132,7 +132,7 @@
 									:initialLeft="1"
 									:opaque="true"
 									:resizable="false"
-									:large="true"
+									:fullWidth="true"
 								>
 									<GamificationContextPanel
 										style="margin-top: -34px"

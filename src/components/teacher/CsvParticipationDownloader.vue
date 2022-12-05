@@ -14,7 +14,7 @@
 			:disableOk="loadingReport"
 			@no="showDialog = false"
 			@yes="onDownload()"
-			:large="true"
+			:fullWidth="true"
 		>
 			<template v-slot:title>
 				<h3>{{ $t("participation_downloader.download_results") }}</h3></template

@@ -206,6 +206,7 @@ export const it = {
 		donate_now: "Dona ora",
 	},
 	misc: {
+		show_more: "Mostra di più",
 		share: "Condividi",
 		page: "pagina",
 		pages: "pagine",
@@ -969,6 +970,11 @@ export const it = {
 		unknown_error: "Si è verificato un errore sconosciuto",
 	},
 	course_tree: {
+		announcement_title: "Annuncio",
+		publish_announcement: "Pubblica",
+		announcement_body: "Annuncio",
+		announcement_attachments: "Allegati",
+		announcement_editor_title: "Annuncio",
 		node_comments_title: "commenti",
 		node_comment_title: "commento",
 		cannot_delete_nonempty_topic: "Sezione non vuota",
@@ -999,6 +1005,8 @@ export const it = {
 		[CourseTreeNodeType.FileNode]: "File",
 		[CourseTreeNodeType.TopicNode]: "Sezione",
 		[CourseTreeNodeType.LessonNode]: "Lezione",
+		[CourseTreeNodeType.PollNode]: "Sondaggio",
+		[CourseTreeNodeType.AnnouncementNode]: "Annuncio",
 	},
 	breadcrumbs: {
 		course_list: "Corsi",

@@ -3,7 +3,7 @@
 		<Dialog
 			:footerBorder="true"
 			:fullHeight="true"
-			:large="true"
+			:fullWidth="true"
 			:noPadding="true"
 			@yes="$emit('hide')"
 			:confirmOnly="true"

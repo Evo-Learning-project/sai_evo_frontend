@@ -1,4 +1,5 @@
 import {
+	AnnouncementNode,
 	EventParticipation,
 	ExerciseTestCase,
 	FileNode,
@@ -198,6 +199,15 @@ export const getBlankLessonNode = (parentId: string | null): LessonNode => ({
 	state: LessonNodeState.DRAFT,
 	id: "",
 	resourcetype: CourseTreeNodeType.LessonNode,
+});
+
+export const getBlankAnnouncementNode = (): AnnouncementNode => ({
+	id: "",
+	parent_id: null,
+	body: "",
+	created: "",
+	creator: getBlankUser(),
+	resourcetype: CourseTreeNodeType.AnnouncementNode,
 });
 
 export const getBlankTopicNode = (parentId: string | null, name = ""): TopicNode => ({
