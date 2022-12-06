@@ -74,7 +74,7 @@
 					/>
 				</div>
 				<!-- choices -->
-				<div class="mt-4" v-if="node.choices.length > 0">
+				<div class="mt-4 hidden-in-dragging-element" v-if="node.choices.length > 0">
 					<div class="">
 						<!-- <div class="" v-for="choice in node.choices" :key="choice.id">
 							

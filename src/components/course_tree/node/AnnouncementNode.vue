@@ -69,13 +69,7 @@
 				<!-- body -->
 				<div class="mt-2 flex flex-wrap items-end">
 					<ProcessedTextFragment
-						style="
-							display: -webkit-box;
-							-webkit-line-clamp: 5;
-							-webkit-box-orient: vertical;
-							overflow: hidden;
-						"
-						class="w-full overflow-x-hidden overflow-ellipsis text-muted"
+						class="w-full truncated-in-dragging-element text-muted"
 						:value="bodyPreview"
 					/>
 					<Btn
@@ -88,7 +82,7 @@
 					>
 				</div>
 				<!-- children -->
-				<div class="mt-4" v-if="children.length > 0">
+				<div class="mt-4 hidden-in-dragging-element" v-if="children.length > 0">
 					<div class="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
 						<div class="" v-for="child in children" :key="child.id">
 							<CourseTreeNode
@@ -101,7 +95,10 @@
 					</div>
 				</div>
 				<!-- comments -->
-				<CourseTreeNodeCommentSection class="w-full mt-4" :nodeId="node.id" />
+				<CourseTreeNodeCommentSection
+					class="w-full mt-6 hidden-in-dragging-element"
+					:nodeId="node.id"
+				/>
 			</div>
 			<!-- teacher actions-->
 			<div

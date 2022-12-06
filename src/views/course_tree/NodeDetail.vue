@@ -98,6 +98,7 @@ export default defineComponent({
 				LessonNode: "LessonNodeDetail",
 				TopicNode: "TopicNodeDetail",
 				AnnouncementNode: "AnnouncementNodeDetail",
+				PollNode: "PollNodeDetail",
 			};
 			return mapping[this.node.resourcetype];
 		},

@@ -19,7 +19,7 @@
 		<div class="flex items-center h-14 z-999">
 			<div
 				v-if="showCollapseSideBarButton"
-				class="flex items-center mt-4 mb-4 hidden lg:block -ml-4.5 mr-8"
+				class="items-center mt-4 mb-4 hidden md:block -ml-4.5 mr-8"
 			>
 				<Btn
 					id="toggle-sidebar"
@@ -27,7 +27,7 @@
 					:variant="'icon'"
 					:outline="true"
 					@click="$emit('toggleSidebarCollapsed')"
-					class="hidden lg:block"
+					class="hidden md:block"
 				>
 					<span class="material-icons-outlined">{{
 						!sidebarCollapsed ? "menu_open" : "menu"
@@ -35,7 +35,7 @@
 				</Btn>
 			</div>
 			<div class="flex items-center mr-auto">
-				<img class="w-72 -ml-1" :src="logoUrl" />
+				<img class="lg:w-64 3xl:w-72 w-56 -ml-1" :src="logoUrl" />
 			</div>
 			<div class="">
 				<div v-if="metaStore.isAuthenticated" class="flex items-center ml-4 md:ml-6">

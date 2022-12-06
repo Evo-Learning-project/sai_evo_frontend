@@ -7,7 +7,7 @@
 	},
 	"private": true,
 	"scripts": {
-		"serve": "vue-cli-service serve --host localhost",
+		"serve": "node --max_old_space_size=4096 node_modules/.bin/vue-cli-service serve --host localhost",
 		"build": "vue-cli-service build",
 		"test:unit": "vue-cli-service test:unit",
 		"lint_new": "eslint . --ext .ts,.tsx,.js,.jsx,.vue,.json --fix",

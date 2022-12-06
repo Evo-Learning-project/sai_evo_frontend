@@ -265,10 +265,20 @@
 		transition: transform 0.5s;
 	}
 
+	.dragging-element button,
 	.dragging-inside-collection .hidden-in-dragging-element,
 	.dragging-element .hidden-in-dragging-element,
 	.drag-ghost .hidden-in-dragging-element {
 		@apply hidden;
+	}
+
+	.dragging-inside-collection .truncated-in-dragging-element,
+	.dragging-element .truncated-in-dragging-element {
+		display: -webkit-box;
+		-webkit-line-clamp: 2;
+		-webkit-box-orient: vertical;
+		overflow: hidden;
+		@apply overflow-x-hidden overflow-ellipsis;
 	}
 
 	.flip-list-move {
