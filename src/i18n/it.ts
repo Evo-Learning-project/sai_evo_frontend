@@ -970,6 +970,12 @@ export const it = {
 		unknown_error: "Si è verificato un errore sconosciuto",
 	},
 	course_tree: {
+		poll_closed: "Questo sondaggio è chiuso",
+		poll_title: "Sondaggio",
+		publish_poll: "Pubblica",
+		poll_text: "Testo del sondaggio",
+		poll_choices: "Opzioni",
+		poll_editor_title: "Sondaggio",
 		announcement_title: "Annuncio",
 		publish_announcement: "Pubblica",
 		announcement_body: "Annuncio",

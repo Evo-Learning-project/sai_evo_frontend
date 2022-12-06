@@ -5,6 +5,7 @@ import {
 	FileNode,
 	LessonNode,
 	NodeComment,
+	PollNode,
 	TopicNode,
 	User,
 } from "./interfaces";
@@ -30,11 +31,13 @@ import {
 	Tag,
 } from ".";
 import {
+	AnnouncementNodeState,
 	CourseTreeNodeType,
 	EventAccessRule,
 	EventParticipationState,
 	ExerciseSolutionState,
 	LessonNodeState,
+	PollNodeState,
 	VoteType,
 } from "./types";
 
@@ -206,8 +209,18 @@ export const getBlankAnnouncementNode = (): AnnouncementNode => ({
 	parent_id: null,
 	body: "",
 	created: "",
-	creator: getBlankUser(),
+	state: AnnouncementNodeState.DRAFT,
 	resourcetype: CourseTreeNodeType.AnnouncementNode,
+});
+
+export const getBlankPollNode = (): PollNode => ({
+	choices: [],
+	id: "",
+	text: "",
+	created: "",
+	parent_id: null,
+	state: PollNodeState.DRAFT,
+	resourcetype: CourseTreeNodeType.PollNode,
 });
 
 export const getBlankTopicNode = (parentId: string | null, name = ""): TopicNode => ({

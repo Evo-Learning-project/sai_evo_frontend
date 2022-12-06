@@ -173,6 +173,7 @@ import {
 	getBlankAnnouncementNode,
 	getBlankFileNode,
 	getBlankLessonNode,
+	getBlankPollNode,
 	getBlankTopicNode,
 	TopicNode,
 } from "@/models";
@@ -325,6 +326,7 @@ export default defineComponent({
 				const factories = {
 					[CourseTreeNodeType.LessonNode]: getBlankLessonNode,
 					[CourseTreeNodeType.AnnouncementNode]: getBlankAnnouncementNode,
+					[CourseTreeNodeType.PollNode]: getBlankPollNode,
 				};
 				await this.withLoading(async () => {
 					this.editingNode = await this.mainStore.createCourseTreeNode({

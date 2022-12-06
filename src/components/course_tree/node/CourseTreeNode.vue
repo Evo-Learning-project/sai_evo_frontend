@@ -45,6 +45,10 @@ export default defineComponent({
 		(this.$options.components as any).AnnouncementNode = defineAsyncComponent(
 			() => import("./AnnouncementNode.vue"),
 		);
+
+		(this.$options.components as any).PollNode = defineAsyncComponent(
+			() => import("./PollNode.vue"),
+		);
 	},
 	methods: {},
 	computed: {
@@ -54,6 +58,7 @@ export default defineComponent({
 				LessonNode: "LessonNode",
 				TopicNode: "TopicNode",
 				AnnouncementNode: "AnnouncementNode",
+				PollNode: "PollNode",
 			};
 			return mapping[this.node.resourcetype];
 		},

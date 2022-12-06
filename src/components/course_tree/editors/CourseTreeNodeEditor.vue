@@ -13,6 +13,7 @@ import { nodeEditorProps } from "../shared";
 import AnnouncementNodeEditor from "./AnnouncementNodeEditor.vue";
 import FileNodeEditor from "./FileNodeEditor.vue";
 import LessonNodeEditor from "./LessonNodeEditor.vue";
+import PollNodeEditor from "./PollNodeEditor.vue";
 import TopicNodeEditor from "./TopicNodeEditor.vue";
 export default defineComponent({
 	name: "CourseTreeNodeEditor",
@@ -41,6 +42,7 @@ export default defineComponent({
 		LessonNodeEditor,
 		TopicNodeEditor,
 		AnnouncementNodeEditor,
+		PollNodeEditor,
 	},
 });
 </script>

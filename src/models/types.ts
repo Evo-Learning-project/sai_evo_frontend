@@ -16,6 +16,12 @@ export enum AnnouncementNodeState {
 	PUBLISHED,
 }
 
+export enum PollNodeState {
+	DRAFT,
+	OPEN,
+	CLOSED,
+}
+
 export enum ExerciseType {
 	MULTIPLE_CHOICE_SINGLE_POSSIBLE,
 	MULTIPLE_CHOICE_MULTIPLE_POSSIBLE,

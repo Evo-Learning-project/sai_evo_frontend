@@ -6,6 +6,7 @@ import {
 	ExerciseSolutionState,
 	ExerciseTestCaseType,
 	LessonNodeState,
+	PollNodeState,
 	VoteType,
 } from "./types";
 import {
@@ -338,7 +339,24 @@ export interface AnnouncementNode extends BaseNodeFields {
 	resourcetype: CourseTreeNodeType.AnnouncementNode;
 }
 
-export type CourseTreeNode = FileNode | LessonNode | TopicNode | AnnouncementNode;
+export interface PollNode extends BaseNodeFields {
+	text: string;
+	choices: {
+		id: string;
+		text: string;
+		votes?: number;
+		selected?: boolean;
+	}[];
+	state: PollNodeState;
+	resourcetype: CourseTreeNodeType.PollNode;
+}
+
+export type CourseTreeNode =
+	| FileNode
+	| LessonNode
+	| TopicNode
+	| AnnouncementNode
+	| PollNode;
 
 export interface NodeComment {
 	id: string;
