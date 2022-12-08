@@ -70,7 +70,9 @@ import {
 import {
 	createCourseNode,
 	createCourseNodeComment,
+	createPollNodeChoice,
 	deleteCourseNode,
+	deletePollNodeChoice,
 	getCourseNode,
 	getCourseNodeComments,
 	getCourseRootNodeId,
@@ -79,7 +81,9 @@ import {
 	getNodeChildren,
 	moveCourseNode,
 	partialUpdateCourseNode,
+	partialUpdatePollNodeChoice,
 	uploadNodeFile,
+	votePollNodeChoice,
 } from "@/api/course_tree";
 import {
 	deleteByIdFromPaginatedData,
@@ -118,6 +122,8 @@ import {
 	getBlankTag,
 	FileNode,
 	NodeComment,
+	PollNodeChoice,
+	CourseTreeNodeType,
 } from "@/models";
 import {
 	CourseIdActionPayload,
@@ -319,6 +325,104 @@ export const useMainStore = defineStore("main", {
 				this.commentsByCourseNodeId[nodeId] = [];
 			}
 			this.commentsByCourseNodeId[nodeId].push(newComment);
+		},
+		async createPollNodeChoice({
+			courseId,
+			nodeId,
+			choice,
+		}: CourseIdActionPayload &
+			CourseTreeNodeIdActionPayload & { choice: PollNodeChoice }) {
+			const newChoice = await createPollNodeChoice(courseId, nodeId, choice);
+			const poll = this.getCourseTreeNodeById(nodeId);
+			if (!poll || poll.resourcetype !== CourseTreeNodeType.PollNode) {
+				throw new Error(
+					"createPollNodeChoice couldn't find node with id " +
+						nodeId +
+						" or its type was " +
+						poll?.resourcetype,
+				);
+			}
+			poll.choices.push(newChoice);
+		},
+		async partialUpdatePollNodeChoice({
+			courseId,
+			nodeId,
+			choiceId,
+			changes,
+		}: CourseIdActionPayload &
+			CourseTreeNodeIdActionPayload & {
+				choiceId: string;
+				changes: Partial<PollNodeChoice>;
+			}) {
+			const updatedChoice = await partialUpdatePollNodeChoice(
+				courseId,
+				nodeId,
+				choiceId,
+				changes,
+			);
+			const poll = this.getCourseTreeNodeById(nodeId);
+			if (!poll || poll.resourcetype !== CourseTreeNodeType.PollNode) {
+				throw new Error(
+					"updatePollNodeChoice couldn't find node with id " +
+						nodeId +
+						" or its type was " +
+						poll?.resourcetype,
+				);
+			}
+			const target = poll.choices.find(c => c.id == choiceId);
+			if (!target) {
+				throw new Error(
+					"updatePollNodeChoice couldn't find poll choice with id " + choiceId,
+				);
+			}
+			Object.assign(target, { ...target, ...updatedChoice });
+		},
+		async deletePollNodeChoice({
+			courseId,
+			nodeId,
+			choiceId,
+		}: CourseIdActionPayload &
+			CourseTreeNodeIdActionPayload & {
+				choiceId: string;
+			}) {
+			await deletePollNodeChoice(courseId, nodeId, choiceId);
+			const poll = this.getCourseTreeNodeById(nodeId);
+			if (!poll || poll.resourcetype !== CourseTreeNodeType.PollNode) {
+				throw new Error(
+					"updatePollNodeChoice couldn't find node with id " +
+						nodeId +
+						" or its type was " +
+						poll?.resourcetype,
+				);
+			}
+			poll.choices = poll.choices.filter(c => c.id != choiceId);
+		},
+		async votePollNodeChoice({
+			courseId,
+			nodeId,
+			choiceId,
+			remove,
+		}: CourseIdActionPayload &
+			CourseTreeNodeIdActionPayload & {
+				choiceId: string;
+				remove: boolean;
+			}) {
+			const pollWithNewVote = await votePollNodeChoice(
+				courseId,
+				nodeId,
+				choiceId,
+				remove,
+			);
+			const poll = this.getCourseTreeNodeById(nodeId);
+			if (!poll || poll.resourcetype !== CourseTreeNodeType.PollNode) {
+				throw new Error(
+					"updatePollNodeChoice couldn't find node with id " +
+						nodeId +
+						" or its type was " +
+						poll?.resourcetype,
+				);
+			}
+			Object.assign(poll, pollWithNewVote);
 		},
 		async getCourseTreeNodeComments({
 			courseId,

@@ -1,17 +1,36 @@
 <template>
 	<div>
-		<h4>
-			{{ comments.length }}
-			{{
-				comments.length === 1
-					? $t("course_tree.node_comment_title")
-					: $t("course_tree.node_comments_title")
-			}}
-		</h4>
+		<div class="flex items-center space-x-2">
+			<span
+				class="material-icons-outlined text-muted"
+				style="margin-bottom: -1px; font-size: 22px !important"
+				>question_answer</span
+			>
+			<h4 v-if="comments.length > 0">
+				{{ comments.length }}
+				{{
+					comments.length === 1
+						? $t("course_tree.node_comment_title")
+						: $t("course_tree.node_comments_title")
+				}}
+			</h4>
+			<Btn
+				style="margin-bottom: -1px"
+				@click="expanded = !expanded"
+				:size="'xs'"
+				:variant="'primary-borderless'"
+				v-if="shownComments.length < comments.length || expanded"
+			>
+				<span class="text-base">{{
+					expanded ? $t("misc.show_recent") : $t("misc.show_all")
+				}}</span>
+			</Btn>
+		</div>
+
 		<!-- comments-->
 		<div>
 			<div
-				v-for="comment in comments"
+				v-for="comment in shownComments"
 				:key="comment.id"
 				class="flex items-center my-3 space-x-2"
 			>
@@ -81,6 +100,7 @@ export default defineComponent({
 		return {
 			draftComment: "",
 			postingComment: false,
+			expanded: false,
 		};
 	},
 	methods: {
@@ -107,6 +127,11 @@ export default defineComponent({
 		...mapStores(useMainStore, useMetaStore),
 		comments() {
 			return this.mainStore.getCommentsByNodeId(this.nodeId);
+		},
+		shownComments() {
+			return this.comments.length <= 2 || this.expanded
+				? this.comments
+				: this.comments.slice(-2);
 		},
 	},
 	components: { Avatar, TextInput, Btn, Timestamp },

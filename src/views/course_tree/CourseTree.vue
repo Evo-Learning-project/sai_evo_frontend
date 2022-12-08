@@ -58,6 +58,7 @@
 						class="my-2"
 						:class="{ 'dragging-inside-collection': draggingNode }"
 						@loadChildren="onLoadChildren($event.node, $event.fromFirstPage)"
+						@loadComments="onLoadComments($event)"
 						:canEdit="canEditNodes"
 						:node="element"
 						@editNode="onEditNode($event)"
@@ -337,6 +338,12 @@ export default defineComponent({
 					this.showEditorDialog = true;
 				}, setErrorNotification);
 			}
+		},
+		async onLoadComments(node: ICourseTreeNode) {
+			await this.mainStore.getCourseTreeNodeComments({
+				courseId: this.courseId,
+				nodeId: node.id,
+			});
 		},
 		async onLoadChildren(node, fromFirstPage: boolean) {
 			console.log("course tree on load children", fromFirstPage);

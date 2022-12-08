@@ -175,6 +175,7 @@ export default defineComponent({
 	},
 	created() {
 		this.$emit("loadChildren", { node: this.node, fromFirstPage: true });
+		this.$emit("loadComments", this.node);
 	},
 	data() {
 		return {

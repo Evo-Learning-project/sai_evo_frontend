@@ -6,6 +6,7 @@ import {
 	LessonNode,
 	NodeComment,
 	PollNode,
+	PollNodeChoice,
 	TopicNode,
 	User,
 } from "./interfaces";
@@ -247,4 +248,9 @@ export const getBlankCourseTreeNodeComment = (comment: string): NodeComment => (
 	created: "",
 	is_edited: false,
 	id: "",
+});
+
+export const getBlankPollNodeChoice = (): PollNodeChoice => ({
+	id: "",
+	text: "",
 });

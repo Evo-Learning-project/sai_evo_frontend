@@ -80,10 +80,116 @@
 		<!-- choices -->
 		<div class="mt-8">
 			<h3 class="mb-4">{{ $t("course_tree.poll_choices") }}</h3>
-			<div class="grid lg:grid-cols-2 lg:gap-6 gap-4 grid-cols-1">
-				<div v-for="choice in modelValue.choices" :key="choice.id">
+			<div class="mb-4">
+				<div
+					v-for="choice in modelValue.choices"
+					:key="choice.id"
+					class="
+						flex
+						items-center
+						space-x-1
+						my-0.5
+						group
+						transition-colors
+						duration-100
+						ease-in-out
+						rounded-sm
+					"
+					:class="{ 'hover:bg-light': editingChoice?.id !== choice.id }"
+				>
+					<span class="material-icons opacity-60" style="font-size: 20px !important">
+						radio_button_checked
+					</span>
 					<!-- TODO choice editor-->
+					<div v-if="editingChoice?.id !== choice.id" class="flex items-center">
+						<p class="mr-4 ml-1">{{ choice.text }}</p>
+						<Btn
+							class="
+								opacity-0
+								group-hover:opacity-80
+								duration-100
+								transition-opacity
+								ease-in-out
+							"
+							@click="onEditChoice(choice)"
+							:variant="'icon'"
+							:outline="true"
+						>
+							<span class="material-icons">edit</span></Btn
+						>
+						<Btn
+							class="
+								opacity-0
+								group-hover:opacity-80
+								duration-100
+								transition-opacity
+								ease-in-out
+							"
+							@click="onDeleteChoice(choice)"
+							:variant="'icon'"
+							:outline="true"
+						>
+							<span class="material-icons">delete</span></Btn
+						>
+					</div>
+					<div v-else class="flex w-full items-center space-x-2">
+						<TextInput
+							@keyup.enter="onSaveChoice"
+							class="w-full"
+							v-model="editingChoice.text"
+						>
+							<!-- {{ $t("course_tree.poll_choice_text") }} -->
+						</TextInput>
+						<Btn
+							:disabled="editingChoice.text.trim().length === 0"
+							@click="onSaveChoice"
+							:variant="'icon'"
+							:outline="true"
+						>
+							<span class="material-icons-outlined">done</span></Btn
+						>
+						<Btn @click="onDiscardChoice" :variant="'icon'" :outline="true">
+							<span class="material-icons-outlined">close</span></Btn
+						>
+					</div>
 				</div>
+				<div
+					v-if="editingChoice?.id === ''"
+					class="mt-4 flex w-full items-center space-x-1"
+				>
+					<span class="material-icons opacity-60" style="font-size: 20px !important">
+						radio_button_checked
+					</span>
+					<TextInput
+						class="w-full"
+						@keyup.enter="onSaveChoice"
+						v-model="editingChoice.text"
+						:placeholder="$t('course_tree.poll_choice_text')"
+					></TextInput>
+					<Btn
+						:disabled="editingChoice.text.trim().length === 0"
+						@click="onSaveChoice"
+						:variant="'icon'"
+						:outline="true"
+						class="my-auto"
+					>
+						<span class="material-icons-outlined">done</span></Btn
+					>
+					<Btn class="my-auto" @click="onDiscardChoice" :variant="'icon'" :outline="true">
+						<span class="material-icons">close</span></Btn
+					>
+				</div>
+
+				<Btn
+					v-else
+					class="mt-4 w-max"
+					:variant="'secondary'"
+					:size="'sm'"
+					@click="onCreateChoice()"
+				>
+					<span class="mr-1 text-base material-icons-outlined"> add </span
+					>{{ $t("course_tree.new_poll_choice") }}</Btn
+				>
 			</div>
 		</div>
 	</div>
@@ -106,7 +212,9 @@ import {
 	CourseTreeNodeType,
 	FileNode as IFileNode,
 	getBlankFileNode,
+	getBlankPollNodeChoice,
 	PollNode,
+	PollNodeChoice,
 	PollNodeState,
 	TopicNode,
 } from "@/models";
@@ -139,6 +247,9 @@ export default defineComponent({
 			topics: [] as TopicNode[],
 			loadingTopics: false,
 			loadingChildren: false,
+			editingChoice: null as null | PollNodeChoice,
+			editingChoiceText: "",
+			savingChoice: false,
 		};
 	},
 	async created() {
@@ -174,6 +285,58 @@ export default defineComponent({
 		]);
 	},
 	methods: {
+		onCreateChoice() {
+			this.editingChoice = getBlankPollNodeChoice();
+		},
+		onEditChoice(choice: PollNodeChoice) {
+			this.editingChoice = JSON.parse(JSON.stringify(choice));
+		},
+		async onSaveChoice() {
+			if (!this.editingChoice) {
+				throw new Error(
+					"attempting to save editingChoice, which is " + this.editingChoice,
+				);
+			}
+			if (this.editingChoice.text.trim().length === 0) {
+				return;
+			}
+			try {
+				this.savingChoice = false;
+				if (!this.editingChoice.id) {
+					console.log("Creating", this.editingChoice);
+					await this.mainStore.createPollNodeChoice({
+						courseId: this.courseId,
+						nodeId: this.modelValue.id,
+						choice: this.editingChoice,
+					});
+				} else {
+					await this.mainStore.partialUpdatePollNodeChoice({
+						courseId: this.courseId,
+						nodeId: this.modelValue.id,
+						choiceId: this.editingChoice.id,
+						changes: this.editingChoice,
+					});
+				}
+				this.editingChoice = null;
+			} catch (e) {
+				setErrorNotification(e);
+			} finally {
+				this.savingChoice = false;
+			}
+		},
+		onDiscardChoice() {
+			this.editingChoice = null;
+		},
+		async onDeleteChoice(choice: PollNodeChoice) {
+			if (!confirm(_("course_tree.confirm_delete_poll_choice"))) {
+				return;
+			}
+			await this.mainStore.deletePollNodeChoice({
+				courseId: this.courseId,
+				nodeId: this.modelValue.id,
+				choiceId: choice.id,
+			});
+		},
 		instantiateAutoSaveManager() {
 			this.autoSaveManager = new AutoSaveManager<PollNode>(
 				this.modelValue,
@@ -293,9 +456,9 @@ export default defineComponent({
 		TextEditor,
 		CloudSaveStatus,
 		Btn,
-
 		LinearProgress,
 		Dropdown,
+		TextInput,
 	},
 });
 </script>

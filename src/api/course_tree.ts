@@ -4,6 +4,8 @@ import {
 	CourseTreeNodeType,
 	FileNode,
 	NodeComment,
+	PollNode,
+	PollNodeChoice,
 	TopicNode,
 } from "@/models";
 import { forceFileDownload } from "@/utils";
@@ -157,6 +159,65 @@ export async function createCourseNodeComment(
 	const response = await axios.post(
 		`/courses/${courseId}/nodes/${nodeId}/comments/`,
 		comment,
+	);
+	return response.data;
+}
+
+export async function createPollNodeChoice(
+	courseId: string,
+	nodeId: string,
+	choice: PollNodeChoice,
+): Promise<PollNodeChoice> {
+	const response = await axios.post(
+		`/courses/${courseId}/nodes/${nodeId}/choices/`,
+		choice,
+	);
+	return response.data;
+}
+
+export async function partialUpdatePollNodeChoice(
+	courseId: string,
+	nodeId: string,
+	choiceId: string,
+	changes: Partial<PollNodeChoice>,
+): Promise<PollNodeChoice> {
+	const response = await axios.patch(
+		`/courses/${courseId}/nodes/${nodeId}/choices/${choiceId}/`,
+		changes,
+	);
+	return response.data;
+}
+
+export async function votePollNodeChoice(
+	courseId: string,
+	nodeId: string,
+	choiceId: string,
+	remove: boolean,
+): Promise<PollNode> {
+	const response = await (remove ? axios.delete : axios.put)(
+		`/courses/${courseId}/nodes/${nodeId}/choices/${choiceId}/vote/`,
+	);
+	return response.data;
+}
+
+// export async function unvotePollNodeChoice(
+// 	courseId: string,
+// 	nodeId: string,
+// 	choiceId: string,
+// ): Promise<PollNode> {
+// 	const response = await axios.delete(
+// 		`/courses/${courseId}/nodes/${nodeId}/choices/${choiceId}/vote/`,
+// 	);
+// 	return response.data;
+// }
+
+export async function deletePollNodeChoice(
+	courseId: string,
+	nodeId: string,
+	choiceId: string,
+): Promise<void> {
+	const response = await axios.delete(
+		`/courses/${courseId}/nodes/${nodeId}/choices/${choiceId}/`,
 	);
 	return response.data;
 }

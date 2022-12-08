@@ -206,6 +206,8 @@ export const it = {
 		donate_now: "Dona ora",
 	},
 	misc: {
+		show_recent: "Mostra recenti",
+		show_all: "Mostra tutti",
 		show_more: "Mostra di più",
 		share: "Condividi",
 		page: "pagina",
@@ -970,6 +972,9 @@ export const it = {
 		unknown_error: "Si è verificato un errore sconosciuto",
 	},
 	course_tree: {
+		confirm_delete_poll_choice: "Vuoi eliminare questa scelta?",
+		new_poll_choice: "Nuova",
+		poll_choice_text: "Testo opzione",
 		poll_closed: "Questo sondaggio è chiuso",
 		poll_title: "Sondaggio",
 		publish_poll: "Pubblica",

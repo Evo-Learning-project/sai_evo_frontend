@@ -5,6 +5,7 @@
 		@editNode="$emit('editNode', $event)"
 		@deleteNode="$emit('deleteNode', $event)"
 		@loadChildren="$emit('loadChildren', $event)"
+		@loadComments="$emit('loadComments', $event)"
 	/>
 </template>
 
