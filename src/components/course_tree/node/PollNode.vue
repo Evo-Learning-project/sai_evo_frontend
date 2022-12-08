@@ -66,52 +66,65 @@
 					</p>
 					<Timestamp :date-only="true" class="text-sm text-muted" :value="node.created" />
 				</div>
-				<!-- body -->
-				<div class="mt-2 flex flex-wrap items-end">
-					<ProcessedTextFragment
-						class="w-full overflow-x-hidden overflow-ellipsis text-muted"
-						:value="node.text"
-					/>
-				</div>
-				<!-- choices -->
-				<div class="mt-4 hidden-in-dragging-element" v-if="node.choices.length > 0">
-					<div class="">
-						<!-- <div class="" v-for="choice in node.choices" :key="choice.id">
-							
-						</div> -->
-						<!-- v-model="selectedChoicesProxy"-->
-						<div
-							class="italic flex items-center space-x-1 text-muted text-sm mb-1"
-							v-if="node.state === PollNodeState.CLOSED"
-						>
-							<span
-								class="-ml-0.5 material-icons-outlined"
-								style="font-size: 16px !important"
-								>block</span
-							>
-							<p>{{ $t("course_tree.poll_closed") }}</p>
+				<div class="flex">
+					<!-- container for both the poll text & its choices-->
+					<div>
+						<!-- poll text -->
+						<div class="mt-2 flex">
+							<ProcessedTextFragment
+								class="w-full overflow-x-hidden overflow-ellipsis text-muted"
+								:value="node.text"
+							/>
 						</div>
-						<RadioGroup
-							class="-ml-2 flex"
-							:options="pollChoicesAsOptions"
-							:modelValue="[]"
-							:disabled="!canVote"
-						>
-							<template v-slot:item="{ description }">
-								<!-- TODO show number of selections-->
-								<div v-if="false" class="flex items-center space-x-2">
-									<p
-										:class="{
-											'text-success': description === 'done',
-											'text-danger-dark': description === 'close',
-										}"
-										class="text-sm font-semibold text-muted material-icons-outlined"
+						<!-- choices -->
+						<div class="mt-4 hidden-in-dragging-element" v-if="node.choices.length > 0">
+							<div class="">
+								<!-- poll closed warning -->
+								<div
+									class="italic flex items-center space-x-1 text-muted text-sm mb-1"
+									v-if="node.state === PollNodeState.CLOSED"
+								>
+									<span
+										class="-ml-0.5 material-icons-outlined"
+										style="font-size: 16px !important"
+										>block</span
 									>
-										{{ description }}
-									</p>
+									<p>{{ $t("course_tree.poll_closed") }}</p>
 								</div>
-							</template>
-						</RadioGroup>
+								<!-- choice radios -->
+								<RadioGroup
+									class="-ml-2 flex"
+									:options="pollChoicesAsOptions"
+									:modelValue="draftSelectedChoiceId ?? selectedChoice?.id"
+									@update:modelValue="draftSelectedChoiceId = $event"
+									:disabled="!canVote"
+								>
+									<template v-slot:itemSide="{ option }">
+										<!-- TODO show number of selections-->
+										<div
+											v-if="canVote && option.value == draftSelectedChoiceId"
+											class="flex items-center space-x-2 ml-8"
+										>
+											<Btn
+												:size="'xs'"
+												:outline="true"
+												@click="onVote(draftSelectedChoiceId)"
+												>{{ $t("course_tree.save_poll_choice") }}</Btn
+											>
+											<p class="text-sm text-muted italic">
+												{{ $t("course_tree.poll_choice_not_saved_yet") }}
+											</p>
+										</div>
+									</template>
+								</RadioGroup>
+							</div>
+						</div>
+					</div>
+					<!-- results -->
+					<div v-if="showResults" class="flex flex-col items-center ml-auto space-y-2">
+						<!-- <h3>{{ $t("course_tree.poll_results") }}</h3> -->
+						<Pie :chartData="pollVotesData" :chartOptions="chartOptions" :height="200">
+						</Pie>
 					</div>
 				</div>
 			</div>
@@ -158,23 +171,6 @@
 				/>
 			</div>
 		</div>
-		<!-- text -->
-		<!-- <div class="ml-1">
-			<ProcessedTextFragment
-				style="
-					display: -webkit-box;
-					-webkit-line-clamp: 2;
-					-webkit-box-orient: vertical;
-					overflow: hidden;
-				"
-				class="w-full overflow-x-hidden overflow-ellipsis text-muted"
-				:value="textPreview"
-			/>
-		</div> -->
-		<!-- footer -->
-		<!-- <div class="flex items-center">
-
-		</div> -->
 	</div>
 </template>
 
@@ -186,11 +182,24 @@ import RadioGroup from "@/components/ui/RadioGroup.vue";
 import Timestamp from "@/components/ui/Timestamp.vue";
 import { getTranslatedString as _ } from "@/i18n";
 import { SelectableOption } from "@/interfaces";
-import { PollNode, PollNodeState } from "@/models";
+import { courseIdMixin, loadingMixin } from "@/mixins";
+import { PollNode, PollNodeChoice, PollNodeState } from "@/models";
+import { useMainStore } from "@/stores/mainStore";
+import { md5, setErrorNotification } from "@/utils";
 import { defineComponent, PropType } from "@vue/runtime-core";
+import { mapStores } from "pinia";
 import { nodeEmits, nodeProps } from "../shared";
+
+import { Pie } from "vue-chartjs";
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
+import { TChartData } from "vue-chartjs/dist/types";
+import { DataFrequency, makeLabelText } from "@/reports";
+
+ChartJS.register(ArcElement, Tooltip, Legend);
+
 export default defineComponent({
 	name: "PollNode",
+	mixins: [loadingMixin, courseIdMixin],
 	props: {
 		node: {
 			type: Object as PropType<PollNode>,
@@ -201,6 +210,7 @@ export default defineComponent({
 	data() {
 		return {
 			PollNodeState,
+			draftSelectedChoiceId: null as null | string,
 		};
 	},
 	emits: {
@@ -213,8 +223,63 @@ export default defineComponent({
 		onDelete() {
 			this.$emit("deleteNode", this.node);
 		},
+		async onVote(choiceId: string) {
+			await this.withLoading(async () => {
+				await this.mainStore.votePollNodeChoice({
+					courseId: this.courseId,
+					nodeId: this.node.id,
+					choiceId,
+					remove: false,
+				});
+			}, setErrorNotification);
+		},
 	},
 	computed: {
+		...mapStores(useMainStore),
+		chartOptions() {
+			return { responsive: false, maintainAspectRatio: false };
+		},
+		pollChoicesSelectionFrequency(): DataFrequency<PollNodeChoice>[] {
+			return this.node.choices
+				.map(c => ({ datum: c, frequency: c.votes ?? 0 }))
+				.sort((a, b) => (String(a.datum.id) < String(b.datum.id) ? -1 : 1));
+		},
+		pollVotesData(): TChartData<"pie", number[], unknown> {
+			// TODO better creation of colors
+			const colors = this.node.choices.reduce((acc, e) => {
+				const text = md5(e.text);
+				let hash = 0;
+				for (let i = 0; i < text.length; i++) {
+					hash = text.charCodeAt(i) + ((hash << 5) - hash);
+				}
+				let color = "#";
+				for (let i = 0; i < 3; i++) {
+					let value = (hash >> (i * 8)) & 0xff;
+					color += ("00" + value.toString(16)).substr(-2);
+				}
+				acc[e.text] = color + "B3";
+				return acc;
+			}, {} as Record<string, string>);
+			return {
+				labels: this.pollChoicesSelectionFrequency.map(
+					r =>
+						makeLabelText(r.datum.text).slice(0, 100) +
+						(makeLabelText(r.datum.text).length <= 100 ? "" : "..."),
+				),
+				datasets: [
+					{
+						data: this.pollChoicesSelectionFrequency.map(r => r.frequency),
+						backgroundColor: this.pollChoicesSelectionFrequency.map(
+							r => colors[r.datum.text],
+						),
+					},
+				],
+			};
+		},
+		selectedChoice() {
+			// ! assumess only one choice can be selected
+			return this.node.choices.filter(c => c.selected)[0];
+		},
 		textPreview() {
 			return this.node.text;
 		},
@@ -223,7 +288,10 @@ export default defineComponent({
 			return "";
 		},
 		canVote() {
-			return this.node.state === PollNodeState.OPEN;
+			return this.node.state === PollNodeState.OPEN && !this.selectedChoice;
+		},
+		showResults() {
+			return !this.canVote;
 		},
 		pollChoicesAsOptions(): SelectableOption[] {
 			return this.node.choices.map(o => ({
@@ -239,6 +307,7 @@ export default defineComponent({
 		Btn,
 		CopyToClipboard,
 		RadioGroup,
+		Pie,
 	},
 });
 </script>

@@ -2,6 +2,7 @@
 	<div>
 		<div class="flex items-center space-x-2">
 			<span
+				v-if="comments.length > 0"
 				class="material-icons-outlined text-muted"
 				style="margin-bottom: -1px; font-size: 22px !important"
 				>question_answer</span

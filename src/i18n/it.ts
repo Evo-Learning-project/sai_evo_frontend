@@ -972,6 +972,9 @@ export const it = {
 		unknown_error: "Si è verificato un errore sconosciuto",
 	},
 	course_tree: {
+		poll_results: "Risultati",
+		save_poll_choice: "Conferma",
+		poll_choice_not_saved_yet: "Selezione non ancora salvata",
 		confirm_delete_poll_choice: "Vuoi eliminare questa scelta?",
 		new_poll_choice: "Nuova",
 		poll_choice_text: "Testo opzione",

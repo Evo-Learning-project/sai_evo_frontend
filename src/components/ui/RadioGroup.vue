@@ -49,7 +49,10 @@
 				<div class="flex items-start space-x-2">
 					<MultiIcon v-if="option.icons" class="w-6" :icons="option.icons"></MultiIcon>
 					<div class="flex flex-col">
-						<p class="" v-html="option.content"></p>
+						<div class="flex items-center">
+							<p class="" v-html="option.content"></p>
+							<slot name="itemSide" v-bind:option="option"></slot>
+						</div>
 						<slot name="item" v-bind:description="option.description"></slot>
 					</div>
 				</div>
