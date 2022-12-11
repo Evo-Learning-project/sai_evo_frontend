@@ -223,6 +223,7 @@
 		<!-- buttons to close/open participations-->
 		<div v-else-if="!firstLoading" class="flex mt-2 space-x-2">
 			<Btn
+				v-if="false"
 				class=""
 				:outline="true"
 				:variant="'danger'"
@@ -234,6 +235,7 @@
 			>
 
 			<Btn
+				v-if="false"
 				class=""
 				v-show="event.state === EventState.RESTRICTED"
 				:variant="'primary'"
