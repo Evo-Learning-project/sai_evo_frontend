@@ -598,7 +598,9 @@
 						<template #item="{ element }">
 							<TestCaseEditor
 								:attachments="exerciseTestCaseAttachmentsByTestCaseId[element.id] ?? []"
-								:executingSolution="testCaseAutoSaveManagers[element.id].isPending()"
+								:executingSolution="
+									testCaseAutoSaveManagers[element.id]?.isPending() ?? false
+								"
 								:testCaseType="modelValue.exercise_type"
 								@blur="onBlurTestCase(element.id)"
 								@delete="onDeleteTestCase(element.id)"
@@ -850,7 +852,7 @@ export default defineComponent({
 	},
 	async created() {
 		// fetch exercise to make sure to have the most up to date version
-		this.$nextTick(
+		await this.$nextTick(
 			// nextTick required to prevent render issues with vue-draggable
 			async () => {
 				this.fetchingExercise = true;
@@ -868,7 +870,7 @@ export default defineComponent({
 			},
 		);
 
-		this.lockEditingObject();
+		await this.lockEditingObject();
 
 		this.autoSaveManager = new AutoSaveManager<Exercise>(
 			this.modelValue,
@@ -1008,27 +1010,23 @@ export default defineComponent({
 				));
 
 			try {
-				console.log("locking...");
 				await this.lockExercise({
 					courseId: this.courseId,
 					exerciseId: this.modelValue.id,
 				});
 				setUpHeartbeatPollingFn();
-				console.log("locked!");
 			} catch (e: any) {
 				if (e.response?.status === 403) {
 					// if lock can't be acquired at the moment, periodically
 					// poll to see if the object is still locked, stopping
 					// once the lock has been acquired by the requesting user
 					this.lockPollingHandle = setInterval(async () => {
-						console.log("polling...");
 						await this.getExercise({
 							courseId: this.courseId,
 							exerciseId: this.modelValue.id,
 						});
 						// user has finally acquired the lock; stop polling
 						if (this.modelValue.locked_by?.id === getCurrentUserId()) {
-							console.log("acquired lock!");
 							clearInterval(this.lockPollingHandle as number);
 							setUpHeartbeatPollingFn();
 							this.lockPollingHandle = null;
@@ -1040,7 +1038,6 @@ export default defineComponent({
 			}
 		},
 		async unlockEditingObject() {
-			console.log("unlocking...");
 			if (typeof this.heartbeatHandle === "number") {
 				clearInterval(this.heartbeatHandle);
 			}
@@ -1105,7 +1102,6 @@ export default defineComponent({
 			if (event.range.length === 0 && event.text.includes(CLOZE_SEPARATOR)) {
 				let i = 0;
 				for (const p of clozeSeparatorPositions) {
-					console.log(p);
 					if (
 						event.range.index >= p &&
 						event.range.index + event.range.length <= p + CLOZE_SEPARATOR.length
