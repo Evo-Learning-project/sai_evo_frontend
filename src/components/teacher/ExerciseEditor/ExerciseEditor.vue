@@ -461,12 +461,7 @@
 						></TagInput>
 					</div>
 				</div>
-				<div
-					class="mt-6"
-					v-if="
-						modelValue.exercise_type === ExerciseType.MULTIPLE_CHOICE_MULTIPLE_POSSIBLE
-					"
-				>
+				<div class="mt-6" v-if="canBeAllOrNothing">
 					<Toggle
 						:modelValue="modelValue.all_or_nothing"
 						@update:modelValue="onBaseExerciseChange('all_or_nothing', $event)"
@@ -475,7 +470,11 @@
 							<p>{{ $t("exercise_editor.all_or_nothing") }}</p>
 							<Tooltip
 								class="transform scale-125"
-								:text-code="'exercise_editor.all_or_nothing'"
+								:text-code="
+									isProgrammingExercise
+										? 'exercise_editor.all_or_nothing_programming'
+										: 'exercise_editor.all_or_nothing'
+								"
 							></Tooltip>
 						</div>
 					</Toggle>
@@ -737,6 +736,7 @@ import {
 	programmingExerciseTypeToLanguageId,
 	ProgrammingExerciseType,
 	ExerciseTestCaseAttachment,
+	programmingExerciseTypes,
 } from "@/models";
 import Card from "@/components/ui/Card.vue";
 import { defineComponent, PropType } from "@vue/runtime-core";
@@ -1479,6 +1479,19 @@ export default defineComponent({
 			return exerciseTypeOptions.filter(
 				o => !this.subExercise || o.value !== ExerciseType.AGGREGATED,
 			);
+		},
+		canBeAllOrNothing() {
+			const allOrNothingTypes = [
+				ExerciseType.MULTIPLE_CHOICE_MULTIPLE_POSSIBLE,
+				...programmingExerciseTypes,
+			];
+			console.log(
+				"All",
+				allOrNothingTypes,
+				this.modelValue.exercise_type,
+				allOrNothingTypes.includes(this.modelValue.exercise_type as ExerciseType),
+			);
+			return allOrNothingTypes.includes(this.modelValue.exercise_type as ExerciseType);
 		},
 		exerciseLocked(): boolean {
 			return !!this.modelValue.locked_by && this.modelValue.locked_by.id != this.user.id;

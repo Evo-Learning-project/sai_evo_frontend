@@ -989,6 +989,8 @@ export const it = {
 		practice_score: "Basato sugli esercizi correggibili automaticamente",
 		student_practice_rule_amount: "Quanti esercizi con questo tag vuoi vedere?",
 		exercise_editor: {
+			all_or_nothing_programming:
+				"Se attivo, le sottomissioni che non superano tutti i test case riceveranno 0 punti.",
 			all_or_nothing:
 				"Se attivo, gli studenti che selezionano almeno una scelta errata o non selezionano tutte quelle corrette otterranno 0 punti.",
 			label: "Il nome dell'esercizio non viene mai mostrato agli studenti",
