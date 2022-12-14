@@ -103,7 +103,7 @@ export const useMetaStore = defineStore("meta", {
 		},
 		async getUserData() {
 			const response = await getMe();
-			this.user = response;
+			this.setUser(response);
 		},
 		async patchUser({ userId, changes }: { userId: string; changes: Partial<User> }) {
 			const response = await updateUser(userId, changes);
