@@ -9,6 +9,19 @@ export const getExerciseSolutionThreadRoute = (
 	params: { courseId, exerciseId, solutionId },
 });
 
+export const getCourseTreeRoute = (courseId: string): RouteLocationRaw => ({
+	name: "CourseTreeDispatcher",
+	params: { courseId },
+});
+
+export const getCourseTreeNodeRoute = (
+	courseId: string,
+	nodeId: string,
+): RouteLocationRaw => ({
+	name: "CourseTreeNodeDetailDispatcher",
+	params: { courseId, nodeId },
+});
+
 export const getExerciseThreadRoute = (
 	courseId: string,
 	exerciseId: string,

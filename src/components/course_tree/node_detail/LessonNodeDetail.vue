@@ -6,7 +6,7 @@
 	</div>
 	<div v-else class="mt-2">
 		<div class="mb-4">
-			<router-link :to="{ name: 'CourseTree' }"
+			<router-link :to="{ name: 'CourseTreeDispatcher', params: { courseId } }"
 				><Btn :size="'xs'" :variant="'primary-borderless'">
 					<span class="material-icons-outlined">chevron_left</span>
 					{{ $t("course_tree.back_to_tree") }}</Btn
@@ -122,7 +122,7 @@ import ProcessedTextFragment from "@/components/ui/ProcessedTextFragment.vue";
 import SlotSkeleton from "@/components/ui/skeletons/SlotSkeleton.vue";
 import Timestamp from "@/components/ui/Timestamp.vue";
 import { getTranslatedString as _ } from "@/i18n";
-import { loadingMixin } from "@/mixins";
+import { courseIdMixin, loadingMixin, nodeMixin } from "@/mixins";
 import { CourseTreeNode as ICourseTreeNode, FileNode, LessonNode } from "@/models";
 import { defineComponent, PropType } from "@vue/runtime-core";
 import CourseTreeNodeCommentSection from "../CourseTreeNodeCommentSection.vue";
@@ -131,7 +131,7 @@ import CourseTreeNode from "../node/CourseTreeNode.vue";
 import { nodeEmits, nodeProps } from "../shared";
 export default defineComponent({
 	name: "LessonNodeDetail",
-	mixins: [loadingMixin],
+	mixins: [loadingMixin, nodeMixin, courseIdMixin],
 	props: {
 		node: {
 			type: Object as PropType<LessonNode>,
@@ -168,10 +168,6 @@ export default defineComponent({
 	computed: {
 		lessonTitle() {
 			return this.node.title || _("course_tree.unnamed_lesson");
-		},
-		permalink() {
-			// TODO implement generic permalink for any node type
-			return "";
 		},
 	},
 	components: {

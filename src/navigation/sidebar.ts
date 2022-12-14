@@ -64,8 +64,8 @@ export const courseDashboardSidebarOptions: SidebarOption[] = [
 	{
 		label: _("sidebar_labels.course_dashboard_material"),
 		icon: "class",
-		routeName: "CourseTree",
-		children: ["NodeDetail"],
+		routeName: "TeacherCourseTree",
+		children: ["TeacherNodeDetail"],
 		requiredPrivileges: [], //TODO [CoursePrivilege.ACCESS_EXERCISES],
 	},
 	{
@@ -102,6 +102,13 @@ export const studentDashboardSidebarOptions: SidebarOption[] = [
 		children: [],
 		icon: "fitness_center",
 		routeName: "CourseDashBoardPracticeSessionList",
+	},
+	{
+		label: _("sidebar_labels.course_dashboard_material"),
+		icon: "class",
+		routeName: "StudentCourseTree",
+		children: ["StudentNodeDetail"],
+		requiredPrivileges: [],
 	},
 	{
 		label: _("student_dashboard_options.my_exams"),

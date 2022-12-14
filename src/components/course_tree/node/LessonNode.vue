@@ -55,7 +55,9 @@
 				>
 			</div>
 			<div class="flex flex-col -space-y-2">
-				<router-link :to="{ name: 'NodeDetail', params: { nodeId: node.id } }">
+				<router-link
+					:to="{ name: 'CourseTreeNodeDetailDispatcher', params: { nodeId: node.id } }"
+				>
 					<h2 style="line-height: 0.95" class="mb-2 hover:text-primary hover:underline">
 						{{ lessonTitle }}
 					</h2>
@@ -136,11 +138,13 @@ import CopyToClipboard from "@/components/ui/CopyToClipboard.vue";
 import ProcessedTextFragment from "@/components/ui/ProcessedTextFragment.vue";
 import Timestamp from "@/components/ui/Timestamp.vue";
 import { getTranslatedString as _ } from "@/i18n";
+import { courseIdMixin, nodeMixin } from "@/mixins";
 import { LessonNode, LessonNodeState } from "@/models";
 import { defineComponent, PropType } from "@vue/runtime-core";
 import { nodeEmits, nodeProps } from "../shared";
 export default defineComponent({
 	name: "LessonNode",
+	mixins: [courseIdMixin, nodeMixin],
 	props: {
 		node: {
 			type: Object as PropType<LessonNode>,
@@ -170,10 +174,6 @@ export default defineComponent({
 		},
 		bodyPreview() {
 			return this.node.body;
-		},
-		permalink() {
-			// TODO implement for all nodes
-			return "";
 		},
 	},
 	// eslint-disable-next-line vue/no-unused-components

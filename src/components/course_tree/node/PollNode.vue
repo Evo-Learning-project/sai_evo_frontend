@@ -55,7 +55,9 @@
 				>
 			</div>
 			<div class="flex flex-col w-full">
-				<router-link :to="{ name: 'NodeDetail', params: { nodeId: node.id } }">
+				<router-link
+					:to="{ name: 'CourseTreeNodeDetailDispatcher', params: { nodeId: node.id } }"
+				>
 					<h2 style="line-height: 0.95" class="mb-2 hover:text-primary hover:underline">
 						{{ $t("course_tree.poll_title") }}
 					</h2>
@@ -182,7 +184,7 @@ import RadioGroup from "@/components/ui/RadioGroup.vue";
 import Timestamp from "@/components/ui/Timestamp.vue";
 import { getTranslatedString as _ } from "@/i18n";
 import { SelectableOption } from "@/interfaces";
-import { courseIdMixin, loadingMixin } from "@/mixins";
+import { courseIdMixin, loadingMixin, nodeMixin } from "@/mixins";
 import { PollNode, PollNodeChoice, PollNodeState } from "@/models";
 import { useMainStore } from "@/stores/mainStore";
 import { md5, setErrorNotification } from "@/utils";
@@ -199,7 +201,7 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 
 export default defineComponent({
 	name: "PollNode",
-	mixins: [loadingMixin, courseIdMixin],
+	mixins: [loadingMixin, courseIdMixin, nodeMixin],
 	props: {
 		node: {
 			type: Object as PropType<PollNode>,
@@ -282,10 +284,6 @@ export default defineComponent({
 		},
 		textPreview() {
 			return this.node.text;
-		},
-		permalink() {
-			// TODO implement for all nodes
-			return "";
 		},
 		canVote() {
 			return this.node.state === PollNodeState.OPEN && !this.selectedChoice;

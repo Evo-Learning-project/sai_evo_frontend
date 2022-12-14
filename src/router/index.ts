@@ -50,7 +50,11 @@ import {
 	studentFavoritesBreadCrumbs,
 	submissionReviewBreadCrumbs,
 } from "@/navigation/breadcrumbs";
-import { exerciseSolutionThreadBeforeGuard } from "./guards";
+import {
+	exerciseSolutionThreadBeforeGuard,
+	courseTreeNodeDetailBeforeGuard,
+	courseTreeBeforeGuard,
+} from "./guards";
 import { useMetaStore } from "@/stores/metaStore";
 
 const routes: Array<RouteRecordRaw> = [
@@ -77,6 +81,18 @@ const routes: Array<RouteRecordRaw> = [
 		name: "ExerciseSolutionThreadDispatcher",
 		component: MainStudent,
 		beforeEnter: exerciseSolutionThreadBeforeGuard,
+	},
+	{
+		path: "/courses/:courseId/material/:nodeId",
+		name: "CourseTreeNodeDetailDispatcher",
+		component: MainStudent,
+		beforeEnter: courseTreeNodeDetailBeforeGuard,
+	},
+	{
+		path: "/courses/:courseId/material/",
+		name: "CourseTreeDispatcher",
+		component: MainStudent,
+		beforeEnter: courseTreeBeforeGuard,
 	},
 	{
 		path: "/teacher",
@@ -120,10 +136,9 @@ const routes: Array<RouteRecordRaw> = [
 				},
 				props: true,
 			},
-			/* TODO rework routes */
 			{
 				path: "courses/:courseId/material",
-				name: "CourseTree",
+				name: "TeacherCourseTree",
 				component: CourseTree,
 				meta: {
 					routeTitle: _("headings.course_tree"),
@@ -133,7 +148,7 @@ const routes: Array<RouteRecordRaw> = [
 			},
 			{
 				path: "courses/:courseId/material/:nodeId",
-				name: "NodeDetail",
+				name: "TeacherNodeDetail",
 				component: NodeDetail,
 				meta: {
 					//routeTitle: _("headings.course_tree_node"),
@@ -336,6 +351,26 @@ const routes: Array<RouteRecordRaw> = [
 						meta: {
 							routeTitle: _("headings.student_favorites"),
 							breadcrumbs: studentFavoritesBreadCrumbs,
+							sidebarOptions: studentDashboardSidebarOptions,
+						},
+					},
+					{
+						path: "material",
+						name: "StudentCourseTree",
+						component: CourseTree,
+						meta: {
+							// routeTitle: _("headings.student_favorites"),
+							// breadcrumbs: studentFavoritesBreadCrumbs,
+							sidebarOptions: studentDashboardSidebarOptions,
+						},
+					},
+					{
+						path: "material/:nodeId",
+						name: "StudentNodeDetail",
+						component: NodeDetail,
+						meta: {
+							// routeTitle: _("headings.student_favorites"),
+							// breadcrumbs: studentFavoritesBreadCrumbs,
 							sidebarOptions: studentDashboardSidebarOptions,
 						},
 					},

@@ -140,7 +140,7 @@ import Btn from "@/components/ui/Btn.vue";
 import CopyToClipboard from "@/components/ui/CopyToClipboard.vue";
 import LinearProgress from "@/components/ui/LinearProgress.vue";
 import Timestamp from "@/components/ui/Timestamp.vue";
-import { courseIdMixin } from "@/mixins";
+import { courseIdMixin, nodeMixin } from "@/mixins";
 import { FileNode } from "@/models";
 import { useMainStore } from "@/stores/mainStore";
 import { getHumanFileSize } from "@/utils";
@@ -162,7 +162,7 @@ export default defineComponent({
 		...nodeProps,
 	},
 	emits: { ...nodeEmits },
-	mixins: [courseIdMixin],
+	mixins: [courseIdMixin, nodeMixin],
 	async created() {
 		this.loadingThumbnail = true;
 		try {
@@ -187,10 +187,6 @@ export default defineComponent({
 	methods: {},
 	computed: {
 		...mapStores(useMainStore),
-		permalink() {
-			// TODO implement
-			return "";
-		},
 		thumbnailPresent() {
 			return !this.loadingThumbnail && this.thumbnailLoaded && this.node.thumbnail;
 		},

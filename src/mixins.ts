@@ -1,5 +1,6 @@
 import { mapStores } from "pinia";
 import { downloadFileNode } from "./api";
+import { getCourseTreeNodeRoute } from "./components/shared/ExerciseSolution/utils";
 import { getTranslatedString as _ } from "./i18n";
 import { DialogData } from "./interfaces";
 import { Course, CoursePrivilege, getBlankCourse } from "./models";
@@ -19,15 +20,18 @@ export const courseIdMixin = {
 	},
 };
 
-// export const nodeMixin = {
-// 	computed: {
-// 			// props passed from a node to its children, independent of the resource type of either
-// 		passThroughProps() {
-// 			return (this as any).
-// 		}
-
-// 	}
-// }
+export const nodeMixin = {
+	computed: {
+		permalink() {
+			return (
+				window.location.origin +
+				router.resolve(
+					getCourseTreeNodeRoute((this as any).courseId, (this as any).node.id),
+				).fullPath
+			);
+		},
+	},
+};
 
 export const fileViewerMixin = {
 	data() {

@@ -55,7 +55,9 @@
 				>
 			</div>
 			<div class="flex w-full flex-col">
-				<router-link :to="{ name: 'NodeDetail', params: { nodeId: node.id } }">
+				<router-link
+					:to="{ name: 'CourseTreeNodeDetailDispatcher', params: { nodeId: node.id } }"
+				>
 					<h2 style="line-height: 0.95" class="mb-2 hover:text-primary hover:underline">
 						{{ $t("course_tree.announcement_title") }}
 					</h2>
@@ -157,6 +159,7 @@ import CopyToClipboard from "@/components/ui/CopyToClipboard.vue";
 import ProcessedTextFragment from "@/components/ui/ProcessedTextFragment.vue";
 import Timestamp from "@/components/ui/Timestamp.vue";
 import { getTranslatedString as _ } from "@/i18n";
+import { courseIdMixin, nodeMixin } from "@/mixins";
 import { AnnouncementNode, AnnouncementNodeState } from "@/models";
 import { useMainStore } from "@/stores/mainStore";
 import { defineComponent, PropType } from "@vue/runtime-core";
@@ -173,6 +176,7 @@ export default defineComponent({
 		},
 		...nodeProps,
 	},
+	mixins: [courseIdMixin, nodeMixin],
 	created() {
 		this.$emit("loadChildren", { node: this.node, fromFirstPage: true });
 		this.$emit("loadComments", this.node);
@@ -203,10 +207,6 @@ export default defineComponent({
 		},
 		bodyPreview() {
 			return this.node.body;
-		},
-		permalink() {
-			// TODO implement for all nodes
-			return "";
 		},
 		isTruncated() {
 			// TODO implement
