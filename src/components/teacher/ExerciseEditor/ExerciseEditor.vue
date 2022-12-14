@@ -461,12 +461,7 @@
 						></TagInput>
 					</div>
 				</div>
-				<div
-					class="mt-6"
-					v-if="
-						modelValue.exercise_type === ExerciseType.MULTIPLE_CHOICE_MULTIPLE_POSSIBLE
-					"
-				>
+				<div class="mt-6" v-if="canBeAllOrNothing">
 					<Toggle
 						:modelValue="modelValue.all_or_nothing"
 						@update:modelValue="onBaseExerciseChange('all_or_nothing', $event)"
@@ -475,7 +470,11 @@
 							<p>{{ $t("exercise_editor.all_or_nothing") }}</p>
 							<Tooltip
 								class="transform scale-125"
-								:text-code="'exercise_editor.all_or_nothing'"
+								:text-code="
+									isProgrammingExercise
+										? 'exercise_editor.all_or_nothing_programming'
+										: 'exercise_editor.all_or_nothing'
+								"
 							></Tooltip>
 						</div>
 					</Toggle>
@@ -603,7 +602,9 @@
 								:attachments="
 									mainStore.exerciseTestCaseAttachmentsByTestCaseId[element.id] ?? []
 								"
-								:executingSolution="testCaseAutoSaveManagers[element.id].isPending()"
+								:executingSolution="
+									testCaseAutoSaveManagers[element.id]?.isPending() ?? false
+								"
 								:testCaseType="modelValue.exercise_type"
 								@blur="onBlurTestCase(element.id)"
 								@delete="onDeleteTestCase(element.id)"
@@ -732,6 +733,7 @@ import {
 	programmingExerciseTypeToLanguageId,
 	ProgrammingExerciseType,
 	ExerciseTestCaseAttachment,
+	programmingExerciseTypes,
 } from "@/models";
 import Card from "@/components/ui/Card.vue";
 import { defineComponent, PropType } from "@vue/runtime-core";
@@ -847,7 +849,7 @@ export default defineComponent({
 	},
 	async created() {
 		// fetch exercise to make sure to have the most up to date version
-		this.$nextTick(
+		await this.$nextTick(
 			// nextTick required to prevent render issues with vue-draggable
 			async () => {
 				this.fetchingExercise = true;
@@ -865,7 +867,7 @@ export default defineComponent({
 			},
 		);
 
-		this.lockEditingObject();
+		await this.lockEditingObject();
 
 		this.autoSaveManager = new AutoSaveManager<Exercise>(
 			this.modelValue,
@@ -991,21 +993,18 @@ export default defineComponent({
 					exerciseId: this.modelValue.id,
 				});
 				setUpHeartbeatPollingFn();
-				console.log("locked!");
 			} catch (e: any) {
 				if (e.response?.status === 403) {
 					// if lock can't be acquired at the moment, periodically
 					// poll to see if the object is still locked, stopping
 					// once the lock has been acquired by the requesting user
 					this.lockPollingHandle = setInterval(async () => {
-						console.log("polling...");
 						await this.mainStore.getExercise({
 							courseId: this.courseId,
 							exerciseId: this.modelValue.id,
 						});
 						// user has finally acquired the lock; stop polling
 						if (this.modelValue.locked_by?.id === getCurrentUserId()) {
-							console.log("acquired lock!");
 							clearInterval(this.lockPollingHandle as number);
 							setUpHeartbeatPollingFn();
 							this.lockPollingHandle = null;
@@ -1017,7 +1016,6 @@ export default defineComponent({
 			}
 		},
 		async unlockEditingObject() {
-			console.log("unlocking...");
 			if (typeof this.heartbeatHandle === "number") {
 				clearInterval(this.heartbeatHandle);
 			}
@@ -1082,7 +1080,6 @@ export default defineComponent({
 			if (event.range.length === 0 && event.text.includes(CLOZE_SEPARATOR)) {
 				let i = 0;
 				for (const p of clozeSeparatorPositions) {
-					console.log(p);
 					if (
 						event.range.index >= p &&
 						event.range.index + event.range.length <= p + CLOZE_SEPARATOR.length
@@ -1453,6 +1450,19 @@ export default defineComponent({
 			return exerciseTypeOptions.filter(
 				o => !this.subExercise || o.value !== ExerciseType.AGGREGATED,
 			);
+		},
+		canBeAllOrNothing() {
+			const allOrNothingTypes = [
+				ExerciseType.MULTIPLE_CHOICE_MULTIPLE_POSSIBLE,
+				...programmingExerciseTypes,
+			];
+			console.log(
+				"All",
+				allOrNothingTypes,
+				this.modelValue.exercise_type,
+				allOrNothingTypes.includes(this.modelValue.exercise_type as ExerciseType),
+			);
+			return allOrNothingTypes.includes(this.modelValue.exercise_type as ExerciseType);
 		},
 		exerciseLocked(): boolean {
 			return (

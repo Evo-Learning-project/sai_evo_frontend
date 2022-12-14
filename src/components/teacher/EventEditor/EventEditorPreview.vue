@@ -41,22 +41,18 @@
 		</template>
 		<template v-slot:body
 			><div class="flex flex-col h-full">
+				<!-- body containing begin & end timestamp -->
 				<div class="mt-1 space-y-1 text-sm mb-7">
 					<div class="flex space-x-1" v-if="event.begin_timestamp">
 						<p class="text-muted">{{ $t("event_editor.begin_timestamp") }}:</p>
-						<Timestamp
-							:reduced="buttonIconsOnly"
-							:value="event.begin_timestamp"
-						></Timestamp>
+						<Timestamp :reduced="buttonIconsOnly" :value="event.begin_timestamp" />
 					</div>
 					<div class="flex space-x-1" v-if="event.end_timestamp">
 						<p class="text-muted">{{ $t("event_editor.end_timestamp") }}:</p>
-						<Timestamp
-							:reduced="buttonIconsOnly"
-							:value="event.end_timestamp"
-						></Timestamp>
+						<Timestamp :reduced="buttonIconsOnly" :value="event.end_timestamp" />
 					</div>
 				</div>
+				<!-- actions -->
 				<div class="flex items-center mt-auto">
 					<Btn
 						class=""
@@ -72,7 +68,7 @@
 							$t("event_preview.close")
 						}}</span></Btn
 					>
-					<Btn
+					<!-- <Btn
 						class=""
 						:size="'sm'"
 						:outline="true"
@@ -83,8 +79,8 @@
 						><span class="text-base material-icons-outlined"> undo </span>
 						<span class="ml-1" v-if="true || !buttonIconsOnly">{{
 							$t("event_preview.reopen")
-						}}</span></Btn
-					>
+						}}</span>
+					</Btn> -->
 					<div class="flex items-center ml-auto">
 						<router-link
 							class="m-auto"
@@ -107,6 +103,17 @@
 								}}</span></Btn
 							></router-link
 						>
+						<Btn
+							class=""
+							:tooltip="$t('event_preview.reopen')"
+							:variant="'icon'"
+							:outline="true"
+							v-if="
+								hasEnded && allowClose && hasPrivileges([CoursePrivilege.MANAGE_EVENTS])
+							"
+							@click="$emit('reopen')"
+							><span class="text-base material-icons-outlined"> undo </span>
+						</Btn>
 						<router-link
 							v-if="hasBegun"
 							:to="{ name: 'ExamProgress', params: { examId: event.id } }"
@@ -154,8 +161,9 @@
 							:title="$t('event_preview.copy_link')"
 							:confirmationMessage="$t('event_preview.copied_link')"
 							:tooltip="$t('help_texts.copy_exam_link')"
-						></CopyToClipboard
-						><!--:tooltip="$t('help_texts.copy_exam_link')"-->
+						></CopyToClipboard>
+
+						<!--:tooltip="$t('help_texts.copy_exam_link')"-->
 					</div>
 				</div>
 			</div>

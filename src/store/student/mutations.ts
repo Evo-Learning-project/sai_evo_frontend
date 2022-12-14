@@ -59,6 +59,7 @@ export const mutations = {
 				"slots",
 				JSON.stringify(flattenedSlots),
 			);
+			throw new Error();
 		}
 		Object.assign(target as EventParticipationSlot, slot);
 	},
@@ -76,6 +77,7 @@ export const mutations = {
 				"patchCurrentEventParticipationSlot couldn't find slot with id",
 				slotId,
 			);
+			throw new Error();
 		}
 		Object.assign(target as EventParticipationSlot, { ...target, ...changes });
 	},
