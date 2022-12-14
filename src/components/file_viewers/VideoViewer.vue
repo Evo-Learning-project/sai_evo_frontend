@@ -19,7 +19,7 @@
 			shadow-all-around
 		"
 	>
-		<VideoPlayer
+		<!-- <VideoPlayer
 			v-if="show"
 			width="1200"
 			controls
@@ -30,7 +30,7 @@
 				type: 'video/mp4',
 			}"
 			@mounted="onPlayerMounted($event)"
-		/>
+		/> -->
 	</div>
 
 	<!-- 			src="http://img-ys011.didistatic.com/static/didiglobal/do1_pcUZZjSG7vFlMbdr8fA6#.mp4"
@@ -50,7 +50,7 @@
 </template>
 
 <script>
-import { VideoPlayer } from "@videojs-player/vue";
+// import { VideoPlayer } from "@videojs-player/vue";
 import "video.js/dist/video-js.css";
 import { fileViewerProps } from "./shared";
 
@@ -95,7 +95,7 @@ export default defineComponent({
 		},
 	},
 	components: {
-		VideoPlayer,
+		//VideoPlayer,
 	},
 });
 </script>
