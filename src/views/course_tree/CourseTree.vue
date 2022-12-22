@@ -55,7 +55,7 @@
 				<div>
 					<CourseTreeNode
 						:isDraggable="canEditNodes"
-						class="my-2"
+						class="my-4"
 						:class="{ 'dragging-inside-collection': draggingNode }"
 						@loadChildren="onLoadChildren($event.node, $event.fromFirstPage)"
 						@loadComments="onLoadComments($event)"
@@ -92,27 +92,29 @@
 			:fullHeight="fullScreenDialog"
 			:large="!fullScreenDialog"
 			:fullWidth="fullScreenDialog"
-			@no="
-				showEditorDialog = false;
-				editingNode = null;
-			"
+			@no="onDismissNodeEditor()"
 			:showDialog="showEditorDialog"
 			:showActions="false"
+			:dismissible="autoSaveEditingNode"
 		>
 			<template v-slot:body>
 				<CourseTreeNodeEditor
+					class="text-darkText"
 					v-if="editingNode"
-					:modelValue="editingNode"
-					:autoSave="autoSaveEditingNode"
-					@closeEditor="
-						showEditorDialog = false;
-						editingNode = null;
-					"
+					:saving="saving"
+					:savingError="savingError"
+					:blockingSaving="blockingSaving"
+					:modelValue="proxyEditingNode"
+					:showAutoSaveIndicator="autoSaveEditingNode"
+					@patchNode="onEditingNodeChange($event.key, $event.value, !!$event.save)"
+					@save="onEditingNodeSave()"
+					@closeEditor="onDismissNodeEditor()"
+					@blur="onEditorBlur()"
 				/>
 			</template>
 		</Dialog>
 
-		<Dialog
+		<!-- <Dialog
 			:fullWidth="true"
 			@yes="creatingFileNode = false"
 			:showDialog="creatingFileNode"
@@ -124,7 +126,7 @@
 			</template>
 			<template v-slot:body>
 				<div class="flex flex-col space-y-4">
-					<div class="w-2/3 flex mx-auto">
+					 <div class="w-2/3 flex mx-auto">
 						<Dropdown
 							class="mr-auto w-1/2"
 							:options="topicsAsOptions"
@@ -132,13 +134,17 @@
 							>{{ $t("course_tree.topic_label") }}</Dropdown
 						>
 					</div>
+					<FileNodeEditor
+						:modelValue="draftFileNode"
+						@patchNode="onEditingNodeChange()"
+					></FileNodeEditor>
 
 					<div class="m-auto w-2/3">
 						<FileUpload :uploading="uploadingFile" v-model="fileUploadProxy" />
 					</div>
 				</div>
 			</template>
-		</Dialog>
+		</Dialog> -->
 
 		<Dialog
 			@yes="resolveBlockingDialog(true)"
@@ -167,10 +173,11 @@ import draggable from "vuedraggable";
 
 import CourseTreeNode from "@/components/course_tree/node/CourseTreeNode.vue";
 import { SelectableOption } from "@/interfaces";
-import { blockingDialogMixin, courseIdMixin, loadingMixin } from "@/mixins";
+import { blockingDialogMixin, courseIdMixin, loadingMixin, savingMixin } from "@/mixins";
 import {
 	CourseTreeNode as ICourseTreeNode,
 	CourseTreeNodeType,
+	FileNode,
 	getBlankAnnouncementNode,
 	getBlankFileNode,
 	getBlankLessonNode,
@@ -192,11 +199,13 @@ import TextInput from "@/components/ui/TextInput.vue";
 import { getCourseTopicNodes } from "@/api";
 import DropdownMenu from "@/components/ui/DropdownMenu.vue";
 import Dropdown from "@/components/ui/Dropdown.vue";
+import { AutoSaveManager, FieldList } from "@/autoSave";
+import FileNodeEditor from "@/components/course_tree/editors/FileNodeEditor.vue";
 
 export default defineComponent({
 	name: "CourseTree",
 	props: {},
-	mixins: [courseIdMixin, loadingMixin, blockingDialogMixin],
+	mixins: [courseIdMixin, loadingMixin, blockingDialogMixin, savingMixin],
 	async created() {
 		await this.withLoading(async () =>
 			this.mainStore.getCourseTopLevelNodes({
@@ -208,12 +217,26 @@ export default defineComponent({
 		this.topics = await getCourseTopicNodes(this.courseId);
 		this.selectedTopicId = this.mainStore.courseIdToTreeRootId[this.courseId];
 	},
+	watch: {
+		"editingNode.id"(newVal) {
+			// re-instantiate (or dispose of) auto save manager each time
+			// a new node is edited (or no node is edited anymore)
+			if (newVal) {
+				this.instantiateAutoSaveManager(this.editingNode as ICourseTreeNode);
+			} else {
+				this.editingNodeAutoSaveManager = null;
+			}
+			this.editingNodeUnsavedChanges = {};
+		},
+	},
 	data() {
 		return {
 			CourseTreeNodeType,
 			createMenuExpanded: false,
 			showEditorDialog: false,
 			editingNode: null as null | ICourseTreeNode,
+			editingNodeAutoSaveManager: null as null | AutoSaveManager<ICourseTreeNode>,
+			editingNodeUnsavedChanges: {},
 			autoSaveEditingNode: true,
 			creatingFileNode: false,
 			uploadingFile: false,
@@ -221,11 +244,14 @@ export default defineComponent({
 			selectedTopicId: "",
 			topics: [] as TopicNode[],
 			draggingNode: false,
+			saving: false,
+			savingError: false,
+			blockingSaving: false,
+			draftFileNode: null as null | FileNode,
 		};
 	},
 	methods: {
 		async onNodeDragStart() {
-			console.log("start");
 			this.draggingNode = true;
 		},
 		async onNodeDragEnd(event: { oldIndex: number; newIndex: number }) {
@@ -261,6 +287,106 @@ export default defineComponent({
 				});
 			} catch (e) {
 				setErrorNotification(e);
+			}
+		},
+		async onEditorBlur() {
+			this.editingNodeAutoSaveManager?.flush();
+		},
+		onDismissNodeEditor() {
+			this.showEditorDialog = false;
+			this.editingNode = null;
+		},
+		instantiateAutoSaveManager(node: ICourseTreeNode) {
+			this.editingNodeAutoSaveManager = new AutoSaveManager<ICourseTreeNode>(
+				node,
+				async changes => {
+					await this.mainStore.partialUpdateCourseTreeNode({
+						courseId: this.courseId,
+						nodeId: node.id,
+						changes,
+					});
+					this.saving = false;
+				},
+				changes => {
+					this.saving = true;
+					this.savingError = false;
+					this.mainStore.patchCourseTreeNode({
+						courseId: this.courseId,
+						nodeId: node.id,
+						changes,
+					});
+				},
+				this.editingNodeDebouncedFields as FieldList<ICourseTreeNode>,
+				2500,
+				undefined,
+				e => {
+					this.saving = false;
+					this.savingError = true;
+					throw e;
+				},
+			);
+		},
+		async onEditingNodeChange<K extends keyof ICourseTreeNode>(
+			key: K,
+			value: ICourseTreeNode[K],
+			save: boolean,
+		) {
+			if (this.autoSaveEditingNode) {
+				await this.editingNodeAutoSaveManager?.onChange({ [key]: value });
+			} else {
+				// update local copy of unsaved changes
+				this.editingNodeUnsavedChanges = {
+					...this.editingNodeUnsavedChanges,
+					[key]: value,
+				};
+			}
+			if (save) {
+				console.log("CHANGE", { key, value, save });
+				await this.onEditingNodeSave();
+			}
+		},
+		async onEditingNodeSave() {
+			/**
+			 * Generic utility function that saves changes to a node. This is used
+			 * under a few different circumstances:
+			 *
+			 * - when the node exists & autosave is on: this just closes the editor
+			 * dialog and show a feedback, without any actual saving operation
+			 * - when the node exists & autosave is off: this saves all unsaved
+			 * changes to the node, closes the editor, and shows a feedback
+			 * - when the node doesn't exist yet: this creates the node, saving
+			 * all unsaved changes to it
+			 */
+			if (!this.editingNode) {
+				throw new Error(
+					"onEditingNodeSave called but editingNode is " + this.editingNode,
+				);
+			}
+			if (!this.editingNode.id) {
+				// create node
+				try {
+					await this.mainStore.createCourseTreeNode({
+						courseId: this.courseId,
+						node: this.proxyEditingNode,
+					});
+					this.onDismissNodeEditor();
+					this.metaStore.showSuccessFeedback();
+				} catch (e) {
+					setErrorNotification(e);
+				}
+			} else if (!this.autoSaveEditingNode) {
+				// save changes to existing node
+				try {
+					this.blockingSaving = true;
+					await this.editingNodeAutoSaveManager?.onChange(this.editingNodeUnsavedChanges);
+					await this.editingNodeAutoSaveManager?.flush();
+					this.onDismissNodeEditor();
+					this.metaStore.showSuccessFeedback();
+				} catch (e) {
+					setErrorNotification(e);
+				} finally {
+					this.blockingSaving = false;
+				}
 			}
 		},
 		onEditNode(node: ICourseTreeNode) {
@@ -304,26 +430,34 @@ export default defineComponent({
 				this.uploadingFile = false;
 			}
 		},
+		async createTopicNode() {
+			const choice = await this.getBlockingBinaryDialogChoice();
+			if (!choice) {
+				this.showBlockingDialog = false;
+				return;
+			}
+			await this.withLocalLoading(
+				async () =>
+					await this.mainStore.createCourseTreeNode({
+						courseId: this.courseId,
+						node: getBlankTopicNode(null, this.editingTopicName.trim()),
+					}),
+			);
+			this.showBlockingDialog = false;
+			this.editingTopicName = "";
+		},
 		async onCreateNode(nodeType: CourseTreeNodeType) {
 			if (nodeType === CourseTreeNodeType.TopicNode) {
-				const choice = await this.getBlockingBinaryDialogChoice();
-				if (!choice) {
-					this.showBlockingDialog = false;
-					return;
-				}
-				await this.withLocalLoading(
-					async () =>
-						await this.mainStore.createCourseTreeNode({
-							courseId: this.courseId,
-							node: getBlankTopicNode(null, this.editingTopicName.trim()),
-						}),
-				);
-				this.showBlockingDialog = false;
-				this.editingTopicName = "";
+				await this.createTopicNode();
 			} else if (nodeType === CourseTreeNodeType.FileNode) {
-				// open dialog to create file node
-				this.creatingFileNode = true;
+				// don't create node on the server just yet
+				this.editingNode = getBlankFileNode(
+					this.mainStore.courseIdToTreeRootId[this.courseId],
+				);
+				this.autoSaveEditingNode = false;
+				this.showEditorDialog = true;
 			} else {
+				// immediately create node & open editor
 				const factories = {
 					[CourseTreeNodeType.LessonNode]: getBlankLessonNode,
 					[CourseTreeNodeType.AnnouncementNode]: getBlankAnnouncementNode,
@@ -356,43 +490,21 @@ export default defineComponent({
 	},
 	computed: {
 		...mapStores(useMainStore, useMetaStore),
+		proxyEditingNode() {
+			if (this.autoSaveEditingNode) {
+				return this.editingNode;
+			}
+			return { ...this.editingNode, ...this.editingNodeUnsavedChanges };
+		},
 		fullScreenDialog() {
 			return this.editingNode?.resourcetype === CourseTreeNodeType.LessonNode;
 		},
-		topicsAsOptions(): SelectableOption[] {
-			return [
-				{
-					value: this.mainStore.courseIdToTreeRootId[this.courseId],
-					content: _("course_tree.no_topic"),
-				},
-				...this.topics.map(t => ({
-					value: t.id,
-					content: t.name,
-				})),
-			];
-		},
 		nodeTypesAsSelectableOptions(): SelectableOption[] {
-			return (
-				(Object.keys(CourseTreeNodeType) as any[])
-					//.filter((key: string | number) => parseInt(key as string) == key)
-					.map(key => ({
-						content: _("course_tree_node_types." + key),
-						icons: courseTreeNodeTypeIcons[key],
-						value: key,
-						// icons: exerciseStatesIcons[key],
-						// value: parseInt(String(key)),
-						// content: _("exercise_states." + key),
-						// description: _("exercise_states_descriptions." + key),
-					}))
-			);
-		},
-		fileUploadProxy: {
-			get() {
-				return [];
-			},
-			async set(val: Blob) {
-				await this.createFileNode(val);
-			},
+			return (Object.keys(CourseTreeNodeType) as any[]).map(key => ({
+				content: _("course_tree_node_types." + key),
+				icons: courseTreeNodeTypeIcons[key],
+				value: key,
+			}));
 		},
 		topLevelNodes() {
 			return this.mainStore.paginatedTopLevelCourseTreeNodes?.data ?? [];
@@ -403,16 +515,23 @@ export default defineComponent({
 		canCreateNodes() {
 			return true;
 		},
+		editingNodeDebouncedFields() {
+			if (this.editingNode?.resourcetype !== CourseTreeNodeType.LessonNode) {
+				return [];
+			}
+			return ["body", "title"];
+		},
 	},
 	components: {
 		draggable,
 		CourseTreeNode,
 		DropdownMenu,
 		Dialog,
-		FileUpload,
+		//FileUpload,
 		CourseTreeNodeEditor,
 		TextInput,
-		Dropdown,
+		//Dropdown,
+		//FileNodeEditor,
 	},
 });
 </script>

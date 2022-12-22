@@ -1,7 +1,7 @@
 <template>
 	<div
 		tabindex="0"
-		class="relative flex rounded card-border group"
+		class="relative flex rounded card-border group my-4"
 		:class="{
 			'card-hoverable hover-shadow-elevation hover:border-transparent': isDraggable,
 		}"

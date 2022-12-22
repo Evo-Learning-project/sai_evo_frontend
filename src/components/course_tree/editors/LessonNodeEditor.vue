@@ -10,26 +10,26 @@
 			>
 			<h1 class="mb-0 ml-2 mr-auto">{{ $t("course_tree.lesson_editor_title") }}</h1>
 			<CloudSaveStatus
-				v-if="autoSave"
+				v-if="showAutoSaveIndicator"
 				:saving="saving"
 				:hadError="savingError"
 				class="mt-1 mr-6"
 			/>
 			<div
 				class="flex space-x-3 items-center"
-				v-if="computedModelValue.state === LessonNodeState.DRAFT"
+				v-if="modelValue.state === LessonNodeState.DRAFT"
 			>
 				<p class="text-muted">{{ $t("course_tree.draft") }}</p>
 				<Btn @click="onPublish()">{{ $t("course_tree.publish_lesson") }}</Btn>
 			</div>
-			<div v-if="!autoSave" class="ml-2">
+			<div class="ml-2">
 				<Btn
 					:disabled="blockingSaving"
-					:outline="computedModelValue.state === LessonNodeState.DRAFT"
+					:outline="modelValue.state === LessonNodeState.DRAFT"
 					@click="onSave()"
 				>
 					{{
-						computedModelValue.state === LessonNodeState.DRAFT
+						modelValue.state === LessonNodeState.DRAFT
 							? $t("course_tree.save_draft")
 							: $t("course_tree.save")
 					}}
@@ -40,8 +40,7 @@
 		<div class="mb-8 flex items-center space-x-8">
 			<TextInput
 				class="w-full"
-				:modelValue="computedModelValue.title"
-				:fixedLabel="true"
+				:modelValue="modelValue.title"
 				@blur="onBlur()"
 				@update:modelValue="onNodeChange('title', $event)"
 			>
@@ -51,7 +50,7 @@
 				<Dropdown
 					:loading="loadingTopics"
 					:options="topicsAsOptions"
-					:modelValue="computedModelValue.parent_id"
+					:modelValue="modelValue.parent_id"
 					@update:modelValue="onParentChange($event)"
 					>{{ $t("course_tree.topic_label") }}</Dropdown
 				>
@@ -69,7 +68,7 @@
 		<!-- body -->
 		<div>
 			<TextEditor
-				:modelValue="computedModelValue.body"
+				:modelValue="modelValue.body"
 				:fixedLabel="true"
 				@blur="onBlur()"
 				@update:modelValue="onNodeChange('body', $event)"
@@ -110,6 +109,7 @@ import { getTranslatedString as _ } from "@/i18n";
 import { SelectableOption } from "@/interfaces";
 import { courseIdMixin, savingMixin } from "@/mixins";
 import {
+	CourseTreeNode,
 	CourseTreeNodeType,
 	FileNode as IFileNode,
 	getBlankFileNode,
@@ -123,7 +123,7 @@ import { setErrorNotification } from "@/utils";
 import { defineComponent, PropType } from "@vue/runtime-core";
 import { mapStores } from "pinia";
 import FileNode from "../node/FileNode.vue";
-import { nodeEditorProps } from "../shared";
+import { nodeEditorEmits, nodeEditorProps } from "../shared";
 export default defineComponent({
 	name: "LessonNodeEditor",
 	props: {
@@ -133,26 +133,21 @@ export default defineComponent({
 		},
 		...nodeEditorProps,
 	},
+	emits: {
+		...nodeEditorEmits,
+	},
 	mixins: [courseIdMixin, savingMixin],
 	data() {
 		return {
 			LessonNodeState,
-			autoSaveManager: null as AutoSaveManager<LessonNode> | null,
-			saving: false,
-			savingError: false,
 			creatingAttachment: false,
-			unsavedChanges: {},
-			blockingSaving: false,
 			topics: [] as TopicNode[],
 			loadingTopics: false,
 			loadingChildren: false,
 		};
 	},
 	async created() {
-		this.instantiateAutoSaveManager();
-
 		await this.mainStore.getCourseRootId({ courseId: this.courseId });
-
 		await Promise.all([
 			(async () => {
 				this.loadingChildren = true;
@@ -181,69 +176,25 @@ export default defineComponent({
 		]);
 	},
 	methods: {
-		instantiateAutoSaveManager() {
-			this.autoSaveManager = new AutoSaveManager<LessonNode>(
-				this.modelValue,
-				async changes => {
-					await this.mainStore.partialUpdateCourseTreeNode({
-						courseId: this.courseId,
-						nodeId: this.modelValue.id,
-						changes,
-					});
-					this.saving = false;
-					if (changes.state === LessonNodeState.PUBLISHED) {
-						this.$emit("closeEditor");
-						this.metaStore.showSuccessFeedback();
-					}
-				},
-				changes => {
-					this.saving = true;
-					this.savingError = false;
-					this.mainStore.patchCourseTreeNode({
-						courseId: this.courseId,
-						nodeId: this.modelValue.id,
-						changes,
-					});
-				},
-				["body", "title"],
-				2500,
-				undefined,
-				() => {
-					this.saving = false;
-					this.savingError = true;
-				},
-			);
+		onNodeChange<K extends keyof CourseTreeNode>(
+			key: K,
+			value: CourseTreeNode[K],
+			save = false,
+		) {
+			this.$emit("patchNode", { key, value, save });
 		},
-		async onNodeChange<K extends keyof LessonNode>(key: K, value: LessonNode[K]) {
-			if (this.autoSave) {
-				await this.autoSaveManager?.onChange({ [key]: value });
-			} else {
-				// update local copy of unsaved changes
-				this.unsavedChanges = { ...this.unsavedChanges, [key]: value };
-			}
+		onSave() {
+			this.$emit("save");
 		},
-		async onSave() {
-			this.blockingSaving = true;
-			await this.autoSaveManager?.onChange(this.unsavedChanges);
-			await this.autoSaveManager?.flush();
-			this.blockingSaving = false;
-			this.$emit("closeEditor");
-			this.metaStore.showSuccessFeedback();
+		onBlur() {
+			this.$emit("blur");
 		},
-		async onBlur() {
-			await this.autoSaveManager?.flush();
-		},
-		async onParentChange(parentId: string) {
+		onParentChange(parentId: string) {
 			console.log("PARENT CHANGE", parentId);
-			await this.onNodeChange("parent_id", parentId);
+			this.onNodeChange("parent_id", parentId);
 		},
 		async onPublish() {
-			this.blockingSaving = true;
-			await this.onNodeChange("state", LessonNodeState.PUBLISHED);
-			if (!this.autoSave) {
-				await this.onSave();
-			}
-			this.blockingSaving = false;
+			this.onNodeChange("state", LessonNodeState.PUBLISHED, true);
 		},
 		async onCreateAttachment(file) {
 			this.creatingAttachment = true;
@@ -261,14 +212,7 @@ export default defineComponent({
 	},
 	computed: {
 		...mapStores(useMainStore, useMetaStore),
-		computedModelValue() {
-			// when autosave is off, take into account unsaved changes too
-			if (this.autoSave) {
-				return this.modelValue;
-			}
-			return { ...this.modelValue, ...this.unsavedChanges };
-		},
-		// TODO refactor, duplicated with CourseTree
+		// TODO refactor, duplicated with other editors
 		topicsAsOptions(): SelectableOption[] {
 			return [
 				{

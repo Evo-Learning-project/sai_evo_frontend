@@ -3,13 +3,16 @@
 		:is="editorComponentName"
 		v-bind="$props"
 		@closeEditor="$emit('closeEditor')"
+		@patchNode="$emit('patchNode', $event)"
+		@blur="$emit('blur')"
+		@save="$emit('save')"
 	></component>
 </template>
 
 <script lang="ts">
 import { CourseTreeNode, CourseTreeNodeType } from "@/models";
 import { defineComponent, PropType } from "@vue/runtime-core";
-import { nodeEditorProps } from "../shared";
+import { nodeEditorEmits, nodeEditorProps } from "../shared";
 import AnnouncementNodeEditor from "./AnnouncementNodeEditor.vue";
 import FileNodeEditor from "./FileNodeEditor.vue";
 import LessonNodeEditor from "./LessonNodeEditor.vue";
@@ -24,6 +27,7 @@ export default defineComponent({
 		},
 		...nodeEditorProps,
 	},
+	emits: { ...nodeEditorEmits },
 	methods: {},
 	computed: {
 		editorComponentName() {

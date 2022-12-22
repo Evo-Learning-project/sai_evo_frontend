@@ -33,8 +33,43 @@ export const nodeEmits = {
 };
 
 export const nodeEditorProps = {
-	autoSave: {
+	blockingSaving: {
+		type: Boolean,
+		default: false as const,
+	},
+	saving: {
+		type: Boolean,
+		default: false as const,
+	},
+	savingError: {
+		type: Boolean,
+		default: false as const,
+	},
+	showAutoSaveIndicator: {
 		type: Boolean,
 		required: true as const,
+	},
+};
+
+export const nodeEditorEmits = {
+	patchNode<N extends CourseTreeNode, K extends keyof N>({
+		key,
+		value,
+		save,
+	}: {
+		key: K;
+		value: N[K];
+		save?: boolean;
+	}) {
+		return true;
+	},
+	blur() {
+		return true;
+	},
+	save() {
+		return true;
+	},
+	closeEditor() {
+		return true;
 	},
 };

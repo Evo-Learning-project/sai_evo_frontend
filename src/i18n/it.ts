@@ -972,6 +972,12 @@ export const it = {
 		unknown_error: "Si è verificato un errore sconosciuto",
 	},
 	course_tree: {
+		file_by_url_description:
+			"Inserisci l'URL del file da condividere. È possibile visualizzare alcune tipologie di file in modalità integrata direttamente all'interno di Evo Learning.",
+		file_url: "Indirizzo del file",
+		file_editor_title: "Nuovo file",
+		file_node_editor_file_upload: "Carica file",
+		file_node_editor_url: "Importa da URL",
 		poll_results: "Risultati",
 		save_poll_choice: "Conferma",
 		poll_choice_not_saved_yet: "Selezione non ancora salvata",
