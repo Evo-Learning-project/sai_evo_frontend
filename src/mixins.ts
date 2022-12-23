@@ -35,11 +35,12 @@ export const nodeMixin = {
 
 export const fileViewerMixin = {
 	data() {
-		return { downloading: true, source: "" };
+		return { downloading: false, source: "" };
 	},
 	methods: {
 		async downloadNodeFile() {
 			const self = this as any;
+			self.downloading = true;
 			const fileBlob = await downloadFileNode(self.url);
 			self.source = arraybufferToBase64(fileBlob);
 			self.downloading = false;

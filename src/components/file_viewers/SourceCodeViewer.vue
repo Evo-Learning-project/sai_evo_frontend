@@ -52,7 +52,7 @@
 			left-1/2
 			overflow-y-auto
 			h-screen
-			w-2/3
+			w-4/5
 		"
 	>
 		<CodeFragment v-if="!downloading" :value="sourceAsText" />

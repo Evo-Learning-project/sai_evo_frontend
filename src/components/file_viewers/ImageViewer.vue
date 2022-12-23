@@ -28,9 +28,6 @@
 		</div>
 		<div class="text-lightText flex items-center space-x-4">
 			<h3 class="">{{ filename }}</h3>
-			<p class="text-sm opacity-70" v-if="pageCount !== null">
-				{{ pageCount }} {{ pageCount === 1 ? $t("misc.page") : $t("misc.pages") }}
-			</p>
 		</div>
 		<div class="ml-auto">
 			<Btn
@@ -42,52 +39,37 @@
 			>
 				<span class="material-icons-outlined text-lightText">file_download</span>
 			</Btn>
-			<Btn class="" :variant="'icon'" :outline="true" @click="onZoom(100)">
+			<Btn class="" :variant="'icon'" :outline="true" @click="onZoom(1)">
 				<span class="material-icons-outlined text-lightText">zoom_in</span>
 			</Btn>
-			<Btn :variant="'icon'" :outline="true" @click="onZoom(-100)">
+			<Btn :variant="'icon'" :outline="true" @click="onZoom(-1)">
 				<span class="material-icons-outlined text-lightText">zoom_out</span>
 			</Btn>
 		</div>
 	</div>
 	<div
 		style="z-index: 1001"
-		class="
-			mt-14
-			fixed
-			top-1/2
-			transform
-			-translate-y-1/2 -translate-x-1/2
-			left-1/2
-			overflow-y-auto
-			h-screen
-		"
+		class="mt-14 fixed top-1/2 transform -translate-y-2/3 -translate-x-1/2 left-1/2"
 	>
-		<div class="relative">
+		<div class="relative w-max">
 			<transition name="fade">
 				<LinearProgress v-if="isLoading || downloading" class="z-50 absolute top-0" />
 			</transition>
-			<vue-pdf-embed
-				:id="id"
-				:width="width"
-				ref="pdfRef"
-				:source="base64Source"
-				:page="page"
-				@progress="onProgress($event)"
-				@rendered="handleDocumentRender"
+			<img
+				class="m-auto"
+				:style="{ width: width + '%', 'max-width': '300% !important' }"
+				:src="base64Source"
 			/>
 		</div>
 	</div>
 </template>
 
 <script lang="ts">
-import VuePdfEmbed from "vue-pdf-embed";
-
 import { defineComponent, PropType } from "@vue/runtime-core";
 import Btn from "../ui/Btn.vue";
 import LinearProgress from "../ui/LinearProgress.vue";
 import { fileViewerProps } from "./shared";
-import { arraybufferToBase64 } from "@/utils";
+import { arraybufferToBase64, setErrorNotification } from "@/utils";
 import { downloadFileNode } from "@/api";
 import { fileViewerMixin } from "@/mixins";
 export default defineComponent({
@@ -96,13 +78,20 @@ export default defineComponent({
 		...fileViewerProps,
 	},
 	components: {
-		VuePdfEmbed,
 		Btn,
 		LinearProgress,
 	},
 	mixins: [fileViewerMixin],
-	mounted() {
-		this.downloadNodeFile();
+	async mounted() {
+		this.isLoading = true;
+		try {
+			await this.downloadNodeFile();
+			await this.setInitialWidth();
+		} catch (e) {
+			setErrorNotification(e);
+		} finally {
+			this.isLoading = false;
+		}
 		const bodyContainsOverflowHidden =
 			document.body.classList.contains("overflow-y-hidden");
 		if (!bodyContainsOverflowHidden) {
@@ -120,11 +109,8 @@ export default defineComponent({
 		return {
 			//downloading: true,
 			isLoading: true,
-			reRendering: false,
-			page: null,
-			pageCount: null as null | number,
-			showAllPages: true,
-			width: 800,
+			width: 100,
+			initialWidth: 100,
 			//source: "",
 		};
 	},
@@ -135,31 +121,35 @@ export default defineComponent({
 		// 	this.source = arraybufferToBase64(fileBlob);
 		// 	this.downloading = false;
 		// },
-		onZoom(amount: number) {
-			if (this.reRendering) {
-				return;
-			}
-			this.reRendering = true;
-			const MIN_WIDTH = 600;
-			const MAX_WIDTH = 1200;
-			if (amount > 0) {
-				this.width = Math.min(MAX_WIDTH, this.width + amount);
+		async setInitialWidth() {
+			const MAX_INITIAL_WIDTH_RATIO = 0.7;
+			const windowWidth = window.innerWidth;
+			const imageWidth: number = await new Promise(resolve => {
+				const image = new Image();
+				image.onload = () => resolve(image.naturalWidth);
+				image.src = this.base64Source;
+			});
+			if (imageWidth <= windowWidth * MAX_INITIAL_WIDTH_RATIO) {
+				this.initialWidth = 100;
 			} else {
-				this.width = Math.max(MIN_WIDTH, this.width + amount);
+				this.initialWidth = ((MAX_INITIAL_WIDTH_RATIO * windowWidth) / imageWidth) * 100;
 			}
+			this.width = this.initialWidth;
 		},
-		onProgress(evt: any) {
-			console.log("prog", evt);
-		},
-		handleDocumentRender() {
-			this.isLoading = false;
-			this.reRendering = false;
-			this.pageCount = (this.$refs as any).pdfRef.pageCount;
+		onZoom(multiplier: number) {
+			const MIN_WIDTH = this.initialWidth / 3;
+			const MAX_WIDTH = this.initialWidth * 3;
+			const FACTOR = this.initialWidth / 5;
+			if (multiplier > 0) {
+				this.width = Math.min(MAX_WIDTH, this.width + FACTOR);
+			} else {
+				this.width = Math.max(MIN_WIDTH, this.width - FACTOR);
+			}
 		},
 	},
 	computed: {
 		base64Source() {
-			return `data:application/pdf;base64,${this.source}`;
+			return `data:image/png;base64,${this.source}`;
 		},
 	},
 });
