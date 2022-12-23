@@ -8,7 +8,7 @@
 				'w-5 h-5 border-2': size === 'md',
 				'w-3 h-3 border-1.5': size === 'sm',
 				'w-12 h-12 border-4 ': size === 'xl',
-				'border-blue-200': variant === 'primary',
+				'border-primary': variant === 'primary',
 				'border-gray-800': variant === 'dark',
 				'border-gray': variant === 'gray',
 				'animate-spin-fast': fast,

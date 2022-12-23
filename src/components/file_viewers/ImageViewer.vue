@@ -52,10 +52,12 @@
 		class="mt-14 fixed top-1/2 transform -translate-y-2/3 -translate-x-1/2 left-1/2"
 	>
 		<div class="relative w-max">
-			<transition name="fade">
+			<!-- <transition name="fade">
 				<LinearProgress v-if="isLoading || downloading" class="z-50 absolute top-0" />
-			</transition>
+			</transition> -->
+			<Spinner :variant="'primary'" :size="'xl'" v-if="isLoading || downloading" />
 			<img
+				v-else
 				class="m-auto"
 				:style="{ width: width + '%', 'max-width': '300% !important' }"
 				:src="base64Source"
@@ -67,11 +69,11 @@
 <script lang="ts">
 import { defineComponent, PropType } from "@vue/runtime-core";
 import Btn from "../ui/Btn.vue";
-import LinearProgress from "../ui/LinearProgress.vue";
 import { fileViewerProps } from "./shared";
 import { arraybufferToBase64, setErrorNotification } from "@/utils";
 import { downloadFileNode } from "@/api";
 import { fileViewerMixin } from "@/mixins";
+import Spinner from "../ui/Spinner.vue";
 export default defineComponent({
 	name: "ImageViewer",
 	props: {
@@ -79,7 +81,7 @@ export default defineComponent({
 	},
 	components: {
 		Btn,
-		LinearProgress,
+		Spinner,
 	},
 	mixins: [fileViewerMixin],
 	async mounted() {
@@ -149,7 +151,7 @@ export default defineComponent({
 	},
 	computed: {
 		base64Source() {
-			return `data:image/png;base64,${this.source}`;
+			return `data:image;base64,${this.source}`;
 		},
 	},
 });
