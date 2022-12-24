@@ -1,29 +1,58 @@
 <template>
-	<component
-		@loadChildren="onLoadChildren($event.node, $event.fromFirstPage)"
-		@loadComments="onLoadComments($event)"
-		@deleteNode="onDeleteNode($event)"
-		:children="nodeChildren"
-		:is="componentName"
-		v-bind="passDownProps"
-		:loadingComments="loadingComments"
-		:loadingChildren="loadingChildren"
-		:node="node"
-		v-if="!firstLoading"
-	/>
-	<div v-else>
-		<SlotSkeleton />
-		<SlotSkeleton />
-		<SlotSkeleton />
+	<div>
+		<component
+			@loadChildren="onLoadChildren($event.node, $event.fromFirstPage)"
+			@loadComments="onLoadComments($event)"
+			@editNode="onEditNode()"
+			@deleteNode="onDeleteNode($event)"
+			:children="nodeChildren"
+			:is="componentName"
+			v-bind="passDownProps"
+			:loadingComments="loadingComments"
+			:loadingChildren="loadingChildren"
+			:node="node"
+			v-if="!firstLoading"
+		/>
+		<div v-else>
+			<SlotSkeleton />
+			<SlotSkeleton />
+			<SlotSkeleton />
+		</div>
+		<Dialog
+			:fullHeight="fullScreenDialog"
+			:large="!fullScreenDialog"
+			:fullWidth="fullScreenDialog"
+			@no="onDismissEditor()"
+			:showDialog="editorOpen"
+			:showActions="false"
+			:dismissible="false"
+		>
+			<template v-slot:body>
+				<CourseTreeNodeEditor
+					class="text-darkText"
+					:saving="saving"
+					:savingError="savingError"
+					:blockingSaving="blockingSaving"
+					:modelValue="proxyEditingNode"
+					:showAutoSaveIndicator="false"
+					@patchNode="onEditingNodeChange($event.key, $event.value, !!$event.save)"
+					@save="onSave()"
+					@closeEditor="onDismissEditor()"
+				/>
+			</template>
+		</Dialog>
 	</div>
 </template>
 
 <script lang="ts">
+import { AutoSaveManager, FieldList } from "@/autoSave";
+import CourseTreeNodeEditor from "@/components/course_tree/editors/CourseTreeNodeEditor.vue";
 import { nodeProps } from "@/components/course_tree/shared";
+import Dialog from "@/components/ui/Dialog.vue";
 import SlotSkeleton from "@/components/ui/skeletons/SlotSkeleton.vue";
 import { getTranslatedString as _ } from "@/i18n";
 import { courseIdMixin, coursePrivilegeMixin, loadingMixin, nodeIdMixin } from "@/mixins";
-import { CoursePrivilege, CourseTreeNode } from "@/models";
+import { CoursePrivilege, CourseTreeNode, CourseTreeNodeType } from "@/models";
 import { useMainStore } from "@/stores/mainStore";
 import { setErrorNotification } from "@/utils";
 import { defineAsyncComponent, defineComponent, PropType } from "@vue/runtime-core";
@@ -61,9 +90,83 @@ export default defineComponent({
 		return {
 			loadingChildren: false,
 			loadingComments: false,
+			unsavedChanges: {},
+			autoSaveManager: null as null | AutoSaveManager<CourseTreeNode>,
+			editorOpen: false,
+			saving: false,
+			savingError: false,
+			blockingSaving: false,
 		};
 	},
 	methods: {
+		async onSave() {
+			try {
+				this.blockingSaving = true;
+				await this.autoSaveManager?.onChange(this.unsavedChanges);
+				await this.autoSaveManager?.flush();
+				this.onDismissEditor();
+				this.metaStore.showSuccessFeedback();
+			} catch (e) {
+				setErrorNotification(e);
+			} finally {
+				this.blockingSaving = false;
+			}
+		},
+		instantiateAutoSaveManager(node: CourseTreeNode) {
+			this.autoSaveManager = new AutoSaveManager<CourseTreeNode>(
+				node,
+				async changes => {
+					await this.mainStore.partialUpdateCourseTreeNode({
+						courseId: this.courseId,
+						nodeId: node.id,
+						changes,
+					});
+					this.saving = false;
+				},
+				changes => {
+					this.saving = true;
+					this.savingError = false;
+					this.mainStore.patchCourseTreeNode({
+						courseId: this.courseId,
+						nodeId: node.id,
+						changes,
+					});
+				},
+				this.editingNodeDebouncedFields as FieldList<CourseTreeNode>,
+				2500,
+				undefined,
+				e => {
+					this.saving = false;
+					this.savingError = true;
+					throw e;
+				},
+			);
+		},
+		async onEditingNodeChange<K extends keyof CourseTreeNode>(
+			key: K,
+			value: CourseTreeNode[K],
+			save: boolean,
+		) {
+			// update local copy of unsaved changes
+			this.unsavedChanges = {
+				...this.unsavedchanges,
+				[key]: value,
+			};
+			if (save) {
+				await this.onSave();
+			}
+		},
+		onEditNode() {
+			console.log("EDITR");
+			this.unsavedChanges = {};
+			this.instantiateAutoSaveManager(this.node as CourseTreeNode);
+			this.editorOpen = true;
+		},
+		onDismissEditor() {
+			// TODO ask for confirmation if there are unsaved changes
+			this.editorOpen = false;
+			this.autoSaveManager = null;
+		},
 		async onLoadChildren(node: CourseTreeNode, fromFirstPage: boolean) {
 			this.loadingChildren = true;
 			try {
@@ -114,6 +217,19 @@ export default defineComponent({
 		nodeChildren() {
 			return this.mainStore.paginatedChildrenByNodeId[this.node?.id ?? ""]?.data ?? [];
 		},
+		// TODO extract shared logic
+		editingNodeDebouncedFields() {
+			if (this.node?.resourcetype !== CourseTreeNodeType.LessonNode) {
+				return [];
+			}
+			return ["body", "title"];
+		},
+		proxyEditingNode() {
+			return { ...this.node, ...this.unsavedChanges };
+		},
+		fullScreenDialog() {
+			return this.node?.resourcetype === CourseTreeNodeType.LessonNode;
+		},
 		passDownProps() {
 			return { ...this.$props, canEdit: this.canEdit };
 		},
@@ -135,7 +251,7 @@ export default defineComponent({
 			return mapping[this.node.resourcetype];
 		},
 	},
-	components: { SlotSkeleton },
+	components: { SlotSkeleton, Dialog, CourseTreeNodeEditor },
 });
 </script>
 

@@ -99,22 +99,6 @@
 				:nodeId="node.id"
 			/>
 		</div>
-		<Dialog
-			:fullHeight="true"
-			:fullWidth="true"
-			@no="editing = false"
-			:showDialog="editing"
-			:showActions="false"
-		>
-			<template v-slot:body>
-				<LessonNodeEditor
-					class="text-darkText"
-					:modelValue="node"
-					@closeEditor="editing = false"
-					v-if="editing"
-				/>
-			</template>
-		</Dialog>
 	</div>
 </template>
 
@@ -154,20 +138,10 @@ export default defineComponent({
 		this.$emit("loadChildren", { node: this.node, fromFirstPage: true });
 		this.$emit("loadComments", this.node);
 	},
-	data() {
-		return {
-			// openedNode: null as null | FileNode,
-			editing: false,
-		};
-	},
 	methods: {
 		onEdit() {
-			this.editing = true;
+			this.$emit("editNode", this.node);
 		},
-		// onShowFileNode(node: FileNode) {
-		// 	console.log("showed", node);
-		// 	this.openedNode = node;
-		// },
 	},
 	computed: {
 		lessonTitle() {
@@ -181,8 +155,6 @@ export default defineComponent({
 		SlotSkeleton,
 		CourseTreeNode,
 		CopyToClipboard,
-		LessonNodeEditor,
-		Dialog,
 		CourseTreeNodeCommentSection,
 	},
 });

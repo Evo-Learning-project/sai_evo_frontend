@@ -115,38 +115,6 @@
 			</template>
 		</Dialog>
 
-		<!-- <Dialog
-			:fullWidth="true"
-			@yes="creatingFileNode = false"
-			:showDialog="creatingFileNode"
-			:confirmOnly="true"
-			:yesText="$t('dialog.default_cancel_text')"
-		>
-			<template v-slot:title>
-				<h1>{{ $t("course_tree.create_file_node_title") }}</h1>
-			</template>
-			<template v-slot:body>
-				<div class="flex flex-col space-y-4">
-					 <div class="w-2/3 flex mx-auto">
-						<Dropdown
-							class="mr-auto w-1/2"
-							:options="topicsAsOptions"
-							v-model="selectedTopicId"
-							>{{ $t("course_tree.topic_label") }}</Dropdown
-						>
-					</div>
-					<FileNodeEditor
-						:modelValue="draftFileNode"
-						@patchNode="onEditingNodeChange()"
-					></FileNodeEditor>
-
-					<div class="m-auto w-2/3">
-						<FileUpload :uploading="uploadingFile" v-model="fileUploadProxy" />
-					</div>
-				</div>
-			</template>
-		</Dialog> -->
-
 		<Dialog
 			@yes="resolveBlockingDialog(true)"
 			@no="resolveBlockingDialog(false)"
@@ -311,6 +279,7 @@ export default defineComponent({
 			this.showEditorDialog = false;
 			this.editingNode = null;
 		},
+		// TODO extract shared logic with NodeDetail
 		instantiateAutoSaveManager(node: ICourseTreeNode) {
 			this.editingNodeAutoSaveManager = new AutoSaveManager<ICourseTreeNode>(
 				node,
