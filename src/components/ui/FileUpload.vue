@@ -1,7 +1,11 @@
 <template>
 	<div class="w-full darken-on-hover">
 		<div class="w-full relative">
-			<LinearProgress v-if="uploading" class="rounded-t absolute top-0 z-10" />
+			<LinearProgress
+				v-if="uploading"
+				:progress="uploadProgress"
+				class="rounded-t absolute top-0 z-10"
+			/>
 			<div
 				v-if="disabled"
 				class="absolute top-0 w-full h-44 z-10 bg-red-500 bg-opacity-0"
@@ -162,6 +166,10 @@ export default defineComponent({
 		uploading: {
 			type: Boolean,
 			default: false,
+		},
+		uploadProgress: {
+			type: Number,
+			required: false,
 		},
 		clearImmediately: {
 			type: Boolean,

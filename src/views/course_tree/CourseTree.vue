@@ -106,6 +106,7 @@
 					:blockingSaving="blockingSaving"
 					:modelValue="proxyEditingNode"
 					:showAutoSaveIndicator="autoSaveEditingNode"
+					:uploadProgress="fileUploadProgress"
 					@patchNode="onEditingNodeChange($event.key, $event.value, !!$event.save)"
 					@save="onEditingNodeSave()"
 					@closeEditor="onDismissNodeEditor()"
@@ -261,6 +262,7 @@ export default defineComponent({
 			savingError: false,
 			blockingSaving: false,
 			draftFileNode: null as null | FileNode,
+			fileUploadProgress: 0,
 		};
 	},
 	methods: {
@@ -354,7 +356,6 @@ export default defineComponent({
 				};
 			}
 			if (save) {
-				console.log("CHANGE", { key, value, save });
 				await this.onEditingNodeSave();
 			}
 		},
@@ -376,19 +377,35 @@ export default defineComponent({
 				);
 			}
 			if (!this.editingNode.id) {
-				// create node
+				/**
+				 * Create node
+				 * */
+
+				// used if creating a FileNode to keep track of upload progress for the file
+				const onUploadProgress = (e: { loaded: number; total: number }) => {
+					this.fileUploadProgress = (e.loaded / e.total) * 100;
+				};
 				try {
+					this.blockingSaving = true;
 					await this.mainStore.createCourseTreeNode({
 						courseId: this.courseId,
 						node: this.proxyEditingNode,
+						config: {
+							onUploadProgress,
+						},
 					});
 					this.onDismissNodeEditor();
 					this.metaStore.showSuccessFeedback();
 				} catch (e) {
 					setErrorNotification(e);
+				} finally {
+					this.blockingSaving = false;
+					this.fileUploadProgress = 0;
 				}
 			} else if (!this.autoSaveEditingNode) {
-				// save changes to existing node
+				/**
+				 * Save changes to existing node
+				 */
 				try {
 					this.blockingSaving = true;
 					await this.editingNodeAutoSaveManager?.onChange(this.editingNodeUnsavedChanges);
@@ -401,8 +418,10 @@ export default defineComponent({
 					this.blockingSaving = false;
 				}
 			} else {
-				// autosave is on, so changes were already saved
-				// flush any pending changes & close editor
+				/**
+				 * Autosave is on, so changes were already saved
+				 * flush any pending changes & close editor
+				 */
 				await this.editingNodeAutoSaveManager?.flush();
 				this.onDismissNodeEditor();
 				this.metaStore.showSuccessFeedback();
@@ -498,7 +517,7 @@ export default defineComponent({
 				nodeId: node.id,
 			});
 		},
-		async onLoadChildren(node, fromFirstPage: boolean) {
+		async onLoadChildren(node: ICourseTreeNode, fromFirstPage: boolean) {
 			console.log("course tree on load children", fromFirstPage);
 			await this.mainStore.getCourseTreeNodeChildren({
 				courseId: this.courseId,

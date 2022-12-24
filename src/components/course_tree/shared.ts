@@ -57,6 +57,10 @@ export const nodeEditorProps = {
 		type: Boolean,
 		required: true as const,
 	},
+	uploadProgress: {
+		type: Number,
+		required: false as const,
+	},
 };
 
 export const nodeEditorEmits = {

@@ -9,7 +9,7 @@ import {
 	TopicNode,
 } from "@/models";
 import { forceFileDownload } from "@/utils";
-import axios from "axios";
+import axios, { AxiosRequestConfig } from "axios";
 import { convertPaginatedResponseToLocalPaginatedData } from "./converters";
 import { BackendPaginatedResponse, PaginatedData } from "./interfaces";
 
@@ -72,15 +72,16 @@ export async function getCourseRootNodeId(courseId: string): Promise<string> {
 export async function createCourseNode(
 	courseId: string,
 	node: CourseTreeNode,
+	config?: AxiosRequestConfig,
 ): Promise<CourseTreeNode> {
 	// use FormData if uploading a file together with the rest of the payload
 	if (node.resourcetype === CourseTreeNodeType.FileNode && node.file !== null) {
 		const formData = new FormData();
 		Object.entries(node).forEach(([k, v]) => formData.append(k, v));
-		const response = await axios.post(`/courses/${courseId}/nodes/`, formData);
+		const response = await axios.post(`/courses/${courseId}/nodes/`, formData, config);
 		return response.data;
 	}
-	const response = await axios.post(`/courses/${courseId}/nodes/`, node);
+	const response = await axios.post(`/courses/${courseId}/nodes/`, node, config);
 	return response.data;
 }
 

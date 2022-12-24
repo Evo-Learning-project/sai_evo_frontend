@@ -1,6 +1,7 @@
 <template>
 	<div class="linear-activity">
-		<div class="indeterminate"></div>
+		<div v-if="indeterminate" class="indeterminate" />
+		<div v-else class="determinate" :style="{ width: progress + '%' }" />
 	</div>
 </template>
 
@@ -8,9 +9,19 @@
 import { defineComponent, PropType } from "@vue/runtime-core";
 export default defineComponent({
 	name: "LinearProgress",
-	props: {},
+	props: {
+		progress: {
+			type: Number,
+			required: false,
+			validator: (v: number) => v >= 0 && v <= 100,
+		},
+	},
 	methods: {},
-	computed: {},
+	computed: {
+		indeterminate() {
+			return typeof this.progress === "undefined";
+		},
+	},
 });
 </script>
 

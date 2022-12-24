@@ -144,6 +144,7 @@ import {
 	CourseTreeNodeIdActionPayload,
 } from "@/store/types";
 import { arraybufferToBase64 } from "@/utils";
+import { AxiosRequestConfig } from "axios";
 import { defineStore } from "pinia";
 
 export const useMainStore = defineStore("main", {
@@ -294,12 +295,13 @@ export const useMainStore = defineStore("main", {
 		async createCourseTreeNode({
 			courseId,
 			node,
-		}: CourseIdActionPayload & { node: CourseTreeNode }) {
+			config = undefined,
+		}: CourseIdActionPayload & { node: CourseTreeNode; config?: AxiosRequestConfig }) {
 			if (node.parent_id === null) {
 				// creating a top-level node
 				node.parent_id = await this.getCourseRootId({ courseId });
 			}
-			const createdNode = await createCourseNode(courseId, node);
+			const createdNode = await createCourseNode(courseId, node, config);
 			if (await this.isTopLevelNode({ courseId, node: createdNode })) {
 				this.paginatedTopLevelCourseTreeNodes = prependToPaginatedData(
 					this.paginatedTopLevelCourseTreeNodes ?? getEmptyPaginatedData(),

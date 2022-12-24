@@ -43,7 +43,11 @@
 		<SegmentedControls class="mb-10" :options="panes" v-model="currentPane" />
 		<!-- file upload pane-->
 		<div v-show="currentPane === 'file_upload'">
-			<FileUpload v-model="fileProxy" />
+			<FileUpload
+				:uploadProgress="uploadProgress"
+				:uploading="blockingSaving"
+				v-model="fileProxy"
+			/>
 		</div>
 		<!-- url pane-->
 		<div v-show="currentPane === 'url'">

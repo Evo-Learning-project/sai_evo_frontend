@@ -1659,6 +1659,10 @@
 	@apply bg-primary-light bg-opacity-30;
 }
 
+.determinate {
+	@apply bg-primary bg-opacity-70 h-1 transition-width duration-75 ease-in-out;
+}
+
 .indeterminate {
 	position: relative;
 	width: 100%;
