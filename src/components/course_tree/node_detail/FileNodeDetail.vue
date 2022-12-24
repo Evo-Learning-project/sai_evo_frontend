@@ -32,6 +32,7 @@ export default defineComponent({
 		},
 		...nodeProps,
 	},
+	// TODO create emits for node details
 	mixins: [courseIdMixin],
 	components: {
 		FileViewer,

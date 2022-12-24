@@ -5,6 +5,7 @@
 			@loadComments="onLoadComments($event)"
 			@editNode="onEditNode()"
 			@deleteNode="onDeleteNode($event)"
+			@viewerClose="onViewerClose()"
 			:children="nodeChildren"
 			:is="componentName"
 			v-bind="passDownProps"
@@ -74,9 +75,9 @@ export default defineComponent({
 		// 	() => import("../../components/course_tree/node_detail/TopicNodeDetail.vue"),
 		// );
 
-		// (this.$options.components as any).FileNode = defineAsyncComponent(
-		// 	() => import("../../components/course_tree/node_detail/FileNodeDetail.vue"),
-		// );
+		(this.$options.components as any).FileNodeDetail = defineAsyncComponent(
+			() => import("../../components/course_tree/node_detail/FileNodeDetail.vue"),
+		);
 	},
 	async created() {
 		await this.withFirstLoading(async () =>
@@ -99,6 +100,12 @@ export default defineComponent({
 		};
 	},
 	methods: {
+		onViewerClose() {
+			this.$router.push({
+				name: "CourseTreeDispatcher",
+				params: { courseId: this.courseId },
+			});
+		},
 		async onSave() {
 			try {
 				this.blockingSaving = true;
