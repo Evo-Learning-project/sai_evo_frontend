@@ -17,7 +17,9 @@
 				transition-border
 			"
 		>
+			<LinearProgress class="absolute -bottom-1 rounded-b-sm left-0" v-if="loading" />
 			<input
+				:disabled="disabled"
 				:maxlength="maxLength"
 				type="text"
 				:value="modelValue"
@@ -59,6 +61,7 @@
 
 <script lang="ts">
 import { defineComponent } from "@vue/runtime-core";
+import LinearProgress from "./LinearProgress.vue";
 
 export default defineComponent({
 	name: "TextInput",
@@ -91,6 +94,15 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+		loading: {
+			type: Boolean,
+			default: false,
+		},
+		disabled: {
+			type: Boolean,
+			default: false,
+		},
 	},
+	components: { LinearProgress },
 });
 </script>

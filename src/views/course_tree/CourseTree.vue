@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<!-- top section with create button-->
-		<div class="flex w-full mb-6 -mt-8">
+		<div class="flex w-full mb-6 -mt-8" v-if="canCreateNodes">
 			<DropdownMenu
 				class="ml-auto"
 				:expanded="createMenuExpanded"
@@ -173,8 +173,15 @@ import draggable from "vuedraggable";
 
 import CourseTreeNode from "@/components/course_tree/node/CourseTreeNode.vue";
 import { SelectableOption } from "@/interfaces";
-import { blockingDialogMixin, courseIdMixin, loadingMixin, savingMixin } from "@/mixins";
 import {
+	blockingDialogMixin,
+	courseIdMixin,
+	coursePrivilegeMixin,
+	loadingMixin,
+	savingMixin,
+} from "@/mixins";
+import {
+	CoursePrivilege,
 	CourseTreeNode as ICourseTreeNode,
 	CourseTreeNodeType,
 	FileNode,
@@ -205,7 +212,13 @@ import FileNodeEditor from "@/components/course_tree/editors/FileNodeEditor.vue"
 export default defineComponent({
 	name: "CourseTree",
 	props: {},
-	mixins: [courseIdMixin, loadingMixin, blockingDialogMixin, savingMixin],
+	mixins: [
+		courseIdMixin,
+		loadingMixin,
+		blockingDialogMixin,
+		savingMixin,
+		coursePrivilegeMixin,
+	],
 	async created() {
 		await this.withLoading(async () =>
 			this.mainStore.getCourseTopLevelNodes({
@@ -387,6 +400,12 @@ export default defineComponent({
 				} finally {
 					this.blockingSaving = false;
 				}
+			} else {
+				// autosave is on, so changes were already saved
+				// flush any pending changes & close editor
+				await this.editingNodeAutoSaveManager?.flush();
+				this.onDismissNodeEditor();
+				this.metaStore.showSuccessFeedback();
 			}
 		},
 		onEditNode(node: ICourseTreeNode) {
@@ -436,13 +455,12 @@ export default defineComponent({
 				this.showBlockingDialog = false;
 				return;
 			}
-			await this.withLocalLoading(
-				async () =>
-					await this.mainStore.createCourseTreeNode({
-						courseId: this.courseId,
-						node: getBlankTopicNode(null, this.editingTopicName.trim()),
-					}),
-			);
+			await this.withLocalLoading(async () => {
+				await this.mainStore.createCourseTreeNode({
+					courseId: this.courseId,
+					node: getBlankTopicNode(null, this.editingTopicName.trim()),
+				});
+			});
 			this.showBlockingDialog = false;
 			this.editingTopicName = "";
 		},
@@ -510,10 +528,10 @@ export default defineComponent({
 			return this.mainStore.paginatedTopLevelCourseTreeNodes?.data ?? [];
 		},
 		canEditNodes() {
-			return true;
+			return this.hasPrivileges([CoursePrivilege.MANAGE_MATERIAL]);
 		},
 		canCreateNodes() {
-			return true;
+			return this.hasPrivileges([CoursePrivilege.MANAGE_MATERIAL]);
 		},
 		editingNodeDebouncedFields() {
 			if (this.editingNode?.resourcetype !== CourseTreeNodeType.LessonNode) {

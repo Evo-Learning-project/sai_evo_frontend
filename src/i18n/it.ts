@@ -927,6 +927,8 @@ export const it = {
 		[CoursePrivilege.MANAGE_EXERCISES]: "Può creare e modificare esercizi.",
 		[CoursePrivilege.UPDATE_COURSE]:
 			"Può modificare le impostazioni del corso, incluso assegnare permessi ad altri utenti.",
+		[CoursePrivilege.MANAGE_MATERIAL]:
+			"Può creare e modificare materiale didattico per il corso, come lezioni, allegati, annunci e sondaggi.",
 	},
 	course_privileges_short: {
 		[CoursePrivilege.ACCESS_EXERCISES]: "Vedere esercizi",
@@ -935,6 +937,7 @@ export const it = {
 		[CoursePrivilege.MANAGE_EXERCISES]: "Creare esercizi",
 		[CoursePrivilege.UPDATE_COURSE]: "Modificare impostazioni corso",
 		[CoursePrivilege.MANAGE_EXERCISE_SOLUTIONS]: "Gestire soluzioni",
+		[CoursePrivilege.MANAGE_MATERIAL]: "Gestire materiale didattico",
 	},
 	testcase_types: {
 		[ExerciseTestCaseType.SHOW_CODE_SHOW_TEXT]: "Pubblico",

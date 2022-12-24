@@ -223,7 +223,6 @@ export const coursePrivilegeMixin = {
 			 * user has such privileges for the current course
 			 */
 			const myPrivileges = (this as any).userCoursePrivileges;
-			console.log(myPrivileges);
 			return requiredPrivilegesList.every(p => myPrivileges.includes(p));
 		},
 		hasAnyPrivileges() {

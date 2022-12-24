@@ -9,6 +9,14 @@ export const nodeProps = {
 		type: Boolean,
 		required: true as const,
 	},
+	loadingComments: {
+		type: Boolean,
+		default: false as const,
+	},
+	loadingChildren: {
+		type: Boolean,
+		default: false as const,
+	},
 };
 
 export const nodeEmits = {

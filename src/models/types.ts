@@ -103,6 +103,7 @@ export enum AssessmentSlotState {
 
 export enum CoursePrivilege {
 	UPDATE_COURSE = "update_course",
+	MANAGE_MATERIAL = "manage_course_tree_nodes",
 	ACCESS_EXERCISES = "access_exercises",
 	MANAGE_EXERCISES = "manage_exercises",
 	ASSESS_PARTICIPATIONS = "assess_participations",

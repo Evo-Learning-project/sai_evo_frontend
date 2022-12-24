@@ -177,8 +177,8 @@ export default defineComponent({
 	},
 	methods: {
 		onNodeChange<K extends keyof CourseTreeNode>(
-			key: K,
-			value: CourseTreeNode[K],
+			key: any, //K,
+			value: any, //CourseTreeNode[K],
 			save = false,
 		) {
 			this.$emit("patchNode", { key, value, save });

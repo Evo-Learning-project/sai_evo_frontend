@@ -6,12 +6,12 @@
 	</div>
 	<div v-else class="mt-2">
 		<div class="mb-4">
-			<router-link :to="{ name: 'CourseTreeDispatcher', params: { courseId } }"
-				><Btn :size="'xs'" :variant="'primary-borderless'">
+			<router-link :to="{ name: 'CourseTreeDispatcher', params: { courseId } }">
+				<Btn :size="'xs'" :variant="'primary-borderless'">
 					<span class="material-icons-outlined">chevron_left</span>
-					{{ $t("course_tree.back_to_tree") }}</Btn
-				></router-link
-			>
+					{{ $t("course_tree.back_to_tree") }}
+				</Btn>
+			</router-link>
 		</div>
 		<!-- header -->
 		<div class="flex md:flex-row flex-col items-center">
@@ -77,7 +77,7 @@
 
 			<!-- children -->
 			<div class="mt-12">
-				<div v-if="localLoading">
+				<div v-if="loadingChildren">
 					<SlotSkeleton />
 					<SlotSkeleton />
 				</div>
@@ -93,7 +93,11 @@
 			</div>
 
 			<!-- comments -->
-			<CourseTreeNodeCommentSection class="mt-8" :nodeId="node.id" />
+			<CourseTreeNodeCommentSection
+				:loadingComments="loadingComments"
+				class="mt-8"
+				:nodeId="node.id"
+			/>
 		</div>
 		<Dialog
 			:fullHeight="true"

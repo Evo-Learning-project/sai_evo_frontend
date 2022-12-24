@@ -61,6 +61,8 @@
 					:maxLength="500"
 					class="w-full"
 					v-model="draftComment"
+					:disabled="loadingComments"
+					:loading="loadingComments"
 					:placeholder="$t('exercise_solution.add_comment')"
 				/>
 				<Btn
@@ -95,6 +97,10 @@ export default defineComponent({
 		nodeId: {
 			type: String,
 			required: true,
+		},
+		loadingComments: {
+			type: Boolean,
+			default: false,
 		},
 	},
 	data() {

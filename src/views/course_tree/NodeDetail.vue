@@ -5,9 +5,12 @@
 		:children="nodeChildren"
 		:is="componentName"
 		v-bind="passDownProps"
+		:loadingComments="loadingComments"
+		:loadingChildren="loadingChildren"
 		:node="node"
-	></component>
-	<div v-if="firstLoading">
+		v-if="!firstLoading"
+	/>
+	<div v-else>
 		<SlotSkeleton />
 		<SlotSkeleton />
 		<SlotSkeleton />
@@ -17,9 +20,10 @@
 <script lang="ts">
 import { nodeProps } from "@/components/course_tree/shared";
 import SlotSkeleton from "@/components/ui/skeletons/SlotSkeleton.vue";
-import { courseIdMixin, loadingMixin, nodeIdMixin } from "@/mixins";
-import { CourseTreeNode } from "@/models";
+import { courseIdMixin, coursePrivilegeMixin, loadingMixin, nodeIdMixin } from "@/mixins";
+import { CoursePrivilege, CourseTreeNode } from "@/models";
 import { useMainStore } from "@/stores/mainStore";
+import { setErrorNotification } from "@/utils";
 import { defineAsyncComponent, defineComponent, PropType } from "@vue/runtime-core";
 import { mapStores } from "pinia";
 
@@ -28,7 +32,7 @@ export default defineComponent({
 	props: {
 		//...nodeProps,
 	},
-	mixins: [nodeIdMixin, loadingMixin, courseIdMixin],
+	mixins: [nodeIdMixin, loadingMixin, courseIdMixin, coursePrivilegeMixin],
 	beforeCreate() {
 		// dynamically import specialized components to prevent circular imports
 		(this.$options.components as any).LessonNodeDetail = defineAsyncComponent(
@@ -51,27 +55,39 @@ export default defineComponent({
 			}),
 		);
 	},
+	data() {
+		return {
+			loadingChildren: false,
+			loadingComments: false,
+		};
+	},
 	methods: {
-		onEdit() {
-			console.log("edit");
-		},
 		async onLoadChildren(node: CourseTreeNode, fromFirstPage: boolean) {
-			console.log("loading children!");
-			await this.withLocalLoading(async () => {
+			this.loadingChildren = true;
+			try {
 				await this.mainStore.getCourseTreeNodeChildren({
 					courseId: this.courseId,
 					nodeId: node.id,
 					fromFirstPage,
 				});
-			});
+			} catch (e) {
+				setErrorNotification(e);
+			} finally {
+				this.loadingChildren = false;
+			}
 		},
 		async onLoadComments(node: CourseTreeNode) {
-			await this.withLocalLoading(async () => {
+			this.loadingComments = true;
+			try {
 				await this.mainStore.getCourseTreeNodeComments({
 					courseId: this.courseId,
 					nodeId: node.id,
 				});
-			});
+			} catch (e) {
+				setErrorNotification(e);
+			} finally {
+				this.loadingComments = false;
+			}
 		},
 	},
 	computed: {
@@ -86,8 +102,8 @@ export default defineComponent({
 			return { ...this.$props, canEdit: this.canEdit };
 		},
 		canEdit() {
-			// TODO implement
-			return true;
+			// TODO extract logic shared with CourseTree
+			return this.hasPrivileges([CoursePrivilege.MANAGE_MATERIAL]);
 		},
 		componentName(): string {
 			if (!this.node) {
