@@ -325,6 +325,7 @@ export interface LessonNode extends BaseNodeFields {
 	title: string;
 	body: string;
 	state: LessonNodeState;
+	comment_count: number;
 	resourcetype: CourseTreeNodeType.LessonNode;
 }
 

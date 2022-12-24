@@ -421,6 +421,7 @@ export default defineComponent({
 			this.showEditorDialog = true;
 		},
 		async onDeleteNode(node: ICourseTreeNode) {
+			// TODO extract duplicated code with other components
 			if (!confirm(_("course_tree.delete_node_confirm"))) {
 				return;
 			}

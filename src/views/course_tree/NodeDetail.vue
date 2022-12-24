@@ -2,6 +2,7 @@
 	<component
 		@loadChildren="onLoadChildren($event.node, $event.fromFirstPage)"
 		@loadComments="onLoadComments($event)"
+		@deleteNode="onDeleteNode($event)"
 		:children="nodeChildren"
 		:is="componentName"
 		v-bind="passDownProps"
@@ -20,6 +21,7 @@
 <script lang="ts">
 import { nodeProps } from "@/components/course_tree/shared";
 import SlotSkeleton from "@/components/ui/skeletons/SlotSkeleton.vue";
+import { getTranslatedString as _ } from "@/i18n";
 import { courseIdMixin, coursePrivilegeMixin, loadingMixin, nodeIdMixin } from "@/mixins";
 import { CoursePrivilege, CourseTreeNode } from "@/models";
 import { useMainStore } from "@/stores/mainStore";
@@ -88,6 +90,20 @@ export default defineComponent({
 			} finally {
 				this.loadingComments = false;
 			}
+		},
+		async onDeleteNode(node: CourseTreeNode) {
+			// TODO extract duplicated code with other components
+			if (!confirm(_("course_tree.delete_node_confirm"))) {
+				return;
+			}
+			await this.withLoading(
+				async () =>
+					await this.mainStore.deleteCourseTreeNode({
+						courseId: this.courseId,
+						nodeId: node.id,
+					}),
+				setErrorNotification,
+			);
 		},
 	},
 	computed: {

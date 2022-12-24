@@ -87,7 +87,7 @@
 							v-bind="$props"
 							:node="child"
 							@deleteNode="$emit('deleteNode', $event)"
-						></CourseTreeNode>
+						/>
 					</div>
 				</div>
 			</div>

@@ -112,6 +112,30 @@
 				/>
 			</div>
 		</div>
+		<div class="ml-12 pl-1 mt-2 -mb-1" v-if="node.comment_count > 0">
+			<router-link
+				class="flex items-center space-x-2 w-max"
+				:to="{ name: 'CourseTreeNodeDetailDispatcher', params: { nodeId: node.id } }"
+			>
+				<span
+					class="material-icons-outlined text-muted"
+					style="
+						margin-bottom: -1px;
+						font-size: 16px !important;
+						text-decoration: none !important;
+					"
+					>question_answer</span
+				>
+				<p class="text-muted hover:underline">
+					{{ node.comment_count }}
+					{{
+						node.comment_count === 1
+							? $t("course_tree.node_comment_title")
+							: $t("course_tree.node_comments_title")
+					}}
+				</p>
+			</router-link>
+		</div>
 		<!-- body -->
 		<!-- <div class="ml-1">
 			<ProcessedTextFragment
