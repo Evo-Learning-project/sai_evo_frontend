@@ -175,6 +175,7 @@ export default defineComponent({
 	async created() {
 		this.loadingThumbnail = true;
 		try {
+			console.log("calling");
 			await this.mainStore.loadCourseTreeNodeThumbnail({
 				courseId: this.courseId,
 				nodeId: this.node.id,
@@ -197,13 +198,18 @@ export default defineComponent({
 	computed: {
 		...mapStores(useMainStore),
 		thumbnailPresent() {
-			return !this.loadingThumbnail && this.thumbnailLoaded && this.node.thumbnail;
+			return (
+				!this.loadingThumbnail &&
+				this.thumbnailLoaded &&
+				this.mainStore.thumbnailByCourseNodeId[this.node.id]
+			);
 		},
 		thumbnailSrc() {
-			if (!this.node.thumbnail || !this.thumbnailLoaded) {
+			const thumbnail = this.mainStore.thumbnailByCourseNodeId[this.node.id];
+			if (!thumbnail || !this.thumbnailLoaded) {
 				return "";
 			}
-			return `data:image/jpeg;base64,${this.node.thumbnail}`;
+			return `data:image/jpeg;base64,${thumbnail}`;
 		},
 		humanReadableFileSize() {
 			return getHumanFileSize(this.node.file?.size ?? 0);

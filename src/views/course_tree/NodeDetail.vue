@@ -157,8 +157,8 @@ export default defineComponent({
 			}
 		},
 		onEditNode() {
-			console.log("EDITR");
 			this.unsavedChanges = {};
+			// TODO passing this.node causes bug that we had in exercise children editor, fix
 			this.instantiateAutoSaveManager(this.node as CourseTreeNode);
 			this.editorOpen = true;
 		},

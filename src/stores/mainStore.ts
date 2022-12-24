@@ -162,6 +162,9 @@ export const useMainStore = defineStore("main", {
 		// maps id's of course tree nodes to arrays of comments
 		commentsByCourseNodeId: {} as Record<string, NodeComment[]>,
 
+		// maps id's of course tree nodes to base64 thumnbails
+		thumbnailByCourseNodeId: {} as Record<string, string>,
+
 		// event participations of the user
 		// ! used on the home page for student dashboard, with the Event nested inside; improve
 		paginatedEventParticipations: null as null | PaginatedData<EventParticipation>,
@@ -284,13 +287,17 @@ export const useMainStore = defineStore("main", {
 			nodeId,
 		}: CourseIdActionPayload & CourseTreeNodeIdActionPayload) {
 			const thumbnail = await getFileNodeThumbnail(courseId, nodeId);
-			const target = this.flatCourseTreeNodes.find(n => n.id == nodeId);
+			const target = this.flatCourseTreeNodes.find(n => n.id == nodeId) as
+				| FileNode
+				| undefined;
+
 			if (!target) {
 				throw new Error(
 					"loadCourseTreeNodeThumbnail couldn't find node with id " + nodeId,
 				);
 			}
-			Object.assign(target, { ...target, thumbnail: arraybufferToBase64(thumbnail) });
+			const thumbnail64 = arraybufferToBase64(thumbnail);
+			this.thumbnailByCourseNodeId[nodeId] = thumbnail64;
 		},
 		async createCourseTreeNode({
 			courseId,
