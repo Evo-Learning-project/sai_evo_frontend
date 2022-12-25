@@ -975,6 +975,7 @@ export const it = {
 		unknown_error: "Si è verificato un errore sconosciuto",
 	},
 	course_tree: {
+		confirm_delete_comment: "Sei sicuro di voler eliminare questo commento?",
 		file_by_url_description:
 			"Inserisci l'URL del file da condividere. È possibile visualizzare alcune tipologie di file in modalità integrata direttamente all'interno di Evo Learning.",
 		file_url: "Indirizzo del file",

@@ -72,6 +72,7 @@ import {
 	createCourseNodeComment,
 	createPollNodeChoice,
 	deleteCourseNode,
+	deleteCourseNodeComment,
 	deletePollNodeChoice,
 	getCourseNode,
 	getCourseNodeComments,
@@ -334,6 +335,16 @@ export const useMainStore = defineStore("main", {
 				this.commentsByCourseNodeId[nodeId] = [];
 			}
 			this.commentsByCourseNodeId[nodeId].push(newComment);
+		},
+		async deleteCourseNodeComment({
+			courseId,
+			nodeId,
+			commentId,
+		}: CourseIdActionPayload & CourseTreeNodeIdActionPayload & { commentId: string }) {
+			await deleteCourseNodeComment(courseId, nodeId, commentId);
+			this.commentsByCourseNodeId[nodeId] = this.commentsByCourseNodeId[nodeId].filter(
+				c => c.id != commentId,
+			);
 		},
 		async createPollNodeChoice({
 			courseId,

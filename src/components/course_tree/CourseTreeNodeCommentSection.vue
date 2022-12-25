@@ -29,14 +29,15 @@
 		</div>
 
 		<!-- comments-->
-		<div>
+		<div class="w-full">
+			<!-- TODO extract to separate component for re-use-->
 			<div
 				v-for="comment in shownComments"
 				:key="comment.id"
-				class="flex items-center my-3 space-x-2"
+				class="flex items-center w-full my-3 space-x-2"
 			>
-				<Avatar :user="comment.user" />
-				<div>
+				<Avatar class="my-auto" :user="comment.user" />
+				<div class="w-full">
 					<div class="flex items-center space-x-1">
 						<p class="mr-2 font-medium text-primary capitalize">
 							{{ comment.user.full_name ?? "" }}
@@ -47,8 +48,26 @@
 							class="text-muted text-xs opacity-90"
 						/>
 					</div>
-					<p class="break-normal">{{ comment.comment }}</p>
+					<div class="flex w-full items-center">
+						<p class="break-normal">{{ comment.comment }}</p>
+					</div>
 				</div>
+				<Btn
+					:variant="'icon'"
+					:outline="true"
+					@click="onDelete(comment.id)"
+					v-if="canDelete(comment)"
+					class="
+						ml-auto
+						opacity-30
+						hover:opacity-100
+						transition-opacity
+						duration-75
+						ease-in-out
+					"
+				>
+					<span class="material-icons text-muted">delete</span>
+				</Btn>
 			</div>
 		</div>
 
@@ -79,11 +98,12 @@
 </template>
 
 <script lang="ts">
-import { courseIdMixin, loadingMixin } from "@/mixins";
-import { getBlankCourseTreeNodeComment } from "@/models";
+import { getTranslatedString as _ } from "@/i18n";
+import { courseIdMixin, coursePrivilegeMixin, loadingMixin } from "@/mixins";
+import { CoursePrivilege, getBlankCourseTreeNodeComment, NodeComment } from "@/models";
 import { useMainStore } from "@/stores/mainStore";
 import { useMetaStore } from "@/stores/metaStore";
-import { setErrorNotification } from "@/utils";
+import { getCurrentUserId, setErrorNotification } from "@/utils";
 import { defineComponent, PropType } from "@vue/runtime-core";
 import { mapStores } from "pinia";
 import Avatar from "../ui/Avatar.vue";
@@ -92,7 +112,7 @@ import TextInput from "../ui/TextInput.vue";
 import Timestamp from "../ui/Timestamp.vue";
 export default defineComponent({
 	name: "CourseTreeNodeCommentSection",
-	mixins: [courseIdMixin, loadingMixin],
+	mixins: [courseIdMixin, loadingMixin, coursePrivilegeMixin],
 	props: {
 		nodeId: {
 			type: String,
@@ -128,6 +148,26 @@ export default defineComponent({
 			} finally {
 				this.postingComment = false;
 			}
+		},
+		async onDelete(commentId: string) {
+			if (!confirm(_("course_tree.confirm_delete_comment"))) {
+				return;
+			}
+			try {
+				await this.mainStore.deleteCourseNodeComment({
+					courseId: this.courseId,
+					nodeId: this.nodeId,
+					commentId,
+				});
+			} catch (e) {
+				setErrorNotification(e);
+			}
+		},
+		canDelete(comment: NodeComment) {
+			return (
+				this.hasPrivileges([CoursePrivilege.MANAGE_MATERIAL]) ||
+				comment.user.id == getCurrentUserId()
+			);
 		},
 	},
 	computed: {

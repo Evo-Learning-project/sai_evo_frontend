@@ -2,10 +2,14 @@
 	<div
 		class="flex rounded-full bg-primary-light text-primary bg-opacity-30"
 		:class="{
-			'w-8 h-8 ': size === 'md',
 			'w-8 h-8': size === 'sm',
 			'w-10 h-10 text-xl': size === 'lg',
 		}"
+		:style="
+			size === 'md'
+				? 'min-width: 2rem !important; min-height: 2rem !important; max-width: 2rem !important; max-height: 2rem; !important'
+				: ''
+		"
 	>
 		<p class="mx-auto my-auto font-semibold">
 			{{ authorName[0].toLocaleUpperCase() }}

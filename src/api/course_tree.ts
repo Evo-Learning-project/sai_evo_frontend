@@ -164,6 +164,17 @@ export async function createCourseNodeComment(
 	return response.data;
 }
 
+export async function deleteCourseNodeComment(
+	courseId: string,
+	nodeId: string,
+	commentId: string,
+): Promise<void> {
+	const response = await axios.delete(
+		`/courses/${courseId}/nodes/${nodeId}/comments/${commentId}/`,
+	);
+	return response.data;
+}
+
 export async function createPollNodeChoice(
 	courseId: string,
 	nodeId: string,
