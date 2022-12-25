@@ -17,7 +17,7 @@
 <script lang="ts">
 import { FileNode } from "@/models";
 import { defineComponent, PropType } from "@vue/runtime-core";
-import { nodeProps } from "../shared";
+import { nodeEmits, nodeProps } from "../shared";
 import FileViewer from "@/components/file_viewers/FileViewer.vue";
 import { downloadFileNode, downloadFileNodeAsAttachment, getFileNodeUrl } from "@/api";
 import { courseIdMixin } from "@/mixins";
@@ -32,7 +32,9 @@ export default defineComponent({
 		},
 		...nodeProps,
 	},
-	// TODO create emits for node details
+	emits: {
+		...nodeEmits,
+	},
 	mixins: [courseIdMixin],
 	components: {
 		FileViewer,

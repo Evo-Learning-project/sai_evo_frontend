@@ -38,6 +38,9 @@ export const nodeEmits = {
 	loadComments(node: CourseTreeNode) {
 		return true;
 	},
+	viewerClose() {
+		return true;
+	},
 };
 
 export const nodeEditorProps = {

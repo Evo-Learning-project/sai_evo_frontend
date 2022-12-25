@@ -246,6 +246,7 @@ export default defineComponent({
 				.map(c => ({ datum: c, frequency: c.votes ?? 0 }))
 				.sort((a, b) => (String(a.datum.id) < String(b.datum.id) ? -1 : 1));
 		},
+		// TODO extract shared logic with detail version of this component
 		pollVotesData(): TChartData<"pie", number[], unknown> {
 			// TODO better creation of colors
 			const colors = this.node.choices.reduce((acc, e) => {

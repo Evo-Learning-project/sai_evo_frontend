@@ -48,7 +48,7 @@
 <script lang="ts">
 import { AutoSaveManager, FieldList } from "@/autoSave";
 import CourseTreeNodeEditor from "@/components/course_tree/editors/CourseTreeNodeEditor.vue";
-import { nodeProps } from "@/components/course_tree/shared";
+import { nodeEmits, nodeProps } from "@/components/course_tree/shared";
 import Dialog from "@/components/ui/Dialog.vue";
 import SlotSkeleton from "@/components/ui/skeletons/SlotSkeleton.vue";
 import { getTranslatedString as _ } from "@/i18n";
@@ -64,17 +64,21 @@ export default defineComponent({
 	props: {
 		//...nodeProps,
 	},
+	emits: {
+		...nodeEmits,
+	},
 	mixins: [nodeIdMixin, loadingMixin, courseIdMixin, coursePrivilegeMixin],
 	beforeCreate() {
 		// dynamically import specialized components to prevent circular imports
 		(this.$options.components as any).LessonNodeDetail = defineAsyncComponent(
 			() => import("../../components/course_tree/node_detail/LessonNodeDetail.vue"),
 		);
-
-		// (this.$options.components as any).TopicNode = defineAsyncComponent(
-		// 	() => import("../../components/course_tree/node_detail/TopicNodeDetail.vue"),
-		// );
-
+		(this.$options.components as any).PollNodeDetail = defineAsyncComponent(
+			() => import("../../components/course_tree/node_detail/PollNodeDetail.vue"),
+		);
+		(this.$options.components as any).AnnouncementNodeDetail = defineAsyncComponent(
+			() => import("../../components/course_tree/node_detail/AnnouncementNodeDetail.vue"),
+		);
 		(this.$options.components as any).FileNodeDetail = defineAsyncComponent(
 			() => import("../../components/course_tree/node_detail/FileNodeDetail.vue"),
 		);
