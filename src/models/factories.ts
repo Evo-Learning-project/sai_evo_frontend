@@ -202,6 +202,7 @@ export const getBlankLessonNode = (parentId: string | null): LessonNode => ({
 	created: "",
 	state: LessonNodeState.DRAFT,
 	id: "",
+	comment_count: 0,
 	resourcetype: CourseTreeNodeType.LessonNode,
 });
 

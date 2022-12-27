@@ -358,7 +358,7 @@ export default defineComponent({
 					this.blockingSaving = true;
 					await this.mainStore.createCourseTreeNode({
 						courseId: this.courseId,
-						node: this.proxyEditingNode,
+						node: this.proxyEditingNode as ICourseTreeNode,
 						config: {
 							onUploadProgress,
 						},
@@ -501,7 +501,10 @@ export default defineComponent({
 			if (this.autoSaveEditingNode) {
 				return this.editingNode;
 			}
-			return { ...this.editingNode, ...this.editingNodeUnsavedChanges };
+			return {
+				...this.editingNode,
+				...this.editingNodeUnsavedChanges,
+			} as ICourseTreeNode;
 		},
 		fullScreenDialog() {
 			return this.editingNode?.resourcetype === CourseTreeNodeType.LessonNode;

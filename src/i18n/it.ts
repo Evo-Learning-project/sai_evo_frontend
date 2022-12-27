@@ -206,7 +206,6 @@ export const it = {
 		donate_now: "Dona ora",
 	},
 	misc: {
-		show_recent: "Mostra recenti",
 		show_all: "Mostra tutti",
 		show_more: "Mostra di più",
 		share: "Condividi",

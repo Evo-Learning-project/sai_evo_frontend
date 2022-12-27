@@ -136,6 +136,12 @@
 					"
 					:src="thumbnailSrc"
 				/>
+				<img
+					style="height: 90px !important; margin: auto"
+					class="pointer-events-none"
+					v-else-if="!loadingThumbnail"
+					:src="getDefaultThumbnail()"
+				/>
 			</div>
 			<!-- TODO file preview -->
 			<!-- <div class="ml-auto bg-gray-200 -my-8 h-full"></div> -->
@@ -194,14 +200,34 @@ export default defineComponent({
 			thumbnailLoaded: false,
 		};
 	},
-	methods: {},
+	methods: {
+		getDefaultThumbnail() {
+			const mime_type = this.node.mime_type;
+			const ARCHIVE_TYPES = [
+				"application/zip",
+				"application/gzip",
+				"application/x-tar",
+				"application/vnd.rar",
+				"application/x-bzip",
+				"application/x-bzip2",
+				"application/java-archive",
+				"application/x-7z-compressed",
+			];
+
+			if (ARCHIVE_TYPES.includes(mime_type)) {
+				return require("@/assets/thumbnails/archive.png");
+			}
+
+			return require("@/assets/thumbnails/text.png");
+		},
+	},
 	computed: {
 		...mapStores(useMainStore),
 		thumbnailPresent() {
 			return (
 				!this.loadingThumbnail &&
 				this.thumbnailLoaded &&
-				this.mainStore.thumbnailByCourseNodeId[this.node.id]
+				!!this.mainStore.thumbnailByCourseNodeId[this.node.id]
 			);
 		},
 		thumbnailSrc() {
