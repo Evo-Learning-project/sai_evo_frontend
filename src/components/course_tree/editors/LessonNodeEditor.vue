@@ -1,6 +1,6 @@
 <template>
 	<div class="relative">
-		<LinearProgress v-if="blockingSaving" class="absolute top-0" />
+		<!-- <LinearProgress v-if="blockingSaving" class="absolute top-0" /> -->
 		<!-- top row -->
 		<div class="flex w-full items-center mb-12">
 			<Btn :variant="'icon'" :outline="true" class="-ml-2"
@@ -247,7 +247,7 @@ export default defineComponent({
 		//Timestamp,
 		FileUpload,
 		FileNode,
-		LinearProgress,
+		//LinearProgress,
 		Dropdown,
 	},
 });

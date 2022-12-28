@@ -29,9 +29,12 @@ export const nodeEmits = {
 	loadChildren({
 		node,
 		fromFirstPage,
+		resolveFn,
 	}: {
 		node: CourseTreeNode;
 		fromFirstPage: boolean;
+		resolveFn: (moreResults: boolean) => void;
+		rejectFn: (error: any) => void;
 	}) {
 		return true;
 	},

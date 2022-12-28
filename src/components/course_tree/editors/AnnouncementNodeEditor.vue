@@ -141,7 +141,7 @@ export default defineComponent({
 			savingError: false,
 			creatingAttachment: false,
 			unsavedChanges: {},
-			blockingSaving: false,
+			//blockingSaving: false,
 			topics: [] as TopicNode[],
 			loadingTopics: false,
 			loadingChildren: false,
@@ -223,10 +223,11 @@ export default defineComponent({
 			}
 		},
 		async onSave() {
-			this.blockingSaving = true;
+			// TODO migrate to new logic where saving is handled in parent
+			//this.blockingSaving = true;
 			await this.autoSaveManager?.onChange(this.unsavedChanges);
 			await this.autoSaveManager?.flush();
-			this.blockingSaving = false;
+			//this.blockingSaving = false;
 			this.$emit("closeEditor");
 			this.metaStore.showSuccessFeedback();
 		},

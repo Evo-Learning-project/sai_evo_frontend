@@ -13,6 +13,7 @@
 				<div
 					v-if="showDialog"
 					class="
+						relative
 						z-20
 						max-h-full
 						overflow-y-auto
@@ -30,6 +31,7 @@
 					}"
 					:style="fullHeight ? 'height: calc(100vh - 10px)' : ''"
 				>
+					<LinearProgress v-if="loading" class="rounded-t-md absolute top-0 left-0" />
 					<div
 						style=""
 						class="w-full overflow-y-auto"
@@ -119,6 +121,7 @@
 <script lang="ts">
 import { defineComponent } from "@vue/runtime-core";
 import Btn from "@/components/ui/Btn.vue";
+import LinearProgress from "./LinearProgress.vue";
 export default defineComponent({
 	name: "Dialog",
 	props: {
@@ -187,11 +190,16 @@ export default defineComponent({
 			type: Boolean,
 			default: true,
 		},
+		loading: {
+			type: Boolean,
+			default: false,
+		},
 		confirmOnly: Boolean,
 		disableOk: Boolean,
 	},
 	components: {
 		Btn,
+		LinearProgress,
 	},
 	beforeUnmount() {
 		const bodyContainsOverflowHidden =

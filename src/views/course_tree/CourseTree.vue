@@ -57,7 +57,14 @@
 						:isDraggable="canEditNodes"
 						class="my-4"
 						:class="{ 'dragging-inside-collection': draggingNode }"
-						@loadChildren="onLoadChildren($event.node, $event.fromFirstPage)"
+						@loadChildren="
+							onLoadChildren(
+								$event.node,
+								$event.fromFirstPage,
+								$event.resolveFn,
+								$event.rejectFn,
+							)
+						"
 						@loadComments="onLoadComments($event)"
 						:canEdit="canEditNodes"
 						:node="element"
@@ -67,6 +74,17 @@
 				</div>
 			</template>
 		</draggable>
+
+		<VueEternalLoading
+			v-if="!loading"
+			:load="onLoadMore"
+			v-model:is-initial="isInitialInfiniteLoad"
+		>
+			<template #loading>
+				<Spinner />
+			</template>
+			<template #no-more> &nbsp; </template>
+		</VueEternalLoading>
 
 		<!-- <div class="my-4" v-for="node in topLevelNodes" :key="node.id">
 			<CourseTreeNode
@@ -96,6 +114,7 @@
 			:showDialog="showEditorDialog"
 			:showActions="false"
 			:dismissible="autoSaveEditingNode"
+			:loading="blockingSaving"
 		>
 			<template v-slot:body>
 				<CourseTreeNodeEditor
@@ -168,15 +187,15 @@ import { mapStores } from "pinia";
 import { icons as courseTreeNodeTypeIcons } from "@/assets/courseTreeNodeTypeIcons";
 import { getTranslatedString as _ } from "@/i18n";
 import Dialog from "@/components/ui/Dialog.vue";
-import FileUpload from "@/components/ui/FileUpload.vue";
 import { setErrorNotification } from "@/utils";
 import CourseTreeNodeEditor from "@/components/course_tree/editors/CourseTreeNodeEditor.vue";
 import TextInput from "@/components/ui/TextInput.vue";
 import { getCourseTopicNodes } from "@/api";
 import DropdownMenu from "@/components/ui/DropdownMenu.vue";
-import Dropdown from "@/components/ui/Dropdown.vue";
 import { AutoSaveManager, FieldList } from "@/autoSave";
-import FileNodeEditor from "@/components/course_tree/editors/FileNodeEditor.vue";
+import VueEternalLoading from "@ts-pro/vue-eternal-loading/src/components/VueEternalLoading/VueEternalLoading.vue";
+import { LoadAction } from "@ts-pro/vue-eternal-loading";
+import Spinner from "@/components/ui/Spinner.vue";
 
 export default defineComponent({
 	name: "CourseTree",
@@ -189,11 +208,12 @@ export default defineComponent({
 		coursePrivilegeMixin,
 	],
 	async created() {
-		await this.withLoading(async () =>
-			this.mainStore.getCourseTopLevelNodes({
-				courseId: this.courseId,
-				fromFirstPage: true,
-			}),
+		await this.withLoading(
+			async () =>
+				await this.mainStore.getCourseTopLevelNodes({
+					courseId: this.courseId,
+					fromFirstPage: true,
+				}),
 		);
 		await this.mainStore.getCourseRootId({ courseId: this.courseId });
 		this.topics = await getCourseTopicNodes(this.courseId);
@@ -230,10 +250,26 @@ export default defineComponent({
 			savingError: false,
 			blockingSaving: false,
 			draftFileNode: null as null | FileNode,
-			fileUploadProgress: 0 as undefined | number,
+			fileUploadProgress: undefined as undefined | number,
+			isInitialInfiniteLoad: false,
 		};
 	},
 	methods: {
+		async onLoadMore({ loaded, noMore, error }: LoadAction) {
+			try {
+				const moreResults = await this.mainStore.getCourseTopLevelNodes({
+					courseId: this.courseId,
+					fromFirstPage: false,
+				});
+				if (!moreResults) {
+					noMore();
+				} else {
+					loaded();
+				}
+			} catch {
+				error();
+			}
+		},
 		async onNodeDragStart() {
 			this.draggingNode = true;
 		},
@@ -493,13 +529,23 @@ export default defineComponent({
 				nodeId: node.id,
 			});
 		},
-		async onLoadChildren(node: ICourseTreeNode, fromFirstPage: boolean) {
+		async onLoadChildren(
+			node: ICourseTreeNode,
+			fromFirstPage: boolean,
+			resolveFn: (moreResults: boolean) => void,
+			rejectFn: (e: any) => void,
+		) {
 			console.log("course tree on load children", fromFirstPage);
-			await this.mainStore.getCourseTreeNodeChildren({
-				courseId: this.courseId,
-				nodeId: node.id,
-				fromFirstPage,
-			});
+			try {
+				const moreResults = await this.mainStore.getCourseTreeNodeChildren({
+					courseId: this.courseId,
+					nodeId: node.id,
+					fromFirstPage,
+				});
+				resolveFn(moreResults);
+			} catch (e) {
+				rejectFn(e);
+			}
 		},
 	},
 	computed: {
@@ -544,11 +590,11 @@ export default defineComponent({
 		CourseTreeNode,
 		DropdownMenu,
 		Dialog,
+		VueEternalLoading,
 		//FileUpload,
 		CourseTreeNodeEditor,
 		TextInput,
-		//Dropdown,
-		//FileNodeEditor,
+		Spinner,
 	},
 });
 </script>

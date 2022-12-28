@@ -82,6 +82,13 @@
 				:node="child"
 			/>
 		</div>
+		<VueEternalLoading v-if="!initialFetch" :load="onLoadMore">
+			<template #loading>
+				<Spinner />
+			</template>
+			<template #no-more> &nbsp; </template>
+		</VueEternalLoading>
+		<Spinner v-if="initialFetch" />
 	</div>
 </template>
 
@@ -93,6 +100,11 @@ import { nodeEmits, nodeProps } from "../shared";
 import { mapStores } from "pinia";
 import { useMainStore } from "@/stores/mainStore";
 import Btn from "@/components/ui/Btn.vue";
+import VueEternalLoading from "@ts-pro/vue-eternal-loading/src/components/VueEternalLoading/VueEternalLoading.vue";
+import { LoadAction } from "@ts-pro/vue-eternal-loading";
+import { setErrorNotification } from "@/utils";
+import Spinner from "@/components/ui/Spinner.vue";
+
 export default defineComponent({
 	name: "TopicNode",
 	props: {
@@ -105,17 +117,53 @@ export default defineComponent({
 	emits: {
 		...nodeEmits,
 	},
-	created() {
-		this.$emit("loadChildren", { node: this.node, fromFirstPage: true });
+	async created() {
+		await new Promise((resolve, reject) =>
+			this.$emit("loadChildren", {
+				node: this.node,
+				fromFirstPage: true,
+				resolveFn: resolve,
+				rejectFn: reject,
+			}),
+		);
+		this.initialFetch = false;
 	},
-	methods: {},
+	data() {
+		return {
+			initialFetch: true,
+		};
+	},
+	methods: {
+		async onLoadMore({ loaded, noMore, error }: LoadAction) {
+			console.log("loading children");
+			try {
+				const moreResults: boolean = await new Promise((resolve, reject) =>
+					// pass resolve/reject to parent and wait for resolution
+					this.$emit("loadChildren", {
+						node: this.node,
+						fromFirstPage: false,
+						resolveFn: resolve,
+						rejectFn: reject,
+					}),
+				);
+				if (!moreResults) {
+					noMore();
+				} else {
+					loaded();
+				}
+			} catch (e) {
+				setErrorNotification(e);
+				error();
+			}
+		},
+	},
 	computed: {
 		...mapStores(useMainStore),
 		children() {
 			return this.mainStore.paginatedChildrenByNodeId[this.node.id]?.data ?? [];
 		},
 	},
-	components: { CourseTreeNode, Btn },
+	components: { CourseTreeNode, Btn, VueEternalLoading, Spinner },
 });
 </script>
 
