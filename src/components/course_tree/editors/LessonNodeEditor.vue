@@ -84,6 +84,7 @@
 					<FileNode :isDraggable="false" :canEdit="true" :node="fileNode" />
 				</div>
 				<FileUpload
+					:uploadProgress="attachmentUploadProgress"
 					:uploading="creatingAttachment"
 					v-model="attachmentProxy"
 					:autoUpload="true"
@@ -144,6 +145,7 @@ export default defineComponent({
 			topics: [] as TopicNode[],
 			loadingTopics: false,
 			loadingChildren: false,
+			attachmentUploadProgress: undefined as undefined | number,
 		};
 	},
 	async created() {
@@ -198,10 +200,23 @@ export default defineComponent({
 		},
 		async onCreateAttachment(file) {
 			this.creatingAttachment = true;
+			const onUploadProgress = (e: { loaded: number; total: number }) => {
+				this.attachmentUploadProgress = (e.loaded / e.total) * 100;
+				// make loader indeterminate after upload completes for
+				//better visual feedback to the user
+				if (this.attachmentUploadProgress === 100) {
+					setTimeout(() => {
+						this.attachmentUploadProgress = undefined;
+					}, 100);
+				}
+			};
 			try {
 				await this.mainStore.createCourseTreeNode({
 					courseId: this.courseId,
 					node: { ...getBlankFileNode(this.modelValue.id), file },
+					config: {
+						onUploadProgress,
+					},
 				});
 			} catch (e) {
 				setErrorNotification(e);

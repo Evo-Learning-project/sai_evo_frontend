@@ -341,19 +341,19 @@ export default defineComponent({
 		async onPublish() {
 			this.onNodeChange("state", PollNodeState.OPEN, true);
 		},
-		async onCreateAttachment(file) {
-			this.creatingAttachment = true;
-			try {
-				await this.mainStore.createCourseTreeNode({
-					courseId: this.courseId,
-					node: { ...getBlankFileNode(this.modelValue.id), file },
-				});
-			} catch (e) {
-				setErrorNotification(e);
-			} finally {
-				this.creatingAttachment = false;
-			}
-		},
+		// async onCreateAttachment(file) {
+		// 	this.creatingAttachment = true;
+		// 	try {
+		// 		await this.mainStore.createCourseTreeNode({
+		// 			courseId: this.courseId,
+		// 			node: { ...getBlankFileNode(this.modelValue.id), file },
+		// 		});
+		// 	} catch (e) {
+		// 		setErrorNotification(e);
+		// 	} finally {
+		// 		this.creatingAttachment = false;
+		// 	}
+		// },
 		/** end shared behavior */
 	},
 	computed: {
@@ -376,14 +376,14 @@ export default defineComponent({
 				this.mainStore.paginatedChildrenByNodeId[this.modelValue.id]?.data ?? []
 			).filter(c => c.resourcetype === CourseTreeNodeType.FileNode) as IFileNode[];
 		},
-		attachmentProxy: {
-			get() {
-				return [];
-			},
-			async set(val: any) {
-				await this.onCreateAttachment(val);
-			},
-		},
+		// attachmentProxy: {
+		// 	get() {
+		// 		return [];
+		// 	},
+		// 	async set(val: any) {
+		// 		await this.onCreateAttachment(val);
+		// 	},
+		// },
 	},
 	components: {
 		//TextInput,
