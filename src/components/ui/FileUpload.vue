@@ -230,17 +230,17 @@ export default defineComponent({
 			//console.log("INPUT FILTER", newFile);
 			console.log("new file", newFile.blob);
 			const isImage = newFile.type.substring(0, 6) === "image/";
-			if (newFile && !oldFile) {
-				// Before adding a file
-				// Filter system files or hide files
-				if (/(\/|^)(Thumbs\.db|desktop\.ini|\..+)$/.test(newFile.name)) {
-					return prevent();
-				}
-				// Filter php html js file
-				if (/\.(php5?|html?|jsx?)$/i.test(newFile.name)) {
-					return prevent();
-				}
-			}
+			// if (newFile && !oldFile) {
+			// 	// Before adding a file
+			// 	// Filter system files or hide files
+			// 	if (/(\/|^)(Thumbs\.db|desktop\.ini|\..+)$/.test(newFile.name)) {
+			// 		return prevent();
+			// 	}
+			// 	// Filter php html js file
+			// 	if (/\.(php5?|html?|jsx?)$/i.test(newFile.name)) {
+			// 		return prevent();
+			// 	}
+			// }
 			if (
 				newFile &&
 				newFile.error === "" &&

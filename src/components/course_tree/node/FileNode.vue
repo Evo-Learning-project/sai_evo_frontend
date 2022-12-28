@@ -137,8 +137,8 @@
 					:src="thumbnailSrc"
 				/>
 				<img
-					style="height: 90px !important; margin: auto"
-					class="pointer-events-none"
+					style="height: 50px !important; margin: auto"
+					class="pointer-events-none opacity-100"
 					v-else-if="!loadingThumbnail"
 					:src="getDefaultThumbnail()"
 				/>
@@ -181,14 +181,11 @@ export default defineComponent({
 	async created() {
 		this.loadingThumbnail = true;
 		try {
-			console.log("calling");
 			await this.mainStore.loadCourseTreeNodeThumbnail({
 				courseId: this.courseId,
 				nodeId: this.node.id,
 			});
 			this.thumbnailLoaded = true;
-		} catch {
-			// TODO set default thumbnail
 		} finally {
 			this.loadingThumbnail = false;
 		}
@@ -214,8 +211,14 @@ export default defineComponent({
 				"application/x-7z-compressed",
 			];
 
+			const SOURCE_CODE_TYPES = ["text/x-script.python", "text/x-c", "text/x-java"];
+
 			if (ARCHIVE_TYPES.includes(mime_type)) {
 				return require("@/assets/thumbnails/archive.png");
+			}
+
+			if (SOURCE_CODE_TYPES.includes(mime_type)) {
+				return require("@/assets/thumbnails/code.png");
 			}
 
 			return require("@/assets/thumbnails/text.png");

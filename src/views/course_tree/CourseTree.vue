@@ -230,7 +230,7 @@ export default defineComponent({
 			savingError: false,
 			blockingSaving: false,
 			draftFileNode: null as null | FileNode,
-			fileUploadProgress: 0,
+			fileUploadProgress: 0 as undefined | number,
 		};
 	},
 	methods: {
@@ -353,6 +353,13 @@ export default defineComponent({
 				// used if creating a FileNode to keep track of upload progress for the file
 				const onUploadProgress = (e: { loaded: number; total: number }) => {
 					this.fileUploadProgress = (e.loaded / e.total) * 100;
+					// make loader indeterminate after upload completes for
+					//better visual feedback to the user
+					if (this.fileUploadProgress === 100) {
+						setTimeout(() => {
+							this.fileUploadProgress = undefined;
+						}, 100);
+					}
 				};
 				try {
 					this.blockingSaving = true;
