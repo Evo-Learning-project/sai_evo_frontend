@@ -312,8 +312,15 @@ export default defineComponent({
 			this.editingNodeAutoSaveManager?.flush();
 		},
 		onDismissNodeEditor() {
+			if (
+				Object.keys(this.editingNodeUnsavedChanges).length > 0 &&
+				!confirm(_("course_tree.editor_discard_unsaved_changes"))
+			) {
+				return;
+			}
 			this.showEditorDialog = false;
 			this.editingNode = null;
+			this.editingNodeUnsavedChanges = {};
 		},
 		// TODO extract shared logic with NodeDetail
 		instantiateAutoSaveManager(node: ICourseTreeNode) {
@@ -398,6 +405,7 @@ export default defineComponent({
 					}
 				};
 				try {
+					// TODO if creating a file node, don't display loader in dialog
 					this.blockingSaving = true;
 					await this.mainStore.createCourseTreeNode({
 						courseId: this.courseId,
@@ -406,6 +414,7 @@ export default defineComponent({
 							onUploadProgress,
 						},
 					});
+					this.editingNodeUnsavedChanges = {};
 					this.onDismissNodeEditor();
 					this.metaStore.showSuccessFeedback();
 				} catch (e) {
@@ -422,6 +431,7 @@ export default defineComponent({
 					this.blockingSaving = true;
 					await this.editingNodeAutoSaveManager?.onChange(this.editingNodeUnsavedChanges);
 					await this.editingNodeAutoSaveManager?.flush();
+					this.editingNodeUnsavedChanges = {};
 					this.onDismissNodeEditor();
 					this.metaStore.showSuccessFeedback();
 				} catch (e) {

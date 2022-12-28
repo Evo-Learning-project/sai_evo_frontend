@@ -974,6 +974,7 @@ export const it = {
 		unknown_error: "Si è verificato un errore sconosciuto",
 	},
 	course_tree: {
+		editor_discard_unsaved_changes: "Vuoi scartare le modifiche non salvate?",
 		confirm_delete_comment: "Sei sicuro di voler eliminare questo commento?",
 		file_by_url_description:
 			"Inserisci l'URL del file da condividere. È possibile visualizzare alcune tipologie di file in modalità integrata direttamente all'interno di Evo Learning.",
