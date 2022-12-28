@@ -17,19 +17,19 @@
 			/>
 			<div
 				class="flex space-x-3 items-center"
-				v-if="computedModelValue.state === AnnouncementNodeState.DRAFT"
+				v-if="modelValue.state === AnnouncementNodeState.DRAFT"
 			>
 				<p class="text-muted">{{ $t("course_tree.draft") }}</p>
 				<Btn @click="onPublish()">{{ $t("course_tree.publish_announcement") }}</Btn>
 			</div>
 			<div v-if="!autoSave" class="ml-2">
 				<Btn
-					:outline="computedModelValue.state === AnnouncementNodeState.DRAFT"
+					:outline="modelValue.state === AnnouncementNodeState.DRAFT"
 					:disabled="blockingSaving"
 					@click="onSave()"
 				>
 					{{
-						computedModelValue.state === AnnouncementNodeState.DRAFT
+						modelValue.state === AnnouncementNodeState.DRAFT
 							? $t("course_tree.save_draft")
 							: $t("course_tree.save")
 					}}
@@ -40,7 +40,7 @@
 		<div class="mb-8 flex items-center space-x-8">
 			<!-- <TextInput
 				class="w-full"
-				:modelValue="computedModelValue.title"
+				:modelValue="modelValue.title"
 				:fixedLabel="true"
 				@blur="onBlur()"
 				@update:modelValue="onNodeChange('title', $event)"
@@ -51,7 +51,7 @@
 				<Dropdown
 					:loading="loadingTopics"
 					:options="topicsAsOptions"
-					:modelValue="computedModelValue.parent_id"
+					:modelValue="modelValue.parent_id"
 					@update:modelValue="onParentChange($event)"
 					>{{ $t("course_tree.topic_label") }}</Dropdown
 				>
@@ -69,7 +69,7 @@
 		<!-- body -->
 		<div>
 			<TextEditor
-				:modelValue="computedModelValue.body"
+				:modelValue="modelValue.body"
 				:fixedLabel="true"
 				@blur="onBlur()"
 				@update:modelValue="onNodeChange('body', $event)"
@@ -82,7 +82,7 @@
 			<h3 class="mb-4">{{ $t("course_tree.announcement_attachments") }}</h3>
 			<div class="grid lg:grid-cols-2 lg:gap-6 gap-4 grid-cols-1">
 				<div v-for="fileNode in fileChildren" :key="fileNode.id">
-					<FileNode :canEdit="true" :node="fileNode" />
+					<FileNode :isDraggable="false" :canEdit="true" :node="fileNode" />
 				</div>
 				<FileUpload
 					:uploading="creatingAttachment"
@@ -111,6 +111,7 @@ import { courseIdMixin, savingMixin } from "@/mixins";
 import {
 	AnnouncementNode,
 	AnnouncementNodeState,
+	CourseTreeNode,
 	CourseTreeNodeType,
 	FileNode as IFileNode,
 	getBlankFileNode,
@@ -136,19 +137,13 @@ export default defineComponent({
 	data() {
 		return {
 			AnnouncementNodeState,
-			autoSaveManager: null as AutoSaveManager<AnnouncementNode> | null,
-			saving: false,
-			savingError: false,
 			creatingAttachment: false,
-			unsavedChanges: {},
-			//blockingSaving: false,
 			topics: [] as TopicNode[],
 			loadingTopics: false,
 			loadingChildren: false,
 		};
 	},
 	async created() {
-		this.instantiateAutoSaveManager();
 		await this.mainStore.getCourseRootId({ courseId: this.courseId });
 		await Promise.all([
 			(async () => {
@@ -178,73 +173,25 @@ export default defineComponent({
 		]);
 	},
 	methods: {
-		instantiateAutoSaveManager() {
-			this.autoSaveManager = new AutoSaveManager<AnnouncementNode>(
-				this.modelValue,
-				async changes => {
-					await this.mainStore.partialUpdateCourseTreeNode({
-						courseId: this.courseId,
-						nodeId: this.modelValue.id,
-						changes,
-					});
-					this.saving = false;
-					if (changes.state === AnnouncementNodeState.PUBLISHED) {
-						this.$emit("closeEditor");
-						this.metaStore.showSuccessFeedback();
-					}
-				},
-				changes => {
-					this.saving = true;
-					this.savingError = false;
-					this.mainStore.patchCourseTreeNode({
-						courseId: this.courseId,
-						nodeId: this.modelValue.id,
-						changes,
-					});
-				},
-				["body"],
-				2500,
-				undefined,
-				() => {
-					this.saving = false;
-					this.savingError = true;
-				},
-			);
-		},
-		async onNodeChange<K extends keyof AnnouncementNode>(
-			key: K,
-			value: AnnouncementNode[K],
+		onNodeChange<K extends keyof CourseTreeNode>(
+			key: any, //K,
+			value: any, //CourseTreeNode[K],
+			save = false,
 		) {
-			if (this.autoSave) {
-				await this.autoSaveManager?.onChange({ [key]: value });
-			} else {
-				// update local copy of unsaved changes
-				this.unsavedChanges = { ...this.unsavedChanges, [key]: value };
-			}
+			// TODO extract shared behavior (mixin?)
+			this.$emit("patchNode", { key, value, save });
 		},
-		async onSave() {
-			// TODO migrate to new logic where saving is handled in parent
-			//this.blockingSaving = true;
-			await this.autoSaveManager?.onChange(this.unsavedChanges);
-			await this.autoSaveManager?.flush();
-			//this.blockingSaving = false;
-			this.$emit("closeEditor");
-			this.metaStore.showSuccessFeedback();
+		onSave() {
+			this.$emit("save");
 		},
-		async onBlur() {
-			await this.autoSaveManager?.flush();
+		onBlur() {
+			this.$emit("blur");
 		},
-		async onParentChange(parentId: string) {
-			console.log("PARENT CHANGE", parentId);
-			await this.onNodeChange("parent_id", parentId);
+		onParentChange(parentId: string) {
+			this.onNodeChange("parent_id", parentId);
 		},
 		async onPublish() {
-			this.blockingSaving = true;
-			await this.onNodeChange("state", AnnouncementNodeState.PUBLISHED);
-			if (!this.autoSave) {
-				await this.onSave();
-			}
-			this.blockingSaving = false;
+			this.onNodeChange("state", AnnouncementNodeState.PUBLISHED, true);
 		},
 		async onCreateAttachment(file) {
 			this.creatingAttachment = true;
@@ -262,13 +209,6 @@ export default defineComponent({
 	},
 	computed: {
 		...mapStores(useMainStore, useMetaStore),
-		computedModelValue() {
-			// when autosave is off, take into account unsaved changes too
-			if (this.autoSave) {
-				return this.modelValue;
-			}
-			return { ...this.modelValue, ...this.unsavedChanges };
-		},
 		// TODO refactor, duplicated with CourseTree
 		topicsAsOptions(): SelectableOption[] {
 			return [

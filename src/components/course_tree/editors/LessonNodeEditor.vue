@@ -81,7 +81,7 @@
 			<h3 class="mb-4">{{ $t("course_tree.lesson_attachments") }}</h3>
 			<div class="grid lg:grid-cols-2 lg:gap-6 gap-4 grid-cols-1">
 				<div v-for="fileNode in fileChildren" :key="fileNode.id">
-					<FileNode :canEdit="true" :node="fileNode" />
+					<FileNode :isDraggable="false" :canEdit="true" :node="fileNode" />
 				</div>
 				<FileUpload
 					:uploading="creatingAttachment"
@@ -181,6 +181,7 @@ export default defineComponent({
 			value: any, //CourseTreeNode[K],
 			save = false,
 		) {
+			// TODO extract shared behavior (mixin?)
 			this.$emit("patchNode", { key, value, save });
 		},
 		onSave() {
@@ -190,7 +191,6 @@ export default defineComponent({
 			this.$emit("blur");
 		},
 		onParentChange(parentId: string) {
-			console.log("PARENT CHANGE", parentId);
 			this.onNodeChange("parent_id", parentId);
 		},
 		async onPublish() {
