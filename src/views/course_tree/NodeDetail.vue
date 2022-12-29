@@ -39,6 +39,7 @@
 					@patchNode="onEditingNodeChange($event.key, $event.value, !!$event.save)"
 					@save="onSave()"
 					@closeEditor="onDismissEditor()"
+					@deleteNode="onDeleteNode($event)"
 				/>
 			</template>
 		</Dialog>

@@ -82,7 +82,12 @@
 			<h3 class="mb-4">{{ $t("course_tree.announcement_attachments") }}</h3>
 			<div class="grid lg:grid-cols-2 lg:gap-6 gap-4 grid-cols-1">
 				<div v-for="fileNode in fileChildren" :key="fileNode.id">
-					<FileNode :isDraggable="false" :canEdit="true" :node="fileNode" />
+					<FileNode
+						@deleteNode="$emit('deleteNode', $event)"
+						:isDraggable="false"
+						:canEdit="true"
+						:node="fileNode"
+					/>
 				</div>
 				<FileUpload
 					:uploadProgress="attachmentUploadProgress"
@@ -124,9 +129,9 @@ import { setErrorNotification } from "@/utils";
 import { defineComponent, PropType } from "@vue/runtime-core";
 import { mapStores } from "pinia";
 import FileNode from "../node/FileNode.vue";
-import { nodeEditorProps } from "../shared";
+import { nodeEditorEmits, nodeEditorProps } from "../shared";
 export default defineComponent({
-	name: "LessonNodeEditor",
+	name: "AnnouncementNodeEditor",
 	props: {
 		modelValue: {
 			type: Object as PropType<AnnouncementNode>,
@@ -134,6 +139,7 @@ export default defineComponent({
 		},
 		...nodeEditorProps,
 	},
+	emits: { ...nodeEditorEmits },
 	mixins: [courseIdMixin, savingMixin],
 	data() {
 		return {

@@ -81,6 +81,9 @@ export const nodeEditorEmits = {
 	}) {
 		return true;
 	},
+	deleteNode(node: CourseTreeNode) {
+		return true;
+	},
 	blur() {
 		return true;
 	},

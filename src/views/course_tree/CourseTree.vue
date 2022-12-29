@@ -130,6 +130,7 @@
 					@save="onEditingNodeSave()"
 					@closeEditor="onDismissNodeEditor()"
 					@blur="onEditorBlur()"
+					@deleteNode="onDeleteNode($event)"
 				/>
 			</template>
 		</Dialog>

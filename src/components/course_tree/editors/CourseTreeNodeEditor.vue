@@ -6,6 +6,7 @@
 		@patchNode="$emit('patchNode', $event)"
 		@blur="$emit('blur')"
 		@save="$emit('save')"
+		@deleteNode="$emit('deleteNode', $event)"
 	></component>
 </template>
 

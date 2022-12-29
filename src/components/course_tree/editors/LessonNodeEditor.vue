@@ -81,7 +81,12 @@
 			<h3 class="mb-4">{{ $t("course_tree.lesson_attachments") }}</h3>
 			<div class="grid lg:grid-cols-2 lg:gap-6 gap-4 grid-cols-1">
 				<div v-for="fileNode in fileChildren" :key="fileNode.id">
-					<FileNode :isDraggable="false" :canEdit="true" :node="fileNode" />
+					<FileNode
+						@deleteNode="$emit('deleteNode', $event)"
+						:isDraggable="false"
+						:canEdit="true"
+						:node="fileNode"
+					/>
 				</div>
 				<FileUpload
 					:uploadProgress="attachmentUploadProgress"
