@@ -51,6 +51,22 @@ export const examParticipationBreadCrumbs: BreadCrumb[] = [
 	},
 ];
 
+export const courseTreeBreadCrumbs: BreadCrumb[] = [
+	courseListBreadCrumb,
+	courseDashBoardBreadCrumb,
+	{
+		routeName: "CourseTreeDispatcher",
+		title: _("breadcrumbs.course_tree"),
+	},
+];
+
+export const courseTreeNodeBreadCrumbs: BreadCrumb[] = [
+	...courseTreeBreadCrumbs,
+	{
+		title: _("breadcrumbs.course_tree_node"),
+	},
+];
+
 export const practiceParticipationBreadCrumbs: BreadCrumb[] = [
 	courseListBreadCrumb,
 	courseDashBoardBreadCrumb,

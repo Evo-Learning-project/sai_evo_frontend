@@ -33,18 +33,22 @@
 </template>
 
 <script lang="ts">
-import { courseIdMixin, eventIdMixin } from "@/mixins";
+import { courseIdMixin, eventIdMixin, nodeIdMixin } from "@/mixins";
 import { BreadCrumb } from "@/navigation/breadcrumbs";
 import {
 	ROUTE_TITLE_COURSE_NAME_TOKEN,
 	ROUTE_TITLE_EVENT_NAME_TOKEN,
+	ROUTE_TITLE_NODE_NAME_TOKEN,
 } from "@/navigation/const";
+import { useMainStore } from "@/stores/mainStore";
 import { defineComponent, PropType } from "@vue/runtime-core";
+import { mapStores } from "pinia";
 import { RouteLocationNormalizedLoaded } from "vue-router";
+import { getCourseTreeNodeTitle } from "@/models";
 
 export default defineComponent({
 	name: "BreadCrumbs",
-	mixins: [courseIdMixin, eventIdMixin],
+	mixins: [courseIdMixin, eventIdMixin, nodeIdMixin],
 	props: {
 		route: {
 			type: Object as PropType<RouteLocationNormalizedLoaded>,
@@ -53,15 +57,18 @@ export default defineComponent({
 	},
 	methods: {
 		replaceTitleTokens(str: string) {
+			const currentNode = this.mainStore.getCourseTreeNodeById(this.nodeId);
 			return str
 				?.replace(ROUTE_TITLE_COURSE_NAME_TOKEN, this.currentCourse.name)
+				?.replace(ROUTE_TITLE_EVENT_NAME_TOKEN, this.currentEvent || this.previewingEvent)
 				?.replace(
-					ROUTE_TITLE_EVENT_NAME_TOKEN,
-					this.currentEvent || this.previewingEvent,
+					ROUTE_TITLE_NODE_NAME_TOKEN,
+					currentNode ? getCourseTreeNodeTitle(currentNode) : "",
 				);
 		},
 	},
 	computed: {
+		...mapStores(useMainStore),
 		breadcrumbs(): BreadCrumb[] {
 			return ((this.route.meta.breadcrumbs as BreadCrumb[]) ?? []).map(b => ({
 				...b,

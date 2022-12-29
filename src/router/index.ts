@@ -38,6 +38,8 @@ import {
 import { getTranslatedString as _ } from "@/i18n";
 import {
 	courseDashBoardBreadCrumbs,
+	courseTreeBreadCrumbs,
+	courseTreeNodeBreadCrumbs,
 	examAssessmentBreadCrumbs,
 	examParticipationBreadCrumbs,
 	examsListBreadCrumbs,
@@ -360,7 +362,7 @@ const routes: Array<RouteRecordRaw> = [
 						component: CourseTree,
 						meta: {
 							// routeTitle: _("headings.student_favorites"),
-							// breadcrumbs: studentFavoritesBreadCrumbs,
+							breadcrumbs: courseTreeBreadCrumbs,
 							sidebarOptions: studentDashboardSidebarOptions,
 						},
 					},
@@ -370,7 +372,7 @@ const routes: Array<RouteRecordRaw> = [
 						component: NodeDetail,
 						meta: {
 							// routeTitle: _("headings.student_favorites"),
-							// breadcrumbs: studentFavoritesBreadCrumbs,
+							breadcrumbs: courseTreeNodeBreadCrumbs,
 							sidebarOptions: studentDashboardSidebarOptions,
 						},
 					},

@@ -16,6 +16,7 @@ import {
 import {
 	ROUTE_TITLE_COURSE_NAME_TOKEN,
 	ROUTE_TITLE_EVENT_NAME_TOKEN,
+	ROUTE_TITLE_NODE_NAME_TOKEN,
 } from "@/navigation/const";
 import { GamificationAction } from "@/gamification";
 
@@ -1040,6 +1041,8 @@ export const it = {
 		submission_review: "Revisione " + ROUTE_TITLE_EVENT_NAME_TOKEN,
 		practice_review: "Riepilogo esercitazione",
 		exam_assessment: "Valutazione " + ROUTE_TITLE_EVENT_NAME_TOKEN,
+		course_tree: "Materiale",
+		course_tree_node: ROUTE_TITLE_NODE_NAME_TOKEN,
 		exercise_solution_thread: "Discussione esercizio",
 		exercise_solution_threads: "Esercizi popolari",
 		student_favorites: "Contenuti salvati",
