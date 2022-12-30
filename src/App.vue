@@ -344,13 +344,20 @@ export default defineComponent({
 	},
 	async created() {
 		if (this.metaStore.isAuthenticated) {
+			// TODO export to router - this is its concern
 			try {
 				await this.mainStore.getCourses();
-				// redirect to student view if attempting to access a teacher view unprivileged
+				// redirect to student view if attempting to access a teacher view unprivileged,
+				// or to unprivileged route specified in route meta
 				if (!this.hasAnyPrivileges && this.isTeacherRoute) {
-					this.$router.push(
-						this.metaStore.user?.is_teacher ? "/teacher/courses" : "/student/courses",
-					);
+					const redirectTo = this.$route.meta.unprivilegedRedirect as string | undefined;
+					this.$router.push({
+						name:
+							redirectTo ??
+							(this.metaStore.user?.is_teacher
+								? "TeacherCourseList"
+								: "StudentCourseList"),
+					});
 				}
 			} catch (e) {
 				console.log("Caught", e);

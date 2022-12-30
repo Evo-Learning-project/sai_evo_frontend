@@ -41,13 +41,12 @@ export const logOut = (showMessage = true, redirect = ""): void => {
 
 export const redirectToMainView = (): void => {
 	const metaStore = useMetaStore();
-
 	if (router.currentRoute.value.query.redirect) {
 		router.push(router.currentRoute.value.query.redirect as string);
 	} else if (metaStore.user.is_teacher) {
-		router.push("/teacher/courses");
+		router.push({ name: "TeacherCourseList" });
 	} else {
-		router.push("/student/courses");
+		router.push({ name: "StudentCourseList" });
 	}
 };
 

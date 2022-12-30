@@ -188,7 +188,7 @@ import { mapStores } from "pinia";
 import { icons as courseTreeNodeTypeIcons } from "@/assets/courseTreeNodeTypeIcons";
 import { getTranslatedString as _ } from "@/i18n";
 import Dialog from "@/components/ui/Dialog.vue";
-import { setErrorNotification } from "@/utils";
+import { setErrorNotification, setPageWideError } from "@/utils";
 import CourseTreeNodeEditor from "@/components/course_tree/editors/CourseTreeNodeEditor.vue";
 import TextInput from "@/components/ui/TextInput.vue";
 import { getCourseTopicNodes } from "@/api";
@@ -215,6 +215,7 @@ export default defineComponent({
 					courseId: this.courseId,
 					fromFirstPage: true,
 				}),
+			setPageWideError,
 		);
 		await this.mainStore.getCourseRootId({ courseId: this.courseId });
 		this.topics = await getCourseTopicNodes(this.courseId);

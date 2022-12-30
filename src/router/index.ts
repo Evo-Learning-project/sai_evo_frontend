@@ -146,6 +146,9 @@ const routes: Array<RouteRecordRaw> = [
 					routeTitle: _("headings.course_tree"),
 					sidebarOptions: courseDashboardSidebarOptions,
 					tags: ["permissions"],
+					// redirect to student version of the route if an
+					// unprivileged user tries to access this route
+					unprivilegedRedirect: "StudentCourseTree",
 				},
 			},
 			{
@@ -156,6 +159,9 @@ const routes: Array<RouteRecordRaw> = [
 					//routeTitle: _("headings.course_tree_node"),
 					sidebarOptions: courseDashboardSidebarOptions,
 					tags: ["permissions"],
+					// redirect to student version of the route if an
+					// unprivileged user tries to access this route
+					unprivilegedRedirect: "StudentNodeDetail",
 				},
 			},
 			/* end course_tree */
@@ -476,7 +482,6 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
 	const metaStore = useMetaStore();
-
 	if (metaStore.unsavedChanges) {
 		if (!confirm(_("misc.confirm_exiting_unsaved_changes"))) {
 			return false;
@@ -488,8 +493,9 @@ router.beforeEach((to, from, next) => {
 	if (!metaStore.isAuthenticated && to.name !== "Login") {
 		next({ name: "Login", query: { redirect: to.fullPath } });
 	} else if (to.meta.requireTeacher && !metaStore.user.is_teacher) {
-		// TODO redirect to CourseList
-		next({ name: "StudentCourseList" });
+		const DEFAULT_UNPRIVILEGED_REDIRECT_ROUTE = "StudentCourseList";
+		const redirectRoute = to.meta.unprivilegedRedirect as string | undefined;
+		next({ name: redirectRoute ?? DEFAULT_UNPRIVILEGED_REDIRECT_ROUTE });
 	} else {
 		next();
 	}
