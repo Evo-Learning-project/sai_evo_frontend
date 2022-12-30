@@ -8,6 +8,7 @@
 			:mimeType="node.mime_type"
 			:id="node.id + '-viewer'"
 			:downloading="downloading"
+			:size="node.file.size"
 		/>
 		<!-- 			v-if="base64Contents !== null"
 			:source="base64Contents"-->

@@ -4,12 +4,45 @@
 		style="z-index: 1000"
 		@click="$emit('viewerClose')"
 	/>
-	<!-- <div
-		class="fixed flex top-0 left-0 w-screen h-screen bg-transparent"
-		style="z-index: 1000"
-	> -->
+	<!-- control bar -->
 	<div
-		style="z-index: 1000"
+		style="z-index: 1002"
+		class="
+			flex
+			items-center
+			bg-dark
+			fixed
+			top-0
+			left-0
+			w-full
+			h-14
+			shadow-elevation
+			bg-opacity-90
+			px-2
+		"
+	>
+		<div class="mr-auto">
+			<Btn class="mr-2" :variant="'icon'" :outline="true" @click="$emit('viewerClose')">
+				<span class="material-icons-outlined text-lightText">close</span>
+			</Btn>
+		</div>
+		<div class="text-lightText flex items-center space-x-4">
+			<h3 class="">{{ filename }}</h3>
+		</div>
+		<div class="ml-auto">
+			<Btn
+				class="mr-2"
+				:loading="downloading"
+				:variant="'icon'"
+				:outline="true"
+				@click="$emit('download')"
+			>
+				<span class="material-icons-outlined text-lightText">file_download</span>
+			</Btn>
+		</div>
+	</div>
+	<div
+		style="z-index: 1001"
 		class="
 			fixed
 			top-1/2
@@ -19,50 +52,40 @@
 			shadow-all-around
 		"
 	>
-		<!-- <VideoPlayer
-			v-if="show"
-			width="1200"
-			controls
-			:loop="true"
-			:volume="0.6"
-			:src="{
-				src: url,
-				type: 'video/mp4',
-			}"
-			@mounted="onPlayerMounted($event)"
-		/> -->
+		<video controls v-if="videoSrc">
+			<source :src="videoSrc" />
+			<p>{{ $t("misc.no_native_video_support") }}</p>
+		</video>
+		<!-- loading placeholder -->
+		<div v-else class="relative">
+			<LinearProgress :progress="downloadProgress" class="absolute top-0 rounded-t-sm" />
+			<div style="width: 650px; height: 350px" class="bg-gray-600 rounded-sm"></div>
+		</div>
 	</div>
-
-	<!-- 			src="http://img-ys011.didistatic.com/static/didiglobal/do1_pcUZZjSG7vFlMbdr8fA6#.mp4"
- -->
-	<!-- </div> -->
-
-	<!-- 		
-        		poster="/your-path/poster.jpg"
-...
-		@mounted="..."
-		@ready="..."
-		@play="..."
-		@pause="..."
-		@ended="..."
-		@seeking="..."
-		...-->
 </template>
 
-<script>
+<script lang="ts">
 // import { VideoPlayer } from "@videojs-player/vue";
 import "video.js/dist/video-js.css";
 import { fileViewerProps } from "./shared";
 
 import { defineComponent, PropType } from "@vue/runtime-core";
+import Btn from "../ui/Btn.vue";
+import { fileViewerMixin } from "@/mixins";
+import LinearProgress from "../ui/LinearProgress.vue";
 export default defineComponent({
 	name: "VideoViewer",
 	props: {
 		...fileViewerProps,
 	},
+	mixins: [fileViewerMixin],
+	async created() {
+		await this.downloadNodeFile();
+		this.videoSrc = (window.URL || window.webkitURL).createObjectURL(
+			new Blob([this.blobSource]),
+		);
+	},
 	mounted() {
-		setTimeout(() => (this.show = true), 50);
-
 		const bodyContainsOverflowHidden =
 			document.body.classList.contains("overflow-y-hidden");
 		if (!bodyContainsOverflowHidden) {
@@ -78,24 +101,20 @@ export default defineComponent({
 	},
 	data() {
 		return {
-			show: false,
+			videoSrc: null as string | null,
+			downloadProgress: undefined as undefined | number,
 		};
 	},
 	methods: {
-		onPlayerMounted(evt) {
-			console.log("player mounted, ", evt);
-			const playerInstance = evt.player;
-			// playerInstance.Hls.xhr.beforeRequest = options => {
-			// 	options.headers = options.headers || {};
-			// 	options.headers.Authorization =
-			// 		"Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJURUxAMTIzNDUiLCJuYmYiOjE2MjMzMjY5MjMsImlzcyI6Ik5DUEFfQ0xJRU5UIiwiZXhwIjoxNjIzMzI3NTIzfQ.eH271E8JUgGvP85Se77OiPNFQvTuTUpa1SGuzBYq8UY";
-			// 	console.log("options", options);
-			// 	return options;
-			// };
+		onDownloadProgress(e: { loaded: number }) {
+			const downloaded = e.loaded;
+			this.downloadProgress = (downloaded / this.size) * 100;
+			console.log({ e, p: this.downloadProgress });
 		},
 	},
 	components: {
-		//VideoPlayer,
+		Btn,
+		LinearProgress,
 	},
 });
 </script>

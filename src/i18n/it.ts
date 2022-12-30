@@ -207,6 +207,8 @@ export const it = {
 		donate_now: "Dona ora",
 	},
 	misc: {
+		no_native_video_support:
+			"Il tuo browser non supporta la riproduzione video HTML5. Scarica il file per visualizzarlo.",
 		show_all: "Mostra tutti",
 		show_more: "Mostra di più",
 		share: "Condividi",

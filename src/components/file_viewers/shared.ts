@@ -14,6 +14,10 @@ export const fileViewerProps = {
 		type: String,
 		required: true as const,
 	},
+	size: {
+		type: Number,
+		required: true as const,
+	},
 	mimeType: {
 		type: String,
 		default: "" as const,
