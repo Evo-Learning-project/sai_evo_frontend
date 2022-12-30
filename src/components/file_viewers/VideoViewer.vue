@@ -65,8 +65,6 @@
 </template>
 
 <script lang="ts">
-// import { VideoPlayer } from "@videojs-player/vue";
-import "video.js/dist/video-js.css";
 import { fileViewerProps } from "./shared";
 
 import { defineComponent, PropType } from "@vue/runtime-core";
@@ -82,7 +80,7 @@ export default defineComponent({
 	async created() {
 		await this.downloadNodeFile();
 		this.videoSrc = (window.URL || window.webkitURL).createObjectURL(
-			new Blob([this.blobSource]),
+			new Blob([this.arrayBufferSource as ArrayBuffer]),
 		);
 	},
 	mounted() {

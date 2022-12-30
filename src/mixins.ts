@@ -38,18 +38,18 @@ export const fileViewerMixin = {
 		return {
 			downloading: false,
 			source: "",
-			blobSource: null as null | Blob,
+			arrayBufferSource: null as null | ArrayBuffer,
 		};
 	},
 	methods: {
 		async downloadNodeFile() {
 			const self = this as any;
 			self.downloading = true;
-			const fileBlob = await downloadFileNode(self.url, e =>
+			const fileArrayBuffer = await downloadFileNode(self.url, e =>
 				self.onDownloadProgress?.(e),
 			);
-			self.source = arraybufferToBase64(fileBlob);
-			self.blobSource = fileBlob;
+			self.source = arraybufferToBase64(fileArrayBuffer);
+			self.arrayBufferSource = fileArrayBuffer;
 			self.downloading = false;
 		},
 	},
