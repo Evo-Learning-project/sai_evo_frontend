@@ -215,6 +215,16 @@
 		<footer
 			class="flex items-center w-full h-12 px-6 py-3 mt-auto text-sm text-white bg-dark"
 		>
+			<p class="">
+				<!-- <span class="mr-0.5">&copy;</span> -->
+				<a
+					target="_blank"
+					class="font-semibold text-indigo-400 hover:underline"
+					href="https://evo-learning.com"
+					>Evo Learning</a
+				>
+			</p>
+			<p class="mx-2">&#183;</p>
 			<p>
 				Crafted with ❤️ by
 				<a

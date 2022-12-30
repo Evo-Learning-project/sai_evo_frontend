@@ -33,8 +33,8 @@ export const nodeEmits = {
 	}: {
 		node: CourseTreeNode;
 		fromFirstPage: boolean;
-		resolveFn: (moreResults: boolean) => void;
-		rejectFn: (error: any) => void;
+		resolveFn?: (moreResults: boolean) => void;
+		rejectFn?: (error: any) => void;
 	}) {
 		return true;
 	},
