@@ -44,6 +44,8 @@ export const it = {
 		remove_filters: "Rimuovi filtri",
 	},
 	login_screen: {
+		entering_you_agree_to: "Entrando accetti i nostri",
+		login_with_google: "Entra con Google",
 		login: "Entra",
 		login_text: "Effettua l'accesso con la tua email",
 		warning: "Attenzione",
@@ -207,6 +209,7 @@ export const it = {
 		donate_now: "Dona ora",
 	},
 	misc: {
+		terms_and_conditions: "termini e condizioni",
 		no_native_video_support:
 			"Il tuo browser non supporta la riproduzione video HTML5. Scarica il file per visualizzarlo.",
 		show_all: "Mostra tutti",

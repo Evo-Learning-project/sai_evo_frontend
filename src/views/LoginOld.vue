@@ -1,17 +1,198 @@
 <template>
-	<div class="flex h-screen w-screen -mx-2 md:-mx-6 lg:-mx-10 -my-4">
-		<!-- login column -->
-		<div class="flex w-2/3 flex-col items-center h-full px-2 md:px-6 py-6">
-			<img src="@/assets/logo.png" style="width: 80%" />
+	<div class="flex flex-col h-full">
+		<Spinner v-if="loading" />
+		<div class="flex flex-col h-full">
+			<!-- <div class="flex items-center">
+				<img src="../assets/logo1.png" />
+				<img src="../assets/logo2.png" />
+			</div> -->
+			<!-- <div class="flex flex-col space-y-2 relative w-max">
+				<div
+					class="top-0 w-20 h-20 text-white absolute"
+					style="
+						width: 120px;
+						height: 80px;
+						top: 0;
+						left: -77px;
+						transform: rotate(125deg);
+					"
+				>
+					<svg
+						style="fill: rgba(255, 255, 255, 0.2)"
+						viewBox="0 0 10 5"
+						xmlns="http://www.w3.org/2000/svg"
+					>
+						<ellipse cx="5" cy="2" rx="5" ry="2" />
+					</svg>
+				</div>
 
-			<!-- main area -->
-			<div class="my-auto flex items-center flex-col">
-				<h1 class="mx-auto mb-8 text-5xl text-center">
+				<div
+					class="top-0 w-20 h-20 text-white absolute"
+					style="
+						width: 120px;
+						height: 80px;
+						top: 16.5px;
+						right: -44px;
+						transform: rotate(90deg);
+					"
+				>
+					<svg
+						style="fill: rgba(255, 255, 255, 1)"
+						viewBox="0 0 100 100"
+						xmlns="http://www.w3.org/2000/svg"
+					>
+						<ellipse cx="14.5" cy="14.5" rx="15.5" ry="10.5" />
+					</svg>
+				</div>
+				<div
+					class="top-0 w-20 h-20 text-white absolute"
+					style="
+						width: 120px;
+						height: 80px;
+						top: 88.25px;
+						right: -44px;
+						transform: rotate(90deg);
+					"
+				>
+					<svg
+						style="fill: rgba(255, 255, 255, 1)"
+						viewBox="0 0 100 100"
+						xmlns="http://www.w3.org/2000/svg"
+					>
+						<ellipse cx="14.5" cy="14.5" rx="15.5" ry="10.5" />
+					</svg>
+				</div>
+				<div
+					class="top-0 w-20 h-20 text-white absolute"
+					style="
+						width: 120px;
+						height: 35px;
+						top: 75px;
+						right: -22px;
+						transform: rotate(90deg);
+					"
+				>
+					<svg
+						style="fill: rgba(255, 255, 255, 1)"
+						viewBox="0 0 100 100"
+						xmlns="http://www.w3.org/2000/svg"
+					>
+						<ellipse cx="14.5" cy="14.5" rx="15.5" ry="10.5" />
+					</svg>
+				</div>
+
+				<div
+					style="
+						width: 7.3rem;
+						background: url('https://www.evo-learning.com/img/hero-bg.png');
+						border-top-left-radius: 0.65rem /* 12px */;
+						border-bottom-left-radius: 0.65rem /* 12px */;
+					"
+					class="
+						border-4 border-primary-dark
+						rounded-l-xl rounded-sm
+						h-7
+						text-transparent
+					"
+				></div>
+				<div
+					style="
+						background-color: #5f21d4;
+						width: 4.5rem;
+						border-top-left-radius: 0.65rem /* 12px */;
+						border-bottom-left-radius: 0.65rem /* 12px */;
+					"
+					class="
+						rounded-sm
+						border-4 border-primary-dark
+						rounded-l-xl
+						h-7
+						text-transparent
+					"
+				></div>
+				<div
+					style="
+						width: 7.3rem;
+						background-color: #5434dc;
+						border-top-left-radius: 0.65rem /* 12px */;
+						border-bottom-left-radius: 0.65rem /* 12px */;
+					"
+					class="
+						rounded-sm
+						border-4 border-primary-dark
+						rounded-l-xl
+						h-7
+						text-transparent
+					"
+				>
+					<div
+						class="absolute w-full bg-white"
+						style="top: 14.5px; height: 0.25px; left: 5.25px; opacity: 10%"
+					></div>
+					<div
+						class="absolute w-full bg-white"
+						style="top: 19.5px; height: 0.25px; opacity: 10%"
+					></div>
+					<div
+						class="absolute w-full bg-white"
+						style="top: 24.5px; height: 0.25px; opacity: 10%"
+					></div>
+					<div
+						class="absolute w-full bg-white"
+						style="top: 29.5px; height: 0.25px; left: 5.35px; opacity: 10%"
+					></div>
+
+					<div
+						class="absolute w-full bg-white"
+						style="top: 52.5px; height: 0.25px; left: 4.25px; opacity: 15%"
+					></div>
+					<div
+						class="absolute w-full bg-white"
+						style="top: 58px; height: 0.25px; opacity: 15%"
+					></div>
+					<div
+						class="absolute w-full bg-white"
+						style="top: 64px; height: 0.25px; left: 4.35px; opacity: 15%"
+					></div>
+
+					<div
+						class="absolute w-full bg-white"
+						style="top: 86.5px; left: 5.25px; height: 0.25px; opacity: 15%"
+					></div>
+					<div
+						class="absolute w-full bg-white"
+						style="top: 91.5px; height: 0.25px; opacity: 15%"
+					></div>
+					<div
+						class="absolute w-full bg-white"
+						style="top: 96.5px; height: 0.25px; opacity: 15%"
+					></div>
+					<div
+						class="absolute w-full bg-white"
+						style="top: 101.5px; left: 5.35px; height: 0.25px; opacity: 15%"
+					></div>
+				</div>
+			</div> -->
+			<h1 class="mb-0 mx-auto text-5xl text-center text-primary">Evo Learning</h1>
+			<div
+				class="
+					w-11/12
+					pb-12
+					m-auto
+					text-center
+					rounded
+					bg-gray-50
+					pt-11
+					lg:px-52 lg:w-max
+					login-card
+				"
+			>
+				<h1 class="mx-auto mb-8 text-4xl text-center">
 					{{ $t("headings.login") }}
 				</h1>
 				<div
 					style="width: 150px; height: 150px"
-					class="mx-auto bg-opacity-100 rounded-full bg-primary shadow-elevation-2"
+					class="mx-auto bg-opacity-100 rounded-full bg-secondary shadow-elevation-2"
 				>
 					<!-- <span class="text-gray-300 text-8xl material-symbols-outlined">
             account_circle
@@ -63,101 +244,15 @@
 						:variant="'secondary'"
 						:size="'lg'"
 						class="md:w-max"
-						style="background: white !important"
 						:disabled="!googleOauthReady || localLoading || disableLogin"
 						:loading="(!googleOauthReady && !googleOauthHadError) || localLoading"
 					>
-						<!-- <img class="mr-2.5" style="width: 22px" src="@/assets/google.png" /> -->
-						<img class="mr-2.5" style="width: 30px" src="@/assets/unipi.png" />
-						<!-- <span class="mr-2 text-xl material-icons">lock</span> -->
+						<span class="mr-2 text-xl material-icons">lock</span>
 						{{ $t("login_screen.login") }}
 					</Btn>
 				</div>
 			</div>
-
-			<!-- copyright & info-->
-			<div class="mt-auto w-full text-sm">
-				<!-- terms & conditions-->
-				<div class="mb-4">
-					<p class="text-xs text-muted">
-						{{ $t("login_screen.entering_you_agree_to") }}
-						<span class="text-primary hover:underline cursor-pointer"
-							>{{ $t("misc.terms_and_conditions") }} </span
-						>.
-					</p>
-				</div>
-				<div class="flex items-center">
-					<p class="">
-						<span class="mr-0.5">&copy;</span>
-						<a
-							target="_blank"
-							class="font-semibold text-primary hover:underline"
-							href="https://evo-learning.com"
-							>Evo Learning</a
-						>
-					</p>
-					<p class="mx-2">&#183;</p>
-					<p>
-						Crafted with ❤️ by
-						<a
-							target="_blank"
-							class="font-semibold text-primary hover:underline"
-							href="http://bsamu.it"
-							>Samuele Bonini</a
-						>
-					</p>
-				</div>
-			</div>
-
-			<!-- </div> -->
 		</div>
-		<!-- hero column-->
-		<div class="w-full flex h-full px-2 md:px-6 lg:px-10 py-4 hero-bg">
-			<img
-				class="m-auto"
-				style="width: 400px"
-				src="https://www.evo-learning.com/img/undraw_6.svg"
-			/>
-		</div>
-		<!-- <div
-			class="
-				w-full
-				overflow-hidden
-				relative
-				h-full
-				bg-gradient
-				grad-bg
-				px-2
-				md:px-6
-				lg:px-10
-				py-4
-			"
-		>
-			<div
-				class="
-					absolute
-					zigzag-pattern
-					w-1/2
-					h-96
-					-top-40
-					-left-40
-					opacity-80
-					rounded-xl
-					-rotate-45
-					transform
-				"
-			></div>
-			<div
-				style="
-					height: 800px;
-					width: 800px;
-					bottom: -500px;
-					right: -500px;
-					border-radius: 500px;
-				"
-				class="absolute patterns opacity-40"
-			></div>
-		</div> -->
 		<v-tour
 			name="demoTour"
 			:steps="demoLoginTourSteps"
@@ -171,6 +266,8 @@
 /* eslint-disable */
 import Btn from "@/components/ui/Btn.vue";
 import { inject, toRefs } from "vue";
+//import { getMainView } from '@/router'
+import Spinner from "@/components/ui/Spinner.vue";
 import { defineComponent } from "@vue/runtime-core";
 import { loadingMixin } from "@/mixins";
 import {
@@ -179,7 +276,7 @@ import {
 	redirectToMainView,
 	setErrorNotification,
 } from "@/utils";
-import { getTranslatedString as _ } from "@/i18n";
+import { getTranslatedString } from "@/i18n";
 import { demoLoginTourSteps, tourOptions } from "@/const";
 import { mapStores } from "pinia";
 import { useMetaStore } from "@/stores/metaStore";
@@ -190,10 +287,10 @@ export default defineComponent({
 	name: "Login",
 	components: {
 		Btn,
+		Spinner,
 	},
 	watch: {
 		googleOauthReady(newVal) {
-			// trigger demo tour
 			if (newVal && isDemoMode() && !(DEMO_TOUR_KEY in localStorage)) {
 				setTimeout(() => ((this as any).$tours["demoTour"] as any).start(), 50);
 				this.disableLogin = true;
@@ -220,26 +317,23 @@ export default defineComponent({
 				await this.withLocalLoading(
 					async () => {
 						const googleUser = await this.$gAuth.signIn();
+						console.log(googleUser);
 						if (!googleUser) {
 							return null;
 						}
 						this.user = googleUser.getBasicProfile().getEmail();
 						const token = googleUser.getAuthResponse().access_token;
-
 						await this.metaStore.convertToken(token);
 						await this.metaStore.getUserData();
+						console.log("main", redirectToMainView, "err", setErrorNotification);
 
 						redirectToMainView();
-
 						// TODO if you use this.setErroNotification, this is undefined - investigate (hint: it has to do something with the mixin and possibily the store)
-						setErrorNotification(_("misc.logged_in"), true);
+						setErrorNotification(getTranslatedString("misc.logged_in"), true);
 					},
-					// different error handling depending on whether in demo mode
 					isDemoMode() ? this.redirectToDemoPage : this.setErrorNotification,
 				);
 			} catch (error) {
-				// TODO handle special errors like email domain unauthorized
-				console.error("sign in error", error);
 				throw error;
 			}
 		},
@@ -276,38 +370,5 @@ export default defineComponent({
 <style>
 .login-card {
 	box-shadow: rgba(60, 64, 67, 0.3) 0 4px 4px 0, rgba(60, 64, 67, 0.15) 0 8px 12px 6px;
-}
-.patterns {
-	background-color: #ffffff00;
-	opacity: 1;
-	background-image: radial-gradient(
-		ellipse farthest-corner at 13px 13px,
-		rgba(41, 111, 249, 1),
-		rgba(51, 96, 243, 1) 50%,
-		#ffffff00 50%
-	);
-	background-size: 13px 13px;
-}
-
-.dot-patterns {
-	background-image: radial-gradient(rgba(51, 96, 243, 1) 1.5px, #e5e5f700 0.5px);
-	background-size: 20px 20px;
-}
-
-.hero-bg {
-	background-image: url("~@/assets/hero-bg.png");
-	background-size: contain;
-}
-
-.zigzag-pattern {
-	background-color: #ffffff00;
-	opacity: 1;
-	background-image: linear-gradient(135deg, rgba(97, 30, 210, 1) 25%, transparent 25%),
-		linear-gradient(225deg, rgba(97, 30, 210, 1) 25%, transparent 25%),
-		linear-gradient(45deg, rgba(97, 30, 210, 1) 25%, transparent 25%),
-		linear-gradient(315deg, rgba(97, 30, 210, 1) 25%, #ffffff00 25%);
-	background-position: 13px 0, 13px 0, 0 0, 0 0;
-	background-size: 26px 26px;
-	background-repeat: repeat;
 }
 </style>

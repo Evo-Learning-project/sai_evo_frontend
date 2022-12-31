@@ -14,6 +14,7 @@
 			<!-- top app bar -->
 			<div class="sticky top-0" style="z-index: 1000">
 				<AppBar
+					v-if="showAppBar"
 					:showCollapseSideBarButton="showSidebar"
 					:showMobileSidebarButton="showSidebar"
 					@toggleSidebarCollapsed="onToggleCollapseSidebar()"
@@ -213,6 +214,7 @@
 			</div>
 		</div>
 		<footer
+			v-if="showFooter"
 			class="flex items-center w-full h-12 px-6 py-3 mt-auto text-sm text-white bg-dark"
 		>
 			<p class="">
@@ -419,6 +421,12 @@ export default defineComponent({
 		},
 	},
 	computed: {
+		showAppBar() {
+			return this.$route.name !== "Login";
+		},
+		showFooter() {
+			return this.$route.name !== "Login";
+		},
 		currentCourse() {
 			return this.mainStore.getCourseById(
 				this.$router.currentRoute.value.params.courseId as any as string,
@@ -489,7 +497,8 @@ export default defineComponent({
 			return (
 				!this.$route.matched.map(m => m.name).includes("StudentCourseDashboard") &&
 				!this.isTeacherRoute &&
-				this.$route.name !== "StudentCourseList"
+				this.$route.name !== "StudentCourseList" &&
+				this.$route.name !== "Login"
 			);
 		},
 	},
