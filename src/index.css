@@ -62,6 +62,30 @@
 		white-space: pre-wrap;
 	}
 
+	.hero-icon {
+		@apply shadow-all-around
+		opacity-40
+		w-max
+		absolute
+		bg-purple-500
+		text-purple-700
+		rounded-md
+		px-5
+		pt-5
+		pb-3;
+		transition: opacity 0.5s ease, transform 0.5s ease;
+		height: max-content;
+	}
+
+	.hero-hidden {
+		@apply opacity-0;
+		transform: translateY(10px);
+	}
+
+	.hero-icon:hover {
+		transform: translateY(-10px);
+	}
+
 	.grad-bg {
 		--grad-start: rgba(115, 5, 253, 1);
 		--grad-mid-1: rgba(97, 30, 210, 1);

@@ -44,7 +44,7 @@ export const it = {
 		remove_filters: "Rimuovi filtri",
 	},
 	login_screen: {
-		entering_you_agree_to: "Entrando accetti i nostri",
+		entering_you_agree_to: "Usufruendo del servizio accetti i nostri",
 		login_with_google: "Entra con Google",
 		login: "Entra",
 		login_text: "Effettua l'accesso con la tua email",

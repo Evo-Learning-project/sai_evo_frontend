@@ -1,28 +1,44 @@
 <template>
-	<div class="flex h-screen w-screen -mx-2 md:-mx-6 lg:-mx-10 -my-4">
+	<div class="md:flex h-full md:h-screen md:w-screen md:-mx-6 lg:-mx-10 -my-2 md:-my-4">
 		<!-- login column -->
-		<div class="flex w-2/3 flex-col items-center h-full px-2 md:px-6 py-6">
-			<img src="@/assets/logo.png" style="width: 80%" />
+		<div
+			class="flex relative md:w-4/5 flex-col items-center h-full md:shadow-elevation-2"
+		>
+			<img src="@/assets/logo.png" class="mt-4 md:w-8/12 w-10/12" />
 
 			<!-- main area -->
-			<div class="my-auto flex items-center flex-col">
+			<div
+				class="
+					absolute
+					top-1/2
+					transform
+					-translate-x-1/2 -translate-y-1/2
+					left-1/2
+					flex
+					items-center
+					flex-col
+				"
+			>
 				<h1 class="mx-auto mb-8 text-5xl text-center">
 					{{ $t("headings.login") }}
 				</h1>
 				<div
 					style="width: 150px; height: 150px"
-					class="mx-auto bg-opacity-100 rounded-full bg-primary shadow-elevation-2"
+					class="mx-auto flex bg-opacity-100 rounded-full bg-primary shadow-elevation-2"
 				>
 					<!-- <span class="text-gray-300 text-8xl material-symbols-outlined">
             account_circle
           </span> -->
-					<span style="font-size: 145px" class="opacity-100 material-icons text-light">
+					<span
+						style="font-size: 145px"
+						class="opacity-100 material-icons m-auto text-light"
+					>
 						person
 					</span>
 				</div>
 				<div
 					v-if="googleOauthHadError"
-					class="mx-4 lg:-mx-48 space-x-3 banner banner-danger mt-6"
+					class="mx-4 px-4 space-x-3 banner banner-danger mt-6"
 				>
 					<div
 						style="width: 40px; height: 40px; padding-left: 2.5px"
@@ -74,18 +90,17 @@
 					</Btn>
 				</div>
 			</div>
-
+			<!-- terms & conditions-->
+			<div class="mb-1 mt-auto mr-auto ml-2 md:ml-4">
+				<p class="text-xs text-muted">
+					{{ $t("login_screen.entering_you_agree_to") }}
+					<span class="text-primary hover:underline cursor-pointer"
+						>{{ $t("misc.terms_and_conditions") }} </span
+					>.
+				</p>
+			</div>
 			<!-- copyright & info-->
-			<div class="mt-auto w-full text-sm">
-				<!-- terms & conditions-->
-				<div class="mb-4">
-					<p class="text-xs text-muted">
-						{{ $t("login_screen.entering_you_agree_to") }}
-						<span class="text-primary hover:underline cursor-pointer"
-							>{{ $t("misc.terms_and_conditions") }} </span
-						>.
-					</p>
-				</div>
+			<div class="w-full text-sm px-2 md:px-4 py-4 bg-light">
 				<div class="flex items-center">
 					<p class="">
 						<span class="mr-0.5">&copy;</span>
@@ -112,12 +127,54 @@
 			<!-- </div> -->
 		</div>
 		<!-- hero column-->
-		<div class="w-full flex h-full px-2 md:px-6 lg:px-10 py-4 hero-bg">
-			<img
-				class="m-auto"
-				style="width: 400px"
-				src="https://www.evo-learning.com/img/undraw_6.svg"
+		<div class="w-full relative hidden md:flex h-full px-2 md:px-6 lg:px-10 py-4 hero-bg">
+			<div
+				style="top: 10%; left: 70%"
+				class="hero-icon"
+				:class="{ 'hero-hidden': !showIcons }"
+			>
+				<span style="font-size: 72px !important" class="material-icons">code</span>
+			</div>
+			<div
+				style="bottom: 10%; right: 70%"
+				class="hero-icon"
+				:class="{ 'hero-hidden': !showIcons }"
+			>
+				<span style="font-size: 72px !important" class="material-icons"
+					>assignment_turned_in</span
+				>
+			</div>
+			<div
+				style="bottom: 30%; right: 10%"
+				class="hero-icon"
+				:class="{ 'hero-hidden': !showIcons }"
+			>
+				<span style="font-size: 72px !important" class="material-icons">book</span>
+			</div>
+			<div
+				style="top: 32.5%; left: 10%"
+				class="hero-icon"
+				:class="{ 'hero-hidden': !showIcons }"
+			>
+				<span style="font-size: 72px !important" class="material-icons">bar_chart</span>
+			</div>
+			<div
+				style="position: relative !important"
+				class="hero-icon m-auto"
+				:class="{ 'hero-hidden': !showIcons }"
+			>
+				<span style="font-size: 72px !important" class="material-icons">school</span>
+			</div>
+			<!-- <img
+				class="absolute top-0 right-0 mt-24 mr-24 filter drop-shadow-lg"
+				style="width: 375px"
+				src="@/assets/hero/undraw_6.svg"
 			/>
+			<img
+				class="absolute filter drop-shadow-lg bottom-0 left-0 mb-12 ml-12"
+				style="width: 300px"
+				src="@/assets/hero/undraw_teaching_re_g7e3.svg"
+			/> -->
 		</div>
 		<!-- <div
 			class="
@@ -207,6 +264,7 @@ export default defineComponent({
 			disableLogin: false,
 			demoLoginTourSteps,
 			tourOptions,
+			showIcons: false,
 		};
 	},
 	mixins: [loadingMixin],
@@ -261,6 +319,9 @@ export default defineComponent({
 			redirectToMainView();
 		}
 	},
+	mounted() {
+		setTimeout(() => (this.showIcons = true), 10);
+	},
 	computed: {
 		...mapStores(useMetaStore),
 		googleOauthReady() {
@@ -289,6 +350,10 @@ export default defineComponent({
 	background-size: 13px 13px;
 }
 
+#login-btn:hover {
+	filter: brightness(0.9825);
+}
+
 .dot-patterns {
 	background-image: radial-gradient(rgba(51, 96, 243, 1) 1.5px, #e5e5f700 0.5px);
 	background-size: 20px 20px;
@@ -296,7 +361,8 @@ export default defineComponent({
 
 .hero-bg {
 	background-image: url("~@/assets/hero-bg.png");
-	background-size: contain;
+	background-size: cover;
+	background-repeat: no-repeat;
 }
 
 .zigzag-pattern {
