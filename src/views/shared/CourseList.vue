@@ -46,6 +46,7 @@
 					:key="'course-' + course.id"
 					:course="course"
 					:id="index === 0 ? 'course-0' : ''"
+					@toggleFavorite="onCourseToggleFavorite(course)"
 				></CourseListItem>
 			</div>
 		</div>
@@ -152,6 +153,11 @@ export default defineComponent({
 			);
 			this.metaStore.showSuccessFeedback();
 		},
+		async onCourseToggleFavorite(course: Course) {
+			const remove = !!course.bookmarked;
+			await this.mainStore.bookmarkCourse({ courseId: course.id, remove });
+			// TODO if adding a bookmark and courses moves out of view, show some kind of feedback
+		},
 	},
 	computed: {
 		...mapStores(useMainStore, useMetaStore),
@@ -173,6 +179,11 @@ export default defineComponent({
 		},
 		coursesSorted() {
 			return [...this.mainStore.courses].sort((a, b) => {
+				if (b.bookmarked) {
+					// TODO this doesn't seem to work with teachers - fix
+					// bookmarked courses first
+					return a.bookmarked ? -1 : 1;
+				}
 				if (a.creator?.id == this.metaStore.user.id) {
 					// courses the user is creator of go first
 					return b.creator?.id == this.metaStore.user.id ? 0 : -1;

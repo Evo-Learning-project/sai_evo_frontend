@@ -2,7 +2,7 @@
 	<div class="md:flex h-full md:h-screen md:w-screen md:-mx-6 lg:-mx-10 -my-2 md:-my-4">
 		<!-- login column -->
 		<div
-			class="flex relative md:w-4/5 flex-col items-center h-full md:shadow-elevation-2"
+			class="flex relative md:w-11/12 flex-col items-center h-full md:shadow-elevation-2"
 		>
 			<img src="@/assets/logo.png" class="mt-4 md:w-8/12 w-10/12" />
 
@@ -360,6 +360,16 @@ export default defineComponent({
 }
 
 .hero-bg {
+	--grad-start: rgba(115, 5, 253, 1);
+	--grad-mid-1: rgba(97, 30, 210, 1);
+	--grad-mid-2: rgba(51, 96, 243, 1);
+	--grad-end: rgba(41, 111, 249, 1);
+	background: linear-gradient(
+		150deg,
+		var(--grad-start) 0%,
+		var(--grad-mid-1) 25%,
+		var(--grad-mid-2) 83% /* var(--grad-end) 100% */
+	);
 	background-image: url("~@/assets/hero-bg.png");
 	background-size: cover;
 	background-repeat: no-repeat;

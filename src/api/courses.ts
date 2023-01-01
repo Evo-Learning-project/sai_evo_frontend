@@ -14,6 +14,15 @@ export async function getCourses(): Promise<Course[]> {
 	return response?.data ?? [];
 }
 
+export async function setCourseBookmark(
+	courseId: string,
+	remove: boolean,
+): Promise<Course> {
+	const method = remove ? "delete" : "put";
+	const response = await axios[method](`/courses/${courseId}/bookmark/`);
+	return response.data;
+}
+
 export async function getCourseGamificationContext(
 	courseId: string,
 ): Promise<GamificationContext> {

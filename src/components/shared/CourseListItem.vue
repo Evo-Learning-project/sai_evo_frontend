@@ -145,7 +145,9 @@
 			<div class="ml-auto flex items-center mt-auto">
 				<!-- TODO implement -->
 				<Btn :variant="'icon'" @click="$emit('toggleFavorite')" :outline="true"
-					><span class="material-icons">bookmark_outline</span></Btn
+					><span class="material-icons">{{
+						course.bookmarked ? "bookmark" : "bookmark_outline"
+					}}</span></Btn
 				>
 				<CopyToClipboard
 					:iconOnly="true"

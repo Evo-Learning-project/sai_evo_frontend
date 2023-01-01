@@ -50,6 +50,7 @@ export interface Course {
 	privileges?: CoursePrivilege[];
 	hidden?: boolean;
 	creator?: User;
+	bookmarked?: boolean;
 
 	// student fields
 	participations?: EventParticipation[];

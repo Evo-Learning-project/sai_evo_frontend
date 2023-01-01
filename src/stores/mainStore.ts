@@ -55,6 +55,7 @@ import {
 	participateInEvent,
 	removeTagFromExercise,
 	runEventParticipationSlotCode,
+	setCourseBookmark,
 	setExerciseSolutionBookmark,
 	updateCourse,
 	updateEvent,
@@ -1423,6 +1424,18 @@ export const useMainStore = defineStore("main", {
 		async createCourse(course: Course) {
 			const newCourse = await createCourse(course);
 			return newCourse;
+		},
+		async bookmarkCourse({
+			courseId,
+			remove,
+		}: CourseIdActionPayload & { remove: boolean }) {
+			const updatedCourse = await setCourseBookmark(courseId, remove);
+			const oldCourse = this.getCourseById(courseId);
+			if (!oldCourse) {
+				throw new Error("updateCourse couldn't find course with id " + courseId);
+			}
+			Object.assign(oldCourse, updatedCourse);
+			return updatedCourse;
 		},
 		async updateCourse(course: Course) {
 			const updatedCourse = await updateCourse(course.id, course);
