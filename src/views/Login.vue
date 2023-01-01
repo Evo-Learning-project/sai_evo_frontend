@@ -106,7 +106,7 @@
 						<span class="mr-0.5">&copy;</span>
 						<a
 							target="_blank"
-							class="font-semibold text-primary hover:underline"
+							class="font-medium text-primary hover:underline"
 							href="https://evo-learning.com"
 							>Evo Learning</a
 						>
@@ -116,7 +116,7 @@
 						Crafted with ❤️ by
 						<a
 							target="_blank"
-							class="font-semibold text-primary hover:underline"
+							class="font-medium text-primary hover:underline"
 							href="http://bsamu.it"
 							>Samuele Bonini</a
 						>

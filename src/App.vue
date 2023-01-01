@@ -215,33 +215,47 @@
 		</div>
 		<footer
 			v-if="showFooter"
-			class="flex items-center w-full h-12 px-6 py-3 mt-auto text-sm text-white bg-dark"
+			class="
+				flex
+				items-center
+				w-full
+				h-12
+				px-6
+				py-3
+				mt-auto
+				text-sm text-darkText
+				bg-light
+				border-t border-gray-200 border-opacity-50
+				z-50
+			"
 		>
-			<p class="">
-				<!-- <span class="mr-0.5">&copy;</span> -->
+			<p>
+				<span class="mr-0.5 text-muted">&copy;</span>
 				<a
 					target="_blank"
-					class="font-semibold text-indigo-400 hover:underline"
+					class="font-medium text-primary hover:underline"
 					href="https://evo-learning.com"
 					>Evo Learning</a
 				>
 			</p>
-			<p class="mx-2">&#183;</p>
+			<p class="mx-2 text-muted">&#183;</p>
 			<p>
-				Crafted with ❤️ by
+				<span class="text-muted">Crafted with</span> ❤️
+				<span class="text-muted">by </span>
 				<a
 					target="_blank"
-					class="font-semibold text-indigo-400 hover:underline"
+					class="font-medium text-primary hover:underline"
 					href="http://bsamu.it"
 					>Samuele Bonini</a
 				>
 			</p>
-			<Tooltip
-				v-if="!isDemoMode"
-				:placement="'left'"
-				class="ml-auto"
-				:textCode="'telegram'"
+			<a
+				target="_blank"
+				id="terms-and-conditions"
+				class="ml-auto text-primary hover:underline"
+				>{{ $t("misc.terms_and_conditions") }}</a
 			>
+			<Tooltip v-if="!isDemoMode" :placement="'left'" class="ml-4" :textCode="'telegram'">
 				<a href="https://t.me/sai_evo" target="_blank"
 					><img
 						class="w-5 h-5 transition-opacity duration-75 opacity-70 hover:opacity-100"
@@ -504,3 +518,9 @@ export default defineComponent({
 	},
 });
 </script>
+
+<style>
+#terms-and-conditions::first-letter {
+	text-transform: capitalize;
+}
+</style>
