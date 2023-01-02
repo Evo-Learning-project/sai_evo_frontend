@@ -293,13 +293,27 @@ export default defineComponent({
 						setErrorNotification(_("misc.logged_in"), true);
 					},
 					// different error handling depending on whether in demo mode
-					isDemoMode() ? this.redirectToDemoPage : this.setErrorNotification,
+					isDemoMode()
+						? this.redirectToDemoPage
+						: e => {
+								// rethrow error to custom handler
+								throw e;
+						  },
 				);
-			} catch (error) {
-				// TODO handle special errors like email domain unauthorized
-				console.error("sign in error", error);
+			} catch (error: any) {
+				console.error("sign in error");
+				const UNAUTHORIZED_EMAIL_DOMAIN_MSG = "Your credentials aren't allowed";
+				if (error.response?.data?.error_description === UNAUTHORIZED_EMAIL_DOMAIN_MSG) {
+					this.onLoginAttemptWithUnauthorizedEmailAddress();
+				} else {
+					setErrorNotification(error);
+				}
 				throw error;
 			}
+		},
+		onLoginAttemptWithUnauthorizedEmailAddress() {
+			// TODO implement
+			alert("!");
 		},
 		redirectToDemoPage() {
 			logAnalyticsEvent("loginFailedRedirectToDemo", {});
