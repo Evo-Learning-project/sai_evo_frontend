@@ -51,3 +51,18 @@ export const courseTreeBeforeGuard = async (
 		next({ name: "StudentCourseTree", params });
 	}
 };
+
+export const courseBeforeGuard = async (
+	to: RouteLocationNormalized,
+	_: RouteLocationNormalized,
+	next: NavigationGuardNext,
+) => {
+	const params = to.params;
+	const course = await getCourse(params.courseId as string);
+	const privileges = course.privileges ?? [];
+	if (privileges.length > 0) {
+		next({ name: "TeacherCourseDashboard", params });
+	} else {
+		next({ name: "StudentCourseDashboard", params });
+	}
+};

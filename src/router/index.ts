@@ -56,6 +56,7 @@ import {
 	exerciseSolutionThreadBeforeGuard,
 	courseTreeNodeDetailBeforeGuard,
 	courseTreeBeforeGuard,
+	courseBeforeGuard,
 } from "./guards";
 import { useMetaStore } from "@/stores/metaStore";
 
@@ -83,6 +84,12 @@ const routes: Array<RouteRecordRaw> = [
 		name: "ExerciseSolutionThreadDispatcher",
 		component: MainStudent,
 		beforeEnter: exerciseSolutionThreadBeforeGuard,
+	},
+	{
+		path: "/courses/:courseId",
+		name: "CourseDispatcher",
+		component: MainStudent,
+		beforeEnter: courseBeforeGuard,
 	},
 	{
 		path: "/courses/:courseId/material/:nodeId",
@@ -135,6 +142,7 @@ const routes: Array<RouteRecordRaw> = [
 					routeTitle: _("headings.course_dashboard"),
 					sidebarOptions: courseDashboardSidebarOptions,
 					tags: ["general"],
+					unprivilegedRedirect: "StudentCourseDashboard",
 				},
 				props: true,
 			},

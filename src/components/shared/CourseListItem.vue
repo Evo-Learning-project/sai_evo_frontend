@@ -192,7 +192,7 @@ export default defineComponent({
 			return (
 				window.location.origin +
 				this.$router.resolve({
-					name: "StudentCourseDashboard", // TODO review
+					name: "CourseDispatcher",
 					params: { courseId: this.course.id },
 				}).fullPath
 			);
