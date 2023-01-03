@@ -158,6 +158,20 @@ export default defineComponent({
 			await this.mainStore.bookmarkCourse({ courseId: course.id, remove });
 			// TODO if adding a bookmark and courses moves out of view, show some kind of feedback
 		},
+		sortCourses(courses: Course[]) {
+			return courses.sort((a, b) => {
+				if (a.creator?.id == this.metaStore.user.id) {
+					// courses the user is creator of go first
+					return b.creator?.id == this.metaStore.user.id ? 0 : -1;
+				}
+				return b.creator?.id == this.metaStore.user.id
+					? 1
+					: // then come the courses that user has privileges over
+					  (b.privileges?.length ?? 0) - (a.privileges?.length ?? 0) ||
+							// as a last resort, sort by id
+							(a.id < b.id ? -1 : 1);
+			});
+		},
 	},
 	computed: {
 		...mapStores(useMainStore, useMetaStore),
@@ -178,23 +192,9 @@ export default defineComponent({
 			);
 		},
 		coursesSorted() {
-			return [...this.mainStore.courses].sort((a, b) => {
-				if (b.bookmarked) {
-					// TODO this doesn't seem to work with teachers - fix
-					// bookmarked courses first
-					return a.bookmarked ? -1 : 1;
-				}
-				if (a.creator?.id == this.metaStore.user.id) {
-					// courses the user is creator of go first
-					return b.creator?.id == this.metaStore.user.id ? 0 : -1;
-				}
-				return b.creator?.id == this.metaStore.user.id
-					? 1
-					: // then come the courses that user has privileges over
-					  (b.privileges?.length ?? 0) - (a.privileges?.length ?? 0) ||
-							// as a last resort, sort by id
-							(a.id < b.id ? -1 : 1);
-			});
+			const bookmarkedCourses = this.mainStore.courses.filter(c => c.bookmarked);
+			const otherCourses = this.mainStore.courses.filter(c => !c.bookmarked);
+			return [...this.sortCourses(bookmarkedCourses), ...this.sortCourses(otherCourses)];
 		},
 	},
 });

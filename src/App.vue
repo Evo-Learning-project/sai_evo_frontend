@@ -167,10 +167,8 @@
 									name: 'TeacherCourseDashboard',
 									params: { courseId: currentCourse?.id ?? '-1' },
 								}"
-								><Btn :outline="true" class="w-full">
-									<span class="mr-1 text-lg material-icons-two-tone two-tone-primary">
-										shield
-									</span>
+								><Btn :variant="'primary-borderless'" class="w-full">
+									<!-- <span class="mr-1 text-lg material-icons"> shield </span> -->
 									<span class="text-base md:text-xs xl:text-base 2xl:text-lg">{{
 										$t("courses.course_panel")
 									}}</span>
