@@ -51,6 +51,12 @@ export const nodeEditorProps = {
 		type: Boolean,
 		default: false as const,
 	},
+	isExistingNode: {
+		// whether the editor is being used to create a new node (false)
+		// or to update an existing one (true)
+		type: Boolean,
+		required: true as const,
+	},
 	saving: {
 		type: Boolean,
 		default: false as const,

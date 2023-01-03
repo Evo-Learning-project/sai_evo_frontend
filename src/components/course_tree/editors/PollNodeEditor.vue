@@ -9,7 +9,7 @@
 			>
 			<h1 class="mb-0 ml-2 mr-auto">{{ $t("course_tree.poll_editor_title") }}</h1>
 			<CloudSaveStatus
-				v-if="autoSave"
+				v-if="showAutoSaveIndicator"
 				:saving="saving"
 				:hadError="savingError"
 				class="mt-1 mr-6"

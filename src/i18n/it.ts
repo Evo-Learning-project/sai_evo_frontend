@@ -1015,6 +1015,7 @@ export const it = {
 		create: "Crea",
 		topic_node_name: "Nome sezione",
 		new_topic_title: "Nuova sezione",
+		update_topic_title: "Aggiorna sezione",
 		save: "Salva",
 		save_draft: "Salva bozza",
 		create_file_node_title: "Nuovo file",

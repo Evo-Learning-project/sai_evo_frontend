@@ -41,6 +41,7 @@
 			</DropdownMenu>
 		</div>
 
+		<!-- node list -->
 		<draggable
 			:modelValue="topLevelNodes"
 			ghost-class="drag-ghost"
@@ -86,15 +87,7 @@
 			<template #no-more> &nbsp; </template>
 		</VueEternalLoading>
 
-		<!-- <div class="my-4" v-for="node in topLevelNodes" :key="node.id">
-			<CourseTreeNode
-				@loadChildren="onLoadChildren($event.node, $event.fromFirstPage)"
-				:canEdit="canEditNodes"
-				:node="node"
-				@editNode="onEditNode($event)"
-				@deleteNode="onDeleteNode($event)"
-			/>
-		</div> -->
+		<!-- empty state -->
 		<div v-if="!loading && topLevelNodes.length === 0" class="flex w-full h-full mt-12">
 			<div class="m-auto flex flex-col">
 				<p style="font-size: 10rem" class="material-icons-outlined opacity-10 mx-auto">
@@ -106,15 +99,16 @@
 			</div>
 		</div>
 
+		<!-- dialog containing node editor -->
 		<Dialog
 			:fullHeight="fullScreenDialog"
-			:large="!fullScreenDialog"
+			:large="largeDialog"
 			:fullWidth="fullScreenDialog"
 			@no="onDismissNodeEditor()"
 			:showDialog="showEditorDialog"
 			:showActions="false"
 			:dismissible="autoSaveEditingNode"
-			:loading="blockingSaving"
+			:loading="editorDialogLoading"
 		>
 			<template v-slot:body>
 				<CourseTreeNodeEditor
@@ -126,32 +120,13 @@
 					:modelValue="proxyEditingNode"
 					:showAutoSaveIndicator="autoSaveEditingNode"
 					:uploadProgress="fileUploadProgress"
+					:isExistingNode="!!editingNode.id"
 					@patchNode="onEditingNodeChange($event.key, $event.value, !!$event.save)"
 					@save="onEditingNodeSave()"
 					@closeEditor="onDismissNodeEditor()"
 					@blur="onEditorBlur()"
 					@deleteNode="onDeleteNode($event)"
 				/>
-			</template>
-		</Dialog>
-
-		<Dialog
-			@yes="resolveBlockingDialog(true)"
-			@no="resolveBlockingDialog(false)"
-			:showDialog="showBlockingDialog"
-			:yesText="localLoading ? $t('misc.wait') : $t('course_tree.create')"
-			:noText="$t('dialog.default_cancel_text')"
-			:disableOk="editingTopicName.trim().length === 0 || localLoading"
-		>
-			<template v-slot:title>
-				<h1>{{ $t("course_tree.new_topic_title") }}</h1>
-			</template>
-			<template v-slot:body>
-				<div class="flex">
-					<TextInput class="w-full mx-auto" v-model="editingTopicName">{{
-						$t("course_tree.topic_node_name")
-					}}</TextInput>
-				</div>
 			</template>
 		</Dialog>
 	</div>
@@ -190,7 +165,6 @@ import { getTranslatedString as _ } from "@/i18n";
 import Dialog from "@/components/ui/Dialog.vue";
 import { setErrorNotification, setPageWideError } from "@/utils";
 import CourseTreeNodeEditor from "@/components/course_tree/editors/CourseTreeNodeEditor.vue";
-import TextInput from "@/components/ui/TextInput.vue";
 import { getCourseTopicNodes } from "@/api";
 import DropdownMenu from "@/components/ui/DropdownMenu.vue";
 import { AutoSaveManager, FieldList } from "@/autoSave";
@@ -242,7 +216,6 @@ export default defineComponent({
 			editingNodeAutoSaveManager: null as null | AutoSaveManager<ICourseTreeNode>,
 			editingNodeUnsavedChanges: {},
 			autoSaveEditingNode: true,
-			creatingFileNode: false,
 			uploadingFile: false,
 			editingTopicName: "",
 			selectedTopicId: "",
@@ -485,7 +458,6 @@ export default defineComponent({
 					node: { ...getBlankFileNode(this.selectedTopicId), file },
 				});
 				this.metaStore.showSuccessFeedback();
-				this.creatingFileNode = false;
 				this.selectedTopicId = this.mainStore.courseIdToTreeRootId[this.courseId];
 			} catch (e) {
 				setErrorNotification(e);
@@ -493,24 +465,17 @@ export default defineComponent({
 				this.uploadingFile = false;
 			}
 		},
-		async createTopicNode() {
-			const choice = await this.getBlockingBinaryDialogChoice();
-			if (!choice) {
-				this.showBlockingDialog = false;
-				return;
-			}
-			await this.withLocalLoading(async () => {
-				await this.mainStore.createCourseTreeNode({
-					courseId: this.courseId,
-					node: getBlankTopicNode(null, this.editingTopicName.trim()),
-				});
-			});
-			this.showBlockingDialog = false;
-			this.editingTopicName = "";
-		},
 		async onCreateNode(nodeType: CourseTreeNodeType) {
+			/**
+			 * TODO refactor - move the declaration of factories to top,
+			 * then based on the type of the node use the correct logic
+			 * whether to create it immediately or turn autosave off &
+			 * open editor dialog only
+			 */
 			if (nodeType === CourseTreeNodeType.TopicNode) {
-				await this.createTopicNode();
+				this.editingNode = getBlankTopicNode(null);
+				this.autoSaveEditingNode = false;
+				this.showEditorDialog = true;
 			} else if (nodeType === CourseTreeNodeType.FileNode) {
 				// don't create node on the server just yet
 				this.editingNode = getBlankFileNode(
@@ -574,6 +539,22 @@ export default defineComponent({
 		fullScreenDialog() {
 			return this.editingNode?.resourcetype === CourseTreeNodeType.LessonNode;
 		},
+		largeDialog() {
+			return (
+				!this.fullScreenDialog &&
+				// display a smaller dialog for topic editor, as it only includes a
+				// single input field and feels less like an "editor"
+				this.editingNode?.resourcetype !== CourseTreeNodeType.TopicNode
+			);
+		},
+		editorDialogLoading() {
+			return (
+				this.blockingSaving &&
+				// don't display loader in dialog for file nodes, as their editor
+				// already shows a loader on the file upload component
+				this.editingNode?.resourcetype !== CourseTreeNodeType.FileNode
+			);
+		},
 		nodeTypesAsSelectableOptions(): SelectableOption[] {
 			return (Object.keys(CourseTreeNodeType) as any[]).map(key => ({
 				content: _("course_tree_node_types." + key),
@@ -591,10 +572,17 @@ export default defineComponent({
 			return this.hasPrivileges([CoursePrivilege.MANAGE_MATERIAL]);
 		},
 		editingNodeDebouncedFields() {
-			if (this.editingNode?.resourcetype !== CourseTreeNodeType.LessonNode) {
+			if (!this.editingNode) {
 				return [];
 			}
-			return ["body", "title"];
+			const debouncedFields: Record<CourseTreeNodeType, string[]> = {
+				AnnouncementNode: ["body"],
+				TopicNode: ["name"],
+				FileNode: [],
+				PollNode: ["text"],
+				LessonNode: ["body", "title"],
+			};
+			return debouncedFields[this.editingNode.resourcetype];
 		},
 	},
 	components: {
@@ -603,9 +591,7 @@ export default defineComponent({
 		DropdownMenu,
 		Dialog,
 		VueEternalLoading,
-		//FileUpload,
 		CourseTreeNodeEditor,
-		TextInput,
 		Spinner,
 	},
 });
