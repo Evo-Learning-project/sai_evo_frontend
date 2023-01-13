@@ -30,70 +30,22 @@
 
 		<!-- comments-->
 		<div class="w-full">
-			<!-- TODO extract to separate component for re-use-->
-			<div
+			<Message
 				v-for="comment in shownComments"
 				:key="comment.id"
-				class="flex items-center w-full my-3 space-x-2"
-			>
-				<Avatar class="my-auto" :user="comment.user" />
-				<div class="w-full">
-					<div class="flex items-center space-x-1">
-						<p class="mr-2 font-medium text-primary capitalize">
-							{{ comment.user.full_name ?? "" }}
-						</p>
-						<Timestamp
-							:value="comment.created"
-							:reduced="true"
-							class="text-muted text-xs opacity-90"
-						/>
-					</div>
-					<div class="flex w-full items-center">
-						<p class="break-normal">{{ comment.comment }}</p>
-					</div>
-				</div>
-				<Btn
-					:variant="'icon'"
-					:outline="true"
-					@click="onDelete(comment.id)"
-					v-if="canDelete(comment)"
-					class="
-						ml-auto
-						opacity-30
-						hover:opacity-100
-						transition-opacity
-						duration-75
-						ease-in-out
-					"
-				>
-					<span class="material-icons text-muted">delete</span>
-				</Btn>
-			</div>
+				:user="comment.user"
+				:canDelete="canDelete(comment)"
+				:message="comment.comment"
+				:class="comment.created"
+				@deleteMessage="onDelete(comment.id)"
+			></Message>
 		</div>
 
 		<!-- comment editor -->
-		<div>
-			<div class="flex items-center w-full mt-4 space-x-2">
-				<Avatar class="px-3 my-auto" :user="metaStore.user" />
-				<TextInput
-					@keyup.enter="onAddComment()"
-					:maxLength="500"
-					class="w-full"
-					v-model="draftComment"
-					:disabled="loadingComments"
-					:loading="loadingComments"
-					:placeholder="$t('exercise_solution.add_comment')"
-				/>
-				<Btn
-					:loading="postingComment"
-					:variant="'secondary'"
-					:disabled="draftComment.trim().length === 0"
-					@click="onAddComment()"
-				>
-					<span class="material-icons">send</span>
-				</Btn>
-			</div>
-		</div>
+		<MessageEditor
+			:posting="postingComment"
+			@sendMessage="onAddComment($event.message, $event.resolveFn, $event.rejectFn)"
+		/>
 	</div>
 </template>
 
@@ -106,6 +58,8 @@ import { useMetaStore } from "@/stores/metaStore";
 import { getCurrentUserId, setErrorNotification } from "@/utils";
 import { defineComponent, PropType } from "@vue/runtime-core";
 import { mapStores } from "pinia";
+import Message from "../messaging/Message.vue";
+import MessageEditor from "../messaging/MessageEditor.vue";
 import Avatar from "../ui/Avatar.vue";
 import Btn from "../ui/Btn.vue";
 import TextInput from "../ui/TextInput.vue";
@@ -125,26 +79,23 @@ export default defineComponent({
 	},
 	data() {
 		return {
-			draftComment: "",
 			postingComment: false,
 			expanded: false,
 		};
 	},
 	methods: {
-		async onAddComment() {
-			if (this.draftComment.trim().length === 0) {
-				return;
-			}
+		async onAddComment(message: string, resolveFn: () => void, rejectFn: () => void) {
 			this.postingComment = true;
 			try {
 				await this.mainStore.createCourseTreeNodeComment({
 					courseId: this.courseId,
 					nodeId: this.nodeId,
-					comment: getBlankCourseTreeNodeComment(this.draftComment),
+					comment: getBlankCourseTreeNodeComment(message),
 				});
-				this.draftComment = "";
+				resolveFn();
 			} catch (e) {
 				setErrorNotification(e);
+				rejectFn();
 			} finally {
 				this.postingComment = false;
 			}
@@ -181,7 +132,7 @@ export default defineComponent({
 				: this.comments.slice(-2);
 		},
 	},
-	components: { Avatar, TextInput, Btn, Timestamp },
+	components: { Btn, MessageEditor, Message },
 });
 </script>
 

@@ -521,7 +521,7 @@ export default defineComponent({
 				});
 				resolveFn(moreResults);
 			} catch (e) {
-				rejectFn(e);
+				rejectFn?.(e);
 			}
 		},
 	},

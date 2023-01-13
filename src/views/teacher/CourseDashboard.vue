@@ -240,7 +240,7 @@ import useVuelidate from "@vuelidate/core";
 import { courseValidation } from "@/validation/models";
 import { demoTeacherTourSteps, teacherTourSteps, tourOptions } from "@/const";
 import CopyToClipboard from "@/components/ui/CopyToClipboard.vue";
-import { isDemoMode } from "@/utils";
+import { isDemoMode, setErrorNotification } from "@/utils";
 
 const DEMO_COURSE_DASHBOARD_TOUR_KEY = "course_dashboard_tour_taken";
 
@@ -274,7 +274,7 @@ export default defineComponent({
 				filters: { event_type: EventType.EXAM },
 			});
 		} catch (e) {
-			this.setErrorNotification(e);
+			setErrorNotification(e);
 		} finally {
 			this.loadingEvents = false;
 		}

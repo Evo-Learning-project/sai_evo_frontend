@@ -299,12 +299,20 @@
 							:key="'comment-' + comment.id"
 							class="my-1.5"
 						>
-							<ExerciseSolutionComment :comment="comment" />
+							<Message
+								:canDelete="false"
+								:user="comment.user"
+								:message="comment.content"
+							></Message>
 						</div>
 					</div>
 
 					<!-- add comment -->
-					<div class="flex items-center w-full mt-4 space-x-2">
+					<MessageEditor
+						:posting="postingComment"
+						@sendMessage="onAddComment($event.message, $event.resolveFn, $event.rejectFn)"
+					/>
+					<!-- <div class="flex items-center w-full mt-4 space-x-2">
 						<Avatar class="px-3 my-auto" :user="metaStore.user" />
 						<TextInput
 							class="w-full"
@@ -319,7 +327,7 @@
 						>
 							<span class="material-icons">send</span>
 						</Btn>
-					</div>
+					</div> -->
 				</div>
 			</div>
 		</div>
@@ -343,7 +351,6 @@ import { defineComponent, PropType } from "@vue/runtime-core";
 import Btn from "@/components/ui/Btn.vue";
 import TextInput from "@/components/ui/TextInput.vue";
 import Avatar from "@/components/ui/Avatar.vue";
-import ExerciseSolutionComment from "./ExerciseSolutionComment.vue";
 import ProcessedTextFragment from "@/components/ui/ProcessedTextFragment.vue";
 import { courseIdMixin, coursePrivilegeMixin, mediaQueryMixin, texMixin } from "@/mixins";
 import { setErrorNotification } from "@/utils";
@@ -355,6 +362,8 @@ import Tooltip from "@/components/ui/Tooltip.vue";
 import { mapStores } from "pinia";
 import { useMetaStore } from "@/stores/metaStore";
 import { useMainStore } from "@/stores/mainStore";
+import MessageEditor from "@/components/messaging/MessageEditor.vue";
+import Message from "@/components/messaging/Message.vue";
 
 export default defineComponent({
 	name: "ExerciseSolution",
@@ -424,7 +433,6 @@ export default defineComponent({
 			voting: false,
 			postingComment: false,
 			bookmarking: false,
-			draftComment: "",
 			VoteType,
 			ExerciseSolutionState,
 			MAX_CONTENT_HEIGHT_PX,
@@ -491,18 +499,19 @@ export default defineComponent({
 				this.voting = false;
 			}
 		},
-		async onAddComment() {
+		async onAddComment(message: string, resolveFn: () => void, rejectFn: () => void) {
 			this.postingComment = true;
 			try {
 				await this.mainStore.createExerciseSolutionComment({
 					courseId: this.courseId,
 					exerciseId: this.exercise.id,
 					solutionId: this.solution.id,
-					comment: getComment(this.draftComment),
+					comment: getComment(message),
 				});
-				this.draftComment = "";
+				resolveFn();
 			} catch (e) {
 				setErrorNotification(e);
+				rejectFn();
 			} finally {
 				this.postingComment = false;
 			}
@@ -560,13 +569,13 @@ export default defineComponent({
 	},
 	components: {
 		Btn,
-		TextInput,
 		Avatar,
-		ExerciseSolutionComment,
 		ProcessedTextFragment,
 		CopyToClipboard,
 		CodeFragment,
 		Tooltip,
+		MessageEditor,
+		Message,
 	},
 });
 </script>
