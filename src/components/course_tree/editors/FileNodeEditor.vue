@@ -40,7 +40,12 @@
 				@update:modelValue="onParentChange($event)"
 			></Dropdown>
 		</div>
-		<SegmentedControls class="mb-10" :options="panes" v-model="currentPane" />
+		<SegmentedControls
+			v-if="false"
+			class="mb-10"
+			:options="panes"
+			v-model="currentPane"
+		/>
 		<!-- file upload pane-->
 		<div v-show="currentPane === 'file_upload'">
 			<FileUpload
