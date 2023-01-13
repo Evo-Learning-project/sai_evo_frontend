@@ -179,7 +179,7 @@ import {
 import { defineComponent, PropType } from "@vue/runtime-core";
 import CourseTreeNode from "../node/CourseTreeNode.vue";
 import { nodeEmits, nodeProps } from "../shared";
-import { md5, setErrorNotification } from "@/utils";
+import { getColorFromString, md5, setErrorNotification } from "@/utils";
 
 import { Pie } from "vue-chartjs";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
@@ -245,18 +245,9 @@ export default defineComponent({
 		},
 		// TODO extract shared logic
 		pollVotesData(): TChartData<"pie", number[], unknown> {
-			// TODO better creation of colors
 			const colors = this.node.choices.reduce((acc, e) => {
 				const text = md5(e.text);
-				let hash = 0;
-				for (let i = 0; i < text.length; i++) {
-					hash = text.charCodeAt(i) + ((hash << 5) - hash);
-				}
-				let color = "#";
-				for (let i = 0; i < 3; i++) {
-					let value = (hash >> (i * 8)) & 0xff;
-					color += ("00" + value.toString(16)).substr(-2);
-				}
+				const color = getColorFromString(text);
 				acc[e.text] = color + "B3";
 				return acc;
 			}, {} as Record<string, string>);

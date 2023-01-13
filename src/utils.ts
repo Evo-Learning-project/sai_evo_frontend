@@ -124,6 +124,26 @@ export const setErrorNotification = (e: any, useAsIs = false) => {
 	});
 };
 
+export const getColorFromString = (str: string) => {
+	const saturation = 75;
+	const lightness = 0.7;
+	let hash = 0;
+	for (let i = 0; i < str.length; i++) {
+		hash = str.charCodeAt(i) + ((hash << 5) - hash);
+		hash = hash & hash;
+	}
+	const h = hash % 360;
+	const a = (saturation * Math.min(lightness, 1 - lightness)) / 100;
+	const f = n => {
+		const k = (n + h / 30) % 12;
+		const color = lightness - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
+		return Math.round(255 * color)
+			.toString(16)
+			.padStart(2, "0"); // convert to Hex and prefix "0" if needed
+	};
+	return `#${f(0)}${f(8)}${f(4)}`;
+};
+
 export function forceFileDownload(response: { data: BlobPart }, title: string) {
 	// console.log("--- calling download", title, response.data);
 	const url = window.URL.createObjectURL(new Blob([response.data]));

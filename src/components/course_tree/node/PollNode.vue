@@ -187,7 +187,7 @@ import { SelectableOption } from "@/interfaces";
 import { courseIdMixin, loadingMixin, nodeMixin } from "@/mixins";
 import { PollNode, PollNodeChoice, PollNodeState } from "@/models";
 import { useMainStore } from "@/stores/mainStore";
-import { md5, setErrorNotification } from "@/utils";
+import { getColorFromString, md5, setErrorNotification } from "@/utils";
 import { defineComponent, PropType } from "@vue/runtime-core";
 import { mapStores } from "pinia";
 import { nodeEmits, nodeProps } from "../shared";
@@ -246,20 +246,12 @@ export default defineComponent({
 				.map(c => ({ datum: c, frequency: c.votes ?? 0 }))
 				.sort((a, b) => (String(a.datum.id) < String(b.datum.id) ? -1 : 1));
 		},
+
 		// TODO extract shared logic with detail version of this component
 		pollVotesData(): TChartData<"pie", number[], unknown> {
-			// TODO better creation of colors
 			const colors = this.node.choices.reduce((acc, e) => {
 				const text = md5(e.text);
-				let hash = 0;
-				for (let i = 0; i < text.length; i++) {
-					hash = text.charCodeAt(i) + ((hash << 5) - hash);
-				}
-				let color = "#";
-				for (let i = 0; i < 3; i++) {
-					let value = (hash >> (i * 8)) & 0xff;
-					color += ("00" + value.toString(16)).substr(-2);
-				}
+				const color = getColorFromString(text);
 				acc[e.text] = color + "B3";
 				return acc;
 			}, {} as Record<string, string>);
