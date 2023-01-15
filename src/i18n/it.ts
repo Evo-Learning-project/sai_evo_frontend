@@ -44,6 +44,9 @@ export const it = {
 		remove_filters: "Rimuovi filtri",
 	},
 	login_screen: {
+		unauthorized_email_1:
+			"L'indirizzo email che hai utilizzato non è abilitato per accedere. Per favore, utilizza un indirizzo email",
+		unauthorized_email_2: "dell'Università di Pisa",
 		entering_you_agree_to: "Usufruendo del servizio accetti i nostri",
 		login_with_google: "Entra con Google",
 		login: "Entra",
