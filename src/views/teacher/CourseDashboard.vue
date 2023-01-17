@@ -27,7 +27,11 @@
 							</Btn>
 						</div>
 						<div v-show="editingName" class="flex items-center">
-							<TextInput class="mr-2 w-96" v-model="dirtyCourseName">
+							<TextInput
+								@keydown.enter="v$.$invalid ? v$.$touch() : onDoneEditingName()"
+								class="mr-2 w-96"
+								v-model="dirtyCourseName"
+							>
 								{{ $t("course_creation_form.course_name") }}
 								<template v-if="v$.dirtyCourse.name.$errors.length > 0" v-slot:errors>
 									<div

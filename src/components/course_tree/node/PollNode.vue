@@ -216,6 +216,7 @@ export default defineComponent({
 		};
 	},
 	emits: {
+		// TODO periodically refetch to get updated vote counts; add a "refetchNode" event
 		...nodeEmits,
 	},
 	methods: {

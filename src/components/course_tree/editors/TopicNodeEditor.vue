@@ -28,7 +28,7 @@
 		<!-- buttons -->
 		<div class="flex w-full mt-4">
 			<Btn
-				:disabled="blockingSaving"
+				:disabled="blockingSaving || modelValue.name.trim().length === 0"
 				@click="onSave()"
 				:variant="'primary-borderless'"
 				class="ml-auto"

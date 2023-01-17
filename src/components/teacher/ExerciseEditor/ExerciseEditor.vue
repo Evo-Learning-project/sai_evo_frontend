@@ -784,7 +784,7 @@ import {
 } from "@/components/shared/Exercise/utils";
 import { ExerciseSolutionSearchFilter } from "@/api/interfaces";
 import SlotSkeleton from "@/components/ui/skeletons/SlotSkeleton.vue";
-import { forceFileDownload, getCurrentUserId } from "@/utils";
+import { forceFileDownload, getCurrentUserId, setErrorNotification } from "@/utils";
 import { mapStores } from "pinia";
 import { useMainStore } from "@/stores/mainStore";
 import { useMetaStore } from "@/stores/metaStore";
@@ -860,7 +860,7 @@ export default defineComponent({
 						exerciseId: this.modelValue.id,
 					});
 				} catch (e) {
-					this.setErrorNotification(e);
+					setErrorNotification(e);
 				} finally {
 					this.fetchingExercise = false;
 				}
@@ -916,7 +916,7 @@ export default defineComponent({
 			});
 			this.solutions.forEach(s => this.instantiateSolutionAutoSaveManager(s));
 		} catch (e) {
-			this.setErrorNotification(e);
+			setErrorNotification(e);
 		} finally {
 			this.loadingSolutions = false;
 		}
@@ -1011,7 +1011,7 @@ export default defineComponent({
 						}
 					}, LOCK_POLLING_INTERVAL);
 				} else {
-					this.setErrorNotification(e);
+					setErrorNotification(e);
 				}
 			}
 		},
@@ -1059,7 +1059,7 @@ export default defineComponent({
 				});
 				//this.solutionTestSlots[solutionId] = fakeSlot;
 			} catch (e) {
-				this.setErrorNotification(e);
+				setErrorNotification(e);
 			} finally {
 				if (solutionId) {
 					this.testingSolutions[solutionId] = false;
@@ -1147,7 +1147,7 @@ export default defineComponent({
 							childType: "choice",
 							childId: choiceId,
 						}),
-					this.setErrorNotification,
+					setErrorNotification,
 				);
 			}
 		},
@@ -1160,7 +1160,7 @@ export default defineComponent({
 							exerciseId: this.modelValue.id,
 							solutionId,
 						}),
-					this.setErrorNotification,
+					setErrorNotification,
 				);
 			}
 		},
@@ -1183,7 +1183,7 @@ export default defineComponent({
 							childType: "sub_exercise",
 							childId: exerciseId,
 						}),
-					this.setErrorNotification,
+					setErrorNotification,
 				);
 			}
 		},
@@ -1218,7 +1218,7 @@ export default defineComponent({
 							childType: "testcase",
 							childId: testcaseId,
 						}),
-					this.setErrorNotification,
+					setErrorNotification,
 				);
 			}
 		},
