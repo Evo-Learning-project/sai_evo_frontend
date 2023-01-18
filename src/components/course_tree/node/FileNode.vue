@@ -140,7 +140,7 @@
 					style="height: 50px !important; margin: auto"
 					class="pointer-events-none opacity-100"
 					v-else-if="!loadingThumbnail"
-					:src="getDefaultThumbnail()"
+					:src="defaultThumbnail"
 				/>
 			</div>
 			<!-- TODO file preview -->
@@ -158,7 +158,7 @@ import Timestamp from "@/components/ui/Timestamp.vue";
 import { courseIdMixin, nodeMixin } from "@/mixins";
 import { FileNode } from "@/models";
 import { useMainStore } from "@/stores/mainStore";
-import { getHumanFileSize } from "@/utils";
+import { getDefaultThumbnail, getHumanFileSize } from "@/utils";
 import { defineComponent, PropType } from "@vue/runtime-core";
 import { mapStores } from "pinia";
 import FileNodeDetail from "../node_detail/FileNodeDetail.vue";
@@ -197,33 +197,7 @@ export default defineComponent({
 			thumbnailLoaded: false,
 		};
 	},
-	methods: {
-		getDefaultThumbnail() {
-			const mime_type = this.node.mime_type;
-			const ARCHIVE_TYPES = [
-				"application/zip",
-				"application/gzip",
-				"application/x-tar",
-				"application/vnd.rar",
-				"application/x-bzip",
-				"application/x-bzip2",
-				"application/java-archive",
-				"application/x-7z-compressed",
-			];
-
-			const SOURCE_CODE_TYPES = ["text/x-script.python", "text/x-c", "text/x-java"];
-
-			if (ARCHIVE_TYPES.includes(mime_type)) {
-				return require("@/assets/thumbnails/archive.png");
-			}
-
-			if (SOURCE_CODE_TYPES.includes(mime_type)) {
-				return require("@/assets/thumbnails/code.png");
-			}
-
-			return require("@/assets/thumbnails/text.png");
-		},
-	},
+	methods: {},
 	computed: {
 		...mapStores(useMainStore),
 		thumbnailPresent() {
@@ -239,6 +213,9 @@ export default defineComponent({
 				return "";
 			}
 			return `data:image/jpeg;base64,${thumbnail}`;
+		},
+		defaultThumbnail() {
+			return getDefaultThumbnail(this.node.mime_type);
 		},
 		humanReadableFileSize() {
 			return getHumanFileSize(this.node.file?.size ?? 0);

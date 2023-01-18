@@ -148,7 +148,11 @@ import { v4 as uuid4 } from "uuid";
 import { mapStores } from "pinia";
 import { useMetaStore } from "@/stores/metaStore";
 import LinearProgress from "./LinearProgress.vue";
-import { getHumanFileSize, getMaxUploadFileSizeBytes } from "@/utils";
+import {
+	getDefaultThumbnail,
+	getHumanFileSize,
+	getMaxUploadFileSizeBytes,
+} from "@/utils";
 
 export default defineComponent({
 	name: "FileUpload",
@@ -255,7 +259,9 @@ export default defineComponent({
 		) {
 			this.fileTooBig = false;
 
-			const isImage = newFile.type.substring(0, 6) === "image/";
+			const mimeType = newFile.type;
+			const isImage = mimeType.substring(0, 6) === "image/";
+
 			if (newFile.file.size > getMaxUploadFileSizeBytes()) {
 				this.$emit("fileTooBig");
 				// without this, the watcher for fileTooBig won't detect both changes
@@ -275,8 +281,7 @@ export default defineComponent({
 				if (newFile.blob && isImage) {
 					newFile.thumb = URL.createObjectURL(newFile.file);
 				} else {
-					// TODO thumbnails for other file types
-					// newFile.thumb = "../../../public/pdf_thumb.png";
+					newFile.thumb = getDefaultThumbnail(mimeType);
 				}
 			}
 			// image size

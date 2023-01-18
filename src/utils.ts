@@ -313,6 +313,41 @@ export const isDemoMode = () => JSON.parse(process.env.VUE_APP_DEMO_MODE ?? "fal
 export const isMaintenanceMode = () =>
 	JSON.parse(process.env.VUE_APP_MAINTENANCE_MODE ?? "false");
 
+export function getDefaultThumbnail(mime_type: string) {
+	const ARCHIVE_TYPES = [
+		"application/zip",
+		"application/gzip",
+		"application/x-tar",
+		"application/vnd.rar",
+		"application/x-bzip",
+		"application/x-bzip2",
+		"application/java-archive",
+		"application/x-7z-compressed",
+	];
+	const SOURCE_CODE_TYPES = [
+		"text/x-script.python",
+		"text/x-c",
+		"text/x-java",
+		"text/javascript",
+		"text/x-sh",
+		"application/json",
+		"text/html",
+		"text/css",
+		"text/x-python-script",
+		"text/xml",
+	];
+	if (ARCHIVE_TYPES.includes(mime_type)) {
+		return require("@/assets/thumbnails/archive.png");
+	}
+	if (SOURCE_CODE_TYPES.includes(mime_type)) {
+		return require("@/assets/thumbnails/code.png");
+	}
+	if (mime_type.split("/")[0] === "video") {
+		return require("@/assets/thumbnails/video.png");
+	}
+	return require("@/assets/thumbnails/text.png");
+}
+
 export function getHumanFileSize(bytes: number) {
 	const thresh = 1024;
 
