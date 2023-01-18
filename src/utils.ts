@@ -307,6 +307,8 @@ export function logAnalyticsEvent(eventName: string, params: Record<string, any>
 	event(eventName, params);
 }
 
+export const getMaxUploadFileSizeBytes = () =>
+	parseFloat(process.env.VUE_APP_MAX_UPLOAD_SIZE_BYTES ?? String(1_100_000_000));
 export const isDemoMode = () => JSON.parse(process.env.VUE_APP_DEMO_MODE ?? "false");
 export const isMaintenanceMode = () =>
 	JSON.parse(process.env.VUE_APP_MAINTENANCE_MODE ?? "false");
@@ -336,8 +338,6 @@ export function arraybufferToBase64(data: any): string {
 
 //  A formatted version of a popular md5 implementation.
 //  Original copyright (c) Paul Johnston & Greg Holt.
-//  The function itself is now 42 lines long.
-
 export function md5(inputString) {
 	const hc = "0123456789abcdef";
 	function rh(n) {

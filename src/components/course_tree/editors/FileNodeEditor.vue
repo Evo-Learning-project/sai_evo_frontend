@@ -51,9 +51,11 @@
 			<FileUpload
 				:uploadProgress="uploadProgress"
 				:uploading="blockingSaving"
+				:showMaxSize="true"
 				v-model="fileProxy"
 			/>
 		</div>
+
 		<!-- url pane-->
 		<div v-show="currentPane === 'url'">
 			<!-- <h1>url</h1> -->

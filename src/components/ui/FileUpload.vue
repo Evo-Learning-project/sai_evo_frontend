@@ -109,6 +109,22 @@
 			</VueUploadComponent>
 		</div>
 
+		<p v-if="!showUpload && showMaxSize && !fileTooBig" class="mt-2 text-sm text-muted">
+			<span class="material-icons-outlined inline-icon mr-1">info</span>
+			{{ $t("misc.max_upload_size_is") }} {{ humanReadableMaxUploadSize }}
+		</p>
+
+		<p
+			v-else-if="fileTooBig"
+			class="mt-2 text-sm text-muted text-danger-dark"
+			:class="{ shake: fileTooBigTextShake }"
+			@animationend="fileTooBigTextShake = false"
+		>
+			<span class="material-icons-outlined inline-icon mr-1">info</span>
+			<span>{{ $t("misc.file_too_big") }}.</span>
+			{{ $t("misc.max_upload_size_is") }} {{ humanReadableMaxUploadSize }}
+		</p>
+
 		<Btn
 			v-if="!disabled && showUpload"
 			class="mt-4"
@@ -132,6 +148,7 @@ import { v4 as uuid4 } from "uuid";
 import { mapStores } from "pinia";
 import { useMetaStore } from "@/stores/metaStore";
 import LinearProgress from "./LinearProgress.vue";
+import { getHumanFileSize, getMaxUploadFileSizeBytes } from "@/utils";
 
 export default defineComponent({
 	name: "FileUpload",
@@ -175,6 +192,10 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+		showMaxSize: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	watch: {
 		uploading(newVal) {
@@ -188,6 +209,9 @@ export default defineComponent({
 				this.showUpload = false;
 			}
 		},
+		fileTooBig(newVal) {
+			this.fileTooBigTextShake = newVal;
+		},
 	},
 	data() {
 		return {
@@ -196,6 +220,8 @@ export default defineComponent({
 			maxSize: 1000000000,
 			showUpload: false,
 			elementId: uuid4(),
+			fileTooBig: false,
+			fileTooBigTextShake: false,
 		};
 	},
 	created() {
@@ -227,20 +253,17 @@ export default defineComponent({
 			oldFile: { file: any; blob: any },
 			prevent: () => any,
 		) {
-			//console.log("INPUT FILTER", newFile);
-			console.log("new file", newFile.blob);
+			this.fileTooBig = false;
+
 			const isImage = newFile.type.substring(0, 6) === "image/";
-			// if (newFile && !oldFile) {
-			// 	// Before adding a file
-			// 	// Filter system files or hide files
-			// 	if (/(\/|^)(Thumbs\.db|desktop\.ini|\..+)$/.test(newFile.name)) {
-			// 		return prevent();
-			// 	}
-			// 	// Filter php html js file
-			// 	if (/\.(php5?|html?|jsx?)$/i.test(newFile.name)) {
-			// 		return prevent();
-			// 	}
-			// }
+			if (newFile.file.size > getMaxUploadFileSizeBytes()) {
+				this.$emit("fileTooBig");
+				// without this, the watcher for fileTooBig won't detect both changes
+				// (the one above to false and this one) and the shake animation on
+				// the warning text won't be re-triggered
+				this.$nextTick(() => (this.fileTooBig = true));
+				return prevent();
+			}
 			if (
 				newFile &&
 				newFile.error === "" &&
@@ -341,6 +364,9 @@ export default defineComponent({
 		...mapStores(useMetaStore),
 		refUploading(): boolean {
 			return !!(this.$refs as any).upload?.active;
+		},
+		humanReadableMaxUploadSize() {
+			return getHumanFileSize(getMaxUploadFileSizeBytes());
 		},
 	},
 });
