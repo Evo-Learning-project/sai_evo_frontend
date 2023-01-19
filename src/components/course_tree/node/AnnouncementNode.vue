@@ -31,6 +31,7 @@
 		</span>
 		<!-- header -->
 		<div class="flex items-start">
+			<!-- icon -->
 			<div
 				class="flex rounded-full mr-3"
 				:class="{
@@ -54,7 +55,9 @@
 					>campaign</span
 				>
 			</div>
+			<!-- title, creator, timestamp-->
 			<div class="flex w-full flex-col">
+				<!-- title -->
 				<router-link
 					:to="{ name: 'CourseTreeNodeDetailDispatcher', params: { nodeId: node.id } }"
 				>
@@ -62,7 +65,17 @@
 						{{ $t("course_tree.announcement_title") }}
 					</h2>
 				</router-link>
-				<div class="-mt-2 flex space-x-2 ml-0.5">
+				<div
+					class="
+						-mt-2
+						md:flex-row
+						flex-col flex
+						md:space-y-0
+						-space-y-1
+						md:space-x-2
+						ml-0.5
+					"
+				>
 					<p v-if="node.creator" class="text-sm">
 						{{ node.creator.full_name }}
 					</p>
@@ -96,11 +109,6 @@
 						</div>
 					</div>
 				</div>
-				<!-- comments -->
-				<CourseTreeNodeCommentSection
-					class="w-full mt-6 hidden-in-dragging-element"
-					:nodeId="node.id"
-				/>
 			</div>
 			<!-- teacher actions-->
 			<div
@@ -147,7 +155,11 @@
 		</div>
 
 		<!-- footer -->
-
+		<!-- comments -->
+		<CourseTreeNodeCommentSection
+			class="w-full md:ml- mt-6 hidden-in-dragging-element"
+			:nodeId="node.id"
+		/>
 		<!-- <div class="flex items-center">
 		</div> -->
 	</div>

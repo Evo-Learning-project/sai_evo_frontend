@@ -30,45 +30,63 @@
 			drag_indicator
 		</span>
 		<!-- header -->
-		<div class="flex items-start">
-			<div
-				class="flex rounded-full mr-3"
-				:class="{
-					'bg-gray-200': node.state === PollNodeState.DRAFT,
-					'bg-primary  bg-opacity-15': node.state === PollNodeState.OPEN,
-				}"
-				style="
-					min-width: 2.5rem;
-					max-width: 2.5rem;
-					min-height: 2.5rem;
-					max-height: 2.5rem;
-				"
-			>
-				<span
-					style="font-size: 28px !important"
-					:class="{
-						'text-gray-500': node.state === PollNodeState.DRAFT,
-						'text-primary': node.state === PollNodeState.OPEN,
-					}"
-					class="m-auto material-icons-outlined"
-					>poll</span
-				>
-			</div>
+		<div class="flex md:flex-row flex-col items-start">
+			<!-- main -->
 			<div class="flex flex-col w-full">
-				<router-link
-					:to="{ name: 'CourseTreeNodeDetailDispatcher', params: { nodeId: node.id } }"
-				>
-					<h2 style="line-height: 0.95" class="mb-2 hover:text-primary hover:underline">
-						{{ $t("course_tree.poll_title") }}
-					</h2>
-				</router-link>
-				<div class="flex space-x-2 ml-0.5 -mt-2">
-					<p v-if="node.creator" class="text-sm">
-						{{ node.creator.full_name }}
-					</p>
-					<Timestamp :date-only="true" class="text-sm text-muted" :value="node.created" />
-				</div>
 				<div class="flex">
+					<!-- icon -->
+					<div
+						class="flex rounded-full mr-3"
+						:class="{
+							'bg-gray-200': node.state === PollNodeState.DRAFT,
+							'bg-primary  bg-opacity-15': node.state === PollNodeState.OPEN,
+						}"
+						style="
+							min-width: 2.5rem;
+							max-width: 2.5rem;
+							min-height: 2.5rem;
+							max-height: 2.5rem;
+						"
+					>
+						<span
+							style="font-size: 28px !important"
+							:class="{
+								'text-gray-500': node.state === PollNodeState.DRAFT,
+								'text-primary': node.state === PollNodeState.OPEN,
+							}"
+							class="m-auto material-icons-outlined"
+							>poll</span
+						>
+					</div>
+					<!-- poll title & creator, timestamp-->
+					<div>
+						<router-link
+							:to="{
+								name: 'CourseTreeNodeDetailDispatcher',
+								params: { nodeId: node.id },
+							}"
+						>
+							<h2
+								style="line-height: 0.95"
+								class="mb-2 hover:text-primary hover:underline"
+							>
+								{{ $t("course_tree.poll_title") }}
+							</h2>
+						</router-link>
+						<div class="flex space-x-2 ml-0.5 -mt-2">
+							<p v-if="node.creator" class="text-sm">
+								{{ node.creator.full_name }}
+							</p>
+							<Timestamp
+								:date-only="true"
+								class="text-sm text-muted"
+								:value="node.created"
+							/>
+						</div>
+					</div>
+				</div>
+
+				<div class="flex md:flex-row flex-col md:ml-12 md:pl-1 ml-1">
 					<!-- container for both the poll text & its choices-->
 					<div>
 						<!-- poll text -->
@@ -113,7 +131,7 @@
 												@click="onVote(draftSelectedChoiceId)"
 												>{{ $t("course_tree.save_poll_choice") }}</Btn
 											>
-											<p class="text-sm text-muted italic">
+											<p class="text-sm text-muted italic hidden md:block">
 												{{ $t("course_tree.poll_choice_not_saved_yet") }}
 											</p>
 										</div>
@@ -123,7 +141,7 @@
 						</div>
 					</div>
 					<!-- results -->
-					<div v-if="showResults" class="flex flex-col items-center ml-auto space-y-2">
+					<div v-if="showResults" class="flex flex-col items-center md:ml-auto space-y-2">
 						<!-- <h3>{{ $t("course_tree.poll_results") }}</h3> -->
 						<Pie :chartData="pollVotesData" :chartOptions="chartOptions" :height="200">
 						</Pie>

@@ -12,7 +12,17 @@
 				v-if="loadingFile || loadingThumbnail"
 			/>
 			<div
-				class="md:ml-5 ml-4 my-auto flex rounded-full mr-3 bg-primary bg-opacity-15"
+				class="
+					md:ml-5
+					ml-4
+					mb-auto
+					md:my-auto
+					mt-4
+					flex
+					rounded-full
+					mr-3
+					bg-primary bg-opacity-15
+				"
 				style="
 					min-width: 2.5rem;
 					max-width: 2.5rem;
@@ -47,7 +57,7 @@
 			>
 				drag_indicator
 			</span>
-			<div class="flex w-full py-4">
+			<div class="flex-col md:flex-row flex w-full py-4">
 				<div class="my-auto" v-if="node.file">
 					<h4
 						:title="node.file.name"
@@ -60,7 +70,7 @@
 							-webkit-box-orient: vertical;
 							overflow: hidden;
 						"
-						class="mb-0.5 cursor-pointer hover:text-primary hover:underline"
+						class="mb-0.5 pr-1 cursor-pointer hover:text-primary hover:underline"
 					>
 						{{ node.file.name }}
 					</h4>
@@ -75,6 +85,7 @@
 						/>
 					</div>
 				</div>
+				<!-- actions -->
 				<div
 					class="
 						z-10
@@ -121,7 +132,7 @@
 					relative
 					overflow-hidden
 				"
-				style="height: 120px !important"
+				style="min-height: 120px !important"
 			>
 				<img
 					v-if="thumbnailPresent"

@@ -30,45 +30,61 @@
 			drag_indicator
 		</span>
 		<!-- header -->
-		<div class="flex items-center">
-			<div
-				class="flex rounded-full mr-3"
-				:class="{
-					'bg-gray-200': node.state === LessonNodeState.DRAFT,
-					'bg-primary  bg-opacity-15': node.state === LessonNodeState.PUBLISHED,
-				}"
-				style="
-					min-width: 2.5rem;
-					max-width: 2.5rem;
-					min-height: 2.5rem;
-					max-height: 2.5rem;
-				"
-			>
-				<span
-					style="font-size: 28px !important"
+		<div class="flex flex-wrap md:items-center">
+			<div class="flex items-center">
+				<div
+					class="flex rounded-full mr-3"
 					:class="{
-						'text-gray-500': node.state === LessonNodeState.DRAFT,
-						'text-primary': node.state === LessonNodeState.PUBLISHED,
+						'bg-gray-200': node.state === LessonNodeState.DRAFT,
+						'bg-primary  bg-opacity-15': node.state === LessonNodeState.PUBLISHED,
 					}"
-					class="m-auto material-icons-outlined"
-					>book</span
+					style="
+						min-width: 2.5rem;
+						max-width: 2.5rem;
+						min-height: 2.5rem;
+						max-height: 2.5rem;
+					"
 				>
-			</div>
-			<div class="flex flex-col -space-y-2">
-				<router-link
-					:to="{ name: 'CourseTreeNodeDetailDispatcher', params: { nodeId: node.id } }"
-				>
-					<h2 style="line-height: 0.95" class="mb-2 hover:text-primary hover:underline">
-						{{ lessonTitle }}
-					</h2>
-				</router-link>
-				<div class="flex space-x-2 ml-0.5">
-					<p v-if="node.creator" class="text-sm">
-						{{ node.creator.full_name }}
-					</p>
-					<Timestamp :date-only="true" class="text-sm text-muted" :value="node.created" />
+					<span
+						style="font-size: 28px !important"
+						:class="{
+							'text-gray-500': node.state === LessonNodeState.DRAFT,
+							'text-primary': node.state === LessonNodeState.PUBLISHED,
+						}"
+						class="m-auto material-icons-outlined"
+						>book</span
+					>
+				</div>
+				<div class="flex flex-col -space-y-1 md:-space-y-2">
+					<router-link
+						:to="{ name: 'CourseTreeNodeDetailDispatcher', params: { nodeId: node.id } }"
+					>
+						<h2
+							style="line-height: 0.95"
+							class="md:block hidden mb-2 hover:text-primary hover:underline"
+						>
+							{{ lessonTitle }}
+						</h2>
+						<h3
+							style="line-height: 0.95"
+							class="mb-2 md:hidden hover:text-primary hover:underline"
+						>
+							{{ lessonTitle }}
+						</h3>
+					</router-link>
+					<div class="flex space-x-2 ml-0.5">
+						<p v-if="node.creator" class="text-sm">
+							{{ node.creator.full_name }}
+						</p>
+						<Timestamp
+							:date-only="true"
+							class="text-sm text-muted"
+							:value="node.created"
+						/>
+					</div>
 				</div>
 			</div>
+
 			<!-- teacher actions-->
 			<div
 				class="
@@ -79,37 +95,44 @@
 					opacity-50
 					ml-auto
 					flex
+					md:flex-row
+					flex-col
 					items-center
 				"
 			>
-				<p class="text-muted mr-4" v-if="node.state === LessonNodeState.DRAFT">
+				<p
+					class="text-muted mr-4 md:block hidden"
+					v-if="node.state === LessonNodeState.DRAFT"
+				>
 					{{ $t("course_tree.draft") }}
 				</p>
-				<Btn
-					v-if="canEdit"
-					@click="onEdit"
-					:variant="'icon'"
-					:outline="true"
-					class="icon-btn-primary"
-					:tooltip="$t('misc.edit')"
-				>
-					<span class="text-xl material-icons"> edit </span>
-				</Btn>
-				<Btn
-					class="mr-4"
-					v-if="canEdit"
-					@click="onDelete"
-					:variant="'icon'"
-					:outline="true"
-					:tooltip="$t('misc.delete')"
-				>
-					<span class="text-xl material-icons"> delete </span>
-				</Btn>
-				<CopyToClipboard
-					:icon-only="true"
-					:tooltip="$t('exercise_solution.share')"
-					:value="permalink"
-				/>
+				<div class="flex">
+					<Btn
+						v-if="canEdit"
+						@click="onEdit"
+						:variant="'icon'"
+						:outline="true"
+						class="icon-btn-primary"
+						:tooltip="$t('misc.edit')"
+					>
+						<span class="text-xl material-icons"> edit </span>
+					</Btn>
+					<Btn
+						class="mr-4"
+						v-if="canEdit"
+						@click="onDelete"
+						:variant="'icon'"
+						:outline="true"
+						:tooltip="$t('misc.delete')"
+					>
+						<span class="text-xl material-icons"> delete </span>
+					</Btn>
+					<CopyToClipboard
+						:icon-only="true"
+						:tooltip="$t('exercise_solution.share')"
+						:value="permalink"
+					/>
+				</div>
 			</div>
 		</div>
 		<div class="ml-12 pl-1 mt-2 -mb-1" v-if="node.comment_count > 0">
