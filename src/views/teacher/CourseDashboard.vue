@@ -319,7 +319,7 @@ export default defineComponent({
 			setTimeout(() => (this.$tours["demoTeacherTour"] as any).start(), 500);
 			localStorage.setItem(DEMO_COURSE_DASHBOARD_TOUR_KEY, "true");
 		}
-		if (!(NEW_MATERIAL_MODULE_TOUR_KEY in localStorage)) {
+		if (!this.showTour && !(NEW_MATERIAL_MODULE_TOUR_KEY in localStorage)) {
 			setTimeout(() => (this.$tours["newMaterialModuleTour"] as any).start(), 500);
 			localStorage.setItem(NEW_MATERIAL_MODULE_TOUR_KEY, "true");
 		}
