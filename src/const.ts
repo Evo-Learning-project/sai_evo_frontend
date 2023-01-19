@@ -147,6 +147,20 @@ export const demoCourseTourSteps = [
 	},
 ];
 
+export const newMaterialModuleTourSteps = [
+	{
+		// material
+		target: "#sidebar-option-3",
+		header: {
+			title: _("tour.new_material_header"),
+		},
+		content: _("tour.new_material_content"),
+		params: {
+			placement: "right",
+		},
+	},
+];
+
 export const teacherTourSteps = [
 	{
 		// exercises
@@ -171,8 +185,19 @@ export const teacherTourSteps = [
 		},
 	},
 	{
+		// material
+		target: "#sidebar-option-3",
+		header: {
+			title: _("tour.material_header"),
+		},
+		content: _("tour.material_content"),
+		params: {
+			placement: "right",
+		},
+	},
+	{
 		// permissions
-		target: "#sidebar-option-4",
+		target: "#sidebar-option-5",
 		header: {
 			title: _("tour.permissions_header"),
 		},
@@ -251,7 +276,7 @@ export const demoTeacherTourSteps = [
 	},
 	{
 		// solutions
-		target: "#sidebar-option-3",
+		target: "#sidebar-option-4",
 		header: {
 			title: _("tour.demo_solutions_header"),
 		},

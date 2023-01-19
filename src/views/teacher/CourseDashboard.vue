@@ -218,6 +218,11 @@
 		</div>
 		<v-tour name="teacherTour" :steps="teacherTourSteps" :options="tourOptions"></v-tour>
 		<v-tour
+			name="newMaterialModuleTour"
+			:steps="newMaterialModuleTourSteps"
+			:options="tourOptions"
+		></v-tour>
+		<v-tour
 			name="demoTeacherTour"
 			:steps="demoTeacherTourSteps"
 			:options="tourOptions"
@@ -242,11 +247,17 @@ import TextEditor from "@/components/ui/TextEditor.vue";
 import useVuelidate from "@vuelidate/core";
 
 import { courseValidation } from "@/validation/models";
-import { demoTeacherTourSteps, teacherTourSteps, tourOptions } from "@/const";
+import {
+	demoTeacherTourSteps,
+	teacherTourSteps,
+	tourOptions,
+	newMaterialModuleTourSteps,
+} from "@/const";
 import CopyToClipboard from "@/components/ui/CopyToClipboard.vue";
 import { isDemoMode, setErrorNotification } from "@/utils";
 
 const DEMO_COURSE_DASHBOARD_TOUR_KEY = "course_dashboard_tour_taken";
+const NEW_MATERIAL_MODULE_TOUR_KEY = "new_material_module_tour_taken";
 
 import { mapStores } from "pinia";
 import { useMainStore } from "@/stores/mainStore";
@@ -308,6 +319,10 @@ export default defineComponent({
 			setTimeout(() => (this.$tours["demoTeacherTour"] as any).start(), 500);
 			localStorage.setItem(DEMO_COURSE_DASHBOARD_TOUR_KEY, "true");
 		}
+		if (!(NEW_MATERIAL_MODULE_TOUR_KEY in localStorage)) {
+			setTimeout(() => (this.$tours["newMaterialModuleTour"] as any).start(), 500);
+			localStorage.setItem(NEW_MATERIAL_MODULE_TOUR_KEY, "true");
+		}
 	},
 	data() {
 		return {
@@ -318,6 +333,7 @@ export default defineComponent({
 			CoursePrivilege,
 			teacherTourSteps,
 			demoTeacherTourSteps,
+			newMaterialModuleTourSteps,
 			tourOptions,
 			loadingEvents: false,
 			loadingExercises: false,

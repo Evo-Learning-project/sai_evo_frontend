@@ -112,7 +112,7 @@
 				</div>
 			</div>
 			<!-- terms & conditions-->
-			<div class="mb-1 mt-auto mr-auto ml-2 md:ml-4">
+			<div class="mb-1 mt-auto mr-auto ml-2 md:ml-4 opacity-0">
 				<p class="text-xs text-muted">
 					{{ $t("login_screen.entering_you_agree_to") }}
 					<span class="text-primary hover:underline cursor-pointer"

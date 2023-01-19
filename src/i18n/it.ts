@@ -1102,6 +1102,12 @@ export const it = {
 		hidden_course: "Corso nascosto agli studenti",
 	},
 	tour: {
+		new_material_header: "Materiale",
+		new_material_content:
+			"Prova subito il nuovo modulo Materiale! Esso ti permette di creare lezioni, caricare contenuti didattici, creare sondaggi e pubblicare annunci.",
+		material_header: "Aggiungi materiale",
+		material_content:
+			"Puoi creare lezioni e aggiungere materiale come video, file PDF e altri allegati. Puoi anche creare sondaggi o pubblicare annunci per il tuo corso.",
 		demo_student_header: "Benvenuto nella sezione studenti!",
 		demo_student_content:
 			"Questa è la dashboard che i tuoi studenti visualizzeranno quando accedono ai tuoi corsi. Vediamo alcune delle funzionalità principali.",

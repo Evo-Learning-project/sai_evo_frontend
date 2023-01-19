@@ -250,7 +250,7 @@
 			<a
 				target="_blank"
 				id="terms-and-conditions"
-				class="ml-auto text-primary hover:underline"
+				class="ml-auto text-primary hover:underline opacity-0"
 				>{{ $t("misc.terms_and_conditions") }}</a
 			>
 			<Tooltip v-if="!isDemoMode" :placement="'left'" class="ml-4" :textCode="'telegram'">
