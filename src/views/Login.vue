@@ -4,7 +4,7 @@
 		<div
 			class="flex relative md:w-11/12 flex-col items-center h-full md:shadow-elevation-2"
 		>
-			<img src="@/assets/logo.png" class="mt-4 md:w-8/12 w-10/12" />
+			<img src="@/assets/logo.png" class="mt-4 md:w-7/12 w-10/12" />
 
 			<!-- main area -->
 			<div

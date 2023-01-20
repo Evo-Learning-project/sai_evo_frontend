@@ -218,7 +218,8 @@
 				items-center
 				w-full
 				h-12
-				px-6
+				md:px-6
+				px-3
 				py-3
 				mt-auto
 				text-sm text-darkText
@@ -250,10 +251,15 @@
 			<a
 				target="_blank"
 				id="terms-and-conditions"
-				class="ml-auto text-primary hover:underline opacity-0"
+				class="ml-auto text-primary hover:underline opacity-0 hidden md:block"
 				>{{ $t("misc.terms_and_conditions") }}</a
 			>
-			<Tooltip v-if="!isDemoMode" :placement="'left'" class="ml-4" :textCode="'telegram'">
+			<Tooltip
+				v-if="!isDemoMode"
+				:placement="'left'"
+				class="ml-auto md:ml-4"
+				:textCode="'telegram'"
+			>
 				<a href="https://t.me/sai_evo" target="_blank"
 					><img
 						class="w-5 h-5 transition-opacity duration-75 opacity-70 hover:opacity-100"

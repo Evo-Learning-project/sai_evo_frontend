@@ -35,7 +35,7 @@
 				</Btn>
 			</div>
 			<div class="flex items-center mr-auto">
-				<img class="lg:w-64 3xl:w-72 w-56 -ml-1" :src="logoUrl" />
+				<img class="lg:w-60 3xl:w-70 w-56 -ml-1" :src="logoUrl" />
 			</div>
 			<div class="">
 				<div v-if="metaStore.isAuthenticated" class="flex items-center ml-4 md:ml-6">

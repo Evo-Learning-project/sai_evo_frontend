@@ -10,7 +10,6 @@
 			card card-border card-hoverable
 			hover-shadow-elevation hover:border-transparent
 			relative
-			overflow-y-hidden
 		"
 	>
 		<!-- <span
