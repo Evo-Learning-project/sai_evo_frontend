@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<div class="h-full">
 		<DataTable
 			:class="{ 'opacity-50': usersData.length === 0 }"
 			:columnDefs="columns"
@@ -169,12 +169,20 @@ export default defineComponent({
 			];
 		},
 		usersData() {
-			return this.mainStore.users.map(u => ({
-				id: u.id,
-				email: u.email,
-				fullName: u.full_name,
-				coursePrivileges: u.course_privileges,
-			}));
+			return (
+				this.mainStore.users
+					.map(u => ({
+						id: u.id,
+						email: u.email,
+						fullName: u.full_name,
+						coursePrivileges: u.course_privileges,
+					}))
+					// put users with more privileges at the top
+					.sort(
+						(a, b) =>
+							(b.coursePrivileges ?? []).length - (a.coursePrivileges ?? []).length,
+					)
+			);
 		},
 		privilegesAsOptions(): SelectableOption[] {
 			return Object.values(CoursePrivilege).map(key => ({
