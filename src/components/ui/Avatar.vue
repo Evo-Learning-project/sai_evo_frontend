@@ -1,19 +1,19 @@
 <template>
 	<div
+		v-if="showFallbackavatar"
 		class="flex rounded-full bg-primary-light text-primary bg-opacity-30"
-		:class="{
-			'w-8 h-8': size === 'sm',
-			'w-10 h-10 text-xl': size === 'lg',
-		}"
-		:style="
-			size === 'md'
-				? 'min-width: 2rem !important; min-height: 2rem !important; max-width: 2rem !important; max-height: 2rem; !important'
-				: ''
-		"
+		:style="avatarSize"
 	>
 		<p class="mx-auto my-auto font-semibold">
 			{{ authorName[0].toLocaleUpperCase() }}
 		</p>
+	</div>
+	<div :style="avatarSize" class="flex rounded-full overflow-hidden" v-else>
+		<img
+			referrerpolicy="no-referrer"
+			@error="showFallbackavatar = true"
+			:src="user.avatar_url"
+		/>
 	</div>
 </template>
 
@@ -32,10 +32,22 @@ export default defineComponent({
 			default: "md",
 		},
 	},
+	data() {
+		return {
+			showFallbackavatar: false,
+		};
+	},
 	methods: {},
 	computed: {
 		authorName(): string {
 			return this.user?.full_name ?? "Autore";
+		},
+		avatarSize() {
+			const size = this.size === "md" ? "2rem" : "3rem";
+			return `min-width: ${size} !important;
+			min-height: ${size} !important;
+			max-width: ${size} !important;
+			max-height: ${size} !important`;
 		},
 	},
 });

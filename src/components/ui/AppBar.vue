@@ -8,7 +8,7 @@
 			md:px-12
 			text-gray-700
 			bg-white
-			px-4
+			px-2
 			shadow-elevation
 			mx-auto
 			sm:px-6
@@ -35,14 +35,17 @@
 				</Btn>
 			</div>
 			<div class="flex items-center mr-auto">
-				<img class="lg:w-60 3xl:w-70 w-56 -ml-1" :src="logoUrl" />
+				<img class="lg:w-60 3xl:w-70 w-50 md:-ml-1" :src="logoUrl" />
 			</div>
 			<div class="">
 				<div v-if="metaStore.isAuthenticated" class="flex items-center ml-4 md:ml-6">
 					<!-- <Btn :variant="'icon'" :outline="true"
 							><span class="material-icons-outlined">brightness_4</span></Btn
 						> -->
-					<LocaleSelector v-if="false && showLocaleSelector"></LocaleSelector>
+					<LocaleSelector
+						class="md:mr-0 -mr-2"
+						v-if="false && showLocaleSelector"
+					></LocaleSelector>
 					<DropdownMenu
 						:placement="'left'"
 						class="text-lightText"
@@ -71,15 +74,18 @@
 						:outline="true"
 						><span class="text-lg material-icons-outlined"> help_outline </span></Btn
 					>
-					<p class="ml-4 mr-1 text-xs md:text-base hidden sm:block">
+					<!-- <p class="ml-4 mr-1 text-xs md:text-base hidden sm:block">
 						{{ metaStore.email }}
-					</p>
-					<p
+					</p> -->
+					<!-- <p
 						@click="$emit('showMatEditor')"
 						class="hidden text-xs cursor-pointer md:block md:text-sm"
 					>
 						{{ metaStore.user?.mat }}
-					</p>
+					</p> -->
+					<Tooltip :textValue="metaStore.email" :placement="'bottom'" :noArrow="true">
+						<Avatar class="md:ml-4 mr-1 md:mr-2" :user="metaStore.user" />
+					</Tooltip>
 					<Btn
 						class="hidden sm:block"
 						:tooltip="$t('misc.logout')"
@@ -107,10 +113,12 @@
 //import { useMetaStore } from "@/stores/metaStore";
 import { isDemoMode, logAnalyticsEvent } from "@/utils";
 import { defineComponent, PropType } from "@vue/runtime-core";
+import Avatar from "./Avatar.vue";
 //import { mapStores } from "pinia";
 import Btn from "./Btn.vue";
 import DropdownMenu from "./DropdownMenu.vue";
 import LocaleSelector from "./LocaleSelector.vue";
+import Tooltip from "./Tooltip.vue";
 export default defineComponent({
 	name: "AppBar",
 	props: {
@@ -175,7 +183,7 @@ export default defineComponent({
 			return require("../../assets/logo.png");
 		},
 	},
-	components: { Btn, DropdownMenu, LocaleSelector },
+	components: { Btn, DropdownMenu, LocaleSelector, Avatar, Tooltip },
 });
 </script>
 

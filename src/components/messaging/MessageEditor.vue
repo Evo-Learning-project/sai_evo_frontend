@@ -1,6 +1,6 @@
 <template>
 	<div class="flex items-center w-full mt-4 space-x-2">
-		<Avatar class="px-3 my-auto" :user="metaStore.user" />
+		<Avatar class="" :user="metaStore.user" />
 		<TextInput
 			@keyup.enter="onSend()"
 			class="w-full"

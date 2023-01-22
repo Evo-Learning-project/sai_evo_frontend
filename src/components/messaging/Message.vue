@@ -3,7 +3,7 @@
 		<Avatar class="my-auto" :user="user" />
 		<div class="w-full">
 			<div class="flex items-center space-x-1">
-				<p class="mr-2 font-medium text-primary capitalize">
+				<p class="mr-2 font-medium capitalize">
 					{{ user.full_name ?? "" }}
 				</p>
 				<Timestamp

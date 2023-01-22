@@ -41,6 +41,7 @@ export interface User {
 	course_privileges?: CoursePrivilege[];
 	mat: string;
 	course: string;
+	avatar_url: string;
 }
 
 export interface Course {
