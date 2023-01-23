@@ -83,17 +83,50 @@
 					>
 						{{ metaStore.user?.mat }}
 					</p> -->
-					<Tooltip :textValue="metaStore.email" :placement="'bottom'" :noArrow="true">
+					<!-- <Tooltip
+						v-if="false"
+						:textValue="metaStore.email"
+						:placement="'bottom'"
+						:noArrow="true"
+					>
 						<Avatar class="md:ml-4 mr-1 md:mr-2" :user="metaStore.user" />
-					</Tooltip>
-					<Btn
-						class="hidden sm:block"
+					</Tooltip> -->
+					<DropdownMenu
+						:placement="'right'"
+						:expanded="donateExpanded"
+						@toggleExpanded="onToggleDonate()"
+						><template v-slot:activator>
+							<Avatar
+								class="darken-on-hover cursor-pointer md:ml-4 mr-1 md:mr-2"
+								:user="metaStore.user"
+							/>
+						</template>
+						<div class="py-4 px-2">
+							<div class="items-center flex">
+								<Avatar :size="'lg'" class="mr-4" :user="metaStore.user" />
+								<div class="flex flex-col -space-y-1.5">
+									<h4>{{ metaStore.user.full_name }}</h4>
+									<p class="text-muted text-sm">{{ metaStore.user.email }}</p>
+								</div>
+								<Btn
+									class="ml-6"
+									:tooltip="$t('misc.logout')"
+									@click="$emit('logout')"
+									:variant="'icon'"
+									:outline="true"
+									><span class="text-lg material-icons-outlined"> logout </span></Btn
+								>
+							</div>
+						</div>
+					</DropdownMenu>
+					<!-- <Btn
+						class="hidden"
 						:tooltip="$t('misc.logout')"
 						@click="$emit('logout')"
 						:variant="'icon'"
 						:outline="true"
 						><span class="text-lg material-icons-outlined"> logout </span></Btn
-					>
+					> -->
 				</div>
 			</div>
 			<div class="md:hidden" v-if="showMobileSidebarButton">
@@ -118,7 +151,7 @@ import Avatar from "./Avatar.vue";
 import Btn from "./Btn.vue";
 import DropdownMenu from "./DropdownMenu.vue";
 import LocaleSelector from "./LocaleSelector.vue";
-import Tooltip from "./Tooltip.vue";
+// import Tooltip from "./Tooltip.vue";
 export default defineComponent({
 	name: "AppBar",
 	props: {
@@ -183,7 +216,13 @@ export default defineComponent({
 			return require("../../assets/logo.png");
 		},
 	},
-	components: { Btn, DropdownMenu, LocaleSelector, Avatar, Tooltip },
+	components: {
+		Btn,
+		DropdownMenu,
+		LocaleSelector,
+		Avatar,
+		//	Tooltip
+	},
 });
 </script>
 
