@@ -51,6 +51,7 @@ export const getBlankUser = (): User => ({
 	is_teacher: false,
 	mat: "",
 	course: "",
+	avatar_url: "",
 });
 
 export const getBlankCourse = (): Course => ({
