@@ -143,7 +143,7 @@
 					<!-- results -->
 					<div
 						v-if="showResults && node.state !== PollNodeState.DRAFT"
-						class="flex flex-col items-center md:ml-auto space-y-2"
+						class="flex flex-col items-center md:ml-auto space-y-2 overflow-hidden"
 					>
 						<!-- <h3>{{ $t("course_tree.poll_results") }}</h3> -->
 						<Pie :chartData="pollVotesData" :chartOptions="chartOptions" :height="200">
