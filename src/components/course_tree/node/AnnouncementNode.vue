@@ -96,19 +96,6 @@
 						><span class="text-base">{{ $t("misc.show_more") }}</span></Btn
 					>
 				</div>
-				<!-- children -->
-				<div class="mt-4 hidden-in-dragging-element" v-if="children.length > 0">
-					<div class="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
-						<div class="" v-for="child in children" :key="child.id">
-							<CourseTreeNode
-								v-bind="$props"
-								:node="child"
-								:isDraggable="false"
-								@deleteNode="$emit('deleteNode', $event)"
-							></CourseTreeNode>
-						</div>
-					</div>
-				</div>
 			</div>
 			<!-- teacher actions-->
 			<div
@@ -123,7 +110,10 @@
 					items-center
 				"
 			>
-				<p class="text-muted mr-4" v-if="node.state === AnnouncementNodeState.DRAFT">
+				<p
+					class="text-muted mr-4 hidden md:block"
+					v-if="node.state === AnnouncementNodeState.DRAFT"
+				>
 					{{ $t("course_tree.draft") }}
 				</p>
 				<Btn
@@ -154,6 +144,22 @@
 			</div>
 		</div>
 
+		<!-- children -->
+		<div
+			class="mt-4 hidden-in-dragging-element md:mx-12 md:px-0.5"
+			v-if="children.length > 0"
+		>
+			<div class="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
+				<div class="" v-for="child in children" :key="child.id">
+					<CourseTreeNode
+						v-bind="$props"
+						:node="child"
+						:isDraggable="false"
+						@deleteNode="$emit('deleteNode', $event)"
+					></CourseTreeNode>
+				</div>
+			</div>
+		</div>
 		<!-- footer -->
 		<!-- comments -->
 		<CourseTreeNodeCommentSection

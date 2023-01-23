@@ -14,7 +14,7 @@
 			<!-- main -->
 			<section class="w-full pb-4 md:px-0 px-4">
 				<div class="mb-8 mt-4">
-					<h2 class="mb-0">{{ routeTitle }}</h2>
+					<h2 class="mb-2" style="line-height: 1.2">{{ routeTitle }}</h2>
 					<BreadCrumbs :route="$route" />
 				</div>
 				<router-view />

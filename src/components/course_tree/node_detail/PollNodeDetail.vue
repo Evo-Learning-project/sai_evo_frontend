@@ -15,11 +15,11 @@
 			</router-link>
 		</div>
 		<!-- header -->
-		<div class="flex md:flex-row flex-col items-center">
+		<div class="flex md:items-center items-start">
 			<!-- icon-->
 			<div
 				style="min-width: 3.5rem; max-width: 3.5rem"
-				class="hidden md:flex rounded-full w-14 h-14 bg-primary bg-opacity-15 mr-3"
+				class="flex rounded-full w-14 h-14 bg-primary bg-opacity-15 mr-3"
 			>
 				<span
 					style="font-size: 40px !important"
@@ -27,7 +27,7 @@
 					>campaign</span
 				>
 			</div>
-			<div class="flex md:flex-row flex-col md:space-x-2">
+			<div class="flex md:flex-row flex-col md:space-x-2 md:mt-0 mt-1 w-full">
 				<!-- responsive title, timestamp, & author -->
 				<div class="flex flex-col">
 					<h1 style="line-height: 1.1" class="mb-0 hidden md:block">

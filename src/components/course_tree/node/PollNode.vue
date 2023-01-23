@@ -141,7 +141,10 @@
 						</div>
 					</div>
 					<!-- results -->
-					<div v-if="showResults" class="flex flex-col items-center md:ml-auto space-y-2">
+					<div
+						v-if="showResults && node.state !== PollNodeState.DRAFT"
+						class="flex flex-col items-center md:ml-auto space-y-2"
+					>
 						<!-- <h3>{{ $t("course_tree.poll_results") }}</h3> -->
 						<Pie :chartData="pollVotesData" :chartOptions="chartOptions" :height="200">
 						</Pie>
@@ -161,7 +164,10 @@
 					items-center
 				"
 			>
-				<p class="text-muted mr-4" v-if="node.state === PollNodeState.DRAFT">
+				<p
+					class="text-muted mr-4 hidden md:block"
+					v-if="node.state === PollNodeState.DRAFT"
+				>
 					{{ $t("course_tree.draft") }}
 				</p>
 				<Btn

@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<!-- top section with create button-->
-		<div class="flex w-full mb-6 -mt-8" v-if="canCreateNodes">
+		<div class="flex w-full mb-6 md:-mt-2 lg:-mt-8" v-if="canCreateNodes">
 			<DropdownMenu
 				class="ml-auto"
 				:expanded="createMenuExpanded"
@@ -101,7 +101,7 @@
 
 		<!-- dialog containing node editor -->
 		<Dialog
-			:fullHeight="fullScreenDialog"
+			:fullHeight="fullHeightDialog"
 			:large="largeDialog"
 			:fullWidth="fullScreenDialog"
 			@no="onDismissNodeEditor()"
@@ -537,7 +537,16 @@ export default defineComponent({
 			} as ICourseTreeNode;
 		},
 		fullScreenDialog() {
-			return this.editingNode?.resourcetype === CourseTreeNodeType.LessonNode;
+			return (
+				this.editingNode?.resourcetype !== CourseTreeNodeType.TopicNode &&
+				this.editingNode?.resourcetype !== CourseTreeNodeType.FileNode
+			); //this.editingNode?.resourcetype === CourseTreeNodeType.LessonNode;
+		},
+		fullHeightDialog() {
+			return (
+				this.fullScreenDialog &&
+				this.editingNode?.resourcetype !== CourseTreeNodeType.FileNode
+			); //this.editingNode?.resourcetype === CourseTreeNodeType.LessonNode;
 		},
 		largeDialog() {
 			return (

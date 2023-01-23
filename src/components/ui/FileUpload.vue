@@ -109,14 +109,17 @@
 			</VueUploadComponent>
 		</div>
 
-		<p v-if="!showUpload && showMaxSize && !fileTooBig" class="mt-2 text-sm text-muted">
+		<p
+			v-if="!showUpload && showMaxSize && !fileTooBig"
+			class="mt-2 text-xs md:text-sm text-muted"
+		>
 			<span class="material-icons-outlined inline-icon mr-1">info</span>
 			{{ $t("misc.max_upload_size_is") }} {{ humanReadableMaxUploadSize }}
 		</p>
 
 		<p
 			v-else-if="fileTooBig"
-			class="mt-2 text-sm text-muted text-danger-dark"
+			class="mt-2 text-xs md:text-sm text-muted text-danger-dark"
 			:class="{ shake: fileTooBigTextShake }"
 			@animationend="fileTooBigTextShake = false"
 		>
@@ -131,7 +134,7 @@
 			:loading="$refs.upload?.active"
 			@click.prevent="$refs.upload.active = true"
 			><span class="mr-2 text-xl material-icons-outlined">cloud_upload</span>
-			Carica
+			{{ $t("misc.upload") }}
 		</Btn>
 	</div>
 </template>

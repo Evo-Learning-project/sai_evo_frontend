@@ -1,39 +1,17 @@
 <template>
 	<div class="mb-2">
 		<!-- top row -->
-		<div class="flex w-full items-center mb-8">
-			<Btn :variant="'icon'" :outline="true" class="-ml-2"
-				><span class="material-icons-outlined" @click="$emit('closeEditor')"> close</span>
-			</Btn>
-			<h1 class="mb-0 ml-2 mr-auto">{{ $t("course_tree.file_editor_title") }}</h1>
-			<!-- <CloudSaveStatus
-				v-if="showAutoSaveIndicator"
-				:saving="saving"
-				:hadError="savingError"
-				class="mt-1 mr-6"
-			/> -->
-			<!-- <div
-				class="flex space-x-3 items-center"
-				v-if="modelValue.state === LessonNodeState.DRAFT"
-			>
-				<p class="text-muted">{{ $t("course_tree.draft") }}</p>
-				<Btn @click="onPublish()">{{ $t("course_tree.publish_lesson") }}</Btn>
-			</div> -->
-			<!-- <div v-if="!autoSave" class="ml-2">
-				<Btn
-					:disabled="blockingSaving"
-					:outline="modelValue.state === LessonNodeState.DRAFT"
-					@click="onSave()"
-				>
-					{{
-						modelValue.state === LessonNodeState.DRAFT
-							? $t("course_tree.save_draft")
-							: $t("course_tree.save")
-					}}
+		<div class="flex md:flex-row flex-col w-full md:items-center mb-8">
+			<div class="flex items-center">
+				<Btn :variant="'icon'" :outline="true" class="-ml-2"
+					><span class="material-icons-outlined" @click="$emit('closeEditor')">
+						close</span
+					>
 				</Btn>
-			</div> -->
+				<h1 class="mb-0 ml-2 mr-auto">{{ $t("course_tree.file_editor_title") }}</h1>
+			</div>
 			<Dropdown
-				class="w-1/3 ml-auto"
+				class="md:w-1/3 w-2/3 ml-auto md:mt-0 md:-mb-0 mt-2 -mb-4"
 				:loading="loadingTopics"
 				:options="topicsAsOptions"
 				:modelValue="modelValue.parent_id"

@@ -14,10 +14,10 @@
 			</router-link>
 		</div>
 		<!-- header -->
-		<div class="flex md:flex-row flex-col items-center">
+		<div class="flex items-start md:items-center">
 			<div
 				style="min-width: 3.5rem; max-width: 3.5rem"
-				class="hidden md:flex rounded-full w-14 h-14 bg-primary bg-opacity-15 mr-3"
+				class="flex rounded-full w-14 h-14 bg-primary bg-opacity-15 mr-3"
 			>
 				<span
 					style="font-size: 40px !important"
@@ -25,8 +25,8 @@
 					>book</span
 				>
 			</div>
-			<div class="flex md:flex-row flex-col md:space-x-2">
-				<div class="flex flex-col">
+			<div class="flex md:flex-row flex-col md:space-x-2 w-full">
+				<div class="flex flex-col md:mt-0 mt-1">
 					<h1 style="line-height: 1.1" class="mb-0 hidden md:block">{{ lessonTitle }}</h1>
 					<h3 style="line-height: 1.1" class="mb-0 md:hidden">{{ lessonTitle }}</h3>
 					<div class="flex space-x-2 ml-0.5">

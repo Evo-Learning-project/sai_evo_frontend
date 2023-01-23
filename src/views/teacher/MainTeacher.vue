@@ -6,7 +6,7 @@
 			v-if="metaStore.helpCenterOpen"
 		></HelpCenter>
 
-		<h1 v-if="routeTitle?.length > 0" class="">
+		<h1 v-if="routeTitle?.length > 0" class="" style="line-height: 1.2">
 			{{ routeTitle }}
 		</h1>
 
