@@ -75,6 +75,7 @@ module.exports = {
 			},
 			outline: {
 				primary: ["1.5px solid #4338CA", "1.75px"],
+				light: ["4px solid rgba(107, 114, 128, 0.13)", "0px"],
 				danger: ["1.5px solid #F87171", "1.75px"],
 				success: ["1.5px solid #10B981", "0px"],
 			},
@@ -117,7 +118,7 @@ module.exports = {
 		extend: {
 			cursor: ["disabled", "hover"],
 			opacity: ["disabled"],
-			outline: ["active"],
+			outline: ["active", "hover"],
 			transitionProperty: ["hover"],
 			ringWidth: ["hover", "active"],
 			ringOpacity: ["active"],

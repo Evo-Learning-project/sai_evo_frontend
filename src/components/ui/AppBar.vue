@@ -35,7 +35,7 @@
 				</Btn>
 			</div>
 			<div class="flex items-center mr-auto">
-				<img class="lg:w-60 3xl:w-70 w-50 md:-ml-1" :src="logoUrl" />
+				<img class="lg:w-60 3xl:w-70 w-52 md:-ml-1" :src="logoUrl" />
 			</div>
 			<div class="">
 				<div v-if="metaStore.isAuthenticated" class="flex items-center ml-4 md:ml-6">
@@ -97,7 +97,14 @@
 						@toggleExpanded="onToggleDonate()"
 						><template v-slot:activator>
 							<Avatar
-								class="darken-on-hover cursor-pointer md:ml-4 mr-1 md:mr-2"
+								class="
+									darken-on-hover
+									cursor-pointer
+									md:ml-4
+									mr-1
+									md:mr-2
+									hover:outline-light
+								"
 								:user="metaStore.user"
 							/>
 						</template>
