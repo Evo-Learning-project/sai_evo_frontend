@@ -97,13 +97,15 @@
 						@toggleExpanded="onToggleDonate()"
 						><template v-slot:activator>
 							<Avatar
+								style="box-sizing: content-box"
 								class="
 									darken-on-hover
 									cursor-pointer
 									md:ml-4
 									mr-1
 									md:mr-2
-									hover:outline-light
+									border-transparent border-4
+									hover:border-gray-300 hover:border-opacity-60
 								"
 								:user="metaStore.user"
 							/>
