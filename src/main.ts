@@ -50,6 +50,10 @@ axios.interceptors.response.use(
 		return response;
 	},
 	error => {
+		/* 
+		TODO if this happens when calling a dispatcher url such as `courses/.../material/...`, it'll
+		redirect to login?redirect=/ instead of redirecting to the original url. fix this
+		*/
 		if (
 			error?.response?.status === 401 &&
 			(router.currentRoute.value.name?.toString().toLowerCase() ?? "") !== "login"

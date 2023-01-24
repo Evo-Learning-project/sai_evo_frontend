@@ -278,7 +278,7 @@ export default defineComponent({
 				courseId: this.courseId,
 				includeExerciseCount: true,
 			});
-			await this.mainStore.getCourse({ courseId: this.courseId });
+			// await this.mainStore.getCourse({ courseId: this.courseId });
 			await this.mainStore.getCourseEventParticipations({
 				courseId: this.courseId,
 				fromFirstPage: true,
@@ -292,10 +292,6 @@ export default defineComponent({
 			}
 		});
 	},
-	// mounted() {
-	// 	this.ads2Code = document.getElementById("ads-div-hidden-2")?.innerHTML ?? "";
-	// 	this.ads3Code = document.getElementById("ads-div-hidden-3")?.innerHTML ?? "";
-	// },
 	data() {
 		return {
 			isInitialInfiniteLoad: false,
@@ -306,8 +302,6 @@ export default defineComponent({
 			loadingParticipations: new Set<string>(),
 			tourOptions,
 			demoStudentTourSteps,
-			// ads2Code: "",
-			// ads3Code: "",
 		};
 	},
 	methods: {
@@ -357,7 +351,7 @@ export default defineComponent({
 					},
 				});
 			} catch (e) {
-				this.setErrorNotification(e);
+				setErrorNotification(e);
 			} finally {
 				this.loadingParticipations.delete(participation.id);
 			}
@@ -378,7 +372,7 @@ export default defineComponent({
 					event: getBlankPractice(),
 				});
 				this.mainStore.setEditingEvent(newPracticeEvent);
-			}, this.setErrorNotification);
+			}, setErrorNotification);
 		},
 	},
 	computed: {

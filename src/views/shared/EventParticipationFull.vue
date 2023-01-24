@@ -257,6 +257,7 @@ import { getTranslatedString } from "@/i18n";
 import ExerciseSolutionContainer from "@/components/shared/ExerciseSolution/ExerciseSolutionContainer.vue";
 import { mapStores } from "pinia";
 import { useMainStore } from "@/stores/mainStore";
+import { setErrorNotification } from "@/utils";
 
 export default defineComponent({
 	name: "EventParticipationFull",
@@ -320,7 +321,7 @@ export default defineComponent({
 						fromFirstPage: true,
 					});
 				} catch (e) {
-					this.setErrorNotification(e);
+					setErrorNotification(e);
 				} finally {
 					this.slotsLoadingSolution[s.id] = false;
 				}
@@ -401,7 +402,7 @@ export default defineComponent({
 				});
 				this.slotsAssessmentControlsVisibility[slot.id] = false;
 			} catch (e) {
-				this.setErrorNotification(e);
+				setErrorNotification(e);
 			} finally {
 				this.slotsAssessmentLoading[slot.id] = false;
 			}

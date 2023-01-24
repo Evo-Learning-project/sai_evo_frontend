@@ -114,7 +114,7 @@ import { LoadAction } from "@ts-pro/vue-eternal-loading";
 import { getBlankExerciseSearchFilters } from "@/api/utils";
 import ExerciseSearchFilters from "@/components/teacher/ExerciseSearchFilters.vue";
 import Btn from "@/components/ui/Btn.vue";
-import { getDebouncedForFilter } from "@/utils";
+import { getDebouncedForFilter, setErrorNotification } from "@/utils";
 import FullExercise from "@/components/shared/FullExercise.vue";
 import { mapStores } from "pinia";
 import { useMainStore } from "@/stores/mainStore";
@@ -201,7 +201,7 @@ export default defineComponent({
 							filter: null,
 						});
 					} catch (e) {
-						this.setErrorNotification(e);
+						setErrorNotification(e);
 					} finally {
 						this.loadingSolutionsByExercise[e.id] = false;
 					}

@@ -217,7 +217,7 @@ import {
 } from "@/api";
 import SlotSkeleton from "@/components/ui/skeletons/SlotSkeleton.vue";
 import Countdown from "@/components/ui/Countdown.vue";
-import { getParticipationRemainingTime } from "@/utils";
+import { getParticipationRemainingTime, setErrorNotification } from "@/utils";
 import { mapStores } from "pinia";
 import { useMainStore } from "@/stores/mainStore";
 import { useMetaStore } from "@/stores/metaStore";
@@ -329,7 +329,7 @@ export default defineComponent({
 			try {
 				await this.slotAutoSaveManagers[slot.id].flush();
 			} catch (e) {
-				this.setErrorNotification(e);
+				setErrorNotification(e);
 			}
 		},
 		async onRunCode(slot: EventParticipationSlot) {
@@ -347,7 +347,7 @@ export default defineComponent({
 				// poll until execution is complete
 				this.pollForExecutionResults(slot.id);
 			} catch (e) {
-				this.setErrorNotification(e);
+				setErrorNotification(e);
 			} finally {
 				this.schedulingCodeRun = false;
 			}
@@ -394,7 +394,7 @@ export default defineComponent({
 						courseId: this.courseId,
 					});
 				},
-				e => this.setErrorNotification(e),
+				e => setErrorNotification(e),
 			);
 			this.goingForward = false;
 		},
@@ -410,7 +410,7 @@ export default defineComponent({
 						courseId: this.courseId,
 					});
 				},
-				e => this.setErrorNotification(e),
+				e => setErrorNotification(e),
 			);
 			this.goingBack = false;
 		},
@@ -458,7 +458,7 @@ export default defineComponent({
 					});
 					this.metaStore.showSuccessFeedback();
 				} catch (e) {
-					this.setErrorNotification(e);
+					setErrorNotification(e);
 				}
 			});
 			this.turningIn = false;

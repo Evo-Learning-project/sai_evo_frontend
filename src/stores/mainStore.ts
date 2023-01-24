@@ -1380,7 +1380,7 @@ export const useMainStore = defineStore("main", {
 		/** Previous teacher actions */
 		// CRUD on courses
 		async getCourse({ courseId }: CourseIdActionPayload) {
-			const { participations, ...course } = await getCourse(courseId);
+			const course = await getCourse(courseId);
 			this.setCourse(course);
 		},
 		async getCourseGamificationContext({ courseId }: CourseIdActionPayload) {

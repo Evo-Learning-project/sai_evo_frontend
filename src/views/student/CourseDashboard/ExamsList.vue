@@ -73,7 +73,7 @@ export default defineComponent({
 				courseId: this.courseId,
 				includeExerciseCount: true,
 			});
-			await this.mainStore.getCourse({ courseId: this.courseId }); // TODO is this necessary?
+			//await this.mainStore.getCourse({ courseId: this.courseId });
 			await this.mainStore.getCourseEventParticipations({
 				courseId: this.courseId,
 				fromFirstPage: true,
@@ -87,7 +87,6 @@ export default defineComponent({
 			MAX_PRACTICE_EXERCISE_COUNT,
 			showNotRecent: false,
 			showBookmarkedOnly: false,
-			loadingParticipations: new Set<string>(),
 			isInitialInfiniteLoad: false,
 		};
 	},

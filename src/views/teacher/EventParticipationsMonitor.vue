@@ -384,6 +384,7 @@ import EventParticipationAssessmentStateRenderer from "@/components/datatable/Ev
 import { mapStores } from "pinia";
 import { useMainStore } from "@/stores/mainStore";
 import { useMetaStore } from "@/stores/metaStore";
+import { setErrorNotification } from "@/utils";
 
 export default defineComponent({
 	components: {
@@ -625,7 +626,7 @@ export default defineComponent({
 				this.metaStore.showSuccessFeedback();
 				this.gridApi.refreshCells({ force: true });
 			} catch (e) {
-				this.setErrorNotification(e);
+				setErrorNotification(e);
 			} finally {
 				this.dispatchingCall = false;
 			}
@@ -701,7 +702,7 @@ export default defineComponent({
 				this.deselectAllRows();
 				this.gridApi.refreshCells({ force: true });
 			} catch (e) {
-				this.setErrorNotification(e);
+				setErrorNotification(e);
 			} finally {
 				this.dispatchingCall = false;
 			}
@@ -773,7 +774,7 @@ export default defineComponent({
 				this.deselectAllRows();
 				this.gridApi.refreshCells({ force: true });
 			} catch (e) {
-				this.setErrorNotification(e);
+				setErrorNotification(e);
 			} finally {
 				this.dispatchingCall = false;
 			}
@@ -797,7 +798,7 @@ export default defineComponent({
 				this.deselectAllRows();
 				this.gridApi.refreshCells({ force: true });
 			} catch (e) {
-				this.setErrorNotification(e);
+				setErrorNotification(e);
 			} finally {
 				this.dispatchingCall = false;
 			}
