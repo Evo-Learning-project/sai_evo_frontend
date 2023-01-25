@@ -32,6 +32,7 @@
 		<!-- header -->
 		<div class="flex flex-wrap md:items-center">
 			<div class="flex items-center">
+				<!-- icon -->
 				<div
 					class="flex rounded-full mr-3"
 					:class="{
@@ -76,11 +77,10 @@
 						<p v-if="node.creator" class="text-sm mr-2">
 							{{ node.creator.full_name }}
 						</p>
-						<!-- TODO show only if dates differ by at least one day-->
 						<span
 							class="text-sm text-muted"
 							style="margin-right: 3px"
-							v-if="node.modified !== node.created"
+							v-if="updatedOnDifferentDay"
 							>{{ $t("misc.updated_on") }}</span
 						>
 						<Timestamp
@@ -194,6 +194,7 @@ import Timestamp from "@/components/ui/Timestamp.vue";
 import { getTranslatedString as _ } from "@/i18n";
 import { courseIdMixin, nodeMixin } from "@/mixins";
 import { LessonNode, LessonNodeState } from "@/models";
+import { sameDay } from "@/utils";
 import { defineComponent, PropType } from "@vue/runtime-core";
 import { nodeEmits, nodeProps } from "../shared";
 export default defineComponent({
@@ -228,6 +229,9 @@ export default defineComponent({
 		},
 		bodyPreview() {
 			return this.node.body;
+		},
+		updatedOnDifferentDay() {
+			return !sameDay(new Date(this.node.created), new Date(this.node.modified));
 		},
 	},
 	// eslint-disable-next-line vue/no-unused-components

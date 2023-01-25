@@ -30,67 +30,66 @@
 			drag_indicator
 		</span>
 		<!-- header -->
-		<div class="flex items-start">
-			<!-- icon -->
-			<div
-				class="flex rounded-full mr-3"
-				:class="{
-					'bg-gray-200': node.state === AnnouncementNodeState.DRAFT,
-					'bg-primary  bg-opacity-15': node.state === AnnouncementNodeState.PUBLISHED,
-				}"
-				style="
-					min-width: 2.5rem;
-					max-width: 2.5rem;
-					min-height: 2.5rem;
-					max-height: 2.5rem;
-				"
-			>
-				<span
-					style="font-size: 28px !important"
-					:class="{
-						'text-gray-500': node.state === AnnouncementNodeState.DRAFT,
-						'text-primary': node.state === AnnouncementNodeState.PUBLISHED,
-					}"
-					class="m-auto material-icons-outlined"
-					>campaign</span
-				>
-			</div>
-			<!-- title, creator, timestamp-->
-			<div class="flex w-full flex-col">
-				<!-- title -->
-				<router-link
-					:to="{ name: 'CourseTreeNodeDetailDispatcher', params: { nodeId: node.id } }"
-				>
-					<h2 style="line-height: 0.95" class="mb-2 hover:text-primary hover:underline">
-						{{ $t("course_tree.announcement_title") }}
-					</h2>
-				</router-link>
+		<div class="flex flex-col items-start">
+			<div class="flex items-start">
+				<!-- icon -->
 				<div
-					class="
-						-mt-2
-						md:flex-row
-						flex-col flex
-						md:space-y-0
-						-space-y-1
-						md:space-x-2
-						ml-0.5
+					class="flex rounded-full mr-3"
+					:class="{
+						'bg-gray-200': node.state === AnnouncementNodeState.DRAFT,
+						'bg-primary  bg-opacity-15': node.state === AnnouncementNodeState.PUBLISHED,
+					}"
+					style="
+						min-width: 2.5rem;
+						max-width: 2.5rem;
+						min-height: 2.5rem;
+						max-height: 2.5rem;
 					"
 				>
-					<p v-if="node.creator" class="text-sm">
-						{{ node.creator.full_name }}
-					</p>
-					<Timestamp
-						:date-only="true"
-						class="text-sm text-muted"
-						:value="node.modified"
-					/>
+					<span
+						style="font-size: 28px !important"
+						:class="{
+							'text-gray-500': node.state === AnnouncementNodeState.DRAFT,
+							'text-primary': node.state === AnnouncementNodeState.PUBLISHED,
+						}"
+						class="m-auto material-icons-outlined"
+						>campaign</span
+					>
 				</div>
-
+				<div>
+					<!-- title -->
+					<router-link
+						:to="{ name: 'CourseTreeNodeDetailDispatcher', params: { nodeId: node.id } }"
+					>
+						<h2 style="line-height: 0.95" class="mb-2 hover:text-primary hover:underline">
+							{{ $t("course_tree.announcement_title") }}
+						</h2>
+					</router-link>
+					<!-- creator name & timestamp -->
+					<div class="-mt-2 flex ml-0.5">
+						<p v-if="node.creator" class="text-sm mr-2">
+							{{ node.creator.full_name }}
+						</p>
+						<span
+							class="text-sm text-muted"
+							style="margin-right: 3px"
+							v-if="updatedOnDifferentDay"
+							>{{ $t("misc.updated_on") }}</span
+						>
+						<Timestamp
+							:date-only="true"
+							class="text-sm text-muted"
+							:value="node.modified"
+						/>
+					</div>
+				</div>
+			</div>
+			<div class="md:mx-12 md:px-1 flex flex-col">
 				<!-- body -->
 				<div class="mt-2 flex flex-col space-y-1">
 					<div class="flex flex-wrap items-end">
 						<ProcessedTextFragment
-							class="w-full truncated-in-dragging-element text-muted"
+							class="truncated-in-dragging-element text-muted"
 							:value="bodyPreview"
 						/>
 						<Btn
@@ -190,6 +189,7 @@ import { getTranslatedString as _ } from "@/i18n";
 import { courseIdMixin, nodeMixin } from "@/mixins";
 import { AnnouncementNode, AnnouncementNodeState } from "@/models";
 import { useMainStore } from "@/stores/mainStore";
+import { sameDay } from "@/utils";
 import { defineComponent, PropType } from "@vue/runtime-core";
 import { mapStores } from "pinia";
 import CourseTreeNodeCommentSection from "../CourseTreeNodeCommentSection.vue";
@@ -239,6 +239,9 @@ export default defineComponent({
 		isTruncated() {
 			// TODO implement
 			return false;
+		},
+		updatedOnDifferentDay() {
+			return !sameDay(new Date(this.node.created), new Date(this.node.modified));
 		},
 	},
 	// eslint-disable-next-line vue/no-unused-components

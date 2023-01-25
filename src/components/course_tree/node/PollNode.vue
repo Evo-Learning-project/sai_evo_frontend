@@ -73,14 +73,20 @@
 								{{ $t("course_tree.poll_title") }}
 							</h2>
 						</router-link>
-						<div class="flex space-x-2 ml-0.5 -mt-2">
-							<p v-if="node.creator" class="text-sm">
+						<div class="flex ml-0.5 -mt-2">
+							<p v-if="node.creator" class="text-sm mr-2">
 								{{ node.creator.full_name }}
 							</p>
+							<span
+								class="text-sm text-muted"
+								style="margin-right: 3px"
+								v-if="updatedOnDifferentDay"
+								>{{ $t("misc.updated_on") }}</span
+							>
 							<Timestamp
 								:date-only="true"
 								class="text-sm text-muted"
-								:value="node.created"
+								:value="node.modified"
 							/>
 						</div>
 					</div>
@@ -211,7 +217,7 @@ import { SelectableOption } from "@/interfaces";
 import { courseIdMixin, loadingMixin, nodeMixin } from "@/mixins";
 import { PollNode, PollNodeChoice, PollNodeState } from "@/models";
 import { useMainStore } from "@/stores/mainStore";
-import { getColorFromString, md5, setErrorNotification } from "@/utils";
+import { getColorFromString, md5, sameDay, setErrorNotification } from "@/utils";
 import { defineComponent, PropType } from "@vue/runtime-core";
 import { mapStores } from "pinia";
 import { nodeEmits, nodeProps } from "../shared";
@@ -314,6 +320,9 @@ export default defineComponent({
 				content: o.text,
 				value: o.id,
 			}));
+		},
+		updatedOnDifferentDay() {
+			return !sameDay(new Date(this.node.created), new Date(this.node.modified));
 		},
 	},
 	// eslint-disable-next-line vue/no-unused-components
