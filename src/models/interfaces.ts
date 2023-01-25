@@ -306,6 +306,7 @@ interface BaseNodeFields {
 	id: string;
 	parent_id: string | null;
 	created: string;
+	modified: string;
 	creator?: User;
 	// children: PaginatedData<CourseTreeNode>;
 }

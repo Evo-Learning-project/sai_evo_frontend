@@ -79,22 +79,31 @@
 					<p v-if="node.creator" class="text-sm">
 						{{ node.creator.full_name }}
 					</p>
-					<Timestamp :date-only="true" class="text-sm text-muted" :value="node.created" />
-				</div>
-				<!-- body -->
-				<div class="mt-2 flex flex-wrap items-end">
-					<ProcessedTextFragment
-						class="w-full truncated-in-dragging-element text-muted"
-						:value="bodyPreview"
+					<Timestamp
+						:date-only="true"
+						class="text-sm text-muted"
+						:value="node.modified"
 					/>
-					<Btn
-						v-if="isTruncated"
-						:size="'xs'"
-						class="-ml-1"
-						:variant="'primary-borderless'"
-						@click="onShowMore()"
-						><span class="text-base">{{ $t("misc.show_more") }}</span></Btn
-					>
+				</div>
+
+				<!-- body -->
+				<div class="mt-2 flex flex-col space-y-1">
+					<div class="flex flex-wrap items-end">
+						<ProcessedTextFragment
+							class="w-full truncated-in-dragging-element text-muted"
+							:value="bodyPreview"
+						/>
+						<Btn
+							v-if="isTruncated"
+							:size="'xs'"
+							class="-ml-1"
+							:variant="'primary-borderless'"
+							@click="onShowMore()"
+							><span class="text-base">{{ $t("misc.show_more") }}</span></Btn
+						>
+					</div>
+					<!-- TODO find proper positioning -->
+					<Avatar :user="node.creator" class="ml-auto" v-if="false" />
 				</div>
 			</div>
 			<!-- teacher actions-->
@@ -172,6 +181,7 @@
 </template>
 
 <script lang="ts">
+import Avatar from "@/components/ui/Avatar.vue";
 import Btn from "@/components/ui/Btn.vue";
 import CopyToClipboard from "@/components/ui/CopyToClipboard.vue";
 import ProcessedTextFragment from "@/components/ui/ProcessedTextFragment.vue";
@@ -239,6 +249,7 @@ export default defineComponent({
 		CopyToClipboard,
 		CourseTreeNode,
 		CourseTreeNodeCommentSection,
+		Avatar,
 	},
 });
 </script>

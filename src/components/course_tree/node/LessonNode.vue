@@ -72,14 +72,21 @@
 							{{ lessonTitle }}
 						</h3>
 					</router-link>
-					<div class="flex space-x-2 ml-0.5">
-						<p v-if="node.creator" class="text-sm">
+					<div class="flex ml-0.5">
+						<p v-if="node.creator" class="text-sm mr-2">
 							{{ node.creator.full_name }}
 						</p>
+						<!-- TODO show only if dates differ by at least one day-->
+						<span
+							class="text-sm text-muted"
+							style="margin-right: 3px"
+							v-if="node.modified !== node.created"
+							>{{ $t("misc.updated_on") }}</span
+						>
 						<Timestamp
 							:date-only="true"
 							class="text-sm text-muted"
-							:value="node.created"
+							:value="node.modified"
 						/>
 					</div>
 				</div>

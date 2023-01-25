@@ -212,6 +212,7 @@ export const it = {
 		donate_now: "Dona ora",
 	},
 	misc: {
+		updated_on: "Aggiornato",
 		file_too_big: "Il file che hai scelto è troppo grande",
 		max_upload_size_is: "La dimensione massima consentita è",
 		terms_and_conditions: "termini e condizioni",
