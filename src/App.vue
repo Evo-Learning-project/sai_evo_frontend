@@ -144,11 +144,14 @@
 							</div>
 						</div>
 					</template>
-					<template v-if="hasAnyPrivileges && !isTeacherRoute" v-slot:footer>
+					<template
+						v-if="hasAnyPrivileges && !isTeacherRoute && $route.params.courseId"
+						v-slot:footer
+					>
 						<div
 							class="
 								mt-4
-								-mx-4
+								-mx-2
 								flex flex-col
 								space-y-1
 								items-center

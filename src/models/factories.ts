@@ -205,6 +205,7 @@ export const getBlankLessonNode = (parentId: string | null): LessonNode => ({
 	id: "",
 	comment_count: 0,
 	resourcetype: CourseTreeNodeType.LessonNode,
+	modified: "",
 });
 
 export const getBlankAnnouncementNode = (): AnnouncementNode => ({
@@ -214,6 +215,7 @@ export const getBlankAnnouncementNode = (): AnnouncementNode => ({
 	created: "",
 	state: AnnouncementNodeState.DRAFT,
 	resourcetype: CourseTreeNodeType.AnnouncementNode,
+	modified: "",
 });
 
 export const getBlankPollNode = (): PollNode => ({
@@ -224,6 +226,7 @@ export const getBlankPollNode = (): PollNode => ({
 	parent_id: null,
 	state: PollNodeState.DRAFT,
 	resourcetype: CourseTreeNodeType.PollNode,
+	modified: "",
 });
 
 export const getBlankTopicNode = (parentId: string | null, name = ""): TopicNode => ({
@@ -232,6 +235,7 @@ export const getBlankTopicNode = (parentId: string | null, name = ""): TopicNode
 	created: "",
 	id: "",
 	resourcetype: CourseTreeNodeType.TopicNode,
+	modified: "",
 });
 
 export const getBlankFileNode = (parentId: string | null): FileNode => ({
@@ -242,6 +246,7 @@ export const getBlankFileNode = (parentId: string | null): FileNode => ({
 	mime_type: "",
 	thumbnail: "",
 	resourcetype: CourseTreeNodeType.FileNode,
+	modified: "",
 });
 
 export const getBlankCourseTreeNodeComment = (comment: string): NodeComment => ({

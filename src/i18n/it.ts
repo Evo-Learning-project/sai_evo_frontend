@@ -463,6 +463,7 @@ export const it = {
 		reopen_exam_title: "Riapri esame",
 		close_exam_for_everyone_title: "Chiudi l'esame per tutti",
 		close_for_everyone: "Chiudi per tutti",
+		reopen_for_everyone: "Riapri per tutti",
 		close_exam_for_everyone_body_1: "Stai per chiudere l'esame",
 		close_exam_for_everyone_body_2: "per tutti i partecipanti.",
 		close_exam_for_everyone_body_3:

@@ -152,7 +152,7 @@ export default defineComponent({
 			this.blockingDialogData = {
 				title: _("course_events.reopen_exam_title"),
 				text: _("course_events.reopen_exam_body") + " " + event.name + "?",
-				yesText: _("course_events.close_for_everyone"),
+				yesText: _("course_events.reopen_for_everyone"),
 				noText: _("dialog.default_cancel_text"),
 			};
 
