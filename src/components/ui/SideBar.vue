@@ -63,7 +63,7 @@
 				<ul class="flex flex-col w-full mt-6" :class="{ 'h-full': !$slots.footer?.() }">
 					<router-link
 						v-wave="{
-							color: '#303f9f',
+							color: '#6a16f0',
 						}"
 						class="relative overflow-hidden rounded-r-full"
 						v-for="(option, index) in sidebarOptions"
