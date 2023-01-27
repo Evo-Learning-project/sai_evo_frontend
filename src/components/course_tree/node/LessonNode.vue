@@ -207,6 +207,7 @@ export default defineComponent({
 		},
 		...nodeProps,
 	},
+
 	data() {
 		return {
 			LessonNodeState,

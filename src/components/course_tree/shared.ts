@@ -1,4 +1,5 @@
 import { CourseTreeNode } from "@/models";
+import { useMainStore } from "@/stores/mainStore";
 
 export const nodeProps = {
 	canEdit: {
@@ -100,3 +101,56 @@ export const nodeEditorEmits = {
 		return true;
 	},
 };
+
+/**
+ * Handles reordering of a node. It is called when a node is
+ * dropped after having been dragged.
+ */
+export async function onChangeNodePosition(
+	courseId: string,
+	nodeList: CourseTreeNode[],
+	oldIndex: number,
+	newIndex: number,
+) {
+	if (oldIndex === newIndex) {
+		// node didn't change position
+		return;
+	}
+	// no updates have been fired yet, so to retrieve the node that was moved
+	// it's sufficient to index the list of nodes using its old position
+	const movedNode = nodeList[oldIndex];
+
+	// to fire the update request, two parameters are needed: a target arguments are dictated
+	// and the position relative to the target. the meaning of these two by django-mptt:
+	// https://django-mptt.readthedocs.io/en/stable/mptt.models.html#mptt.models.TreeManager.move_node
+	let moveArgs: {
+		target: string | null;
+		position: "first-child" | "last-child" | "left" | "right";
+	};
+
+	if (newIndex === 0) {
+		// node moved to the top of the list: it's the first child of its parent now
+		moveArgs = { target: movedNode.parent_id, position: "first-child" };
+	} else if (newIndex === nodeList.length - 1) {
+		// node moved to the end of the list: it's the last child of its parent now
+		moveArgs = { target: movedNode.parent_id, position: "last-child" };
+	} else if (newIndex < oldIndex) {
+		// node moved to the left: it's now the left sibling of the node
+		// that was at `newIndex` before the node was moved
+		const newRightSibling = nodeList[newIndex];
+		moveArgs = { target: newRightSibling.id, position: "left" };
+	} else {
+		// node moved to the right: it's now the right siblin of the node
+		// that was at `newIndex` before the node was moved
+		const newRightSibling = nodeList[newIndex];
+		moveArgs = { target: newRightSibling.id, position: "right" };
+	}
+
+	// fire move request
+	await useMainStore().moveCourseTreeNode({
+		courseId,
+		node: movedNode,
+		targetId: moveArgs.target as string,
+		position: moveArgs.position,
+	});
+}

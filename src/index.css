@@ -295,7 +295,7 @@
 	}
 
 	.drag-ghost {
-		@apply opacity-5 bg-light brightness-0 filter;
+		@apply opacity-10 bg-light brightness-0 filter;
 	}
 
 	.dragging-element {

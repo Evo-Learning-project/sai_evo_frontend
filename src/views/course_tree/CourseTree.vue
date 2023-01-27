@@ -51,13 +51,13 @@
 			@start="onNodeDragStart($event)"
 			@end="onNodeDragEnd($event)"
 			animation="200"
+			:class="{ 'dragging-inside-collection': mainStore.draggingCourseTreeNode }"
 		>
 			<template #item="{ element }">
 				<div>
 					<CourseTreeNode
 						:isDraggable="canEditNodes"
 						class="my-4"
-						:class="{ 'dragging-inside-collection': draggingNode }"
 						@loadChildren="
 							onLoadChildren(
 								$event.node,
@@ -171,6 +171,7 @@ import { AutoSaveManager, FieldList } from "@/autoSave";
 import VueEternalLoading from "@ts-pro/vue-eternal-loading/src/components/VueEternalLoading/VueEternalLoading.vue";
 import { LoadAction } from "@ts-pro/vue-eternal-loading";
 import Spinner from "@/components/ui/Spinner.vue";
+import { onChangeNodePosition } from "@/components/course_tree/shared";
 
 export default defineComponent({
 	name: "CourseTree",
@@ -246,39 +247,19 @@ export default defineComponent({
 			}
 		},
 		async onNodeDragStart() {
-			this.draggingNode = true;
+			//this.draggingNode = true;
+			this.mainStore.draggingCourseTreeNode = true;
 		},
 		async onNodeDragEnd(event: { oldIndex: number; newIndex: number }) {
-			this.draggingNode = false;
-			console.log("node drag end", event);
-			const newIndex = event.newIndex;
-			const oldIndex = event.oldIndex;
-			if (oldIndex === newIndex) {
-				return;
-			}
-			const movedNode = this.topLevelNodes[oldIndex];
-			let moveArgs: {
-				target: string | null;
-				position: "first-child" | "last-child" | "left" | "right";
-			};
-			if (newIndex === 0) {
-				moveArgs = { target: movedNode.parent_id, position: "first-child" };
-			} else if (newIndex === this.topLevelNodes.length - 1) {
-				moveArgs = { target: movedNode.parent_id, position: "last-child" };
-			} else if (newIndex < oldIndex) {
-				const newRightSibling = this.topLevelNodes[newIndex];
-				moveArgs = { target: newRightSibling.id, position: "left" };
-			} else {
-				const newRightSibling = this.topLevelNodes[newIndex];
-				moveArgs = { target: newRightSibling.id, position: "right" };
-			}
+			//this.draggingNode = false;
+			this.mainStore.draggingCourseTreeNode = false;
 			try {
-				await this.mainStore.moveCourseTreeNode({
-					courseId: this.courseId,
-					node: movedNode,
-					targetId: moveArgs.target as string,
-					position: moveArgs.position,
-				});
+				await onChangeNodePosition(
+					this.courseId,
+					this.topLevelNodes,
+					event.oldIndex,
+					event.newIndex,
+				);
 			} catch (e) {
 				setErrorNotification(e);
 			}

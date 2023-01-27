@@ -69,7 +69,7 @@
 				</Btn>
 			</div>
 		</div>
-		<div
+		<!-- <div
 			v-for="child in children"
 			:key="child.id"
 			class="mx-2 my-2 hidden-in-dragging-element"
@@ -81,7 +81,32 @@
 				:canEdit="canEdit"
 				:node="child"
 			/>
-		</div>
+		</div> -->
+
+		<draggable
+			ghost-class="drag-ghost"
+			drag-class="dragging-element"
+			:modelValue="children"
+			handle=".drag-handle"
+			item-key="id"
+			@start="onNodeDragStart($event)"
+			@end="onNodeDragEnd($event)"
+			animation="200"
+			class="hidden-in-dragging-element"
+		>
+			<template #item="{ element }">
+				<div class="my-2 mx-2.5">
+					<CourseTreeNode
+						:isDraggable="canEdit"
+						@editNode="$emit('editNode', $event)"
+						@deleteNode="$emit('deleteNode', $event)"
+						:canEdit="canEdit"
+						:node="element"
+					/>
+				</div>
+			</template>
+		</draggable>
+
 		<VueEternalLoading v-if="!initialFetch" :load="onLoadMore">
 			<template #loading>
 				<Spinner />
@@ -93,6 +118,8 @@
 </template>
 
 <script lang="ts">
+import draggable from "vuedraggable";
+
 import { TopicNode } from "@/models";
 import { defineComponent, PropType } from "@vue/runtime-core";
 import CourseTreeNode from "./CourseTreeNode.vue";
@@ -104,6 +131,8 @@ import VueEternalLoading from "@ts-pro/vue-eternal-loading/src/components/VueEte
 import { LoadAction } from "@ts-pro/vue-eternal-loading";
 import { setErrorNotification } from "@/utils";
 import Spinner from "@/components/ui/Spinner.vue";
+import { courseIdMixin } from "@/mixins";
+import { onChangeNodePosition } from "@/components/course_tree/shared";
 
 export default defineComponent({
 	name: "TopicNode",
@@ -117,6 +146,7 @@ export default defineComponent({
 	emits: {
 		...nodeEmits,
 	},
+	mixins: [courseIdMixin],
 	async created() {
 		await new Promise((resolve, reject) =>
 			this.$emit("loadChildren", {
@@ -131,9 +161,26 @@ export default defineComponent({
 	data() {
 		return {
 			initialFetch: true,
+			draggingChild: false,
 		};
 	},
 	methods: {
+		async onNodeDragStart() {
+			this.draggingChild = true;
+		},
+		async onNodeDragEnd(event: { oldIndex: number; newIndex: number }) {
+			this.draggingChild = false;
+			try {
+				await onChangeNodePosition(
+					this.courseId,
+					this.children,
+					event.oldIndex,
+					event.newIndex,
+				);
+			} catch (e) {
+				setErrorNotification(e);
+			}
+		},
 		async onLoadMore({ loaded, noMore, error }: LoadAction) {
 			console.log("loading children");
 			try {
@@ -163,7 +210,7 @@ export default defineComponent({
 			return this.mainStore.paginatedChildrenByNodeId[this.node.id]?.data ?? [];
 		},
 	},
-	components: { CourseTreeNode, Btn, VueEternalLoading, Spinner },
+	components: { draggable, CourseTreeNode, Btn, VueEternalLoading, Spinner },
 });
 </script>
 
