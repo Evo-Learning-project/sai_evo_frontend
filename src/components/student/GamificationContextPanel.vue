@@ -89,12 +89,12 @@
 				</div>
 			</Tooltip>
 
-			<div v-if="false" class="ml-4 flex items-center flex-wrap space-x-0.5">
+			<div v-if="true" class="ml-4 flex items-center flex-wrap space-x-0.5">
 				<GamificationBadge class="text-primary" />
 				<GamificationBadge class="text-primary" />
 				<GamificationBadge class="text-primary-light" />
 				<GamificationBadge class="text-primary-dark" />
-				<GamificationBadge class="text-secondary" />
+				<GamificationBadge class="text-gray-500" />
 				<GamificationBadge class="text-success" />
 			</div>
 		</div>

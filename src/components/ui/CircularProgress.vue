@@ -75,7 +75,7 @@ export default defineComponent({
 }
 
 div[role="progressbar"] {
-	--fg: #303f9f;
+	--fg: #6a16f0;
 	--bg: rgba(102, 106, 209, 0.2);
 	--pgPercentage: var(--value);
 	animation: growProgressBar 1s 1 forwards;

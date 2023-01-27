@@ -161,7 +161,7 @@ export default defineComponent({
 		) {
 			// update local copy of unsaved changes
 			this.unsavedChanges = {
-				...this.unsavedchanges,
+				...this.unsavedChanges,
 				[key]: value,
 			};
 			if (save) {

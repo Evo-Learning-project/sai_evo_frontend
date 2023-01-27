@@ -111,7 +111,7 @@
 										</svg>
 									</p>
 								</div>
-								<!-- <Btn
+								<Btn
 									:tooltip="showGamificationPanel ? '' : $t('gamification.show_panel')"
 									:variant="'icon'"
 									@click="showGamificationPanel = !showGamificationPanel"
@@ -124,8 +124,8 @@
 										}"
 										>visibility</span
 									>
-								</Btn> -->
-								<!-- <DraggablePopup
+								</Btn>
+								<DraggablePopup
 									:title="''"
 									v-if="showGamificationPanel"
 									@close="showGamificationPanel = false"
@@ -140,7 +140,7 @@
 										class="w-full"
 										v-if="showGamificationPanel"
 									/>
-								</DraggablePopup> -->
+								</DraggablePopup>
 							</div>
 						</div>
 					</template>
@@ -292,6 +292,8 @@ import ErrorView from "./views/shared/ErrorView.vue";
 import Btn from "./components/ui/Btn.vue";
 import { Breadcrumbs } from "@sentry/browser/dist/integrations";
 import BreadCrumbs from "./components/ui/BreadCrumbs.vue";
+import DraggablePopup from "./components/ui/DraggablePopup.vue";
+import GamificationContextPanel from "./components/student/GamificationContextPanel.vue";
 
 //import { typesetTex } from "./utils";
 const SIDEBAR_COLLASPED_LOCALSTORAGE = "sidebar_collapsed";
@@ -364,6 +366,8 @@ export default defineComponent({
 		ErrorView,
 		Btn,
 		BreadCrumbs,
+		DraggablePopup,
+		GamificationContextPanel,
 	},
 	async created() {
 		if (this.metaStore.isAuthenticated) {
