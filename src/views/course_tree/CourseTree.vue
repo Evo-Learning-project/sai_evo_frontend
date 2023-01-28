@@ -231,6 +231,15 @@ export default defineComponent({
 		};
 	},
 	methods: {
+		// onchs() {
+		// 	setTimeout(() => {
+		// 		var slides = document.getElementsByClassName("dragging-element");
+		// 		for (var i = 0; i < slides.length; i++) {
+		// 			console.log("EL", slides.item(i));
+		// 			slides.item(i)?.classList.remove("dragging-element");
+		// 		}
+		// 	}, 10);
+		// },
 		async onLoadMore({ loaded, noMore, error }: LoadAction) {
 			try {
 				const moreResults = await this.mainStore.getCourseTopLevelNodes({

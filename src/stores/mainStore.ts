@@ -468,10 +468,9 @@ export const useMainStore = defineStore("main", {
 			// get target node from target id. if the target id is the id of the root
 			// node of the course, set the target to null
 			const target =
-				targetId == (await getCourseRootNodeId(courseId))
+				targetId == (await this.getCourseRootId({ courseId }))
 					? null
 					: this.getCourseTreeNodeById(targetId);
-			console.log("TARGET", target);
 
 			if (typeof target === "undefined") {
 				throw new Error("moveCourseTreeNode didn't find target with id " + targetId);
