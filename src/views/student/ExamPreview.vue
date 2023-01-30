@@ -8,17 +8,34 @@
 			<h2>{{ mainStore.previewingEvent.name }}</h2>
 			<div
 				v-if="mainStore.previewingEvent.instructions.length > 0"
-				class="mb-2 overflow-hidden overflow-ellipsis"
+				class="mb-4 overflow-hidden overflow-ellipsis"
 				v-html="mainStore.previewingEvent.instructions"
-			></div>
-			<div class="mt-1 mb-4 space-y-1 text-sm">
-				<div class="flex space-x-1" v-if="mainStore.previewingEvent.begin_timestamp">
+			/>
+			<div class="mt-1 mb-4">
+				<div class="flex space-x-1 mb-1" v-if="mainStore.previewingEvent.begin_timestamp">
 					<p class="text-muted">{{ $t("event_editor.begin_timestamp") }}:</p>
 					<Timestamp :value="mainStore.previewingEvent.begin_timestamp"></Timestamp>
 				</div>
 				<div class="flex space-x-1" v-if="mainStore.previewingEvent.end_timestamp">
 					<p class="text-muted">{{ $t("event_editor.end_timestamp") }}:</p>
 					<Timestamp :value="mainStore.previewingEvent.end_timestamp"></Timestamp>
+				</div>
+				<div
+					v-if="
+						mainStore.previewingEvent.time_limit_rule === EventTimeLimitRule.TIME_LIMIT
+					"
+					class="banner banner-light w-max mt-4"
+				>
+					<span class="material-icons-outlined icon-light">timer</span>
+					<div>
+						<p>
+							{{ $t("event_participation_page.exam_has_time_limit_warning_1") }}
+							<strong>{{ timeLimitMinutes }} {{ $t("misc.minutes") }}</strong
+							>,
+							{{ $t("event_participation_page.exam_has_time_limit_warning_2") }}
+						</p>
+						<p>{{ $t("event_participation_page.exam_has_time_limit_warning_3") }}</p>
+					</div>
 				</div>
 			</div>
 			<div class="mt-auto">
@@ -121,7 +138,7 @@
 import Btn from "@/components/ui/Btn.vue";
 import Timestamp from "@/components/ui/Timestamp.vue";
 import { courseIdMixin, eventIdMixin, loadingMixin } from "@/mixins";
-import { Event, EventState } from "@/models";
+import { Event, EventState, EventTimeLimitRule } from "@/models";
 import { defineComponent } from "@vue/runtime-core";
 
 import SlotSkeleton from "@/components/ui/skeletons/SlotSkeleton.vue";
@@ -166,6 +183,7 @@ export default defineComponent({
 	data() {
 		return {
 			EventState,
+			EventTimeLimitRule,
 			dirtyMat: "",
 			dirtyCourse: "",
 			courseSelectionOptions,
@@ -184,6 +202,13 @@ export default defineComponent({
 	},
 	computed: {
 		...mapStores(useMainStore, useMetaStore),
+		timeLimitMinutes() {
+			return (
+				Math.floor(
+					((this.mainStore.previewingEvent?.time_limit_seconds ?? 0) / 60) * 10,
+				) / 10
+			);
+		},
 		isDemoMode() {
 			return isDemoMode();
 		},

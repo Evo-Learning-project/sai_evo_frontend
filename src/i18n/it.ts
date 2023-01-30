@@ -84,6 +84,11 @@ export const it = {
 		student_course_leaderboard: "Classifica",
 	},
 	event_participation_page: {
+		exam_has_time_limit_warning_1: "Questo esame ha un limite di tempo di ",
+		exam_has_time_limit_warning_2:
+			"che inizieranno a decorrere dal momento in cui inizierai la tua partecipazione. Una volta iniziato, non potrai fermare il tempo.",
+		exam_has_time_limit_warning_3:
+			"Tutte le tue risposte vengono salvate automaticamente. Anche se non riesci a consegnare prima dello scadere del tempo, tutte le tue risposte saranno mostrate al docente.",
 		times_up: "Tempo scaduto",
 		all_answers_saved: "Tutte le tue risposte sono state salvate",
 		exercise: "Esercizio",
