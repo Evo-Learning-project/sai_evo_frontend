@@ -57,18 +57,17 @@
 			>
 				drag_indicator
 			</span>
-			<div class="flex-col md:flex-row flex w-full py-4">
-				<div class="my-auto" v-if="node.file">
+			<div class="flex-col md:flex-row flex w-full py-4 overflow-hidden">
+				<div class="my-auto overflow-hidden" v-if="node.file">
 					<h4
 						:title="node.file.name"
 						@click="showDetails = true"
 						@keyup.enter="showDetails = true"
 						style="
 							line-height: 0.95;
-							display: -webkit-box;
-							-webkit-line-clamp: 1;
-							-webkit-box-orient: vertical;
+							white-space: nowrap;
 							overflow: hidden;
+							text-overflow: ellipsis;
 						"
 						class="mb-0.5 pr-1 cursor-pointer hover:text-primary hover:underline"
 					>

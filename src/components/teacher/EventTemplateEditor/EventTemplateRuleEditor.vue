@@ -257,18 +257,11 @@
 						<Btn
 							@click="setRuleMode(EventTemplateRuleType.ID_BASED, true)"
 							:variant="'transparent'"
-							class="
-								pb-4
-								border-b
-								md:py-5 md:pl-4 md:border-r md:border-b-0
-								hoverable-with-two-tone-primary
-							"
+							class="pb-4 border-b md:py-5 md:pl-4 md:border-r md:border-b-0"
 						>
 							<template v-slot:content>
 								<div class="flex items-center justify-center space-x-3">
-									<span class="opacity-50 material-icons-two-tone two-tone-light">
-										topic
-									</span>
+									<span class="opacity-50 material-icons"> topic </span>
 									<h4 class="">
 										{{ $t("event_template_rule_editor.pick_single_exercise") }}
 									</h4>
@@ -281,12 +274,7 @@
 						<Btn
 							@click="setRuleMode(EventTemplateRuleType.ID_BASED, false)"
 							:variant="'transparent'"
-							class="
-								py-4
-								border-b
-								md:pl-4 md:pr-3 md:py-0 md:border-r md:border-b-0
-								hoverable-with-two-tone-primary
-							"
+							class="py-4 border-b md:pl-4 md:pr-3 md:py-0 md:border-r md:border-b-0"
 						>
 							<template v-slot:content>
 								<div class="flex items-center justify-center space-x-3">
@@ -303,13 +291,11 @@
 						<Btn
 							@click="setRuleMode(EventTemplateRuleType.TAG_BASED)"
 							:variant="'transparent'"
-							class="pt-4 md:pl-8 md:pt-0 hoverable-with-two-tone-primary md:pr-6"
+							class="pt-4 md:pl-8 md:pt-0 md:pr-6"
 						>
 							<template v-slot:content>
 								<div class="flex items-center justify-center space-x-3">
-									<span class="opacity-50 material-icons-two-tone two-tone-light">
-										label
-									</span>
+									<span class="opacity-50 material-icons"> label </span>
 									<h4 class="">
 										{{ $t("event_template_rule_editor.pick_exercise_tag_based") }}
 									</h4>

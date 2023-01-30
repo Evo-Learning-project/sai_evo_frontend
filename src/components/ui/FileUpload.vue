@@ -6,10 +6,7 @@
 				:progress="uploadProgress"
 				class="rounded-t absolute top-0 z-10"
 			/>
-			<div
-				v-if="disabled"
-				class="absolute top-0 w-full h-44 z-10 bg-red-500 bg-opacity-0"
-			></div>
+			<div v-if="disabled" class="absolute top-0 w-full h-44 z-10"></div>
 			<VueUploadComponent
 				class="w-full"
 				@input-filter="inputFilter"

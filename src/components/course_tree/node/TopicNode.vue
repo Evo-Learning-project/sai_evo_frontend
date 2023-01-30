@@ -95,7 +95,7 @@
 			class="hidden-in-dragging-element"
 		>
 			<template #item="{ element }">
-				<div class="my-2 mx-2.5">
+				<div class="my-2 md:mx-2.5 mx-1">
 					<CourseTreeNode
 						:isDraggable="canEdit"
 						@editNode="$emit('editNode', $event)"

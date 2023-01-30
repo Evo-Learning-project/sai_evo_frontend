@@ -9,10 +9,10 @@
 		></transition>
 		<div></div>
 		<!-- main -->
-		<div class="flex h-full bg-red md:space-x-10">
+		<div class="flex h-full md:space-x-10">
 			<!-- sidebar -->
 			<!-- main -->
-			<section class="w-full pb-4 md:px-0 px-4">
+			<section class="w-full pb-4">
 				<div class="mb-8 mt-4">
 					<h2 class="mb-2" style="line-height: 1.2">{{ routeTitle }}</h2>
 					<BreadCrumbs :route="$route" />

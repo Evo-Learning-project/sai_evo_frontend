@@ -110,19 +110,19 @@ export const articles: HelpCenterArticle[] = [
 
     <ul class="list-none list-inside">
       <li class="my-2">
-      <span class="mr-1 inline-icon material-icons-two-tone two-tone-primary">topic</span>
+      <span class="mr-1 inline-icon material-icons text-primary">topic</span>
       <span class="mt-4 text-primary font-semibold">Stesso esercizio per tutti</span>
         <p>A tutti gli studenti verrà assegnato lo stesso esercizio.</p>
       </li>
 
       <li class="my-2">
-        <span class="mr-1 inline-icon material-icons-two-tone two-tone-primary">shuffle</span>
+        <span class="mr-1 inline-icon material-icons text-primary">shuffle</span>
         <span class="mt-4 text-primary font-semibold">Esercizio scelto casualmente da un insieme</span>
         <p>A ciascuno studente verrà assegnato un esercizio scelto casualmente tra quelli che selezioni.</p>
       </li>
 
       <li class="my-2">
-        <span class="mr-1 inline-icon material-icons-two-tone two-tone-primary">label</span>
+        <span class="mr-1 inline-icon material-icons text-primary">label</span>
         <span class="mt-4 text-primary font-semibold">Esercizio scelto casualmente in base ai tag</span>
         <p>A ciascuno studente verrà assegnato un esercizio scelto casualmente tra quelli che hanno i tag che selezioni.</p>
       </li>

@@ -73,7 +73,7 @@
 								{{ $t("course_tree.poll_title") }}
 							</h2>
 						</router-link>
-						<div class="flex ml-0.5 -mt-2">
+						<div class="flex flex-wrap ml-0.5 -mt-2">
 							<p v-if="node.creator" class="text-sm mr-2">
 								{{ node.creator.full_name }}
 							</p>

@@ -7,7 +7,7 @@
 					<div class="w-28 lg:w-64 skeleton-unit"></div>
 				</div>
 				<div class="flex items-center opacity-0">
-					<span class="mr-2 material-icons-two-tone two-tone-primary">book</span>
+					<span class="mr-2 material-icons">book</span>
 					<h3>&nbsp;</h3>
 				</div>
 			</div>

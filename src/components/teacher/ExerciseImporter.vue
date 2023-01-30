@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<div class="mb-4 banner banner-light">
-			<span class="material-icons-two-tone two-tone-primary">science</span>
+			<span class="material-icons">science</span>
 			<div>
 				<p>{{ $t("misc.experimental_feature_warning") }}</p>
 			</div>

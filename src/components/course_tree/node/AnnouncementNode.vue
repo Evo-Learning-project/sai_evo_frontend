@@ -66,7 +66,7 @@
 						</h2>
 					</router-link>
 					<!-- creator name & timestamp -->
-					<div class="-mt-2 flex ml-0.5">
+					<div class="-mt-2 flex flex-wrap ml-0.5">
 						<p v-if="node.creator" class="text-sm mr-2">
 							{{ node.creator.full_name }}
 						</p>

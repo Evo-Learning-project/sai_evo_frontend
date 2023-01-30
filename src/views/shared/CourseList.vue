@@ -6,7 +6,6 @@
 				class="mb-4 banner banner-danger"
 				v-if="!metaStore.user.is_teacher && !metaStore.user.mat && !isDemoMode"
 			>
-				<!-- <span class="material-icons-two-tone two-tone-danger"> school </span> -->
 				<div class="w-full">
 					<div class="flex items-center space-x-3">
 						<span class="material-icons-outlined text-danger-dark"> school </span>

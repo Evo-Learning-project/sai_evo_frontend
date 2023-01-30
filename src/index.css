@@ -585,10 +585,6 @@
 		@apply flex justify-center w-8 h-8 text-xl rounded-full shadow-md place-items-center;
 	}
 
-	.hoverable-with-two-tone-primary:hover .material-icons-two-tone {
-		@apply two-tone-primary opacity-70 !important;
-	}
-
 	.two-tone-primary {
 		/*filter: invert(31%) sepia(65%) saturate(1500%) hue-rotate(212deg) brightness(90%) contrast(87%);*/
 		filter: invert(20%) sepia(48%) saturate(2779%) hue-rotate(220deg) brightness(96%)
@@ -789,7 +785,7 @@
 	}
 
 	.ti-selected-item {
-		@apply bg-primary -mx-2 p-0 pl-2 !important;
+		@apply bg-primary bg-opacity-20 text-darkText -mx-2 p-0 pl-2 !important;
 	}
 
 	.vue-tags-input {
