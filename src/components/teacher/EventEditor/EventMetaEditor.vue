@@ -285,12 +285,11 @@
 							$t("event_editor.student_email")
 						}}</TextInput>
 						<div class="flex items-center w-1/2 space-x-1">
-							<!-- TODO convert back and forth between minutes and seconds -->
 							<NumberInput
 								class="w-full"
 								:small="false"
 								:modelValue="parseFloat(exception[1]) / 60"
-								@update:modelValue="exception[1] = parseFloat($event) * 60"
+								@update:modelValue="exception[1] = parseFloat($event || 0) * 60"
 								:leftIcon="'timer'"
 								>{{
 									mediaQueryMdMatches ? $t("misc.time_limit") : $t("misc.limit")
@@ -416,7 +415,7 @@ export default defineComponent({
 			//this.modelValue.time_limit_exceptions?.push(["", 0]);
 			this.emitUpdate("time_limit_exceptions", [
 				...(this.modelValue.time_limit_exceptions ?? []),
-				["", this.modelValue.time_limit_seconds],
+				["", this.modelValue.time_limit_seconds ?? 0],
 			]);
 		},
 		onRemoveTimeLimitException(index: number) {
