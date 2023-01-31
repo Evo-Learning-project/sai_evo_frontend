@@ -1,11 +1,11 @@
 <template>
 	<div
-		v-if="showFallbackavatar"
+		v-if="showFallbackavatar || !user.avatar_url"
 		class="flex rounded-full bg-primary-light text-primary bg-opacity-30"
 		:style="avatarSize"
 	>
 		<p class="mx-auto my-auto font-semibold">
-			{{ authorName[0].toLocaleUpperCase() }}
+			{{ fullName[0].toLocaleUpperCase() }}
 		</p>
 	</div>
 	<div :style="avatarSize" class="flex rounded-full overflow-hidden" v-else>
@@ -39,8 +39,8 @@ export default defineComponent({
 	},
 	methods: {},
 	computed: {
-		authorName(): string {
-			return this.user?.full_name ?? "Autore";
+		fullName(): string {
+			return this.user?.full_name ?? "A";
 		},
 		avatarSize() {
 			const size = this.size === "md" ? "2rem" : "3rem";

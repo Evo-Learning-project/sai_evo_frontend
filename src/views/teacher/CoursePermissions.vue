@@ -9,6 +9,7 @@
 				:placeholder="''"
 				:label="$t('course_permissions.search_user')"
 				@update:modelValue="onShowUserPermissionsDialog($event)"
+				@createOption="onAssignPermissionsToNonExistingUser($event)"
 				:hint="$t('course_permissions.search_user_hint')"
 				:filterFunction="filterUser"
 				:isCreatableFunction="isValidEmailAddress"
@@ -22,14 +23,26 @@
 						</div>
 					</div>
 				</template>
-				<template v-slot:noResults> no res</template>
-				<template v-slot:createOption="{ searchText }"> {{ searchText }}</template>
+				<template v-slot:noResults>
+					<div class="flex flex-col items-center my-4 mx-2">
+						<p class="text-lg">{{ $t("course_permissions.search_cant_find_user") }}</p>
+						<p class="text-sm text-muted">
+							{{ $t("course_permissions.try_with_email_hint") }}
+						</p>
+					</div>
+				</template>
+				<template v-slot:createOption="{ searchText }">
+					<div class="flex items-center space-x-4 mr-8">
+						<Avatar :user="{ full_name: searchText }" />
+						<p>{{ searchText }}</p>
+					</div>
+				</template>
 			</Combobox>
 		</div>
 
 		<!-- list of privileged users-->
 		<div class="mt-6">
-			<h3 class="mb-4">{{ $t("course_permissions.users_with_privileges") }}</h3>
+			<h3 class="mb-1">{{ $t("course_permissions.users_with_privileges") }}</h3>
 			<div
 				v-for="user in privilegedUsers"
 				:key="user.id"
@@ -121,7 +134,7 @@ import { mapStores } from "pinia";
 import { useMetaStore } from "@/stores/metaStore";
 import { useMainStore } from "@/stores/mainStore";
 import { getCurrentUserId, setErrorNotification, setPageWideError } from "@/utils";
-import Combobox from "@/components/ui/skeletons/Combobox.vue";
+import Combobox from "@/components/ui/Combobox.vue";
 import Avatar from "@/components/ui/Avatar.vue";
 import Tooltip from "@/components/ui/Tooltip.vue";
 import Chipset from "@/components/ui/Chipset.vue";
@@ -165,6 +178,9 @@ export default defineComponent({
 		},
 		isCourseCreator(user: User) {
 			return this.currentCourse?.creator?.id == user.id;
+		},
+		onAssignPermissionsToNonExistingUser(email: string) {
+			console.log("TO EMAIL", email);
 		},
 		getUserPermissionsAsOptions(user: User) {
 			return (user.course_privileges ?? []).map(key => ({

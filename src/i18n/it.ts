@@ -63,6 +63,8 @@ export const it = {
 		users_with_privileges: "Utenti con permessi",
 		course_creator: "Creatore del corso",
 		add_permissions_tooltip: "Aggiungi permessi",
+		search_cant_find_user: "Non trovi l'utente che stai cercando?",
+		try_with_email_hint: "Digita l'indirizzo email dell'utente",
 	},
 	headings: {
 		course_tree: "Materiale " + ROUTE_TITLE_COURSE_NAME_TOKEN,

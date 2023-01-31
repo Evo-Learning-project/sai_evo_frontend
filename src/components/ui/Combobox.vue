@@ -40,7 +40,13 @@
 				<slot name="noResults" v-bind:searchText="searchText"></slot>
 			</div>
 			<div v-if="filteredItems.length === 0 && isCreatableFunction(searchText)">
-				<slot name="createOption" v-bind:searchText="searchText"></slot>
+				<div
+					v-wave
+					class="flex py-2 hover:bg-light cursor-pointer -mx-5 px-5"
+					@click="$emit('createOption', searchText)"
+				>
+					<slot name="createOption" v-bind:searchText="searchText"></slot>
+				</div>
 			</div>
 		</DropdownMenu>
 	</div>
@@ -48,8 +54,8 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from "@vue/runtime-core";
-import TextInput from "../TextInput.vue";
-import DropdownMenu from "../DropdownMenu.vue";
+import TextInput from "./TextInput.vue";
+import DropdownMenu from "./DropdownMenu.vue";
 import { SelectableOption } from "@/interfaces";
 import { v4 as uuid4 } from "uuid";
 
