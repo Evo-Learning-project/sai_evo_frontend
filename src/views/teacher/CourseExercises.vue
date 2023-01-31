@@ -155,7 +155,12 @@ import ExerciseEditorWrapper from "@/components/teacher/ExerciseEditor/ExerciseE
 import { defineComponent } from "@vue/runtime-core";
 import Spinner from "@/components/ui/Spinner.vue";
 import ExerciseSearchFilters from "@/components/teacher/ExerciseSearchFilters.vue";
-import { forceFileDownload, getClonedExercise, getDebouncedForFilter } from "@/utils";
+import {
+	forceFileDownload,
+	getClonedExercise,
+	getDebouncedForFilter,
+	setErrorNotification,
+} from "@/utils";
 import { courseIdMixin, coursePrivilegeMixin, loadingMixin } from "@/mixins";
 import ExerciseEditorWrapperSkeleton from "@/components/ui/skeletons/ExerciseEditorWrapperSkeleton.vue";
 import { getBlankExerciseSearchFilters, isEmptyFilter } from "@/api/utils";
@@ -245,7 +250,7 @@ export default defineComponent({
 				const exercises = (await getExercises(this.courseId, 1, null, MAX_PAGE_SIZE))
 					.data;
 				forceFileDownload({ data: JSON.stringify(exercises, null, 4) }, "exercises.json");
-			}, this.setErrorNotification);
+			}, setErrorNotification);
 		},
 		async onFilterChange() {
 			await this.withLoading(
@@ -271,7 +276,7 @@ export default defineComponent({
 					this.showExerciseImporter = false;
 				},
 				e => {
-					this.setErrorNotification(e);
+					setErrorNotification(e);
 					this.importLoading = false;
 				},
 			);

@@ -104,7 +104,7 @@ import { DataFormat, getImportedData, ImportedExerciseData } from "@/integration
 import { SelectableOption } from "@/interfaces";
 import { loadingMixin } from "@/mixins";
 import { Exercise, ExerciseState } from "@/models";
-import { getFileContent } from "@/utils";
+import { getFileContent, setErrorNotification } from "@/utils";
 import { defineComponent, PropType } from "@vue/runtime-core";
 import MinimalExercisePreview from "./ExerciseEditor/MinimalExercisePreview.vue";
 import Dropdown from "../ui/Dropdown.vue";
@@ -151,10 +151,10 @@ export default defineComponent({
 					this.currentStep = "file_chosen";
 				} else {
 					// TODO handle errors
-					this.setErrorNotification(importedData.errors?.[0], true);
+					setErrorNotification(importedData.errors?.[0], true);
 				}
 			} catch (e) {
-				this.setErrorNotification(e);
+				setErrorNotification(e);
 			}
 		},
 		onSelect(format: DataFormat) {

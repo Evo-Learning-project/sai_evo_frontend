@@ -217,7 +217,12 @@ import EventInstancesPreview from "./EventInstancesPreview.vue";
 import useVuelidate from "@vuelidate/core";
 import { eventValidation } from "@/validation/models";
 import NumberInput from "@/components/ui/NumberInput.vue";
-import { getCurrentUserId, roundToTwoDecimals } from "@/utils";
+import {
+	getCurrentUserId,
+	roundToTwoDecimals,
+	setErrorNotification,
+	setPageWideError,
+} from "@/utils";
 import { mapStores } from "pinia";
 import { useMainStore } from "@/stores/mainStore";
 import { useMetaStore } from "@/stores/metaStore";
@@ -274,7 +279,7 @@ export default defineComponent({
 			});
 			// TODO is it necessary?
 			// await this.mainStore.getExercises({ courseId: this.courseId, filters: null, fromFirstPage: true });
-		}, this.setPageWideError);
+		}, setPageWideError);
 
 		// ! this.ws = await subscribeToEventChanges(this.eventId);
 
@@ -348,7 +353,7 @@ export default defineComponent({
 						}
 					}, LOCK_POLLING_INTERVAL);
 				} else {
-					this.setErrorNotification(e);
+					setErrorNotification(e);
 				}
 			}
 		},

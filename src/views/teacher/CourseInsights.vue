@@ -122,7 +122,7 @@
 <script lang="ts">
 import { courseIdMixin, loadingMixin } from "@/mixins";
 import { defineComponent, PropType } from "@vue/runtime-core";
-import { logAnalyticsEvent, roundToTwoDecimals } from "@/utils";
+import { logAnalyticsEvent, roundToTwoDecimals, setErrorNotification } from "@/utils";
 import DataTable from "@/components/ui/DataTable.vue";
 import { EventSearchFilter } from "@/api";
 import { EventState, EventType, User, Event, EventParticipation } from "@/models";
@@ -185,7 +185,7 @@ export default defineComponent({
 			try {
 				await this.mainStore.getCourseActiveUsers({ courseId: this.courseId });
 			} catch (e) {
-				this.setErrorNotification(e);
+				setErrorNotification(e);
 			} finally {
 				this.loadingActiveStudents = false;
 			}
@@ -201,7 +201,7 @@ export default defineComponent({
 					} as EventSearchFilter,
 				});
 			} catch (e) {
-				this.setErrorNotification(e);
+				setErrorNotification(e);
 			} finally {
 				this.loadingExams = false;
 			}

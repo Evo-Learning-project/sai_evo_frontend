@@ -362,6 +362,7 @@ import useVuelidate from "@vuelidate/core";
 import { eventTemplateRuleValidation } from "@/validation/models";
 import NumberInput from "@/components/ui/NumberInput.vue";
 import Tooltip from "@/components/ui/Tooltip.vue";
+import { setErrorNotification } from "@/utils";
 
 export default defineComponent({
 	components: {
@@ -404,7 +405,7 @@ export default defineComponent({
 					}
 					this.loadingPreview = false;
 				} catch (e) {
-					this.setErrorNotification(e);
+					setErrorNotification(e);
 				}
 
 				this.previewExercises = this.previewExercises.filter(

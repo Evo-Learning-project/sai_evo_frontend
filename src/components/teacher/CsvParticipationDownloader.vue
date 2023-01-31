@@ -78,7 +78,7 @@ import {
 	ReportType,
 } from "@/reports";
 import { getParticipationsAsCsv } from "@/reports/csv";
-import { forceFileDownload } from "@/utils";
+import { forceFileDownload, setErrorNotification } from "@/utils";
 import { defineComponent, PropType } from "@vue/runtime-core";
 import Btn from "../ui/Btn.vue";
 import Dialog from "../ui/Dialog.vue";
@@ -174,7 +174,7 @@ export default defineComponent({
 				});
 				return participations;
 			} catch (e) {
-				this.setErrorNotification(e);
+				setErrorNotification(e);
 				return [];
 			}
 		},

@@ -301,7 +301,7 @@ export default defineComponent({
 						exerciseId: this.exercise.id,
 						solutionId: solution.id,
 					}),
-				this.setErrorNotification,
+				setErrorNotification,
 			);
 		},
 		async editDraftSolution(): Promise<boolean> {

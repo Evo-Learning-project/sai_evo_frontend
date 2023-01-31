@@ -103,7 +103,7 @@ import MinimalExercisePreviewSkeleton from "@/components/ui/skeletons/MinimalExe
 import SlotSkeleton from "@/components/ui/skeletons/SlotSkeleton.vue";
 import Btn from "@/components/ui/Btn.vue";
 import FullExercise from "@/components/shared/FullExercise.vue";
-import { logAnalyticsEvent } from "@/utils";
+import { logAnalyticsEvent, setErrorNotification } from "@/utils";
 import { mapStores } from "pinia";
 import { useMainStore } from "@/stores/mainStore";
 export default defineComponent({
@@ -170,7 +170,7 @@ export default defineComponent({
 							} as ExerciseSolutionSearchFilter,
 						});
 					} catch (e) {
-						this.setErrorNotification(e);
+						setErrorNotification(e);
 					} finally {
 						this.loadingSolutionsByExercise[e.id] = false;
 					}

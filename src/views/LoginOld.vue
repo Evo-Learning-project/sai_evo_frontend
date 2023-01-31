@@ -331,7 +331,7 @@ export default defineComponent({
 						// TODO if you use this.setErroNotification, this is undefined - investigate (hint: it has to do something with the mixin and possibily the store)
 						setErrorNotification(getTranslatedString("misc.logged_in"), true);
 					},
-					isDemoMode() ? this.redirectToDemoPage : this.setErrorNotification,
+					isDemoMode() ? this.redirectToDemoPage : setErrorNotification,
 				);
 			} catch (error) {
 				throw error;

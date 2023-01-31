@@ -155,7 +155,7 @@ import NumberInput from "@/components/ui/NumberInput.vue";
 import ArticleHandle from "@/components/shared/HelpCenter/ArticleHandle.vue";
 import SegmentedControls from "@/components/ui/SegmentedControls.vue";
 import { SelectableOption } from "@/interfaces";
-import { logAnalyticsEvent } from "@/utils";
+import { logAnalyticsEvent, setErrorNotification } from "@/utils";
 import { mapStores } from "pinia";
 import { useMainStore } from "@/stores/mainStore";
 export default defineComponent({
@@ -280,7 +280,7 @@ export default defineComponent({
 					[],
 					0,
 					undefined,
-					this.setErrorNotification,
+					setErrorNotification,
 					undefined,
 					true,
 					false,
@@ -323,7 +323,7 @@ export default defineComponent({
 			try {
 				await this.rulesAutoSaveInstances[rule.id].onChange({ [field]: value });
 			} catch (e) {
-				this.setErrorNotification(e);
+				setErrorNotification(e);
 			} finally {
 				this.$emit("doneSaving");
 			}

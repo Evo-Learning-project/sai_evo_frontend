@@ -63,7 +63,7 @@ import VueEternalLoading from "@ts-pro/vue-eternal-loading/src/components/VueEte
 import { LoadAction } from "@ts-pro/vue-eternal-loading";
 import { getBlankExerciseSearchFilters } from "@/api/utils";
 import FullExercise from "@/components/shared/FullExercise.vue";
-import { logAnalyticsEvent } from "@/utils";
+import { logAnalyticsEvent, setErrorNotification } from "@/utils";
 import { mapStores } from "pinia";
 import { useMainStore } from "@/stores/mainStore";
 export default defineComponent({
@@ -112,7 +112,7 @@ export default defineComponent({
 							filter: { bookmarked: true } as ExerciseSolutionSearchFilter,
 						});
 					} catch (e) {
-						this.setErrorNotification(e);
+						setErrorNotification(e);
 					} finally {
 						this.loadingSolutionsByExercise[e.id] = false;
 					}

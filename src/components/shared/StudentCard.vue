@@ -81,6 +81,7 @@ import Timestamp from "../ui/Timestamp.vue";
 import { getUserCourseParticipations } from "@/api/courses";
 import { courseIdMixin, loadingMixin } from "@/mixins";
 import SkeletonCard from "../ui/SkeletonCard.vue";
+import { setErrorNotification } from "@/utils";
 export default defineComponent({
 	name: "StudentCard",
 	mixins: [courseIdMixin, loadingMixin],
@@ -100,7 +101,7 @@ export default defineComponent({
 						this.user.id,
 					);
 				} catch (e) {
-					this.setErrorNotification(e);
+					setErrorNotification(e);
 				} finally {
 					this.fetching = false;
 				}

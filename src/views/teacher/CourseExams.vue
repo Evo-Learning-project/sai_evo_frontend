@@ -78,6 +78,7 @@ import { useMainStore } from "@/stores/mainStore";
 import { DialogData } from "@/interfaces";
 import { getTranslatedString as _ } from "@/i18n";
 import { useMetaStore } from "@/stores/metaStore";
+import { setErrorNotification } from "@/utils";
 
 export default defineComponent({
 	components: {
@@ -143,7 +144,7 @@ export default defineComponent({
 							users_allowed_past_closure: [],
 						},
 					}),
-				this.setErrorNotification,
+				setErrorNotification,
 				() => this.metaStore.showSuccessFeedback(),
 			);
 			this.showBlockingDialog = false;
@@ -174,7 +175,7 @@ export default defineComponent({
 							users_allowed_past_closure: [],
 						},
 					}),
-				this.setErrorNotification,
+				setErrorNotification,
 				() => this.metaStore.showSuccessFeedback(),
 			);
 			this.showBlockingDialog = false;
