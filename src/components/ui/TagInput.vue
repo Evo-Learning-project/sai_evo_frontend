@@ -20,8 +20,6 @@
 			/>
 		</div>
 	</div>
-
-	<!--@tags-changed="newTags => onTagsChanged(newTags)"-->
 </template>
 
 <script lang="ts">
@@ -87,12 +85,6 @@ export default defineComponent({
 		};
 	},
 	methods: {
-		onTagsChanged(newTags: any) {
-			this.$emit(
-				"update:modelValue",
-				newTags.map((t: { text: string }) => this.processTag(t)),
-			);
-		},
 		beforeAddingTag(event: any) {
 			if (
 				!this.processedModelValue

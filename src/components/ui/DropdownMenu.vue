@@ -40,7 +40,7 @@
 				shadow-popup
 			"
 			:class="{
-				'opacity-0 scale-95 invisible': !expanded,
+				'opacity-0 scale-95 invisible max-h-97': !expanded,
 				'max-h-97 opacity-100 scale-100': expanded,
 				'origin-top-left left-0': placement === 'left',
 				'origin-top-right right-0': placement === 'right',

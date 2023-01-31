@@ -1432,6 +1432,9 @@ export const useMainStore = defineStore("main", {
 			const courses = await getCourses();
 			this.courses = courses;
 		},
+		getUser(userId: string) {
+			return this.users.find(u => u.id == userId);
+		},
 		async getTags({
 			courseId,
 			includeExerciseCount = false,
