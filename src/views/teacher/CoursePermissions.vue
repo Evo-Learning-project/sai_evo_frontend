@@ -1,24 +1,28 @@
 <template>
 	<div class="h-full">
 		<!-- user search -->
-		<Combobox
-			leftIcon="person_add"
-			class="w-1/2 mt-4"
-			:items="usersAsOptions"
-			:placeholder="''"
-			:label="$t('course_permissions.search_user')"
-			@update:modelValue="onSetUserPermissions($event)"
-		>
-			<template v-slot="{ item }">
-				<div class="flex items-center space-x-4">
-					<Avatar :user="item.data" />
-					<div class="flex flex-col">
-						<p>{{ item.data.full_name }}</p>
-						<p class="text-muted text-sm -mt-1">{{ item.data.email }}</p>
+		<div class="flex items-center space-x-2 mt-4">
+			<span class="material-icons icon-light">person_add</span>
+			<Combobox
+				class="w-1/2"
+				:items="usersAsOptions"
+				:placeholder="''"
+				:label="$t('course_permissions.search_user')"
+				@update:modelValue="onShowUserPermissionsDialog($event)"
+				:hint="$t('course_permissions.search_user_hint')"
+			>
+				<template v-slot="{ item }">
+					<div class="flex items-center space-x-4">
+						<Avatar :user="item.data" />
+						<div class="flex flex-col">
+							<p>{{ item.data.full_name }}</p>
+							<p class="text-muted text-sm -mt-1">{{ item.data.email }}</p>
+						</div>
 					</div>
-				</div>
-			</template>
-		</Combobox>
+				</template>
+			</Combobox>
+		</div>
+
 		<!-- list of privileged users-->
 		<div class="mt-12">
 			<h3 class="mb-4">{{ $t("course_permissions.users_with_privileges") }}</h3>
@@ -48,16 +52,16 @@
 					</div>
 					<!-- permissions chips -->
 					<div class="flex flex-wrap w-full">
-						<div
-							v-for="privilege in user.course_privileges"
-							:key="user.id + '-' + privilege"
-							class="chip flex items-center space-x-1 text-sm"
-						>
-							<span style="font-size: 18px !important" class="material-icons-outlined">{{
-								coursePrivilegeIcons[privilege][0]
-							}}</span>
-							<p>{{ $t("course_privileges_short." + privilege) }}</p>
-						</div>
+						<Chipset
+							:showAddChip="true"
+							:disabled="isCourseCreator(user) || user.id == currentUserId"
+							:deletable="true"
+							:modelValue="[]"
+							:options="getUserPermissionsAsOptions(user)"
+							@deleteChip="onRemoveUserPrivilege(user, $event)"
+							@addChip="onShowUserPermissionsDialog(user.id)"
+							:addChipTooltip="$t('course_permissions.add_permissions_tooltip')"
+						/>
 					</div>
 				</div>
 			</div>
@@ -90,8 +94,8 @@
 							<p class="ml-1 mt-0.5 text-sm text-muted">{{ description }}</p>
 						</template>
 					</CheckboxGroup>
-				</div></template
-			>
+				</div>
+			</template>
 		</Dialog>
 	</div>
 </template>
@@ -110,10 +114,11 @@ import { SelectableOption } from "@/interfaces";
 import { mapStores } from "pinia";
 import { useMetaStore } from "@/stores/metaStore";
 import { useMainStore } from "@/stores/mainStore";
-import { setErrorNotification, setPageWideError } from "@/utils";
+import { getCurrentUserId, setErrorNotification, setPageWideError } from "@/utils";
 import Combobox from "@/components/ui/skeletons/Combobox.vue";
 import Avatar from "@/components/ui/Avatar.vue";
 import Tooltip from "@/components/ui/Tooltip.vue";
+import Chipset from "@/components/ui/Chipset.vue";
 
 export default defineComponent({
 	name: "CoursePermissions",
@@ -123,6 +128,7 @@ export default defineComponent({
 		Combobox,
 		Avatar,
 		Tooltip,
+		Chipset,
 	},
 	mixins: [courseIdMixin, loadingMixin, savingMixin],
 	async created() {
@@ -146,12 +152,37 @@ export default defineComponent({
 			this.showDialog = false;
 			this.editingUserId = "";
 		},
-		onSetUserPermissions(userId: string) {
+		onShowUserPermissionsDialog(userId: string) {
 			this.editingUserId = userId;
 			this.showDialog = true;
 		},
 		isCourseCreator(user: User) {
-			return this.currentCourse.creator.id == user.id;
+			return this.currentCourse?.creator?.id == user.id;
+		},
+		getUserPermissionsAsOptions(user: User) {
+			return (user.course_privileges ?? []).map(key => ({
+				value: key,
+				content: _("course_privileges_short." + key),
+				icons: coursePrivilegeIcons[key],
+				//description: _("course_privileges." + key),
+			}));
+		},
+		async onSetUserPrivileges(userId: string, privileges: CoursePrivilege[]) {
+			await this.withLoading(
+				async () =>
+					await this.mainStore.updateUserCoursePrivileges({
+						courseId: this.courseId,
+						userId,
+						privileges,
+					}),
+				setErrorNotification,
+			);
+		},
+		async onRemoveUserPrivilege(user: User, privilege: CoursePrivilege) {
+			await this.onSetUserPrivileges(
+				user.id,
+				(user.course_privileges ?? []).filter(p => p != privilege),
+			);
 		},
 	},
 	computed: {
@@ -164,40 +195,19 @@ export default defineComponent({
 				return this.editingUser?.course_privileges;
 			},
 			async set(val: CoursePrivilege[]) {
-				await this.withLoading(
-					async () =>
-						await this.mainStore.updateUserCoursePrivileges({
-							courseId: this.courseId,
-							userId: this.editingUserId,
-							privileges: val,
-						}),
-					setErrorNotification,
-				);
+				await this.onSetUserPrivileges(this.editingUserId, val);
 			},
 		},
-		usersData() {
-			return (
-				this.mainStore.users
-					.map(u => ({
-						id: u.id,
-						email: u.email,
-						fullName: u.full_name,
-						coursePrivileges: u.course_privileges,
-					}))
-					// put users with more privileges at the top
+		privilegedUsers() {
+			return [
+				...this.mainStore.users.filter(u => this.isCourseCreator(u)),
+				...this.mainStore.users
+					.filter(u => !this.isCourseCreator(u) && (u.course_privileges ?? []).length > 0)
 					.sort(
 						(a, b) =>
-							(b.coursePrivileges ?? []).length - (a.coursePrivileges ?? []).length,
-					)
-			);
-		},
-		privilegedUsers() {
-			return this.mainStore.users
-				.filter(u => (u.course_privileges ?? []).length > 0)
-				.sort(
-					(a, b) =>
-						(b.course_privileges ?? []).length - (a.course_privileges ?? []).length,
-				);
+							(b.course_privileges ?? []).length - (a.course_privileges ?? []).length,
+					),
+			];
 		},
 		usersAsOptions(): SelectableOption[] {
 			return this.mainStore.users.map(u => ({
@@ -213,6 +223,9 @@ export default defineComponent({
 				icons: coursePrivilegeIcons[key],
 				description: _("course_privileges." + key),
 			}));
+		},
+		currentUserId() {
+			return getCurrentUserId();
 		},
 	},
 });

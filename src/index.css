@@ -252,6 +252,10 @@
 		@apply w-10 h-10 p-0;
 	}
 
+	.icon-btn-xs {
+		@apply w-5 h-5 p-0;
+	}
+
 	.icon-btn-base {
 		@apply w-10 h-10 p-0;
 	}

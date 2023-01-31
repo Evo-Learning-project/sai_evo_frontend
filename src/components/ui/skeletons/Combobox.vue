@@ -2,12 +2,21 @@
 	<div class="combo-box">
 		<DropdownMenu :expanded="expanded" @toggleExpanded="onToggleExpanded()">
 			<template v-slot:activator>
-				<TextInput
-					:leftIcon="leftIcon"
-					v-model="searchText"
-					:placeholder="placeholder || undefined"
-					>{{ label }}</TextInput
-				>
+				<div class="relative">
+					<TextInput
+						:leftIcon="leftIcon"
+						v-model="searchText"
+						:placeholder="placeholder || undefined"
+						>{{ label }}</TextInput
+					>
+					<p
+						style="font-size: 12.5px"
+						class="absolute -bottom-5 left-0 text-muted"
+						v-if="hint"
+					>
+						{{ hint }}
+					</p>
+				</div>
 			</template>
 			<label
 				v-for="(item, index) in filteredItems"
@@ -69,7 +78,14 @@ export default defineComponent({
 			type: String,
 			default: "",
 		},
-		leftIcon: { type: String, default: "" },
+		leftIcon: {
+			type: String,
+			default: "",
+		},
+		hint: {
+			type: String,
+			default: "",
+		},
 	},
 	watch: {
 		searchText(newVal) {

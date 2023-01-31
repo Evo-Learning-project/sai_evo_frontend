@@ -58,9 +58,11 @@ export const it = {
 		enable_third_party_cookies_2: "cookie di terze parti",
 	},
 	course_permissions: {
-		search_user: "Cerca utente",
+		search_user: "Aggiungi utente con permessi",
+		search_user_hint: "Cerca per indirizzo email o per nome e cognome",
 		users_with_privileges: "Utenti con permessi",
 		course_creator: "Creatore del corso",
+		add_permissions_tooltip: "Aggiungi permessi",
 	},
 	headings: {
 		course_tree: "Materiale " + ROUTE_TITLE_COURSE_NAME_TOKEN,

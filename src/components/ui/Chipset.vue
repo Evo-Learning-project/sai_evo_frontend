@@ -3,22 +3,15 @@
 		<div v-for="(option, index) in options" :key="'chipset-' + id + '-option-' + index">
 			<Tooltip :textValue="option.description" :noArrow="true" :placement="'bottom'">
 				<div
-					class="
-						font-normal
-						transition-colors
-						duration-75
-						ease-linear
-						cursor-pointer
-						chip
-						hover:bg-gray-200
-					"
+					class="font-normal transition-colors duration-75 ease-linear chip"
 					:class="{
 						'chip-sm': compact,
 						'chip-primary': modelValue.includes(option.value),
 						'border-0 bg-light': filled && !modelValue.includes(option.value),
 						'opacity-50 bg-gray-50': option.disabled,
+						'hover:bg-gray-200': !option.disabled && !deletable,
 					}"
-					v-wave="!option.disabled"
+					v-wave="!option.disabled && !deletable"
 				>
 					<!-- ring-primary ring-2 text-primary font-semibold -->
 					<input
@@ -30,7 +23,8 @@
 						:value="option.value"
 					/>
 					<label
-						class="flex items-center cursor-pointer"
+						:class="{ 'cursor-pointer': !option.disabled && !deletable }"
+						class="flex items-center"
 						:for="'chipset-' + id + '-option-' + index"
 					>
 						<MultiIcon
@@ -44,9 +38,34 @@
 						<div class="" v-if="$slots.default">
 							<slot v-bind:optionValue="option.value"></slot>
 						</div>
-					</label></div
-			></Tooltip>
+						<Btn
+							@click="onRemove(option.value)"
+							class="z-10 ml-1.5 -mr-1.5 bg-gray-200"
+							v-if="deletable && !disabled"
+							:size="'xs'"
+							:variant="'icon'"
+							:outline="true"
+						>
+							<span
+								style="font-size: 15px !important; margin-left: 0.5px !important"
+								class="material-icons-outlined"
+								>close</span
+							>
+						</Btn>
+					</label>
+				</div>
+			</Tooltip>
 		</div>
+		<Btn
+			@click="$emit('addChip')"
+			:variant="'icon'"
+			:outline="true"
+			v-if="showAddChip && !disabled"
+			class="-mt-1 -ml-0.5"
+			:tooltip="addChipTooltip"
+		>
+			<span class="material-icons">add_circle_outline</span>
+		</Btn>
 	</div>
 </template>
 
@@ -56,6 +75,7 @@ import MultiIcon from "@/components/ui/MultiIcon.vue";
 
 import { v4 as uuid4 } from "uuid";
 import Tooltip from "./Tooltip.vue";
+import Btn from "./Btn.vue";
 export default defineComponent({
 	name: "Chipset",
 	props: {
@@ -80,10 +100,27 @@ export default defineComponent({
 			type: Boolean,
 			default: true,
 		},
+		deletable: {
+			type: Boolean,
+			default: false,
+		},
+		disabled: {
+			type: Boolean,
+			default: false,
+		},
+		showAddChip: {
+			type: Boolean,
+			default: false,
+		},
+		addChipTooltip: {
+			type: String,
+			default: "",
+		},
 	},
 	components: {
 		MultiIcon,
 		Tooltip,
+		Btn,
 	},
 	created() {
 		this.id = uuid4();
@@ -92,6 +129,20 @@ export default defineComponent({
 		return {
 			id: "",
 		};
+	},
+	methods: {
+		onRemove(val) {
+			// console.log(
+			// 	"BEFORE",
+			// 	this.proxyModelValue,
+			// 	"VAL",
+			// 	val,
+			// 	"AFTER",
+			// 	this.proxyModelValue?.filter(o => o.value != val),
+			// );
+			//this.proxyModelValue = this.proxyModelValue?.filter(o => o.value != val);
+			this.$emit("deleteChip", val);
+		},
 	},
 	computed: {
 		proxyModelValue: {

@@ -42,6 +42,7 @@
 				'rounded-full bg-transparent hover:bg-gray-200 text-gray-600 icon-btn':
 					variant === 'icon',
 				'icon-btn icon-btn-sm': variant === 'icon' && size === 'sm',
+				'icon-btn icon-btn-xs': variant === 'icon' && size === 'xs',
 				'icon-btn icon-btn-base': variant === 'icon' && size === 'base',
 				'icon-btn icon-btn-lg': variant === 'icon' && size === 'lg',
 			}"
@@ -103,6 +104,7 @@
 			'rounded-full bg-transparent hover:bg-gray-200 text-gray-600 icon-btn':
 				variant === 'icon',
 			'icon-btn icon-btn-sm': variant === 'icon' && size === 'sm',
+			'icon-btn icon-btn-xs': variant === 'icon' && size === 'xs',
 			'icon-btn icon-btn-base': variant === 'icon' && size === 'base',
 			'icon-btn icon-btn-lg': variant === 'icon' && size === 'lg',
 		}"
