@@ -36,6 +36,12 @@
 					<slot v-bind:item="item"></slot>
 				</div>
 			</label>
+			<div v-if="filteredItems.length === 0 && !isCreatableFunction(searchText)">
+				<slot name="noResults" v-bind:searchText="searchText"></slot>
+			</div>
+			<div v-if="filteredItems.length === 0 && isCreatableFunction(searchText)">
+				<slot name="createOption" v-bind:searchText="searchText"></slot>
+			</div>
 		</DropdownMenu>
 	</div>
 </template>
@@ -86,6 +92,14 @@ export default defineComponent({
 			type: String,
 			default: "",
 		},
+		filterFunction: {
+			type: Function as PropType<(search: string, option: SelectableOption) => boolean>,
+			required: true,
+		},
+		isCreatableFunction: {
+			type: Function as PropType<(search: string) => boolean>,
+			default: () => false,
+		},
 	},
 	watch: {
 		searchText(newVal) {
@@ -121,7 +135,7 @@ export default defineComponent({
 	},
 	computed: {
 		filteredItems() {
-			return this.items;
+			return this.items.filter(i => this.filterFunction(this.searchText, i));
 		},
 	},
 	components: { TextInput, DropdownMenu },

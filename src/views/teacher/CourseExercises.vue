@@ -7,7 +7,7 @@
 			></ExerciseSearchFilters>
 		</div>
 
-		<div class="flex items-center w-full mt-8 mb-6">
+		<div v-if="canCreateAndEditExercises" class="flex items-center w-full mt-8 mb-6">
 			<Btn @click="onAddExercise()" :loading="localLoading" class="ml-auto"
 				><span class="mr-1 text-base material-icons-outlined"> add </span>
 				{{ $t("course_exercises.new_exercise") }}</Btn
@@ -54,8 +54,8 @@
 					:id="'course-' + courseId + '-exercise-' + exercise.id"
 					@delete="onDeleteExercise(exercise)"
 					@cloneExercise="onCloneExercise(exercise)"
-				></ExerciseEditorWrapper
-			></transition-group>
+					:editable="canCreateAndEditExercises"
+			/></transition-group>
 		</div>
 		<div class="flex flex-col space-y-4" v-else>
 			<ExerciseEditorWrapperSkeleton />
@@ -140,7 +140,13 @@
 import { getTranslatedString as _ } from "@/i18n";
 import { icons as exerciseTypesIcons } from "@/assets/exerciseTypesIcons";
 import { icons as exerciseStatesIcons } from "@/assets/exerciseStatesIcons";
-import { Exercise, ExerciseState, ExerciseType, getBlankExercise } from "@/models";
+import {
+	CoursePrivilege,
+	Exercise,
+	ExerciseState,
+	ExerciseType,
+	getBlankExercise,
+} from "@/models";
 
 import { VueEternalLoading, LoadAction } from "@ts-pro/vue-eternal-loading";
 import { DialogData, SelectableOption } from "@/interfaces";
@@ -150,7 +156,7 @@ import { defineComponent } from "@vue/runtime-core";
 import Spinner from "@/components/ui/Spinner.vue";
 import ExerciseSearchFilters from "@/components/teacher/ExerciseSearchFilters.vue";
 import { forceFileDownload, getClonedExercise, getDebouncedForFilter } from "@/utils";
-import { courseIdMixin, loadingMixin } from "@/mixins";
+import { courseIdMixin, coursePrivilegeMixin, loadingMixin } from "@/mixins";
 import ExerciseEditorWrapperSkeleton from "@/components/ui/skeletons/ExerciseEditorWrapperSkeleton.vue";
 import { getBlankExerciseSearchFilters, isEmptyFilter } from "@/api/utils";
 import Dialog from "@/components/ui/Dialog.vue";
@@ -169,7 +175,7 @@ export default defineComponent({
 		},
 		options: Array,
 	},
-	mixins: [courseIdMixin, loadingMixin],
+	mixins: [courseIdMixin, loadingMixin, coursePrivilegeMixin],
 	watch: {
 		searchFilter: {
 			async handler() {
@@ -366,6 +372,9 @@ export default defineComponent({
 					content: _("exercise_states." + key),
 					description: _("exercise_states_descriptions." + key),
 				}));
+		},
+		canCreateAndEditExercises() {
+			return this.hasPrivileges([CoursePrivilege.MANAGE_EXERCISES]);
 		},
 	},
 });

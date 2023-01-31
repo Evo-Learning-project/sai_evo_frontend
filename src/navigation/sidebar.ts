@@ -66,7 +66,7 @@ export const courseDashboardSidebarOptions: SidebarOption[] = [
 		icon: "class",
 		routeName: "TeacherCourseTree",
 		children: ["TeacherNodeDetail"],
-		requiredPrivileges: [], //TODO [CoursePrivilege.ACCESS_EXERCISES],
+		requiredPrivileges: [], //[CoursePrivilege.MANAGE_MATERIAL],
 	},
 	{
 		label: _("sidebar_labels.exercise_solution_threads"),
@@ -79,7 +79,7 @@ export const courseDashboardSidebarOptions: SidebarOption[] = [
 		label: _("sidebar_labels.course_permissions"),
 		icon: "admin_panel_settings",
 		routeName: "CoursePermissions",
-		requiredPrivileges: [CoursePrivilege.UPDATE_COURSE],
+		requiredPrivileges: [], //[CoursePrivilege.UPDATE_COURSE],
 	},
 	{
 		label: _("sidebar_labels.course_insights"),

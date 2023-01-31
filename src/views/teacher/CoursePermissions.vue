@@ -1,7 +1,7 @@
 <template>
 	<div class="h-full">
 		<!-- user search -->
-		<div class="flex items-center space-x-2 mt-4">
+		<div class="flex items-center space-x-2 mt-4 mb-12" v-if="canManagePermissions">
 			<span class="material-icons icon-light">person_add</span>
 			<Combobox
 				class="w-1/2"
@@ -10,6 +10,8 @@
 				:label="$t('course_permissions.search_user')"
 				@update:modelValue="onShowUserPermissionsDialog($event)"
 				:hint="$t('course_permissions.search_user_hint')"
+				:filterFunction="filterUser"
+				:isCreatableFunction="isValidEmailAddress"
 			>
 				<template v-slot="{ item }">
 					<div class="flex items-center space-x-4">
@@ -20,11 +22,13 @@
 						</div>
 					</div>
 				</template>
+				<template v-slot:noResults> no res</template>
+				<template v-slot:createOption="{ searchText }"> {{ searchText }}</template>
 			</Combobox>
 		</div>
 
 		<!-- list of privileged users-->
-		<div class="mt-12">
+		<div class="mt-6">
 			<h3 class="mb-4">{{ $t("course_permissions.users_with_privileges") }}</h3>
 			<div
 				v-for="user in privilegedUsers"
@@ -53,8 +57,10 @@
 					<!-- permissions chips -->
 					<div class="flex flex-wrap w-full">
 						<Chipset
-							:showAddChip="true"
-							:disabled="isCourseCreator(user) || user.id == currentUserId"
+							:showAddChip="canManagePermissions"
+							:disabled="
+								!canManagePermissions || isCourseCreator(user) || user.id == currentUserId
+							"
 							:deletable="true"
 							:modelValue="[]"
 							:options="getUserPermissionsAsOptions(user)"
@@ -102,7 +108,7 @@
 
 <script lang="ts">
 // TODO have a way to add permissions to users that haven't logged in for the first time yet
-import { courseIdMixin, loadingMixin, savingMixin } from "@/mixins";
+import { courseIdMixin, coursePrivilegeMixin, loadingMixin, savingMixin } from "@/mixins";
 import { defineComponent } from "@vue/runtime-core";
 
 import { getTranslatedString as _ } from "@/i18n";
@@ -119,6 +125,7 @@ import Combobox from "@/components/ui/skeletons/Combobox.vue";
 import Avatar from "@/components/ui/Avatar.vue";
 import Tooltip from "@/components/ui/Tooltip.vue";
 import Chipset from "@/components/ui/Chipset.vue";
+import { hasCoursePrivileges } from "@/navigation/permissions";
 
 export default defineComponent({
 	name: "CoursePermissions",
@@ -130,7 +137,7 @@ export default defineComponent({
 		Tooltip,
 		Chipset,
 	},
-	mixins: [courseIdMixin, loadingMixin, savingMixin],
+	mixins: [courseIdMixin, loadingMixin, savingMixin, coursePrivilegeMixin],
 	async created() {
 		await this.withLoading(
 			async () =>
@@ -184,6 +191,24 @@ export default defineComponent({
 				(user.course_privileges ?? []).filter(p => p != privilege),
 			);
 		},
+		// for combobox
+		filterUser(search: string, userOption: SelectableOption) {
+			const searchTokens = search.toLowerCase().split(/\s/);
+			const user = this.mainStore.getUser(userOption.value);
+			const fullName = (user?.full_name ?? "").toLowerCase().replace(/\s/g, "");
+			const email = (user?.email ?? "").toLowerCase().replace(/\s/g, "");
+
+			return searchTokens.every(t => fullName.includes(t) || email.includes(t));
+		},
+		isValidEmailAddress(text: string) {
+			const input = document.createElement("input");
+			input.type = "email";
+			input.required = true;
+			input.value = text;
+			return typeof input.checkValidity === "function"
+				? input.checkValidity()
+				: /\S+@\S+\.\S+/.test(text);
+		},
 	},
 	computed: {
 		...mapStores(useMainStore, useMetaStore),
@@ -223,6 +248,9 @@ export default defineComponent({
 				icons: coursePrivilegeIcons[key],
 				description: _("course_privileges." + key),
 			}));
+		},
+		canManagePermissions() {
+			return this.hasPrivileges([CoursePrivilege.UPDATE_COURSE]);
 		},
 		currentUserId() {
 			return getCurrentUserId();

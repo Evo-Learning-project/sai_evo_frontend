@@ -23,7 +23,7 @@
 			:hoverable="true"
 			:selectable="false"
 			@edit="toggleExpand()"
-			:showEdit="true"
+			:showEdit="editable"
 		></MinimalExercisePreview>
 
 		<ExerciseEditor
@@ -63,6 +63,10 @@ export default defineComponent({
 			required: true,
 		},
 		selectable: {
+			type: Boolean,
+			default: true,
+		},
+		editable: {
 			type: Boolean,
 			default: true,
 		},

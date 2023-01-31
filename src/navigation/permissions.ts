@@ -23,6 +23,3 @@ export const hasCoursePrivileges = (privileges: CoursePrivilege[]) =>
 		}
 		return privileges.every(p => (course.privileges ?? []).includes(p));
 	}) as RoutePermissionCheckFunction;
-
-// ! example
-const a = hasCoursePrivileges([]);

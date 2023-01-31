@@ -294,6 +294,7 @@ import { Breadcrumbs } from "@sentry/browser/dist/integrations";
 import BreadCrumbs from "./components/ui/BreadCrumbs.vue";
 import DraggablePopup from "./components/ui/DraggablePopup.vue";
 import GamificationContextPanel from "./components/student/GamificationContextPanel.vue";
+import { coursePrivilegeMixin } from "./mixins";
 
 //import { typesetTex } from "./utils";
 const SIDEBAR_COLLASPED_LOCALSTORAGE = "sidebar_collapsed";
@@ -308,25 +309,16 @@ export default defineComponent({
 		const metaStore = useMetaStore();
 		const logOut = require("./utils").logOut;
 
-		// const sidebarCollapsedLocalStorage =
-		// 	localStorage.getItem(SIDEBAR_COLLASPED_LOCALSTORAGE) ?? "false";
-
-		// let sidebarCollapsed: Ref<boolean>;
-		// try {
-		// 	sidebarCollapsed = ref(JSON.parse(sidebarCollapsedLocalStorage));
-		// } catch {
-		// 	sidebarCollapsed = ref(false);
-		// }
 		return {
 			mainStore,
 			metaStore,
 			logOut,
-			//sidebarCollapsed,
 		};
 	},
 	beforeCreate(): void {
 		this.metaStore.initStore();
 	},
+	mixins: [coursePrivilegeMixin],
 	mounted() {
 		// TODO refactor
 		setTimeout(() => {
@@ -464,7 +456,11 @@ export default defineComponent({
 			const sidebarOptions = (this.$route.meta?.sidebarOptions ?? []) as SidebarOption[];
 
 			return [
-				...sidebarOptions.filter(r => r.routeName !== "StudentCourseList"),
+				...sidebarOptions.filter(
+					r =>
+						r.routeName !== "StudentCourseList" &&
+						this.hasPrivileges(r.requiredPrivileges),
+				),
 				...(sidebarOptions.filter(r => r.routeName === "StudentCourseList").length === 1
 					? [
 							{
