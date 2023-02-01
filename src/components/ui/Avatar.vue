@@ -1,6 +1,6 @@
 <template>
 	<div
-		v-if="showFallbackavatar"
+		v-if="showFallbackavatar || !user.avatar_url"
 		class="flex rounded-full bg-primary-light text-primary bg-opacity-30"
 		:style="avatarSize"
 	>

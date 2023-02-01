@@ -281,7 +281,7 @@
 
 							<!-- author -->
 							<div class="flex items-center ml-auto">
-								<Avatar class="ml-auto md:mr-2 mr-1" :user="solution.user" />
+								<Avatar class="ml-auto md:mr-2 mr-1" :user="solution.user ?? {}" />
 								<p class="md:mr-5 mr-2 text-sm md:text-base text-muted">
 									{{ authorName }}
 								</p>
