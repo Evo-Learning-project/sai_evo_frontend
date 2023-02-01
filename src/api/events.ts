@@ -377,9 +377,9 @@ export async function downloadEventParticipationSlotAttachment(
 		`/courses/${courseId}/events/${eventId}/participations/${participationId}/slots/${slotId}/attachment/`,
 		{ responseType: "arraybuffer" },
 	);
-	const fileName = response.headers["content-disposition"]
-		.split(/.*filename=(.*)/)[1]
-		.replace(/"/g, "");
+	const fileName = (
+		response.headers["content-disposition"].split(/.*filename=(.*)/)[1] ?? "attachment"
+	).replace(/"/g, "");
 	forceFileDownload(response, fileName);
 }
 

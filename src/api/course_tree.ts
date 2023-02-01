@@ -132,9 +132,10 @@ export async function downloadFileNodeAsAttachment(
 	const response = await axios.get(`/courses/${courseId}/nodes/${nodeId}/download/`, {
 		responseType: "arraybuffer",
 	});
-	const fileName = response.headers["content-disposition"]
-		.split(/.*filename=(.*)/)[1]
-		.replace(/"/g, "");
+	console.log("content-disposition", response.headers["content-disposition"]);
+	const fileName = (
+		response.headers["content-disposition"].split(/.*filename=(.*)/)[1] ?? "filename"
+	).replace(/"/g, "");
 	forceFileDownload(response, fileName);
 }
 
