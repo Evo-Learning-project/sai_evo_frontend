@@ -132,7 +132,7 @@ export default defineComponent({
 		getUserPosition(userId: string) {
 			return (
 				this.pageSize * (this.pageNumber - 1) +
-				this.paginatedUsers?.data.findIndex(u => u.id == userId) +
+				(this.paginatedUsers?.data ?? []).findIndex(u => u.id == userId) +
 				1
 			);
 		},
