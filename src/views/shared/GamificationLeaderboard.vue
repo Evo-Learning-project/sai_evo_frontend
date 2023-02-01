@@ -11,26 +11,53 @@
 					<div
 						class="mr-2"
 						:class="{
-							'text-yellow-400': index === 0,
-							'text-gray-400': index === 1,
-							'text-yellow-900': index === 2,
-							'opacity-0': pageNumber > 1 || index >= 3 || loading,
+							'text-yellow-400': pageNumber === 1 && index === 0,
+							'text-gray-400': pageNumber === 1 && index === 1,
+							'text-bronze': pageNumber === 1 && index === 2,
+							'opacity-0': loading,
 						}"
 					>
-						<svg style="width: 24px; height: 24px" viewBox="0 0 24 24">
-							<path
-								fill="currentColor"
-								d="M5 16L3 5L8.5 10L12 4L15.5 10L21 5L19 16H5M19 19C19 19.6 18.6 20 18 20H6C5.4 20 5 19.6 5 19V18H19V19Z"
-							/>
-						</svg>
+						<div style="width: 34px; height: 34px" class="relative">
+							<svg
+								v-if="pageNumber === 1 && index < 3"
+								style="width: 34px; height: 34px"
+								viewBox="0 0 24 24"
+							>
+								<path
+									fill="currentColor"
+									d="M5 16L3 5L8.5 10L12 4L15.5 10L21 5L19 16H5M19 19C19 19.6 18.6 20 18 20H6C5.4 20 5 19.6 5 19V18H19V19Z"
+								/>
+							</svg>
+							<p
+								:class="{
+									'font-medium opacity-90 text-sm drop-shadow-lg filter':
+										pageNumber === 1 && index < 3,
+									'text-yellow-800': pageNumber === 1 && index === 0,
+									'text-gray-900': pageNumber === 1 && index === 1,
+									'text-yellow-900': pageNumber === 1 && index === 2,
+								}"
+								class="
+									absolute
+									top-1/2
+									left-1/2
+									-translate-x-1/2 -translate-y-1/2
+									transform
+									text-muted
+									opacity-50
+								"
+							>
+								{{ getUserPosition(user.id) }}
+							</p>
+						</div>
 					</div>
+					<Avatar class="mr-2 ml-4" :user="user" />
 					<p class="text-lg mr-4">{{ user.full_name }}</p>
 					<p class="ml-auto material-icons text-primary text-base mr-1">auto_awesome</p>
 					<p class="font-semibold">{{ user.reputation }}</p>
 				</div>
 			</div>
 
-			<div class="flex items-center space-x-1 mt-4" v-if="lastPageNumber > 1">
+			<div class="flex items-center space-x-1 mt-4 flex-wrap" v-if="lastPageNumber > 1">
 				<div v-for="page in pageNumbers" :key="'page-btn-' + page">
 					<Btn
 						v-if="page !== pageNumber"
@@ -55,6 +82,7 @@
 	<div v-else>
 		<SlotSkeleton />
 		<SlotSkeleton />
+		<SlotSkeleton />
 	</div>
 </template>
 
@@ -70,6 +98,7 @@ import { logAnalyticsEvent } from "@/utils";
 import { mapStores } from "pinia";
 import { useMetaStore } from "@/stores/metaStore";
 import { useMainStore } from "@/stores/mainStore";
+import Avatar from "@/components/ui/Avatar.vue";
 
 export default defineComponent({
 	name: "GamificationLeaderboard",
@@ -99,7 +128,15 @@ export default defineComponent({
 			});
 		},
 	},
-	methods: {},
+	methods: {
+		getUserPosition(userId: string) {
+			return (
+				this.pageSize * (this.pageNumber - 1) +
+				this.paginatedUsers?.data.findIndex(u => u.id == userId) +
+				1
+			);
+		},
+	},
 	data() {
 		return {
 			paginatedUsers: null as PaginatedData<GamificationUser> | null,
@@ -116,7 +153,7 @@ export default defineComponent({
 			return [...Array(this.lastPageNumber).keys()].map(p => p + 1);
 		},
 	},
-	components: { SlotSkeleton, Btn },
+	components: { SlotSkeleton, Btn, Avatar },
 });
 </script>
 

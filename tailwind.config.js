@@ -85,6 +85,7 @@ module.exports = {
 				onPrimary: "#FFFFFF",
 				onSecondary: "#111827",
 				darkTextInput: "#e0e0e0",
+				bronze: "#d68a44",
 				primary: {
 					// #6200ee
 					// TODO try #0057C9

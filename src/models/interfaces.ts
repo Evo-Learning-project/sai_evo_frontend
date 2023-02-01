@@ -298,6 +298,7 @@ export interface GamificationUser {
 	email: string;
 	reputation: number;
 	badges: GamificationBadge[];
+	avatar_url: string;
 }
 
 // Course tree
