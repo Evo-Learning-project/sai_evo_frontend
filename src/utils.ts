@@ -509,3 +509,27 @@ export function sameDay(d1: Date, d2: Date) {
 		d1.getDate() === d2.getDate()
 	);
 }
+
+// returns a file name from the content-disposition header of a download response
+// https://stackoverflow.com/a/67994693/12424975
+export function getFileNameFromResponseHeader(disposition: string): string {
+	const utf8FilenameRegex = /filename\*=UTF-8''([\w%\-.]+)(?:; ?|$)/i;
+	const asciiFilenameRegex = /^filename=(["']?)(.*?[^\\])\1(?:; ?|$)/i;
+
+	let fileName = "filename";
+	if (utf8FilenameRegex.test(disposition)) {
+		fileName = decodeURIComponent(utf8FilenameRegex.exec(disposition)?.[1] ?? "filename");
+	} else {
+		// prevent ReDos attacks by anchoring the ascii regex to string start and
+		// slicing off everything before 'filename='
+		const filenameStart = disposition.toLowerCase().indexOf("filename=");
+		if (filenameStart >= 0) {
+			const partialDisposition = disposition.slice(filenameStart);
+			const matches = asciiFilenameRegex.exec(partialDisposition);
+			if (matches != null && matches[2]) {
+				fileName = matches[2];
+			}
+		}
+	}
+	return fileName;
+}

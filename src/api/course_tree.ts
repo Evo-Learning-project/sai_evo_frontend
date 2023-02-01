@@ -8,7 +8,7 @@ import {
 	PollNodeChoice,
 	TopicNode,
 } from "@/models";
-import { forceFileDownload } from "@/utils";
+import { forceFileDownload, getFileNameFromResponseHeader } from "@/utils";
 import axios, { AxiosRequestConfig } from "axios";
 import { convertPaginatedResponseToLocalPaginatedData } from "./converters";
 import { BackendPaginatedResponse, PaginatedData } from "./interfaces";
@@ -132,9 +132,10 @@ export async function downloadFileNodeAsAttachment(
 	const response = await axios.get(`/courses/${courseId}/nodes/${nodeId}/download/`, {
 		responseType: "arraybuffer",
 	});
-	const fileName = response.headers["content-disposition"]
-		.split(/.*filename=(.*)/)[1]
-		.replace(/"/g, "");
+	const fileName = getFileNameFromResponseHeader(response.headers["content-disposition"]);
+	// (
+	// 	response.headers["content-disposition"].split(/.*filename=(.*)/)[1] ?? "filename"
+	// ).replace(/"/g, "");
 	forceFileDownload(response, fileName);
 }
 
