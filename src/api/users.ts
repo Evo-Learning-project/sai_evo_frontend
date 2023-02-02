@@ -23,11 +23,12 @@ export async function getActiveUsersForCourse(courseId: string): Promise<User[]>
 
 export async function updateUserCoursePrivileges(
 	courseId: string,
-	userId: string,
+	userId: string | null,
+	email: string | null,
 	privileges: CoursePrivilege[],
 ): Promise<User> {
 	const response = await axios.patch(
-		`/courses/${courseId}/privileges/?user_id=${userId}`,
+		`/courses/${courseId}/privileges/?${userId ? "user_id=" + userId : "email=" + email}`,
 		{
 			course_privileges: privileges,
 		},

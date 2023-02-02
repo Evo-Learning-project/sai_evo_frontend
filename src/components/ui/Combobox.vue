@@ -23,7 +23,7 @@
 				:for="id + '-input-' + index"
 				:key="item[itemId]"
 			>
-				<div v-wave class="flex py-2 hover:bg-light cursor-pointer -mx-5 px-5">
+				<div v-wave class="flex py-3 hover:bg-light cursor-pointer -mx-5 pl-5 pr-8">
 					<input
 						@input="onInput(item.value, $event)"
 						@click="item.value == modelValue ? (expanded = false) : null"
@@ -43,7 +43,7 @@
 				<div
 					v-wave
 					class="flex py-2 hover:bg-light cursor-pointer -mx-5 px-5"
-					@click="$emit('createOption', searchText)"
+					@click="onCreateOption()"
 				>
 					<slot name="createOption" v-bind:searchText="searchText"></slot>
 				</div>
@@ -136,6 +136,10 @@ export default defineComponent({
 			inputEvent.preventDefault();
 			this.$emit("update:modelValue", value);
 			this.expanded = false;
+			this.searchText = "";
+		},
+		onCreateOption() {
+			this.$emit("createOption", this.searchText);
 			this.searchText = "";
 		},
 	},

@@ -4,12 +4,12 @@
 		<div class="flex items-center space-x-2 mt-4 mb-12" v-if="canManagePermissions">
 			<span class="material-icons icon-light">person_add</span>
 			<Combobox
-				class="w-1/2"
+				class="lg:w-3/5 w-full"
 				:items="usersAsOptions"
 				:placeholder="''"
 				:label="$t('course_permissions.search_user')"
-				@update:modelValue="onShowUserPermissionsDialog($event)"
-				@createOption="onAssignPermissionsToNonExistingUser($event)"
+				@update:modelValue="onShowUserPermissionsDialog($event, null)"
+				@createOption="onShowUserPermissionsDialog(null, $event)"
 				:hint="$t('course_permissions.search_user_hint')"
 				:filterFunction="filterUser"
 				:isCreatableFunction="isValidEmailAddress"
@@ -61,7 +61,7 @@
 					"
 				>
 					<!-- user data -->
-					<div class="flex items-center space-x-3 w-1/3">
+					<div class="flex items-center space-x-3 lg:w-1/3">
 						<Avatar :size="'lg'" :user="user" />
 						<div class="ml-2 mr-4 flex flex-col -space-y-1">
 							<div class="flex items-center space-x-1">
@@ -75,7 +75,10 @@
 									<span class="material-icons ml-1 inline-icon text-muted"> shield </span>
 								</Tooltip>
 							</div>
-							<div class="flex items-center space-x-1.5">
+							<div
+								v-if="user.email !== user.full_name"
+								class="flex items-center space-x-1"
+							>
 								<p class="text-sm text-muted">{{ user.email }}</p>
 								<a style="margin-bottom: -4.85px" :href="'mailto:' + user.email">
 									<Btn :size="'xs'" :variant="'icon'" :outline="true">
@@ -101,7 +104,7 @@
 							:modelValue="[]"
 							:options="getUserPermissionsAsOptions(user)"
 							@deleteChip="onRemoveUserPrivilege(user, $event)"
-							@addChip="onShowUserPermissionsDialog(user.id)"
+							@addChip="onShowUserPermissionsDialog(user.id, null)"
 							:addChipTooltip="$t('course_permissions.add_permissions_tooltip')"
 						/>
 					</div>
@@ -148,7 +151,7 @@ import { courseIdMixin, coursePrivilegeMixin, loadingMixin, savingMixin } from "
 import { defineComponent } from "@vue/runtime-core";
 
 import { getTranslatedString as _ } from "@/i18n";
-import { CoursePrivilege, User } from "@/models";
+import { CoursePrivilege, getBlankUser, User } from "@/models";
 import { icons as coursePrivilegeIcons } from "@/assets/coursePrivilegeIcons";
 import Dialog from "@/components/ui/Dialog.vue";
 import CheckboxGroup from "@/components/ui/CheckboxGroup.vue";
@@ -188,47 +191,60 @@ export default defineComponent({
 	data() {
 		return {
 			showDialog: false,
-			editingUserId: "",
+			editingUserId: null as string | null,
+			// used when editing privileges for a user that doesn't exist yet
+			editingUserEmail: null as string | null,
 			coursePrivilegeIcons,
 		};
 	},
 	methods: {
 		hideDialog() {
 			this.showDialog = false;
-			this.editingUserId = "";
+			this.editingUserId = null;
+			this.editingUserEmail = null;
 		},
-		onShowUserPermissionsDialog(userId: string) {
+		onShowUserPermissionsDialog(userId: string | null, email: string | null) {
 			this.editingUserId = userId;
+			this.editingUserEmail = email;
 			this.showDialog = true;
 		},
 		isCourseCreator(user: User) {
 			return this.currentCourse?.creator?.id == user.id;
 		},
-		onAssignPermissionsToNonExistingUser(email: string) {
-			console.log("TO EMAIL", email);
-		},
+		// onAssignPermissionsToNonExistingUser(email: string) {
+		// 	console.log("TO EMAIL", email);
+		// },
 		getUserPermissionsAsOptions(user: User) {
 			return (user.course_privileges ?? []).map(key => ({
 				value: key,
 				content: _("course_privileges_short." + key),
 				icons: coursePrivilegeIcons[key],
-				//description: _("course_privileges." + key),
 			}));
 		},
-		async onSetUserPrivileges(userId: string, privileges: CoursePrivilege[]) {
-			await this.withLoading(
-				async () =>
-					await this.mainStore.updateUserCoursePrivileges({
-						courseId: this.courseId,
-						userId,
-						privileges,
-					}),
-				setErrorNotification,
-			);
+		async onSetUserPrivileges(
+			userId: string | null,
+			email: string | null,
+			privileges: CoursePrivilege[],
+		) {
+			await this.withLoading(async () => {
+				const updatedUser = await this.mainStore.updateUserCoursePrivileges({
+					courseId: this.courseId,
+					userId,
+					email,
+					privileges,
+				});
+				if (email !== null) {
+					// user was just created using provided email address, now switch to editing
+					// the newly created user instead of using the email address only
+					this.editingUserId = updatedUser.id;
+					this.editingUserEmail = null;
+				}
+			}, setErrorNotification);
 		},
 		async onRemoveUserPrivilege(user: User, privilege: CoursePrivilege) {
 			await this.onSetUserPrivileges(
 				user.id,
+				null,
 				(user.course_privileges ?? []).filter(p => p != privilege),
 			);
 		},
@@ -254,14 +270,24 @@ export default defineComponent({
 	computed: {
 		...mapStores(useMainStore, useMetaStore),
 		editingUser(): User | undefined {
-			return this.mainStore.users.find(u => u.id == this.editingUserId);
+			if (this.editingUserId !== null) {
+				return this.mainStore.users.find(u => u.id == this.editingUserId);
+			}
+			if (this.editingUserEmail !== null) {
+				return {
+					...getBlankUser(),
+					full_name: this.editingUserEmail,
+					course_privileges: [],
+				};
+			}
+			return undefined;
 		},
 		editingUserPrivileges: {
 			get() {
 				return this.editingUser?.course_privileges;
 			},
 			async set(val: CoursePrivilege[]) {
-				await this.onSetUserPrivileges(this.editingUserId, val);
+				await this.onSetUserPrivileges(this.editingUserId, this.editingUserEmail, val);
 			},
 		},
 		privilegedUsers() {

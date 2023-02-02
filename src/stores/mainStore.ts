@@ -731,13 +731,14 @@ export const useMainStore = defineStore("main", {
 				console.error("setEventParticipation didn't find", payload);
 			}
 		},
-		// replace the user with same id as payload user with the given payload
+		// replace the user with same id as payload user with the given payload it if exists,
+		// otherwise push a new user to the store with the given fields
 		setUser(user: User) {
 			const target = this.users.find((u: User) => u.id == user.id);
 			if (target) {
 				Object.assign(target, user);
 			} else {
-				console.error("setUser didn't find", user);
+				this.users.push(user);
 			}
 		},
 		/**
@@ -1947,13 +1948,16 @@ export const useMainStore = defineStore("main", {
 		async updateUserCoursePrivileges({
 			courseId,
 			userId,
+			email,
 			privileges,
 		}: CourseIdActionPayload & {
-			userId: string;
+			userId: string | null;
+			email: string | null;
 			privileges: CoursePrivilege[];
 		}) {
-			const user = await updateUserCoursePrivileges(courseId, userId, privileges);
+			const user = await updateUserCoursePrivileges(courseId, userId, email, privileges);
 			this.setUser(user);
+			return user;
 		},
 		async bulkPartialUpdateEventParticipation({
 			courseId,
