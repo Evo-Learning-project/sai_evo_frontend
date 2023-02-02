@@ -211,9 +211,6 @@ export default defineComponent({
 		isCourseCreator(user: User) {
 			return this.currentCourse?.creator?.id == user.id;
 		},
-		// onAssignPermissionsToNonExistingUser(email: string) {
-		// 	console.log("TO EMAIL", email);
-		// },
 		getUserPermissionsAsOptions(user: User) {
 			return (user.course_privileges ?? []).map(key => ({
 				value: key,
@@ -258,6 +255,7 @@ export default defineComponent({
 			return searchTokens.every(t => fullName.includes(t) || email.includes(t));
 		},
 		isValidEmailAddress(text: string) {
+			// TODO improve to match django logic for validating an email
 			const input = document.createElement("input");
 			input.type = "email";
 			input.required = true;
@@ -271,9 +269,12 @@ export default defineComponent({
 		...mapStores(useMainStore, useMetaStore),
 		editingUser(): User | undefined {
 			if (this.editingUserId !== null) {
+				// an actual user is being edited
 				return this.mainStore.users.find(u => u.id == this.editingUserId);
 			}
 			if (this.editingUserEmail !== null) {
+				// a nonexistent user is being edited - the backend will create its account
+				// as soon as the first request is issued using the email address
 				return {
 					...getBlankUser(),
 					full_name: this.editingUserEmail,
@@ -284,7 +285,7 @@ export default defineComponent({
 		},
 		editingUserPrivileges: {
 			get() {
-				return this.editingUser?.course_privileges;
+				return this.editingUser?.course_privileges ?? [];
 			},
 			async set(val: CoursePrivilege[]) {
 				await this.onSetUserPrivileges(this.editingUserId, this.editingUserEmail, val);
