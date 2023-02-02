@@ -84,7 +84,7 @@ export const getErrorData = (e: any, useAsIs = false): ErrorMessage => {
 	if (useAsIs) {
 		return { title: e };
 	}
-	console.log("Error data", e.response);
+	console.log("Error data", e.response, e);
 	if (e.response) {
 		return {
 			icon: "error_outline",

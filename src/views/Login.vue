@@ -324,10 +324,13 @@ export default defineComponent({
 						  },
 				);
 			} catch (error: any) {
-				console.error("sign in error");
+				console.error("sign in error", error);
+
 				const UNAUTHORIZED_EMAIL_DOMAIN_MSG = "Your credentials aren't allowed";
 				if (error.response?.data?.error_description === UNAUTHORIZED_EMAIL_DOMAIN_MSG) {
 					this.onLoginAttemptWithUnauthorizedEmailAddress();
+				} else if (error.error === "popup_closed_by_user") {
+					logAnalyticsEvent("popup_closed_by_user", {});
 				} else {
 					setErrorNotification(error);
 				}
