@@ -48,13 +48,24 @@
 				:key="user.id"
 				class="py-2 hover:bg-light hover:bg-opacity-60 transition-colors duration-100"
 			>
-				<div class="flex items-center card w-full">
+				<div
+					class="
+						flex
+						lg:flex-row
+						flex-col
+						lg:space-y-0
+						space-y-4
+						lg:items-center
+						card
+						w-full
+					"
+				>
 					<!-- user data -->
-					<div class="flex items-center w-1/3">
-						<Avatar :user="user" />
-						<div class="ml-2 mr-4 flex flex-col -space-y-0.5">
+					<div class="flex items-center space-x-3 w-1/3">
+						<Avatar :size="'lg'" :user="user" />
+						<div class="ml-2 mr-4 flex flex-col -space-y-1">
 							<div class="flex items-center space-x-1">
-								<p>{{ user.full_name }}</p>
+								<p class="text-lg">{{ user.full_name }}</p>
 								<Tooltip
 									v-if="isCourseCreator(user)"
 									:textValue="$t('course_permissions.course_creator')"
@@ -64,7 +75,19 @@
 									<span class="material-icons ml-1 inline-icon text-muted"> shield </span>
 								</Tooltip>
 							</div>
-							<p class="text-sm text-muted">{{ user.email }}</p>
+							<div class="flex items-center space-x-1.5">
+								<p class="text-sm text-muted">{{ user.email }}</p>
+								<a style="margin-bottom: -4.85px" :href="'mailto:' + user.email">
+									<Btn :size="'xs'" :variant="'icon'" :outline="true">
+										<span
+											style="font-size: 14px !important"
+											class="material-icons-outlined icon-light"
+										>
+											email
+										</span>
+									</Btn>
+								</a>
+							</div>
 						</div>
 					</div>
 					<!-- permissions chips -->
@@ -139,6 +162,7 @@ import Avatar from "@/components/ui/Avatar.vue";
 import Tooltip from "@/components/ui/Tooltip.vue";
 import Chipset from "@/components/ui/Chipset.vue";
 import { hasCoursePrivileges } from "@/navigation/permissions";
+import Btn from "@/components/ui/Btn.vue";
 
 export default defineComponent({
 	name: "CoursePermissions",
@@ -149,6 +173,7 @@ export default defineComponent({
 		Avatar,
 		Tooltip,
 		Chipset,
+		Btn,
 	},
 	mixins: [courseIdMixin, loadingMixin, savingMixin, coursePrivilegeMixin],
 	async created() {

@@ -83,14 +83,6 @@
 					>
 						{{ metaStore.user?.mat }}
 					</p> -->
-					<!-- <Tooltip
-						v-if="false"
-						:textValue="metaStore.email"
-						:placement="'bottom'"
-						:noArrow="true"
-					>
-						<Avatar class="md:ml-4 mr-1 md:mr-2" :user="metaStore.user" />
-					</Tooltip> -->
 					<DropdownMenu
 						:placement="'right'"
 						:expanded="donateExpanded"
@@ -112,7 +104,7 @@
 						</template>
 						<div class="py-4 px-2">
 							<div class="items-center flex">
-								<Avatar :size="'lg'" class="mr-4" :user="metaStore.user" />
+								<Avatar :size="'xl'" class="mr-4" :user="metaStore.user" />
 								<div class="flex flex-col -space-y-1.5">
 									<h4>{{ metaStore.user.full_name }}</h4>
 									<p class="text-muted text-sm">{{ metaStore.user.email }}</p>

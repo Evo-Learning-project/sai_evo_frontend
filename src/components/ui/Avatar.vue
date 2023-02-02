@@ -28,7 +28,7 @@ export default defineComponent({
 			default: () => ({}),
 		},
 		size: {
-			type: String as PropType<"sm" | "md" | "lg">,
+			type: String as PropType<"sm" | "md" | "lg" | "xl">,
 			default: "md",
 		},
 	},
@@ -43,7 +43,7 @@ export default defineComponent({
 			return this.user?.full_name ?? "A";
 		},
 		avatarSize() {
-			const size = this.size === "md" ? "2rem" : "3rem";
+			const size = this.size === "md" ? "2rem" : this.size === "lg" ? "2.4rem" : "3.5rem";
 			return `min-width: ${size} !important;
 			min-height: ${size} !important;
 			max-width: ${size} !important;

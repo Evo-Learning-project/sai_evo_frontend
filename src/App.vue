@@ -62,15 +62,6 @@
 				>
 					<template v-if="!isTeacherRoute" v-slot:header>
 						<div class="">
-							<!-- <div class="mx-auto flex space-x-2 items-center">
-								<Avatar :user="metaStore.user" :size="'lg'" />
-								<div class="flex flex-col">
-									<p class="text-sm mb-0">{{ metaStore.email }}</p>
-									<p class="text-xs text-muted -mt-0.5">
-										{{ metaStore.user?.mat }}
-									</p>
-								</div>
-							</div> -->
 							<div
 								class="relative flex items-center mt-0.5 -ml-0.5"
 								v-if="mainStore.gamificationContext"

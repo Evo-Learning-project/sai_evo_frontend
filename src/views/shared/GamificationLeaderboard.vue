@@ -50,7 +50,7 @@
 							</p>
 						</div>
 					</div>
-					<Avatar class="mr-2 ml-4" :user="user" />
+					<Avatar :size="'lg'" class="mr-4 ml-4" :user="user" />
 					<p class="text-lg mr-4">{{ user.full_name }}</p>
 					<p class="ml-auto material-icons text-primary text-base mr-1">auto_awesome</p>
 					<p class="font-semibold">{{ user.reputation }}</p>

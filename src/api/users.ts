@@ -27,7 +27,7 @@ export async function updateUserCoursePrivileges(
 	privileges: CoursePrivilege[],
 ): Promise<User> {
 	const response = await axios.patch(
-		`/users/${userId}/privileges/?course_id=${courseId}`,
+		`/courses/${courseId}/privileges/?user_id=${userId}`,
 		{
 			course_privileges: privileges,
 		},
