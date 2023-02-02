@@ -123,7 +123,6 @@ export default defineComponent({
 	},
 	methods: {
 		onToggleUpdate(event: unknown, option: SelectableOption) {
-			console.log(event, option);
 			if (event) {
 				// new selection
 				this.proxyModelValue = [...this.proxyModelValue, option.value];
