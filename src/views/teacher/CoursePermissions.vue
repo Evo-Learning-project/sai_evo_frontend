@@ -2,7 +2,7 @@
 	<div class="h-full">
 		<!-- user search -->
 		<div class="flex items-center space-x-2 mt-4 mb-12" v-if="canManagePermissions">
-			<span class="material-icons icon-light">person_add</span>
+			<span class="material-icons-outlined icon-light">person_add</span>
 			<Combobox
 				class="lg:w-3/5 w-full"
 				:items="usersAsOptions"
