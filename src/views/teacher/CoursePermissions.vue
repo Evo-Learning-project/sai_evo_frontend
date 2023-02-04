@@ -35,8 +35,8 @@
 							{{ $t("course_permissions.try_with_email_hint") }}
 						</p>
 					</div>
-					<div class="flex flex-col items-center my-4 mx-2" v-else>
-						<p>{{ $t("misc.wait") }}</p>
+					<div class="flex flex-col items-center my-4 mx-12" v-else>
+						<Spinner />
 					</div>
 				</template>
 				<template v-slot:createOption="{ searchText }">
@@ -174,6 +174,7 @@ import Tooltip from "@/components/ui/Tooltip.vue";
 import Chipset from "@/components/ui/Chipset.vue";
 import Btn from "@/components/ui/Btn.vue";
 import { throttle } from "lodash";
+import Spinner from "@/components/ui/Spinner.vue";
 
 export default defineComponent({
 	name: "CoursePermissions",
@@ -185,6 +186,7 @@ export default defineComponent({
 		Tooltip,
 		Chipset,
 		Btn,
+		Spinner,
 	},
 	mixins: [courseIdMixin, loadingMixin, savingMixin, coursePrivilegeMixin],
 	async created() {
