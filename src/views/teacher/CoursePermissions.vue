@@ -7,11 +7,12 @@
 				class="lg:w-3/5 w-full"
 				:items="usersAsOptions"
 				:placeholder="''"
+				:loading="loadingUsers"
 				:label="$t('course_permissions.search_user')"
 				@update:modelValue="onShowUserPermissionsDialog($event, null)"
 				@createOption="onShowUserPermissionsDialog(null, $event)"
+				@updateSearchText="onUserSearch($event)"
 				:hint="$t('course_permissions.search_user_hint')"
-				:filterFunction="filterUser"
 				:isCreatableFunction="isValidEmailAddress"
 			>
 				<template v-slot="{ item }">
@@ -164,8 +165,8 @@ import Combobox from "@/components/ui/Combobox.vue";
 import Avatar from "@/components/ui/Avatar.vue";
 import Tooltip from "@/components/ui/Tooltip.vue";
 import Chipset from "@/components/ui/Chipset.vue";
-import { hasCoursePrivileges } from "@/navigation/permissions";
 import Btn from "@/components/ui/Btn.vue";
+import { throttle } from "lodash";
 
 export default defineComponent({
 	name: "CoursePermissions",
@@ -198,6 +199,7 @@ export default defineComponent({
 			// used when editing privileges for a user that doesn't exist yet
 			editingUserEmail: null as string | null,
 			coursePrivilegeIcons,
+			loadingUsers: false,
 		};
 	},
 	methods: {
@@ -249,13 +251,17 @@ export default defineComponent({
 			);
 		},
 		// for combobox
-		filterUser(search: string, userOption: SelectableOption) {
-			const searchTokens = search.toLowerCase().split(/\s/);
-			const user = this.mainStore.getUserById(userOption.value);
-			const fullName = (user?.full_name ?? "").toLowerCase().replace(/\s/g, "");
-			const email = (user?.email ?? "").toLowerCase().replace(/\s/g, "");
+		// filterUser(search: string, userOption: SelectableOption) {
+		// 	const searchTokens = search.toLowerCase().split(/\s/);
+		// 	const user = this.mainStore.getUserById(userOption.value);
+		// 	const fullName = (user?.full_name ?? "").toLowerCase().replace(/\s/g, "");
+		// 	const email = (user?.email ?? "").toLowerCase().replace(/\s/g, "");
 
-			return searchTokens.every(t => fullName.includes(t) || email.includes(t));
+		// 	return searchTokens.every(t => fullName.includes(t) || email.includes(t));
+		// },
+		async onUserSearch(search: string) {
+			this.loadingUsers = true;
+			await this.throttledGetUsers(search);
 		},
 		isValidEmailAddress(text: string) {
 			// TODO improve to match django logic for validating an email
@@ -267,6 +273,19 @@ export default defineComponent({
 				? input.checkValidity()
 				: /\S+@\S+\.\S+/.test(text);
 		},
+		throttledGetUsers: throttle(async function (this: any, search) {
+			try {
+				await this.mainStore.getUsersForCourse({
+					courseId: this.courseId,
+					teachersOnly: false,
+					search,
+				});
+			} catch (e) {
+				setErrorNotification(e);
+			} finally {
+				this.loadingUsers = false;
+			}
+		}, 500),
 	},
 	computed: {
 		...mapStores(useMainStore, useMetaStore),

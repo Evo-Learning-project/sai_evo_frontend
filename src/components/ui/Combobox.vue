@@ -1,6 +1,10 @@
 <template>
 	<div class="combo-box">
-		<DropdownMenu :expanded="expanded" @toggleExpanded="onToggleExpanded()">
+		<DropdownMenu
+			:expanded="expanded"
+			@toggleExpanded="onToggleExpanded()"
+			:loading="shouldShowLoading"
+		>
 			<template v-slot:activator>
 				<div class="relative">
 					<TextInput
@@ -18,34 +22,36 @@
 					</p>
 				</div>
 			</template>
-			<label
-				v-for="(item, index) in filteredItems"
-				:for="id + '-input-' + index"
-				:key="item[itemId]"
-			>
-				<div v-wave class="flex py-3 hover:bg-light cursor-pointer -mx-5 pl-5 pr-8">
-					<input
-						@input="onInput(item.value, $event)"
-						@click="item.value == modelValue ? (expanded = false) : null"
-						class="w-0 h-0 opacity-0"
-						type="radio"
-						:id="id + '-input-' + index"
-						:value="item.value"
-						:checked="item.value == modelValue"
-					/>
-					<slot v-bind:item="item"></slot>
-				</div>
-			</label>
-			<div v-if="filteredItems.length === 0 && !isCreatableFunction(searchText)">
-				<slot name="noResults" v-bind:searchText="searchText"></slot>
-			</div>
-			<div v-if="filteredItems.length === 0 && isCreatableFunction(searchText)">
-				<div
-					v-wave
-					class="flex py-2 hover:bg-light cursor-pointer -mx-5 px-5"
-					@click="onCreateOption()"
+			<div class="">
+				<label
+					v-for="(item, index) in filteredItems"
+					:for="id + '-input-' + index"
+					:key="item[itemId]"
 				>
-					<slot name="createOption" v-bind:searchText="searchText"></slot>
+					<div v-wave class="flex py-3 hover:bg-light cursor-pointer -mx-5 pl-5 pr-8">
+						<input
+							@input="onInput(item.value, $event)"
+							@click="item.value == modelValue ? (expanded = false) : null"
+							class="w-0 h-0 opacity-0"
+							type="radio"
+							:id="id + '-input-' + index"
+							:value="item.value"
+							:checked="item.value == modelValue"
+						/>
+						<slot v-bind:item="item"></slot>
+					</div>
+				</label>
+				<div v-if="filteredItems.length === 0 && !isCreatableFunction(searchText)">
+					<slot name="noResults" v-bind:searchText="searchText"></slot>
+				</div>
+				<div v-if="filteredItems.length === 0 && isCreatableFunction(searchText)">
+					<div
+						v-wave
+						class="flex py-2 hover:bg-light cursor-pointer -mx-5 px-5"
+						@click="onCreateOption()"
+					>
+						<slot name="createOption" v-bind:searchText="searchText"></slot>
+					</div>
 				</div>
 			</div>
 		</DropdownMenu>
@@ -100,16 +106,33 @@ export default defineComponent({
 		},
 		filterFunction: {
 			type: Function as PropType<(search: string, option: SelectableOption) => boolean>,
-			required: true,
+			// by default, no filtering is performed and it is up
+			// to the parent component to handle search
+			default: () => true,
 		},
 		isCreatableFunction: {
+			// a function that takes in the search text and returns whether that's a valid
+			// payload for creating a new item
 			type: Function as PropType<(search: string) => boolean>,
 			default: () => false,
+		},
+		loading: {
+			type: Boolean,
+			default: false,
 		},
 	},
 	watch: {
 		searchText(newVal) {
 			this.expanded = newVal.length > 0;
+			this.$emit("updateSearchText", newVal);
+		},
+		loading(newVal) {
+			// only show progress when combobox has been loading for a while
+			if (!newVal) {
+				this.shouldShowLoading = false;
+			} else {
+				setTimeout(() => (this.shouldShowLoading = this.loading), 1500);
+			}
 		},
 	},
 	created() {
@@ -119,7 +142,8 @@ export default defineComponent({
 		return {
 			searchText: "",
 			expanded: false,
-			id: "2",
+			id: "",
+			shouldShowLoading: false,
 		};
 	},
 	methods: {

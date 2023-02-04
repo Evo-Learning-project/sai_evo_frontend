@@ -64,13 +64,11 @@ axios.interceptors.response.use(
 	},
 );
 
-const pinia = createPinia();
-
 const app = createApp(App);
 
 app
 	.directive("click-outside", clickOutsideDirective)
-	.use(pinia)
+	.use(createPinia())
 	.use(VWave, {
 		duration: 0.3,
 	})

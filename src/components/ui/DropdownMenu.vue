@@ -46,6 +46,9 @@
 				'origin-top-right right-0': placement === 'right',
 			}"
 		>
+			<div class="relative" v-if="loading" style="width: 120%">
+				<LinearProgress class="absolute px-4 -mx-8 -top-4 w-full" />
+			</div>
 			<slot></slot>
 		</div>
 	</div>
@@ -54,6 +57,7 @@
 <script lang="ts">
 import { defineComponent, PropType } from "@vue/runtime-core";
 import Btn from "./Btn.vue";
+import LinearProgress from "./LinearProgress.vue";
 export default defineComponent({
 	name: "DropdownMenu",
 	props: {
@@ -81,10 +85,14 @@ export default defineComponent({
 			type: String as PropType<"left" | "right">,
 			default: "left",
 		},
+		loading: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	methods: {},
 	computed: {},
-	components: { Btn },
+	components: { Btn, LinearProgress },
 });
 </script>
 
