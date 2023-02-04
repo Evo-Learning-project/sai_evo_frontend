@@ -154,7 +154,9 @@ export const useMainStore = defineStore("main", {
 		courses: [] as Course[], // global list of courses
 		paginatedTopLevelCourseTreeNodes: null as null | PaginatedData<CourseTreeNode>,
 		tags: [] as Tag[], // tags of current course
-		users: [] as User[], // users currently displayed (e.g. course insights page)
+
+		privilegedUsers: [] as User[], // users with privileges for the current course
+		paginatedUsers: getEmptyPaginatedData() as PaginatedData<User>, // users currently displayed (e.g. course insights page)
 		paginatedExercises: getEmptyPaginatedData() as PaginatedData<Exercise>, // exercises currently displayed
 		events: [] as Event[], // events currently displayed (e.g. course exam list)
 
@@ -207,6 +209,8 @@ export const useMainStore = defineStore("main", {
 		getPaginatedExercises: state => state.paginatedExercises ?? getEmptyPaginatedData(),
 		getCourseById: state => (courseId: string) =>
 			state.courses.find(c => c.id == courseId),
+		getUserById: state => (userId: string) =>
+			[...state.privilegedUsers, ...state.paginatedUsers.data].find(u => u.id == userId),
 		getEventById: state => (eventId: string) =>
 			state.events.find(e => e.id == eventId) ?? getBlankExam(),
 		getEventByTemplateId: state => (templateId: string) =>
@@ -729,16 +733,6 @@ export const useMainStore = defineStore("main", {
 				Object.assign(target, payload);
 			} else {
 				console.error("setEventParticipation didn't find", payload);
-			}
-		},
-		// replace the user with same id as payload user with the given payload it if exists,
-		// otherwise push a new user to the store with the given fields
-		setUser(user: User) {
-			const target = this.users.find((u: User) => u.id == user.id);
-			if (target) {
-				Object.assign(target, user);
-			} else {
-				this.users.push(user);
 			}
 		},
 		/**
@@ -1433,9 +1427,6 @@ export const useMainStore = defineStore("main", {
 			const courses = await getCourses();
 			this.courses = courses;
 		},
-		getUser(userId: string) {
-			return this.users.find(u => u.id == userId);
-		},
 		async getTags({
 			courseId,
 			includeExerciseCount = false,
@@ -1932,18 +1923,34 @@ export const useMainStore = defineStore("main", {
 
 		/** CRUD on users */
 		async getUsersForCourse(
-			// returns all users in the system and their permissions relative to given course
-			{ courseId }: CourseIdActionPayload,
+			// returns users with applied filters their permissions relative to given course
+			{
+				courseId,
+				teachersOnly,
+				search,
+			}: CourseIdActionPayload & { teachersOnly: boolean; search?: string },
 		) {
-			const users = await getUsers(courseId);
-			this.users = users;
+			// TODO pagination
+			const users = await getUsers(courseId, {
+				isTeacher: teachersOnly ? true : undefined,
+				search,
+			});
+			this.paginatedUsers = users;
+		},
+		async getPrivilegedUsersForCourse({ courseId }: CourseIdActionPayload) {
+			// we can assume the number of privileged users for a given course will be fairly
+			// small, therefore no need to keep them paginated - we can fetch all of them at once
+			const users = await getUsers(courseId, { hasPrivileges: true, size: 99999999 });
+			console.log("About to set priv", users.data);
+			this.privilegedUsers = users.data;
 		},
 		async getCourseActiveUsers(
 			// returns all users that are active in given course
 			{ courseId }: CourseIdActionPayload,
 		) {
 			const users = await getActiveUsersForCourse(courseId);
-			this.users = users;
+			// TODO pagination
+			this.paginatedUsers = users;
 		},
 		async updateUserCoursePrivileges({
 			courseId,
@@ -1956,7 +1963,37 @@ export const useMainStore = defineStore("main", {
 			privileges: CoursePrivilege[];
 		}) {
 			const user = await updateUserCoursePrivileges(courseId, userId, email, privileges);
-			this.setUser(user);
+
+			const newPrivileges = user.course_privileges ?? [];
+			const privilegedUserIndex = this.privilegedUsers.findIndex(u => u.id == user.id);
+			const userWasPrivileged = privilegedUserIndex !== -1;
+
+			// if user was not among the privileged users but now has at least
+			// one privilege, it should be added
+			const shouldAddToPrivilegedUsers = !userWasPrivileged && newPrivileges.length > 0;
+
+			// if user was among the privileged users but now has 0 privileges,
+			// it should be removed
+			const shouldRemoveFromPrivilegedUsers =
+				userWasPrivileged && newPrivileges.length === 0;
+
+			// update or add user to user list
+			const target = this.paginatedUsers.data.find(u => u.id == user.id);
+			if (target) {
+				Object.assign(target, user);
+			} else {
+				prependToPaginatedData(this.paginatedUsers, user);
+			}
+
+			// update, add, or remove user in privileged users list
+			if (shouldRemoveFromPrivilegedUsers) {
+				this.privilegedUsers.splice(privilegedUserIndex, 1);
+			} else if (shouldAddToPrivilegedUsers) {
+				this.privilegedUsers.push(user);
+			} else {
+				Object.assign(this.privilegedUsers[privilegedUserIndex], user);
+			}
+
 			return user;
 		},
 		async bulkPartialUpdateEventParticipation({

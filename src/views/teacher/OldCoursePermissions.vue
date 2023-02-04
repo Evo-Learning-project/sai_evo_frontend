@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
 	<div class="h-full">
 		<DataTable
 			:class="{ 'opacity-50': usersData.length === 0 }"
@@ -196,4 +196,4 @@ export default defineComponent({
 });
 </script>
 
-<style></style>
+<style></style> -->

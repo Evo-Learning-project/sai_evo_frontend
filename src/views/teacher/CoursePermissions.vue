@@ -180,13 +180,16 @@ export default defineComponent({
 	},
 	mixins: [courseIdMixin, loadingMixin, savingMixin, coursePrivilegeMixin],
 	async created() {
-		await this.withLoading(
-			async () =>
-				await this.mainStore.getUsersForCourse({
-					courseId: this.courseId,
-				}),
-			setPageWideError,
-		);
+		await this.withLoading(async () => {
+			// get all users with privileges
+			await this.mainStore.getPrivilegedUsersForCourse({ courseId: this.courseId });
+			// initially, fetch teachers to give some data
+			// to start with when searching users
+			await this.mainStore.getUsersForCourse({
+				courseId: this.courseId,
+				teachersOnly: true,
+			});
+		}, setPageWideError);
 	},
 	data() {
 		return {
@@ -248,7 +251,7 @@ export default defineComponent({
 		// for combobox
 		filterUser(search: string, userOption: SelectableOption) {
 			const searchTokens = search.toLowerCase().split(/\s/);
-			const user = this.mainStore.getUser(userOption.value);
+			const user = this.mainStore.getUserById(userOption.value);
 			const fullName = (user?.full_name ?? "").toLowerCase().replace(/\s/g, "");
 			const email = (user?.email ?? "").toLowerCase().replace(/\s/g, "");
 
@@ -270,7 +273,7 @@ export default defineComponent({
 		editingUser(): User | undefined {
 			if (this.editingUserId !== null) {
 				// an actual user is being edited
-				return this.mainStore.users.find(u => u.id == this.editingUserId);
+				return this.mainStore.getUserById(this.editingUserId);
 			}
 			if (this.editingUserEmail !== null) {
 				// a nonexistent user is being edited - the backend will create its account
@@ -293,8 +296,8 @@ export default defineComponent({
 		},
 		privilegedUsers() {
 			return [
-				...this.mainStore.users.filter(u => this.isCourseCreator(u)),
-				...this.mainStore.users
+				...this.mainStore.privilegedUsers.filter(u => this.isCourseCreator(u)),
+				...this.mainStore.privilegedUsers
 					.filter(u => !this.isCourseCreator(u) && (u.course_privileges ?? []).length > 0)
 					.sort(
 						(a, b) =>
@@ -303,7 +306,7 @@ export default defineComponent({
 			];
 		},
 		usersAsOptions(): SelectableOption[] {
-			return this.mainStore.users.map(u => ({
+			return this.mainStore.paginatedUsers.data.map(u => ({
 				value: u.id,
 				content: u.full_name,
 				data: u,

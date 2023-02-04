@@ -250,13 +250,15 @@ export default defineComponent({
 				}));
 		},
 		activeUsersForSelectedExams() {
-			const activeUsers = this.mainStore.users;
-			return activeUsers.filter(u =>
-				this.selectedExams.some(
-					e =>
-						typeof this.participations[e.id].find(p => p.user.id == u.id) !== "undefined",
-				),
-			);
+			// TODO re-implement
+			return [];
+			// const activeUsers = this.mainStore.users;
+			// return activeUsers.filter(u =>
+			// 	this.selectedExams.some(
+			// 		e =>
+			// 			typeof this.participations[e.id].find(p => p.user.id == u.id) !== "undefined",
+			// 	),
+			// );
 		},
 		selectedExams(): Event[] {
 			return this.mainStore.exams.filter(e =>
