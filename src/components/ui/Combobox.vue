@@ -38,7 +38,7 @@
 							:value="item.value"
 							:checked="item.value == modelValue"
 						/>
-						<slot v-bind:item="item"></slot>
+						<slot :item="item" :searchText="searchText"></slot>
 					</div>
 				</label>
 				<div v-if="filteredItems.length === 0 && !isCreatableFunction(searchText)">
@@ -151,7 +151,7 @@ export default defineComponent({
 			if (this.expanded) {
 				this.expanded = false;
 			} else {
-				this.expanded = this.searchText.length > 0;
+				this.expanded = this.searchText.length > 0 || this.items.length > 0;
 			}
 		},
 		onInput(value: string, inputEvent: Event) {

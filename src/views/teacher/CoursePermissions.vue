@@ -14,22 +14,29 @@
 				@updateSearchText="onUserSearch($event)"
 				:hint="$t('course_permissions.search_user_hint')"
 				:isCreatableFunction="isValidEmailAddress"
+				:filterFunction="filterUser"
 			>
-				<template v-slot="{ item }">
+				<template v-slot="{ item, searchText }">
 					<div class="flex items-center space-x-4">
 						<Avatar :user="item.data" />
 						<div class="flex flex-col">
-							<p>{{ item.data.full_name }}</p>
-							<p class="text-muted text-sm -mt-1">{{ item.data.email }}</p>
+							<p v-html="highlightMatchingText(searchText, item.data.full_name)" />
+							<p
+								v-html="highlightMatchingText(searchText, item.data.email)"
+								class="text-muted text-sm -mt-1"
+							/>
 						</div>
 					</div>
 				</template>
 				<template v-slot:noResults>
-					<div class="flex flex-col items-center my-4 mx-2">
+					<div class="flex flex-col items-center my-4 mx-2" v-if="!loadingUsers">
 						<p class="text-lg">{{ $t("course_permissions.search_cant_find_user") }}</p>
 						<p class="text-sm text-muted">
 							{{ $t("course_permissions.try_with_email_hint") }}
 						</p>
+					</div>
+					<div class="flex flex-col items-center my-4 mx-2" v-else>
+						<p>{{ $t("misc.wait") }}</p>
 					</div>
 				</template>
 				<template v-slot:createOption="{ searchText }">
@@ -251,14 +258,33 @@ export default defineComponent({
 			);
 		},
 		// for combobox
-		// filterUser(search: string, userOption: SelectableOption) {
-		// 	const searchTokens = search.toLowerCase().split(/\s/);
-		// 	const user = this.mainStore.getUserById(userOption.value);
-		// 	const fullName = (user?.full_name ?? "").toLowerCase().replace(/\s/g, "");
-		// 	const email = (user?.email ?? "").toLowerCase().replace(/\s/g, "");
+		filterUser(search: string, userOption: SelectableOption) {
+			const searchTokens = search.toLowerCase().split(/\s/);
+			const user = this.mainStore.getUserById(userOption.value);
+			const fullName = (user?.full_name ?? "").toLowerCase().replace(/\s/g, "");
+			const email = (user?.email ?? "").toLowerCase().replace(/\s/g, "");
 
-		// 	return searchTokens.every(t => fullName.includes(t) || email.includes(t));
-		// },
+			return searchTokens.every(t => fullName.includes(t) || email.includes(t));
+		},
+		highlightMatchingText(search: string, text: string) {
+			const words = text.split(/\s/);
+			return words
+				.map(w => {
+					const matchIndex = w.toLowerCase().indexOf(search.toLowerCase());
+					if (matchIndex !== -1) {
+						return (
+							w.substring(0, matchIndex) +
+							`<strong class="font-bold">${w.substring(
+								matchIndex,
+								matchIndex + search.length,
+							)}</strong>` +
+							w.substring(matchIndex + search.length, w.length)
+						);
+					}
+					return w;
+				})
+				.join(" ");
+		},
 		async onUserSearch(search: string) {
 			this.loadingUsers = true;
 			await this.throttledGetUsers(search);

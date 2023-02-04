@@ -46,7 +46,7 @@
 				'origin-top-right right-0': placement === 'right',
 			}"
 		>
-			<div class="relative" v-if="loading" style="width: 120%">
+			<div class="relative" v-if="loading" style="width: 200%">
 				<LinearProgress class="absolute px-4 -mx-8 -top-4 w-full" />
 			</div>
 			<slot></slot>

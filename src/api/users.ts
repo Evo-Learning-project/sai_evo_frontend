@@ -17,7 +17,7 @@ export async function getUsers(
 		(typeof hasPrivileges === "boolean"
 			? `&has_privileges=${String(hasPrivileges)}`
 			: "") +
-		(typeof search === "string" ? `&search=${search}` : "") +
+		(typeof search === "string" ? `&search=${encodeURIComponent(search)}` : "") +
 		(typeof size === "number" ? `&size=${size}` : "");
 	const response = await axios.get(`/users/?course_id=${courseId}${queryParams}`);
 	// !! TODO take in a page arg
