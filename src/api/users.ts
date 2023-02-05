@@ -35,8 +35,8 @@ export async function updateUser(userId: string, changes: Partial<User>): Promis
 }
 
 export async function getActiveUsersForCourse(courseId: string): Promise<User[]> {
-	const response = await axios.get(`/courses/${courseId}/active_users/?size=9999999999`);
-	return convertPaginatedResponseToLocalPaginatedData(response.data, 1).data;
+	const response = await axios.get(`/courses/${courseId}/active_users/`);
+	return response.data;
 }
 
 export async function updateUserCoursePrivileges(

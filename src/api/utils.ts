@@ -32,7 +32,7 @@ export const getEventUrlQueryParams = (filters: EventSearchFilter | null): strin
 		ret += `event_type=${filters.event_type}&`;
 	}
 	if (typeof filters.state !== "undefined") {
-		ret += `?state=${filters.state}&`;
+		ret += `state=${filters.state}&`;
 	}
 	return ret;
 };

@@ -59,6 +59,11 @@ export interface Course {
 	public_exercises_count?: number;
 }
 
+export type CourseExamParticipationReport = Record<
+	string,
+	{ user: string; id: string; score: string }[]
+>;
+
 interface Vote {
 	id: string;
 	vote_type: VoteType;

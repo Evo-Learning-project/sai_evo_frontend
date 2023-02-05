@@ -1,9 +1,26 @@
 <template>
 	<Card :margin-less="true">
 		<template v-slot:header>
-			<div class="flex items-center w-full">
-				<span class="material-icons-outlined text-lg icon-light -ml-0.5">person</span>
-				<p class="ml-1.5">{{ user.full_name }}</p>
+			<div class="flex items-center w-full mt-2">
+				<div class="flex items-center space-x-4">
+					<Avatar :size="'lg'" :user="user" />
+					<div class="flex flex-col -space-y-1">
+						<p class="">{{ user.full_name }}</p>
+						<div class="flex items-center space-x-1">
+							<p class="text-sm text-muted">{{ user.email }}</p>
+							<a style="margin-bottom: -4.85px" :href="'mailto:' + user.email">
+								<Btn :size="'xs'" :variant="'icon'" :outline="true">
+									<span
+										style="font-size: 14px !important"
+										class="material-icons-outlined icon-light"
+									>
+										email
+									</span>
+								</Btn>
+							</a>
+						</div>
+					</div>
+				</div>
 				<Btn
 					class="ml-auto"
 					:outline="true"
@@ -19,13 +36,9 @@
 						"
 						:class="{ 'rotate-180': expanded }"
 					>
-						{{ false && expanded ? "expand_less" : "expand_more" }}
-					</span></Btn
-				>
-			</div>
-			<div class="flex items-center space-x-1.5">
-				<span class="text-sm icon-light material-icons-outlined">mail</span>
-				<p class="">{{ user.email }}</p>
+						expand_more
+					</span>
+				</Btn>
 			</div>
 		</template>
 		<template v-slot:body>
@@ -82,6 +95,7 @@ import { getUserCourseParticipations } from "@/api/courses";
 import { courseIdMixin, loadingMixin } from "@/mixins";
 import SkeletonCard from "../ui/SkeletonCard.vue";
 import { setErrorNotification } from "@/utils";
+import Avatar from "../ui/Avatar.vue";
 export default defineComponent({
 	name: "StudentCard",
 	mixins: [courseIdMixin, loadingMixin],
@@ -134,7 +148,7 @@ export default defineComponent({
 				.sort((a, b) => (new Date(a.timestamp) < new Date(b.timestamp) ? -1 : 1));
 		},
 	},
-	components: { Card, Btn, Timeline, Timestamp, SkeletonCard },
+	components: { Card, Btn, Timeline, Timestamp, SkeletonCard, Avatar },
 });
 </script>
 

@@ -5,6 +5,7 @@ import {
 	Event,
 	EventParticipation,
 	GamificationContext,
+	CourseExamParticipationReport,
 } from "@/models";
 import axios from "axios";
 import { convertEventTemplateRules } from "./utils";
@@ -20,6 +21,13 @@ export async function setCourseBookmark(
 ): Promise<Course> {
 	const method = remove ? "delete" : "put";
 	const response = await axios[method](`/courses/${courseId}/bookmark/`);
+	return response.data;
+}
+
+export async function getCourseParticipationReport(
+	courseId: string,
+): Promise<CourseExamParticipationReport> {
+	const response = await axios.get(`/courses/${courseId}/participation_report/`);
 	return response.data;
 }
 

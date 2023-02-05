@@ -1949,8 +1949,12 @@ export const useMainStore = defineStore("main", {
 			{ courseId }: CourseIdActionPayload,
 		) {
 			const users = await getActiveUsersForCourse(courseId);
-			// TODO pagination
-			this.paginatedUsers = users;
+			this.paginatedUsers = {
+				data: users,
+				count: users.length,
+				pageNumber: 1,
+				isLastPage: true,
+			};
 		},
 		async updateUserCoursePrivileges({
 			courseId,

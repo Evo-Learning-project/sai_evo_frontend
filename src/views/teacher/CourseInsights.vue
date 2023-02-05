@@ -99,9 +99,12 @@
 				/>
 			</div>
 		</div>
-		<div v-show="viewMode === 'cards'" class="grid grid-cols-1 gap-3 mt-4 md:grid-cols-3">
+		<div
+			v-show="viewMode === 'cards'"
+			class="grid grid-cols-1 gap-3 mt-4 md:grid-cols-3 2xl:grid-cols-4"
+		>
 			<div
-				v-if="!loading && mainStore.users.length === 0"
+				v-if="!loading && mainStore.paginatedUsers.count === 0"
 				class="flex flex-col items-center mt-8"
 			>
 				<p style="font-size: 6rem" class="material-icons-outlined opacity-10">
@@ -111,7 +114,7 @@
 			</div>
 			<StudentCard
 				class="mb-auto"
-				v-for="user in mainStore.users"
+				v-for="user in mainStore.paginatedUsers.data"
 				:key="'active-user-' + user.id"
 				:user="user"
 			/>
@@ -122,10 +125,22 @@
 <script lang="ts">
 import { courseIdMixin, loadingMixin } from "@/mixins";
 import { defineComponent, PropType } from "@vue/runtime-core";
-import { logAnalyticsEvent, roundToTwoDecimals, setErrorNotification } from "@/utils";
+import {
+	getColorFromString,
+	logAnalyticsEvent,
+	roundToTwoDecimals,
+	setErrorNotification,
+} from "@/utils";
 import DataTable from "@/components/ui/DataTable.vue";
-import { EventSearchFilter } from "@/api";
-import { EventState, EventType, User, Event, EventParticipation } from "@/models";
+import { EventSearchFilter, getCourseParticipationReport } from "@/api";
+import {
+	EventState,
+	EventType,
+	User,
+	Event,
+	EventParticipation,
+	CourseExamParticipationReport,
+} from "@/models";
 import { getCourseInsightsHeaders } from "@/const";
 import CheckboxGroup from "@/components/ui/CheckboxGroup.vue";
 import { SelectableOption } from "@/interfaces";
@@ -160,7 +175,8 @@ export default defineComponent({
 			await Promise.all([this.fetchUsers(), this.fetchClosedExams()]);
 			// initially enable all exams in the table
 			this.selectedExamsIds = this.mainStore.exams.map(e => e.id);
-			this.participations = await this.fetchParticipations();
+
+			this.participations = await getCourseParticipationReport(this.courseId);
 		});
 		logAnalyticsEvent("viewedCourseStats", { courseId: this.courseId });
 	},
@@ -171,7 +187,7 @@ export default defineComponent({
 			loadingExams: false,
 			gridApi: null as any,
 			columnApi: null as any,
-			participations: {} as Record<string, EventParticipation[]>,
+			participations: {} as CourseExamParticipationReport,
 			selectedExamsIds: [] as string[],
 			viewMode: "table" as "table" | "cards",
 		};
@@ -206,18 +222,6 @@ export default defineComponent({
 				this.loadingExams = false;
 			}
 		},
-		async fetchParticipations() {
-			const participations: Record<string, EventParticipation[]> = {};
-			for (const e of this.mainStore.exams) {
-				// TODO profile this and consider enabling bulk get
-				participations[e.id] = await this.mainStore.getEventParticipations({
-					courseId: this.courseId,
-					eventId: e.id,
-					mutate: false, //TODO consider calling api function direclty if not mutating
-				});
-			}
-			return participations;
-		},
 	},
 	computed: {
 		...mapStores(useMainStore),
@@ -250,15 +254,15 @@ export default defineComponent({
 				}));
 		},
 		activeUsersForSelectedExams() {
-			// TODO re-implement
-			return [];
-			// const activeUsers = this.mainStore.users;
-			// return activeUsers.filter(u =>
-			// 	this.selectedExams.some(
-			// 		e =>
-			// 			typeof this.participations[e.id].find(p => p.user.id == u.id) !== "undefined",
-			// 	),
-			// );
+			if (this.loading) {
+				return [];
+			}
+			const activeUsers = this.mainStore.paginatedUsers.data;
+			return activeUsers.filter(u =>
+				this.selectedExams.some(
+					e => typeof this.participations[e.id].find(p => p.user == u.id) !== "undefined",
+				),
+			);
 		},
 		selectedExams(): Event[] {
 			return this.mainStore.exams.filter(e =>
@@ -272,23 +276,7 @@ export default defineComponent({
 		},
 		examsColors(): Record<string, string> {
 			return this.mainStore.exams.reduce((acc, e) => {
-				const letters = "0123456789ABCDEF";
-				let color = "#";
-				for (let i = 0; i < 6; i++) {
-					color += letters[Math.floor(Math.random() * 16)];
-				}
-				/*
-				let hash = 0;
-				for (let i = 0; i < e.name.length; i++) {
-					hash = e.name.charCodeAt(i) + ((hash << 5) - hash);
-				}
-				let color = "#";
-				for (let i = 0; i < 3; i++) {
-					let value = (hash >> (i * 8)) & 0xff;
-					color += ("00" + value.toString(16)).substr(-2);
-				}
-				*/
-				acc[e.id] = color;
+				acc[e.id] = getColorFromString(e.name);
 				return acc;
 			}, {} as Record<string, string>);
 		},
@@ -302,10 +290,12 @@ export default defineComponent({
 			const getScoreSumFn = (u: User) =>
 				Math.round(
 					Object.entries(this.participations)
-						.filter(e => this.selectedExamsIds.map(i => String(i)).includes(String(e[0])))
-						.map(e => e[1])
+						.filter(([eventId]) =>
+							this.selectedExamsIds.map(i => String(i)).includes(String(eventId)),
+						)
+						.map(([, participations]) => participations)
 						.flat()
-						.filter(p => p.user.id == u.id)
+						.filter(p => p.user == u.id)
 						.map(p => parseFloat(p.score ?? "0"))
 						.reduce((a, b) => a + b, 0) * 100,
 				) / 100;
@@ -318,7 +308,7 @@ export default defineComponent({
 				course: u.course,
 				...exams.reduce((acc, e) => {
 					const score = normalizeOptionalStringContainingNumber(
-						this.participations[e.id].find(p => p.user.id == u.id)?.score,
+						this.participations[e.id].find(p => p.user == u.id)?.score,
 					);
 					acc["exam_" + e.id] = score;
 					return acc;
@@ -328,7 +318,7 @@ export default defineComponent({
 					getScoreSumFn(u) /
 						this.selectedExams.filter(
 							// only consider exams the user has participated in
-							e => this.participations[e.id].findIndex(p => p.user.id == u.id) !== -1,
+							e => this.participations[e.id].findIndex(p => p.user == u.id) !== -1,
 						).length,
 				),
 			}));
