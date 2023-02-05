@@ -17,8 +17,8 @@
 			:fullWidth="true"
 		>
 			<template v-slot:title>
-				<h3>{{ $t("participation_downloader.download_results") }}</h3></template
-			>
+				<h3>{{ $t("participation_downloader.download_results") }}</h3>
+			</template>
 			<template v-slot:body>
 				<div class="text-darkText">
 					<p class="mb-4 text-muted">
@@ -28,8 +28,8 @@
 						<template v-slot:item="{ description }">
 							<div class="flex items-center mb-2 space-x-2">
 								<p class="text-sm text-muted">{{ description }}</p>
-							</div></template
-						>
+							</div>
+						</template>
 					</RadioGroup>
 					<div
 						:class="{
@@ -48,7 +48,7 @@
 								}
 							"
 							:modelValue="availablePresets[ReportSettingsPreset.CUSTOM].fields"
-						></CheckboxGroup>
+						/>
 					</div>
 					<div class="flex items-center mt-12 ml-1.5 space-x-2 w-44 hidden">
 						<SegmentedControls
