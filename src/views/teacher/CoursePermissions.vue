@@ -272,17 +272,20 @@ export default defineComponent({
 			const words = text.split(/\s/);
 			return words
 				.map(w => {
-					const matchIndex = w.toLowerCase().indexOf(search.toLowerCase());
-					if (matchIndex !== -1) {
-						return (
-							w.substring(0, matchIndex) +
-							`<strong class="font-bold">${w.substring(
-								matchIndex,
-								matchIndex + search.length,
-							)}</strong>` +
-							w.substring(matchIndex + search.length, w.length)
-						);
+					for (const searchWord of search.split(/\s/)) {
+						const matchIndex = w.toLowerCase().indexOf(searchWord.toLowerCase());
+						if (matchIndex !== -1) {
+							return (
+								w.substring(0, matchIndex) +
+								`<strong class="font-bold">${w.substring(
+									matchIndex,
+									matchIndex + searchWord.length,
+								)}</strong>` +
+								w.substring(matchIndex + searchWord.length, w.length)
+							);
+						}
 					}
+
 					return w;
 				})
 				.join(" ");
