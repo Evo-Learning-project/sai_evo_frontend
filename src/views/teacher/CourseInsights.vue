@@ -84,8 +84,8 @@
 				/>
 			</div>
 		</div>
-		<div v-show="viewMode === 'table'" class="flex-grow">
-			<div class="h-full overflow-y-auto">
+		<div v-show="viewMode === 'table'" class="flex-grow flex flex-col">
+			<div class="flex-grow overflow-y-auto">
 				<DataTable
 					:class="{ 'opacity-60': loading }"
 					:columnDefs="tableHeaders"
@@ -97,6 +97,16 @@
 						columnApi.autoSizeAllColumns(false);
 					"
 				/>
+			</div>
+			<div class="flex w-full">
+				<Btn
+					class="ml-auto"
+					:disabled="downloadingReport"
+					:outline="true"
+					@click="downloadReport()"
+				>
+					{{ downloadingReport ? $t("misc.wait") : $t("misc.download_as_csv") }}
+				</Btn>
 			</div>
 		</div>
 		<div
@@ -126,6 +136,7 @@
 import { courseIdMixin, loadingMixin } from "@/mixins";
 import { defineComponent, PropType } from "@vue/runtime-core";
 import {
+	forceFileDownload,
 	getColorFromString,
 	logAnalyticsEvent,
 	roundToTwoDecimals,
@@ -144,13 +155,14 @@ import {
 import { getCourseInsightsHeaders } from "@/const";
 import CheckboxGroup from "@/components/ui/CheckboxGroup.vue";
 import { SelectableOption } from "@/interfaces";
-import Btn from "@/components/ui/Btn.vue";
 import { getTranslatedString as _ } from "@/i18n";
 import { normalizeOptionalStringContainingNumber } from "@/api/utils";
 import SegmentedControls from "@/components/ui/SegmentedControls.vue";
 import StudentCard from "@/components/shared/StudentCard.vue";
 import { mapStores } from "pinia";
 import { useMainStore } from "@/stores/mainStore";
+import { getCourseExamParticipationsReportAsCsv } from "@/reports/courseExamsParticipations";
+import Btn from "@/components/ui/Btn.vue";
 export default defineComponent({
 	name: "CourseInsights",
 	mixins: [courseIdMixin, loadingMixin],
@@ -190,6 +202,7 @@ export default defineComponent({
 			participations: {} as CourseExamParticipationReport,
 			selectedExamsIds: [] as string[],
 			viewMode: "table" as "table" | "cards",
+			downloadingReport: false,
 		};
 	},
 	methods: {
@@ -220,6 +233,26 @@ export default defineComponent({
 				setErrorNotification(e);
 			} finally {
 				this.loadingExams = false;
+			}
+		},
+		downloadReport() {
+			this.downloadingReport = true;
+			try {
+				const content = getCourseExamParticipationsReportAsCsv(
+					this.participations,
+					this.mainStore.paginatedUsers.data,
+					this.mainStore.events,
+				).replace(/(\\r)?\\n/g, "\n");
+				forceFileDownload(
+					{
+						data: content,
+					},
+					this.currentCourse.name + "_report.csv",
+				);
+			} catch (e) {
+				setErrorNotification(e);
+			} finally {
+				setTimeout(() => (this.downloadingReport = false), 150);
 			}
 		},
 	},

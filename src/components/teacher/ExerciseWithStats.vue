@@ -112,16 +112,16 @@ import { _DeepPartialObject } from "chart.js/types/utils";
 import { getTranslatedString as _ } from "@/i18n";
 
 import { SelectableOption } from "@/interfaces";
+
 import {
-	exerciseChoicesBarChartOptions,
-	DataFrequency,
-	getChoiceSelectionFrequencyFor,
-	makeLabelText,
-	exerciseChoiceDatasetSettings,
 	getTestCasePassingFrequencyFor,
+	getChoiceSelectionFrequencyFor,
 	passedTestCasesBarChartOptions,
+	exerciseChoicesBarChartOptions,
 	scoreChartDatasetSettings,
-} from "@/reports";
+	exerciseChoiceDatasetSettings,
+} from "@/reports/examParticipations";
+import { makeLabelText, DataFrequency } from "@/reports/misc";
 import ExerciseTestCase from "../shared/ExerciseTestCase.vue";
 import { mediaQueryMixin } from "@/mixins";
 import { getCorrectChoices } from "../shared/Exercise/utils";

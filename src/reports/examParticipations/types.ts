@@ -1,12 +1,7 @@
-export interface DataFrequency<T> {
-	datum: T;
-	frequency: number;
-}
-
-export enum ExamStatsTabs {
-	OVERALL,
-	EXERCISES,
-}
+// export interface DataFrequency<T> {
+// 	datum: T;
+// 	frequency: number;
+// }
 
 export enum ReportSettingsPreset {
 	MAT_AND_SCORES,

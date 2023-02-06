@@ -146,17 +146,24 @@ import ExerciseWithStats from "@/components/teacher/ExerciseWithStats.vue";
 import MinimalExercisePreviewSkeleton from "@/components/ui/skeletons/MinimalExercisePreviewSkeleton.vue";
 import {
 	areAllParticipationsFullyAssessed,
-	DataFrequency,
-	ExamStatsTabs,
 	getExerciseListFromParticipations,
-	getScoreFrequencyFromParticipations,
-	scoreChartDatasetSettings,
-	scoreChartOptions,
 } from "@/reports";
+
+import { DataFrequency } from "@/reports/misc";
+import {
+	getScoreFrequencyFromParticipations,
+	scoreChartOptions,
+	scoreChartDatasetSettings,
+} from "@/reports/examParticipations";
 import { roundToTwoDecimals } from "@/utils";
 import { mapStores } from "pinia";
 import { useMainStore } from "@/stores/mainStore";
 ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale);
+
+enum ExamStatsTabs {
+	OVERALL,
+	EXERCISES,
+}
 
 export default defineComponent({
 	name: "EventStats",

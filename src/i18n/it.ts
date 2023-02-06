@@ -1,5 +1,5 @@
 import { DataFormat } from "./../integrations/types";
-import { ReportField } from "./../reports/types";
+import { ReportField } from "../reports/examParticipations/types";
 import {
 	CoursePrivilege,
 	EventParticipationState,
@@ -1204,6 +1204,12 @@ export const it = {
 		},
 	},
 	reports: {
+		course_participation_report_headers: {
+			email: "Email",
+			course: "Corso",
+			full_name: "Nome e cognome",
+			mat: "Matricola",
+		},
 		csv_headers: {
 			user: {
 				email: "Email",

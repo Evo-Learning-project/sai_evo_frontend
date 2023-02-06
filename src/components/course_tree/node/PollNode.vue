@@ -225,7 +225,7 @@ import { nodeEmits, nodeProps } from "../shared";
 import { Pie } from "vue-chartjs";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { TChartData } from "vue-chartjs/dist/types";
-import { DataFrequency, makeLabelText } from "@/reports";
+import { DataFrequency, makeLabelText } from "@/reports/misc";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 

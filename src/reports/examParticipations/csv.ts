@@ -4,6 +4,11 @@ import { EventParticipation, ExerciseType, ExerciseTestCase } from "@/models";
 import { get } from "lodash";
 import { isNumeric } from "@/api/utils";
 
+/**
+ * Returns a list of headers to be used when generating the CSV report.
+ * The list is constructed by using the given settings and only including
+ * the fields which are enabled in the settings.
+ */
 const getEventParticipationHeaders = (
 	participations: EventParticipation[],
 	reportSettings: ReportSettings,
@@ -84,6 +89,9 @@ const getEventParticipationHeaders = (
 	...(reportSettings.fields.includes(ReportField.SCORE) ? ["score"] : []),
 ];
 
+/**
+ * Takes in a header and returns its trnslated version
+ */
 const getHeaderString = (header: string) => {
 	const tokens = header.split(".");
 	let i = 0;
@@ -107,6 +115,12 @@ const getHeaderString = (header: string) => {
 	return _("reports.csv_headers." + header);
 };
 
+/**
+ * Takes in a participation and the name of a field of the CSV report.
+ * Returns the value of the field on the participation, performing nested
+ * lookups as needed. The exact nature of the performed lookup depends
+ * on the field accessed.
+ */
 const getCellValue = (participation: EventParticipation, field: string) => {
 	// for fields that don't actually exist on the participation,
 	// or need additional processing, manually set the value
@@ -147,21 +161,15 @@ const getCellValue = (participation: EventParticipation, field: string) => {
 	return get(participation, field);
 };
 
+/**
+ * Takes in an array of participations and a settings object, and returns
+ * a string which is a valid CSV containing the report of those participations.
+ */
 export const getParticipationsAsCsv = (
 	participations: EventParticipation[],
 	reportSettings: ReportSettings,
 ): string => {
 	const headers = getEventParticipationHeaders(participations, reportSettings);
-	// const replacer = (key: string, value: string) =>
-	//   value === null
-	//     ? ""
-	//     : typeof value === "string"
-	//     ? value
-	//         .replace(/\\n/g, "\n")
-	//         .replace(/<img src="[^"]+"/g, "[img]")
-	//         .replace(/"/g, '""')
-	//     : value;
-
 	const replacer = (key: string, value: string) => {
 		if (value === null) {
 			return null;
@@ -177,7 +185,6 @@ export const getParticipationsAsCsv = (
 				.replace(/<img src="[^"]+"/g, "[img]")
 				.replace(/"/g, '""');
 		}
-
 		return value;
 	};
 

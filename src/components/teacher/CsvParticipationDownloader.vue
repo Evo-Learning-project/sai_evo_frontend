@@ -76,8 +76,8 @@ import {
 	ReportSettings,
 	ReportSettingsPreset,
 	ReportType,
-} from "@/reports";
-import { getParticipationsAsCsv } from "@/reports/csv";
+} from "@/reports/examParticipations";
+import { getParticipationsAsCsv } from "@/reports/examParticipations";
 import { forceFileDownload, setErrorNotification } from "@/utils";
 import { defineComponent, PropType } from "@vue/runtime-core";
 import Btn from "../ui/Btn.vue";

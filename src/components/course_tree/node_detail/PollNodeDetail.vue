@@ -184,7 +184,7 @@ import { getColorFromString, md5, setErrorNotification } from "@/utils";
 import { Pie } from "vue-chartjs";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { TChartData } from "vue-chartjs/dist/types";
-import { DataFrequency, makeLabelText } from "@/reports";
+import { DataFrequency, makeLabelText } from "@/reports/misc";
 import { SelectableOption } from "@/interfaces";
 import { mapStores } from "pinia";
 import { useMainStore } from "@/stores/mainStore";

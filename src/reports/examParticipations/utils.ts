@@ -1,4 +1,9 @@
-import { ReportField, ReportSettings, ReportSettingsPreset, ReportType } from "./types";
+import {
+	ReportField,
+	ReportSettings,
+	ReportSettingsPreset,
+	ReportType,
+} from "@/reports/examParticipations";
 import {
 	EventParticipation,
 	ParticipationAssessmentProgress,
