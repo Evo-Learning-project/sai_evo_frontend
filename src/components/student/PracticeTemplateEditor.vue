@@ -194,7 +194,9 @@ export default defineComponent({
 		this.modelValue.rules.forEach(r => {
 			this.instantiateRuleAutoSaveManager(r);
 		});
-		this.selectedTags = this.modelValue.rules.map(r => String(r.clauses?.[0].tags[0].id));
+		this.selectedTags = this.modelValue.rules.map(r =>
+			String(r.clauses?.[0]?.tags?.[0]?.id),
+		);
 	},
 	watch: {
 		editingRule(newVal) {
@@ -345,8 +347,8 @@ export default defineComponent({
 			return this.mainStore.tags.find(
 				t =>
 					t.id ==
-					this.modelValue.rules.find(r => r.id == this.editingRule)?.clauses?.[0].tags[0]
-						.id,
+					this.modelValue.rules.find(r => r.id == this.editingRule)?.clauses?.[0]
+						?.tags?.[0]?.id,
 			);
 		},
 		editingRuleTagSeenExercises(): number {
