@@ -40,7 +40,7 @@ export default defineComponent({
 	methods: {},
 	computed: {
 		fullName(): string {
-			return this.user?.full_name ?? "A";
+			return this.user?.full_name || this.user?.email || "A";
 		},
 		avatarSize() {
 			const size = this.size === "md" ? "2rem" : this.size === "lg" ? "2.4rem" : "3.5rem";
