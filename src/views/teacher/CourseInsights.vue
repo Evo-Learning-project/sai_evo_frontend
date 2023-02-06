@@ -104,7 +104,7 @@
 					:disabled="downloadingReport"
 					:outline="true"
 					@click="downloadReport()"
-				>
+					><span class="mr-1 material-icons-outlined"> file_download </span>
 					{{ downloadingReport ? $t("misc.wait") : $t("misc.download_as_csv") }}
 				</Btn>
 			</div>

@@ -144,16 +144,14 @@ import Tabs from "@/components/ui/Tabs.vue";
 import { SelectableOption } from "@/interfaces";
 import ExerciseWithStats from "@/components/teacher/ExerciseWithStats.vue";
 import MinimalExercisePreviewSkeleton from "@/components/ui/skeletons/MinimalExercisePreviewSkeleton.vue";
-import {
-	areAllParticipationsFullyAssessed,
-	getExerciseListFromParticipations,
-} from "@/reports";
 
 import { DataFrequency } from "@/reports/misc";
 import {
 	getScoreFrequencyFromParticipations,
 	scoreChartOptions,
 	scoreChartDatasetSettings,
+	areAllParticipationsFullyAssessed,
+	getExerciseListFromParticipations,
 } from "@/reports/examParticipations";
 import { roundToTwoDecimals } from "@/utils";
 import { mapStores } from "pinia";

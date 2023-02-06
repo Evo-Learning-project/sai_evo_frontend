@@ -1,3 +1,5 @@
+import { getTranslatedString as _ } from "@/i18n";
+
 export const scoreChartOptions = {
 	responsive: true,
 	maintainAspectRatio: true,
