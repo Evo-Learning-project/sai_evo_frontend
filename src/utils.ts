@@ -39,6 +39,15 @@ export const logOut = (showMessage = true, redirect = ""): void => {
 	}
 };
 
+export const redirectToCourseEnrollment = (redirect: string): void => {
+	router.push({
+		name: "CourseEnrollment",
+		query: {
+			redirect,
+		},
+	});
+};
+
 export const redirectToMainView = (): void => {
 	const metaStore = useMetaStore();
 	if (router.currentRoute.value.query.redirect) {

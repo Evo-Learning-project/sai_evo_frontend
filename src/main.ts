@@ -21,7 +21,7 @@ import * as Sentry from "@sentry/vue";
 import { BrowserTracing } from "@sentry/tracing";
 
 import "vue3-tour/dist/vue3-tour.css";
-import { clickOutsideDirective, logOut } from "./utils";
+import { clickOutsideDirective, logOut, redirectToCourseEnrollment } from "./utils";
 
 import Vue3Sanitize from "vue-3-sanitize";
 
@@ -59,6 +59,11 @@ axios.interceptors.response.use(
 			(router.currentRoute.value.name?.toString().toLowerCase() ?? "") !== "login"
 		) {
 			logOut(false, router.currentRoute.value.fullPath);
+		} else if (
+			error?.response?.status === 403 &&
+			error.response.data?.detail === "NOT_ENROLLED"
+		) {
+			redirectToCourseEnrollment(router.currentRoute.value.fullPath);
 		}
 		throw error;
 	},
