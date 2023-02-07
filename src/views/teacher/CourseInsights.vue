@@ -241,6 +241,7 @@ export default defineComponent({
 				const content = getCourseExamParticipationsReportAsCsv(
 					this.participations,
 					this.mainStore.paginatedUsers.data,
+					// TODO use filtered exams
 					this.mainStore.events,
 				).replace(/(\\r)?\\n/g, "\n");
 				forceFileDownload(

@@ -110,7 +110,7 @@ import { arraybufferToBase64 } from "@/utils";
 import { downloadFileNode } from "@/api";
 import { fileViewerMixin } from "@/mixins";
 export default defineComponent({
-	name: "PdfViewer",
+	name: "IframeViewer",
 	props: {
 		...fileViewerProps,
 	},

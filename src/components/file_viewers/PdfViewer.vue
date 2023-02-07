@@ -9,32 +9,60 @@
 		style="z-index: 1002"
 		class="
 			flex
+			md:flex-row
+			flex-col
 			items-center
 			bg-dark
 			fixed
 			top-0
 			left-0
 			w-full
-			h-14
+			md:h-14
 			shadow-elevation
 			bg-opacity-90
 			px-2
 		"
 	>
-		<div class="mr-auto">
-			<Btn class="mr-2" :variant="'icon'" :outline="true" @click="$emit('viewerClose')">
-				<span class="material-icons-outlined text-lightText">close</span>
-			</Btn>
+		<div class="flex items-center w-full">
+			<div class="">
+				<Btn
+					class="md:mr-2"
+					:variant="'icon'"
+					:outline="true"
+					@click="$emit('viewerClose')"
+				>
+					<span class="material-icons-outlined text-lightText">close</span>
+				</Btn>
+			</div>
+			<div
+				class="
+					text-lightText
+					flex
+					md:flex-row
+					flex-col
+					items-center
+					space-x-4
+					md:ml-4
+					overflow-hidden
+				"
+				style="text-overflow: ellipsis"
+			>
+				<h3 class="hidden md:block">{{ filename }}</h3>
+				<p class="md:hidden w-full overflow-hidden" style="text-overflow: ellipsis">
+					{{ filename }}
+				</p>
+				<p class="text-sm opacity-70 hidden md:block" v-if="pageCount !== null">
+					{{ pageCount }} {{ pageCount === 1 ? $t("misc.page") : $t("misc.pages") }}
+				</p>
+			</div>
 		</div>
-		<div class="text-lightText flex items-center space-x-4">
-			<h3 class="">{{ filename }}</h3>
-			<p class="text-sm opacity-70" v-if="pageCount !== null">
+
+		<div class="md:ml-auto md:mt-0 -mt-3 flex items-center text-lightText">
+			<p class="text-sm opacity-70 md:hidden" v-if="pageCount !== null">
 				{{ pageCount }} {{ pageCount === 1 ? $t("misc.page") : $t("misc.pages") }}
 			</p>
-		</div>
-		<div class="ml-auto">
 			<Btn
-				class="mr-2"
+				class="md:mr-2"
 				:loading="downloading"
 				:variant="'icon'"
 				:outline="true"
@@ -83,13 +111,11 @@
 <script lang="ts">
 import VuePdfEmbed from "vue-pdf-embed";
 
-import { defineComponent, PropType } from "@vue/runtime-core";
+import { defineComponent } from "@vue/runtime-core";
 import Btn from "../ui/Btn.vue";
 import LinearProgress from "../ui/LinearProgress.vue";
 import { fileViewerProps } from "./shared";
-import { arraybufferToBase64 } from "@/utils";
-import { downloadFileNode } from "@/api";
-import { fileViewerMixin } from "@/mixins";
+import { fileViewerMixin, mediaQueryMixin } from "@/mixins";
 export default defineComponent({
 	name: "PdfViewer",
 	props: {
@@ -100,13 +126,16 @@ export default defineComponent({
 		Btn,
 		LinearProgress,
 	},
-	mixins: [fileViewerMixin],
+	mixins: [fileViewerMixin, mediaQueryMixin],
 	mounted() {
 		this.downloadNodeFile();
 		const bodyContainsOverflowHidden =
 			document.body.classList.contains("overflow-y-hidden");
 		if (!bodyContainsOverflowHidden) {
 			document.body.classList.add("overflow-y-hidden");
+		}
+		if (!this.mediaQueryMdMatches) {
+			this.width = window.screen.availWidth - 10;
 		}
 	},
 	beforeUnmount() {
@@ -140,12 +169,17 @@ export default defineComponent({
 				return;
 			}
 			this.reRendering = true;
-			const MIN_WIDTH = 600;
-			const MAX_WIDTH = 1200;
+			const lasdWidth = this.width;
+			const MIN_WIDTH = this.mediaQueryMdMatches ? 400 : window.screen.availWidth / 2;
+			const MAX_WIDTH = this.mediaQueryMdMatches ? 1800 : window.screen.availWidth * 2;
 			if (amount > 0) {
 				this.width = Math.min(MAX_WIDTH, this.width + amount);
 			} else {
 				this.width = Math.max(MIN_WIDTH, this.width + amount);
+			}
+			if (lasdWidth === this.width) {
+				// width didn't change - call re-rendering off
+				this.reRendering = false;
 			}
 		},
 		onProgress(evt: any) {
