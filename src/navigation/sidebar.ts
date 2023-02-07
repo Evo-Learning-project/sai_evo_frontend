@@ -69,6 +69,13 @@ export const courseDashboardSidebarOptions: SidebarOption[] = [
 		requiredPrivileges: [], //[CoursePrivilege.MANAGE_MATERIAL],
 	},
 	{
+		label: _("sidebar_labels.course_gamification"),
+		icon: "sports_esports",
+		routeName: "CourseGamification",
+		children: [],
+		requiredPrivileges: [CoursePrivilege.UPDATE_COURSE],
+	},
+	{
 		label: _("sidebar_labels.exercise_solution_threads"),
 		icon: "forum",
 		routeName: "TeacherCourseExerciseSolutionThreads",

@@ -16,6 +16,7 @@ import NodeDetail from "../views/course_tree/NodeDetail.vue";
 import CourseExams from "../views/teacher/CourseExams.vue";
 import CourseInsights from "../views/teacher/CourseInsights.vue";
 import CoursePermissions from "../views/teacher/CoursePermissions.vue";
+import CourseGamification from "../views/teacher/CourseGamification.vue";
 import EventEditor from "../components/teacher/EventEditor/EventEditor.vue";
 import EventParticipationPage from "../views/student/EventParticipationPage.vue";
 import EventParticipationFull from "../views/shared/EventParticipationFull.vue";
@@ -153,7 +154,7 @@ const routes: Array<RouteRecordRaw> = [
 				meta: {
 					routeTitle: _("headings.course_tree"),
 					sidebarOptions: courseDashboardSidebarOptions,
-					tags: ["permissions"],
+					tags: ["material"],
 					// redirect to student version of the route if an
 					// unprivileged user tries to access this route
 					unprivilegedRedirect: "StudentCourseTree",
@@ -181,6 +182,16 @@ const routes: Array<RouteRecordRaw> = [
 					routeTitle: _("headings.course_permissions"),
 					sidebarOptions: courseDashboardSidebarOptions,
 					tags: ["permissions"],
+				},
+			},
+			{
+				path: "courses/:courseId/gamification",
+				name: "CourseGamification",
+				component: CourseGamification,
+				meta: {
+					routeTitle: _("headings.course_gamification"),
+					sidebarOptions: courseDashboardSidebarOptions,
+					tags: ["gamification"],
 				},
 			},
 			{
