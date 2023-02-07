@@ -169,7 +169,7 @@ export default defineComponent({
 				return;
 			}
 			this.reRendering = true;
-			const lasdWidth = this.width;
+			const lastWidth = this.width;
 			const MIN_WIDTH = this.mediaQueryMdMatches ? 400 : window.screen.availWidth / 2;
 			const MAX_WIDTH = this.mediaQueryMdMatches ? 1800 : window.screen.availWidth * 2;
 			if (amount > 0) {
@@ -177,7 +177,7 @@ export default defineComponent({
 			} else {
 				this.width = Math.max(MIN_WIDTH, this.width + amount);
 			}
-			if (lasdWidth === this.width) {
+			if (lastWidth === this.width) {
 				// width didn't change - call re-rendering off
 				this.reRendering = false;
 			}
