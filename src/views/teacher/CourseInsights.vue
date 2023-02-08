@@ -277,15 +277,20 @@ export default defineComponent({
 			];
 		},
 		examsAsSelectableOptions(): SelectableOption[] {
-			return [...this.mainStore.exams]
-				.sort((a, b) =>
-					new Date(b.begin_timestamp ?? "") < new Date(a.begin_timestamp ?? "") ? 1 : -1,
-				)
-				.map(e => ({
-					value: e.id,
-					content:
-						e.name.trim().length > 0 ? e.name.trim() : _("event_preview.unnamed_event"),
-				}));
+			return (
+				[...this.mainStore.exams]
+					// TODO use moment
+					.sort((a, b) =>
+						new Date(b.begin_timestamp ?? "") < new Date(a.begin_timestamp ?? "")
+							? 1
+							: -1,
+					)
+					.map(e => ({
+						value: e.id,
+						content:
+							e.name.trim().length > 0 ? e.name.trim() : _("event_preview.unnamed_event"),
+					}))
+			);
 		},
 		activeUsersForSelectedExams() {
 			if (this.loading) {
