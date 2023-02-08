@@ -88,8 +88,10 @@ export const getTestCasePassingFrequencyFor = (
 export const getChoiceSelectionFrequencyFor = (
 	exercise: Exercise,
 	slots: EventParticipationSlot[],
-): DataFrequency<ExerciseChoice>[] =>
-	slots
+): DataFrequency<ExerciseChoice>[] => {
+	const selectedChoicesIds = new Set<string>();
+
+	const selectedChoicesFrequency = slots
 		.flatMap(s => s.selected_choices)
 		.reduce((a, c) => {
 			const choice = (exercise.choices ?? []).find(ch => ch.id == c) as ExerciseChoice;
@@ -99,6 +101,19 @@ export const getChoiceSelectionFrequencyFor = (
 			} else {
 				a.push({ datum: choice, frequency: 1 });
 			}
+			selectedChoicesIds.add(String(c));
 			return a;
 		}, [] as DataFrequency<ExerciseChoice>[])
 		.sort((a, b) => (String(a.datum.id) < String(b.datum.id) ? -1 : 1));
+
+	return [
+		...selectedChoicesFrequency,
+		// include choices that weren't selected with frequency 0
+		...(exercise.choices ?? [])
+			.filter(c => !selectedChoicesIds.has(String(c.id)))
+			.map(c => ({
+				datum: c,
+				frequency: 0,
+			})),
+	];
+};
