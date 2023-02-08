@@ -1117,11 +1117,18 @@ export default defineComponent({
 			await this.solutionAutoSaveManagers[solutionId].flush();
 		},
 		async onAddChoice() {
+			// when the exercise is set to be all_or_nothing, we need to make sure that
+			// incorrect choices have a `correctness` value of -1.
+			//.if we didn't do this, then by all_or_nothing logic the choice would
+			// actually be considered true because selecting it doesn't
+			// decrease the score obtained
+			const score = this.modelValue.all_or_nothing ? -1 : 0;
+
 			const newChoice: ExerciseChoice = await this.mainStore.createExerciseChild({
 				courseId: this.courseId,
 				exerciseId: this.modelValue.id,
 				childType: "choice",
-				payload: getBlankChoice(),
+				payload: getBlankChoice(score),
 			});
 			this.instantiateChoiceAutoSaveManager(newChoice);
 		},

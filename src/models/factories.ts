@@ -74,10 +74,10 @@ export const getBlankExerciseSolution = (
 	is_bookmarked: false,
 });
 
-export const getBlankChoice = (): ExerciseChoice => ({
+export const getBlankChoice = (correctness?: number): ExerciseChoice => ({
 	id: "",
 	text: "",
-	correctness: 0,
+	correctness: correctness ?? 0,
 });
 
 export const getBlankTestCase = (): ExerciseTestCase => ({
