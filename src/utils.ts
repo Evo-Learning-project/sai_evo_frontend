@@ -241,7 +241,7 @@ export const getParticipationRemainingTime = (
 	const now = moment();
 	const remaining = endMoment.diff(now, "seconds");
 
-	return remaining;
+	return Math.max(remaining, 0);
 };
 
 export const getFileContent = async (file: File): Promise<string> => {
