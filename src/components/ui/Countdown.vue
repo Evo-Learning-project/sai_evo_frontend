@@ -27,6 +27,8 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from "@vue/runtime-core";
+import moment from "moment";
+
 export default defineComponent({
 	name: "Countdown",
 	props: {
@@ -55,23 +57,30 @@ export default defineComponent({
 			handle: null as number | null,
 			hasShakenHalfTime: false,
 			hasShakenLittleTime: false,
+			startMoment: null as null | moment.Moment,
 		};
 	},
 	methods: {
 		startTimer() {
-			// TODO to make this more solid, run every 500 ms & instead of just decreasing the seconds, count the difference
 			this.seconds = this.initialSeconds;
 			if (this.seconds <= 0) {
 				this.stopTimer();
 				this.$emit("timeUp");
 			}
+			if (this.startMoment === null) {
+				this.startMoment = moment();
+			}
 
 			this.handle = setInterval(() => {
-				if (--this.seconds === 0) {
+				const now = moment();
+				const end = moment(this.startMoment).add(this.initialSeconds, "seconds");
+
+				this.seconds = end.diff(now, "seconds");
+
+				if (this.seconds <= 0) {
 					this.stopTimer();
 					this.$emit("timeUp");
 				}
-
 				if (this.littleTimeRemaining) {
 					this.shake = true;
 				}
@@ -80,6 +89,7 @@ export default defineComponent({
 		stopTimer() {
 			clearInterval(this.handle as number);
 			this.handle = null;
+			this.startMoment = null;
 		},
 		onShakeEnd() {
 			if (!this.hasShakenHalfTime) {

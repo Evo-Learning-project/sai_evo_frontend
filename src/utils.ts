@@ -1,7 +1,7 @@
 /* eslint-disable no-var */
 declare const Buffer;
 
-import { EventParticipation, Event, Exercise } from "@/models";
+import { EventParticipation, Event, Exercise, EventTimeLimitRule } from "@/models";
 import { getTranslatedString } from "./i18n/index";
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import debounce from "lodash/debounce";
@@ -61,7 +61,7 @@ export const getFormattedTimestamp = (
 	dateOnly = false,
 	reduced = false,
 ): string => {
-	moment().locale("it");
+	moment().locale("it"); // TODO get user locale
 	return (
 		moment(timestamp)
 			//.calendar()
@@ -228,13 +228,20 @@ export const getParticipationRemainingTime = (
 	participation: EventParticipation,
 	event: Event,
 ): number | null => {
-	if (event.time_limit_seconds === null) {
+	if (
+		typeof event.time_limit_seconds !== "number" ||
+		event.time_limit_rule !== EventTimeLimitRule.TIME_LIMIT
+	) {
 		return null;
 	}
-	const endDate = new Date(participation.begin_timestamp);
-	endDate.setSeconds(endDate.getSeconds() + event.time_limit_seconds);
+	const endMoment = moment(participation.begin_timestamp).add(
+		event.time_limit_seconds,
+		"seconds",
+	);
+	const now = moment();
+	const remaining = endMoment.diff(now, "seconds");
 
-	return Math.max(Math.floor((endDate.getTime() - new Date().getTime()) / 1000), 0);
+	return remaining;
 };
 
 export const getFileContent = async (file: File): Promise<string> => {

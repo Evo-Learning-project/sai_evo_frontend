@@ -24,7 +24,7 @@
 					v-if="
 						mainStore.previewingEvent.time_limit_rule === EventTimeLimitRule.TIME_LIMIT
 					"
-					class="banner banner-light w-max mt-4"
+					class="banner banner-light mt-4"
 				>
 					<span class="material-icons-outlined icon-light">timer</span>
 					<div>
