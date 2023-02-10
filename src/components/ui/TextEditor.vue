@@ -1,5 +1,5 @@
 <template>
-	<div :class="{ 'h-full': tall }">
+	<div :class="{ 'h-full': tall }" :id="id">
 		<div @mouseup="endDragging()" class="flex space-x-2 relative">
 			<div
 				:id="resizablePanelId"
@@ -65,8 +65,8 @@
 									? $t("misc.show_full_editor")
 									: $t("misc.having_troubles_with_editor")
 							}}
-						</p></Btn
-					>
+						</p>
+					</Btn>
 				</div>
 			</div>
 			<div
@@ -116,6 +116,20 @@
 		<div v-if="$slots.errors?.()" class="text-sm font-light text-danger-dark">
 			<slot name="errors"></slot>
 		</div>
+		<div class="hidden" :id="id + 'latex-button-src'">
+			<svg
+				style="width: 16px !important"
+				xmlns="http://www.w3.org/2000/svg"
+				viewBox="0 0 24 24"
+			>
+				<title>{{ $t("misc.insert_latex") }}</title>
+				<path
+					class="ql-stroke"
+					style="stroke-width: 0.5 !important; fill: unset"
+					d="M12.42,5.29C11.32,5.19 10.35,6 10.25,7.11L10,10H12.82V12H9.82L9.38,17.07C9.18,19.27 7.24,20.9 5.04,20.7C3.79,20.59 2.66,19.9 2,18.83L3.5,17.33C3.83,18.38 4.96,18.97 6,18.63C6.78,18.39 7.33,17.7 7.4,16.89L7.82,12H4.82V10H8L8.27,6.93C8.46,4.73 10.39,3.1 12.6,3.28C13.86,3.39 15,4.09 15.66,5.17L14.16,6.67C13.91,5.9 13.23,5.36 12.42,5.29M22,13.65L20.59,12.24L17.76,15.07L14.93,12.24L13.5,13.65L16.35,16.5L13.5,19.31L14.93,20.72L17.76,17.89L20.59,20.72L22,19.31L19.17,16.5L22,13.65Z"
+				/>
+			</svg>
+		</div>
 	</div>
 </template>
 
@@ -130,7 +144,9 @@ import { quillEditor } from "vue3-quill";
 import Quill from "quill";
 const ImageResize = require("quill-image-resize").default;
 const ImageDrop = require("quill-image-drop-module").ImageDrop;
+import MagicUrl from "quill-magic-url";
 
+Quill.register("modules/magicUrl", MagicUrl);
 Quill.register("modules/imageDrop", ImageDrop);
 Quill.register("modules/imageResize", ImageResize);
 
@@ -187,6 +203,19 @@ export default defineComponent({
 	mounted() {
 		// prevent auto-focusing of quill editor
 		this.$nextTick(() => (this.internalDisabled = false));
+
+		// add custom LaTeX button
+		const latexButton = document.querySelector("#" + this.id + " .ql-latex");
+		if (latexButton) {
+			// when clicked, the LaTeX button inserts two $'s and positions the cursor between them'
+			latexButton.addEventListener("click", () => {
+				const selection = this.instance.getSelection(true);
+				this.instance.insertText(selection.index, "$$");
+				this.instance.setSelection(selection.index + 1, 0);
+			});
+			latexButton.innerHTML = document.getElementById(`${this.id}latex-button-src`)
+				?.innerHTML as string;
+		}
 	},
 	data() {
 		return {
@@ -199,6 +228,7 @@ export default defineComponent({
 			previewPanelWidth: 50,
 			pos: 0,
 			triggerTexHandle: null as number | null,
+			id: "a" + uuid4(), // https://github.com/testing-library/dom-testing-library/issues/168,
 		};
 	},
 	methods: {
@@ -270,11 +300,13 @@ export default defineComponent({
 						// [{ align: [] }],
 						["image"], // "video"
 						["clean"],
+						["latex"],
 					],
 					imageResize: {
 						modules: ["Resize", "DisplaySize"],
 					},
 					imageDrop: true,
+					magicUrl: true,
 				},
 			};
 		},

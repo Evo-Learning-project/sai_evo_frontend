@@ -143,6 +143,7 @@ export const getBlankEventParticipation = (): EventParticipation => ({
 	slots: [],
 	state: EventParticipationState.IN_PROGRESS,
 	user: getBlankUser(),
+	time_limit_timestamp: null,
 });
 
 export const getBlankEventTemplateRule = (

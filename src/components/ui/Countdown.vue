@@ -117,10 +117,13 @@ export default defineComponent({
 			return this.isInitialized && this.seconds < 5 * 60;
 		},
 		lessThanHalfTimeRemaining(): boolean {
+			if (this.initialSeconds === null) {
+				return false;
+			}
 			return this.isInitialized && this.seconds < Math.floor(this.initialSeconds / 2);
 		},
 		isInitialTimeValid(): boolean {
-			return !isNaN(this.initialSeconds);
+			return !isNaN(this.initialSeconds ?? 0);
 		},
 		endMoment() {
 			return moment(new Date(this.endTimestamp));
