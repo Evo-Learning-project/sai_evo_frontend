@@ -45,7 +45,7 @@
 			<div class="flex items-start mt-1 space-x-10">
 				<CloudSaveStatus :saving="saving" :hadError="savingError"></CloudSaveStatus>
 				<Countdown
-					v-show="currentEventParticipation.time_limit_timestamp !== null"
+					v-show="currentEventParticipation.time_limit_timestamp !== null && runTimer"
 					@timeUp="onTimeUp()"
 					:endTimestamp="currentEventParticipation.time_limit_timestamp"
 					:isInitialized="runTimer"
