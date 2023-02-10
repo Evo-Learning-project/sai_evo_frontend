@@ -45,9 +45,9 @@
 			<div class="flex items-start mt-1 space-x-10">
 				<CloudSaveStatus :saving="saving" :hadError="savingError"></CloudSaveStatus>
 				<Countdown
-					v-show="remainingTime !== null"
+					v-show="currentEventParticipation.time_limit_timestamp !== null"
 					@timeUp="onTimeUp()"
-					:initialSeconds="remainingTime ?? 0"
+					:endTimestamp="currentEventParticipation.time_limit_timestamp"
 					:isInitialized="runTimer"
 				/>
 			</div>
@@ -269,12 +269,7 @@ export default defineComponent({
 		}
 
 		// set up timer, if there is a time limit
-		const remainingTime = getParticipationRemainingTime(
-			this.currentEventParticipation,
-			this.currentEventParticipation.event,
-		);
-		if (typeof remainingTime === "number") {
-			this.remainingTime = remainingTime;
+		if (typeof this.currentEventParticipation.time_limit_timestamp === "number") {
 			this.runTimer = true;
 		}
 

@@ -209,6 +209,7 @@ export interface EventParticipation {
 	end_timestamp?: string;
 	current_slot_cursor?: number;
 	bookmarked?: boolean;
+	time_limit_timestamp: number | null;
 
 	// student-only field to indicate whether the assessment has been published for this participation
 	assessment_available?: boolean;

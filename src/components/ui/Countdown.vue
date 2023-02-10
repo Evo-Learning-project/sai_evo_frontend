@@ -18,7 +18,12 @@
 				/>
 			</svg>
 		</span>
-		<p class="ml-1" :class="{ 'text-danger-dark': littleTimeRemaining }">
+		<p
+			class="ml-1"
+			:class="{
+				'text-danger-dark': littleTimeRemaining,
+			}"
+		>
 			<span v-if="initialSeconds >= 3600">{{ formattedTime.hours }}:</span
 			>{{ formattedTime.minutes }}:{{ formattedTime.seconds }}
 		</p>
@@ -32,12 +37,12 @@ import moment from "moment";
 export default defineComponent({
 	name: "Countdown",
 	props: {
-		initialSeconds: {
-			type: Number,
-			required: true,
-		},
 		isInitialized: {
 			type: Boolean,
+			required: true,
+		},
+		endTimestamp: {
+			type: Number,
 			required: true,
 		},
 	},
@@ -57,39 +62,32 @@ export default defineComponent({
 			handle: null as number | null,
 			hasShakenHalfTime: false,
 			hasShakenLittleTime: false,
-			startMoment: null as null | moment.Moment,
+			initialSeconds: null as number | null,
 		};
 	},
 	methods: {
 		startTimer() {
-			this.seconds = this.initialSeconds;
+			this.timerCallback();
+			this.initialSeconds = this.seconds;
+
+			this.handle = setInterval(this.timerCallback, 1000);
+		},
+		timerCallback() {
+			const now = moment();
+			this.seconds = this.endMoment.diff(now, "seconds");
+
 			if (this.seconds <= 0) {
 				this.stopTimer();
 				this.$emit("timeUp");
 			}
-			if (this.startMoment === null) {
-				this.startMoment = moment();
+			if (this.littleTimeRemaining) {
+				this.shake = true;
 			}
-
-			this.handle = setInterval(() => {
-				const now = moment();
-				const end = moment(this.startMoment).add(this.initialSeconds, "seconds");
-
-				this.seconds = end.diff(now, "seconds");
-
-				if (this.seconds <= 0) {
-					this.stopTimer();
-					this.$emit("timeUp");
-				}
-				if (this.littleTimeRemaining) {
-					this.shake = true;
-				}
-			}, 1000);
 		},
 		stopTimer() {
 			clearInterval(this.handle as number);
 			this.handle = null;
-			this.startMoment = null;
+			this.initialSeconds = null;
 		},
 		onShakeEnd() {
 			if (!this.hasShakenHalfTime) {
@@ -100,7 +98,11 @@ export default defineComponent({
 		},
 	},
 	computed: {
-		formattedTime(): { hours: string; minutes: string; seconds: string } {
+		formattedTime(): {
+			hours: string;
+			minutes: string;
+			seconds: string;
+		} {
 			const hours = Math.floor(this.seconds / 3600);
 			const minutes = Math.floor((this.seconds - hours * 3600) / 60);
 			const seconds = this.seconds - minutes * 60 - hours * 3600;
@@ -119,6 +121,9 @@ export default defineComponent({
 		},
 		isInitialTimeValid(): boolean {
 			return !isNaN(this.initialSeconds);
+		},
+		endMoment() {
+			return moment(new Date(this.endTimestamp));
 		},
 	},
 });
