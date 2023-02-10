@@ -36,7 +36,7 @@ export const it = {
 		access_as_student: "Entra come studente",
 	},
 	enrollment: {
-		enrollment: "Iscrizioni",
+		enrollment: "Iscrizione",
 		do_you_want_to_enroll: "Vuoi iscriverti a",
 		enroll: "Iscriviti",
 	},
@@ -1256,6 +1256,7 @@ export const it = {
 	},
 	server_messages: {
 		error: {
+			NOT_ENROLLED: "Non sei iscritto a questo corso. Iscriviti per continuare.",
 			EVENT_CLOSED: "L'esame è terminato.",
 			NOT_IN_EVENT_ALLOWED_LIST:
 				"Non sei nella lista di studenti ammessi a questo esame. Se ritieni che si tratti di un errore, contatta il docente.",

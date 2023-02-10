@@ -1,9 +1,13 @@
 <template>
 	<div>
-		<Dialog @yes="onEnroll()" :dismissible="false" @no="onCancel()" :showDialog="true" :loading="enrolling"
-			:yesText="$t('enrollment.enroll')" :noText="$t('dialog.default_cancel_text')">
+		<Dialog @yes="onEnroll()" :disableOk="enrolling" :dismissible="false" @no="onCancel()" :showDialog="true"
+			:loading="enrolling" :yesText="enrolling ? $t('misc.wait') : $t('enrollment.enroll')"
+			:noText="$t('dialog.default_cancel_text')">
 			<template v-slot:title>{{ $t('enrollment.enrollment') }}</template>
-			<template v-slot:body>{{ $t('enrollment.do_you_want_to_enroll') }} {{ currentCourse.name }}?</template>
+			<template v-slot:body>{{ $t('enrollment.do_you_want_to_enroll') }} <span v-if="currentCourse.name">
+					{{ currentCourse.name }}
+				</span>
+				<span style="filter: blur(5px)" class="opacity-50" v-else>course name</span>?</template>
 		</Dialog>
 	</div>
 </template>
