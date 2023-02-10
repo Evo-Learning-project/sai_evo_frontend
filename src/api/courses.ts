@@ -15,6 +15,15 @@ export async function getCourses(): Promise<Course[]> {
 	return response?.data ?? [];
 }
 
+export async function manageSelfCourseEnrollment(
+	courseId: string,
+	remove: boolean,
+): Promise<void> {
+	const method = remove ? "delete" : "put";
+	const response = await axios[method](`/courses/${courseId}/my_enrollment/`);
+	return response.data;
+}
+
 export async function setCourseBookmark(
 	courseId: string,
 	remove: boolean,

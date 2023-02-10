@@ -46,6 +46,7 @@ import {
 	getUsers,
 	lockEvent,
 	lockExercise,
+	manageSelfCourseEnrollment,
 	moveEventParticipationCurrentSlotCursor,
 	PaginatedData,
 	partialUpdateEvent,
@@ -277,6 +278,12 @@ export const useMainStore = defineStore("main", {
 		},
 	},
 	actions: {
+		async selfEnrollInCourse({ courseId }: CourseIdActionPayload) {
+			await manageSelfCourseEnrollment(courseId, false);
+		},
+		async selfUnenrollInCourse({ courseId }: CourseIdActionPayload) {
+			await manageSelfCourseEnrollment(courseId, true);
+		},
 		async isTopLevelNode({
 			courseId,
 			node,

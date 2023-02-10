@@ -35,6 +35,11 @@ export const it = {
 		go_to_course: "Vai al corso",
 		access_as_student: "Entra come studente",
 	},
+	enrollment: {
+		enrollment: "Iscrizioni",
+		do_you_want_to_enroll: "Vuoi iscriverti a",
+		enroll: "Iscriviti",
+	},
 	filter_results: {
 		title: "Cerca esercizi",
 		filter_by_tag: "Filtra per tag",

@@ -61,7 +61,8 @@ axios.interceptors.response.use(
 			logOut(false, router.currentRoute.value.fullPath);
 		} else if (
 			error?.response?.status === 403 &&
-			error.response.data?.detail === "NOT_ENROLLED"
+			error.response.data?.detail === "NOT_ENROLLED" &&
+			!("redirect" in router.currentRoute.value.query ?? {})
 		) {
 			redirectToCourseEnrollment(router.currentRoute.value.fullPath);
 		}
