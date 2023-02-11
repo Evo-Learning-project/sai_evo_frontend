@@ -164,8 +164,8 @@
 			<EventStateEditor
 				class="pb-10"
 				:modelValue="modelValue"
-				@update:modelValue="onChange('state', $event)"
-			></EventStateEditor>
+				@update:modelValue="onStateUpdate($event)"
+			/>
 		</div>
 
 		<Dialog
@@ -183,6 +183,31 @@
 				{{ $t("event_editor.editing_open_event_body") }}
 			</template>
 		</Dialog>
+
+		<Dialog
+			:showDialog="showBlockingDialog"
+			@no="resolveBlockingDialog(false)"
+			@yes="showAnnouncementEditor = true"
+			:large="showAnnouncementEditor"
+			:showActions="!showAnnouncementEditor"
+			:loading="publishingAnnouncement"
+		>
+			<template v-slot:title>
+				<div v-if="!showAnnouncementEditor">{{ $t("event_editor.publish_exam") }}</div>
+			</template>
+			<template v-slot:body>
+				<AnnouncementNodeEditor
+					v-if="showAnnouncementEditor"
+					:modelValue="announcement"
+					@patchNode="onAnnouncementNodeChange($event.key, $event.value, !!$event.save)"
+					@save="resolveBlockingDialog(true)"
+					@closeEditor="resolveBlockingDialog(false)"
+					:isExistingNode="false"
+					:publishOnly="true"
+				/>
+				<p v-else>{{ $t("event_editor.publish_announcement_prompt") }}</p>
+			</template>
+		</Dialog>
 	</div>
 	<!-- <collapsible-panel-group class="hidden"></collapsible-panel-group> -->
 </template>
@@ -194,13 +219,21 @@ import EventTemplateEditor from "@/components/teacher/EventTemplateEditor/EventT
 import CloudSaveStatus from "@/components/ui/CloudSaveStatus.vue";
 import { defineComponent, provide } from "@vue/runtime-core";
 import {
+	AnnouncementNode,
 	Event,
 	EventState,
 	EventTemplate,
 	EventTemplateRuleType,
 	Exercise,
+	getBlankAnnouncementNode,
 } from "@/models";
-import { courseIdMixin, eventIdMixin, loadingMixin, savingMixin } from "@/mixins";
+import {
+	blockingDialogMixin,
+	courseIdMixin,
+	eventIdMixin,
+	loadingMixin,
+	savingMixin,
+} from "@/mixins";
 import Dialog from "@/components/ui/Dialog.vue";
 import { getTranslatedString as _ } from "@/i18n";
 
@@ -226,6 +259,8 @@ import {
 import { mapStores } from "pinia";
 import { useMainStore } from "@/stores/mainStore";
 import { useMetaStore } from "@/stores/metaStore";
+import AnnouncementNodeEditor from "@/components/course_tree/editors/AnnouncementNodeEditor.vue";
+import { examPublishedAnnouncementTemplate } from "@/assets/announcements";
 
 export default defineComponent({
 	setup() {
@@ -249,8 +284,9 @@ export default defineComponent({
 		Btn,
 		EventInstancesPreview,
 		NumberInput,
+		AnnouncementNodeEditor,
 	},
-	mixins: [courseIdMixin, eventIdMixin, loadingMixin, savingMixin],
+	mixins: [courseIdMixin, eventIdMixin, loadingMixin, savingMixin, blockingDialogMixin],
 	props: [],
 	beforeRouteLeave() {
 		console.log("route", this.modelValue);
@@ -307,6 +343,9 @@ export default defineComponent({
 			dirtyMaxScore: null as null | number,
 			lockPollingHandle: null as null | number,
 			heartbeatHandle: null as null | number,
+			announcement: getBlankAnnouncementNode(),
+			showAnnouncementEditor: false,
+			publishingAnnouncement: false,
 		};
 	},
 	methods: {
@@ -408,6 +447,51 @@ export default defineComponent({
 				this.invalidateExamples();
 			}
 			await this.autoSaveManager?.onChange({ [field]: value });
+		},
+		async onAnnouncementNodeChange<K extends keyof AnnouncementNode>(
+			key: K,
+			value: AnnouncementNode[K],
+			save: boolean,
+		) {
+			// update local copy of unsaved changes
+			this.announcement = {
+				...this.announcement,
+				[key]: value,
+			};
+			if (save) {
+				this.resolveBlockingDialog?.(true);
+			}
+		},
+		async promptForPublishingAnnouncement() {
+			this.showAnnouncementEditor = false;
+
+			this.announcement = {
+				...getBlankAnnouncementNode(),
+				body: examPublishedAnnouncementTemplate(this.modelValue),
+				parent_id: await this.mainStore.getCourseRootId({ courseId: this.courseId }),
+			};
+
+			const choice = await this.getBlockingBinaryDialogChoice();
+			if (choice) {
+				this.publishingAnnouncement = true;
+				try {
+					await this.mainStore.createCourseTreeNode({
+						courseId: this.courseId,
+						node: this.announcement,
+					});
+				} catch (e) {
+					setErrorNotification;
+				} finally {
+					this.publishingAnnouncement = false;
+				}
+			}
+			this.showBlockingDialog = false;
+		},
+		async onStateUpdate(newState: EventState) {
+			if (newState === EventState.PLANNED) {
+				await this.promptForPublishingAnnouncement();
+			}
+			await this.onChange("state", newState);
 		},
 		async onBlur() {
 			await this.autoSaveManager?.flush();

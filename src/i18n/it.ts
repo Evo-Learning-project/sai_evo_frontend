@@ -685,6 +685,8 @@ export const it = {
 		student_email: "Email dello studente",
 		import_enrolled: "Importa iscritti",
 		allowed_students: "studenti ammessi",
+		publish_exam: "Pubblica esame",
+		publish_announcement_prompt: "Vuoi pubblicare un annuncio sul materiale del corso contenente il link all'esame?"
 	},
 	exercise_editor: {
 		confirm_delete_testcase_attachment: "Sei sicuro di voler eliminare l'allegato",
@@ -1061,6 +1063,11 @@ export const it = {
 		[CourseTreeNodeType.LessonNode]: "Lezione",
 		[CourseTreeNodeType.PollNode]: "Sondaggio",
 		[CourseTreeNodeType.AnnouncementNode]: "Annuncio",
+	},
+	announcements: {
+		exam_published_1: "È stato pubblicato l'esame",
+		exam_published_2: "L'esame inizierà il giorno",
+		exam_published_3: "Ecco il link per accedere all'esame"
 	},
 	breadcrumbs: {
 		course_list: "Corsi",

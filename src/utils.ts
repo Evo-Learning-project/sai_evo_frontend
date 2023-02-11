@@ -73,6 +73,13 @@ export const getFormattedTimestamp = (
 	);
 };
 
+export const getExamPermalink = (exam: Event) =>
+	window.location.origin +
+	router.resolve({
+		name: "ExamParticipationPreview",
+		params: { examId: exam.id },
+	}).fullPath;
+
 export const getErrorData = (e: any, useAsIs = false): ErrorMessage => {
 	if (isMaintenanceMode()) {
 		return {
