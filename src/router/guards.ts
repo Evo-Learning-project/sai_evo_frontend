@@ -1,3 +1,4 @@
+import { getMe } from "@/api";
 import { getCourse } from "@/api/courses";
 import {
 	NavigationGuardNext,
@@ -10,6 +11,11 @@ async function hasPrivilegesOverRouteCourse(route: RouteLocationNormalized) {
 	const course = await getCourse(params.courseId as string);
 	const privileges = course.privileges ?? [];
 	return privileges.length > 0;
+}
+
+async function isTeacher() {
+	const user = await getMe();
+	return user.is_teacher;
 }
 
 /**
@@ -33,28 +39,46 @@ const privilegedRouteWithRedirectBeforeGuard =
 		}
 	};
 
+/**
+ * Same as above but checks that the user is a teacher instead of checking
+ * course-specific permissions
+ */
+const teacherRouteWithRedirectBeforeGuard =
+	(privilegedRouteName: string, unprivilegedRouteName: string) =>
+	async (
+		to: RouteLocationNormalized,
+		_: RouteLocationNormalized,
+		next: NavigationGuardNext,
+	) => {
+		const params = to.params;
+		if (await isTeacher()) {
+			next({ name: privilegedRouteName, params });
+		} else {
+			next({ name: unprivilegedRouteName, params });
+		}
+	};
+
+export const courseListBeforeGuard = teacherRouteWithRedirectBeforeGuard(
+	"TeacherCourseList",
+	"StudentCourseList",
+);
+
 export const exerciseSolutionThreadBeforeGuard = privilegedRouteWithRedirectBeforeGuard(
 	"TeacherDetailExerciseSolutionThreads",
 	"ExerciseSolutionThread",
 );
-
 
 export const courseTreeNodeDetailBeforeGuard = privilegedRouteWithRedirectBeforeGuard(
 	"TeacherNodeDetail",
 	"StudentNodeDetail",
 );
 
-
-
 export const courseTreeBeforeGuard = privilegedRouteWithRedirectBeforeGuard(
 	"TeacherCourseTree",
 	"StudentCourseTree",
 );
 
-
-
 export const courseBeforeGuard = privilegedRouteWithRedirectBeforeGuard(
 	"TeacherCourseDashboard",
 	"StudentCourseDashboard",
 );
-

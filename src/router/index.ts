@@ -57,6 +57,7 @@ import {
 	courseTreeNodeDetailBeforeGuard,
 	courseTreeBeforeGuard,
 	courseBeforeGuard,
+	courseListBeforeGuard,
 } from "./guards";
 import { useMetaStore } from "@/stores/metaStore";
 
@@ -84,6 +85,12 @@ const routes: Array<RouteRecordRaw> = [
 		name: "ExerciseSolutionThreadDispatcher",
 		component: MainStudent,
 		beforeEnter: exerciseSolutionThreadBeforeGuard,
+	},
+	{
+		path: "/courses",
+		name: "CourseListDispatcher",
+		component: MainStudent,
+		beforeEnter: courseListBeforeGuard,
 	},
 	{
 		path: "/courses/:courseId",
