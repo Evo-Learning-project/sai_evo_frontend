@@ -101,7 +101,7 @@ export const articles: HelpCenterArticle[] = [
 
     <p class="mt-4">Il modello è composto da slot, e ogni slot stabilisce il criterio per scegliere un esercizio
     da assegnare ai partecipanti dell'esame. Questo ti consente sia di creare esami uguali per tutti,
-    che creare esami dove ogni studente
+    che di creare esami dove ogni studente
     vedrà esercizi diversi.</p>
 
     <p class="mt-4">
@@ -149,7 +149,7 @@ export const articles: HelpCenterArticle[] = [
       <span class="material-icons-outlined inline-icon text-primary">add</span> <span class="text-primary">${getTranslatedString(
 				"event_template_editor.add_rule",
 			)}</span>.</p>
-    <p>Clicca su <span class="material-icons inline-icon text-secondary">settings</span> <span class="text-secondary">${getTranslatedString(
+    <p>Clicca su <span class="material-icons inline-icon text-onSecondary">settings</span> <span class="text-onSecondary">${getTranslatedString(
 			"event_template_rule_editor.choose_exercise",
 		)}</span> nello slot creato.</p>
 
@@ -208,13 +208,22 @@ export const articles: HelpCenterArticle[] = [
       <p>Accedi alla pagina ${getSidebarOptionHtml(
 				"CoursePermissions",
 			)} del tuo corso.</p>
-      <p class="mt-4">Dalla tabella degli utenti, trova l'utente al quale vuoi aggiungere i permessi. Puoi aiutarti cliccando sull'icona <span class="icon-light material-icons-outlined inline-icon">filter_list</span> 
-      (accanto alle intestazioni nella tabella) per cercare
-      gli utenti per email o nome e cognome.</p>
+      <p class="mt-4">Nella casella di ricerca, digita il nome e cognome oppure l'indirizzo email
+      dell'utente a cui vuoi aggiungere i permessi.</p>
 
-      <p class="mt-4">Clicca sulla riga corrispondente all'utente al quale vuoi aggiungere i permessi.</p>
+      <p class="mt-4">Seleziona dai risultati l'utente al quale vuoi aggiungere i permessi.</p>
       <p>Clicca sugli switch <span class="mr-1.5 transform scale-150 ml-1 text-4xl inline-icon material-icons text-primary">toggle_on</span> relativi
       ai permessi che vuoi abilitare.</p>
+
+      <div class="banner banner-light mt-4">
+      <span class="material-icons-two-tone inline-icon" style="
+      filter: invert(80%) sepia(67%) saturate(1803%) hue-rotate(348deg)
+        brightness(80%) contrast(96%);
+    ">
+      tips_and_updates
+      </span>
+      <p class="">Se vuoi aggiungere i permessi a un utente ma non riesci a trovarlo, potrebbe non aver effettuato il primo login. Puoi comunque inserire
+      il suo indirizzo email e assegnargli i permessi, che verranno applicati appena l'utente effettuerà il primo accesso.</p></div>
       `,
 	},
 	{
