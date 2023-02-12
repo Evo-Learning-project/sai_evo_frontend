@@ -185,27 +185,37 @@
 		</Dialog>
 
 		<Dialog
+			class="transition-all duration-100 ease"
 			:showDialog="showBlockingDialog"
 			@no="resolveBlockingDialog(false)"
-			@yes="showAnnouncementEditor = true"
+			@yes="
+				bounceDialog = true;
+				showAnnouncementEditor = true;
+			"
 			:large="showAnnouncementEditor"
 			:showActions="!showAnnouncementEditor"
 			:loading="publishingAnnouncement"
+			:dialogBoxClasses="bounceDialog ? 'bounce-big-enter-active' : ''"
+			@animationend="bounceDialog = false"
 		>
 			<!-- <template v-slot:title>
 				<div v-if="!showAnnouncementEditor">{{ $t("event_editor.publish_exam") }}</div>
 			</template> -->
 			<template v-slot:body>
-				<AnnouncementNodeEditor
-					v-if="showAnnouncementEditor"
-					:modelValue="announcement"
-					@patchNode="onAnnouncementNodeChange($event.key, $event.value, !!$event.save)"
-					@save="resolveBlockingDialog(true)"
-					@closeEditor="resolveBlockingDialog(false)"
-					:isExistingNode="false"
-					:publishOnly="true"
-				/>
-				<p v-else>{{ $t("event_editor.publish_announcement_prompt") }}</p>
+				<transition name="fade-quick">
+					<AnnouncementNodeEditor
+						v-if="showAnnouncementEditor"
+						:modelValue="announcement"
+						@patchNode="onAnnouncementNodeChange($event.key, $event.value, !!$event.save)"
+						@save="resolveBlockingDialog(true)"
+						@closeEditor="resolveBlockingDialog(false)"
+						:isExistingNode="false"
+						:publishOnly="true"
+				/></transition>
+
+				<p v-if="!showAnnouncementEditor">
+					{{ $t("event_editor.publish_announcement_prompt") }}
+				</p>
 			</template>
 		</Dialog>
 	</div>
@@ -346,6 +356,7 @@ export default defineComponent({
 			announcement: getBlankAnnouncementNode(),
 			showAnnouncementEditor: false,
 			publishingAnnouncement: false,
+			bounceDialog: false,
 		};
 	},
 	methods: {
