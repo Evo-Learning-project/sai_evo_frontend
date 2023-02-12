@@ -18,11 +18,11 @@
 						:disabled="disabled || internalDisabled"
 						@change="onEditorChange($event)"
 						@ready="onEditorReady($event)"
-						v-show="!showBaseEditor && !forceBaseEditor"
+						v-if="!showBaseEditor && !forceBaseEditor"
 					/>
 					<textarea
 						class="py-3.5 px-3.5 bg-transparent rounded-t-sm outline-none"
-						v-if="showBaseEditor || forceBaseEditor"
+						v-else
 						rows="8"
 						@input="$emit('update:modelValue', $event.target.value)"
 						:value="modelValue"
@@ -39,7 +39,7 @@
 						:size="'xs'"
 						:variant="'primary-borderless'"
 						@click="showPreview = !showPreview"
-						v-show="containsLatex(modelValue)"
+						v-show="containsLatex"
 					>
 						<p class="text-sm" style="font-weight: 400; font-size: 11px">
 							{{ showPreview ? $t("misc.hide_preview") : $t("misc.show_preview") }}
@@ -64,17 +64,6 @@
 						<p class="text-sm" style="font-weight: 400; font-size: 11px">
 							{{ $t("misc.show_full_editor") }}
 						</p>
-					</Btn>
-					<Btn
-						v-else
-						@click="toggleBaseEditor()"
-						:size="'xs'"
-						class="ml-auto my-auto -mt-7"
-						:tooltip="$t('misc.show_base_editor')"
-						:variant="'primary-borderless'"
-						:outline="true"
-					>
-						<span class="material-icons">html</span>
 					</Btn>
 				</div>
 			</div>
@@ -134,7 +123,7 @@
 				<title>{{ $t("misc.insert_latex") }}</title>
 				<path
 					class="ql-stroke"
-					style="stroke-width: 0.5 !important; fill: unset"
+					style="stroke-width: 0.5 !important; fill: unset; stroke: #444"
 					d="M12.42,5.29C11.32,5.19 10.35,6 10.25,7.11L10,10H12.82V12H9.82L9.38,17.07C9.18,19.27 7.24,20.9 5.04,20.7C3.79,20.59 2.66,19.9 2,18.83L3.5,17.33C3.83,18.38 4.96,18.97 6,18.63C6.78,18.39 7.33,17.7 7.4,16.89L7.82,12H4.82V10H8L8.27,6.93C8.46,4.73 10.39,3.1 12.6,3.28C13.86,3.39 15,4.09 15.66,5.17L14.16,6.67C13.91,5.9 13.23,5.36 12.42,5.29M22,13.65L20.59,12.24L17.76,15.07L14.93,12.24L13.5,13.65L16.35,16.5L13.5,19.31L14.93,20.72L17.76,17.89L20.59,20.72L22,19.31L19.17,16.5L22,13.65Z"
 				/>
 			</svg>
@@ -143,16 +132,23 @@
 			<svg
 				xmlns="http://www.w3.org/2000/svg"
 				enable-background="new 0 0 24 24"
-				height="24px"
+				height="35px"
 				viewBox="0 0 24 24"
-				width="24px"
-				fill="#000000"
+				width="35px"
+				style="
+					fill: currentColor;
+					margin-bottom: -2px;
+					margin-left: -10px;
+					stroke-width: 0.5 !important;
+				"
 			>
 				<title>{{ $t("misc.show_base_editor") }}</title>
 
-				<g><rect fill="none" height="28" width="28" /></g>
+				<g><rect fill="none" height="35" width="35" /></g>
 				<g>
 					<path
+						class="ql-stroke"
+						style="stroke-width: 0.5 !important; fill: unset; stroke: #444"
 						d="M3.5,9H5v6H3.5v-2.5h-2V15H0V9h1.5v2h2V9z M17.5,9H13c-0.55,0-1,0.45-1,1v5h1.5v-4.5h1V14H16v-3.51h1V15h1.5v-5 C18.5,9.45,18.05,9,17.5,9z M11,9H6v1.5h1.75V15h1.5v-4.5H11V9z M24,15v-1.5h-2.5V9H20v6H24z"
 					/>
 				</g>
@@ -227,6 +223,9 @@ export default defineComponent({
 				this.triggerTexHandle = setTimeout(() => this.triggerTexRender(), 100);
 			}
 		},
+		showBaseEditor(newVal) {
+			this.$nextTick(this.addCustomButtons);
+		},
 	},
 	mounted() {
 		// prevent auto-focusing of quill editor
@@ -279,7 +278,6 @@ export default defineComponent({
 			}
 		},
 		stripHtmlFromLaTexBlocks,
-		containsLatex,
 		startDragging() {
 			document.addEventListener("mousemove", this.handleDragging);
 		},
@@ -320,6 +318,9 @@ export default defineComponent({
 		},
 		dividerStyle() {
 			return { left: this.previewPanelWidth + "%" };
+		},
+		containsLatex() {
+			return containsLatex(this.modelValue);
 		},
 		editorOptions() {
 			return {
