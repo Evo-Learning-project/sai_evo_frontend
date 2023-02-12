@@ -3,7 +3,11 @@
 		<LinearProgress v-if="loading" class="absolute top-0 rounded-t-sm" />
 		<!-- floating label -->
 		<label class="absolute top-2 left-1.5 origin-0 fixed-label"><slot></slot></label>
-		<DropdownMenu :expanded="expanded" @toggleExpanded="expanded = !expanded">
+		<DropdownMenu
+			:expanded="expanded"
+			@toggleExpanded="expanded = !expanded"
+			class="w-full"
+		>
 			<template v-slot:activator>
 				<div
 					v-wave
@@ -14,12 +18,12 @@
 						rounded-t-sm
 						border-b-2
 						flex
-						space-x-2
 						overflow-hidden
 						items-top
 						py-2
 						px-3
 						light-input
+						w-full
 						relative
 						z-10
 						bg-light
@@ -29,10 +33,15 @@
 						transition-border
 					"
 				>
-					<MultiIcon class="w-6" :icons="selectedOption.icons"></MultiIcon>
+					<MultiIcon class="w-6 mr-2" :icons="selectedOption.icons"></MultiIcon>
 					<div>
 						<p v-html="selectedOption.content"></p>
 					</div>
+					<span
+						class="material-icons ml-auto text-muted"
+						style="font-size: 26px !important"
+						>arrow_drop_down</span
+					>
 				</div>
 			</template>
 			<div class="-my-1.5 w-full">
