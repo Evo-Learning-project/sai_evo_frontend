@@ -192,9 +192,9 @@
 			:showActions="!showAnnouncementEditor"
 			:loading="publishingAnnouncement"
 		>
-			<template v-slot:title>
+			<!-- <template v-slot:title>
 				<div v-if="!showAnnouncementEditor">{{ $t("event_editor.publish_exam") }}</div>
-			</template>
+			</template> -->
 			<template v-slot:body>
 				<AnnouncementNodeEditor
 					v-if="showAnnouncementEditor"
