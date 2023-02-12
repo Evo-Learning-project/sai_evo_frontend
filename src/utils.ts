@@ -161,6 +161,10 @@ export function forceFileDownload(response: { data: BlobPart }, title: string) {
 	link.click();
 }
 
+const LATEX_REGEX = /(\${1,2})((?:\\.|[\s\S])*)\1/g; ///(\${1,2})[^]*?[^\\]\1|[^\$]+/g;
+
+export const containsLatex = (html: string) => LATEX_REGEX.test(html);
+
 export function stripHtmlFromLaTexBlocks(html: string) {
 	/**
 		Returns the given string containing html where all blocks
@@ -169,7 +173,6 @@ export function stripHtmlFromLaTexBlocks(html: string) {
 		editor adding html to them, which messes with MathJax
 	 */
 	// eslint-disable-next-line no-useless-escape
-	const LATEX_REGEX = /(\${1,2})((?:\\.|[\s\S])*)\1/g; ///(\${1,2})[^]*?[^\\]\1|[^\$]+/g;
 
 	return html.replace(LATEX_REGEX, val => {
 		const textContent = val

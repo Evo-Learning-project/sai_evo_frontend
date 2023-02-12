@@ -18,11 +18,11 @@
 						:disabled="disabled || internalDisabled"
 						@change="onEditorChange($event)"
 						@ready="onEditorReady($event)"
-						v-if="!showBaseEditor && !forceBaseEditor"
+						v-show="!showBaseEditor && !forceBaseEditor"
 					/>
 					<textarea
 						class="py-3.5 px-3.5 bg-transparent rounded-t-sm outline-none"
-						v-else
+						v-if="showBaseEditor || forceBaseEditor"
 						rows="8"
 						@input="$emit('update:modelValue', $event.target.value)"
 						:value="modelValue"
@@ -39,6 +39,7 @@
 						:size="'xs'"
 						:variant="'primary-borderless'"
 						@click="showPreview = !showPreview"
+						v-show="containsLatex(modelValue)"
 					>
 						<p class="text-sm" style="font-weight: 400; font-size: 11px">
 							{{ showPreview ? $t("misc.hide_preview") : $t("misc.show_preview") }}
@@ -55,17 +56,25 @@
 					</p>
 					<Btn
 						@click="toggleBaseEditor()"
+						v-if="showBaseEditor"
 						:size="'xs'"
-						:class="[showBaseEditor ? 'ml-2' : 'ml-auto my-auto -mt-6']"
+						class="ml-2"
 						:variant="'primary-borderless'"
 					>
 						<p class="text-sm" style="font-weight: 400; font-size: 11px">
-							{{
-								showBaseEditor
-									? $t("misc.show_full_editor")
-									: $t("misc.having_troubles_with_editor")
-							}}
+							{{ $t("misc.show_full_editor") }}
 						</p>
+					</Btn>
+					<Btn
+						v-else
+						@click="toggleBaseEditor()"
+						:size="'xs'"
+						class="ml-auto my-auto -mt-7"
+						:tooltip="$t('misc.show_base_editor')"
+						:variant="'primary-borderless'"
+						:outline="true"
+					>
+						<span class="material-icons">html</span>
 					</Btn>
 				</div>
 			</div>
@@ -130,6 +139,25 @@
 				/>
 			</svg>
 		</div>
+		<div class="hidden" :id="id + 'html-button-src'">
+			<svg
+				xmlns="http://www.w3.org/2000/svg"
+				enable-background="new 0 0 24 24"
+				height="24px"
+				viewBox="0 0 24 24"
+				width="24px"
+				fill="#000000"
+			>
+				<title>{{ $t("misc.show_base_editor") }}</title>
+
+				<g><rect fill="none" height="28" width="28" /></g>
+				<g>
+					<path
+						d="M3.5,9H5v6H3.5v-2.5h-2V15H0V9h1.5v2h2V9z M17.5,9H13c-0.55,0-1,0.45-1,1v5h1.5v-4.5h1V14H16v-3.51h1V15h1.5v-5 C18.5,9.45,18.05,9,17.5,9z M11,9H6v1.5h1.75V15h1.5v-4.5H11V9z M24,15v-1.5h-2.5V9H20v6H24z"
+					/>
+				</g>
+			</svg>
+		</div>
 	</div>
 </template>
 
@@ -151,7 +179,7 @@ Quill.register("modules/imageDrop", ImageDrop);
 Quill.register("modules/imageResize", ImageResize);
 
 import Btn from "./Btn.vue";
-import { stripHtmlFromLaTexBlocks } from "@/utils";
+import { containsLatex, stripHtmlFromLaTexBlocks } from "@/utils";
 export default defineComponent({
 	name: "TextEditor",
 	props: {
@@ -203,19 +231,7 @@ export default defineComponent({
 	mounted() {
 		// prevent auto-focusing of quill editor
 		this.$nextTick(() => (this.internalDisabled = false));
-
-		// add custom LaTeX button
-		const latexButton = document.querySelector("#" + this.id + " .ql-latex");
-		if (latexButton) {
-			// when clicked, the LaTeX button inserts two $'s and positions the cursor between them'
-			latexButton.addEventListener("click", () => {
-				const selection = this.instance.getSelection(true);
-				this.instance.insertText(selection.index, "$$");
-				this.instance.setSelection(selection.index + 1, 0);
-			});
-			latexButton.innerHTML = document.getElementById(`${this.id}latex-button-src`)
-				?.innerHTML as string;
-		}
+		this.addCustomButtons();
 	},
 	data() {
 		return {
@@ -238,7 +254,32 @@ export default defineComponent({
 				this.previewPanelWidth = percentage;
 			}
 		},
+		addCustomButtons() {
+			// add custom LaTeX button
+			const latexButton = document.querySelector("#" + this.id + " .ql-latex");
+			if (latexButton) {
+				// when clicked, the LaTeX button inserts two $'s and positions the cursor between them
+				latexButton.addEventListener("click", () => {
+					const selection = this.instance.getSelection(true);
+					this.instance.insertText(selection.index, "$$");
+					this.instance.setSelection(selection.index + 1, 0);
+				});
+				latexButton.innerHTML = document.getElementById(`${this.id}latex-button-src`)
+					?.innerHTML as string;
+			}
+			// add custom html button
+			const htmlButton = document.querySelector("#" + this.id + " .ql-html");
+			if (htmlButton) {
+				// when clicked, the html button toggles between full & base editor
+				htmlButton.addEventListener("click", () => {
+					this.toggleBaseEditor();
+				});
+				htmlButton.innerHTML = document.getElementById(`${this.id}html-button-src`)
+					?.innerHTML as string;
+			}
+		},
 		stripHtmlFromLaTexBlocks,
+		containsLatex,
 		startDragging() {
 			document.addEventListener("mousemove", this.handleDragging);
 		},
@@ -301,6 +342,7 @@ export default defineComponent({
 						["image"], // "video"
 						["clean"],
 						["latex"],
+						["html"],
 					],
 					imageResize: {
 						modules: ["Resize", "DisplaySize"],

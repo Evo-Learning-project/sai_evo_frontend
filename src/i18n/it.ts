@@ -226,6 +226,7 @@ export const it = {
 		donate_now: "Dona ora",
 	},
 	misc: {
+		show_base_editor: "Editor base",
 		insert_latex: "Inserisci formula LaTeX",
 		updated_on: "Aggiornato",
 		file_too_big: "Il file che hai scelto è troppo grande",
