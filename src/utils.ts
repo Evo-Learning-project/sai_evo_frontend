@@ -97,7 +97,11 @@ export const getErrorData = (e: any, useAsIs = false): ErrorMessage => {
 	if (e.response) {
 		return {
 			icon: "error_outline",
-			title: _("errors." + e.response.status),
+			title:
+				!e.response?.data?.detail ||
+				DEFAULT_SERVER_MESSAGES.includes(e.response?.data?.detail)
+					? _("errors." + e.response.status)
+					: _("server_messages.error." + e.response.data.detail),
 			content: e.response?.data?.detail,
 		};
 	} else if (e.request) {
@@ -321,6 +325,12 @@ export const getMaxUploadFileSizeBytes = () =>
 export const isDemoMode = () => JSON.parse(process.env.VUE_APP_DEMO_MODE ?? "false");
 export const isMaintenanceMode = () =>
 	JSON.parse(process.env.VUE_APP_MAINTENANCE_MODE ?? "false");
+
+export const DEFAULT_SERVER_MESSAGES = [
+	"You do not have permission to perform this action.",
+	"Not found.",
+	"Invalid token header. No credentials provided.",
+];
 
 export function getDefaultThumbnail(mime_type: string) {
 	const ARCHIVE_TYPES = [

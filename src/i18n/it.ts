@@ -38,7 +38,9 @@ export const it = {
 	enrollment: {
 		enrollment: "Iscrizione",
 		do_you_want_to_enroll: "Vuoi iscriverti a",
+		do_you_want_to_unenroll: "Vuoi disiscriverti da",
 		enroll: "Iscriviti",
+		unenroll: "Disiscriviti"
 	},
 	filter_results: {
 		title: "Cerca esercizi",
@@ -1258,6 +1260,7 @@ export const it = {
 		error: {
 			NOT_ENROLLED: "Non sei iscritto a questo corso. Iscriviti per continuare.",
 			EVENT_CLOSED: "L'esame è terminato.",
+			ALREADY_ENROLLED: "Sei già iscritto a questo corso.",
 			NOT_IN_EVENT_ALLOWED_LIST:
 				"Non sei nella lista di studenti ammessi a questo esame. Se ritieni che si tratti di un errore, contatta il docente.",
 		},

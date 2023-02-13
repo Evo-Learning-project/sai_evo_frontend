@@ -19,14 +19,9 @@
 <script lang="ts">
 import { defineComponent, PropType } from "@vue/runtime-core";
 import Btn from "@/components/ui/Btn.vue";
-import { isMaintenanceMode } from "@/utils";
+import { isMaintenanceMode, DEFAULT_SERVER_MESSAGES } from "@/utils";
 import { ErrorMessage } from "@/interfaces";
 
-const DEFAULT_SERVER_MESSAGES = [
-	"You do not have permission to perform this action.",
-	"Not found.",
-	"Invalid token header. No credentials provided.",
-];
 
 export default defineComponent({
 	name: "ErrorView",

@@ -280,9 +280,21 @@ export const useMainStore = defineStore("main", {
 	actions: {
 		async selfEnrollInCourse({ courseId }: CourseIdActionPayload) {
 			await manageSelfCourseEnrollment(courseId, false);
+			const course = this.getCourseById(courseId)
+			if(course) {
+				course.enrolled = true
+			} else {
+				throw new Error("selfEnrollInCourse couldn't find course with id " + courseId)
+			}
 		},
 		async selfUnenrollInCourse({ courseId }: CourseIdActionPayload) {
 			await manageSelfCourseEnrollment(courseId, true);
+			const course = this.getCourseById(courseId)
+			if(course) {
+				course.enrolled = false
+			} else {
+				throw new Error("selfUnenrollInCourse couldn't find course with id " + courseId)
+			}
 		},
 		async isTopLevelNode({
 			courseId,
