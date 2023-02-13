@@ -240,9 +240,8 @@ export default defineComponent({
 			try {
 				const content = getCourseExamParticipationsReportAsCsv(
 					this.participations,
-					this.mainStore.paginatedUsers.data,
-					// TODO use filtered exams
-					this.mainStore.events,
+					this.activeUsersForSelectedExams,
+					this.selectedExams,
 				).replace(/(\\r)?\\n/g, "\n");
 				forceFileDownload(
 					{
