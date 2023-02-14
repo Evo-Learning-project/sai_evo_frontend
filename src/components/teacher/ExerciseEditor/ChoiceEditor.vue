@@ -152,6 +152,19 @@ export default defineComponent({
 			default: false,
 		},
 	},
+	watch: {
+		correctnessIsBoolean(newVal) {
+			// when the exercise is set to be all_or_nothing and this prop becomes true,
+			// we need to make sure that incorrect choices have a `correctness` value
+			// of -1. to ensure this, we instantly emit an update if the choice
+			// `correctness` is 0. if we didn't do this, then by all_or_nothing logic the
+			// choice would actually be considered true because selecting it doesn't
+			// decrease the score obtained
+			if (newVal && this.modelValue.correctness === 0) {
+				this.onUpdate("correctness", -1);
+			}
+		},
+	},
 	validations() {
 		return {
 			choice: exerciseChoiceValidation,

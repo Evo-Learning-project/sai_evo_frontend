@@ -28,6 +28,7 @@
 						'md:max-w-4xl md:min-w-md': !fullWidth && !large,
 						'w-4/5 md:w-3/4 md:mx-4': large,
 						'w-full md:w-full md:mx-4': fullWidth,
+						[dialogBoxClasses]: true,
 					}"
 					:style="fullHeight ? 'height: calc(100vh - 10px)' : ''"
 				>
@@ -196,6 +197,10 @@ export default defineComponent({
 		},
 		confirmOnly: Boolean,
 		disableOk: Boolean,
+		dialogBoxClasses: {
+			type: String,
+			default: "",
+		},
 	},
 	components: {
 		Btn,

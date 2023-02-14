@@ -22,7 +22,7 @@
 				<p class="text-muted">{{ $t("course_tree.draft") }}</p>
 				<Btn @click="onPublish()">{{ $t("course_tree.publish_announcement") }}</Btn>
 			</div>
-			<div v-if="!autoSave" class="ml-2">
+			<div v-if="!publishOnly" class="ml-2">
 				<Btn
 					:outline="modelValue.state === AnnouncementNodeState.DRAFT"
 					:disabled="blockingSaving"
@@ -67,7 +67,7 @@
 			</div> -->
 		</div>
 		<!-- body -->
-		<div>
+		<div class="mb-8">
 			<TextEditor
 				:modelValue="modelValue.body"
 				:fixedLabel="true"
@@ -78,7 +78,7 @@
 			</TextEditor>
 		</div>
 		<!-- attachments -->
-		<div class="mt-8">
+		<div v-if="allowChildren">
 			<h3 class="mb-4">{{ $t("course_tree.announcement_attachments") }}</h3>
 			<div class="grid lg:grid-cols-2 lg:gap-6 gap-4 grid-cols-1">
 				<div v-for="fileNode in fileChildren" :key="fileNode.id">
@@ -103,7 +103,6 @@
 
 <script lang="ts">
 import { getCourseTopicNodes } from "@/api";
-import { AutoSaveManager } from "@/autoSave";
 import Btn from "@/components/ui/Btn.vue";
 import CloudSaveStatus from "@/components/ui/CloudSaveStatus.vue";
 import Dropdown from "@/components/ui/Dropdown.vue";
@@ -137,6 +136,12 @@ export default defineComponent({
 			type: Object as PropType<AnnouncementNode>,
 			required: true,
 		},
+		// whether to only show the publish button or also
+		// the save / save as draft one
+		publishOnly: {
+			type: Boolean,
+			default: false,
+		},
 		...nodeEditorProps,
 	},
 	emits: { ...nodeEditorEmits },
@@ -155,6 +160,9 @@ export default defineComponent({
 		await this.mainStore.getCourseRootId({ courseId: this.courseId });
 		await Promise.all([
 			(async () => {
+				if (!this.allowChildren) {
+					return;
+				}
 				this.loadingChildren = true;
 				try {
 					await this.mainStore.getCourseTreeNodeChildren({
@@ -247,6 +255,9 @@ export default defineComponent({
 			return (
 				this.mainStore.paginatedChildrenByNodeId[this.modelValue.id]?.data ?? []
 			).filter(c => c.resourcetype === CourseTreeNodeType.FileNode) as IFileNode[];
+		},
+		allowChildren() {
+			return this.isExistingNode;
 		},
 		attachmentProxy: {
 			get() {

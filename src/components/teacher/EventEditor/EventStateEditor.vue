@@ -86,7 +86,7 @@ import { icons as eventStateIcons } from "@/assets/eventStateIcons";
 import { getTranslatedString as _ } from "@/i18n";
 //import Card from "@/components/ui/Card.vue";
 import Btn from "@/components/ui/Btn.vue";
-import { getFormattedTimestamp } from "@/utils";
+import { getExamPermalink, getFormattedTimestamp } from "@/utils";
 import Timestamp from "@/components/ui/Timestamp.vue";
 import CopyToClipboard from "@/components/ui/CopyToClipboard.vue";
 import { loadingMixin } from "@/mixins";
@@ -172,13 +172,7 @@ export default defineComponent({
 			return getFormattedTimestamp(this.modelValue.begin_timestamp ?? "");
 		},
 		permalink(): string {
-			return (
-				window.location.origin +
-				this.$router.resolve({
-					name: "ExamParticipationPreview",
-					params: { examId: this.modelValue.id },
-				}).fullPath
-			);
+			return getExamPermalink(this.modelValue);
 		},
 		relevantErrors() {
 			// remove the errors that are relative to event template rules as those

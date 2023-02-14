@@ -45,11 +45,11 @@
 			<div class="flex items-start mt-1 space-x-10">
 				<CloudSaveStatus :saving="saving" :hadError="savingError"></CloudSaveStatus>
 				<Countdown
-					v-show="remainingTime !== null"
+					v-show="currentEventParticipation.time_limit_timestamp !== null && runTimer"
 					@timeUp="onTimeUp()"
-					:initialSeconds="remainingTime ?? 0"
+					:endTimestamp="currentEventParticipation.time_limit_timestamp"
 					:isInitialized="runTimer"
-				></Countdown>
+				/>
 			</div>
 		</teleport>
 
@@ -269,12 +269,7 @@ export default defineComponent({
 		}
 
 		// set up timer, if there is a time limit
-		const remainingTime = getParticipationRemainingTime(
-			this.currentEventParticipation,
-			this.currentEventParticipation.event,
-		);
-		if (remainingTime !== null) {
-			this.remainingTime = remainingTime;
+		if (typeof this.currentEventParticipation.time_limit_timestamp === "number") {
 			this.runTimer = true;
 		}
 
@@ -306,6 +301,7 @@ export default defineComponent({
 			showTimeUpBackdrop: false,
 			remainingTime: null as number | null,
 			runTimer: false,
+			detectedTimerMisfire: false,
 			goingForward: false,
 			goingBack: false,
 			turningIn: false,
@@ -415,6 +411,26 @@ export default defineComponent({
 			this.goingBack = false;
 		},
 		async onTimeUp() {
+			const remainingTime = getParticipationRemainingTime(
+				this.currentEventParticipation,
+				this.currentEventParticipation.event,
+			);
+			if (typeof remainingTime === "number" && remainingTime > 0) {
+				// sanity check that the timer isn't mis-firing
+				this.runTimer = false;
+				this.remainingTime = remainingTime;
+				this.$nextTick(() => (this.runTimer = true));
+				if (!this.detectedTimerMisfire) {
+					this.detectedTimerMisfire = true;
+					throw new Error(
+						"onTimeUp called with remaining time = " +
+							remainingTime +
+							", participation " +
+							this.currentEventParticipation.id,
+					);
+				}
+				return;
+			}
 			this.showTimeUpBackdrop = true;
 			setTimeout(async () => await this.onTurnIn(), 500);
 		},

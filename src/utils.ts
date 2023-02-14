@@ -1,7 +1,7 @@
 /* eslint-disable no-var */
 declare const Buffer;
 
-import { EventParticipation, Event, Exercise } from "@/models";
+import { EventParticipation, Event, Exercise, EventTimeLimitRule } from "@/models";
 import { getTranslatedString } from "./i18n/index";
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import debounce from "lodash/debounce";
@@ -70,7 +70,7 @@ export const getFormattedTimestamp = (
 	dateOnly = false,
 	reduced = false,
 ): string => {
-	moment().locale("it");
+	moment().locale("it"); // TODO get user locale
 	return (
 		moment(timestamp)
 			//.calendar()
@@ -81,6 +81,13 @@ export const getFormattedTimestamp = (
 			)
 	);
 };
+
+export const getExamPermalink = (exam: Event) =>
+	window.location.origin +
+	router.resolve({
+		name: "ExamParticipationPreview",
+		params: { examId: exam.id },
+	}).fullPath;
 
 export const getErrorData = (e: any, useAsIs = false): ErrorMessage => {
 	if (isMaintenanceMode()) {
@@ -167,6 +174,8 @@ export function forceFileDownload(response: { data: BlobPart }, title: string) {
 	link.click();
 }
 
+export const containsLatex = (html: string) => /(\${1,2})((?:\\.|[\s\S])*)\1/.test(html);
+
 export function stripHtmlFromLaTexBlocks(html: string) {
 	/**
 		Returns the given string containing html where all blocks
@@ -175,7 +184,7 @@ export function stripHtmlFromLaTexBlocks(html: string) {
 		editor adding html to them, which messes with MathJax
 	 */
 	// eslint-disable-next-line no-useless-escape
-	const LATEX_REGEX = /(\${1,2})((?:\\.|[\s\S])*)\1/g; ///(\${1,2})[^]*?[^\\]\1|[^\$]+/g;
+	const LATEX_REGEX = /(\${1,2})((?:\\.|[\s\S])*)\1/g;
 
 	return html.replace(LATEX_REGEX, val => {
 		const textContent = val
@@ -241,13 +250,20 @@ export const getParticipationRemainingTime = (
 	participation: EventParticipation,
 	event: Event,
 ): number | null => {
-	if (event.time_limit_seconds === null) {
+	if (
+		typeof event.time_limit_seconds !== "number" ||
+		event.time_limit_rule !== EventTimeLimitRule.TIME_LIMIT
+	) {
 		return null;
 	}
-	const endDate = new Date(participation.begin_timestamp);
-	endDate.setSeconds(endDate.getSeconds() + event.time_limit_seconds);
+	const endMoment = moment(participation.begin_timestamp).add(
+		event.time_limit_seconds,
+		"seconds",
+	);
+	const now = moment();
+	const remaining = endMoment.diff(now, "seconds");
 
-	return Math.max(Math.floor((endDate.getTime() - new Date().getTime()) / 1000), 0);
+	return Math.max(remaining, 0);
 };
 
 export const getFileContent = async (file: File): Promise<string> => {

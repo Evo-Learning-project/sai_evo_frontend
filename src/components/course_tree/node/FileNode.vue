@@ -73,7 +73,7 @@
 					>
 						{{ node.file.name }}
 					</h4>
-					<div class="flex xl:flex-row flex-col xl:space-x-2 ml-0.5">
+					<!-- <div class="flex xl:flex-row flex-col xl:space-x-2 ml-0.5">
 						<p v-if="node.creator" class="text-sm">
 							{{ node.creator.full_name }}
 						</p>
@@ -81,6 +81,22 @@
 							:date-only="true"
 							class="text-sm text-muted"
 							:value="node.created"
+						/>
+					</div> -->
+					<div class="flex flex-wrap ml-0.5">
+						<p v-if="node.creator" class="text-sm mr-2">
+							{{ node.creator.full_name }}
+						</p>
+						<span
+							class="text-sm text-muted"
+							style="margin-right: 3px"
+							v-if="updatedOnDifferentDay"
+							>{{ $t("misc.updated_on") }}</span
+						>
+						<Timestamp
+							:date-only="true"
+							class="text-sm text-muted"
+							:value="node.modified"
 						/>
 					</div>
 				</div>
@@ -168,7 +184,7 @@ import Timestamp from "@/components/ui/Timestamp.vue";
 import { courseIdMixin, nodeMixin } from "@/mixins";
 import { FileNode } from "@/models";
 import { useMainStore } from "@/stores/mainStore";
-import { getDefaultThumbnail, getHumanFileSize } from "@/utils";
+import { getDefaultThumbnail, getHumanFileSize, sameDay } from "@/utils";
 import { defineComponent, PropType } from "@vue/runtime-core";
 import { mapStores } from "pinia";
 import FileNodeDetail from "../node_detail/FileNodeDetail.vue";
@@ -229,6 +245,9 @@ export default defineComponent({
 		},
 		humanReadableFileSize() {
 			return getHumanFileSize(this.node.file?.size ?? 0);
+		},
+		updatedOnDifferentDay() {
+			return !sameDay(new Date(this.node.created), new Date(this.node.modified));
 		},
 	},
 	components: { LinearProgress, FileNodeDetail, Timestamp, CopyToClipboard, Btn },

@@ -9,6 +9,7 @@ export const getters = {
 				p => p.event.event_type === EventType.EXAM,
 			),
 		].sort((p1, p2) =>
+			// TODO use moment
 			new Date(p1.begin_timestamp) < new Date(p2.begin_timestamp) ? 1 : -1,
 		),
 	practiceParticipations: (state: StudentState) =>

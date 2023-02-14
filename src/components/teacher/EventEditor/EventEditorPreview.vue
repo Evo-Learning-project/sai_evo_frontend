@@ -234,6 +234,7 @@ export default defineComponent({
 		canReopen() {
 			return (
 				this.hasEnded &&
+				// TODO use absolute time to avoid tz issues
 				Math.abs(
 					new Date().getTime() - new Date(this.event.begin_timestamp ?? "").getTime(),
 				) /

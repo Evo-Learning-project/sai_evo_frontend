@@ -241,6 +241,7 @@ export default defineComponent({
 			return false;
 		},
 		updatedOnDifferentDay() {
+			// TODO use moment
 			return !sameDay(new Date(this.node.created), new Date(this.node.modified));
 		},
 	},

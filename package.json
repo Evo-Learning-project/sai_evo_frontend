@@ -54,6 +54,7 @@
 		"quill-image-drop-module": "^1.0.3",
 		"quill-image-resize": "^3.0.9",
 		"quill-image-resize-module": "^3.0.0",
+		"quill-magic-url": "^4.2.0",
 		"simple-syntax-highlighter": "^2.2.0",
 		"ts-adt": "^2.1.2",
 		"uuid": "^8.3.2",

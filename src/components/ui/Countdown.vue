@@ -18,7 +18,12 @@
 				/>
 			</svg>
 		</span>
-		<p class="ml-1" :class="{ 'text-danger-dark': littleTimeRemaining }">
+		<p
+			class="ml-1"
+			:class="{
+				'text-danger-dark': littleTimeRemaining,
+			}"
+		>
 			<span v-if="initialSeconds >= 3600">{{ formattedTime.hours }}:</span
 			>{{ formattedTime.minutes }}:{{ formattedTime.seconds }}
 		</p>
@@ -27,15 +32,17 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from "@vue/runtime-core";
+import moment from "moment";
+
 export default defineComponent({
 	name: "Countdown",
 	props: {
-		initialSeconds: {
-			type: Number,
-			required: true,
-		},
 		isInitialized: {
 			type: Boolean,
+			required: true,
+		},
+		endTimestamp: {
+			type: Number,
 			required: true,
 		},
 	},
@@ -55,31 +62,32 @@ export default defineComponent({
 			handle: null as number | null,
 			hasShakenHalfTime: false,
 			hasShakenLittleTime: false,
+			initialSeconds: null as number | null,
 		};
 	},
 	methods: {
 		startTimer() {
-			// TODO to make this more solid, run every 500 ms & instead of just decreasing the seconds, count the difference
-			this.seconds = this.initialSeconds;
+			this.timerCallback();
+			this.initialSeconds = this.seconds;
+
+			this.handle = setInterval(this.timerCallback, 1000);
+		},
+		timerCallback() {
+			const now = moment();
+			this.seconds = this.endMoment.diff(now, "seconds");
+
 			if (this.seconds <= 0) {
 				this.stopTimer();
 				this.$emit("timeUp");
 			}
-
-			this.handle = setInterval(() => {
-				if (--this.seconds === 0) {
-					this.stopTimer();
-					this.$emit("timeUp");
-				}
-
-				if (this.littleTimeRemaining) {
-					this.shake = true;
-				}
-			}, 1000);
+			if (this.littleTimeRemaining) {
+				this.shake = true;
+			}
 		},
 		stopTimer() {
 			clearInterval(this.handle as number);
 			this.handle = null;
+			this.initialSeconds = null;
 		},
 		onShakeEnd() {
 			if (!this.hasShakenHalfTime) {
@@ -90,7 +98,11 @@ export default defineComponent({
 		},
 	},
 	computed: {
-		formattedTime(): { hours: string; minutes: string; seconds: string } {
+		formattedTime(): {
+			hours: string;
+			minutes: string;
+			seconds: string;
+		} {
 			const hours = Math.floor(this.seconds / 3600);
 			const minutes = Math.floor((this.seconds - hours * 3600) / 60);
 			const seconds = this.seconds - minutes * 60 - hours * 3600;
@@ -105,10 +117,16 @@ export default defineComponent({
 			return this.isInitialized && this.seconds < 5 * 60;
 		},
 		lessThanHalfTimeRemaining(): boolean {
+			if (this.initialSeconds === null) {
+				return false;
+			}
 			return this.isInitialized && this.seconds < Math.floor(this.initialSeconds / 2);
 		},
 		isInitialTimeValid(): boolean {
-			return !isNaN(this.initialSeconds);
+			return !isNaN(this.initialSeconds ?? 0);
+		},
+		endMoment() {
+			return moment(new Date(this.endTimestamp));
 		},
 	},
 });
