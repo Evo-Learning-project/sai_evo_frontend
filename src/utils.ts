@@ -568,3 +568,37 @@ export function getFileNameFromResponseHeader(disposition: string): string {
 	}
 	return fileName;
 }
+
+export function highlightMatchingText(search: string, text: string) {
+	const words = text.split(/\s/);
+	return words
+		.map(w => {
+			for (const searchWord of search.split(/\s/)) {
+				const matchIndex = w.toLowerCase().indexOf(searchWord.toLowerCase());
+				if (matchIndex !== -1) {
+					return (
+						w.substring(0, matchIndex) +
+						`<strong class="font-bold">${w.substring(
+							matchIndex,
+							matchIndex + searchWord.length,
+						)}</strong>` +
+						w.substring(matchIndex + searchWord.length, w.length)
+					);
+				}
+			}
+
+			return w;
+		})
+		.join(" ");
+}
+
+export function isValidEmailAddress(text: string) {
+	// TODO improve to match django logic for validating an email
+	const input = document.createElement("input");
+	input.type = "email";
+	input.required = true;
+	input.value = text;
+	return typeof input.checkValidity === "function"
+		? input.checkValidity()
+		: /\S+@\S+\.\S+/.test(text);
+}

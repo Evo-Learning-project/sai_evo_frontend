@@ -214,7 +214,12 @@ export const useMainStore = defineStore("main", {
 		getCourseById: state => (courseId: string) =>
 			state.courses.find(c => c.id == courseId),
 		getUserById: state => (userId: string) =>
-			[...state.privilegedUsers, ...state.paginatedUsers.data].find(u => u.id == userId),
+			[
+				...state.privilegedUsers,
+				...state.enrolledUsers,
+				...state.activeUsers,
+				...state.paginatedUsers.data,
+			].find(u => u.id == userId),
 		getEventById: state => (eventId: string) =>
 			state.events.find(e => e.id == eventId) ?? getBlankExam(),
 		getEventByTemplateId: state => (templateId: string) =>

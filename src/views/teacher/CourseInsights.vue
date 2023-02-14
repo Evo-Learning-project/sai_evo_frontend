@@ -120,7 +120,7 @@
 					:placeholder="$t('course_insights.search_students')"
 					v-model="userSearchText"
 				/>
-				<Btn class="md:ml-auto w-full md:w-max">
+				<Btn class="md:ml-auto w-full md:w-max" @click="onEnrollUsers()">
 					<span class="material-icons mr-2">person_add</span>
 					{{ $t("course_insights.enroll_students") }}
 				</Btn>
@@ -152,11 +152,25 @@
 				/>
 			</div>
 		</div>
+		<Dialog
+			:showDialog="showBlockingDialog"
+			@yes="resolveBlockingDialog(true)"
+			@no="resolveBlockingDialog(false)"
+			:large="true"
+			:footerBorder="true"
+		>
+			<template v-slot:title>{{ $t("course_insights.add_enrolled_students") }}</template>
+			<template v-slot:body>
+				<div class="text-darkText">
+					<UserPicker v-model="usersToEnroll"></UserPicker>
+				</div>
+			</template>
+		</Dialog>
 	</div>
 </template>
 
 <script lang="ts">
-import { courseIdMixin, loadingMixin } from "@/mixins";
+import { blockingDialogMixin, courseIdMixin, loadingMixin } from "@/mixins";
 import { defineComponent, PropType } from "@vue/runtime-core";
 import {
 	forceFileDownload,
@@ -174,6 +188,7 @@ import {
 	Event,
 	EventParticipation,
 	CourseExamParticipationReport,
+	userMatchesSearch,
 } from "@/models";
 import { getCourseInsightsHeaders } from "@/const";
 import CheckboxGroup from "@/components/ui/CheckboxGroup.vue";
@@ -187,9 +202,11 @@ import { getCourseExamParticipationsReportAsCsv } from "@/reports/courseExamsPar
 import Btn from "@/components/ui/Btn.vue";
 import Tabs from "@/components/ui/Tabs.vue";
 import TextInput from "@/components/ui/TextInput.vue";
+import Dialog from "@/components/ui/Dialog.vue";
+import UserPicker from "@/components/shared/UserPicker.vue";
 export default defineComponent({
 	name: "CourseInsights",
-	mixins: [courseIdMixin, loadingMixin],
+	mixins: [courseIdMixin, loadingMixin, blockingDialogMixin],
 	props: {},
 	components: {
 		DataTable,
@@ -198,6 +215,8 @@ export default defineComponent({
 		StudentCard,
 		Tabs,
 		TextInput,
+		Dialog,
+		UserPicker,
 	},
 	watch: {
 		viewMode(newVal) {
@@ -229,6 +248,10 @@ export default defineComponent({
 			viewMode: "table" as "table" | "cards",
 			downloadingReport: false,
 			userSearchText: "",
+			usersToEnroll: { ids: [], emails: [] } as {
+				ids: string[];
+				emails: string[];
+			},
 		};
 	},
 	methods: {
@@ -264,6 +287,13 @@ export default defineComponent({
 				this.loadingExams = false;
 			}
 		},
+		async onEnrollUsers() {
+			this.showBlockingDialog = true;
+			const choice = await this.getBlockingBinaryDialogChoice();
+			if (!choice) {
+				this.showBlockingDialog = false;
+			}
+		},
 		downloadReport() {
 			this.downloadingReport = true;
 			try {
@@ -284,11 +314,22 @@ export default defineComponent({
 				setTimeout(() => (this.downloadingReport = false), 150);
 			}
 		},
+		filterUser(search: string, userOption: SelectableOption) {
+			const user = this.mainStore.getUserById(userOption.value) as User;
+			return userMatchesSearch(search, user);
+		},
 	},
 	computed: {
 		...mapStores(useMainStore),
 		practiceParticipations() {
 			return [];
+		},
+		usersAsOptions(): SelectableOption[] {
+			return this.mainStore.paginatedUsers.data.map(u => ({
+				value: u.id,
+				content: u.full_name,
+				data: u,
+			}));
 		},
 		viewModesAsOptions(): SelectableOption[] {
 			return [

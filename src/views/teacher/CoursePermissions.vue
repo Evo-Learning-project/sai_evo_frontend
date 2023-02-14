@@ -167,7 +167,13 @@ import { SelectableOption } from "@/interfaces";
 import { mapStores } from "pinia";
 import { useMetaStore } from "@/stores/metaStore";
 import { useMainStore } from "@/stores/mainStore";
-import { getCurrentUserId, setErrorNotification, setPageWideError } from "@/utils";
+import {
+	getCurrentUserId,
+	highlightMatchingText,
+	setErrorNotification,
+	setPageWideError,
+	isValidEmailAddress,
+} from "@/utils";
 import Combobox from "@/components/ui/Combobox.vue";
 import Avatar from "@/components/ui/Avatar.vue";
 import Tooltip from "@/components/ui/Tooltip.vue";
@@ -261,51 +267,15 @@ export default defineComponent({
 		},
 		// for combobox
 		filterUser(search: string, userOption: SelectableOption) {
-			// const searchTokens = search.toLowerCase().split(/\s/);
-			// const fullName = (user?.full_name ?? "").toLowerCase().replace(/\s/g, "");
-			// const email = (user?.email ?? "").toLowerCase().replace(/\s/g, "");
-
 			const user = this.mainStore.getUserById(userOption.value) as User;
-
 			return userMatchesSearch(search, user);
-
-			// return searchTokens.every(t => fullName.includes(t) || email.includes(t));
 		},
-		highlightMatchingText(search: string, text: string) {
-			const words = text.split(/\s/);
-			return words
-				.map(w => {
-					for (const searchWord of search.split(/\s/)) {
-						const matchIndex = w.toLowerCase().indexOf(searchWord.toLowerCase());
-						if (matchIndex !== -1) {
-							return (
-								w.substring(0, matchIndex) +
-								`<strong class="font-bold">${w.substring(
-									matchIndex,
-									matchIndex + searchWord.length,
-								)}</strong>` +
-								w.substring(matchIndex + searchWord.length, w.length)
-							);
-						}
-					}
+		isValidEmailAddress,
 
-					return w;
-				})
-				.join(" ");
-		},
+		highlightMatchingText,
 		async onUserSearch(search: string) {
 			this.loadingUsers = true;
 			await this.throttledGetUsers(search);
-		},
-		isValidEmailAddress(text: string) {
-			// TODO improve to match django logic for validating an email
-			const input = document.createElement("input");
-			input.type = "email";
-			input.required = true;
-			input.value = text;
-			return typeof input.checkValidity === "function"
-				? input.checkValidity()
-				: /\S+@\S+\.\S+/.test(text);
 		},
 		throttledGetUsers: throttle(async function (this: any, search) {
 			try {
