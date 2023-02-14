@@ -51,7 +51,10 @@
 				</div>
 			</div>
 			<!-- filter button -->
-			<div class="w-full items-center flex mb-4 -ml-3">
+			<div class="w-full flex flex-col mb-4 -ml-3">
+				<!-- tabs to select view mode -->
+				<Tabs class="mt-6 mb-8" :options="viewModesAsOptions" v-model="viewMode" />
+				<!-- exam filters -->
 				<div v-show="viewMode === 'table'" class="flex items-center w-max">
 					<Btn
 						:variant="'icon'"
@@ -76,14 +79,9 @@
 						$t("course_insights.filter_exams")
 					}}</label>
 				</div>
-				<SegmentedControls
-					:small="true"
-					class="hidden ml-auto md:block"
-					:options="viewModesAsOptions"
-					v-model="viewMode"
-				/>
 			</div>
 		</div>
+		<!-- exams table -->
 		<div v-show="viewMode === 'table'" class="flex-grow flex flex-col">
 			<div class="flex-grow overflow-y-auto">
 				<DataTable
@@ -109,23 +107,34 @@
 				</Btn>
 			</div>
 		</div>
+		<!-- enrolled students list-->
 		<div
 			v-show="viewMode === 'cards'"
-			class="grid grid-cols-1 gap-3 mt-4 md:grid-cols-3 2xl:grid-cols-4"
+			class="grid grid-cols-1 gap-3 md:grid-cols-3 2xl:grid-cols-4"
 		>
 			<div
 				v-if="!loading && mainStore.paginatedUsers.count === 0"
-				class="flex flex-col items-center mt-8"
+				class="
+					flex flex-col
+					items-center
+					mt-12
+					w-full
+					h-full
+					md:col-span-3
+					2xl:col-span-4
+				"
 			>
 				<p style="font-size: 6rem" class="material-icons-outlined opacity-10">
 					person_off
 				</p>
-				<h2 class="opacity-40">{{ $t("course_insights.no_active_students") }}</h2>
+				<h2 class="opacity-40">{{ $t("course_insights.no_enrolled_students") }}</h2>
 			</div>
+			<!-- TODO implement-->
+			<!-- filters & ability to add students -->
 			<StudentCard
 				class="mb-auto"
 				v-for="user in mainStore.paginatedUsers.data"
-				:key="'active-user-' + user.id"
+				:key="'enrolled-user-' + user.id"
 				:user="user"
 			/>
 		</div>
@@ -157,12 +166,12 @@ import CheckboxGroup from "@/components/ui/CheckboxGroup.vue";
 import { SelectableOption } from "@/interfaces";
 import { getTranslatedString as _ } from "@/i18n";
 import { normalizeOptionalStringContainingNumber } from "@/api/utils";
-import SegmentedControls from "@/components/ui/SegmentedControls.vue";
 import StudentCard from "@/components/shared/StudentCard.vue";
 import { mapStores } from "pinia";
 import { useMainStore } from "@/stores/mainStore";
 import { getCourseExamParticipationsReportAsCsv } from "@/reports/courseExamsParticipations";
 import Btn from "@/components/ui/Btn.vue";
+import Tabs from "@/components/ui/Tabs.vue";
 export default defineComponent({
 	name: "CourseInsights",
 	mixins: [courseIdMixin, loadingMixin],
@@ -171,8 +180,8 @@ export default defineComponent({
 		DataTable,
 		CheckboxGroup,
 		Btn,
-		SegmentedControls,
 		StudentCard,
+		Tabs,
 	},
 	watch: {
 		viewMode(newVal) {
@@ -194,7 +203,7 @@ export default defineComponent({
 	},
 	data() {
 		return {
-			loadingActiveStudents: false,
+			loadingEnrolledStudents: false,
 			examSelectionExpanded: false,
 			loadingExams: false,
 			gridApi: null as any,
@@ -210,13 +219,13 @@ export default defineComponent({
 			return data.id;
 		},
 		async fetchUsers() {
-			this.loadingActiveStudents = true;
+			this.loadingEnrolledStudents = true;
 			try {
-				await this.mainStore.getCourseActiveUsers({ courseId: this.courseId });
+				await this.mainStore.getCourseEnrolledUsers({ courseId: this.courseId });
 			} catch (e) {
 				setErrorNotification(e);
 			} finally {
-				this.loadingActiveStudents = false;
+				this.loadingEnrolledStudents = false;
 			}
 		},
 		async fetchClosedExams() {
@@ -267,12 +276,12 @@ export default defineComponent({
 				{
 					value: "table",
 					icons: ["table_chart"],
-					content: "",
+					content: _("course_insights.exams_stats"),
 				},
 				{
 					value: "cards",
-					icons: ["portrait"],
-					content: "",
+					icons: ["people"],
+					content: _("course_insights.enrolled_students"),
 				},
 			];
 		},
@@ -291,8 +300,8 @@ export default defineComponent({
 			if (this.loading) {
 				return [];
 			}
-			const activeUsers = this.mainStore.paginatedUsers.data;
-			return activeUsers.filter(u =>
+			const users = this.mainStore.paginatedUsers.data;
+			return users.filter(u =>
 				this.selectedExams.some(
 					e => typeof this.participations[e.id].find(p => p.user == u.id) !== "undefined",
 				),
@@ -318,7 +327,7 @@ export default defineComponent({
 			if (this.loading) {
 				return [];
 			}
-			const activeUsers = this.activeUsersForSelectedExams;
+			const filteredUsers = this.activeUsersForSelectedExams;
 			const exams = this.mainStore.exams;
 
 			const getScoreSumFn = (u: User) =>
@@ -334,7 +343,7 @@ export default defineComponent({
 						.reduce((a, b) => a + b, 0) * 100,
 				) / 100;
 
-			return activeUsers.map(u => ({
+			return filteredUsers.map(u => ({
 				id: u.id,
 				email: u.email,
 				fullName: u.full_name,

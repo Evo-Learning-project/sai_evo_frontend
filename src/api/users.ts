@@ -39,6 +39,11 @@ export async function getActiveUsersForCourse(courseId: string): Promise<User[]>
 	return response.data;
 }
 
+export async function getUsersEnrolledInCourse(courseId: string): Promise<User[]> {
+	const response = await axios.get(`/courses/${courseId}/enrollments/`);
+	return response.data;
+}
+
 export async function updateUserCoursePrivileges(
 	courseId: string,
 	userId: string | null,

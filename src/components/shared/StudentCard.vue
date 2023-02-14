@@ -79,6 +79,9 @@
 						</router-link>
 					</div>
 				</Timeline>
+				<p v-if="processedHistory.length === 0 && !fetching" class="text-muted">
+					{{ $t("course_insights.no_user_activity") }}
+				</p>
 			</div>
 		</template>
 	</Card>

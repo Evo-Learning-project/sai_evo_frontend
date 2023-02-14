@@ -201,6 +201,10 @@ export const it = {
 			" oppure una stringa.",
 	},
 	course_insights: {
+		exams_stats: "Esami",
+		enrolled_students: "Studenti iscritti",
+		no_enrolled_students: "Non ci sono ancora iscritti",
+		no_user_activity: "Nessuna attività nel corso",
 		filter_exams: "Filtra esami",
 		score_sum: "Somma",
 		score_average: "Media",

@@ -44,6 +44,7 @@ import {
 	getExerciseTestCaseAttachments,
 	getTags,
 	getUsers,
+	getUsersEnrolledInCourse,
 	lockEvent,
 	lockExercise,
 	manageSelfCourseEnrollment,
@@ -1962,6 +1963,18 @@ export const useMainStore = defineStore("main", {
 			const users = await getUsers(courseId, { hasPrivileges: true, size: 99999999 });
 			console.log("About to set priv", users.data);
 			this.privilegedUsers = users.data;
+		},
+		async getCourseEnrolledUsers(
+			// returns all users that are enrolled in given course
+			{ courseId }: CourseIdActionPayload,
+		) {
+			const users = await getUsersEnrolledInCourse(courseId);
+			this.paginatedUsers = {
+				data: users,
+				count: users.length,
+				pageNumber: 1,
+				isLastPage: true,
+			};
 		},
 		async getCourseActiveUsers(
 			// returns all users that are active in given course

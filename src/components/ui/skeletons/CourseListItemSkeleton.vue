@@ -13,7 +13,7 @@
 			</div>
 		</template>
 		<template v-slot:body>
-			<div class="relative w-full h-full">
+			<div class="relative h-full">
 				<div class="absolute flex flex-col w-full h-full">
 					<div class="w-3/5 h-3 mb-1 skeleton-unit"></div>
 					<div class="w-3/5 h-3 skeleton-unit"></div>
