@@ -159,6 +159,7 @@ export const useMainStore = defineStore("main", {
 
 		privilegedUsers: [] as User[], // users with privileges for the current course
 		enrolledUsers: [] as User[], // users enrolled in current course
+		activeUsers: [] as User[], // users active (i.e. with >= 1 participation) in current course
 		paginatedUsers: getEmptyPaginatedData() as PaginatedData<User>, // general-purpose store for users
 		paginatedExercises: getEmptyPaginatedData() as PaginatedData<Exercise>, // exercises currently displayed
 		events: [] as Event[], // events currently displayed (e.g. course exam list)
@@ -282,20 +283,20 @@ export const useMainStore = defineStore("main", {
 	actions: {
 		async selfEnrollInCourse({ courseId }: CourseIdActionPayload) {
 			await manageSelfCourseEnrollment(courseId, false);
-			const course = this.getCourseById(courseId)
-			if(course) {
-				course.enrolled = true
+			const course = this.getCourseById(courseId);
+			if (course) {
+				course.enrolled = true;
 			} else {
-				throw new Error("selfEnrollInCourse couldn't find course with id " + courseId)
+				throw new Error("selfEnrollInCourse couldn't find course with id " + courseId);
 			}
 		},
 		async selfUnenrollInCourse({ courseId }: CourseIdActionPayload) {
 			await manageSelfCourseEnrollment(courseId, true);
-			const course = this.getCourseById(courseId)
-			if(course) {
-				course.enrolled = false
+			const course = this.getCourseById(courseId);
+			if (course) {
+				course.enrolled = false;
 			} else {
-				throw new Error("selfUnenrollInCourse couldn't find course with id " + courseId)
+				throw new Error("selfUnenrollInCourse couldn't find course with id " + courseId);
 			}
 		},
 		async isTopLevelNode({
@@ -1970,19 +1971,14 @@ export const useMainStore = defineStore("main", {
 			{ courseId }: CourseIdActionPayload,
 		) {
 			const users = await getUsersEnrolledInCourse(courseId);
-			this.enrolledUsers = users
+			this.enrolledUsers = users;
 		},
 		async getCourseActiveUsers(
 			// returns all users that are active in given course
 			{ courseId }: CourseIdActionPayload,
 		) {
 			const users = await getActiveUsersForCourse(courseId);
-			this.paginatedUsers = {
-				data: users,
-				count: users.length,
-				pageNumber: 1,
-				isLastPage: true,
-			};
+			this.activeUsers = users;
 		},
 		async updateUserCoursePrivileges({
 			courseId,

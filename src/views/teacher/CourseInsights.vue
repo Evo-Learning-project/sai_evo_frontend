@@ -238,7 +238,10 @@ export default defineComponent({
 		async fetchUsers() {
 			this.loadingEnrolledStudents = true;
 			try {
-				await this.mainStore.getCourseEnrolledUsers({ courseId: this.courseId });
+				await Promise.all([
+					this.mainStore.getCourseEnrolledUsers({ courseId: this.courseId }),
+					this.mainStore.getCourseActiveUsers({ courseId: this.courseId }),
+				]);
 			} catch (e) {
 				setErrorNotification(e);
 			} finally {
@@ -321,7 +324,7 @@ export default defineComponent({
 			if (this.loading) {
 				return [];
 			}
-			const users = this.mainStore.enrolledUsers;
+			const users = this.mainStore.activeUsers;
 			return users.filter(u =>
 				this.selectedExams.some(
 					e => typeof this.participations[e.id].find(p => p.user == u.id) !== "undefined",
