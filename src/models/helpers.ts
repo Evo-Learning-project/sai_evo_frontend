@@ -1,5 +1,5 @@
 import { getTranslatedString as _ } from "@/i18n";
-import { CourseTreeNode } from "./interfaces";
+import { CourseTreeNode, User } from "./interfaces";
 import { CourseTreeNodeType } from "./types";
 
 export function getCourseTreeNodeTitle(node: CourseTreeNode) {
@@ -17,4 +17,13 @@ export function getCourseTreeNodeTitle(node: CourseTreeNode) {
 		default:
 			throw new Error("getCourseTreeNodeTitle not implemented for " + node);
 	}
+}
+
+export function userMatchesSearch(search: string, user: User) {
+	const searchTokens = search.toLowerCase().split(/\s/);
+
+	const fullName = (user?.full_name ?? "").toLowerCase().replace(/\s/g, "");
+	const email = (user?.email ?? "").toLowerCase().replace(/\s/g, "");
+
+	return searchTokens.every(t => fullName.includes(t) || email.includes(t));
 }

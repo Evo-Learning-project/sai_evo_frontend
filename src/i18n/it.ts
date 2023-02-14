@@ -214,6 +214,8 @@ export const it = {
 		no_active_students: "Non ci sono ancora studenti attivi nel corso",
 		active_students_description:
 			"Gli studenti attivi sono studenti che hanno partecipato ad almeno un esame o hanno iniziato autonomamente almeno un'esercitazione nel corso.",
+		search_students: "Cerca studenti",
+		enroll_students: "Iscrivi studenti",
 		user_history_event_descriptions: {
 			[EventType.EXAM]: "Ha partecipato all'esame",
 			[EventType.SELF_SERVICE_PRACTICE]: "Ha svolto un'esercitazione",

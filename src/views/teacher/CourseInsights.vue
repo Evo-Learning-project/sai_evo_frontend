@@ -51,7 +51,7 @@
 				</div>
 			</div>
 			<!-- filter button -->
-			<div class="w-full flex flex-col mb-4 -ml-3">
+			<div class="w-full flex flex-col mb-4">
 				<!-- tabs to select view mode -->
 				<Tabs class="mt-6 mb-8" :options="viewModesAsOptions" v-model="viewMode" />
 				<!-- exam filters -->
@@ -108,35 +108,49 @@
 			</div>
 		</div>
 		<!-- enrolled students list-->
-		<div
-			v-show="viewMode === 'cards'"
-			class="grid grid-cols-1 gap-3 md:grid-cols-3 2xl:grid-cols-4"
-		>
+		<div v-show="viewMode === 'cards'" class="flex-grow flex flex-col w-full">
+			<!-- filters & controls -->
 			<div
-				v-if="!loading && mainStore.paginatedUsers.count === 0"
-				class="
-					flex flex-col
-					items-center
-					mt-12
-					w-full
-					h-full
-					md:col-span-3
-					2xl:col-span-4
-				"
+				class="flex md:flex-row flex-col md:space-y-0 space-y-4 w-full mb-12 items-center"
 			>
-				<p style="font-size: 6rem" class="material-icons-outlined opacity-10">
-					person_off
-				</p>
-				<h2 class="opacity-40">{{ $t("course_insights.no_enrolled_students") }}</h2>
+				<TextInput
+					class="md:w-1/2 w-full"
+					:searchBar="true"
+					:leftIcon="'search'"
+					:placeholder="$t('course_insights.search_students')"
+					v-model="userSearchText"
+				/>
+				<Btn class="md:ml-auto w-full md:w-max">
+					<span class="material-icons mr-2">person_add</span>
+					{{ $t("course_insights.enroll_students") }}
+				</Btn>
 			</div>
-			<!-- TODO implement-->
-			<!-- filters & ability to add students -->
-			<StudentCard
-				class="mb-auto"
-				v-for="user in mainStore.paginatedUsers.data"
-				:key="'enrolled-user-' + user.id"
-				:user="user"
-			/>
+			<!-- students -->
+			<div class="grid grid-cols-1 gap-3 md:grid-cols-3 2xl:grid-cols-4">
+				<div
+					v-if="!loading && mainStore.enrolledUsers.length === 0"
+					class="
+						flex flex-col
+						items-center
+						mt-12
+						w-full
+						h-full
+						md:col-span-3
+						2xl:col-span-4
+					"
+				>
+					<p style="font-size: 6rem" class="material-icons-outlined opacity-10">
+						person_off
+					</p>
+					<h2 class="opacity-40">{{ $t("course_insights.no_enrolled_students") }}</h2>
+				</div>
+				<StudentCard
+					class="mb-auto"
+					v-for="user in mainStore.enrolledUsers"
+					:key="'enrolled-user-' + user.id"
+					:user="user"
+				/>
+			</div>
 		</div>
 	</div>
 </template>
@@ -172,6 +186,7 @@ import { useMainStore } from "@/stores/mainStore";
 import { getCourseExamParticipationsReportAsCsv } from "@/reports/courseExamsParticipations";
 import Btn from "@/components/ui/Btn.vue";
 import Tabs from "@/components/ui/Tabs.vue";
+import TextInput from "@/components/ui/TextInput.vue";
 export default defineComponent({
 	name: "CourseInsights",
 	mixins: [courseIdMixin, loadingMixin],
@@ -182,6 +197,7 @@ export default defineComponent({
 		Btn,
 		StudentCard,
 		Tabs,
+		TextInput,
 	},
 	watch: {
 		viewMode(newVal) {
@@ -212,6 +228,7 @@ export default defineComponent({
 			selectedExamsIds: [] as string[],
 			viewMode: "table" as "table" | "cards",
 			downloadingReport: false,
+			userSearchText: "",
 		};
 	},
 	methods: {
@@ -249,7 +266,7 @@ export default defineComponent({
 			try {
 				const content = getCourseExamParticipationsReportAsCsv(
 					this.participations,
-					this.mainStore.paginatedUsers.data,
+					this.mainStore.enrolledUsers,
 					// TODO use filtered exams
 					this.mainStore.events,
 				).replace(/(\\r)?\\n/g, "\n");
@@ -300,7 +317,7 @@ export default defineComponent({
 			if (this.loading) {
 				return [];
 			}
-			const users = this.mainStore.paginatedUsers.data;
+			const users = this.mainStore.enrolledUsers;
 			return users.filter(u =>
 				this.selectedExams.some(
 					e => typeof this.participations[e.id].find(p => p.user == u.id) !== "undefined",

@@ -158,7 +158,8 @@ export const useMainStore = defineStore("main", {
 		tags: [] as Tag[], // tags of current course
 
 		privilegedUsers: [] as User[], // users with privileges for the current course
-		paginatedUsers: getEmptyPaginatedData() as PaginatedData<User>, // users currently displayed (e.g. course insights page)
+		enrolledUsers: [] as User[], // users enrolled in current course
+		paginatedUsers: getEmptyPaginatedData() as PaginatedData<User>, // general-purpose store for users
 		paginatedExercises: getEmptyPaginatedData() as PaginatedData<Exercise>, // exercises currently displayed
 		events: [] as Event[], // events currently displayed (e.g. course exam list)
 
@@ -1969,12 +1970,7 @@ export const useMainStore = defineStore("main", {
 			{ courseId }: CourseIdActionPayload,
 		) {
 			const users = await getUsersEnrolledInCourse(courseId);
-			this.paginatedUsers = {
-				data: users,
-				count: users.length,
-				pageNumber: 1,
-				isLastPage: true,
-			};
+			this.enrolledUsers = users
 		},
 		async getCourseActiveUsers(
 			// returns all users that are active in given course

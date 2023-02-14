@@ -159,7 +159,7 @@ import { courseIdMixin, coursePrivilegeMixin, loadingMixin, savingMixin } from "
 import { defineComponent } from "@vue/runtime-core";
 
 import { getTranslatedString as _ } from "@/i18n";
-import { CoursePrivilege, getBlankUser, User } from "@/models";
+import { CoursePrivilege, getBlankUser, User, userMatchesSearch } from "@/models";
 import { icons as coursePrivilegeIcons } from "@/assets/coursePrivilegeIcons";
 import Dialog from "@/components/ui/Dialog.vue";
 import CheckboxGroup from "@/components/ui/CheckboxGroup.vue";
@@ -261,12 +261,15 @@ export default defineComponent({
 		},
 		// for combobox
 		filterUser(search: string, userOption: SelectableOption) {
-			const searchTokens = search.toLowerCase().split(/\s/);
-			const user = this.mainStore.getUserById(userOption.value);
-			const fullName = (user?.full_name ?? "").toLowerCase().replace(/\s/g, "");
-			const email = (user?.email ?? "").toLowerCase().replace(/\s/g, "");
+			// const searchTokens = search.toLowerCase().split(/\s/);
+			// const fullName = (user?.full_name ?? "").toLowerCase().replace(/\s/g, "");
+			// const email = (user?.email ?? "").toLowerCase().replace(/\s/g, "");
 
-			return searchTokens.every(t => fullName.includes(t) || email.includes(t));
+			const user = this.mainStore.getUserById(userOption.value) as User;
+
+			return userMatchesSearch(search, user);
+
+			// return searchTokens.every(t => fullName.includes(t) || email.includes(t));
 		},
 		highlightMatchingText(search: string, text: string) {
 			const words = text.split(/\s/);
