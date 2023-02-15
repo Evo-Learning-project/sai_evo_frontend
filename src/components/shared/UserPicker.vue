@@ -50,10 +50,10 @@
 					v-wave
 					tabindex="0"
 					class="py-2 px-2 transition-colors duration-75 cursor-pointer"
-					@click="onSelectUserByEmail(searchText)"
-					@keyup.enter="onSelectUserByEmail(searchText)"
+					@click="onToggleUser({ email: searchText })"
+					@keyup.enter="onToggleUser({ email: searchText })"
 					:class="[
-						modelValue.emails.includes(searchText)
+						isUserSelected({ email: searchText })
 							? 'text-primary-dark bg-primary-light hover:bg-primary-light bg-opacity-15 hover:bg-opacity-20'
 							: 'hover:bg-light',
 					]"
@@ -81,10 +81,10 @@
 					class="py-2 px-2 transition-colors duration-75 cursor-pointer"
 					v-for="user in filteredUsers"
 					:key="user.id"
-					@click="onSelectUserById(user.id)"
-					@keyup.enter="onSelectUserById(user.id)"
+					@click="onToggleUser(user)"
+					@keyup.enter="onToggleUser(user)"
 					:class="[
-						modelValue.ids.includes(user.id)
+						isUserSelected(user)
 							? 'text-primary-dark bg-primary-light hover:bg-primary-light bg-opacity-15 hover:bg-opacity-20'
 							: 'hover:bg-light',
 					]"
@@ -155,9 +155,48 @@ export default defineComponent({
 			 * so keep a local cache of selected user objects
 			 */
 			cachedUsers: [] as User[],
+			/**
+			 * Once an email address has been selected, it's saved into
+			 * a local cache so it can show up in later search results
+			 * as if it belonged to an actual user
+			 */
+			cachedEmails: [] as string[],
 		};
 	},
 	methods: {
+		onToggleUser(user: Partial<User>) {
+			if (user.id) {
+				const userId = user.id;
+				if (this.modelValue.ids.includes(userId)) {
+					this.onRemoveUser({ id: userId });
+				} else {
+					if (!this.cachedUsers.find(u => u.id == userId)) {
+						!this.cachedUsers.push(this.mainStore.getUserById(userId));
+					}
+
+					this.addingUserIds.push(userId);
+					this.$emit("update:modelValue", {
+						emails: this.modelValue.emails,
+						ids: [...this.modelValue.ids, userId],
+					});
+				}
+			} else {
+				const email = user.email as string;
+				if (this.modelValue.emails.includes(email)) {
+					this.onRemoveUser({ email });
+				} else {
+					if (!this.cachedEmails.find(e => e == email)) {
+						!this.cachedEmails.push(email);
+					}
+
+					this.addingEmails.push(email);
+					this.$emit("update:modelValue", {
+						emails: [...this.modelValue.emails, email],
+						ids: this.modelValue.ids,
+					});
+				}
+			}
+		},
 		onRemoveUser(user: Partial<User>) {
 			if (user.id) {
 				this.$emit("update:modelValue", {
@@ -171,28 +210,11 @@ export default defineComponent({
 				});
 			}
 		},
-		onSelectUserById(userId: string) {
-			if (this.modelValue.ids.includes(userId)) {
-				this.onRemoveUser({ id: userId });
-			} else {
-				this.addingUserIds.push(userId);
-				this.cachedUsers.push(this.mainStore.getUserById(userId));
-				this.$emit("update:modelValue", {
-					emails: this.modelValue.emails,
-					ids: [...this.modelValue.ids, userId],
-				});
+		isUserSelected(user: Partial<User>) {
+			if (user.id) {
+				return this.modelValue.ids.includes(user.id);
 			}
-		},
-		onSelectUserByEmail(email: string) {
-			if (this.modelValue.emails.includes(email)) {
-				this.onRemoveUser({ email });
-			} else {
-				this.addingEmails.push(email);
-				this.$emit("update:modelValue", {
-					emails: [...this.modelValue.emails, email],
-					ids: this.modelValue.ids,
-				});
-			}
+			return this.modelValue.emails.includes(user.email);
 		},
 		async onUserSearch(search: string) {
 			this.loadingUsers = true;
@@ -219,7 +241,10 @@ export default defineComponent({
 			return this.mainStore.paginatedUsers.data;
 		},
 		filteredUsers() {
-			return this.users.filter(u => userMatchesSearch(this.searchText, u));
+			return [
+				...this.users,
+				...this.cachedEmails.map(e => ({ full_name: e, email: e })),
+			].filter(u => userMatchesSearch(this.searchText, u));
 		},
 		isSearchTextValidEmail() {
 			return isValidEmailAddress(this.searchText);
