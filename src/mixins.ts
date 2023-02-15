@@ -256,7 +256,7 @@ export const scrollMixin = {
 			// 	!self.isScrollable || -(el.scrollLeft + el.clientWidth) + el.scrollWidth <= 1;
 			// self.atBeginX = el.scrollLeft === 0;
 			self.fromTop = el.scrollTop
-			console.log("FROM TOP", self.fromTop)
+			//console.log("FROM TOP", self.fromTop)
 		},
 	},
 	computed: {

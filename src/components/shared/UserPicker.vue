@@ -1,9 +1,12 @@
 <template>
 	<div>
 		<!-- selected users-->
-		<p :class="{ 'opacity-0': addingUsers.length === 0 }" class="mb-4 mt-2 font-medium">
-			{{ addingUsers.length }} {{ $t("misc.selected") }}
-		</p>
+		<Transition name="slide-fade">
+			<p v-if="addingUsers.length > 0" class="mb-4 mt-2 font-medium">
+				{{ addingUsers.length }} {{ $t("misc.selected") }}
+			</p>
+		</Transition>
+
 		<div class="flex items-center mr-2 mb-6 flex-wrap">
 			<TransitionGroup name="quick-bounce">
 				<div
@@ -39,7 +42,7 @@
 		<p class="text-muted text-sm mt-0.5">
 			{{ $t("course_permissions.search_user_hint") }}
 		</p>
-		<div class="mt-4 relative">
+		<div class="mt-8 relative">
 			<div class="absolute top-0 left-1/2 -translate-x-1/2 transform" v-if="loadingUsers">
 				<Spinner :size="'lg'" />
 			</div>
