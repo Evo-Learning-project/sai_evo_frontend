@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<!-- selected users-->
-		<p class="mb-4 mt-2 font-medium" v-if="addingUsers.length > 0">
+		<p :class="{ 'opacity-0': addingUsers.length === 0 }" class="mb-4 mt-2 font-medium">
 			{{ addingUsers.length }} {{ $t("misc.selected") }}
 		</p>
 		<div class="flex items-center mr-2 mb-6 flex-wrap">
@@ -22,6 +22,7 @@
 							class="bg-gray-200 -mr-2 ml-2"
 							:outline="true"
 							:size="'xs'"
+							@click="onRemoveUser(user)"
 							><span
 								style="font-size: 15px !important; margin-left: 0.5px !important"
 								class="material-icons"
@@ -46,10 +47,21 @@
 				<!-- create by email-->
 				<div
 					v-if="filteredUsers.length === 0 && isSearchTextValidEmail"
-					class="flex items-center space-x-4 mr-8"
+					v-wave
+					tabindex="0"
+					class="py-2 px-2 transition-colors duration-75 cursor-pointer"
+					@click="onSelectUserByEmail(searchText)"
+					@keyup.enter="onSelectUserByEmail(searchText)"
+					:class="[
+						modelValue.emails.includes(searchText)
+							? 'text-primary-dark bg-primary-light hover:bg-primary-light bg-opacity-15 hover:bg-opacity-20'
+							: 'hover:bg-light',
+					]"
 				>
-					<Avatar :user="{ full_name: searchText }" />
-					<p>{{ searchText }}</p>
+					<div class="flex items-center space-x-4 mr-8">
+						<Avatar :user="{ full_name: searchText }" />
+						<p>{{ searchText }}</p>
+					</div>
 				</div>
 				<!-- empty results-->
 				<div
@@ -66,10 +78,16 @@
 				<div
 					v-wave
 					tabindex="0"
-					class="py-2 px-2 hover:bg-light transition-colors duration-75 cursor-pointer"
+					class="py-2 px-2 transition-colors duration-75 cursor-pointer"
 					v-for="user in filteredUsers"
 					:key="user.id"
-					@click="onSelectUser(user.id)"
+					@click="onSelectUserById(user.id)"
+					@keyup.enter="onSelectUserById(user.id)"
+					:class="[
+						modelValue.ids.includes(user.id)
+							? 'text-primary-dark bg-primary-light hover:bg-primary-light bg-opacity-15 hover:bg-opacity-20'
+							: 'hover:bg-light',
+					]"
 				>
 					<div class="flex items-center space-x-4">
 						<Avatar :user="user" />
@@ -89,7 +107,7 @@
 <script lang="ts">
 import { SelectableOption } from "@/interfaces";
 import { courseIdMixin } from "@/mixins";
-import { userMatchesSearch } from "@/models";
+import { userMatchesSearch, User } from "@/models";
 import { useMainStore } from "@/stores/mainStore";
 import {
 	highlightMatchingText,
@@ -132,15 +150,49 @@ export default defineComponent({
 			loadingUsers: false,
 			addingUserIds: [] as string[],
 			addingEmails: [] as string[],
+			/**
+			 * Users in the store may change due to filtered API calls,
+			 * so keep a local cache of selected user objects
+			 */
+			cachedUsers: [] as User[],
 		};
 	},
 	methods: {
-		onSelectUser(userId: string) {
-			this.addingUserIds.push(userId);
-			this.$emit("update:modelValue", {
-				emails: this.modelValue.emails,
-				ids: [...this.modelValue.ids, userId],
-			});
+		onRemoveUser(user: Partial<User>) {
+			if (user.id) {
+				this.$emit("update:modelValue", {
+					emails: this.modelValue.emails,
+					ids: this.modelValue.ids.filter(i => i != user.id),
+				});
+			} else {
+				this.$emit("update:modelValue", {
+					emails: this.modelValue.emails.filter(e => e != user.email),
+					ids: this.modelValue.ids,
+				});
+			}
+		},
+		onSelectUserById(userId: string) {
+			if (this.modelValue.ids.includes(userId)) {
+				this.onRemoveUser({ id: userId });
+			} else {
+				this.addingUserIds.push(userId);
+				this.cachedUsers.push(this.mainStore.getUserById(userId));
+				this.$emit("update:modelValue", {
+					emails: this.modelValue.emails,
+					ids: [...this.modelValue.ids, userId],
+				});
+			}
+		},
+		onSelectUserByEmail(email: string) {
+			if (this.modelValue.emails.includes(email)) {
+				this.onRemoveUser({ email });
+			} else {
+				this.addingEmails.push(email);
+				this.$emit("update:modelValue", {
+					emails: [...this.modelValue.emails, email],
+					ids: this.modelValue.ids,
+				});
+			}
 		},
 		async onUserSearch(search: string) {
 			this.loadingUsers = true;
@@ -173,9 +225,8 @@ export default defineComponent({
 			return isValidEmailAddress(this.searchText);
 		},
 		addingUsers() {
-			// TODO when filter change, the users in store change so this becomes undefined & crashes - save selected user OBJECTS to local state
 			return [
-				...this.modelValue.ids.map(i => this.mainStore.getUserById(i)),
+				...this.modelValue.ids.map(i => this.cachedUsers.find(u => u.id == i)),
 				...this.modelValue.emails.map(e => ({
 					full_name: e,
 					email: e,
