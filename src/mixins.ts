@@ -8,6 +8,9 @@ import router from "./router";
 import { useMainStore } from "./stores/mainStore";
 import { useMetaStore } from "./stores/metaStore";
 import { arraybufferToBase64, setErrorNotification, setPageWideError } from "./utils";
+import { v4 as uuid4 } from "uuid";
+import { debounce } from "lodash";
+
 export const courseIdMixin = {
 	computed: {
 		courseId(): string {
@@ -221,6 +224,53 @@ export const savingMixin = {
 		},
 	},
 };
+
+export const scrollMixin = {
+	mounted() {
+		const self = this as any
+		self.element = document.getElementById(self.scrollableElementId);
+		// debounce(self.onScroll, 30)
+		self.element?.addEventListener("scroll", debounce(self.onScroll, 50, {
+			maxWait: 70,
+			leading: true
+		}), {
+			passive: true,
+		});
+		self.onScroll();
+	},
+	data() {
+		return {
+			fromTop: 0,
+			scrollableElementId: uuid4(),
+			element: null as null|HTMLElement
+		}
+	},
+	methods: {
+		onScroll() {
+			const self = this as any
+			const el = self.element as HTMLElement;
+			// self.isScrollable =
+			// 	el.scrollHeight > el.clientHeight &&
+			// 	["scroll", "auto"].indexOf(getComputedStyle(el).overflowX) >= 0;
+			// self.atEndX =
+			// 	!self.isScrollable || -(el.scrollLeft + el.clientWidth) + el.scrollWidth <= 1;
+			// self.atBeginX = el.scrollLeft === 0;
+			self.fromTop = el.scrollTop
+			console.log("FROM TOP", self.fromTop)
+		},
+	},
+	computed: {
+		isAtTop() {
+			const self = this as any
+			return self.fromTop === 0
+		},
+		fromBottom() {
+			const self = this as any
+			const el = self.element as HTMLElement;
+			return el.scrollHeight - self.fromTop
+		}
+	}
+}
 
 export const coursePrivilegeMixin = {
 	methods: {

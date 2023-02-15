@@ -43,7 +43,11 @@
 			<div class="absolute top-0 left-1/2 -translate-x-1/2 transform" v-if="loadingUsers">
 				<Spinner :size="'lg'" />
 			</div>
-			<div class="mt-4 -mb-3 h-100 overflow-auto">
+			<div
+				class="w-full transition-all duration-75 ease-in-out"
+				:class="[isAtTop ? 'bg-transparent' : 'top-edge-shadow']"
+			></div>
+			<div class="mt-4 -mb-3 h-100 overflow-auto" :id="scrollableElementId">
 				<!-- create by email-->
 				<div
 					v-if="filteredUsers.length === 0 && isSearchTextValidEmail"
@@ -94,6 +98,7 @@
 						<div class="flex flex-col">
 							<p v-html="highlightMatchingText(searchText, user.full_name)" />
 							<p
+								v-if="user.email !== user.full_name"
 								v-html="highlightMatchingText(searchText, user.email)"
 								class="text-muted text-sm -mt-1"
 							/>
@@ -106,7 +111,7 @@
 </template>
 <script lang="ts">
 import { SelectableOption } from "@/interfaces";
-import { courseIdMixin } from "@/mixins";
+import { courseIdMixin, scrollMixin } from "@/mixins";
 import { userMatchesSearch, User } from "@/models";
 import { useMainStore } from "@/stores/mainStore";
 import {
@@ -137,7 +142,7 @@ export default defineComponent({
 		this.loadingUsers = true;
 		await this.throttledGetUsers(null);
 	},
-	mixins: [courseIdMixin],
+	mixins: [courseIdMixin, scrollMixin],
 	watch: {
 		searchText(newVal) {
 			this.loadingUsers = true;

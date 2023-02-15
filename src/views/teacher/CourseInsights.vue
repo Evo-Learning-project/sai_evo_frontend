@@ -204,6 +204,7 @@ import Tabs from "@/components/ui/Tabs.vue";
 import TextInput from "@/components/ui/TextInput.vue";
 import Dialog from "@/components/ui/Dialog.vue";
 import UserPicker from "@/components/shared/UserPicker.vue";
+import { useMetaStore } from "@/stores/metaStore";
 export default defineComponent({
 	name: "CourseInsights",
 	mixins: [courseIdMixin, loadingMixin, blockingDialogMixin],
@@ -224,6 +225,14 @@ export default defineComponent({
 				courseId: this.courseId,
 				to: newVal,
 			});
+		},
+		usersToEnroll: {
+			handler(newVal) {
+				// this will enable the `unsavedChanges` getter which will prompt
+				// user for confirmation when leaving the window
+				this.metaStore.saving = newVal.ids.length > 0 || newVal.emails.length > 0;
+			},
+			deep: true,
 		},
 	},
 	async created() {
@@ -320,7 +329,7 @@ export default defineComponent({
 		},
 	},
 	computed: {
-		...mapStores(useMainStore),
+		...mapStores(useMainStore, useMetaStore),
 		practiceParticipations() {
 			return [];
 		},
