@@ -45,6 +45,15 @@
 						class="mt-3 text-sm"
 						:variant="'primary-borderless'"
 						:size="'xs'"
+						@click="selectedExamsIds = closedExamIds"
+						><span class="text-sm">{{
+							$t("course_insights.select_closed_exams")
+						}}</span></Btn
+					>
+					<Btn
+						class="mt-3 text-sm"
+						:variant="'primary-borderless'"
+						:size="'xs'"
 						@click="selectedExamsIds = []"
 						><span class="text-sm">{{ $t("misc.unselect_all") }}</span></Btn
 					>
@@ -55,29 +64,31 @@
 				<!-- tabs to select view mode -->
 				<Tabs class="mt-6 mb-8" :options="viewModesAsOptions" v-model="viewMode" />
 				<!-- exam filters -->
-				<div v-show="viewMode === 'table'" class="flex items-center w-max">
-					<Btn
-						:variant="'icon'"
-						:outline="true"
-						@click="examSelectionExpanded = !examSelectionExpanded"
-						class=""
-						id="more-filters-btn"
-						><span
-							class="
-								transition-transform
-								duration-200
-								ease-out
-								transform
-								material-icons-outlined
-							"
-							:class="{ 'rotate-180': examSelectionExpanded }"
-						>
-							{{ "expand_more" }}
-						</span>
-					</Btn>
-					<label class="cursor-pointer text-muted" for="more-filters-btn">{{
-						$t("course_insights.filter_exams")
-					}}</label>
+				<div class="flex items-center w-full mb-4 -ml-3">
+					<div v-show="viewMode === 'table'" class="flex items-center w-max">
+						<Btn
+							:variant="'icon'"
+							:outline="true"
+							@click="examSelectionExpanded = !examSelectionExpanded"
+							class=""
+							id="more-filters-btn"
+							><span
+								class="
+									transition-transform
+									duration-200
+									ease-out
+									transform
+									material-icons-outlined
+								"
+								:class="{ 'rotate-180': examSelectionExpanded }"
+							>
+								{{ "expand_more" }}
+							</span>
+						</Btn>
+						<label class="cursor-pointer text-muted" for="more-filters-btn">{{
+							$t("course_insights.filter_exams")
+						}}</label>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -242,7 +253,7 @@ export default defineComponent({
 	},
 	async created() {
 		await this.withLoading(async () => {
-			await Promise.all([this.fetchUsers(), this.fetchClosedExams()]);
+			await Promise.all([this.fetchUsers(), this.fetchExams()]);
 			// initially enable all exams in the table
 			this.selectedExamsIds = this.mainStore.exams.map(e => e.id);
 
@@ -286,14 +297,14 @@ export default defineComponent({
 				this.loadingEnrolledStudents = false;
 			}
 		},
-		async fetchClosedExams() {
+		async fetchExams() {
 			this.loadingExams = true;
 			try {
 				await this.mainStore.getEvents({
 					courseId: this.courseId,
 					filters: {
 						event_type: EventType.EXAM,
-						state: EventState.CLOSED,
+						// state: EventState.CLOSED,
 					} as EventSearchFilter,
 				});
 			} catch (e) {
@@ -408,9 +419,16 @@ export default defineComponent({
 			const users = this.mainStore.activeUsers;
 			return users.filter(u =>
 				this.selectedExams.some(
-					e => typeof this.participations[e.id].find(p => p.user == u.id) !== "undefined",
+					e =>
+						typeof (this.participations[e.id] ?? []).find(p => p.user == u.id) !==
+						"undefined",
 				),
 			);
+		},
+		closedExamIds() {
+			return this.mainStore.exams
+				.filter(e => e.state === EventState.CLOSED)
+				.map(e => e.id);
 		},
 		selectedExams(): Event[] {
 			return this.mainStore.exams.filter(e =>
@@ -456,7 +474,7 @@ export default defineComponent({
 				course: u.course,
 				...exams.reduce((acc, e) => {
 					const score = normalizeOptionalStringContainingNumber(
-						this.participations[e.id].find(p => p.user == u.id)?.score,
+						(this.participations[e.id] ?? []).find(p => p.user == u.id)?.score,
 					);
 					acc["exam_" + e.id] = score;
 					return acc;
@@ -466,7 +484,8 @@ export default defineComponent({
 					getScoreSumFn(u) /
 						this.selectedExams.filter(
 							// only consider exams the user has participated in
-							e => this.participations[e.id].findIndex(p => p.user == u.id) !== -1,
+							e =>
+								(this.participations[e.id] ?? []).findIndex(p => p.user == u.id) !== -1,
 						).length,
 				),
 			}));
