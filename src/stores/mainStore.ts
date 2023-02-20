@@ -21,6 +21,7 @@ import {
 	deleteExerciseSubExercise,
 	deleteExerciseTestCase,
 	deleteExerciseTestCaseAttachment,
+	enrollUsersInCourse,
 	EventParticipationSearchFilter,
 	EventSearchFilter,
 	ExerciseSearchFilter,
@@ -1977,6 +1978,16 @@ export const useMainStore = defineStore("main", {
 		) {
 			const users = await getUsersEnrolledInCourse(courseId);
 			this.enrolledUsers = users;
+		},
+		async enrollUsersInCourse(
+			// returns all users that are enrolled in given course
+			{
+				courseId,
+				userIds,
+				emails,
+			}: CourseIdActionPayload & { userIds: string[]; emails: string[] },
+		) {
+			await enrollUsersInCourse(courseId, userIds, emails);
 		},
 		async getCourseActiveUsers(
 			// returns all users that are active in given course

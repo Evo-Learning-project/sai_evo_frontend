@@ -2,12 +2,12 @@
 	<div>
 		<!-- selected users-->
 		<Transition name="slide-fade">
-			<p v-if="addingUsers.length > 0" class="mb-4 mt-2 font-medium">
-				{{ addingUsers.length }} {{ $t("misc.selected") }}
+			<p v-if="addingUsers.length > 0" class="mt-2 mb-4 font-medium">
+				{{ addingUsers.length }} {{ $tc("misc.selected", addingUsers.length) }}
 			</p>
 		</Transition>
 
-		<div class="flex items-center mr-2 mb-6 flex-wrap">
+		<div class="flex flex-wrap items-center mb-6 mr-2">
 			<TransitionGroup name="quick-bounce">
 				<div
 					class="mr-2.5 mb-2.5 bg-light flex px-3 my-auto w-max rounded-full"
@@ -18,11 +18,11 @@
 						<Avatar :user="user" class="-ml-3 mr-1.5" />
 						<div class="flex flex-col">
 							<p>{{ user.full_name }}</p>
-							<!-- <p class="text-muted text-sm -mt-1">{{ user.email }}</p> -->
+							<!-- <p class="-mt-1 text-sm text-muted">{{ user.email }}</p> -->
 						</div>
 						<Btn
 							:variant="'icon'"
-							class="bg-gray-200 -mr-2 ml-2"
+							class="ml-2 -mr-2 bg-gray-200"
 							:outline="true"
 							:size="'xs'"
 							@click="onRemoveUser(user)"
@@ -42,21 +42,21 @@
 		<p class="text-muted text-sm mt-0.5">
 			{{ $t("course_permissions.search_user_hint") }}
 		</p>
-		<div class="mt-8 relative">
-			<div class="absolute top-0 left-1/2 -translate-x-1/2 transform" v-if="loadingUsers">
+		<div class="relative mt-8">
+			<div class="absolute top-0 transform -translate-x-1/2 left-1/2" v-if="loadingUsers">
 				<Spinner :size="'lg'" />
 			</div>
 			<div
 				class="w-full transition-all duration-75 ease-in-out"
 				:class="[isAtTop ? 'bg-transparent' : 'top-edge-shadow']"
 			></div>
-			<div class="mt-4 -mb-3 h-100 overflow-auto" :id="scrollableElementId">
+			<div class="mt-4 -mb-3 overflow-auto h-100" :id="scrollableElementId">
 				<!-- create by email-->
 				<div
 					v-if="filteredUsers.length === 0 && isSearchTextValidEmail"
 					v-wave
 					tabindex="0"
-					class="py-2 px-2 transition-colors duration-75 cursor-pointer"
+					class="px-2 py-2 transition-colors duration-75 cursor-pointer"
 					@click="onToggleUser({ email: searchText })"
 					@keyup.enter="onToggleUser({ email: searchText })"
 					:class="[
@@ -65,14 +65,14 @@
 							: 'hover:bg-light',
 					]"
 				>
-					<div class="flex items-center space-x-4 mr-8">
+					<div class="flex items-center mr-8 space-x-4">
 						<Avatar :user="{ full_name: searchText }" />
 						<p>{{ searchText }}</p>
 					</div>
 				</div>
 				<!-- empty results-->
 				<div
-					class="flex flex-col items-center mt-12 mx-2"
+					class="flex flex-col items-center mx-2 mt-12"
 					v-if="filteredUsers.length === 0 && !isSearchTextValidEmail && !loadingUsers"
 				>
 					<h3 class="font-medium">
@@ -85,7 +85,7 @@
 				<div
 					v-wave
 					tabindex="0"
-					class="py-2 px-2 transition-colors duration-75 cursor-pointer"
+					class="px-2 py-2 transition-colors duration-75 cursor-pointer"
 					v-for="user in filteredUsers"
 					:key="user.id"
 					@click="onToggleUser(user)"
@@ -103,7 +103,7 @@
 							<p
 								v-if="user.email !== user.full_name"
 								v-html="highlightMatchingText(searchText, user.email)"
-								class="text-muted text-sm -mt-1"
+								class="-mt-1 text-sm text-muted"
 							/>
 						</div>
 					</div>

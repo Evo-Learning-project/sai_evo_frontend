@@ -216,6 +216,10 @@ export const it = {
 			"Gli studenti attivi sono studenti che hanno partecipato ad almeno un esame o hanno iniziato autonomamente almeno un'esercitazione nel corso.",
 		search_students: "Cerca studenti",
 		enroll_students: "Iscrivi studenti",
+		search_student: "Cerca studente",
+		add_enrolled_students: "Iscrivi studenti",
+		enroll: "Iscrivi",
+		unenroll: "Rimuovi iscrizione",
 		user_history_event_descriptions: {
 			[EventType.EXAM]: "Ha partecipato all'esame",
 			[EventType.SELF_SERVICE_PRACTICE]: "Ha svolto un'esercitazione",
@@ -239,6 +243,7 @@ export const it = {
 		donate_now: "Dona ora",
 	},
 	misc: {
+		selected: "selezionato | selezionati",
 		show_base_editor: "Editor base",
 		insert_latex: "Inserisci formula LaTeX",
 		updated_on: "Aggiornato",

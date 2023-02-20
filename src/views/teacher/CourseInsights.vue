@@ -1,6 +1,6 @@
 <template>
 	<div class="relative flex flex-col flex-grow">
-		<div class="-mt-4 flex w-full flex-col">
+		<div class="flex flex-col w-full -mt-4">
 			<!-- exam checkboxes-->
 			<div
 				v-show="viewMode === 'table'"
@@ -51,7 +51,7 @@
 				</div>
 			</div>
 			<!-- filter button -->
-			<div class="w-full flex flex-col mb-4">
+			<div class="flex flex-col w-full mb-4">
 				<!-- tabs to select view mode -->
 				<Tabs class="mt-6 mb-8" :options="viewModesAsOptions" v-model="viewMode" />
 				<!-- exam filters -->
@@ -82,7 +82,7 @@
 			</div>
 		</div>
 		<!-- exams table -->
-		<div v-show="viewMode === 'table'" class="flex-grow flex flex-col">
+		<div v-show="viewMode === 'table'" class="flex flex-col flex-grow">
 			<div class="flex-grow overflow-y-auto">
 				<DataTable
 					:class="{ 'opacity-60': loading }"
@@ -108,20 +108,21 @@
 			</div>
 		</div>
 		<!-- enrolled students list-->
-		<div v-show="viewMode === 'cards'" class="flex-grow flex flex-col w-full">
+		<div v-show="viewMode === 'cards'" class="flex flex-col flex-grow w-full">
 			<!-- filters & controls -->
 			<div
-				class="flex md:flex-row flex-col md:space-y-0 space-y-4 w-full mb-12 items-center"
+				class="flex flex-col items-center w-full mb-12 space-y-4 md:flex-row md:space-y-0"
 			>
 				<TextInput
-					class="md:w-1/2 w-full"
+					v-if="false"
+					class="w-full md:w-1/2"
 					:searchBar="true"
 					:leftIcon="'search'"
 					:placeholder="$t('course_insights.search_students')"
 					v-model="userSearchText"
 				/>
-				<Btn class="md:ml-auto w-full md:w-max" @click="onEnrollUsers()">
-					<span class="material-icons mr-2">person_add</span>
+				<Btn class="w-full md:ml-auto md:w-max" @click="onEnrollUsers()">
+					<span class="mr-2 material-icons">person_add</span>
 					{{ $t("course_insights.enroll_students") }}
 				</Btn>
 			</div>
@@ -132,9 +133,9 @@
 					class="
 						flex flex-col
 						items-center
-						mt-12
 						w-full
 						h-full
+						mt-12
 						md:col-span-3
 						2xl:col-span-4
 					"
@@ -156,8 +157,12 @@
 			:showDialog="showBlockingDialog"
 			@yes="resolveBlockingDialog(true)"
 			@no="resolveBlockingDialog(false)"
+			:yesText="enrollingUsers ? $t('misc.wait') : $t('course_insights.enroll')"
+			:noText="$t('dialog.default_cancel_text')"
+			:disableOk="usersToEnrollCount === 0 || enrollingUsers"
 			:large="true"
 			:footerBorder="true"
+			:loading="enrollingUsers"
 		>
 			<template v-slot:title>{{ $t("course_insights.add_enrolled_students") }}</template>
 			<template v-slot:body>
@@ -261,6 +266,7 @@ export default defineComponent({
 				ids: string[];
 				emails: string[];
 			},
+			enrollingUsers: false,
 		};
 	},
 	methods: {
@@ -301,6 +307,28 @@ export default defineComponent({
 			const choice = await this.getBlockingBinaryDialogChoice();
 			if (!choice) {
 				this.showBlockingDialog = false;
+				return;
+			}
+			try {
+				this.enrollingUsers = true;
+				await this.mainStore.enrollUsersInCourse({
+					courseId: this.courseId,
+					userIds: this.usersToEnroll.ids,
+					emails: this.usersToEnroll.emails,
+				});
+				// re-fetch enrolled users to include new ones
+				await this.mainStore.getCourseEnrolledUsers({ courseId: this.courseId });
+				// cleanup
+				this.metaStore.showSuccessFeedback();
+				this.usersToEnroll = {
+					ids: [],
+					emails: [],
+				};
+			} catch (e) {
+				setErrorNotification(e);
+			} finally {
+				this.enrollingUsers = false;
+				this.showBlockingDialog = false;
 			}
 		},
 		downloadReport() {
@@ -332,6 +360,9 @@ export default defineComponent({
 		...mapStores(useMainStore, useMetaStore),
 		practiceParticipations() {
 			return [];
+		},
+		usersToEnrollCount() {
+			return this.usersToEnroll.emails.length + this.usersToEnroll.ids.length;
 		},
 		usersAsOptions(): SelectableOption[] {
 			return this.mainStore.paginatedUsers.data.map(u => ({
