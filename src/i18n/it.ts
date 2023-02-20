@@ -194,6 +194,7 @@ export const it = {
 			" oppure una stringa.",
 	},
 	course_insights: {
+		select_closed_exams: "Seleziona esami chiusi",
 		filter_exams: "Filtra esami",
 		score_sum: "Somma",
 		score_average: "Media",
