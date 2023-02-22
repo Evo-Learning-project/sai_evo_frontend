@@ -42,7 +42,7 @@
 
 <script lang="ts">
 /* eslint-disable no-constant-condition */
-import { ESCAPED_CLOZE_SEPARATOR } from "@/const";
+import { CLOZE_PLACEHOLDER_REGEX } from "@/const";
 import {
 	EventParticipationSlot,
 	EventParticipationSlotSubmission,
@@ -107,20 +107,20 @@ export default defineComponent({
 			// Returns a template to be compiled and embedded as the exercise
 			// text. The template combines the exercise text with dropdown
 			// inputs in correspondence of CLOZE_SEPARATOR sequences.
-			let i = 0;
-			return this.slot?.exercise.text.replace(
-				new RegExp(ESCAPED_CLOZE_SEPARATOR, "g"),
-				_ => {
-					const ret = this.slot.sub_slots[i]
-						? `
+			const processedIds: string[] = []; // to prevent duplicates
+			return this.slot?.exercise.text.replace(CLOZE_PLACEHOLDER_REGEX, (_, clozeId) => {
+				const clozeSlot = this.slot.sub_slots
+					.filter(s => !processedIds.includes(s.exercise.id))
+					.find(s => s.exercise.id == clozeId);
+				const ret = clozeSlot
+					? `
             <select
-                ${false && this.readOnly ? 'disabled="true"' : ""}
                 class="inline material-select"
-                value="${this.slot.sub_slots[i]?.selected_choices[0] ?? ""}"
+                value="${clozeSlot.selected_choices[0] ?? ""}"
                 ${
-									this.slot.sub_slots[i].id
+									clozeSlot.id
 										? `@change="$emit('selectionUpdate', {
-                    slotId: ${this.slot.sub_slots[i].id},
+                    slotId: ${clozeSlot.id},
                     value: $event.target.value
                 })"`
 										: ""
@@ -129,7 +129,7 @@ export default defineComponent({
                 <option ${
 									this.readOnly ? 'disabled="true"' : ""
 								} value="">${getTranslatedString("misc.select_one")}</option>
-                ${(this.slot.sub_slots[i]?.exercise.choices ?? []).map(
+                ${(clozeSlot.exercise.choices ?? []).map(
 									c => `
                     <option
                         ${this.readOnly ? 'disabled="true"' : ""}
@@ -139,31 +139,30 @@ export default defineComponent({
 								)}
             </select>
             ` +
-						  (this.showScores
-								? `<span class="ml-2 text-base material-icons-outlined ${
-										this.correctChoices.includes(
-											this.slot.sub_slots[i].selected_choices[0] ?? "",
-										)
-											? "text-success"
-											: "text-danger-dark"
-								  }"
+					  (this.showScores
+							? `<span class="ml-2 text-base material-icons-outlined ${
+									this.correctChoices.includes(clozeSlot.selected_choices[0] ?? "")
+										? "text-success"
+										: "text-danger-dark"
+							  }"
             >
                 ${
-									this.correctChoices.includes(
-										this.slot.sub_slots[i].selected_choices[0] ?? "",
-									)
+									this.correctChoices.includes(clozeSlot.selected_choices[0] ?? "")
 										? "done"
 										: "close"
 								}
             </span>
         `
-								: "")
-						: "";
+							: "")
+					: `<span class="text-danger-dark">${getTranslatedString(
+							"cloze.invalid_cloze_id",
+					  )}</span>`;
 
-					i++;
-					return ret;
-				},
-			);
+				if (clozeSlot) {
+					processedIds.push(clozeSlot.exercise.id);
+				}
+				return ret;
+			});
 		},
 	},
 	components: { AbstractExercise, VRuntimeTemplate, ProcessedTextFragment },

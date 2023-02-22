@@ -348,10 +348,8 @@ export const courseSelectionOptions: SelectableOption[] = [
 	{ value: "C", content: "Corso C" },
 ];
 
-export const CLOZE_SEPARATOR = "[[?]]";
-export const ESCAPED_CLOZE_SEPARATOR = CLOZE_SEPARATOR.replace(/\[/g, "\\[")
-	.replace(/\]/g, "\\]")
-	.replace(/\?/g, "\\?");
+export const CLOZE_PLACEHOLDER_REGEX =  new RegExp("\\[\\[([A-Za-z0-9]+)\\]\\]", "g")
+export const CLOZE_SEPARATOR = (id: string)=> `[[${id}]]`;
 
 // returns the headers for the CourseInsights table
 export const getCourseInsightsHeaders = (
