@@ -70,7 +70,22 @@
 				</div>
 			</div>
 		</div>
-		<!-- TODO implement for cloze exercises -->
+
+		<div v-else-if="isClozeExercise" class="grid grid-cols-1 md:grid-cols-2 md:gap-18">
+			<div
+				v-for="(subExerciseData, index) in clozeSubExercisesChoicesFrequencyChartData"
+				:key="'cloze-' + index + 'data'"
+			>
+				<h5 class="ml-1">{{ $t("event_stats.cloze_stats_title") }} {{ index + 1 }}</h5>
+				<Bar
+					:chart-data="subExerciseData"
+					:chart-options="exerciseChoicesBarChartOptions"
+					:height="mediaQueryMdMatches ? 30 : 100"
+					:width="100"
+				/>
+			</div>
+		</div>
+
 		<div v-else>
 			<p class="text-muted">
 				{{ $t("event_stats.no_stats_available_for_exercise") }}
@@ -168,6 +183,9 @@ export default defineComponent({
 		isOpenAnswerExercise(): boolean {
 			return this.exercise.exercise_type === ExerciseType.OPEN_ANSWER;
 		},
+		isClozeExercise(): boolean {
+			return this.exercise.exercise_type === ExerciseType.COMPLETION;
+		},
 		selectedChoicesFrequency(): DataFrequency<ExerciseChoice>[] {
 			if ((this.exercise.choices?.length ?? 0) === 0) {
 				return [];
@@ -183,12 +201,34 @@ export default defineComponent({
 			}
 			return getTestCasePassingFrequencyFor(this.exercise, this.slots);
 		},
+		clozeSubExercisesChoicesFrequencyChartData(): TChartData<"bar", number[], unknown>[] {
+			return (this.exercise.sub_exercises ?? []).map(e => {
+				const subExerciseChoiceFrequency = getChoiceSelectionFrequencyFor(
+					e,
+					this.slots.flatMap(s => s.sub_slots).filter(s => s.exercise.id == e.id),
+				);
+				return {
+					labels: subExerciseChoiceFrequency.map(r =>
+						makeLabelText(r.datum.text).slice(0, 100),
+					),
+					datasets: [
+						{
+							data: subExerciseChoiceFrequency.map(r => r.frequency),
+							...exerciseChoiceDatasetSettings,
+							backgroundColor: subExerciseChoiceFrequency.map(r =>
+								this.getCorrectChoices(e).includes(r.datum.id)
+									? "#10B981b3"
+									: "#e5e7ebb3",
+							),
+						},
+					],
+				};
+			});
+		},
 		selectedChoicesFrequencyChartData(): TChartData<"bar", number[], unknown> {
 			return {
-				labels: this.selectedChoicesFrequency.map(
-					r => makeLabelText(r.datum.text).slice(0, 100),
-					// +
-					// (makeLabelText(r.datum.text).length <= 100 ? "" : "...")
+				labels: this.selectedChoicesFrequency.map(r =>
+					makeLabelText(r.datum.text).slice(0, 100),
 				),
 				datasets: [
 					{
