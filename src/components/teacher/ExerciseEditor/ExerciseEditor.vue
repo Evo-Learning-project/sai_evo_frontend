@@ -270,7 +270,7 @@
 							class="w-full"
 							v-if="modelValue.exercise_type === ExerciseType.COMPLETION"
 						>
-							<ClozeExercise :slot="fakeSlot" />
+							<ClozeExercise :slot="modelValueWrapperSlot" />
 						</div>
 					</div>
 
@@ -1078,7 +1078,6 @@ export default defineComponent({
 						fakeSlot.execution_results = executionResults[sId];
 					}
 				});
-				//this.solutionTestSlots[solutionId] = fakeSlot;
 			} catch (e) {
 				setErrorNotification(e);
 			} finally {
@@ -1547,7 +1546,7 @@ export default defineComponent({
 		stateDropdownId() {
 			return "exercise_state_" + this.elementId;
 		},
-		fakeSlot() {
+		modelValueWrapperSlot() {
 			return getFakeEventParticipationSlot(this.modelValue);
 		},
 	},
