@@ -645,7 +645,11 @@
 				>
 					<template v-slot:title>
 						{{ $t("exercise_editor.editing_cloze") }}
-						{{ editingClozeSubExerciseId + 1 }}
+						{{
+							modelValue.sub_exercises?.findIndex(
+								s => s.id == editingClozeSubExerciseId,
+							) + 1
+						}}
 					</template>
 					<template v-slot:body v-if="!!editingCloze">
 						<ExerciseEditor
