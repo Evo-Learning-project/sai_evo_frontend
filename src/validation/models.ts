@@ -7,6 +7,7 @@ import {
 	ruleTypeSet,
 	tagBasedRulePopulated,
 	tagBasedRuleSatisfied,
+	clozeIdsAreValid,
 } from "./validators";
 
 export const courseValidation = {
@@ -67,6 +68,7 @@ export const exerciseChoiceValidation = {
 export const baseExerciseValidation = {
 	text: {
 		required,
+		clozeIdsAreValid,
 	},
 	exercise_type: {
 		required,

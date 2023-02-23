@@ -10,6 +10,7 @@ import {
 	EventTemplateRule,
 } from "@/models";
 import { useMainStore } from "@/stores/mainStore";
+import { CLOZE_PLACEHOLDER_REGEX } from "@/const";
 
 export const courseNameUnique = (name: string, course: Course): boolean => {
 	const mainStore = useMainStore();
@@ -55,3 +56,13 @@ export const atLeastOneCorrectChoice = (
 	}
 	return choices.some(c => (c.correctness ?? 0) > 0);
 };
+
+// checks that, for a cloze exercise, all cloze placeholders in its text
+// correspond to sub-exercises of the exercise
+export const clozeIdsAreValid = (text: string, exercise: Exercise) =>
+	exercise.exercise_type !== ExerciseType.COMPLETION ||
+	[...text.matchAll(CLOZE_PLACEHOLDER_REGEX)]
+		.map(
+			m => m[1], // capture group match, in this case the id of the cloze sub exercise
+		)
+		.every(id => (exercise.sub_exercises ?? []).some(e => e.id == id));

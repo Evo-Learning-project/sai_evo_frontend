@@ -154,7 +154,7 @@ export default defineComponent({
             </span>
         `
 							: "")
-					: `<span class="text-danger-dark">${getTranslatedString(
+					: `<span class="p-1 rounded-sm text-danger-dark bg-danger bg-opacity-20">${getTranslatedString(
 							"cloze.invalid_cloze_id",
 					  )}</span>`;
 

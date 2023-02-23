@@ -765,6 +765,9 @@ export const it = {
 		no_choice_penalty_warning:
 			"Non hai impostato una penalità (punteggio negativo) per alcuna scelta. Gli studenti potranno ottenere il punteggio massimo per questo esercizio selezionando tutte le scelte disponibili.",
 	},
+	cloze: {
+		invalid_cloze_id: "(ID sotto-domanda invalido)"
+	},
 	exercise_wrapper: {
 		select: "Seleziona",
 	},
@@ -892,6 +895,7 @@ export const it = {
 		},
 		exercise: {
 			modelValue: {
+				"text-clozeIdsAreValid": "Hai inserito degli ID errati per le sotto-domande",
 				"text-required": "Il testo dell'esercizio non può essere vuoto.",
 				"choices-choicesRequiredIfMultipleChoiceExercise":
 					"L'esercizio deve avere almeno una scelta selezionabile.",
