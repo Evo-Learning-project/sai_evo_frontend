@@ -766,7 +766,7 @@ export const it = {
 			"Non hai impostato una penalità (punteggio negativo) per alcuna scelta. Gli studenti potranno ottenere il punteggio massimo per questo esercizio selezionando tutte le scelte disponibili.",
 	},
 	cloze: {
-		invalid_cloze_id: "(ID sotto-domanda invalido)"
+		invalid_cloze_id: "(ID sotto-domanda invalido)",
 	},
 	exercise_wrapper: {
 		select: "Seleziona",
@@ -1123,7 +1123,8 @@ export const it = {
 			private_tags:
 				"Questi tag non verranno mai mostrati agli studenti e possono essere utilizzati per organizzare gli esercizi e aggiungerli agli esami",
 			clozes:
-				"Per aggiungere una sotto-domanda, posiziona il cursore nella posizione del testo dove vuoi aggiungerla e clicca Aggiungi domanda. Per modificare una sotto-domanda, clicca sul simbolo [[?]] corrispondente e clicca Modifica domanda.",
+				"Per aggiungere una sotto-domanda, posiziona il cursore nella posizione del testo dove vuoi aggiungerla e clicca Aggiungi domanda. \
+				Per modificare una sotto-domanda, clicca sul segnaposto corrispondente, per esempio [[1234]], e clicca Modifica domanda.",
 		},
 		event_template_rule_editor: {
 			weight: "Punteggio massimo ottenibile per gli esercizi di questo slot",

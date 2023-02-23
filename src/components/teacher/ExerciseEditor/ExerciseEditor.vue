@@ -243,7 +243,7 @@
 					</div>
 
 					<!-- exercise text -->
-					<div class="flex flex-col my-6 space-y-2 xl:flex-row xl:space-x-2 xl:space-y-0">
+					<div class="flex flex-col my-6 space-y-4 xl:flex-row xl:space-x-2 xl:space-y-0">
 						<TextEditor
 							v-if="!cloze"
 							:modelValue="modelValue.text"
@@ -267,16 +267,19 @@
 						</TextEditor>
 						<!-- cloze text preview -->
 						<div
-							class="w-full"
+							class="relative w-full"
 							v-if="modelValue.exercise_type === ExerciseType.COMPLETION"
 						>
+							<p class="absolute top-2 left-1.5 origin-0 fixed-label w-full">
+								{{ $t("misc.preview") }}
+							</p>
 							<ClozeExercise :slot="modelValueWrapperSlot" />
 						</div>
 					</div>
 
 					<!-- cloze controls -->
 					<div
-						class="flex items-start w-full space-y-1 md:space-y-0"
+						class="flex items-start w-full mb-8 space-y-1 md:space-y-0"
 						v-if="modelValue.exercise_type === ExerciseType.COMPLETION"
 					>
 						<Btn
@@ -1327,7 +1330,9 @@ export default defineComponent({
 		},
 		async onAddCloze() {
 			const selection = this.textEditorInstance.getSelection();
-			const insertionIndex = selection.index + selection.length;
+			const insertionIndex = selection
+				? selection.index + selection.length
+				: this.textEditorInstance.getLength();
 
 			try {
 				this.addingCloze = true;
