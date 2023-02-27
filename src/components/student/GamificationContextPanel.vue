@@ -7,12 +7,12 @@
 			<div class="flex items-center space-x-2">
 				<h5 class="text-lg font-medium">{{ goal.name }}</h5>
 				<p class="text-sm text-muted -mb-1.25px">
-					Livello attuale:
+					{{ $t("gamification.current_level") }}:
 					<strong>{{ mainStore.progressByGoalId[goal.id]?.current_level ?? 0 }}</strong>
 				</p>
 			</div>
 			<div>
-				<p class="mb-1">Per il prossimo livello:</p>
+				<p class="mb-1">{{ $t("gamification.to_reach_next_level") }}:</p>
 				<div class="grid grid-cols-3 gap-x-6">
 					<div
 						class="flex flex-col items-center whitespace-normal space-y-1"

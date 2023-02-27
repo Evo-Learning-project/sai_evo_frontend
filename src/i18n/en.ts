@@ -1,4 +1,11 @@
-import { ExerciseState, ExerciseType, EventState, ExerciseTestCaseType } from "@/models";
+import { GamificationAction } from "@/gamification";
+import {
+	ExerciseState,
+	ExerciseType,
+	EventState,
+	ExerciseTestCaseType,
+	CourseTreeNodeType,
+} from "@/models";
 import {
 	ROUTE_TITLE_COURSE_NAME_TOKEN,
 	ROUTE_TITLE_EVENT_NAME_TOKEN,
@@ -18,7 +25,7 @@ export const en = {
 		rule_amount_2: "do you want to see?",
 	},
 	headings: {
-		course_tree: "Materiale " + ROUTE_TITLE_COURSE_NAME_TOKEN,
+		course_tree: "Material " + ROUTE_TITLE_COURSE_NAME_TOKEN,
 		exercise_solution_threads: "Soluzioni esercizi " + ROUTE_TITLE_COURSE_NAME_TOKEN,
 		login: "Login",
 		course_title: ROUTE_TITLE_COURSE_NAME_TOKEN,
@@ -41,7 +48,7 @@ export const en = {
 		student_exercise_solution_thread: "Discussione esercizio",
 		student_exercise_solution_threads: "Esercizi popolari",
 		student_favorites: "Contenuti salvati",
-		student_course_leaderboard: "Classifica",
+		student_course_leaderboard: "Leaderboard",
 	},
 	course_tree: {
 		poll_results: "Risultati",
@@ -51,7 +58,7 @@ export const en = {
 		new_poll_choice: "Nuova",
 		poll_choice_text: "Testo opzione",
 		poll_closed: "Questo sondaggio è chiuso",
-		poll_title: "Sondaggio",
+		poll_title: "Poll",
 		publish_poll: "Pubblica",
 		poll_text: "Testo del sondaggio",
 		poll_choices: "Opzioni",
@@ -86,6 +93,13 @@ export const en = {
 		lesson_creation_date: "Creata il",
 		lesson_attachments: "Attachments",
 		add_attachment: "Add attachment",
+	},
+	course_tree_node_types: {
+		[CourseTreeNodeType.FileNode]: "File",
+		[CourseTreeNodeType.TopicNode]: "Section",
+		[CourseTreeNodeType.LessonNode]: "Lesson",
+		[CourseTreeNodeType.PollNode]: "Poll",
+		[CourseTreeNodeType.AnnouncementNode]: "Announcement",
 	},
 	courses: {
 		access_as_student: "Access as student",
@@ -127,6 +141,7 @@ export const en = {
 		tab_text: "Text",
 		tab_testcases: "Test cases",
 		tab_editor: "Editor",
+		tab_execution_results: "Results",
 		run_code: "Run",
 		running_code: "Running your code...",
 		execution_results: "Execution results",
@@ -276,6 +291,8 @@ export const en = {
 		[ExerciseState.DRAFT]: "Draft",
 	},
 	misc: {
+		updated_on: "Updated on",
+		wait: "Wait...",
 		file_upload: "Upload file",
 		show_preview: "Show preview",
 		hide_preview: "Hide preview",
@@ -288,6 +305,28 @@ export const en = {
 		edit: "Edit",
 		select: "Select",
 		preview: "Preview",
+	},
+	gamification: {
+		to_reach_next_level: "To reach next level",
+		your_reputation: "Your reputation",
+		your_leaderboard_position: "Your leaderboard position",
+		your_badges: "Your badges",
+		show_panel: "Show details",
+		goals: "Goals",
+		no_leaderboard: "The leaderboard is empty... for now",
+		no_goals: "There are no study goals",
+		current_level: "Current level",
+		actions: {
+			[GamificationAction.SUBMIT_EXERCISE_SOLUTION]: "Propose a solution to an exercise",
+			[GamificationAction.EXERCISE_SOLUTION_APPROVED]:
+				"Get teacher's approval to a solution you proposed",
+			[GamificationAction.TURN_IN_PRACTICE_PARTICIPATION]: "Complete a practice session",
+			[GamificationAction.CORRECTLY_ANSWERED_EXERCISE]: "Answer correctly to an exercise",
+			[GamificationAction.EXERCISE_SOLUTION_UPVOTED]:
+				"Get a thumbs up to a solution you proposed",
+			[GamificationAction.SUBMIT_FIRST_EXERCISE_SOLUTION]:
+				"Be the first to propose a solution to an exercise",
+		},
 	},
 	help_texts: {
 		student_practice_rule_amount: "Quanti esercizi con questo tag vuoi vedere?",
