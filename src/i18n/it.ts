@@ -1,4 +1,4 @@
-import { DataFormat } from "./../integrations/types";
+import { DataFormat } from "@/integrations/moodle/types";
 import { ReportField } from "../reports/examParticipations/types";
 import {
 	CoursePrivilege,
