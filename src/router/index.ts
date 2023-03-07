@@ -15,6 +15,7 @@ import CourseTree from "../views/course_tree/CourseTree.vue";
 import NodeDetail from "../views/course_tree/NodeDetail.vue";
 import CourseExams from "../views/teacher/CourseExams.vue";
 import CourseInsights from "../views/teacher/CourseInsights.vue";
+import CourseIntegrations from "../views/teacher/CourseIntegrations.vue";
 import CoursePermissions from "../views/teacher/CoursePermissions.vue";
 import EventEditor from "../components/teacher/EventEditor/EventEditor.vue";
 import EventParticipationPage from "../views/student/EventParticipationPage.vue";
@@ -194,6 +195,16 @@ const routes: Array<RouteRecordRaw> = [
 				path: "courses/:courseId/insights",
 				name: "CourseInsights",
 				component: CourseInsights,
+				meta: {
+					routeTitle: _("headings.course_insights"),
+					sidebarOptions: courseDashboardSidebarOptions,
+					tags: ["general"],
+				},
+			},
+			{
+				path: "courses/:courseId/integrations",
+				name: "CourseIntegrations",
+				component: CourseIntegrations,
 				meta: {
 					routeTitle: _("headings.course_insights"),
 					sidebarOptions: courseDashboardSidebarOptions,

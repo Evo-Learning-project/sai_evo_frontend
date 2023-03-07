@@ -171,6 +171,30 @@ export default defineComponent({
 							(a.id < b.id ? -1 : 1);
 			});
 		},
+		// testExtraScopes() {
+		// 	const SCOPES = [
+		// 		"https://www.googleapis.com/auth/classroom.courses.readonly",
+		// 		"https://www.googleapis.com/auth/classroom.announcements",
+		// 		"https://www.googleapis.com/auth/classroom.courseworkmaterials",
+		// 		"https://www.googleapis.com/auth/classroom.coursework.students",
+		// 		"https://www.googleapis.com/auth/classroom.rosters",
+		// 		"https://www.googleapis.com/auth/classroom.profile.emails",
+		// 	];
+		// 	var options = new (window as any).gapi.auth2.SigninOptionsBuilder({
+		// 		scope: "email https://www.googleapis.com/auth/drive " + SCOPES.join(" "),
+		// 	});
+
+		// 	const googleUser = this.$gAuth.instance.currentUser.get(); //.get(); //(window as any).gapi.auth2.currentUser.get();
+		// 	console.log("CURRENT", this.$gAuth.instance.currentUser.get());
+		// 	googleUser.grant(options).then(
+		// 		function (success) {
+		// 			console.log(JSON.stringify({ message: "success", value: success }));
+		// 		},
+		// 		function (fail) {
+		// 			alert(JSON.stringify({ message: "fail", value: fail }));
+		// 		},
+		// 	);
+		// },
 	},
 	computed: {
 		...mapStores(useMainStore, useMetaStore),

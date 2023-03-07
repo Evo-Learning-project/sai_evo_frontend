@@ -9,6 +9,7 @@ Vue3GoogleOauth = reactive({
 });
 const googleAuth = (function () {
 	function installClient() {
+		// create a <script> tag to load the client and resolve after it's loaded
 		const apiUrl = "https://apis.google.com/js/api.js";
 		return new Promise(resolve => {
 			let script = document.createElement("script");
@@ -69,6 +70,7 @@ const googleAuth = (function () {
 					reject(false);
 					return;
 				}
+				console.log("FN", this.instance.signIn);
 				this.instance
 					.signIn()
 					.then(googleUser => {

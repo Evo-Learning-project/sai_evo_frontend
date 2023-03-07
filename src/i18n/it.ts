@@ -227,6 +227,8 @@ export const it = {
 		donate_now: "Dona ora",
 	},
 	misc: {
+		popup_blocked:
+			"Il tuo browser ha bloccato l'apertura di una nuova scheda. Per favore, abilita l'apertura di schede e pop-up per proseguire",
 		show_base_editor: "Editor base",
 		insert_latex: "Inserisci formula LaTeX",
 		updated_on: "Aggiornato",
@@ -1283,5 +1285,14 @@ export const it = {
 		extras_detected_tags: "Tag rilevati",
 		extras_detected_tags_description:
 			"Clicca sui tag che vuoi aggiungere agli esercizi importati. I tag selezionati verranno aggiunti come tag pubblici.",
+	},
+	integrations: {
+		classroom: {
+			enable: "Abilita integrazione con Google Classroom per questo corso",
+			grant_scopes_btn: "Abilita permessi",
+			grant_scopes_to_use_integration:
+				"Per utilizzare l'integrazione con Google Classroom, abilita i permessi necessari.",
+			you_have_outstanding_scopes: "Non hai ancora abilitato tutti i permessi necessari",
+		},
 	},
 };
