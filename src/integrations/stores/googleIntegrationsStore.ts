@@ -1,10 +1,17 @@
 import { defineStore } from "pinia";
 import axios from "axios";
+import {
+	GoogleClassroomCourseData,
+	GoogleClassroomCourseTwin,
+} from "../classroom/interfaces";
 
 export const useGoogleIntegrationsStore = defineStore("googleIntegration", {
 	state: () => ({
 		// Google OAuth scopes that the user has granted access to
 		authorizedScopes: [] as string[],
+		// maps course id's to their course twins (i.e. the Classroom course to
+		// which they are paired), if they exist
+		courseTwins: {} as Record<string, GoogleClassroomCourseTwin>,
 	}),
 	getters: {},
 	actions: {
@@ -25,6 +32,48 @@ export const useGoogleIntegrationsStore = defineStore("googleIntegration", {
 			const response = await axios.get(`/integrations/classroom/authorized_scopes/`);
 			this.authorizedScopes = response.data;
 			return this.authorizedScopes;
+		},
+		async getCourseTwin(courseId: string): Promise<GoogleClassroomCourseTwin | null> {
+			try {
+				const response = await axios.get(
+					`/integrations/classroom/course/?course_id=${courseId}`,
+				);
+				this.courseTwins[courseId] = response.data;
+				return response.data;
+			} catch (e) {
+				console.error(e);
+				return null;
+			}
+		},
+		async createCourseTwin(
+			courseId: string,
+			classroomCourseId: string,
+		): Promise<GoogleClassroomCourseTwin> {
+			const response = await axios.post(
+				`/integrations/classroom/course/?course_id=${courseId}`,
+				{
+					classroom_course_id: classroomCourseId,
+				},
+			);
+			this.courseTwins[courseId] = response.data;
+			return response.data;
+		},
+		async partialUpdateCourseTwin(
+			courseId: string,
+			payload: Partial<GoogleClassroomCourseTwin>,
+		): Promise<GoogleClassroomCourseTwin> {
+			const response = await axios.patch(
+				`/integrations/classroom/course/?course_id=${courseId}`,
+				payload,
+			);
+			this.courseTwins[courseId] = response.data;
+			return response.data;
+		},
+		async getGoogleClassroomCoursesTaughtByCurrentUser(): Promise<
+			GoogleClassroomCourseData[]
+		> {
+			const response = await axios.get(`/integrations/classroom/classroom_courses/`);
+			return response.data;
 		},
 	},
 });

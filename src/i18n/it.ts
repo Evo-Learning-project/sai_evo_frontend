@@ -227,6 +227,8 @@ export const it = {
 		donate_now: "Dona ora",
 	},
 	misc: {
+		an_error_occurred: "Si è verificato un errore",
+		try_again: "Riprova",
 		popup_blocked:
 			"Il tuo browser ha bloccato l'apertura di una nuova scheda. Per favore, abilita l'apertura di schede e pop-up per proseguire",
 		show_base_editor: "Editor base",
@@ -1288,11 +1290,15 @@ export const it = {
 	},
 	integrations: {
 		classroom: {
+			select_course_to_pair:
+				"Seleziona il corso di Google Classroom che vuoi associare a ",
 			enable: "Abilita integrazione con Google Classroom per questo corso",
 			grant_scopes_btn: "Abilita permessi",
 			grant_scopes_to_use_integration:
 				"Per utilizzare l'integrazione con Google Classroom, abilita i permessi necessari.",
 			you_have_outstanding_scopes: "Non hai ancora abilitato tutti i permessi necessari",
+			pair_a_classroom_course: "Associa un corso Google Classroom",
+			is_paired_with: "è associato con il corso",
 		},
 	},
 };
