@@ -18,26 +18,36 @@
 			}}</Toggle>
 		</div>
 		<!-- integration settings-->
-		<div class="mt-8 flex flex-col space-y-4" v-if="integrationEnabled">
+		<div class="mt-12 flex flex-col space-y-4" v-if="integrationEnabled">
 			<p class="">
 				{{ currentCourse.name }} {{ $t("integrations.classroom.is_paired_with") }}:
 			</p>
-			<GoogleClassroomCourseItem :course="twinCourse.data" />
+			<GoogleClassroomCourseItem :course="twinCourse.data" class="w-1/2" />
 		</div>
 		<Dialog
 			:showDialog="showBlockingDialog"
-			@yes="resolveBlockingDialog(true)"
+			@yes="resolveBlockingDialog(!(classroomCourses.length === 0))"
 			@no="resolveBlockingDialog(false)"
-			:yesText="creatingCourseTwin ? $t('misc.wait') : $t('dialog.default_ok_text')"
+			:yesText="
+				creatingCourseTwin
+					? $t('misc.wait')
+					: classroomCourses.length === 0
+					? $t('dialog.default_ok_text')
+					: $t('integrations.classroom.pair_course')
+			"
 			:noText="$t('dialog.default_cancel_text')"
-			:disableOk="selectedClassroomCourseId === null || creatingCourseTwin"
+			:confirmOnly="classroomCourses.length === 0"
+			:disableOk="
+				(classroomCourses.length > 0 && selectedClassroomCourseId === null) ||
+				creatingCourseTwin
+			"
 			:large="true"
 		>
 			<template v-slot:title>{{
 				$t("integrations.classroom.pair_a_classroom_course")
 			}}</template>
 			<template v-slot:body>
-				<Spinner :size="'xl'" v-if="fetchingClassroomCourses" />
+				<Spinner class="mt-4" :size="'xl'" v-if="fetchingClassroomCourses" />
 				<div v-else class="">
 					<div
 						v-if="errorWhileFetchingClassroomCourses"
@@ -54,10 +64,11 @@
 						}}</Btn>
 					</div>
 					<div v-else>
-						<p class="text-muted">
+						<p v-if="classroomCourses.length > 0" class="text-muted">
 							{{ $t("integrations.classroom.select_course_to_pair") }}
 							{{ currentCourse.name }}.
 						</p>
+						<p v-else>{{ $t("integrations.classroom.you_dont_teach_any_courses") }}</p>
 						<!-- selectable Classroom courses-->
 						<div class="grid md:grid-cols-3 2xl:grid-cols-4 gap-4 mt-8">
 							<GoogleClassroomCourseItem

@@ -130,6 +130,11 @@ export default defineComponent({
 			default: false,
 		},
 	},
+	watch: {
+		modelValue() {
+			this.syncCheckboxState();
+		},
+	},
 	created() {
 		this.id = uuid4();
 	},
@@ -138,6 +143,20 @@ export default defineComponent({
 			id: "",
 		};
 	},
+	methods: {
+		syncCheckboxState() {
+			// this is needed to keep the `checked` attribute of the checkbox element
+			// in sync with the value of `modelValue`. whenever either an `update:modelValue`
+			// event is emitted, or the value of the `modelValue` prop changes, we make sure
+			// the checkbox is checked if and only if the value is truthy
+			this.$nextTick(() => {
+				const checkboxElement = document.getElementById(this.id) as HTMLInputElement;
+				if (checkboxElement && checkboxElement.checked !== this.modelValue) {
+					checkboxElement.checked = this.modelValue as boolean;
+				}
+			});
+		},
+	},
 	computed: {
 		proxyModelValue: {
 			get() {
@@ -145,6 +164,7 @@ export default defineComponent({
 			},
 			set(val: unknown) {
 				this.$emit("update:modelValue", val);
+				this.syncCheckboxState();
 			},
 		},
 	},

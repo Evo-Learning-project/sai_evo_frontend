@@ -1299,6 +1299,9 @@ export const it = {
 			you_have_outstanding_scopes: "Non hai ancora abilitato tutti i permessi necessari",
 			pair_a_classroom_course: "Associa un corso Google Classroom",
 			is_paired_with: "è associato con il corso",
+			you_dont_teach_any_courses:
+				"Non è stato possibile trovare corsi su Google Classroom di cui sei un insegnante. Prova con un altro account.",
+			pair_course: "Associa",
 		},
 	},
 };
