@@ -78,6 +78,7 @@ export const it = {
 		course_exams: "Esami " + ROUTE_TITLE_COURSE_NAME_TOKEN,
 		course_permissions: "Permessi " + ROUTE_TITLE_COURSE_NAME_TOKEN,
 		course_insights: "Statistiche " + ROUTE_TITLE_COURSE_NAME_TOKEN,
+		course_integrations: "Integrazioni per " + ROUTE_TITLE_COURSE_NAME_TOKEN,
 		course_list: "Corsi",
 		exam_progress: "Progresso " + ROUTE_TITLE_EVENT_NAME_TOKEN,
 		exam_results: "Risultati " + ROUTE_TITLE_EVENT_NAME_TOKEN,
@@ -227,6 +228,7 @@ export const it = {
 		donate_now: "Dona ora",
 	},
 	misc: {
+		disable: "Disabilita",
 		an_error_occurred: "Si è verificato un errore",
 		try_again: "Riprova",
 		popup_blocked:
@@ -426,6 +428,7 @@ export const it = {
 		course_dashboard_exercises: "Esercizi",
 		exercise_solution_threads: "Soluzioni",
 		course_insights: "Statistiche",
+		course_integrations: "Integrazioni",
 		course_dashboard_back_to_courses: "Torna ai corsi",
 		course_list_courses: "Corsi",
 		course_list_new_course: "Nuovo corso",
@@ -1290,6 +1293,8 @@ export const it = {
 	},
 	integrations: {
 		classroom: {
+			introduction:
+				"L'integrazione Evo Learning + Google Classroom ti consente di collegare i corsi che hai creato su Evo ai corsi che insegni su Classroom.",
 			select_course_to_pair:
 				"Seleziona il corso di Google Classroom che vuoi associare a ",
 			enable: "Abilita integrazione con Google Classroom per questo corso",
@@ -1302,6 +1307,19 @@ export const it = {
 			you_dont_teach_any_courses:
 				"Non è stato possibile trovare corsi su Google Classroom di cui sei un insegnante. Prova con un altro account.",
 			pair_course: "Associa",
+			feature_exams:
+				"Pubblica i tuoi esami su Evo e verranno sincronizzati con gli assegnamenti su Classroom",
+			feature_exam_participations:
+				"Tieni traccia su Classroom delle consegne e dei voti assegnati agli studenti per esami che hai creato su Evo",
+			feature_material:
+				"Pubblica lezioni, annunci e materiale su Evo e visualizzali anche nel tuo corso Classroom",
+			feature_roster:
+				"Sincronizza le iscrizioni ai tuoi corsi Classroom con quelle ai corsi associati in Evo",
+			disable_title: "Disabilita integrazione",
+			disable_body:
+				"Se disabiliti l'integrazione, le seguenti funzionalità verranno disattivate:",
+			keep_active: "Mantieni attiva",
+			find_out_features: "Scopri i vantaggi dell'integrazione Evo + Classroom",
 		},
 	},
 };

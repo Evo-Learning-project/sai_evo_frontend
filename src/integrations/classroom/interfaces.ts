@@ -3,7 +3,7 @@ export interface GoogleClassroomCourseData {
 	name: string;
 	alternateLink: string;
 	enrollmentCode: string;
-	descriptionHeading: string;
+	description: string;
 }
 
 export interface GoogleClassroomCourseTwin {

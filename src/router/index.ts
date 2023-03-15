@@ -206,7 +206,7 @@ const routes: Array<RouteRecordRaw> = [
 				name: "CourseIntegrations",
 				component: CourseIntegrations,
 				meta: {
-					routeTitle: _("headings.course_insights"),
+					routeTitle: _("headings.course_integrations"),
 					sidebarOptions: courseDashboardSidebarOptions,
 					tags: ["general"],
 				},

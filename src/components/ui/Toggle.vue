@@ -101,7 +101,7 @@
 				"
 			></label>
 		</div>
-		<label :for="id" v-if="$slots.default">
+		<label class="cursor-pointer" :for="id" v-if="$slots.default">
 			<slot></slot>
 		</label>
 	</div>

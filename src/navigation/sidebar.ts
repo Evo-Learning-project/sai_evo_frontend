@@ -88,6 +88,12 @@ export const courseDashboardSidebarOptions: SidebarOption[] = [
 		requiredPrivileges: [],
 	},
 	{
+		label: _("sidebar_labels.course_integrations"),
+		icon: "extension",
+		routeName: "CourseIntegrations",
+		requiredPrivileges: [],
+	},
+	{
 		label: _("sidebar_labels.course_dashboard_back_to_courses"),
 		icon: "chevron_left",
 		routeName: "TeacherCourseList",
