@@ -45,6 +45,9 @@ export const useGoogleIntegrationsStore = defineStore("googleIntegration", {
 				return null;
 			}
 		},
+		async isGoogleClassroomIntegrationActive(courseId: string) {
+			return (await this.getCourseTwin(courseId))?.enabled ?? false;
+		},
 		async createCourseTwin(
 			courseId: string,
 			classroomCourseId: string,

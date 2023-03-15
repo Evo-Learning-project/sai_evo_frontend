@@ -39,6 +39,7 @@
 				class="
 					flex flex-col
 					mt-2
+					md:mt-10
 					space-y-2
 					md:items-center md:flex-row md:space-y-0 md:space-x-4
 				"
@@ -57,18 +58,33 @@
 					<strong>{{ currentEventStateName }} </strong>.
 				</h5>
 				<!-- publish/unpublish button-->
-				<Btn
-					class=""
+				<div
+					class="flex md:space-x-12 md:flex-row flex-col md:space-y-0 space-y-4"
 					v-if="isDraft || isPlanned"
-					:variant="'primary'"
-					:loading="loading"
-					:disabled="false && isDraft && v$.$invalid && v$.$dirty"
-					@click="
-						isDraft ? (v$.$invalid ? onInvalidSubmission() : publish()) : revertToDraft()
-					"
 				>
-					{{ isDraft ? $t("event_editor.publish") : $t("event_editor.revert_to_draft") }}
-				</Btn>
+					<Btn
+						class=""
+						:variant="'primary'"
+						:loading="loading"
+						:disabled="false && isDraft && v$.$invalid && v$.$dirty"
+						@click="
+							isDraft
+								? v$.$invalid
+									? onInvalidSubmission()
+									: publish()
+								: revertToDraft()
+						"
+					>
+						{{
+							isDraft ? $t("event_editor.publish") : $t("event_editor.revert_to_draft")
+						}}
+					</Btn>
+					<IntegrationSwitch
+						class="md:ml-auto bg-light pl-3 pr-2 rounded md:py-0 py-2"
+						v-if="isDraft && showClassroomIntegrationSwitch"
+						:modelValue="true"
+					/>
+				</div>
 			</div>
 			<!-- helper text for planned exam-->
 			<p v-if="isPlanned" class="mt-10 text-muted">
@@ -96,13 +112,17 @@ import Btn from "@/components/ui/Btn.vue";
 import { getExamPermalink, getFormattedTimestamp } from "@/utils";
 import Timestamp from "@/components/ui/Timestamp.vue";
 import CopyToClipboard from "@/components/ui/CopyToClipboard.vue";
-import { loadingMixin } from "@/mixins";
+import { courseIdMixin, loadingMixin } from "@/mixins";
+import IntegrationSwitch from "@/integrations/classroom/components/IntegrationSwitch.vue";
+import { mapStores } from "pinia";
+import { useGoogleIntegrationsStore } from "@/integrations/stores/googleIntegrationsStore";
 
 export default defineComponent({
 	components: {
 		Btn,
 		Timestamp,
 		CopyToClipboard,
+		IntegrationSwitch,
 	},
 	props: {
 		modelValue: {
@@ -114,15 +134,22 @@ export default defineComponent({
 			default: false,
 		},
 	},
+	mixins: [courseIdMixin],
 	setup() {
 		return {
 			v$: inject("v$"),
 		};
 	},
 	name: "EventStateEditor",
+	async created() {
+		this.showClassroomIntegrationSwitch =
+			await this.googleIntegrationStore.isGoogleClassroomIntegrationActive(this.courseId);
+	},
 	data() {
 		return {
 			shakeErrorBanner: false,
+			publishToClassroom: true,
+			showClassroomIntegrationSwitch: false,
 		};
 	},
 	methods: {
@@ -130,7 +157,9 @@ export default defineComponent({
 			this.$emit("update:modelValue", value);
 		},
 		onInvalidSubmission() {
+			// make errors visible
 			(this.v$ as any).$touch();
+
 			window.scrollTo(
 				0,
 				document.body.scrollHeight || document.documentElement.scrollHeight,
@@ -153,6 +182,7 @@ export default defineComponent({
 		},
 	},
 	computed: {
+		...mapStores(useGoogleIntegrationsStore),
 		eventStateOptions() {
 			return (Object.keys(EventState) as unknown[] as EventState[])
 				.filter((key: string | number) => parseInt(key as string) == key) //(ExerciseType[key] as unknown) == 'number')

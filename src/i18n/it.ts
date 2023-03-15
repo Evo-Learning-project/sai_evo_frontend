@@ -1295,6 +1295,7 @@ export const it = {
 	},
 	integrations: {
 		classroom: {
+			publish_on_classroom: "Pubblica anche su Classroom",
 			introduction:
 				"L'integrazione Evo Learning + Google Classroom ti consente di collegare i corsi che hai creato su Evo ai corsi che insegni su Classroom.",
 			select_course_to_pair:
