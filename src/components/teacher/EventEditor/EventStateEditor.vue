@@ -82,7 +82,7 @@
 					<IntegrationSwitch
 						class="md:ml-auto bg-light pl-3 pr-2 rounded md:py-0 py-2"
 						v-if="isDraft && showClassroomIntegrationSwitch"
-						:modelValue="true"
+						v-model="publishToClassroom"
 					/>
 				</div>
 			</div>
@@ -154,7 +154,10 @@ export default defineComponent({
 	},
 	methods: {
 		emitUpdate(value: EventState) {
-			this.$emit("update:modelValue", value);
+			this.$emit("update:modelValue", {
+				value,
+				fireIntegrationEvent: this.publishToClassroom,
+			});
 		},
 		onInvalidSubmission() {
 			// make errors visible

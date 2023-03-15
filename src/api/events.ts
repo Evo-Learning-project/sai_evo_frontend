@@ -125,8 +125,16 @@ export async function partialUpdateEvent(
 	courseId: string,
 	eventId: string,
 	changes: Partial<Event>,
+	fireIntegrationEvent?: boolean,
 ): Promise<Event> {
-	const response = await axios.patch(`courses/${courseId}/events/${eventId}/`, changes);
+	const response = await axios.patch(
+		`courses/${courseId}/events/${eventId}/${
+			typeof fireIntegrationEvent === "boolean"
+				? `?fire_integration_event=${JSON.stringify(fireIntegrationEvent)}`
+				: ""
+		}`,
+		changes,
+	);
 	return normalizeIncomingEvent(response.data);
 }
 

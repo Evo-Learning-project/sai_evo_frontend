@@ -1758,11 +1758,18 @@ export const useMainStore = defineStore("main", {
 			eventId,
 			changes,
 			mutate = false,
+			fireIntegrationEvent = false,
 		}: EventIdActionPayload & {
 			changes: Partial<Event>;
 			mutate: boolean;
+			fireIntegrationEvent?: boolean;
 		}) {
-			const event = await partialUpdateEvent(courseId, eventId, changes);
+			const event = await partialUpdateEvent(
+				courseId,
+				eventId,
+				changes,
+				fireIntegrationEvent,
+			);
 			if (mutate) {
 				this.setEvent({ eventId, payload: event });
 			}

@@ -165,7 +165,7 @@
 				:loading="updatingState"
 				class="pb-10"
 				:modelValue="modelValue"
-				@update:modelValue="onStateUpdate($event)"
+				@update:modelValue="onStateUpdate($event.value, $event.fireIntegrationEvent)"
 			/>
 		</div>
 
@@ -505,7 +505,7 @@ export default defineComponent({
 			}
 			this.showBlockingDialog = false;
 		},
-		async onStateUpdate(newState: EventState) {
+		async onStateUpdate(newState: EventState, fireIntegrationEvent: boolean) {
 			if (newState === EventState.PLANNED) {
 				await this.promptForPublishingAnnouncement();
 			}
@@ -521,6 +521,7 @@ export default defineComponent({
 					eventId: this.modelValue.id,
 					changes: { state: newState },
 					mutate: false,
+					fireIntegrationEvent,
 				});
 				if (newState === EventState.PLANNED) {
 					this.metaStore.showSuccessFeedback();
