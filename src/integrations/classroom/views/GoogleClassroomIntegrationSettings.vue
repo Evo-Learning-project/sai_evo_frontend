@@ -60,7 +60,7 @@
 			:warning="true"
 			:yesText="disablingIntegration ? $t('misc.wait') : $t('misc.disable')"
 			:noText="$t('integrations.classroom.keep_active')"
-			:disableOk="disablingIntegration"
+			:disableOk="disablingIntegration || !disableConfirmCheckSuccess"
 		>
 			<template v-slot:title>{{ $t("integrations.classroom.disable_title") }}</template>
 			<template v-slot:body>
@@ -74,6 +74,23 @@
 						{{ $t("integrations.classroom.feature_" + feature) }}
 					</li>
 				</ul>
+				<div class="banner banner-danger my-4">
+					<div>
+						<div class="flex space-x-1 items-center">
+							<span class="material-icons-outlined"> error_outline </span>
+							<h5>{{ $t("misc.warning") }}</h5>
+						</div>
+						<p>{{ $t("integrations.classroom.disable_warning") }}</p>
+					</div>
+				</div>
+				<div class="flex flex-col space-y-2">
+					<p>
+						{{ $t("integrations.classroom.type_course_name_to_disable_integration") }}
+						&ldquo;<strong>{{ currentCourse.name }}</strong
+						>&rdquo;:
+					</p>
+					<TextInput v-model="disableConfirmText" />
+				</div>
 			</template>
 		</Dialog>
 
@@ -132,7 +149,8 @@
 								v-for="course in classroomCourses"
 								:key="course.id"
 								:selectable="true"
-							></GoogleClassroomCourseItem>
+								:hoverable="true"
+							/>
 						</div>
 					</div>
 				</div>
@@ -157,6 +175,7 @@ import Spinner from "@/components/ui/Spinner.vue";
 import Btn from "@/components/ui/Btn.vue";
 import { useMetaStore } from "@/stores/metaStore";
 import ArticleHandle from "@/components/shared/HelpCenter/ArticleHandle.vue";
+import TextInput from "@/components/ui/TextInput.vue";
 export default defineComponent({
 	name: "GoogleClassroomIntegrationSettings",
 	props: {},
@@ -166,6 +185,14 @@ export default defineComponent({
 		await this.withFirstLoading(
 			async () => await this.googleIntegrationStore.getCourseTwin(this.courseId),
 		);
+	},
+	watch: {
+		showDisableIntegrationDialog(newVal) {
+			if (!newVal) {
+				// reset confirm text when dialog gets closed
+				this.disableConfirmText = "";
+			}
+		},
 	},
 	data() {
 		return {
@@ -178,6 +205,7 @@ export default defineComponent({
 			classroomCourses: [] as GoogleClassroomCourseData[],
 			errorWhileFetchingClassroomCourses: false,
 			showDisableIntegrationDialog: false,
+			disableConfirmText: "",
 		};
 	},
 	methods: {
@@ -246,6 +274,10 @@ export default defineComponent({
 		twinCourse() {
 			return this.googleIntegrationStore.courseTwins[this.courseId];
 		},
+		disableConfirmCheckSuccess() {
+			const normalize = (text: string) => text.trim().toLocaleLowerCase();
+			return normalize(this.currentCourse.name) === normalize(this.disableConfirmText);
+		},
 	},
 	components: {
 		GoogleScopeChecker,
@@ -255,6 +287,7 @@ export default defineComponent({
 		GoogleClassroomCourseItem,
 		Btn,
 		ArticleHandle,
+		TextInput,
 	},
 });
 </script>

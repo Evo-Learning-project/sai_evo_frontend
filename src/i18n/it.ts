@@ -1295,6 +1295,10 @@ export const it = {
 	},
 	integrations: {
 		classroom: {
+			type_course_name_to_disable_integration:
+				"Per disabilitare l'integrazione, scrivi qui sotto",
+			disable_warning:
+				"Se disabiliti l'integrazione, tutti i dati del tuo corso non saranno più sincronizzati con Google Classroom. Anche se riabiliti l'integrazione, i dati che hai sincronizzato in passato non verranno sincronizzati nuovamente. ",
 			publish_on_classroom: "Pubblica anche su Classroom",
 			introduction:
 				"L'integrazione Evo Learning + Google Classroom ti consente di collegare i corsi che hai creato su Evo ai corsi che insegni su Classroom.",

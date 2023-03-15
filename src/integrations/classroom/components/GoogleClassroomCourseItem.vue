@@ -2,10 +2,10 @@
 	<div
 		:class="{
 			'outline-success outline-4 border-transparent': selected,
+			'hover:border-transparent hover-shadow-elevation hover:bg-light': hoverable,
 		}"
 		class="
 			card card-border card-hoverable
-			hover:border-transparent hover-shadow-elevation hover:bg-light
 			duration-75
 			ease-in-out
 			transition-all
@@ -62,6 +62,10 @@ export default defineComponent({
 			default: false,
 		},
 		selectable: {
+			type: Boolean,
+			default: false,
+		},
+		hoverable: {
 			type: Boolean,
 			default: false,
 		},
