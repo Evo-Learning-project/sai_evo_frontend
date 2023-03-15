@@ -1,6 +1,7 @@
 <template>
 	<div class="">
 		<h4 class="mb-3">{{ $t("event_editor.state_editor_title") }}</h4>
+		<!-- state banners-->
 		<div class="my-4 banner banner-light" v-if="isDraft">
 			<span class="ml-px text-yellow-900 material-icons-outlined"> error_outline </span>
 			<p class="">{{ currentEventStateDescription }}</p>
@@ -12,6 +13,7 @@
 			<p class="">{{ currentEventStateDescription }}</p>
 		</div>
 		<div class="">
+			<!-- errors -->
 			<div
 				:class="{ shake: shakeErrorBanner }"
 				v-if="relevantErrors.length > 0"
@@ -41,20 +43,25 @@
 					md:items-center md:flex-row md:space-y-0 md:space-x-4
 				"
 			>
-				<h5 class="">
-					{{
-						isDraft || isPlanned
-							? $t("event_editor.current_state_is")
-							: $t("event_editor.state_is")
-					}}
-					<strong>{{ currentEventStateName }}</strong
-					>.
+				<!-- text showing exam state-->
+				<h5 v-if="isDraft" class="text-lg">
+					{{ $t("event_editor.current_state_is_draft") }}.
 				</h5>
+
+				<h5 v-else-if="isPlanned" class="text-lg">
+					{{ $t("event_editor.current_state_is_planned") }}.
+				</h5>
+
+				<h5 v-else>
+					{{ $t("event_editor.state_is") }}
+					<strong>{{ currentEventStateName }} </strong>.
+				</h5>
+				<!-- publish/unpublish button-->
 				<Btn
 					class=""
 					v-if="isDraft || isPlanned"
 					:variant="'primary'"
-					:loading="localLoading"
+					:loading="loading"
 					:disabled="false && isDraft && v$.$invalid && v$.$dirty"
 					@click="
 						isDraft ? (v$.$invalid ? onInvalidSubmission() : publish()) : revertToDraft()
@@ -63,12 +70,12 @@
 					{{ isDraft ? $t("event_editor.publish") : $t("event_editor.revert_to_draft") }}
 				</Btn>
 			</div>
+			<!-- helper text for planned exam-->
 			<p v-if="isPlanned" class="mt-10 text-muted">
 				{{ $t("event_editor.event_planned_help_text") }}
-				<!-- <strong>{{ formattedTimestamp }}</strong> -->
-				<strong>&nbsp;<Timestamp :value="modelValue.begin_timestamp"></Timestamp></strong
-				>.
+				<strong><Timestamp :value="modelValue.begin_timestamp" /></strong>.
 			</p>
+			<!-- text with link to the exam -->
 			<div class="flex flex-col items-stretch mt-2 space-y-2" v-if="isPlanned || isOpen">
 				<p class="text-muted">
 					{{ $t("event_editor.this_is_the_link_to_the_event") }}
@@ -97,11 +104,14 @@ export default defineComponent({
 		Timestamp,
 		CopyToClipboard,
 	},
-	mixins: [loadingMixin],
 	props: {
 		modelValue: {
 			type: Object as PropType<Event>,
 			required: true,
+		},
+		loading: {
+			type: Boolean,
+			default: false,
 		},
 	},
 	setup() {

@@ -629,6 +629,8 @@ export const it = {
 		state_editor_title: "Pubblica",
 		state: "Stato esame",
 		current_state_is: "L'esame è attualmente in stato",
+		current_state_is_draft: "L'esame è in stato di bozza",
+		current_state_is_planned: "L'esame è stato pianificato",
 		state_is: "L'esame è",
 		max_grade: "Voto massimo",
 		begin_timestamp: "Data e ora di inizio",
@@ -659,7 +661,7 @@ export const it = {
 		show_all_exercises_at_once: "Mostra tutti gli esercizi insieme",
 		show_one_exercise_at_once: "Mostra solo un esercizio alla volta",
 		publish: "Pubblica",
-		revert_to_draft: "Torna a stato di bozza",
+		revert_to_draft: "Torna in bozza",
 		event_planned_help_text: "L'esame verrà aperto agli studenti automaticamente in data",
 		editing_open_event_title: "Modifica di un esame in corso",
 		editing_open_event_body:

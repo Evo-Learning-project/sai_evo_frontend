@@ -162,6 +162,7 @@
 				</div>
 			</div>
 			<EventStateEditor
+				:loading="updatingState"
 				class="pb-10"
 				:modelValue="modelValue"
 				@update:modelValue="onStateUpdate($event)"
@@ -357,6 +358,7 @@ export default defineComponent({
 			showAnnouncementEditor: false,
 			publishingAnnouncement: false,
 			bounceDialog: false,
+			updatingState: false,
 		};
 	},
 	methods: {
@@ -476,11 +478,16 @@ export default defineComponent({
 		async promptForPublishingAnnouncement() {
 			this.showAnnouncementEditor = false;
 
-			this.announcement = {
-				...getBlankAnnouncementNode(),
-				body: examPublishedAnnouncementTemplate(this.modelValue),
-				parent_id: await this.mainStore.getCourseRootId({ courseId: this.courseId }),
-			};
+			try {
+				this.announcement = {
+					...getBlankAnnouncementNode(),
+					body: examPublishedAnnouncementTemplate(this.modelValue),
+					parent_id: await this.mainStore.getCourseRootId({ courseId: this.courseId }),
+				};
+			} catch (e) {
+				setErrorNotification(e);
+				return;
+			}
 
 			const choice = await this.getBlockingBinaryDialogChoice();
 			if (choice) {
@@ -491,7 +498,7 @@ export default defineComponent({
 						node: this.announcement,
 					});
 				} catch (e) {
-					setErrorNotification;
+					setErrorNotification(e);
 				} finally {
 					this.publishingAnnouncement = false;
 				}
@@ -502,7 +509,31 @@ export default defineComponent({
 			if (newState === EventState.PLANNED) {
 				await this.promptForPublishingAnnouncement();
 			}
-			await this.onChange("state", newState);
+			try {
+				/**
+				 * Do the update manually instead of calling this.onChange("state", newState)
+				 * in order to first update the remote resource and only then do the
+				 * update locally
+				 */
+				this.updatingState = true;
+				await this.mainStore.partialUpdateEvent({
+					courseId: this.courseId,
+					eventId: this.modelValue.id,
+					changes: { state: newState },
+					mutate: false,
+				});
+				if (newState === EventState.PLANNED) {
+					this.metaStore.showSuccessFeedback();
+				}
+				this.mainStore.setEvent({
+					eventId: this.eventId,
+					payload: { ...this.modelValue, state: newState },
+				});
+			} catch (e) {
+				setErrorNotification(e);
+			} finally {
+				this.updatingState = false;
+			}
 		},
 		async onBlur() {
 			await this.autoSaveManager?.flush();
