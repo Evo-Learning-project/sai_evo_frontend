@@ -57,7 +57,7 @@
 				v-if="loading"
 				class="absolute transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
 			>
-				<Spinner :size="'md'" :variant="variant === 'primary' ? 'primary' : 'gray'" />
+				<Spinner :size="'md'" :variant="'gray'" />
 			</p>
 			<slot name="content"></slot>
 		</button>
@@ -119,7 +119,7 @@
 			v-if="loading"
 			class="absolute transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
 		>
-			<Spinner :size="'md'" :variant="variant === 'primary' ? 'primary' : 'gray'" />
+			<Spinner :size="'md'" :variant="'gray'" />
 		</p>
 		<slot name="content"></slot>
 	</button>
