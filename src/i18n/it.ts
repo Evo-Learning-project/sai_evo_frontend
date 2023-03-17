@@ -1295,6 +1295,7 @@ export const it = {
 	},
 	integrations: {
 		classroom: {
+			published_on_classroom: "Pubblicato su Classroom",
 			type_course_name_to_disable_integration:
 				"Per disabilitare l'integrazione, scrivi qui sotto",
 			disable_warning:

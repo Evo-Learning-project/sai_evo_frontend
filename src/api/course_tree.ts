@@ -89,8 +89,16 @@ export async function partialUpdateCourseNode(
 	courseId: string,
 	nodeId: string,
 	payload: Partial<CourseTreeNode>,
+	fireIntegrationEvent?: boolean,
 ): Promise<CourseTreeNode> {
-	const response = await axios.patch(`/courses/${courseId}/nodes/${nodeId}/`, payload);
+	const response = await axios.patch(
+		`/courses/${courseId}/nodes/${nodeId}/${
+			typeof fireIntegrationEvent === "boolean"
+				? `?fire_integration_event=${JSON.stringify(fireIntegrationEvent)}`
+				: ""
+		}`,
+		payload,
+	);
 	return response.data;
 }
 

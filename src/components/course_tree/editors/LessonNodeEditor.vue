@@ -2,54 +2,55 @@
 	<div class="relative">
 		<!-- <LinearProgress v-if="blockingSaving" class="absolute top-0" /> -->
 		<!-- top row -->
-		<div
-			class="
-				flex
-				md:flex-row md:space-y-0
-				space-y-2
-				flex-col
-				w-full
-				md:items-center
-				mb-12
-			"
-		>
-			<div class="flex items-center mr-auto">
-				<Btn :variant="'icon'" :outline="true" class="-ml-2"
-					><span class="material-icons-outlined" @click="$emit('closeEditor')">
-						close</span
-					></Btn
-				>
-				<h1 class="mb-0 ml-2">{{ $t("course_tree.lesson_editor_title") }}</h1>
-			</div>
-			<div class="flex items-center md:ml-0 ml-auto">
-				<CloudSaveStatus
-					v-if="showAutoSaveIndicator"
-					:saving="saving"
-					:hadError="savingError"
-					class="mt-1 mr-6 ml-auto hidden md:block"
-				/>
-				<div
-					class="flex space-x-3 items-center"
-					v-if="modelValue.state === LessonNodeState.DRAFT"
-				>
-					<p class="text-muted">{{ $t("course_tree.draft") }}</p>
-					<Btn @click="onPublish()">{{ $t("course_tree.publish_lesson") }}</Btn>
-				</div>
-				<div class="ml-2">
-					<Btn
-						:disabled="blockingSaving"
-						:outline="modelValue.state === LessonNodeState.DRAFT"
-						@click="onSave()"
+		<div class="mb-12 flex flex-col space-y-4">
+			<div
+				class="flex md:flex-row md:space-y-0 space-y-2 flex-col w-full md:items-center"
+			>
+				<div class="flex items-center mr-auto">
+					<Btn :variant="'icon'" :outline="true" class="-ml-2"
+						><span class="material-icons-outlined" @click="$emit('closeEditor')">
+							close</span
+						></Btn
 					>
-						{{
-							modelValue.state === LessonNodeState.DRAFT
-								? $t("course_tree.save_draft")
-								: $t("course_tree.save")
-						}}
-					</Btn>
+					<h1 class="mb-0 ml-2">{{ $t("course_tree.lesson_editor_title") }}</h1>
 				</div>
+				<div class="flex items-center md:ml-0 ml-auto">
+					<CloudSaveStatus
+						v-if="showAutoSaveIndicator"
+						:saving="saving"
+						:hadError="savingError"
+						class="mt-1 mr-6 ml-auto hidden md:block"
+					/>
+					<!-- 'draft' label & publish button -->
+					<div
+						class="flex space-x-3 items-center"
+						v-if="modelValue.state === LessonNodeState.DRAFT"
+					>
+						<p class="text-muted">{{ $t("course_tree.draft") }}</p>
+						<Btn @click="onPublish()">{{ $t("course_tree.publish_lesson") }}</Btn>
+					</div>
+					<!-- save button-->
+					<div class="ml-2">
+						<Btn
+							:disabled="blockingSaving"
+							:outline="modelValue.state === LessonNodeState.DRAFT"
+							@click="onSave()"
+						>
+							{{
+								modelValue.state === LessonNodeState.DRAFT
+									? $t("course_tree.save_draft")
+									: $t("course_tree.save")
+							}}
+						</Btn>
+					</div>
+				</div>
+			</div>
+			<div class="w-full flex">
+				<IntegrationSwitch class="ml-auto" v-model="publishToClassroom" />
+				<PublishedOnClassroom class="banner-success px-2 ml-auto" v-if="false" />
 			</div>
 		</div>
+
 		<!-- title & creation date -->
 		<div
 			class="
@@ -135,6 +136,8 @@ import TextEditor from "@/components/ui/TextEditor.vue";
 import TextInput from "@/components/ui/TextInput.vue";
 import Timestamp from "@/components/ui/Timestamp.vue";
 import { getTranslatedString as _ } from "@/i18n";
+import IntegrationSwitch from "@/integrations/classroom/components/IntegrationSwitch.vue";
+import PublishedOnClassroom from "@/integrations/classroom/components/PublishedOnClassroom.vue";
 import { SelectableOption } from "@/interfaces";
 import { courseIdMixin, savingMixin } from "@/mixins";
 import {
@@ -174,6 +177,8 @@ export default defineComponent({
 			loadingTopics: false,
 			loadingChildren: false,
 			attachmentUploadProgress: undefined as undefined | number,
+			publishToClassroom: true,
+			showClassroomIntegrationSwitch: false,
 		};
 	},
 	async created() {
@@ -292,6 +297,8 @@ export default defineComponent({
 		FileNode,
 		//LinearProgress,
 		Dropdown,
+		IntegrationSwitch,
+		PublishedOnClassroom,
 	},
 });
 </script>

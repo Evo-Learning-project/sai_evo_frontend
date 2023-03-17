@@ -57,11 +57,11 @@
 					{{ $t("event_editor.state_is") }}
 					<strong>{{ currentEventStateName }} </strong>.
 				</h5>
-				<!-- publish/unpublish button-->
 				<div
 					class="flex md:space-x-12 md:flex-row flex-col md:space-y-0 space-y-4"
 					v-if="isDraft || isPlanned"
 				>
+					<!-- publish/unpublish button-->
 					<Btn
 						class=""
 						:variant="'primary'"
@@ -81,10 +81,20 @@
 					</Btn>
 					<IntegrationSwitch
 						class="md:ml-auto bg-light pl-3 pr-2 rounded md:py-0 py-2"
-						v-if="isDraft && showClassroomIntegrationSwitch"
+						v-if="isDraft && showClassroomIntegrationSwitch && !hasGoogleClassroomTwin"
 						v-model="publishToClassroom"
 					/>
 				</div>
+				<PublishedOnClassroom
+					:remote-object-url="
+						googleClassroomCourseWorkTwin.data.alternateLink ||
+						(googleClassroomCourseTwin
+							? googleClassroomCourseTwin.data.alternateLink
+							: '')
+					"
+					class="banner-success pl-3 pr-2 rounded md:py-0"
+					v-if="hasGoogleClassroomTwin"
+				/>
 			</div>
 			<!-- helper text for planned exam-->
 			<p v-if="isPlanned" class="mt-10 text-muted">
@@ -112,10 +122,12 @@ import Btn from "@/components/ui/Btn.vue";
 import { getExamPermalink, getFormattedTimestamp } from "@/utils";
 import Timestamp from "@/components/ui/Timestamp.vue";
 import CopyToClipboard from "@/components/ui/CopyToClipboard.vue";
-import { courseIdMixin, loadingMixin } from "@/mixins";
+import { courseIdMixin, eventIdMixin, loadingMixin } from "@/mixins";
 import IntegrationSwitch from "@/integrations/classroom/components/IntegrationSwitch.vue";
 import { mapStores } from "pinia";
 import { useGoogleIntegrationsStore } from "@/integrations/stores/googleIntegrationsStore";
+import PublishedOnClassroom from "@/integrations/classroom/components/PublishedOnClassroom.vue";
+import { GoogleClassroomCourseWorkTwin } from "@/integrations/classroom/interfaces";
 
 export default defineComponent({
 	components: {
@@ -123,6 +135,7 @@ export default defineComponent({
 		Timestamp,
 		CopyToClipboard,
 		IntegrationSwitch,
+		PublishedOnClassroom,
 	},
 	props: {
 		modelValue: {
@@ -134,7 +147,7 @@ export default defineComponent({
 			default: false,
 		},
 	},
-	mixins: [courseIdMixin],
+	mixins: [courseIdMixin, eventIdMixin],
 	setup() {
 		return {
 			v$: inject("v$"),
@@ -144,20 +157,41 @@ export default defineComponent({
 	async created() {
 		this.showClassroomIntegrationSwitch =
 			await this.googleIntegrationStore.isGoogleClassroomIntegrationActive(this.courseId);
+		await this.checkForCourseworkTwin();
 	},
 	data() {
 		return {
 			shakeErrorBanner: false,
 			publishToClassroom: true,
 			showClassroomIntegrationSwitch: false,
+			googleClassroomCourseWorkTwin: null as null | GoogleClassroomCourseWorkTwin,
 		};
 	},
 	methods: {
+		async checkForCourseworkTwin() {
+			this.googleClassroomCourseWorkTwin =
+				await this.googleIntegrationStore.getGoogleClassroomCourseWorkTwin(this.eventId);
+			console.log({ twin: this.googleClassroomCourseWorkTwin });
+		},
 		emitUpdate(value: EventState) {
 			this.$emit("update:modelValue", {
 				value,
 				fireIntegrationEvent: this.publishToClassroom,
 			});
+			// if we're changing the exam to PLANNED and there's an active integration
+			// with Classroom, check whether the twin coursework was created successfully
+			if (
+				this.publishToClassroom &&
+				this.showClassroomIntegrationSwitch &&
+				value === EventState.PLANNED
+			) {
+				const handle = setInterval(async () => {
+					await this.checkForCourseworkTwin();
+					if (this.hasGoogleClassroomTwin) {
+						clearInterval(handle);
+					}
+				}, 1000);
+			}
 		},
 		onInvalidSubmission() {
 			// make errors visible
@@ -196,6 +230,9 @@ export default defineComponent({
 					description: _("event_states_descriptions." + key),
 				}));
 		},
+		hasGoogleClassroomTwin() {
+			return this.googleClassroomCourseWorkTwin !== null;
+		},
 		isDraft() {
 			return this.modelValue.state == EventState.DRAFT;
 		},
@@ -204,6 +241,9 @@ export default defineComponent({
 		},
 		isOpen() {
 			return this.modelValue.state == EventState.OPEN;
+		},
+		googleClassroomCourseTwin() {
+			return this.googleIntegrationStore.courseTwins[this.courseId];
 		},
 		currentEventStateName() {
 			return this.eventStateOptions[this.modelValue?.state]?.content?.toLowerCase();

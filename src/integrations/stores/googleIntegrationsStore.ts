@@ -3,6 +3,7 @@ import axios from "axios";
 import {
 	GoogleClassroomCourseData,
 	GoogleClassroomCourseTwin,
+	GoogleClassroomCourseWorkTwin,
 } from "../classroom/interfaces";
 
 export const useGoogleIntegrationsStore = defineStore("googleIntegration", {
@@ -47,6 +48,18 @@ export const useGoogleIntegrationsStore = defineStore("googleIntegration", {
 		},
 		async isGoogleClassroomIntegrationActive(courseId: string) {
 			return (await this.getCourseTwin(courseId))?.enabled ?? false;
+		},
+		async getGoogleClassroomCourseWorkTwin(
+			eventId: string,
+		): Promise<GoogleClassroomCourseWorkTwin | null> {
+			try {
+				const response = await axios.get(
+					`/integrations/classroom/coursework/?event_id=${eventId}`,
+				);
+				return response.data;
+			} catch (e) {
+				return null;
+			}
 		},
 		async createCourseTwin(
 			courseId: string,

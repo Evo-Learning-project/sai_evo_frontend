@@ -81,10 +81,12 @@ export const nodeEditorEmits = {
 		key,
 		value,
 		save,
+		fireIntegrationEvent,
 	}: {
 		key: K;
 		value: N[K];
 		save?: boolean;
+		fireIntegrationEvent?: boolean;
 	}) {
 		return true;
 	},

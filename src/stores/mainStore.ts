@@ -568,9 +568,18 @@ export const useMainStore = defineStore("main", {
 			courseId,
 			nodeId,
 			changes,
+			fireIntegrationEvent = false,
 		}: CourseIdActionPayload &
-			CourseTreeNodeIdActionPayload & { changes: Partial<CourseTreeNode> }) {
-			const updatedNode = await partialUpdateCourseNode(courseId, nodeId, changes);
+			CourseTreeNodeIdActionPayload & {
+				changes: Partial<CourseTreeNode>;
+				fireIntegrationEvent?: boolean;
+			}) {
+			const updatedNode = await partialUpdateCourseNode(
+				courseId,
+				nodeId,
+				changes,
+				fireIntegrationEvent,
+			);
 			return updatedNode;
 		},
 		patchCourseTreeNode({
