@@ -336,6 +336,52 @@ export default defineComponent({
 				await this.onEditingNodeSave();
 			}
 		},
+		async createNodeFromUnsavedChanges() {
+			// used if creating a FileNode to keep track of upload progress for the file
+			const onUploadProgress = (e: { loaded: number; total: number }) => {
+				this.fileUploadProgress = (e.loaded / e.total) * 100;
+				// make loader indeterminate after upload completes for
+				//better visual feedback to the user
+				if (this.fileUploadProgress === 100) {
+					setTimeout(() => {
+						this.fileUploadProgress = undefined;
+					}, 100);
+				}
+			};
+			try {
+				// TODO if creating a file node, don't display loader in dialog
+				this.blockingSaving = true;
+				await this.mainStore.createCourseTreeNode({
+					courseId: this.courseId,
+					node: this.proxyEditingNode as ICourseTreeNode,
+					config: {
+						onUploadProgress,
+					},
+				});
+				this.editingNodeUnsavedChanges = {};
+				this.onDismissNodeEditor();
+				this.metaStore.showSuccessFeedback();
+			} catch (e) {
+				setErrorNotification(e);
+			} finally {
+				this.blockingSaving = false;
+				this.fileUploadProgress = 0;
+			}
+		},
+		async updateNodeFromUnsavedChanges() {
+			try {
+				this.blockingSaving = true;
+				await this.editingNodeAutoSaveManager?.onChange(this.editingNodeUnsavedChanges);
+				await this.editingNodeAutoSaveManager?.flush();
+				this.editingNodeUnsavedChanges = {};
+				this.onDismissNodeEditor();
+				this.metaStore.showSuccessFeedback();
+			} catch (e) {
+				setErrorNotification(e);
+			} finally {
+				this.blockingSaving = false;
+			}
+		},
 		async onEditingNodeSave() {
 			/**
 			 * Generic utility function that saves changes to a node. This is used
@@ -357,53 +403,12 @@ export default defineComponent({
 				/**
 				 * Create node
 				 * */
-
-				// used if creating a FileNode to keep track of upload progress for the file
-				const onUploadProgress = (e: { loaded: number; total: number }) => {
-					this.fileUploadProgress = (e.loaded / e.total) * 100;
-					// make loader indeterminate after upload completes for
-					//better visual feedback to the user
-					if (this.fileUploadProgress === 100) {
-						setTimeout(() => {
-							this.fileUploadProgress = undefined;
-						}, 100);
-					}
-				};
-				try {
-					// TODO if creating a file node, don't display loader in dialog
-					this.blockingSaving = true;
-					await this.mainStore.createCourseTreeNode({
-						courseId: this.courseId,
-						node: this.proxyEditingNode as ICourseTreeNode,
-						config: {
-							onUploadProgress,
-						},
-					});
-					this.editingNodeUnsavedChanges = {};
-					this.onDismissNodeEditor();
-					this.metaStore.showSuccessFeedback();
-				} catch (e) {
-					setErrorNotification(e);
-				} finally {
-					this.blockingSaving = false;
-					this.fileUploadProgress = 0;
-				}
+				await this.createNodeFromUnsavedChanges();
 			} else if (!this.autoSaveEditingNode) {
 				/**
 				 * Save changes to existing node
 				 */
-				try {
-					this.blockingSaving = true;
-					await this.editingNodeAutoSaveManager?.onChange(this.editingNodeUnsavedChanges);
-					await this.editingNodeAutoSaveManager?.flush();
-					this.editingNodeUnsavedChanges = {};
-					this.onDismissNodeEditor();
-					this.metaStore.showSuccessFeedback();
-				} catch (e) {
-					setErrorNotification(e);
-				} finally {
-					this.blockingSaving = false;
-				}
+				await this.updateNodeFromUnsavedChanges();
 			} else {
 				/**
 				 * Autosave is on, so changes were already saved
