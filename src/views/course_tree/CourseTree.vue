@@ -231,15 +231,6 @@ export default defineComponent({
 		};
 	},
 	methods: {
-		// onchs() {
-		// 	setTimeout(() => {
-		// 		var slides = document.getElementsByClassName("dragging-element");
-		// 		for (var i = 0; i < slides.length; i++) {
-		// 			console.log("EL", slides.item(i));
-		// 			slides.item(i)?.classList.remove("dragging-element");
-		// 		}
-		// 	}, 10);
-		// },
 		async onLoadMore({ loaded, noMore, error }: LoadAction) {
 			try {
 				const moreResults = await this.mainStore.getCourseTopLevelNodes({
@@ -256,11 +247,9 @@ export default defineComponent({
 			}
 		},
 		async onNodeDragStart() {
-			//this.draggingNode = true;
 			this.mainStore.draggingCourseTreeNode = true;
 		},
 		async onNodeDragEnd(event: { oldIndex: number; newIndex: number }) {
-			//this.draggingNode = false;
 			this.mainStore.draggingCourseTreeNode = false;
 			try {
 				await onChangeNodePosition(
@@ -420,13 +409,6 @@ export default defineComponent({
 			}
 		},
 		onEditNode(node: ICourseTreeNode) {
-			/* TODO make deep copy of editing node and await a blocking dialog
-			meanwhile, you save all changes in the deep copied object and if the user
-			saves, you flush everything in the autosave manager.
-
-			In order to be able to do this, you need to lift up the manager here
-			instead of using it in the editors. The editors will simply emit patchNode({key: val})
-			*/
 			this.autoSaveEditingNode = false;
 			this.editingNode = node;
 			this.showEditorDialog = true;
