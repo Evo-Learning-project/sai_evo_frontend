@@ -445,55 +445,43 @@ export default defineComponent({
 				setErrorNotification,
 			);
 		},
-		async createFileNode(file: Blob) {
-			this.uploadingFile = true;
-			try {
-				await this.mainStore.createCourseTreeNode({
-					courseId: this.courseId,
-					node: { ...getBlankFileNode(this.selectedTopicId), file },
-				});
-				this.metaStore.showSuccessFeedback();
-				this.selectedTopicId = this.mainStore.courseIdToTreeRootId[this.courseId];
-			} catch (e) {
-				setErrorNotification(e);
-			} finally {
-				this.uploadingFile = false;
-			}
-		},
 		async onCreateNode(nodeType: CourseTreeNodeType) {
-			/**
-			 * TODO refactor - move the declaration of factories to top,
-			 * then based on the type of the node use the correct logic
-			 * whether to create it immediately or turn autosave off &
-			 * open editor dialog only
-			 */
-			if (nodeType === CourseTreeNodeType.TopicNode) {
-				this.editingNode = getBlankTopicNode(null);
-				this.autoSaveEditingNode = false;
-				this.showEditorDialog = true;
-			} else if (nodeType === CourseTreeNodeType.FileNode) {
-				// don't create node on the server just yet
-				this.editingNode = getBlankFileNode(
-					this.mainStore.courseIdToTreeRootId[this.courseId],
-				);
-				this.autoSaveEditingNode = false;
-				this.showEditorDialog = true;
-			} else {
-				// immediately create node & open editor
-				const factories = {
-					[CourseTreeNodeType.LessonNode]: getBlankLessonNode,
-					[CourseTreeNodeType.AnnouncementNode]: getBlankAnnouncementNode,
-					[CourseTreeNodeType.PollNode]: getBlankPollNode,
-				};
+			// functions used to get a new node based on the given node type
+			const factories = {
+				[CourseTreeNodeType.LessonNode]: getBlankLessonNode,
+				[CourseTreeNodeType.AnnouncementNode]: getBlankAnnouncementNode,
+				[CourseTreeNodeType.PollNode]: getBlankPollNode,
+				[CourseTreeNodeType.TopicNode]: getBlankTopicNode,
+				[CourseTreeNodeType.FileNode]: getBlankFileNode,
+			};
+			const factory = factories[nodeType];
+			const newNode = factory(this.mainStore.courseIdToTreeRootId[this.courseId]);
+
+			// these types of node are autosaved on the server when created, and require
+			// different treatment upon creation
+			const autoSavedNodeTypes = [
+				CourseTreeNodeType.LessonNode,
+				CourseTreeNodeType.AnnouncementNode,
+				CourseTreeNodeType.PollNode,
+			];
+			// set autosaving on or off depending on whether the type of node being
+			// created requires it
+			this.autoSaveEditingNode = autoSavedNodeTypes.includes(nodeType);
+
+			// for autosaved node types, create the node immediately and use that one
+			// for editing
+			if (this.autoSaveEditingNode) {
 				await this.withLoading(async () => {
 					this.editingNode = await this.mainStore.createCourseTreeNode({
 						courseId: this.courseId,
-						node: factories[nodeType](null),
+						node: newNode,
 					});
-					this.autoSaveEditingNode = true;
-					this.showEditorDialog = true;
 				}, setErrorNotification);
+			} else {
+				// otherwise, only save changes to local object
+				this.editingNode = newNode;
 			}
+			this.showEditorDialog = true;
 		},
 		async onLoadComments(node: ICourseTreeNode) {
 			await this.mainStore.getCourseTreeNodeComments({
