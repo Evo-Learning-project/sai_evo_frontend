@@ -887,6 +887,24 @@ export const it = {
 		[EventState.CLOSED]: "",
 	},
 	validation_errors: {
+		course_tree: {
+			lesson: {
+				modelValue: {
+					"title-required": "Inserisci un titolo per la lezione",
+				},
+			},
+			announcement: {
+				modelValue: {
+					"body-required": "L'annuncio non può essere vuoto",
+				},
+			},
+			poll: {
+				modelValue: {
+					"text-required": "Il testo non può essere vuoto",
+					"choices-required": "Inserisci almeno una scelta",
+				},
+			},
+		},
 		event: {
 			modelValue: {
 				"name-required": "Inserisci un nome per l'esame",

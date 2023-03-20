@@ -77,6 +77,17 @@
 				@update:modelValue="onNodeChange('title', $event)"
 			>
 				{{ $t("course_tree.lesson_title") }}
+				<template v-if="v$.modelValue.title.$errors.length > 0" v-slot:errors>
+					<div
+						class="input-errors"
+						v-for="error of v$.modelValue.title.$errors"
+						:key="error.$uid"
+					>
+						<div class="error-msg">
+							{{ $t("validation_errors.course_tree.lesson." + error.$uid) }}
+						</div>
+					</div>
+				</template>
 			</TextInput>
 			<div class="md:w-1/3 w-full">
 				<Dropdown
@@ -158,7 +169,9 @@ import {
 import { useMainStore } from "@/stores/mainStore";
 import { useMetaStore } from "@/stores/metaStore";
 import { setErrorNotification } from "@/utils";
+import { lessonNodeValidation } from "@/validation/models";
 import { defineComponent, PropType } from "@vue/runtime-core";
+import useVuelidate from "@vuelidate/core";
 import { mapStores } from "pinia";
 import FileNode from "../node/FileNode.vue";
 import { nodeEditorEmits, nodeEditorProps } from "../shared";
@@ -175,6 +188,15 @@ export default defineComponent({
 		...nodeEditorEmits,
 	},
 	mixins: [courseIdMixin, savingMixin],
+	validations() {
+		return {
+			modelValue: lessonNodeValidation,
+		};
+	},
+	setup() {
+		const v = useVuelidate();
+		return { v$: v };
+	},
 	data() {
 		return {
 			LessonNodeState,
@@ -228,6 +250,10 @@ export default defineComponent({
 			this.$emit("patchNode", { key, value, save });
 		},
 		onSave() {
+			if (this.modelValue.state !== LessonNodeState.DRAFT && this.v$.$invalid) {
+				this.v$.$touch();
+				return;
+			}
 			this.$emit("save");
 		},
 		onBlur() {
@@ -237,12 +263,15 @@ export default defineComponent({
 			this.onNodeChange("parent_id", parentId);
 		},
 		async onPublish() {
-			this.$emit("updateState", {
-				newState: LessonNodeState.PUBLISHED,
-				params: {
-					fireIntegrationEvent: this.publishToClassroom,
-				},
-			});
+			this.v$.$touch();
+			if (this.v$.$errors.length === 0) {
+				this.$emit("updateState", {
+					newState: LessonNodeState.PUBLISHED,
+					params: {
+						fireIntegrationEvent: this.publishToClassroom,
+					},
+				});
+			}
 		},
 		async onCreateAttachment(file) {
 			this.creatingAttachment = true;

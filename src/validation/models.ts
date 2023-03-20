@@ -84,3 +84,30 @@ export const exerciseValidation = {
 		// $each: helpers.forEach(baseExerciseValidation as any),
 	},
 };
+
+export const lessonNodeValidation = {
+	title: {
+		required,
+	},
+};
+
+export const topicNodeValidation = {
+	name: {
+		required,
+	},
+};
+
+export const pollNodeValidation = {
+	text: {
+		required,
+	},
+	choices: {
+		required,
+	},
+};
+
+export const announcementNodeValidation = {
+	body: {
+		required,
+	},
+};
