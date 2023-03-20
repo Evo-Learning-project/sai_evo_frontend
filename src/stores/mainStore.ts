@@ -594,11 +594,6 @@ export const useMainStore = defineStore("main", {
 			}
 			const oldParentId = target.parent_id;
 			Object.assign(target, { ...target, ...changes });
-			console.log({
-				oldParentId,
-				newP: changes.parent_id,
-				root: this.courseIdToTreeRootId[courseId],
-			});
 			if (changes.parent_id) {
 				if (oldParentId == this.courseIdToTreeRootId[courseId]) {
 					// remove node from children list of top-level nodes

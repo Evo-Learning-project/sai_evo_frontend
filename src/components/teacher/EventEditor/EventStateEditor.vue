@@ -171,7 +171,6 @@ export default defineComponent({
 		async checkForCourseworkTwin() {
 			this.googleClassroomCourseWorkTwin =
 				await this.googleIntegrationStore.getGoogleClassroomCourseWorkTwin(this.eventId);
-			console.log({ twin: this.googleClassroomCourseWorkTwin });
 		},
 		emitUpdate(value: EventState) {
 			this.$emit("update:modelValue", {

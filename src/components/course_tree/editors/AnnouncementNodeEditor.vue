@@ -49,7 +49,11 @@
 					class="ml-auto"
 					v-model="publishToClassroom"
 				/>
-				<PublishedOnClassroom class="banner-success px-2 ml-auto" v-if="false" />
+				<PublishedOnClassroom
+					class="banner-success rounded px-2 ml-auto"
+					v-if="hasGoogleClassroomTwin"
+					:remote-object-url="googleClassroomAnnouncementTwin?.data.alternateLink"
+				/>
 			</div>
 		</div>
 
@@ -139,6 +143,7 @@ import TextEditor from "@/components/ui/TextEditor.vue";
 import { getTranslatedString as _ } from "@/i18n";
 import IntegrationSwitch from "@/integrations/classroom/components/IntegrationSwitch.vue";
 import PublishedOnClassroom from "@/integrations/classroom/components/PublishedOnClassroom.vue";
+import { GoogleClassroomAnnouncementTwin } from "@/integrations/classroom/interfaces";
 import { useGoogleIntegrationsStore } from "@/integrations/stores/googleIntegrationsStore";
 import { SelectableOption } from "@/interfaces";
 import { courseIdMixin, savingMixin } from "@/mixins";
@@ -196,12 +201,14 @@ export default defineComponent({
 			attachmentUploadProgress: undefined as undefined | number,
 			publishToClassroom: true,
 			showClassroomIntegrationSwitch: false,
+			googleClassroomAnnouncementTwin: null as null | GoogleClassroomAnnouncementTwin,
 		};
 	},
 	async created() {
 		await this.mainStore.getCourseRootId({ courseId: this.courseId });
 		this.showClassroomIntegrationSwitch =
 			await this.googleIntegrationStore.isGoogleClassroomIntegrationActive(this.courseId);
+		this.checkForAnnouncementTwin();
 		await Promise.all([
 			(async () => {
 				if (!this.allowChildren) {
@@ -240,6 +247,12 @@ export default defineComponent({
 		) {
 			// TODO extract shared behavior (mixin?)
 			this.$emit("patchNode", { key, value, save });
+		},
+		async checkForAnnouncementTwin() {
+			this.googleClassroomAnnouncementTwin =
+				await this.googleIntegrationStore.getGoogleClassroomAnnouncementTwin(
+					this.modelValue.id,
+				);
 		},
 		onSave() {
 			if (this.modelValue.state !== AnnouncementNodeState.DRAFT && this.v$.$invalid) {
@@ -294,6 +307,9 @@ export default defineComponent({
 	},
 	computed: {
 		...mapStores(useMainStore, useMetaStore, useGoogleIntegrationsStore),
+		hasGoogleClassroomTwin() {
+			return this.googleClassroomAnnouncementTwin !== null;
+		},
 		// TODO refactor, duplicated with CourseTree
 		topicsAsOptions(): SelectableOption[] {
 			return [

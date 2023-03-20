@@ -55,7 +55,11 @@
 					class="ml-auto"
 					v-model="publishToClassroom"
 				/>
-				<PublishedOnClassroom class="banner-success px-2 ml-auto" v-if="false" />
+				<PublishedOnClassroom
+					class="banner-success px-2 ml-auto"
+					v-if="hasGoogleClassroomTwin"
+					:remoteObjectUrl="googleClassroomMaterialTwin?.data.alternateLink"
+				/>
 			</div>
 		</div>
 
@@ -154,6 +158,7 @@ import TextInput from "@/components/ui/TextInput.vue";
 import { getTranslatedString as _ } from "@/i18n";
 import IntegrationSwitch from "@/integrations/classroom/components/IntegrationSwitch.vue";
 import PublishedOnClassroom from "@/integrations/classroom/components/PublishedOnClassroom.vue";
+import { GoogleClassroomMaterialTwin } from "@/integrations/classroom/interfaces";
 import { useGoogleIntegrationsStore } from "@/integrations/stores/googleIntegrationsStore";
 import { SelectableOption } from "@/interfaces";
 import { courseIdMixin, savingMixin } from "@/mixins";
@@ -207,12 +212,14 @@ export default defineComponent({
 			attachmentUploadProgress: undefined as undefined | number,
 			publishToClassroom: true,
 			showClassroomIntegrationSwitch: false,
+			googleClassroomMaterialTwin: null as null | GoogleClassroomMaterialTwin,
 		};
 	},
 	async created() {
 		await this.mainStore.getCourseRootId({ courseId: this.courseId });
 		this.showClassroomIntegrationSwitch =
 			await this.googleIntegrationStore.isGoogleClassroomIntegrationActive(this.courseId);
+		this.checkForMaterialTwin();
 		await Promise.all([
 			(async () => {
 				this.loadingChildren = true;
@@ -241,6 +248,12 @@ export default defineComponent({
 		]);
 	},
 	methods: {
+		async checkForMaterialTwin() {
+			this.googleClassroomMaterialTwin =
+				await this.googleIntegrationStore.getGoogleClassroomMaterialTwin(
+					this.modelValue.id,
+				);
+		},
 		onNodeChange<K extends keyof CourseTreeNode>(
 			key: any, //K,
 			value: any, //CourseTreeNode[K],
@@ -302,6 +315,9 @@ export default defineComponent({
 	},
 	computed: {
 		...mapStores(useMainStore, useMetaStore, useGoogleIntegrationsStore),
+		hasGoogleClassroomTwin() {
+			return this.googleClassroomMaterialTwin !== null;
+		},
 		// TODO refactor, duplicated with other editors
 		topicsAsOptions(): SelectableOption[] {
 			return [

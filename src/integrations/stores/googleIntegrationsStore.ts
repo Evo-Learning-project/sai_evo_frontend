@@ -1,9 +1,11 @@
 import { defineStore } from "pinia";
 import axios from "axios";
 import {
+	GoogleClassroomAnnouncementTwin,
 	GoogleClassroomCourseData,
 	GoogleClassroomCourseTwin,
 	GoogleClassroomCourseWorkTwin,
+	GoogleClassroomMaterialTwin,
 } from "../classroom/interfaces";
 
 export const useGoogleIntegrationsStore = defineStore("googleIntegration", {
@@ -16,6 +18,15 @@ export const useGoogleIntegrationsStore = defineStore("googleIntegration", {
 	}),
 	getters: {},
 	actions: {
+		/**
+		 * Utility functions
+		 */
+		async getGoogleClassroomCoursesTaughtByCurrentUser(): Promise<
+			GoogleClassroomCourseData[]
+		> {
+			const response = await axios.get(`/integrations/classroom/classroom_courses/`);
+			return response.data;
+		},
 		async getClassroomScopesAuthUrl(): Promise<string> {
 			/**
 			 * Returns a URL that can be used to authenticate and grant scopes
@@ -34,6 +45,9 @@ export const useGoogleIntegrationsStore = defineStore("googleIntegration", {
 			this.authorizedScopes = response.data;
 			return this.authorizedScopes;
 		},
+		/**
+		 * Course twin functions
+		 */
 		async getCourseTwin(courseId: string): Promise<GoogleClassroomCourseTwin | null> {
 			try {
 				const response = await axios.get(
@@ -48,18 +62,6 @@ export const useGoogleIntegrationsStore = defineStore("googleIntegration", {
 		},
 		async isGoogleClassroomIntegrationActive(courseId: string) {
 			return (await this.getCourseTwin(courseId))?.enabled ?? false;
-		},
-		async getGoogleClassroomCourseWorkTwin(
-			eventId: string,
-		): Promise<GoogleClassroomCourseWorkTwin | null> {
-			try {
-				const response = await axios.get(
-					`/integrations/classroom/coursework/?event_id=${eventId}`,
-				);
-				return response.data;
-			} catch (e) {
-				return null;
-			}
 		},
 		async createCourseTwin(
 			courseId: string,
@@ -85,11 +87,45 @@ export const useGoogleIntegrationsStore = defineStore("googleIntegration", {
 			this.courseTwins[courseId] = response.data;
 			return response.data;
 		},
-		async getGoogleClassroomCoursesTaughtByCurrentUser(): Promise<
-			GoogleClassroomCourseData[]
-		> {
-			const response = await axios.get(`/integrations/classroom/classroom_courses/`);
-			return response.data;
+
+		/**
+		 * Getters for twins of various types of items
+		 */
+		async getGoogleClassroomCourseWorkTwin(
+			eventId: string,
+		): Promise<GoogleClassroomCourseWorkTwin | null> {
+			try {
+				const response = await axios.get(
+					`/integrations/classroom/coursework/?event_id=${eventId}`,
+				);
+				return response.data;
+			} catch (e) {
+				return null;
+			}
+		},
+		async getGoogleClassroomMaterialTwin(
+			lessonId: string,
+		): Promise<GoogleClassroomMaterialTwin | null> {
+			try {
+				const response = await axios.get(
+					`/integrations/classroom/material/?lesson_id=${lessonId}`,
+				);
+				return response.data;
+			} catch (e) {
+				return null;
+			}
+		},
+		async getGoogleClassroomAnnouncementTwin(
+			announcementId: string,
+		): Promise<GoogleClassroomAnnouncementTwin | null> {
+			try {
+				const response = await axios.get(
+					`/integrations/classroom/announcement/?announcement_id=${announcementId}`,
+				);
+				return response.data;
+			} catch (e) {
+				return null;
+			}
 		},
 	},
 });
