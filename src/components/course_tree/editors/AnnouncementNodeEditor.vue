@@ -1,41 +1,58 @@
 <template>
 	<div class="relative">
-		<LinearProgress v-if="blockingSaving" class="absolute top-0" />
 		<!-- top row -->
-		<div class="flex w-full items-center mb-12">
-			<Btn :variant="'icon'" :outline="true" class="-ml-2"
-				><span class="material-icons-outlined" @click="$emit('closeEditor')">
-					close</span
-				></Btn
-			>
-			<h1 class="mb-0 ml-2 mr-auto">{{ $t("course_tree.announcement_editor_title") }}</h1>
-			<CloudSaveStatus
-				v-if="showAutoSaveIndicator"
-				:saving="saving"
-				:hadError="savingError"
-				class="mt-1 mr-6"
-			/>
-			<div
-				class="flex space-x-3 items-center"
-				v-if="modelValue.state === AnnouncementNodeState.DRAFT"
-			>
-				<p class="text-muted">{{ $t("course_tree.draft") }}</p>
-				<Btn @click="onPublish()">{{ $t("course_tree.publish_announcement") }}</Btn>
-			</div>
-			<div v-if="!publishOnly" class="ml-2">
-				<Btn
-					:outline="modelValue.state === AnnouncementNodeState.DRAFT"
-					:disabled="blockingSaving"
-					@click="onSave()"
+		<div class="flex flex-col space-y-4 mb-4">
+			<div class="flex w-full items-center">
+				<Btn :variant="'icon'" :outline="true" class="-ml-2"
+					><span class="material-icons-outlined" @click="$emit('closeEditor')">
+						close</span
+					></Btn
 				>
-					{{
+				<h1 class="mb-0 ml-2 mr-auto">
+					{{ $t("course_tree.announcement_editor_title") }}
+				</h1>
+				<CloudSaveStatus
+					v-if="showAutoSaveIndicator"
+					:saving="saving"
+					:hadError="savingError"
+					class="mt-1 mr-6"
+				/>
+				<div
+					class="flex space-x-3 items-center"
+					v-if="modelValue.state === AnnouncementNodeState.DRAFT"
+				>
+					<p class="text-muted">{{ $t("course_tree.draft") }}</p>
+					<Btn :disabled="blockingSaving" @click="onPublish()">{{
+						$t("course_tree.publish_announcement")
+					}}</Btn>
+				</div>
+				<div v-if="!publishOnly" class="ml-2">
+					<Btn
+						:outline="modelValue.state === AnnouncementNodeState.DRAFT"
+						:disabled="blockingSaving"
+						@click="onSave()"
+					>
+						{{
+							modelValue.state === AnnouncementNodeState.DRAFT
+								? $t("course_tree.save_draft")
+								: $t("course_tree.save")
+						}}
+					</Btn>
+				</div>
+			</div>
+			<div class="w-full flex">
+				<IntegrationSwitch
+					v-if="
+						showClassroomIntegrationSwitch &&
 						modelValue.state === AnnouncementNodeState.DRAFT
-							? $t("course_tree.save_draft")
-							: $t("course_tree.save")
-					}}
-				</Btn>
+					"
+					class="ml-auto"
+					v-model="publishToClassroom"
+				/>
+				<PublishedOnClassroom class="banner-success px-2 ml-auto" v-if="false" />
 			</div>
 		</div>
+
 		<!-- title & creation date -->
 		<div class="mb-8 flex items-center space-x-8">
 			<!-- <TextInput
@@ -107,10 +124,11 @@ import Btn from "@/components/ui/Btn.vue";
 import CloudSaveStatus from "@/components/ui/CloudSaveStatus.vue";
 import Dropdown from "@/components/ui/Dropdown.vue";
 import FileUpload from "@/components/ui/FileUpload.vue";
-import LinearProgress from "@/components/ui/LinearProgress.vue";
 import TextEditor from "@/components/ui/TextEditor.vue";
-import TextInput from "@/components/ui/TextInput.vue";
 import { getTranslatedString as _ } from "@/i18n";
+import IntegrationSwitch from "@/integrations/classroom/components/IntegrationSwitch.vue";
+import PublishedOnClassroom from "@/integrations/classroom/components/PublishedOnClassroom.vue";
+import { useGoogleIntegrationsStore } from "@/integrations/stores/googleIntegrationsStore";
 import { SelectableOption } from "@/interfaces";
 import { courseIdMixin, savingMixin } from "@/mixins";
 import {
@@ -154,10 +172,14 @@ export default defineComponent({
 			loadingTopics: false,
 			loadingChildren: false,
 			attachmentUploadProgress: undefined as undefined | number,
+			publishToClassroom: true,
+			showClassroomIntegrationSwitch: false,
 		};
 	},
 	async created() {
 		await this.mainStore.getCourseRootId({ courseId: this.courseId });
+		this.showClassroomIntegrationSwitch =
+			await this.googleIntegrationStore.isGoogleClassroomIntegrationActive(this.courseId);
 		await Promise.all([
 			(async () => {
 				if (!this.allowChildren) {
@@ -207,7 +229,12 @@ export default defineComponent({
 			this.onNodeChange("parent_id", parentId);
 		},
 		async onPublish() {
-			this.onNodeChange("state", AnnouncementNodeState.PUBLISHED, true);
+			this.$emit("updateState", {
+				newState: AnnouncementNodeState.PUBLISHED,
+				params: {
+					fireIntegrationEvent: this.publishToClassroom,
+				},
+			});
 		},
 		async onCreateAttachment(file) {
 			this.creatingAttachment = true;
@@ -237,7 +264,7 @@ export default defineComponent({
 		},
 	},
 	computed: {
-		...mapStores(useMainStore, useMetaStore),
+		...mapStores(useMainStore, useMetaStore, useGoogleIntegrationsStore),
 		// TODO refactor, duplicated with CourseTree
 		topicsAsOptions(): SelectableOption[] {
 			return [
@@ -269,15 +296,14 @@ export default defineComponent({
 		},
 	},
 	components: {
-		//TextInput,
 		TextEditor,
 		CloudSaveStatus,
 		Btn,
-		//Timestamp,
 		FileUpload,
 		FileNode,
-		LinearProgress,
 		Dropdown,
+		IntegrationSwitch,
+		PublishedOnClassroom,
 	},
 });
 </script>

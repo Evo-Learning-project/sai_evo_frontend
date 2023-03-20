@@ -126,6 +126,7 @@
 					@closeEditor="onDismissNodeEditor()"
 					@blur="onEditorBlur()"
 					@deleteNode="onDeleteNode($event)"
+					@updateState="onEditingNodeStateUpdate($event)"
 				/>
 			</template>
 		</Dialog>
@@ -145,6 +146,7 @@ import {
 	savingMixin,
 } from "@/mixins";
 import {
+	AnnouncementNodeState,
 	CoursePrivilege,
 	CourseTreeNode as ICourseTreeNode,
 	CourseTreeNodeType,
@@ -154,6 +156,8 @@ import {
 	getBlankLessonNode,
 	getBlankPollNode,
 	getBlankTopicNode,
+	LessonNodeState,
+	PollNodeState,
 	TopicNode,
 } from "@/models";
 import { useMainStore } from "@/stores/mainStore";
@@ -171,7 +175,10 @@ import { AutoSaveManager, FieldList } from "@/autoSave";
 import VueEternalLoading from "@ts-pro/vue-eternal-loading/src/components/VueEternalLoading/VueEternalLoading.vue";
 import { LoadAction } from "@ts-pro/vue-eternal-loading";
 import Spinner from "@/components/ui/Spinner.vue";
-import { onChangeNodePosition } from "@/components/course_tree/shared";
+import {
+	NodeEditorStateUpdatePayload,
+	onChangeNodePosition,
+} from "@/components/course_tree/shared";
 
 export default defineComponent({
 	name: "CourseTree",
@@ -307,6 +314,63 @@ export default defineComponent({
 				},
 			);
 		},
+		async onEditingNodeStateUpdate({ newState, params }: NodeEditorStateUpdatePayload) {
+			if (!this.editingNode) {
+				throw new Error(
+					"Called onEditingNodeStateUpdate with this.editingNode is " + this.editingNode,
+				);
+			}
+
+			this.blockingSaving = true;
+			if (!this.editingNode.id) {
+				// if the node hasn't been created yet, we just create it
+				// with the supplied state value
+				const oldState =
+					this.proxyEditingNode && "state" in this.proxyEditingNode
+						? this.proxyEditingNode.state
+						: null;
+				this.editingNodeUnsavedChanges["state"] = newState;
+				try {
+					await this.createNodeFromUnsavedChanges();
+					this.onDismissNodeEditor();
+					this.metaStore.showSuccessFeedback();
+				} catch (e) {
+					setErrorNotification(e);
+					this.editingNodeUnsavedChanges["state"] = oldState;
+				}
+			} else {
+				// otherwise, we first save the changes to the server and, if the rmeote update
+				// is successful, we patch the local node too. if the node is being autosaved,
+				// we first flush the autosave manager, then the only change we need to sync is
+				// the new value for the state; otherwise, we patch the node with all unsaved
+				// changes plus the new state
+				const changes = {
+					state: newState,
+					...(this.autoSaveEditingNode ? {} : this.editingNodeUnsavedChanges),
+				};
+				try {
+					// flush any pending changes first
+					await this.editingNodeAutoSaveManager?.flush();
+					await this.mainStore.partialUpdateCourseTreeNode({
+						courseId: this.courseId,
+						nodeId: this.editingNode.id,
+						changes,
+						fireIntegrationEvent: params.fireIntegrationEvent,
+					});
+					this.mainStore.patchCourseTreeNode({
+						courseId: this.courseId,
+						nodeId: this.editingNode.id,
+						changes,
+					});
+					this.editingNodeUnsavedChanges = {};
+					this.onDismissNodeEditor();
+					this.metaStore.showSuccessFeedback();
+				} catch (e) {
+					setErrorNotification(e);
+				}
+			}
+			this.blockingSaving = false;
+		},
 		async onEditingNodeChange<K extends keyof ICourseTreeNode>(
 			key: K,
 			value: ICourseTreeNode[K],
@@ -338,7 +402,6 @@ export default defineComponent({
 				}
 			};
 			try {
-				// TODO if creating a file node, don't display loader in dialog
 				this.blockingSaving = true;
 				await this.mainStore.createCourseTreeNode({
 					courseId: this.courseId,
@@ -367,6 +430,7 @@ export default defineComponent({
 				this.metaStore.showSuccessFeedback();
 			} catch (e) {
 				setErrorNotification(e);
+				throw e;
 			} finally {
 				this.blockingSaving = false;
 			}

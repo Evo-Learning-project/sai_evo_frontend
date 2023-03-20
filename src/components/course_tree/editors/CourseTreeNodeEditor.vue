@@ -7,6 +7,7 @@
 		@blur="$emit('blur')"
 		@save="$emit('save')"
 		@deleteNode="$emit('deleteNode', $event)"
+		@updateState="$emit('updateState', $event)"
 	></component>
 </template>
 

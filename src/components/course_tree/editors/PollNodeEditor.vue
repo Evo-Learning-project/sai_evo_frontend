@@ -339,21 +339,11 @@ export default defineComponent({
 			await this.onNodeChange("parent_id", parentId);
 		},
 		async onPublish() {
-			this.onNodeChange("state", PollNodeState.OPEN, true);
+			this.$emit("updateState", {
+				newState: PollNodeState.OPEN,
+				params: {},
+			});
 		},
-		// async onCreateAttachment(file) {
-		// 	this.creatingAttachment = true;
-		// 	try {
-		// 		await this.mainStore.createCourseTreeNode({
-		// 			courseId: this.courseId,
-		// 			node: { ...getBlankFileNode(this.modelValue.id), file },
-		// 		});
-		// 	} catch (e) {
-		// 		setErrorNotification(e);
-		// 	} finally {
-		// 		this.creatingAttachment = false;
-		// 	}
-		// },
 		/** end shared behavior */
 	},
 	computed: {

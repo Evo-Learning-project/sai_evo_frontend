@@ -27,7 +27,9 @@
 						v-if="modelValue.state === LessonNodeState.DRAFT"
 					>
 						<p class="text-muted">{{ $t("course_tree.draft") }}</p>
-						<Btn @click="onPublish()">{{ $t("course_tree.publish_lesson") }}</Btn>
+						<Btn :disabled="blockingSaving" @click="onPublish()">{{
+							$t("course_tree.publish_lesson")
+						}}</Btn>
 					</div>
 					<!-- save button-->
 					<div class="ml-2">
@@ -46,7 +48,13 @@
 				</div>
 			</div>
 			<div class="w-full flex">
-				<IntegrationSwitch class="ml-auto" v-model="publishToClassroom" />
+				<IntegrationSwitch
+					v-if="
+						showClassroomIntegrationSwitch && modelValue.state === LessonNodeState.DRAFT
+					"
+					class="ml-auto"
+					v-model="publishToClassroom"
+				/>
 				<PublishedOnClassroom class="banner-success px-2 ml-auto" v-if="false" />
 			</div>
 		</div>
@@ -126,18 +134,16 @@
 
 <script lang="ts">
 import { getCourseTopicNodes } from "@/api";
-import { AutoSaveManager } from "@/autoSave";
 import Btn from "@/components/ui/Btn.vue";
 import CloudSaveStatus from "@/components/ui/CloudSaveStatus.vue";
 import Dropdown from "@/components/ui/Dropdown.vue";
 import FileUpload from "@/components/ui/FileUpload.vue";
-import LinearProgress from "@/components/ui/LinearProgress.vue";
 import TextEditor from "@/components/ui/TextEditor.vue";
 import TextInput from "@/components/ui/TextInput.vue";
-import Timestamp from "@/components/ui/Timestamp.vue";
 import { getTranslatedString as _ } from "@/i18n";
 import IntegrationSwitch from "@/integrations/classroom/components/IntegrationSwitch.vue";
 import PublishedOnClassroom from "@/integrations/classroom/components/PublishedOnClassroom.vue";
+import { useGoogleIntegrationsStore } from "@/integrations/stores/googleIntegrationsStore";
 import { SelectableOption } from "@/interfaces";
 import { courseIdMixin, savingMixin } from "@/mixins";
 import {
@@ -183,6 +189,8 @@ export default defineComponent({
 	},
 	async created() {
 		await this.mainStore.getCourseRootId({ courseId: this.courseId });
+		this.showClassroomIntegrationSwitch =
+			await this.googleIntegrationStore.isGoogleClassroomIntegrationActive(this.courseId);
 		await Promise.all([
 			(async () => {
 				this.loadingChildren = true;
@@ -229,7 +237,12 @@ export default defineComponent({
 			this.onNodeChange("parent_id", parentId);
 		},
 		async onPublish() {
-			this.onNodeChange("state", LessonNodeState.PUBLISHED, true);
+			this.$emit("updateState", {
+				newState: LessonNodeState.PUBLISHED,
+				params: {
+					fireIntegrationEvent: this.publishToClassroom,
+				},
+			});
 		},
 		async onCreateAttachment(file) {
 			this.creatingAttachment = true;
@@ -259,7 +272,7 @@ export default defineComponent({
 		},
 	},
 	computed: {
-		...mapStores(useMainStore, useMetaStore),
+		...mapStores(useMainStore, useMetaStore, useGoogleIntegrationsStore),
 		// TODO refactor, duplicated with other editors
 		topicsAsOptions(): SelectableOption[] {
 			return [

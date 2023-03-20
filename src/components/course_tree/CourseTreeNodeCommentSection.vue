@@ -56,14 +56,11 @@ import { CoursePrivilege, getBlankCourseTreeNodeComment, NodeComment } from "@/m
 import { useMainStore } from "@/stores/mainStore";
 import { useMetaStore } from "@/stores/metaStore";
 import { getCurrentUserId, setErrorNotification } from "@/utils";
-import { defineComponent, PropType } from "@vue/runtime-core";
+import { defineComponent } from "@vue/runtime-core";
 import { mapStores } from "pinia";
 import Message from "../messaging/Message.vue";
 import MessageEditor from "../messaging/MessageEditor.vue";
-import Avatar from "../ui/Avatar.vue";
 import Btn from "../ui/Btn.vue";
-import TextInput from "../ui/TextInput.vue";
-import Timestamp from "../ui/Timestamp.vue";
 export default defineComponent({
 	name: "CourseTreeNodeCommentSection",
 	mixins: [courseIdMixin, loadingMixin, coursePrivilegeMixin],

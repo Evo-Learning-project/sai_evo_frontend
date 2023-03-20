@@ -54,38 +54,6 @@ export class AutoSaveManager<T> {
 		this.state = AutoSaveManagerState.UP_TO_DATE;
 	}
 
-	// async onChange<K extends keyof T>({
-	// 	field,
-	// 	value,
-	// }: {
-	// 	field: K;
-	// 	value: T[K];
-	// }): Promise<void> {
-	// 	this.state = AutoSaveManagerState.PENDING;
-
-	// 	// record new change to field
-	// 	this.unsavedChanges[field] = value as any;
-
-	// 	// make deep copy of field about to change in case rollback becomes necessary
-	// 	// (only for non-debounced fields as it would be disconcerting to roll back
-	// 	// debounced changes like in text fields)
-	// 	if (!this.debouncedFields.includes(field)) {
-	// 		this.beforeChanges[field] = JSON.parse(JSON.stringify(this.instance[field]));
-	// 	}
-
-	// 	if (this.alwaysPatchLocal) {
-	// 		// instantly update in-memory instance
-	// 		this.localPatchFunction({ [field]: value } as any);
-	// 	}
-
-	// 	// dispatch update to backend
-	// 	await this.remotePatchFunction(this.unsavedChanges);
-	// 	if (!this.debouncedFields.includes(field)) {
-	// 		// field isn't to be debounced; call remote update immediately
-	// 		await this.remotePatchFunction.flush();
-	// 	}
-	// }
-
 	async onChange(changes: Partial<T>): Promise<void> {
 		this.state = AutoSaveManagerState.PENDING;
 
@@ -117,6 +85,15 @@ export class AutoSaveManager<T> {
 
 	async flush(): Promise<void> {
 		if (this.state !== AutoSaveManagerState.UP_TO_DATE) {
+			/**
+			 * We don't just call .flush() on remotePatchFunction, because that'll
+			 * prevent us from calling flush multiple times in a row, as the
+			 * behavior of lodash's flush is to just return the last value if
+			 * called more than once in a row. Instead, we cancel any pending
+			 * invocations, schedule the function, and flush it immmediately
+			 */
+			this.remotePatchFunction.cancel();
+			this.remotePatchFunction(this.unsavedChanges);
 			await this.remotePatchFunction.flush();
 		}
 	}
