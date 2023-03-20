@@ -27,9 +27,11 @@
 			:showDialog="editorOpen"
 			:showActions="false"
 			:dismissible="false"
+			:loading="blockingSaving"
 		>
 			<template v-slot:body>
 				<CourseTreeNodeEditor
+					:isExistingNode="true"
 					class="text-darkText"
 					:saving="saving"
 					:savingError="savingError"
@@ -37,6 +39,7 @@
 					:modelValue="proxyEditingNode"
 					:showAutoSaveIndicator="false"
 					@patchNode="onEditingNodeChange($event.key, $event.value, !!$event.save)"
+					@updateState="onStateUpdate($event)"
 					@save="onSave()"
 					@closeEditor="onDismissEditor()"
 					@deleteNode="onDeleteNode($event)"
@@ -49,7 +52,11 @@
 <script lang="ts">
 import { AutoSaveManager, FieldList } from "@/autoSave";
 import CourseTreeNodeEditor from "@/components/course_tree/editors/CourseTreeNodeEditor.vue";
-import { nodeEmits, nodeProps } from "@/components/course_tree/shared";
+import {
+	NodeEditorStateUpdatePayload,
+	nodeEmits,
+	nodeProps,
+} from "@/components/course_tree/shared";
 import Dialog from "@/components/ui/Dialog.vue";
 import SlotSkeleton from "@/components/ui/skeletons/SlotSkeleton.vue";
 import { getTranslatedString as _ } from "@/i18n";
@@ -84,7 +91,11 @@ export default defineComponent({
 			() => import("../../components/course_tree/node_detail/FileNodeDetail.vue"),
 		);
 	},
+	beforeUnmount() {
+		window.removeEventListener("beforeunload", this.beforeWindowUnload);
+	},
 	async created() {
+		window.addEventListener("beforeunload", this.beforeWindowUnload);
 		await this.withFirstLoading(async () =>
 			this.mainStore.getCourseTreeNodeDetail({
 				courseId: this.courseId,
@@ -105,6 +116,17 @@ export default defineComponent({
 		};
 	},
 	methods: {
+		beforeWindowUnload(e: { preventDefault: () => void; returnValue: string }) {
+			if (
+				Object.keys(this.unsavedChanges).length > 0 &&
+				!confirm(_("course_tree.editor_discard_unsaved_changes"))
+			) {
+				// Cancel the event
+				e.preventDefault();
+				// Chrome requires returnValue to be set
+				e.returnValue = "";
+			}
+		},
 		onViewerClose() {
 			this.$router.push({
 				name: "CourseTreeDispatcher",
@@ -116,6 +138,34 @@ export default defineComponent({
 				this.blockingSaving = true;
 				await this.autoSaveManager?.onChange(this.unsavedChanges);
 				await this.autoSaveManager?.flush();
+				this.unsavedChanges = {};
+				this.onDismissEditor();
+				this.metaStore.showSuccessFeedback();
+			} catch (e) {
+				setErrorNotification(e);
+			} finally {
+				this.blockingSaving = false;
+			}
+		},
+		async onStateUpdate({ newState, params }: NodeEditorStateUpdatePayload) {
+			const changes = {
+				state: newState,
+				...this.unsavedChanges,
+			};
+			try {
+				this.blockingSaving = true;
+				await this.mainStore.partialUpdateCourseTreeNode({
+					courseId: this.courseId,
+					nodeId: this.node.id,
+					changes,
+					fireIntegrationEvent: params.fireIntegrationEvent,
+				});
+				this.mainStore.patchCourseTreeNode({
+					courseId: this.courseId,
+					nodeId: this.node.id,
+					changes,
+				});
+				this.unsavedChanges = {};
 				this.onDismissEditor();
 				this.metaStore.showSuccessFeedback();
 			} catch (e) {
@@ -175,7 +225,12 @@ export default defineComponent({
 			this.editorOpen = true;
 		},
 		onDismissEditor() {
-			// TODO ask for confirmation if there are unsaved changes
+			if (
+				Object.keys(this.unsavedChanges).length > 0 &&
+				!confirm(_("course_tree.editor_discard_unsaved_changes"))
+			) {
+				return;
+			}
 			this.editorOpen = false;
 			this.autoSaveManager = null;
 		},
@@ -224,7 +279,7 @@ export default defineComponent({
 	computed: {
 		...mapStores(useMainStore),
 		node() {
-			return this.mainStore.currentCourseTreeNode; // this.mainStore.getCourseTreeNodeById(this.nodeId);
+			return this.mainStore.currentCourseTreeNode as CourseTreeNode;
 		},
 		nodeChildren() {
 			return this.mainStore.paginatedChildrenByNodeId[this.node?.id ?? ""]?.data ?? [];

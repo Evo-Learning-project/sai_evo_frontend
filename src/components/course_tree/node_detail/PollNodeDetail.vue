@@ -19,11 +19,19 @@
 			<!-- icon-->
 			<div
 				style="min-width: 3.5rem; max-width: 3.5rem"
-				class="flex rounded-full w-14 h-14 bg-primary bg-opacity-15 mr-3"
+				class="flex rounded-full w-14 h-14 mr-3"
+				:class="{
+					'bg-gray-200': node.state === PollNodeState.DRAFT,
+					'bg-primary  bg-opacity-15': node.state !== PollNodeState.DRAFT,
+				}"
 			>
 				<span
 					style="font-size: 40px !important"
-					class="m-auto material-icons-outlined text-primary"
+					class="m-auto material-icons-outlined"
+					:class="{
+						'text-gray-500': node.state === PollNodeState.DRAFT,
+						'text-primary': node.state !== PollNodeState.DRAFT,
+					}"
 					>campaign</span
 				>
 			</div>
@@ -45,6 +53,9 @@
 							class="text-sm text-muted"
 							:value="node.created"
 						/>
+						<p class="text-muted text-sm" v-if="node.state === PollNodeState.DRAFT">
+							{{ $t("course_tree.draft") }}
+						</p>
 					</div>
 				</div>
 				<!-- teacher actions-->

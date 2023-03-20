@@ -190,7 +190,11 @@ export default defineComponent({
 		savingMixin,
 		coursePrivilegeMixin,
 	],
+	beforeUnmount() {
+		window.removeEventListener("beforeunload", this.beforeWindowUnload);
+	},
 	async created() {
+		window.addEventListener("beforeunload", this.beforeWindowUnload);
 		await this.withLoading(
 			async () =>
 				await this.mainStore.getCourseTopLevelNodes({
@@ -238,6 +242,17 @@ export default defineComponent({
 		};
 	},
 	methods: {
+		beforeWindowUnload(e: { preventDefault: () => void; returnValue: string }) {
+			if (
+				Object.keys(this.editingNodeUnsavedChanges).length > 0 &&
+				!confirm(_("course_tree.editor_discard_unsaved_changes"))
+			) {
+				// Cancel the event
+				e.preventDefault();
+				// Chrome requires returnValue to be set
+				e.returnValue = "";
+			}
+		},
 		async onLoadMore({ loaded, noMore, error }: LoadAction) {
 			try {
 				const moreResults = await this.mainStore.getCourseTopLevelNodes({
