@@ -60,39 +60,39 @@
 				</div>
 			</div>
 			<!-- filter button -->
-			<div class="flex items-center w-full mb-4 -ml-3">
-				<div v-show="viewMode === 'table'" class="flex items-center w-max">
-					<Btn
-						:variant="'icon'"
-						:outline="true"
-						@click="examSelectionExpanded = !examSelectionExpanded"
-						class=""
-						id="more-filters-btn"
-						><span
-							class="
-								transition-transform
-								duration-200
-								ease-out
-								transform
-								material-icons-outlined
-							"
-							:class="{ 'rotate-180': examSelectionExpanded }"
-						>
-							{{ "expand_more" }}
-						</span>
-					</Btn>
-					<label class="cursor-pointer text-muted" for="more-filters-btn">{{
-						$t("course_insights.filter_exams")
-					}}</label>
+			<div class="flex flex-col w-full mb-4">
+				<!-- tabs to select view mode -->
+				<Tabs class="mt-6 mb-8" :options="viewModesAsOptions" v-model="viewMode" />
+				<!-- exam filters -->
+				<div class="flex items-center w-full mb-4 -ml-3">
+					<div v-show="viewMode === 'table'" class="flex items-center w-max">
+						<Btn
+							:variant="'icon'"
+							:outline="true"
+							@click="examSelectionExpanded = !examSelectionExpanded"
+							class=""
+							id="more-filters-btn"
+							><span
+								class="
+									transition-transform
+									duration-200
+									ease-out
+									transform
+									material-icons-outlined
+								"
+								:class="{ 'rotate-180': examSelectionExpanded }"
+							>
+								{{ "expand_more" }}
+							</span>
+						</Btn>
+						<label class="cursor-pointer text-muted" for="more-filters-btn">{{
+							$t("course_insights.filter_exams")
+						}}</label>
+					</div>
 				</div>
-				<SegmentedControls
-					:small="true"
-					class="hidden ml-auto md:block"
-					:options="viewModesAsOptions"
-					v-model="viewMode"
-				/>
 			</div>
 		</div>
+		<!-- exams table -->
 		<div v-show="viewMode === 'table'" class="flex flex-col flex-grow">
 			<div class="flex-grow overflow-y-auto">
 				<DataTable
@@ -118,31 +118,75 @@
 				</Btn>
 			</div>
 		</div>
-		<div
-			v-show="viewMode === 'cards'"
-			class="grid grid-cols-1 gap-3 mt-4 md:grid-cols-3 2xl:grid-cols-4"
-		>
+		<!-- enrolled students list-->
+		<div v-show="viewMode === 'cards'" class="flex flex-col flex-grow w-full">
+			<!-- filters & controls -->
 			<div
-				v-if="!loading && mainStore.paginatedUsers.count === 0"
-				class="flex flex-col items-center mt-8"
+				class="flex flex-col items-center w-full mb-12 space-y-4 md:flex-row md:space-y-0"
 			>
-				<p style="font-size: 6rem" class="material-icons-outlined opacity-10">
-					person_off
-				</p>
-				<h2 class="opacity-40">{{ $t("course_insights.no_active_students") }}</h2>
+				<TextInput
+					v-if="false"
+					class="w-full md:w-1/2"
+					:searchBar="true"
+					:leftIcon="'search'"
+					:placeholder="$t('course_insights.search_students')"
+					v-model="userSearchText"
+				/>
+				<Btn class="w-full md:ml-auto md:w-max" @click="onEnrollUsers()">
+					<span class="mr-2 material-icons">person_add</span>
+					{{ $t("course_insights.enroll_students") }}
+				</Btn>
 			</div>
-			<StudentCard
-				class="mb-auto"
-				v-for="user in mainStore.paginatedUsers.data"
-				:key="'active-user-' + user.id"
-				:user="user"
-			/>
+			<!-- students -->
+			<div class="grid grid-cols-1 gap-3 md:grid-cols-3 2xl:grid-cols-4">
+				<div
+					v-if="!loading && mainStore.enrolledUsers.length === 0"
+					class="
+						flex flex-col
+						items-center
+						w-full
+						h-full
+						mt-12
+						md:col-span-3
+						2xl:col-span-4
+					"
+				>
+					<p style="font-size: 6rem" class="material-icons-outlined opacity-10">
+						person_off
+					</p>
+					<h2 class="opacity-40">{{ $t("course_insights.no_enrolled_students") }}</h2>
+				</div>
+				<StudentCard
+					class="mb-auto"
+					v-for="user in mainStore.enrolledUsers"
+					:key="'enrolled-user-' + user.id"
+					:user="user"
+				/>
+			</div>
 		</div>
+		<Dialog
+			:showDialog="showBlockingDialog"
+			@yes="resolveBlockingDialog(true)"
+			@no="resolveBlockingDialog(false)"
+			:yesText="enrollingUsers ? $t('misc.wait') : $t('course_insights.enroll')"
+			:noText="$t('dialog.default_cancel_text')"
+			:disableOk="usersToEnrollCount === 0 || enrollingUsers"
+			:large="true"
+			:footerBorder="true"
+			:loading="enrollingUsers"
+		>
+			<template v-slot:title>{{ $t("course_insights.add_enrolled_students") }}</template>
+			<template v-slot:body>
+				<div class="text-darkText">
+					<UserPicker v-model="usersToEnroll"></UserPicker>
+				</div>
+			</template>
+		</Dialog>
 	</div>
 </template>
 
 <script lang="ts">
-import { courseIdMixin, loadingMixin } from "@/mixins";
+import { blockingDialogMixin, courseIdMixin, loadingMixin } from "@/mixins";
 import { defineComponent, PropType } from "@vue/runtime-core";
 import {
 	forceFileDownload,
@@ -160,28 +204,36 @@ import {
 	Event,
 	EventParticipation,
 	CourseExamParticipationReport,
+	userMatchesSearch,
 } from "@/models";
 import { getCourseInsightsHeaders } from "@/const";
 import CheckboxGroup from "@/components/ui/CheckboxGroup.vue";
 import { SelectableOption } from "@/interfaces";
 import { getTranslatedString as _ } from "@/i18n";
 import { normalizeOptionalStringContainingNumber } from "@/api/utils";
-import SegmentedControls from "@/components/ui/SegmentedControls.vue";
 import StudentCard from "@/components/shared/StudentCard.vue";
 import { mapStores } from "pinia";
 import { useMainStore } from "@/stores/mainStore";
 import { getCourseExamParticipationsReportAsCsv } from "@/reports/courseExamsParticipations";
 import Btn from "@/components/ui/Btn.vue";
+import Tabs from "@/components/ui/Tabs.vue";
+import TextInput from "@/components/ui/TextInput.vue";
+import Dialog from "@/components/ui/Dialog.vue";
+import UserPicker from "@/components/shared/UserPicker.vue";
+import { useMetaStore } from "@/stores/metaStore";
 export default defineComponent({
 	name: "CourseInsights",
-	mixins: [courseIdMixin, loadingMixin],
+	mixins: [courseIdMixin, loadingMixin, blockingDialogMixin],
 	props: {},
 	components: {
 		DataTable,
 		CheckboxGroup,
 		Btn,
-		SegmentedControls,
 		StudentCard,
+		Tabs,
+		TextInput,
+		Dialog,
+		UserPicker,
 	},
 	watch: {
 		viewMode(newVal) {
@@ -189,6 +241,14 @@ export default defineComponent({
 				courseId: this.courseId,
 				to: newVal,
 			});
+		},
+		usersToEnroll: {
+			handler(newVal) {
+				// this will enable the `unsavedChanges` getter which will prompt
+				// user for confirmation when leaving the window
+				this.metaStore.saving = newVal.ids.length > 0 || newVal.emails.length > 0;
+			},
+			deep: true,
 		},
 	},
 	async created() {
@@ -203,7 +263,7 @@ export default defineComponent({
 	},
 	data() {
 		return {
-			loadingActiveStudents: false,
+			loadingEnrolledStudents: false,
 			examSelectionExpanded: false,
 			loadingExams: false,
 			gridApi: null as any,
@@ -212,6 +272,12 @@ export default defineComponent({
 			selectedExamsIds: [] as string[],
 			viewMode: "table" as "table" | "cards",
 			downloadingReport: false,
+			userSearchText: "",
+			usersToEnroll: { ids: [], emails: [] } as {
+				ids: string[];
+				emails: string[];
+			},
+			enrollingUsers: false,
 		};
 	},
 	methods: {
@@ -219,13 +285,16 @@ export default defineComponent({
 			return data.id;
 		},
 		async fetchUsers() {
-			this.loadingActiveStudents = true;
+			this.loadingEnrolledStudents = true;
 			try {
-				await this.mainStore.getCourseActiveUsers({ courseId: this.courseId });
+				await Promise.all([
+					this.mainStore.getCourseEnrolledUsers({ courseId: this.courseId }),
+					this.mainStore.getCourseActiveUsers({ courseId: this.courseId }),
+				]);
 			} catch (e) {
 				setErrorNotification(e);
 			} finally {
-				this.loadingActiveStudents = false;
+				this.loadingEnrolledStudents = false;
 			}
 		},
 		async fetchExams() {
@@ -242,6 +311,35 @@ export default defineComponent({
 				setErrorNotification(e);
 			} finally {
 				this.loadingExams = false;
+			}
+		},
+		async onEnrollUsers() {
+			this.showBlockingDialog = true;
+			const choice = await this.getBlockingBinaryDialogChoice();
+			if (!choice) {
+				this.showBlockingDialog = false;
+				return;
+			}
+			try {
+				this.enrollingUsers = true;
+				await this.mainStore.enrollUsersInCourse({
+					courseId: this.courseId,
+					userIds: this.usersToEnroll.ids,
+					emails: this.usersToEnroll.emails,
+				});
+				// re-fetch enrolled users to include new ones
+				await this.mainStore.getCourseEnrolledUsers({ courseId: this.courseId });
+				// cleanup
+				this.metaStore.showSuccessFeedback();
+				this.usersToEnroll = {
+					ids: [],
+					emails: [],
+				};
+			} catch (e) {
+				setErrorNotification(e);
+			} finally {
+				this.enrollingUsers = false;
+				this.showBlockingDialog = false;
 			}
 		},
 		downloadReport() {
@@ -264,23 +362,37 @@ export default defineComponent({
 				setTimeout(() => (this.downloadingReport = false), 150);
 			}
 		},
+		filterUser(search: string, userOption: SelectableOption) {
+			const user = this.mainStore.getUserById(userOption.value) as User;
+			return userMatchesSearch(search, user);
+		},
 	},
 	computed: {
-		...mapStores(useMainStore),
+		...mapStores(useMainStore, useMetaStore),
 		practiceParticipations() {
 			return [];
+		},
+		usersToEnrollCount() {
+			return this.usersToEnroll.emails.length + this.usersToEnroll.ids.length;
+		},
+		usersAsOptions(): SelectableOption[] {
+			return this.mainStore.paginatedUsers.data.map(u => ({
+				value: u.id,
+				content: u.full_name,
+				data: u,
+			}));
 		},
 		viewModesAsOptions(): SelectableOption[] {
 			return [
 				{
 					value: "table",
 					icons: ["table_chart"],
-					content: "",
+					content: _("course_insights.exams_stats"),
 				},
 				{
 					value: "cards",
-					icons: ["portrait"],
-					content: "",
+					icons: ["people"],
+					content: _("course_insights.enrolled_students"),
 				},
 			];
 		},
@@ -304,8 +416,8 @@ export default defineComponent({
 			if (this.loading) {
 				return [];
 			}
-			const activeUsers = this.mainStore.paginatedUsers.data;
-			return activeUsers.filter(u =>
+			const users = this.mainStore.activeUsers;
+			return users.filter(u =>
 				this.selectedExams.some(
 					e =>
 						typeof (this.participations[e.id] ?? []).find(p => p.user == u.id) !==
@@ -338,7 +450,7 @@ export default defineComponent({
 			if (this.loading) {
 				return [];
 			}
-			const activeUsers = this.activeUsersForSelectedExams;
+			const filteredUsers = this.activeUsersForSelectedExams;
 			const exams = this.mainStore.exams;
 
 			const getScoreSumFn = (u: User) =>
@@ -354,7 +466,7 @@ export default defineComponent({
 						.reduce((a, b) => a + b, 0) * 100,
 				) / 100;
 
-			return activeUsers.map(u => ({
+			return filteredUsers.map(u => ({
 				id: u.id,
 				email: u.email,
 				fullName: u.full_name,

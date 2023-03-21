@@ -21,6 +21,7 @@ import {
 	deleteExerciseSubExercise,
 	deleteExerciseTestCase,
 	deleteExerciseTestCaseAttachment,
+	enrollUsersInCourse,
 	EventParticipationSearchFilter,
 	EventSearchFilter,
 	ExerciseSearchFilter,
@@ -44,8 +45,10 @@ import {
 	getExerciseTestCaseAttachments,
 	getTags,
 	getUsers,
+	getUsersEnrolledInCourse,
 	lockEvent,
 	lockExercise,
+	manageSelfCourseEnrollment,
 	moveEventParticipationCurrentSlotCursor,
 	PaginatedData,
 	partialUpdateEvent,
@@ -156,7 +159,9 @@ export const useMainStore = defineStore("main", {
 		tags: [] as Tag[], // tags of current course
 
 		privilegedUsers: [] as User[], // users with privileges for the current course
-		paginatedUsers: getEmptyPaginatedData() as PaginatedData<User>, // users currently displayed (e.g. course insights page)
+		enrolledUsers: [] as User[], // users enrolled in current course
+		activeUsers: [] as User[], // users active (i.e. with >= 1 participation) in current course
+		paginatedUsers: getEmptyPaginatedData() as PaginatedData<User>, // general-purpose store for users
 		paginatedExercises: getEmptyPaginatedData() as PaginatedData<Exercise>, // exercises currently displayed
 		events: [] as Event[], // events currently displayed (e.g. course exam list)
 
@@ -210,7 +215,12 @@ export const useMainStore = defineStore("main", {
 		getCourseById: state => (courseId: string) =>
 			state.courses.find(c => c.id == courseId),
 		getUserById: state => (userId: string) =>
-			[...state.privilegedUsers, ...state.paginatedUsers.data].find(u => u.id == userId),
+			[
+				...state.privilegedUsers,
+				...state.enrolledUsers,
+				...state.activeUsers,
+				...state.paginatedUsers.data,
+			].find(u => u.id == userId),
 		getEventById: state => (eventId: string) =>
 			state.events.find(e => e.id == eventId) ?? getBlankExam(),
 		getEventByTemplateId: state => (templateId: string) =>
@@ -277,6 +287,24 @@ export const useMainStore = defineStore("main", {
 		},
 	},
 	actions: {
+		async selfEnrollInCourse({ courseId }: CourseIdActionPayload) {
+			await manageSelfCourseEnrollment(courseId, false);
+			const course = this.getCourseById(courseId);
+			if (course) {
+				course.enrolled = true;
+			} else {
+				throw new Error("selfEnrollInCourse couldn't find course with id " + courseId);
+			}
+		},
+		async selfUnenrollInCourse({ courseId }: CourseIdActionPayload) {
+			await manageSelfCourseEnrollment(courseId, true);
+			const course = this.getCourseById(courseId);
+			if (course) {
+				course.enrolled = false;
+			} else {
+				throw new Error("selfUnenrollInCourse couldn't find course with id " + courseId);
+			}
+		},
 		async isTopLevelNode({
 			courseId,
 			node,
@@ -1955,17 +1983,29 @@ export const useMainStore = defineStore("main", {
 			console.log("About to set priv", users.data);
 			this.privilegedUsers = users.data;
 		},
+		async getCourseEnrolledUsers(
+			// returns all users that are enrolled in given course
+			{ courseId }: CourseIdActionPayload,
+		) {
+			const users = await getUsersEnrolledInCourse(courseId);
+			this.enrolledUsers = users;
+		},
+		async enrollUsersInCourse(
+			// returns all users that are enrolled in given course
+			{
+				courseId,
+				userIds,
+				emails,
+			}: CourseIdActionPayload & { userIds: string[]; emails: string[] },
+		) {
+			await enrollUsersInCourse(courseId, userIds, emails);
+		},
 		async getCourseActiveUsers(
 			// returns all users that are active in given course
 			{ courseId }: CourseIdActionPayload,
 		) {
 			const users = await getActiveUsersForCourse(courseId);
-			this.paginatedUsers = {
-				data: users,
-				count: users.length,
-				pageNumber: 1,
-				isLastPage: true,
-			};
+			this.activeUsers = users;
 		},
 		async updateUserCoursePrivileges({
 			courseId,

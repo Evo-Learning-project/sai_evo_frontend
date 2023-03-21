@@ -2,12 +2,19 @@
 	<Card :margin-less="true">
 		<template v-slot:header>
 			<div class="flex items-center w-full mt-2">
-				<div class="flex items-center space-x-4">
+				<div class="flex items-center space-x-4 overflow-hidden">
 					<Avatar :size="'lg'" :user="user" />
-					<div class="flex flex-col -space-y-1">
-						<p class="">{{ user.full_name }}</p>
-						<div class="flex items-center space-x-1">
-							<p class="text-sm text-muted">{{ user.email }}</p>
+					<div class="flex flex-col -space-y-1 overflow-hidden">
+						<p class="overflow-hidden overflow-ellipsis" :title="user.full_name">
+							{{ user.full_name }}
+						</p>
+						<div class="flex items-center space-x-1 overflow-hidden">
+							<p
+								class="overflow-hidden text-sm text-muted overflow-ellipsis"
+								:title="user.email"
+							>
+								{{ user.email }}
+							</p>
 							<a style="margin-bottom: -4.85px" :href="'mailto:' + user.email">
 								<Btn :size="'xs'" :variant="'icon'" :outline="true">
 									<span
@@ -79,6 +86,9 @@
 						</router-link>
 					</div>
 				</Timeline>
+				<p v-if="processedHistory.length === 0 && !fetching" class="text-muted">
+					{{ $t("course_insights.no_user_activity") }}
+				</p>
 			</div>
 		</template>
 	</Card>

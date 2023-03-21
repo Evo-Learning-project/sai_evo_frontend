@@ -24,8 +24,8 @@
 					</div>
 					<div class="flex items-center mt-8 space-x-3">
 						<span class="opacity-0 material-icons-outlined"> school </span>
-						<NumberInput class="w-96 text-darkText" v-model="dirtyMat"
-							>{{ $t("student_data.your_mat") }}
+						<NumberInput class="w-96 text-darkText" v-model="dirtyMat">
+							{{ $t("student_data.your_mat") }}
 						</NumberInput>
 						<Btn
 							:variant="'primary'"
@@ -46,7 +46,9 @@
 					:course="course"
 					:id="index === 0 ? 'course-0' : ''"
 					@toggleFavorite="onCourseToggleFavorite(course)"
-				></CourseListItem>
+					@enroll="onEnrollChange(course, 'enroll')"
+					@unenroll="onEnrollChange(course, 'unenroll')"
+				/>
 			</div>
 		</div>
 		<div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4" v-else>
@@ -56,6 +58,10 @@
 			<CourseListItemSkeleton />
 			<CourseListItemSkeleton />
 			<CourseListItemSkeleton />
+			<CourseListItemSkeleton class="2xl:block hidden" />
+			<CourseListItemSkeleton class="2xl:block hidden" />
+			<CourseListItemSkeleton class="2xl:block hidden" />
+			<CourseListItemSkeleton class="2xl:block hidden" />
 		</div>
 		<div
 			class="flex flex-col w-full text-center select-none mt-28"
@@ -80,11 +86,36 @@
 				{{ $t("course_list.no_courses_with_filters") }}
 			</h2>
 		</div>
-		<v-tour
-			name="demoCourseTour"
-			:steps="demoCourseTourSteps"
-			:options="tourOptions"
-		></v-tour>
+		<Dialog
+			:loading="enrollmentLoading"
+			:yesText="
+				enrollmentLoading
+					? $t('misc.wait')
+					: enrollmentDialogMode === 'enroll'
+					? $t('enrollment.enroll')
+					: $t('enrollment.unenroll')
+			"
+			:noText="$t('dialog.default_cancel_text')"
+			:disableOk="enrollmentLoading"
+			:showDialog="showBlockingDialog"
+			@yes="resolveBlockingDialog(true)"
+			@no="resolveBlockingDialog(false)"
+			><template v-slot:title v-if="enrollmentDialogMode === 'enroll'">{{
+				$t("enrollment.enrollment")
+			}}</template>
+			<template v-slot:body
+				>{{
+					enrollmentDialogMode === "enroll"
+						? $t("enrollment.do_you_want_to_enroll")
+						: $t("enrollment.do_you_want_to_unenroll")
+				}}
+				<span v-if="selectedCourseForEnrollment">
+					{{ selectedCourseForEnrollment.name }}
+				</span>
+				?</template
+			></Dialog
+		>
+		<v-tour name="demoCourseTour" :steps="demoCourseTourSteps" :options="tourOptions" />
 	</div>
 </template>
 
@@ -92,7 +123,7 @@
 import { defineComponent } from "@vue/runtime-core";
 import CourseListItem from "@/components/shared/CourseListItem.vue";
 
-import { loadingMixin } from "@/mixins";
+import { blockingDialogMixin, loadingMixin } from "@/mixins";
 import CourseListItemSkeleton from "@/components/ui/skeletons/CourseListItemSkeleton.vue";
 import NumberInput from "@/components/ui/NumberInput.vue";
 import Btn from "@/components/ui/Btn.vue";
@@ -101,22 +132,24 @@ import { getBlankCourseSearchFilters } from "@/api/utils";
 import { CourseSearchFilter } from "@/api/interfaces";
 import CourseSearchFilters from "@/components/shared/CourseSearchFilters.vue";
 import { demoCourseTourSteps, tourOptions } from "@/const";
-import { isDemoMode } from "@/utils";
+import { isDemoMode, setErrorNotification } from "@/utils";
 import { mapStores } from "pinia";
 import { useMainStore } from "@/stores/mainStore";
 import { useMetaStore } from "@/stores/metaStore";
+import Dialog from "@/components/ui/Dialog.vue";
 
 const DEMO_COURSES_TOUR_KEY = "courses_tour_taken";
 
 export default defineComponent({
 	name: "CourseList",
-	mixins: [loadingMixin],
+	mixins: [loadingMixin, blockingDialogMixin],
 	components: {
 		CourseListItem,
 		CourseListItemSkeleton,
 		NumberInput,
 		Btn,
 		CourseSearchFilters,
+		Dialog,
 	},
 	async created() {
 		await this.withFirstLoading(async () => this.mainStore.getCourses());
@@ -134,6 +167,9 @@ export default defineComponent({
 			searchFilters: getBlankCourseSearchFilters(),
 			demoCourseTourSteps,
 			tourOptions,
+			enrollmentDialogMode: null as null | "enroll" | "unenroll",
+			selectedCourseForEnrollment: null as Course | null,
+			enrollmentLoading: false,
 		};
 	},
 	watch: {
@@ -143,6 +179,31 @@ export default defineComponent({
 		// },
 	},
 	methods: {
+		async onEnrollChange(course: Course, mode: "enroll" | "unenroll") {
+			this.enrollmentDialogMode = mode;
+			this.selectedCourseForEnrollment = course;
+			const choice = await this.getBlockingBinaryDialogChoice();
+			if (!choice) {
+				this.showBlockingDialog = false;
+				this.selectedCourseForEnrollment = null;
+				this.enrollmentDialogMode = null;
+				return;
+			}
+			try {
+				this.enrollmentLoading = true;
+				await (this.enrollmentDialogMode === "enroll"
+					? this.mainStore.selfEnrollInCourse
+					: this.mainStore.selfUnenrollInCourse)({ courseId: course.id });
+				this.metaStore.showSuccessFeedback();
+			} catch (e) {
+				setErrorNotification(e);
+			} finally {
+				this.showBlockingDialog = false;
+				this.selectedCourseForEnrollment = null;
+				this.enrollmentLoading = false;
+				this.enrollmentDialogMode = null;
+			}
+		},
 		async onSaveMat() {
 			await this.withLocalLoading(async () =>
 				this.metaStore.patchUser({
@@ -215,9 +276,24 @@ export default defineComponent({
 			);
 		},
 		coursesSorted() {
-			const bookmarkedCourses = this.mainStore.courses.filter(c => c.bookmarked);
-			const otherCourses = this.mainStore.courses.filter(c => !c.bookmarked);
-			return [...this.sortCourses(bookmarkedCourses), ...this.sortCourses(otherCourses)];
+			const bookmarkedEnrolledCourses = this.mainStore.courses.filter(
+				c => c.bookmarked && c.enrolled,
+			);
+			const enrolledCourses = this.mainStore.courses.filter(
+				c => c.enrolled && !c.bookmarked,
+			);
+			const bookmarkedCourses = this.mainStore.courses.filter(
+				c => c.bookmarked && !c.enrolled,
+			);
+			const otherCourses = this.mainStore.courses.filter(
+				c => !c.bookmarked && !c.enrolled,
+			);
+			return [
+				...this.sortCourses(bookmarkedEnrolledCourses),
+				...this.sortCourses(bookmarkedCourses),
+				...this.sortCourses(enrolledCourses),
+				...this.sortCourses(otherCourses),
+			];
 		},
 	},
 });

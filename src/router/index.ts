@@ -2,6 +2,7 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 import MainTeacher from "../views/teacher/MainTeacher.vue";
 import MainStudent from "../views/student/MainStudent.vue";
+import CourseEnrollment from "../views/student/CourseEnrollment.vue";
 import CourseList from "../views/shared/CourseList.vue";
 import TeacherCourseDashboard from "../views/teacher/CourseDashboard.vue";
 import StudentCourseDashboard from "../views/student/CourseDashboard/Main.vue";
@@ -110,6 +111,11 @@ const routes: Array<RouteRecordRaw> = [
 		name: "CourseTreeDispatcher",
 		component: MainStudent,
 		beforeEnter: courseTreeBeforeGuard,
+	},
+	{
+		path: "/courses/:courseId/enrollment/",
+		name: "CourseEnrollment",
+		component: CourseEnrollment,
 	},
 	{
 		path: "/teacher",

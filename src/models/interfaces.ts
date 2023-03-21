@@ -52,6 +52,7 @@ export interface Course {
 	hidden?: boolean;
 	creator?: User;
 	bookmarked?: boolean;
+	enrolled?: boolean;
 
 	// student fields
 	participations?: EventParticipation[];

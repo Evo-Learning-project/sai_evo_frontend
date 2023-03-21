@@ -12,14 +12,6 @@
 			relative
 		"
 	>
-		<!-- <span
-			v-if="course.bookmarked"
-			:style="'font-size: 42px !important; color: ' + bookmarkColor + ';'"
-			class="material-icons-outlined absolute -top-2 right-4"
-		>
-			bookmark
-		</span> -->
-
 		<div
 			class="
 				text-darkText
@@ -65,15 +57,7 @@
 						</p>
 					</div>
 				</div>
-
-				<!-- <div class="flex items-center space-x-1 mt-2"> -->
-				<!-- <span class="my-auto material-icons text-muted text-xl">person</span> -->
-				<!-- <p style="font-weight: 400" class="-mb-0.5 text-xs text-muted uppercase">
-						{{ course.creator?.full_name }}
-					</p> -->
-				<!-- </div> -->
 			</div>
-
 			<Tooltip
 				v-if="course.hidden"
 				:textCode="'hidden_course'"
@@ -89,14 +73,6 @@
 			</Tooltip>
 		</div>
 		<div class="my-1">
-			<!-- <div class="flex items-center px-0.5 mb-1 space-x-1 text-sm"> -->
-			<!-- <div class="flex items-center space-x-0.5 text-muted">
-					<span class="my-auto text-xl material-icons-outlined">person</span>
-					<span class="">{{ $t("misc.teacher") }}:</span>
-				</div> -->
-			<!-- <p class="text-muted text-sm uppercase">{{ course.creator?.full_name }}</p> -->
-			<!-- </div> -->
-			<!-- v-html="formattedDescription" -->
 			<p
 				style="line-height: 1.2rem; font-weight: 400; opacity: 0.8"
 				class="my-3 text-sm"
@@ -108,7 +84,18 @@
 		</div>
 		<div class="mt-auto flex w-full">
 			<div class="flex flex-col mt-auto space-y-1.5">
+				<Btn
+					@click="$emit('enroll')"
+					:size="'sm'"
+					v-if="!canAccessCoursePanel && !course.enrolled"
+					:variant="'primary'"
+					:outline="true"
+				>
+					<span class="material-icons mr-2">person_add</span>
+					{{ $t("enrollment.enroll") }}
+				</Btn>
 				<router-link
+					v-else
 					class="w-full"
 					:to="{
 						name: 'StudentCourseDashboard',
@@ -121,16 +108,13 @@
 						:outline="true"
 						class="whitespace-nowrap font-medium"
 					>
-						<!-- <span class="mr-0.5 mt-0.5 text-lg material-icons-outlined">
-						chevron_right
-					</span> -->
 						<span class="text-base 2xl:text-lg">{{
-							metaStore.user.is_teacher
+							metaStore.user.is_teacher || canAccessCoursePanel
 								? $t("courses.access_as_student")
 								: $t("courses.go_to_course")
 						}}</span>
-					</Btn></router-link
-				>
+					</Btn>
+				</router-link>
 				<router-link
 					v-if="canAccessCoursePanel"
 					class=""
@@ -146,16 +130,23 @@
 					>
 						<span class="text-base 2xl:text-lg">{{ $t("courses.course_panel") }}</span>
 						<!-- <span class="ml-1 text-lg material-icons-outlined"> shield </span> -->
-					</Btn></router-link
-				>
+					</Btn>
+				</router-link>
 			</div>
 			<div class="ml-auto flex items-center mt-auto">
-				<!-- TODO implement -->
 				<Btn :variant="'icon'" @click="$emit('toggleFavorite')" :outline="true"
 					><span class="material-icons">{{
 						course.bookmarked ? "bookmark" : "bookmark_outline"
-					}}</span></Btn
-				>
+					}}</span>
+				</Btn>
+				<Btn
+					v-if="course.enrolled"
+					:variant="'icon'"
+					@click="$emit('unenroll')"
+					:outline="true"
+					:tooltip="$t('enrollment.unenroll')"
+					><span class="material-icons">person_remove</span>
+				</Btn>
 				<CopyToClipboard
 					:iconOnly="true"
 					:tooltip="$t('misc.share')"

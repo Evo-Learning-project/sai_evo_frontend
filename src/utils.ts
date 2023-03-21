@@ -39,6 +39,15 @@ export const logOut = (showMessage = true, redirect = ""): void => {
 	}
 };
 
+export const redirectToCourseEnrollment = (redirect: string): void => {
+	router.push({
+		name: "CourseEnrollment",
+		query: {
+			redirect,
+		},
+	});
+};
+
 export const redirectToMainView = (): void => {
 	const metaStore = useMetaStore();
 	if (router.currentRoute.value.query.redirect) {
@@ -95,7 +104,11 @@ export const getErrorData = (e: any, useAsIs = false): ErrorMessage => {
 	if (e.response) {
 		return {
 			icon: "error_outline",
-			title: _("errors." + e.response.status),
+			title:
+				!e.response?.data?.detail ||
+				DEFAULT_SERVER_MESSAGES.includes(e.response?.data?.detail)
+					? _("errors." + e.response.status)
+					: _("server_messages.error." + e.response.data.detail),
 			content: e.response?.data?.detail,
 		};
 	} else if (e.request) {
@@ -329,6 +342,12 @@ export const isDemoMode = () => JSON.parse(process.env.VUE_APP_DEMO_MODE ?? "fal
 export const isMaintenanceMode = () =>
 	JSON.parse(process.env.VUE_APP_MAINTENANCE_MODE ?? "false");
 
+export const DEFAULT_SERVER_MESSAGES = [
+	"You do not have permission to perform this action.",
+	"Not found.",
+	"Invalid token header. No credentials provided.",
+];
+
 export function getDefaultThumbnail(mime_type: string) {
 	const ARCHIVE_TYPES = [
 		"application/zip",
@@ -548,4 +567,38 @@ export function getFileNameFromResponseHeader(disposition: string): string {
 		}
 	}
 	return fileName;
+}
+
+export function highlightMatchingText(search: string, text: string) {
+	const words = text.split(/\s/);
+	return words
+		.map(w => {
+			for (const searchWord of search.split(/\s/)) {
+				const matchIndex = w.toLowerCase().indexOf(searchWord.toLowerCase());
+				if (matchIndex !== -1) {
+					return (
+						w.substring(0, matchIndex) +
+						`<strong class="font-bold">${w.substring(
+							matchIndex,
+							matchIndex + searchWord.length,
+						)}</strong>` +
+						w.substring(matchIndex + searchWord.length, w.length)
+					);
+				}
+			}
+
+			return w;
+		})
+		.join(" ");
+}
+
+export function isValidEmailAddress(text: string) {
+	// TODO improve to match django logic for validating an email
+	const input = document.createElement("input");
+	input.type = "email";
+	input.required = true;
+	input.value = text;
+	return typeof input.checkValidity === "function"
+		? input.checkValidity()
+		: /\S+@\S+\.\S+/.test(text);
 }

@@ -35,6 +35,13 @@ export const it = {
 		go_to_course: "Vai al corso",
 		access_as_student: "Entra come studente",
 	},
+	enrollment: {
+		enrollment: "Iscrizione",
+		do_you_want_to_enroll: "Vuoi iscriverti a",
+		do_you_want_to_unenroll: "Vuoi disiscriverti da",
+		enroll: "Iscriviti",
+		unenroll: "Disiscriviti",
+	},
 	filter_results: {
 		title: "Cerca esercizi",
 		filter_by_tag: "Filtra per tag",
@@ -195,6 +202,10 @@ export const it = {
 			" oppure una stringa.",
 	},
 	course_insights: {
+		exams_stats: "Esami",
+		enrolled_students: "Studenti iscritti",
+		no_enrolled_students: "Non ci sono ancora iscritti",
+		no_user_activity: "Nessuna attività nel corso",
 		select_closed_exams: "Seleziona esami chiusi",
 		filter_exams: "Filtra esami",
 		score_sum: "Somma",
@@ -205,6 +216,12 @@ export const it = {
 		no_active_students: "Non ci sono ancora studenti attivi nel corso",
 		active_students_description:
 			"Gli studenti attivi sono studenti che hanno partecipato ad almeno un esame o hanno iniziato autonomamente almeno un'esercitazione nel corso.",
+		search_students: "Cerca studenti",
+		enroll_students: "Iscrivi studenti",
+		search_student: "Cerca studente",
+		add_enrolled_students: "Iscrivi studenti",
+		enroll: "Iscrivi",
+		unenroll: "Rimuovi iscrizione",
 		user_history_event_descriptions: {
 			[EventType.EXAM]: "Ha partecipato all'esame",
 			[EventType.SELF_SERVICE_PRACTICE]: "Ha svolto un'esercitazione",
@@ -233,6 +250,7 @@ export const it = {
 		try_again: "Riprova",
 		popup_blocked:
 			"Il tuo browser ha bloccato l'apertura di una nuova scheda. Per favore, abilita l'apertura di schede e pop-up per proseguire",
+		selected: "selezionato | selezionati",
 		show_base_editor: "Editor base",
 		insert_latex: "Inserisci formula LaTeX",
 		updated_on: "Aggiornato",
@@ -1291,7 +1309,9 @@ export const it = {
 	},
 	server_messages: {
 		error: {
+			NOT_ENROLLED: "Non sei iscritto a questo corso. Iscriviti per continuare.",
 			EVENT_CLOSED: "L'esame è terminato.",
+			ALREADY_ENROLLED: "Sei già iscritto a questo corso.",
 			NOT_IN_EVENT_ALLOWED_LIST:
 				"Non sei nella lista di studenti ammessi a questo esame. Se ritieni che si tratti di un errore, contatta il docente.",
 		},
