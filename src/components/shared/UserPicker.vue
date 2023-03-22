@@ -222,7 +222,7 @@ export default defineComponent({
 			if (user.id) {
 				return this.modelValue.ids.includes(user.id);
 			}
-			return this.modelValue.emails.includes(user.email);
+			return this.modelValue.emails.includes(user.email as string);
 		},
 		async onUserSearch(search: string) {
 			this.loadingUsers = true;
@@ -252,7 +252,7 @@ export default defineComponent({
 			return [
 				...this.users,
 				...this.cachedEmails.map(e => ({ full_name: e, email: e })),
-			].filter(u => userMatchesSearch(this.searchText, u));
+			].filter(u => userMatchesSearch(this.searchText, u as User));
 		},
 		isSearchTextValidEmail() {
 			return isValidEmailAddress(this.searchText);
