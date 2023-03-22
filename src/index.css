@@ -383,14 +383,26 @@
 
 	.top-edge-shadow {
 		/* box-shadow: 0px 1px 2px 0px rgb(60 64 67 / 30%), 0px 2px 6px 2px rgb(60 64 67 / 15%); */
-		background: linear-gradient(to bottom,#e8eaed,rgba(255,255,255,0));
-		-webkit-mask-image: linear-gradient(to right,#e8eaed37 0%,#e8eaed 6.93%,#e8eaed 93.07%,#e8eaed37);
-		mask-image: linear-gradient(to right,#e8eaed37 0%,#e8eaed 6.93%,#e8eaed 93.07%,#e8eaed37);
+		background: linear-gradient(to bottom, #e8eaed, rgba(255, 255, 255, 0));
+		-webkit-mask-image: linear-gradient(
+			to right,
+			#e8eaed37 0%,
+			#e8eaed 6.93%,
+			#e8eaed 93.07%,
+			#e8eaed37
+		);
+		mask-image: linear-gradient(
+			to right,
+			#e8eaed37 0%,
+			#e8eaed 6.93%,
+			#e8eaed 93.07%,
+			#e8eaed37
+		);
 		position: absolute;
 		height: 6px;
 		top: 0;
 		width: calc(100% + 10px) !important;
-    	margin-left: -5px;
+		margin-left: -5px;
 		/*
 		    background: linear-gradient(to top,#e8eaed,rgba(255,255,255,0));
     height: 6px;
@@ -1049,17 +1061,17 @@
 
 	.slide-fade-enter-active {
 		transition: all 0.2s ease-out;
-	  }
-	  
-	  .slide-fade-leave-active {
+	}
+
+	.slide-fade-leave-active {
 		transition: all 0.1s ease-in; /* cubic-bezier(1, 0.5, 0.8, 1); */
-	  }
-	  
-	  .slide-fade-enter-from,
-	  .slide-fade-leave-to {
+	}
+
+	.slide-fade-enter-from,
+	.slide-fade-leave-to {
 		transform: translateX(10px);
 		opacity: 0;
-	  }
+	}
 
 	.bounce-enter-active {
 		animation: bounce-in 0.25s ease;

@@ -47,7 +47,7 @@ export async function getUsersEnrolledInCourse(courseId: string): Promise<User[]
 export async function enrollUsersInCourse(
 	courseId: string,
 	userIds: string[],
-	emails: [],
+	emails: string[],
 ): Promise<User[]> {
 	const response = await axios.put(`/courses/${courseId}/enrollments/`, {
 		user_ids: userIds,

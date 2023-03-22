@@ -136,7 +136,7 @@ export default defineComponent({
 		modelValue: {
 			type: Object as PropType<{
 				ids: string[];
-				emails: [];
+				emails: string[];
 			}>,
 			required: true,
 		},
@@ -179,7 +179,7 @@ export default defineComponent({
 					this.onRemoveUser({ id: userId });
 				} else {
 					if (!this.cachedUsers.find(u => u.id == userId)) {
-						!this.cachedUsers.push(this.mainStore.getUserById(userId));
+						!this.cachedUsers.push(this.mainStore.getUserById(userId) as User);
 					}
 
 					this.addingUserIds.push(userId);
