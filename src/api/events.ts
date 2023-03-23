@@ -318,10 +318,15 @@ export async function bulkPartialUpdateEventParticipation(
 	eventId: string,
 	participationIds: string[],
 	changes: Partial<EventParticipation>,
+	fireIntegrationEvent?: boolean,
 ): Promise<EventParticipation[]> {
 	const url = `/courses/${courseId}/events/${eventId}/participations/bulk_patch/?ids=${participationIds.join(
 		",",
-	)}`;
+	)}${
+		typeof fireIntegrationEvent === "boolean"
+			? `&fire_integration_event=${JSON.stringify(fireIntegrationEvent)}`
+			: ""
+	}`;
 	const response = await axios.patch(url, changes);
 	return response.data.map((p: EventParticipation) =>
 		normalizeIncomingEventParticipation(p),

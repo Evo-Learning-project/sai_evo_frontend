@@ -264,6 +264,13 @@
 			<template v-slot:body>
 				{{ blockingDialogData.text }}
 			</template>
+			<template v-slot:footerButtons>
+				<IntegrationSwitch
+					v-if="showClassroomIntegrationSwitch"
+					class="ml-7.5 mb-1"
+					v-model="publishToClassroom"
+				/>
+			</template>
 		</Dialog>
 
 		<Dialog
@@ -331,7 +338,7 @@
 			name="examInsightsTour"
 			:steps="examInsightsPageTourSteps"
 			:options="tourOptions"
-		></v-tour>
+		/>
 	</div>
 </template>
 
@@ -385,6 +392,9 @@ import { mapStores } from "pinia";
 import { useMainStore } from "@/stores/mainStore";
 import { useMetaStore } from "@/stores/metaStore";
 import { setErrorNotification } from "@/utils";
+import IntegrationSwitch from "@/integrations/classroom/components/IntegrationSwitch.vue";
+import { GoogleClassroomCourseWorkTwin } from "@/integrations/classroom/interfaces";
+import { useGoogleIntegrationsStore } from "@/integrations/stores/googleIntegrationsStore";
 
 export default defineComponent({
 	components: {
@@ -395,7 +405,6 @@ export default defineComponent({
 		CsvParticipationDownloader,
 		SkeletonCard,
 		Spinner,
-
 		/** Cell renderers required by Ag-grid */
 		// eslint-disable-next-line vue/no-unused-components
 		EventParticipationSlotScoreRenderer,
@@ -407,6 +416,7 @@ export default defineComponent({
 		EventParticipationStateRenderer,
 		// eslint-disable-next-line vue/no-unused-components
 		EventParticipationAssessmentStateRenderer,
+		IntegrationSwitch,
 	},
 	name: "EventParticipationsMonitor",
 	props: {
@@ -435,6 +445,10 @@ export default defineComponent({
 				includeDetails: false,
 			});
 		});
+
+		if (this.resultsMode) {
+			await this.checkForCourseworkTwin();
+		}
 
 		if (this.resultsMode && !(VISITED_INSIGHTS_TOUR_KEY in localStorage)) {
 			setTimeout(() => (this.$tours as any)["examInsightsTour"].start(), 200);
@@ -502,10 +516,17 @@ export default defineComponent({
 
 			EventParticipationState,
 			participationStateIcons,
+
+			googleClassroomCourseWorkTwin: null as null | GoogleClassroomCourseWorkTwin,
+			publishToClassroom: true,
 		};
 	},
 	methods: {
 		areAllParticipationsFullyAssessed,
+		async checkForCourseworkTwin() {
+			this.googleClassroomCourseWorkTwin =
+				await this.googleIntegrationStore.getGoogleClassroomCourseWorkTwin(this.eventId);
+		},
 		setDataRefreshInterval(interval: number, callback?: any) {
 			this.refreshHandle = setInterval(async () => {
 				await this.mainStore.getEventParticipations({
@@ -782,6 +803,7 @@ export default defineComponent({
 		async dispatchParticipationsUpdate(
 			participationIds: string[],
 			changes: Partial<EventParticipation>,
+			fireIntegrationEvent?: boolean,
 		) {
 			// generic method to update multiple participations at once and show feedback/error
 			this.dispatchingCall = true;
@@ -792,6 +814,7 @@ export default defineComponent({
 					eventId: this.eventId,
 					participationIds,
 					changes,
+					fireIntegrationEvent,
 				});
 				this.showBlockingDialog = false;
 				this.metaStore.showSuccessFeedback();
@@ -820,9 +843,13 @@ export default defineComponent({
 			}
 
 			// TODO handle blocking dialog
-			await this.dispatchParticipationsUpdate(this.selectedParticipations, {
-				visibility: AssessmentVisibility.PUBLISHED,
-			});
+			await this.dispatchParticipationsUpdate(
+				this.selectedParticipations,
+				{
+					visibility: AssessmentVisibility.PUBLISHED,
+				},
+				this.publishToClassroom,
+			);
 		},
 		async onUndoParticipationTurnIn(participation: EventParticipation) {
 			const dialogData: DialogData = {
@@ -856,7 +883,7 @@ export default defineComponent({
 		},
 	},
 	computed: {
-		...mapStores(useMainStore, useMetaStore),
+		...mapStores(useMainStore, useMetaStore, useGoogleIntegrationsStore),
 		showDialog: {
 			get() {
 				return (
@@ -876,6 +903,13 @@ export default defineComponent({
 					this.reOpeningClosedExamsMode = false;
 				}
 			},
+		},
+		showClassroomIntegrationSwitch() {
+			// TODO refactor
+			return (
+				this.googleClassroomCourseWorkTwin !== null &&
+				(this.blockingDialogData?.text ?? "") === _("event_results.publish_confirm_text")
+			);
 		},
 		dialogData(): DialogData {
 			let ret = {} as DialogData;

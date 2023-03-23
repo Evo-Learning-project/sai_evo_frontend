@@ -2056,17 +2056,18 @@ export const useMainStore = defineStore("main", {
 			changes,
 			eventId,
 			participationIds,
-		}: {
-			courseId: string;
-			eventId: string;
+			fireIntegrationEvent,
+		}: EventIdActionPayload & {
 			changes: Partial<EventParticipation>;
 			participationIds: string[];
+			fireIntegrationEvent?: boolean;
 		}) {
 			const response = await bulkPartialUpdateEventParticipation(
 				courseId,
 				eventId,
 				participationIds,
 				changes,
+				fireIntegrationEvent,
 			);
 			response.forEach(p => this.setEventParticipation(p));
 		},
