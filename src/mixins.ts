@@ -97,6 +97,7 @@ export const blockingDialogMixin = {
 			showBlockingDialog: false,
 			blockingDialogPromise: null as null | Promise<boolean>,
 			resolveBlockingDialog: null as null | ((boolean) => void),
+			rejectBlockingDialog: null as null | ((e: any) => void),
 		};
 	},
 	methods: {
@@ -105,9 +106,10 @@ export const blockingDialogMixin = {
 
 			self.showBlockingDialog = true;
 
-			self.blockingDialogPromise = new Promise(
-				resolve => (self.resolveBlockingDialog = resolve),
-			);
+			self.blockingDialogPromise = new Promise((resolve, reject) => {
+				self.resolveBlockingDialog = resolve;
+				self.rejectBlockingDialog = reject;
+			});
 			const choice = await self.blockingDialogPromise;
 
 			//self.showBlockingDialog = false;

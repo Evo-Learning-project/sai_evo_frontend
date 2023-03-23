@@ -212,11 +212,20 @@
 						@closeEditor="resolveBlockingDialog(false)"
 						:isExistingNode="false"
 						:publishOnly="true"
-				/></transition>
+					/>
+				</transition>
 
 				<p v-if="!showAnnouncementEditor">
 					{{ $t("event_editor.publish_announcement_prompt") }}
 				</p>
+			</template>
+			<template v-slot:footerButtons>
+				<Btn
+					class="ml-2"
+					@click="rejectBlockingDialog()"
+					:variant="'primary-borderless'"
+					>{{ $t("dialog.default_cancel_text") }}</Btn
+				>
 			</template>
 		</Dialog>
 	</div>
@@ -507,7 +516,12 @@ export default defineComponent({
 		},
 		async onStateUpdate(newState: EventState, fireIntegrationEvent: boolean) {
 			if (newState === EventState.PLANNED) {
-				await this.promptForPublishingAnnouncement();
+				try {
+					await this.promptForPublishingAnnouncement();
+				} catch (e) {
+					this.showBlockingDialog = false;
+					return;
+				}
 			}
 			try {
 				/**
