@@ -217,7 +217,11 @@ import {
 } from "@/api";
 import SlotSkeleton from "@/components/ui/skeletons/SlotSkeleton.vue";
 import Countdown from "@/components/ui/Countdown.vue";
-import { getParticipationRemainingTime, setErrorNotification } from "@/utils";
+import {
+	DEFAULT_SERVER_MESSAGES,
+	getParticipationRemainingTime,
+	setErrorNotification,
+} from "@/utils";
 import { mapStores } from "pinia";
 import { useMainStore } from "@/stores/mainStore";
 import { useMetaStore } from "@/stores/metaStore";
@@ -546,6 +550,11 @@ export default defineComponent({
 							slot.id,
 							JSON.stringify(changes),
 						);
+						if (
+							!DEFAULT_SERVER_MESSAGES.includes((e as any).response?.data?.detail ?? "")
+						) {
+							setErrorNotification(e);
+						}
 						throw e;
 					}
 				},

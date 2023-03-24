@@ -53,13 +53,45 @@
 
 		<!-- second row with controls -->
 		<div class="flex items-center mb-1">
-			<TextInput
-				:searchBar="true"
-				v-model="searchText"
-				:leftIcon="'search'"
-				:placeholder="$t('event_monitor.search_students')"
-				class="w-1/3 mr-auto"
-			/>
+			<div class="flex items-center space-x-2 w-1/3 mr-auto">
+				<TextInput
+					:searchBar="true"
+					v-model="searchText"
+					:leftIcon="'search'"
+					class="w-full"
+					:placeholder="$t('event_monitor.search_students')"
+				/>
+				<!-- TODO implement sorting -->
+				<DropdownMenu
+					:expanded="sortOptionsExpanded"
+					@toggleExpanded="sortOptionsExpanded = !sortOptionsExpanded"
+				>
+					<template v-slot:activator>
+						<Btn :variant="'icon'" :outline="true" class="">
+							<svg
+								style="width: 22px; height: 22px"
+								class="opacity-70"
+								xmlns="http://www.w3.org/2000/svg"
+								viewBox="0 0 24 24"
+							>
+								<title>sort</title>
+								<path
+									d="M18 21L14 17H17V7H14L18 3L22 7H19V17H22M2 19V17H12V19M2 13V11H9V13M2 7V5H6V7H2Z"
+								/>
+							</svg>
+						</Btn>
+					</template>
+					<div class="-mx-5 -my-2.5">
+						<Btn :outline="true" class="px-8 pt-2 pb-2" :variant="'transparent'">
+							<div class="flex items-center align-top">Alphabetical Order</div>
+						</Btn>
+						<Btn :outline="true" class="px-8 pt-2 pb-2" :variant="'transparent'">
+							<div class="flex items-center align-top">Progress</div>
+						</Btn>
+					</div>
+				</DropdownMenu>
+			</div>
+
 			<!-- buttons to publish results and download participations -->
 			<div v-if="!firstLoading && resultsMode" class="flex mr-2">
 				<!-- TODO if the button is wrapped in a tooltip,
@@ -466,6 +498,7 @@ import IntegrationSwitch from "@/integrations/classroom/components/IntegrationSw
 import { GoogleClassroomCourseWorkTwin } from "@/integrations/classroom/interfaces";
 import { useGoogleIntegrationsStore } from "@/integrations/stores/googleIntegrationsStore";
 import TextInput from "@/components/ui/TextInput.vue";
+import DropdownMenu from "@/components/ui/DropdownMenu.vue";
 
 export default defineComponent({
 	components: {
@@ -491,6 +524,7 @@ export default defineComponent({
 		EventParticipationScoreRenderer,
 		IntegrationSwitch,
 		TextInput,
+		DropdownMenu,
 	},
 	name: "EventParticipationsMonitor",
 	props: {
@@ -590,6 +624,7 @@ export default defineComponent({
 
 			googleClassroomCourseWorkTwin: null as null | GoogleClassroomCourseWorkTwin,
 			publishToClassroom: true,
+			sortOptionsExpanded: false,
 		};
 	},
 	methods: {
