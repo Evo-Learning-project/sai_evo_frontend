@@ -17,6 +17,7 @@
 			<Btn
 				:variant="'icon'"
 				:outline="true"
+				style="margin-top: 7.5px !important; line-height: 1 !important"
 				:class="{
 					'transition-opacity duration-75 hover:opacity-100 opacity-70': hasNullishScore,
 				}"
@@ -27,10 +28,10 @@
 					<span
 						v-if="hasNullishScore"
 						class="text-yellow-900 material-icons-outlined mx-auto"
-						style="font-size: 20px !important; padding-top: 12.5px !important"
+						style="font-size: 20px !important; padding-top: 3.5px !important"
 						>pending_actions</span
 					>
-					<span v-else class="mx-auto -mt-2" style="padding-top: -10px !important">
+					<span v-else class="mx-auto" style="padding-top: -5px !important">
 						{{ params.value.score }}
 					</span>
 				</div></Btn

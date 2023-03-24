@@ -503,12 +503,12 @@ export const getEventParticipationMonitorHeaders = (
 		{
 			field: "email",
 			headerName: _("event_participation_headings.student"),
-			filterParams: {
-				filterOptions: ["contains"],
-				suppressAndOrCondition: true,
-			},
-			filter: "agTextColumnFilter",
-			minWidth: 300,
+			// filterParams: {
+			// 	filterOptions: ["contains"],
+			// 	suppressAndOrCondition: true,
+			// },
+			// filter: "agTextColumnFilter",
+			minWidth: 400,
 			resizable: true,
 			cellRenderer: "EventParticipationEmailRenderer",
 			checkboxSelection: true,
@@ -531,11 +531,11 @@ export const getEventParticipationMonitorHeaders = (
 		{
 			field: "mat",
 			headerName: _("event_participation_headings.mat"),
-			filterParams: {
-				filterOptions: ["contains"],
-				suppressAndOrCondition: true,
-			},
-			filter: "agTextColumnFilter",
+			// filterParams: {
+			// 	filterOptions: ["contains"],
+			// 	suppressAndOrCondition: true,
+			// },
+			// filter: "agTextColumnFilter",
 			resizable: true,
 		},
 		...(isDemoMode()
@@ -544,11 +544,11 @@ export const getEventParticipationMonitorHeaders = (
 					{
 						field: "course",
 						headerName: _("event_participation_headings.course"),
-						filterParams: {
-							filterOptions: ["contains"],
-							suppressAndOrCondition: true,
-						},
-						filter: "agTextColumnFilter",
+						// filterParams: {
+						// 	filterOptions: ["contains"],
+						// 	suppressAndOrCondition: true,
+						// },
+						// filter: "agTextColumnFilter",
 						resizable: true,
 					},
 			  ]),
@@ -581,6 +581,7 @@ export const getEventParticipationMonitorHeaders = (
 			width: 60,
 			resizable: true,
 			headerName: _("event_participation_headings.grade"),
+			cellRenderer: "EventParticipationScoreRenderer",
 		});
 	}
 

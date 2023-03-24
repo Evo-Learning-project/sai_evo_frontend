@@ -4,12 +4,12 @@
 		:class="[params.value === EventParticipationState.IN_PROGRESS ? 'mt-1' : 'mt-1.5']"
 	>
 		<span
-			v-if="params.value == EventParticipationState.IN_PROGRESS"
+			v-if="params.value !== EventParticipationState.CLOSED_BY_TEACHER"
 			class="focus-within:text-lg material-icons-outlined text-muted -mb-2 pt-2.5"
 			style="margin-left: 13px"
 			>{{participationStateIcons[params.value as EventParticipationState][0] }}</span
 		>
-		<Tooltip
+		<!-- <Tooltip
 			:placement="'top'"
 			:noArrow="true"
 			:text-value="$t('event_monitor.undo_turn_in')"
@@ -23,7 +23,7 @@
 					>{{participationStateIcons[params.value as EventParticipationState][0] }}</span
 				></Btn
 			></Tooltip
-		>
+		> -->
 	</div>
 </template>
 
@@ -51,7 +51,7 @@ export default defineComponent({
 	},
 	methods: {},
 	computed: {},
-	components: { Btn, Tooltip },
+	//components: { Btn, Tooltip },
 });
 </script>
 
