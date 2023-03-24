@@ -252,7 +252,7 @@ const routes: Array<RouteRecordRaw> = [
 				name: "ExamProgress",
 				meta: {
 					sidebarOptions: courseDashboardSidebarOptions,
-					routeTitle: _("headings.exam_progress"),
+					//routeTitle: _("headings.exam_progress"),
 					tags: ["exams", "participations"],
 				},
 			},
@@ -266,7 +266,7 @@ const routes: Array<RouteRecordRaw> = [
 				},
 				meta: {
 					sidebarOptions: courseDashboardSidebarOptions,
-					routeTitle: _("headings.exam_results"),
+					// routeTitle: _("headings.exam_results"),
 					tags: ["exams", "participations"],
 				},
 			},

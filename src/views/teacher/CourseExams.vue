@@ -117,7 +117,7 @@ export default defineComponent({
 					event.name +
 					" " +
 					_("course_events.close_exam_for_everyone_body_2") +
-					" " +
+					". " +
 					_("course_events.close_exam_for_everyone_body_3") +
 					" " +
 					_("event_preview.monitor") +

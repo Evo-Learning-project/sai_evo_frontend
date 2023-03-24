@@ -143,6 +143,7 @@ export const it = {
 		email: "Email",
 		exercise: "Es.",
 		grade: "Voto",
+		student: "Studente",
 	},
 	event_assessment: {
 		no_score_for_exercise: "Punteggio non assegnato",
@@ -507,9 +508,10 @@ export const it = {
 		close_for_everyone: "Chiudi per tutti",
 		reopen_for_everyone: "Riapri per tutti",
 		close_exam_for_everyone_body_1: "Stai per chiudere l'esame",
-		close_exam_for_everyone_body_2: "per tutti i partecipanti.",
+		close_exam_for_everyone_body_2: "per tutti i partecipanti",
 		close_exam_for_everyone_body_3:
 			"Se vuoi chiudere l'esame solo per alcuni studenti, selezionali dalla pagina",
+		close_exam_for_everyone_body_1_alt: "Vuoi chiudere l'esame",
 	},
 	exercise_preview: {
 		unnamed_exercise: "Esercizio senza nome",
@@ -526,13 +528,18 @@ export const it = {
 		copied_link: "Copiato link per gli studenti negli appunti",
 	},
 	event_monitor: {
+		select_students_to_publish_results:
+			"Seleziona gli studenti per pubblicare i risultati",
+		if_selected: "Se selezionati",
+		search_students: "Cerca studenti",
 		assess_slot: "Valuta",
 		change_slot_score: "Modifica punteggio",
 		undo_turn_in: "Annulla consegna",
 		stats_turned_in: "Consegnati",
 		stats_participants: "Partecipanti",
 		stats_average_progress: "Completamento medio",
-		close_for_selected: "Chiudi esame per i selezionati",
+		close_for_selected: "Chiudi",
+		reopen_for_selected: "Riapri",
 		open_for_selected: "Apri esame per i selezionati",
 		close_for_selected_text_1: "Stai per chiudere l'esame per",
 		open_for_selected_text: "Stai per riaprire l'esame per",
@@ -540,9 +547,11 @@ export const it = {
 		some_exams_still_open:
 			"L'esame è stato chiuso per alcuni partecipanti. Ricorda di chiudere l'esame per tutti al termine. Le righe evidenziate in rosso corrispondono a esami già chiusi.",
 		un_turn_in_text:
-			"Questo studente ha già consegnato. Puoi annullare la sua consegna per permettergli di modificare le sue risposte. Vuoi annullare la consegna di ",
+			"Vuoi annullare la consegna dello studento selezionato?|Vuoi annullare la consegna degli studenti selezionati?",
 		un_turn_in_instructions:
 			"Per riaprire l'esame di uno studente che ha già consegnato, clicca sull'icona",
+		student_will_be_brought_back_to_first_slot:
+			"Lo studente verrà riportato al primo esercizio e potrà cambiare le risposte date finora. | Gli studenti selezionati verranno riportati al primo esercizio e potranno cambiare le risposte date finora.",
 		in_column_state: "nella colonna Consegna.",
 	},
 	event_stats: {

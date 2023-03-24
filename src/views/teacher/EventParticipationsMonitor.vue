@@ -1,141 +1,240 @@
 <template>
 	<div class="relative flex flex-col flex-grow">
-		<!-- insights button -->
-		<div v-if="!firstLoading && resultsMode" class="z-50 flex flex-col mb-2 -mt-8">
-			<router-link class="ml-auto" :to="{ name: 'ExamStats' }">
+		<!-- top row with controls -->
+		<div class="flex items-center pb-4 pt-1.5">
+			<div class="mr-auto overflow-hidden w-1/4">
+				<h4
+					style="
+						line-height: 0.95;
+						white-space: nowrap;
+						overflow: hidden;
+						text-overflow: ellipsis;
+					"
+				>
+					{{ event.name }}
+				</h4>
+			</div>
+			<!-- buttons to publish results and download participations -->
+			<div v-if="!firstLoading && resultsMode" class="flex mr-2">
+				<!-- TODO if the button is wrapped in a tooltip,
+					it'll be clickable even if disabled, and won't inherit no-elevate class -->
+				<Btn
+					class="no-elevate mr-2"
+					@click="onPublishResults"
+					:disabled="selectedParticipationsIds.length == 0"
+					:tooltip="
+						selectedParticipationsIds.length == 0
+							? $t('event_monitor.select_students_to_publish_results')
+							: ''
+					"
+				>
+					<!-- <span class="mr-1 text-base material-icons-outlined"> done </span> -->
+					{{ $t("event_results.publish_results") }}</Btn
+				>
+				<!-- insights button -->
+
+				<router-link class="z-50" :to="{ name: 'ExamStats' }">
+					<Btn
+						:outline="true"
+						:tooltip="$t('help_texts.stats')"
+						:variant="'icon'"
+						class="transition-transform duration-200 transform icon-btn-primary"
+					>
+						<span
+							id="insights-btn"
+							class="transition-opacity duration-75 rounded-full material-icons-outlined"
+							>insights</span
+						>
+					</Btn>
+				</router-link>
+				<CsvParticipationDownloader class="ml-auto" />
+			</div>
+
+			<!-- buttons to close/open participations-->
+			<div v-else-if="!firstLoading" class="flex mr-2 items-center">
+				<p class="text-muted mr-1">{{ $t("event_monitor.if_selected") }}:</p>
+				<div v-for="[name, action] in Object.entries(bulkActions)" :key="name">
+					<Btn
+						@click="action.method()"
+						class="no-elevate mx-1"
+						:variant="'secondary'"
+						:disabled="!selectedParticipations.some(p => action.applicable(p))"
+						>{{ action.label }}</Btn
+					>
+				</div>
+				<!-- <Btn
+					class="mr-2 ml-2 no-elevate"
+					:outline="false"
+					:size="'sm'"
+					:variant="'secondary'"
+					@click="onCloseSelectedExams"
+					:disabled="selectedCloseableParticipations.length === 0"
+				>
+					{{ $t("event_monitor.close_for_selected") }}
+				</Btn>
+				<Btn
+					class="no-elevate"
+					:outline="false"
+					:size="'sm'"
+					:variant="'secondary'"
+					@click="onCloseSelectedExams"
+					:disabled="selectedCloseableParticipations.length === 0"
+				>
+					{{ $t("event_monitor.undo_turn_in") }}
+				</Btn> -->
 				<Btn
 					:outline="true"
-					:tooltip="!showStats ? $t('help_texts.stats') : ''"
-					:variant="'icon'"
-					class="-mt-8 transition-transform duration-200 transform icon-btn-primary"
+					:size="'sm'"
+					:variant="'danger'"
+					@click="onCloseExam"
+					class="ml-4 mr-1"
 				>
-					<span
-						id="insights-btn"
-						class="transition-opacity duration-75 rounded-full material-icons-outlined"
-						>insights</span
-					>
+					<span class="mr-1 text-base material-icons-outlined"> block </span>
+					{{ $t("event_preview.close") }}
 				</Btn>
-			</router-link>
+
+				<Btn
+					v-if="true"
+					class=""
+					v-show="event.state === EventState.RESTRICTED"
+					:variant="'primary'"
+					:outline="true"
+					@click="onOpenSelectedExams"
+					:disabled="selectedOpenableParticipations.length === 0"
+				>
+					<span class="mr-1 text-base material-icons-outlined"> undo </span>
+					{{ $t("event_monitor.open_for_selected") }}</Btn
+				>
+			</div>
+			<TextInput
+				:searchBar="true"
+				v-model="searchText"
+				:leftIcon="'search'"
+				:placeholder="$t('event_monitor.search_students')"
+				class="w-1/4"
+			/>
 		</div>
 
 		<!-- alerts -->
 		<!-- event restricted alert -->
-		<div
-			class="flex w-full transition-all duration-200"
-			v-if="event.state === EventState.RESTRICTED"
-			:class="{
-				'opacity-0 max-h-0 mb-0': !showRestrictedModeBanner,
-				'opacity-100 max-h-96 mb-3': showRestrictedModeBanner,
-			}"
-		>
-			<div class="w-full mb-4 banner banner-danger">
-				<span class="text-yellow-900 material-icons-outlined"> error_outline </span>
-				<p>
-					{{ $t("event_monitor.some_exams_still_open") }}
-				</p>
-				<Btn
-					:outline="true"
-					:size="'xs'"
-					:variant="'icon'"
-					@click="showRestrictedModeBanner = false"
-				>
-					<span
-						class="material-icons-outlined"
-						style="font-size: 17px !important; margin-right: 0 !important"
-						>close</span
-					></Btn
-				>
-			</div>
-		</div>
-		<div v-if="!firstLoading && resultsMode">
-			<!-- pending assessments alert -->
+		<div v-if="false">
 			<div
-				v-if="!areAllParticipationsFullyAssessed(mainStore.eventParticipations)"
-				class="flex transition-all duration-200 banner banner-danger"
+				class="flex w-full transition-all duration-200"
+				v-if="event.state === EventState.RESTRICTED"
 				:class="{
-					'opacity-0 max-h-0 mb-0 py-0': !showThereArePendingAssessmentsBanner,
-					'opacity-100 max-h-96 mb-3': showThereArePendingAssessmentsBanner,
+					'opacity-0 max-h-0 mb-0': !showRestrictedModeBanner,
+					'opacity-100 max-h-96 mb-3': showRestrictedModeBanner,
 				}"
 			>
-				<span class="ml-px text-yellow-900 material-icons-outlined">
-					pending_actions
-				</span>
-				<p class="">
-					{{ $t("event_assessment.some_exams_require_manual_assessment") }}
+				<div class="w-full mb-4 banner banner-danger">
+					<span class="text-yellow-900 material-icons-outlined"> error_outline </span>
+					<p>
+						{{ $t("event_monitor.some_exams_still_open") }}
+					</p>
+					<Btn
+						:outline="true"
+						:size="'xs'"
+						:variant="'icon'"
+						@click="showRestrictedModeBanner = false"
+					>
+						<span
+							class="material-icons-outlined"
+							style="font-size: 17px !important; margin-right: 0 !important"
+							>close</span
+						></Btn
+					>
+				</div>
+			</div>
+			<div v-if="!firstLoading && resultsMode">
+				<!-- pending assessments alert -->
+				<div
+					v-if="!areAllParticipationsFullyAssessed(mainStore.eventParticipations)"
+					class="flex transition-all duration-200 banner banner-danger"
+					:class="{
+						'opacity-0 max-h-0 mb-0 py-0': !showThereArePendingAssessmentsBanner,
+						'opacity-100 max-h-96 mb-3': showThereArePendingAssessmentsBanner,
+					}"
+				>
+					<span class="ml-px text-yellow-900 material-icons-outlined">
+						pending_actions
+					</span>
+					<p class="">
+						{{ $t("event_assessment.some_exams_require_manual_assessment") }}
 
-					{{ $t("event_assessment.exams_awaiting_assessment_are_marked") }}
-					<span class="text-base text-yellow-900 inline-icon material-icons-outlined"
-						>pending_actions</span
-					>.
-				</p>
-				<Btn
-					:outline="true"
-					:size="'xs'"
-					:variant="'icon'"
-					@click="showThereArePendingAssessmentsBanner = false"
+						{{ $t("event_assessment.exams_awaiting_assessment_are_marked") }}
+						<span class="text-base text-yellow-900 inline-icon material-icons-outlined"
+							>pending_actions</span
+						>.
+					</p>
+					<Btn
+						:outline="true"
+						:size="'xs'"
+						:variant="'icon'"
+						@click="showThereArePendingAssessmentsBanner = false"
+					>
+						<span
+							class="material-icons-outlined"
+							style="font-size: 17px !important; margin-right: 3px !important"
+							>close</span
+						></Btn
+					>
+				</div>
+				<!-- you can publish results alert -->
+				<div
+					v-else-if="thereAreUnpublishedAssessments"
+					class="flex transition-all duration-200 banner banner-light"
+					:class="{
+						'opacity-0 max-h-0 mb-0 py-0': !showThereAreUnpublishedResultsBanner,
+						'opacity-100 max-h-96 mb-3': showThereAreUnpublishedResultsBanner,
+					}"
 				>
-					<span
-						class="material-icons-outlined"
-						style="font-size: 17px !important; margin-right: 3px !important"
-						>close</span
-					></Btn
+					<span class="ml-px material-icons-outlined text-success"> task </span>
+					<p>
+						{{ $t("event_assessment.ready_to_publish_1") }}
+						<span>{{ $t("event_results.publish_results") }}</span
+						>. {{ $t("event_assessment.ready_to_publish_2") }}
+					</p>
+					<Btn
+						:outline="true"
+						:size="'xs'"
+						:variant="'icon'"
+						style="margin-left: auto !important"
+						@click="showThereAreUnpublishedResultsBanner = false"
+					>
+						<span
+							class="material-icons-outlined"
+							style="font-size: 17px !important; margin-right: 0 !important"
+							>close</span
+						></Btn
+					>
+				</div>
+				<!-- all assessments published alert -->
+				<div
+					v-else
+					class="flex transition-all duration-200 banner banner-success"
+					:class="{
+						'opacity-0 max-h-0 mb-0 py-0': !showAllAssessmentsPublishedBanner,
+						'opacity-100 max-h-96 mb-3': showAllAssessmentsPublishedBanner,
+					}"
 				>
-			</div>
-			<!-- you can publish results alert -->
-			<div
-				v-else-if="thereAreUnpublishedAssessments"
-				class="flex transition-all duration-200 banner banner-light"
-				:class="{
-					'opacity-0 max-h-0 mb-0 py-0': !showThereAreUnpublishedResultsBanner,
-					'opacity-100 max-h-96 mb-3': showThereAreUnpublishedResultsBanner,
-				}"
-			>
-				<span class="ml-px material-icons-outlined text-success"> task </span>
-				<p>
-					{{ $t("event_assessment.ready_to_publish_1") }}
-					<span>{{ $t("event_results.publish_results") }}</span
-					>. {{ $t("event_assessment.ready_to_publish_2") }}
-				</p>
-				<Btn
-					:outline="true"
-					:size="'xs'"
-					:variant="'icon'"
-					style="margin-left: auto !important"
-					@click="showThereAreUnpublishedResultsBanner = false"
-				>
-					<span
-						class="material-icons-outlined"
-						style="font-size: 17px !important; margin-right: 0 !important"
-						>close</span
-					></Btn
-				>
-			</div>
-			<!-- all assessments published alert -->
-			<div
-				v-else
-				class="flex transition-all duration-200 banner banner-success"
-				:class="{
-					'opacity-0 max-h-0 mb-0 py-0': !showAllAssessmentsPublishedBanner,
-					'opacity-100 max-h-96 mb-3': showAllAssessmentsPublishedBanner,
-				}"
-			>
-				<span class="text-xl material-icons-outlined"> done </span>
-				<p class="">
-					{{ $t("event_assessment.all_published") }}
-				</p>
-				<Btn
-					:outline="true"
-					:size="'xs'"
-					:variant="'icon'"
-					style="margin-left: auto !important"
-					@click="showAllAssessmentsPublishedBanner = false"
-				>
-					<span
-						class="material-icons-outlined"
-						style="font-size: 17px !important; margin-right: 0 !important"
-						>close</span
-					></Btn
-				>
+					<span class="text-xl material-icons-outlined"> done </span>
+					<p class="">
+						{{ $t("event_assessment.all_published") }}
+					</p>
+					<Btn
+						:outline="true"
+						:size="'xs'"
+						:variant="'icon'"
+						style="margin-left: auto !important"
+						@click="showAllAssessmentsPublishedBanner = false"
+					>
+						<span
+							class="material-icons-outlined"
+							style="font-size: 17px !important; margin-right: 0 !important"
+							>close</span
+						></Btn
+					>
+				</div>
 			</div>
 		</div>
 
@@ -186,6 +285,7 @@
 			</div>
 		</div>
 
+		<!----------------------->
 		<!-- table -->
 		<div class="flex-grow">
 			<DataTable
@@ -205,47 +305,6 @@
 				"
 				@selectionChanged="onSelectionChanged"
 			></DataTable>
-		</div>
-
-		<!-- buttons to publish results and download participations -->
-		<div v-if="!firstLoading && resultsMode" class="flex mt-4">
-			<Btn
-				:variant="'success'"
-				@click="onPublishResults"
-				:disabled="selectedParticipations.length == 0"
-			>
-				<span class="mr-1 text-base material-icons-outlined"> done </span>
-				{{ $t("event_results.publish_results") }}</Btn
-			>
-			<CsvParticipationDownloader class="ml-auto" />
-		</div>
-
-		<!-- buttons to close/open participations-->
-		<div v-else-if="!firstLoading" class="flex mt-2 space-x-2">
-			<Btn
-				v-if="false"
-				class=""
-				:outline="true"
-				:variant="'danger'"
-				@click="onCloseSelectedExams"
-				:disabled="selectedCloseableParticipations.length === 0"
-			>
-				<span class="mr-1 text-base material-icons-outlined"> block </span>
-				{{ $t("event_monitor.close_for_selected") }}</Btn
-			>
-
-			<Btn
-				v-if="false"
-				class=""
-				v-show="event.state === EventState.RESTRICTED"
-				:variant="'primary'"
-				:outline="true"
-				@click="onOpenSelectedExams"
-				:disabled="selectedOpenableParticipations.length === 0"
-			>
-				<span class="mr-1 text-base material-icons-outlined"> undo </span>
-				{{ $t("event_monitor.open_for_selected") }}</Btn
-			>
 		</div>
 
 		<Dialog
@@ -395,6 +454,7 @@ import { setErrorNotification } from "@/utils";
 import IntegrationSwitch from "@/integrations/classroom/components/IntegrationSwitch.vue";
 import { GoogleClassroomCourseWorkTwin } from "@/integrations/classroom/interfaces";
 import { useGoogleIntegrationsStore } from "@/integrations/stores/googleIntegrationsStore";
+import TextInput from "@/components/ui/TextInput.vue";
 
 export default defineComponent({
 	components: {
@@ -417,6 +477,7 @@ export default defineComponent({
 		// eslint-disable-next-line vue/no-unused-components
 		EventParticipationAssessmentStateRenderer,
 		IntegrationSwitch,
+		TextInput,
 	},
 	name: "EventParticipationsMonitor",
 	props: {
@@ -493,9 +554,10 @@ export default defineComponent({
 			editingParticipationId: "",
 			gridApi: null as any,
 			columnApi: null as any,
-			selectedParticipations: [] as string[],
+			selectedParticipationsIds: [] as string[],
 			showStats: false,
 			dispatchingCall: false,
+			searchText: "",
 
 			// dialog functions
 			showAssessmentEditorDialog: false,
@@ -577,13 +639,13 @@ export default defineComponent({
 		},
 		onSelectionChanged() {
 			// copy the id's of the selected participations
-			this.selectedParticipations = this.gridApi
+			this.selectedParticipationsIds = this.gridApi
 				?.getSelectedNodes()
 				.map((n: any) => n.data.id);
 		},
 		deselectAllRows() {
 			this.gridApi.deselectAll();
-			this.selectedParticipations = [];
+			this.selectedParticipationsIds = [];
 		},
 		async onCellClicked(event: CellClickedEvent) {
 			// TODO refactor to have separate methods
@@ -652,6 +714,44 @@ export default defineComponent({
 				this.dispatchingCall = false;
 			}
 		},
+		async onCloseExam() {
+			const dialogData: DialogData = {
+				title: _("course_events.close_exam_for_everyone_title"),
+				text:
+					_("course_events.close_exam_for_everyone_body_1_alt") +
+					" " +
+					this.event.name +
+					" " +
+					_("course_events.close_exam_for_everyone_body_2") +
+					"?",
+				yesText: _("course_events.close_for_everyone"),
+				noText: _("dialog.default_cancel_text"),
+			};
+			this.blockingDialogData = dialogData;
+
+			const choice = await this.getBlockingBinaryDialogChoice();
+
+			if (!choice) {
+				this.showBlockingDialog = false;
+				return;
+			}
+
+			await this.withLoading(
+				async () =>
+					await this.mainStore.partialUpdateEvent({
+						courseId: this.courseId,
+						eventId: this.event.id,
+						mutate: true,
+						changes: {
+							state: EventState.CLOSED,
+							users_allowed_past_closure: [],
+						},
+					}),
+				setErrorNotification,
+				() => this.metaStore.showSuccessFeedback(),
+			);
+			this.showBlockingDialog = false;
+		},
 		async onCloseSelectedExams() {
 			// closing exams only for a group of participant means putting all of the
 			// participants except those ones inside the `users_allowed_past_closure`
@@ -689,10 +789,10 @@ export default defineComponent({
 			}
 
 			// these are the ones the exam will stay open for
-			const unselectedParticipations = this.mainStore.eventParticipations.filter(
-				p => !this.selectedParticipations.includes(p.id),
+			const unselectedParticipationsIds = this.mainStore.eventParticipations.filter(
+				p => !this.selectedParticipationsIds.includes(p.id),
 			);
-			const unselectedUserIds = unselectedParticipations.map(p => p.user.id);
+			const unselectedUserIds = unselectedParticipationsIds.map(p => p.user.id);
 
 			this.dispatchingCall = true;
 			try {
@@ -769,10 +869,10 @@ export default defineComponent({
 			}
 
 			// these are the ones the exam will stay open for
-			const selectedParticipations = this.mainStore.eventParticipations.filter(p =>
-				this.selectedParticipations.includes(p.id),
+			const selectedParticipationsIds = this.mainStore.eventParticipations.filter(p =>
+				this.selectedParticipationsIds.includes(p.id),
 			);
-			const selectedUserIds = selectedParticipations.map(p => p.user.id);
+			const selectedUserIds = selectedParticipationsIds.map(p => p.user.id);
 
 			this.dispatchingCall = true;
 
@@ -805,7 +905,10 @@ export default defineComponent({
 			changes: Partial<EventParticipation>,
 			fireIntegrationEvent?: boolean,
 		) {
-			// generic method to update multiple participations at once and show feedback/error
+			/**
+			 * Generic method to update multiple participations
+			 * at once and show feedback/error
+			 */
 			this.dispatchingCall = true;
 
 			try {
@@ -844,7 +947,7 @@ export default defineComponent({
 
 			// TODO handle blocking dialog
 			await this.dispatchParticipationsUpdate(
-				this.selectedParticipations,
+				this.selectedParticipationsIds,
 				{
 					visibility: AssessmentVisibility.PUBLISHED,
 				},
@@ -852,9 +955,20 @@ export default defineComponent({
 			);
 		},
 		async onUndoParticipationTurnIn(participation: EventParticipation) {
+			const applicableParticipationsIds = this.selectedParticipations
+				.filter(p => this.bulkActions.undoTurnIn.applicable(p))
+				.map(p => p.id);
 			const dialogData: DialogData = {
 				title: "",
-				text: _("event_monitor.un_turn_in_text") + participation.user?.full_name + "?",
+				text:
+					_("event_monitor.un_turn_in_text", applicableParticipationsIds.length) +
+					(this.event.exercises_shown_at_a_time === 1
+						? " " +
+						  _(
+								"event_monitor.student_will_be_brought_back_to_first_slot",
+								applicableParticipationsIds.length,
+						  )
+						: ""),
 				warning: false,
 				noText: _("dialog.default_no_text"),
 				yesText: _("dialog.default_yes_text"),
@@ -868,8 +982,9 @@ export default defineComponent({
 				return;
 			}
 
-			await this.dispatchParticipationsUpdate([participation.id], {
+			await this.dispatchParticipationsUpdate(applicableParticipationsIds, {
 				state: EventParticipationState.IN_PROGRESS,
+				current_slot_cursor: 0,
 			});
 		},
 
@@ -879,7 +994,7 @@ export default defineComponent({
 			this.editingFullName = "";
 			this.editingParticipationId = "";
 			this.showDialog = false;
-			this.selectedParticipations = [];
+			this.selectedParticipationsIds = [];
 		},
 	},
 	computed: {
@@ -903,6 +1018,35 @@ export default defineComponent({
 					this.reOpeningClosedExamsMode = false;
 				}
 			},
+		},
+		selectedParticipations() {
+			return this.mainStore.eventParticipations.filter(p =>
+				this.selectedParticipationsIds.includes(p.id),
+			);
+		},
+		bulkActions() {
+			const actions = {
+				undoTurnIn: {
+					applicable: (p: EventParticipation) =>
+						p.state === EventParticipationState.TURNED_IN,
+					method: this.onUndoParticipationTurnIn,
+					label: _("event_monitor.undo_turn_in"),
+				},
+				close: {
+					applicable: (p: EventParticipation) =>
+						p.state === EventParticipationState.IN_PROGRESS,
+					method: this.onCloseSelectedExams,
+					label: _("event_monitor.close_for_selected"),
+				},
+				reOpen: {
+					applicable: (p: EventParticipation) =>
+						p.state === EventParticipationState.IN_PROGRESS,
+					method: this.onOpenSelectedExams,
+					label: _("event_monitor.reopen_for_selected"),
+				},
+			};
+
+			return actions;
 		},
 		showClassroomIntegrationSwitch() {
 			// TODO refactor
@@ -969,6 +1113,7 @@ export default defineComponent({
 					state: this.resultsMode ? p.assessment_progress : p.state,
 					visibility: p.visibility,
 					score: p.score ?? "",
+					user: p.user,
 				} as Record<string, unknown>;
 				p.slots.forEach(
 					s => (ret["slot-" + ((s.slot_number as number) + 1)] = s), //s.score ?? '-')
@@ -979,7 +1124,7 @@ export default defineComponent({
 		selectedCloseableParticipations(): EventParticipation[] {
 			return this.mainStore.eventParticipations.filter(
 				p =>
-					this.selectedParticipations.includes(p.id) && // participation is selected
+					this.selectedParticipationsIds.includes(p.id) && // participation is selected
 					(this.event.state === EventState.OPEN || // event is open for everyone or...
 						//... event is still open for this participant
 						this.event.users_allowed_past_closure?.includes(p.user.id)),
@@ -988,7 +1133,7 @@ export default defineComponent({
 		selectedOpenableParticipations(): EventParticipation[] {
 			return this.mainStore.eventParticipations.filter(
 				p =>
-					this.selectedParticipations.includes(p.id) && // participation is selected
+					this.selectedParticipationsIds.includes(p.id) && // participation is selected
 					// event is restricted and participant isn't in the list of those still allowed
 					this.event.state === EventState.RESTRICTED &&
 					!this.event.users_allowed_past_closure?.includes(p.user.id),

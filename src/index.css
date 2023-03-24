@@ -479,7 +479,8 @@
 		@apply bg-light bg-opacity-80;
 	}
 
-	.card button {
+	.card button,
+	.no-elevate {
 		@apply shadow-none !important;
 	}
 	.link {
@@ -1244,6 +1245,7 @@
 	}
 	.ag-row {
 		@apply border-l-0 border-r-0 border-b bg-white border-light transition-colors duration-75 !important;
+		height: 58px !important;
 	}
 	.ag-row:hover {
 		@apply border-b-0 !important;
@@ -1257,6 +1259,13 @@
 
 	.ag-theme-material .ag-checkbox-input-wrapper {
 		font-family: "Material Icons Outlined" !important;
+		width: 19px !important;
+		height: 19px !important;
+		font-size: 22px !important;
+	}
+	.ag-theme-material .ag-checkbox-input-wrapper:active {
+		outline: none;
+		box-shadow: none !important;
 	}
 	.ag-theme-material .ag-checkbox-input-wrapper::after {
 		content: "check_box_outline_blank" !important;

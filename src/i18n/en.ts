@@ -24,6 +24,9 @@ export const en = {
 		rule_amount_1: "How many exercises with tag",
 		rule_amount_2: "do you want to see?",
 	},
+	login_screen: {
+		login: "Login",
+	},
 	headings: {
 		course_tree: "Material " + ROUTE_TITLE_COURSE_NAME_TOKEN,
 		exercise_solution_threads: "Soluzioni esercizi " + ROUTE_TITLE_COURSE_NAME_TOKEN,
@@ -288,6 +291,23 @@ export const en = {
 		make_public_confirmation_body:
 			"Se rendi questo esercizio pubblico, tutti gli studenti potranno visualizzarlo in qualsiasi momento. Se vuoi utilizzare questo esercizio in un esame, rendilo privato.",
 	},
+	event_monitor: {
+		search_students: "Search students",
+		close_for_selected: "Close",
+		undo_turn_in: "Undo turn-in",
+		if_selected: "If selected",
+		reopen_for_selected: "Reopen",
+		stats_participants: "Participants",
+		stats_turned_in: "Turned in",
+		stats_average_progress: "Average completion",
+	},
+	event_participation_headings: {
+		student: "Student",
+		mat: "Mat",
+		course: "Course",
+		exercise: "Exercise",
+		participation_state: "Turned in",
+	},
 	filter_results: {
 		title: "Search exercises",
 		more_filters: "More filters",
@@ -522,5 +542,8 @@ export const en = {
 		classroom: {
 			publish_on_classroom: "Also publish on Classroom",
 		},
+	},
+	data_table: {
+		noRowsToShow: "No results",
 	},
 };
