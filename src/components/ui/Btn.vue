@@ -3,8 +3,11 @@
 		<button
 			v-wave="disabled ? false : {}"
 			:disabled="disabled || loading"
-			class="relative overflow-hidden disabled:cursor-not-allowed disabled:opacity-70"
+			class="relative overflow-hidden disabled:cursor-not-allowed"
 			:class="{
+				'disabled:opacity-40 transition-colors-opacity duration-100 ease-linear':
+					variant === 'secondary',
+				'disabled:opacity-70': variant !== 'secondary',
 				'shadow-elevation-2 bg-light': forceActive,
 				'bg-success-light bg-opacity-30': forceActive && variant === 'success-borderless',
 				'px-6 py-2 font-medium': !outline && size === 'base' && variant !== 'transparent',
@@ -14,8 +17,9 @@
 				'px-14 py-2 text-lg font-medium': size === 'lg' && variant !== 'icon',
 				'text-onPrimary bg-primary hover:bg-primary-dark shadow-btn':
 					!outline && variant === 'primary',
-				'text-onSecondary bg-secondary hover:bg-secondary-dark shadow-btn':
-					!outline && variant === 'secondary',
+				'text-onSecondary bg-secondary': !outline && variant === 'secondary',
+				'hover:bg-secondary-dark shadow-btn':
+					!outline && variant === 'secondary' && !disabled,
 				'text-danger-dark bg-danger shadow-btn': !outline && variant === 'danger',
 				'text-danger-dark border-danger-dark bg-white border hover:bg-danger-dark hover:bg-opacity-5':
 					outline && variant === 'danger',
@@ -65,8 +69,11 @@
 		v-else
 		v-wave="disabled ? false : {}"
 		:disabled="disabled || loading"
-		class="relative overflow-hidden disabled:cursor-not-allowed disabled:opacity-70"
+		class="relative overflow-hidden disabled:cursor-not-allowed"
 		:class="{
+			'disabled:opacity-40 transition-colors-opacity duration-100 ease-linear':
+				variant === 'secondary',
+			'disabled:opacity-70': variant !== 'secondary',
 			'shadow-elevation-2 bg-light': forceActive,
 			'bg-success-light bg-opacity-30': forceActive && variant === 'success-borderless',
 			'px-6 py-2 font-medium': !outline && size === 'base' && variant !== 'transparent',
@@ -76,8 +83,9 @@
 			'px-14 py-2 text-lg font-medium': size === 'lg' && variant !== 'icon',
 			'text-onPrimary bg-primary hover:bg-primary-dark shadow-btn':
 				!outline && variant === 'primary',
-			'text-onSecondary bg-secondary hover:bg-secondary-dark shadow-btn':
-				!outline && variant === 'secondary',
+			'text-onSecondary bg-secondary': !outline && variant === 'secondary',
+			'hover:bg-secondary-dark shadow-btn':
+				!outline && variant === 'secondary' && !disabled,
 			'text-danger-dark bg-danger shadow-btn': !outline && variant === 'danger',
 			'text-danger-dark border-danger-dark bg-white border hover:bg-danger-dark hover:bg-opacity-5':
 				outline && variant === 'danger',

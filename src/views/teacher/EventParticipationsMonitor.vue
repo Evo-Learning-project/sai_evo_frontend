@@ -63,11 +63,16 @@
 				/>
 				<!-- TODO implement sorting -->
 				<DropdownMenu
-					:expanded="sortOptionsExpanded"
-					@toggleExpanded="sortOptionsExpanded = !sortOptionsExpanded"
+					:expanded="sortingOptionsExpanded"
+					@toggleExpanded="sortingOptionsExpanded = !sortingOptionsExpanded"
 				>
 					<template v-slot:activator>
-						<Btn :variant="'icon'" :outline="true" class="">
+						<Btn
+							:tooltip="$t('event_monitor.sorting_tooltip')"
+							:variant="'icon'"
+							:outline="true"
+							class=""
+						>
 							<svg
 								style="width: 22px; height: 22px"
 								class="opacity-70"
@@ -81,13 +86,22 @@
 							</svg>
 						</Btn>
 					</template>
-					<div class="-mx-5 -my-2.5">
-						<Btn :outline="true" class="px-8 pt-2 pb-2" :variant="'transparent'">
-							<div class="flex items-center align-top">Alphabetical Order</div>
-						</Btn>
-						<Btn :outline="true" class="px-8 pt-2 pb-2" :variant="'transparent'">
-							<div class="flex items-center align-top">Progress</div>
-						</Btn>
+					<div class="-mx-5 -my-2.5 w-max">
+						<div v-for="(option, index) in sortingOptions" :key="index">
+							<Btn
+								:outline="true"
+								class="px-8 pt-2 pb-2 w-full"
+								:variant="'transparent'"
+								@click="setSortingOption(index)"
+							>
+								<span
+									class="material-icons mr-2 text-primary"
+									v-if="index === selectedSortingOption"
+									>done</span
+								>
+								<div class="flex items-center align-top">{{ option.label }}</div>
+							</Btn>
+						</div>
 					</div>
 				</DropdownMenu>
 			</div>
@@ -624,7 +638,9 @@ export default defineComponent({
 
 			googleClassroomCourseWorkTwin: null as null | GoogleClassroomCourseWorkTwin,
 			publishToClassroom: true,
-			sortOptionsExpanded: false,
+			sortingOptionsExpanded: false,
+
+			selectedSortingOption: 0,
 		};
 	},
 	methods: {
@@ -950,6 +966,11 @@ export default defineComponent({
 			});
 		},
 
+		setSortingOption(index: number) {
+			this.selectedSortingOption = index;
+			this.sortingOptionsExpanded = false;
+		},
+
 		hideDialog() {
 			this.editingSlot = null;
 			this.editingSlotDirty = null;
@@ -965,6 +986,61 @@ export default defineComponent({
 			return this.mainStore.eventParticipations.filter(p =>
 				this.selectedParticipationsIds.includes(p.id),
 			);
+		},
+		sortingOptions() {
+			const options: {
+				label: string;
+				sortFn: (p1: EventParticipation, p2: EventParticipation) => number;
+			}[] = [
+				{
+					label: _("event_monitor.sort_options.alphabetical"),
+					sortFn: (p1, p2) => {
+						const lastName1 = p1.user.last_name;
+						const lastName2 = p2.user.last_name;
+						console.log({ lastName1, lastName2 });
+						if (lastName1 > lastName2) {
+							return 1;
+						}
+						if (lastName1 < lastName2) {
+							return -1;
+						}
+						return 0;
+					},
+				},
+				{
+					label: _("event_monitor.sort_options.alphabetical_reverse"),
+					sortFn: (p1, p2) => {
+						const lastName1 = p1.user.last_name;
+						const lastName2 = p2.user.last_name;
+						if (lastName1 > lastName2) {
+							return -1;
+						}
+						if (lastName1 < lastName2) {
+							return 1;
+						}
+						return 0;
+					},
+				},
+				{
+					label: _("event_monitor.sort_options.begin_timestamp"),
+					sortFn: (p1, p2) => {
+						const begin1 = p1.begin_timestamp;
+						const begin2 = p2.begin_timestamp;
+						return new Date(begin1).getTime() - new Date(begin2).getTime();
+					},
+				},
+				{
+					label: _("event_monitor.sort_options.begin_timestamp_reverse"),
+					sortFn: (p1, p2) => {
+						const begin1 = p1.begin_timestamp;
+						const begin2 = p2.begin_timestamp;
+						return new Date(begin2).getTime() - new Date(begin1).getTime();
+					},
+				},
+				// { label: _("event_monitor.sort_options.progress") },
+				// { label: _("event_monitor.sort_options.progress_inverse") },
+			];
+			return options;
 		},
 		bulkActions() {
 			const actions = {
@@ -1044,8 +1120,10 @@ export default defineComponent({
 			);
 		},
 		filteredParticipationsData() {
-			const data = this.participationsData;
-			return data.filter(d => userMatchesSearch(this.searchText, d.user as User));
+			const data = this.participationsData as any as EventParticipation[]; // TODO refactor
+			return data
+				.filter(d => userMatchesSearch(this.searchText, d.user as User))
+				.sort(this.sortingOptions[this.selectedSortingOption].sortFn);
 		},
 		participationsData() {
 			return this.mainStore.eventParticipations.map((p: EventParticipation) => {
@@ -1060,6 +1138,7 @@ export default defineComponent({
 					visibility: p.visibility,
 					score: p.score ?? "",
 					user: p.user,
+					begin_timestamp: p.begin_timestamp,
 				} as Record<string, unknown>;
 				p.slots.forEach(
 					s => (ret["slot-" + ((s.slot_number as number) + 1)] = s), //s.score ?? '-')

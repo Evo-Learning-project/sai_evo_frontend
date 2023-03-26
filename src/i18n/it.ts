@@ -553,6 +553,13 @@ export const it = {
 		student_will_be_brought_back_to_first_slot:
 			"Lo studente verrà riportato al primo esercizio e potrà cambiare le risposte date finora. | Gli studenti selezionati verranno riportati al primo esercizio e potranno cambiare le risposte date finora.",
 		in_column_state: "nella colonna Consegna.",
+		sorting_tooltip: "Cambia ordinamento",
+		sort_options: {
+			alphabetical: "Alfabetico (cognome)",
+			alphabetical_reverse: "Alfabetico inverso (cognome)",
+			begin_timestamp: "Ordine di inizio",
+			begin_timestamp_reverse: "Ordine di inizio inverso",
+		},
 	},
 	event_stats: {
 		not_yet_assessed: "Non ancora corretto",

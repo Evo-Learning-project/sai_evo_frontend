@@ -1263,6 +1263,7 @@
 		height: 19px !important;
 		font-size: 22px !important;
 	}
+	.ag-theme-material .ag-checkbox-input-wrapper:focus-within,
 	.ag-theme-material .ag-checkbox-input-wrapper:active {
 		outline: none;
 		box-shadow: none !important;
