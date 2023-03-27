@@ -300,21 +300,21 @@ export default defineComponent({
 				await this.withLocalLoading(
 					async () => {
 						// ------------------------------------------
-						const googleUser = await this.$gAuth.signIn();
-						if (!googleUser) {
-							return null;
-						}
-						const token = googleUser.getAuthResponse().access_token;
-						await this.metaStore.convertToken(token);
-						await this.metaStore.getUserData();
-						// ------------------------------------------
-
-						// ------------------------------------------
-						// const code = await this.$gAuth.getAuthCode();
-						// console.log({ code });
-
-						// await this.metaStore.convertAuthorizationCode(code);
+						// const googleUser = await this.$gAuth.signIn();
+						// if (!googleUser) {
+						// 	return null;
+						// }
+						// const token = googleUser.getAuthResponse().access_token;
+						// await this.metaStore.convertToken(token);
 						// await this.metaStore.getUserData();
+						// ------------------------------------------
+
+						// ------------------------------------------
+						const code = await this.$gAuth.getAuthCode();
+						console.log({ code });
+
+						await this.metaStore.convertAuthorizationCode(code);
+						await this.metaStore.getUserData();
 						// ------------------------------------------
 
 						redirectToMainView();
@@ -398,7 +398,7 @@ export default defineComponent({
 }
 
 #login-btn:hover {
-	filter: brightness(0.9825);
+	filter: brightness(0.9725);
 }
 
 .dot-patterns {

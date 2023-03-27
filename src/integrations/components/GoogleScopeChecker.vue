@@ -31,7 +31,7 @@
 		<GoogleScopesButton
 			v-if="!loading && outstandingScopes.length > 0"
 			class="mt-4"
-			:getUrl="googleIntegrationStore.getClassroomScopesAuthUrl"
+			:getUrl="() => googleIntegrationStore.getClassroomScopesAuthUrl('teacher')"
 			@authDone="loadAuthorizedScopes()"
 		>
 			<div class="flex items-center space-x-2.5">

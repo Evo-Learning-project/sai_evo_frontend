@@ -27,12 +27,12 @@ export const useGoogleIntegrationsStore = defineStore("googleIntegration", {
 			const response = await axios.get(`/integrations/classroom/classroom_courses/`);
 			return response.data;
 		},
-		async getClassroomScopesAuthUrl(): Promise<string> {
+		async getClassroomScopesAuthUrl(role: "student" | "teacher"): Promise<string> {
 			/**
 			 * Returns a URL that can be used to authenticate and grant scopes
 			 * that allow the application to use Classroom's features
 			 */
-			const response = await axios.get(`/integrations/classroom/auth_url/`);
+			const response = await axios.get(`/integrations/classroom/auth_url/?role=${role}`);
 			return response.data;
 		},
 		async getAuthorizedScopes(): Promise<string[]> {

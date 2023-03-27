@@ -31,9 +31,11 @@ import { sanitizeOptions } from "./const";
 import VueGtag from "vue-gtag";
 import { createPinia } from "pinia";
 
+// TODO export to env vars
 const gAuthOptions = {
 	clientId: "956826904172-mcsaj1bqcllv93bpad7dmd0e3oil4758.apps.googleusercontent.com",
-	scope: "profile",
+	scope:
+		"profile email https://www.googleapis.com/auth/classroom.rosters https://www.googleapis.com/auth/classroom.coursework.me",
 	prompt: "consent",
 	fetch_basic_profile: true,
 	//hosted_domain: ["studenti.unipi.it"]

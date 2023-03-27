@@ -5,7 +5,7 @@
 			:disabled="disabled || loading"
 			class="relative overflow-hidden disabled:cursor-not-allowed"
 			:class="{
-				'disabled:opacity-40 transition-colors-opacity duration-100 ease-linear':
+				'disabled:opacity-40 transition-all duration-100 ease-linear':
 					variant === 'secondary',
 				'disabled:opacity-70': variant !== 'secondary',
 				'shadow-elevation-2 bg-light': forceActive,
@@ -71,7 +71,7 @@
 		:disabled="disabled || loading"
 		class="relative overflow-hidden disabled:cursor-not-allowed"
 		:class="{
-			'disabled:opacity-40 transition-colors-opacity duration-100 ease-linear':
+			'disabled:opacity-40 transition-all duration-100 ease-linear':
 				variant === 'secondary',
 			'disabled:opacity-70': variant !== 'secondary',
 			'shadow-elevation-2 bg-light': forceActive,
