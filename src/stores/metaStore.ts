@@ -101,6 +101,18 @@ export const useMetaStore = defineStore("meta", {
 			this.setToken(response.data.access_token);
 			this.setRefreshToken(response.data.refresh_token);
 		},
+		async convertAuthorizationCode(code: string) {
+			const response = await axios.post("/users/auth/convert-token/", {
+				code,
+				grant_type: "convert_token",
+				client_id: process.env.VUE_APP_GOOGLE_OAUTH_CLIENT_ID,
+				client_secret: process.env.VUE_APP_GOOGLE_OAUTH_CLIENT_SECRET,
+				backend: "google-oauth2",
+			});
+
+			this.setToken(response.data.access_token);
+			this.setRefreshToken(response.data.refresh_token);
+		},
 		async getUserData() {
 			const response = await getMe();
 			this.setUser(response);

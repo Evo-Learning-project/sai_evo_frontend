@@ -280,7 +280,6 @@ export default defineComponent({
 	},
 	data() {
 		return {
-			user: "",
 			loadingLogin: true,
 			disableLogin: false,
 			demoLoginTourSteps,
@@ -300,15 +299,23 @@ export default defineComponent({
 				this.loginAttemptWithUnauthorizedEmailAddress = false;
 				await this.withLocalLoading(
 					async () => {
+						// ------------------------------------------
 						const googleUser = await this.$gAuth.signIn();
 						if (!googleUser) {
 							return null;
 						}
-						this.user = googleUser.getBasicProfile().getEmail();
 						const token = googleUser.getAuthResponse().access_token;
-
 						await this.metaStore.convertToken(token);
 						await this.metaStore.getUserData();
+						// ------------------------------------------
+
+						// ------------------------------------------
+						// const code = await this.$gAuth.getAuthCode();
+						// console.log({ code });
+
+						// await this.metaStore.convertAuthorizationCode(code);
+						// await this.metaStore.getUserData();
+						// ------------------------------------------
 
 						redirectToMainView();
 

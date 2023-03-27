@@ -67,12 +67,8 @@
 					@toggleExpanded="sortingOptionsExpanded = !sortingOptionsExpanded"
 				>
 					<template v-slot:activator>
-						<Btn
-							:tooltip="$t('event_monitor.sorting_tooltip')"
-							:variant="'icon'"
-							:outline="true"
-							class=""
-						>
+						<Btn :variant="'icon'" :outline="true" class="">
+							<!-- :tooltip="$t('event_monitor.sorting_tooltip')" -->
 							<svg
 								style="width: 22px; height: 22px"
 								class="opacity-70"
