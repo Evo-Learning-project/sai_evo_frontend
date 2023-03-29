@@ -338,6 +338,7 @@ export interface LessonNode extends BaseNodeFields {
 	state: LessonNodeState;
 	comment_count: number;
 	resourcetype: CourseTreeNodeType.LessonNode;
+	schedule_publish_at?: string | null;
 }
 
 export interface TopicNode extends BaseNodeFields {
@@ -349,6 +350,7 @@ export interface AnnouncementNode extends BaseNodeFields {
 	body: string;
 	state: AnnouncementNodeState;
 	resourcetype: CourseTreeNodeType.AnnouncementNode;
+	schedule_publish_at?: string | null;
 }
 
 export interface PollNodeChoice {

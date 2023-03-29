@@ -36,6 +36,7 @@ const gAuthOptions = {
 	clientId: "956826904172-mcsaj1bqcllv93bpad7dmd0e3oil4758.apps.googleusercontent.com",
 	scope:
 		"profile email https://www.googleapis.com/auth/classroom.rosters https://www.googleapis.com/auth/classroom.coursework.me",
+	// TODO probably remove this - see https://developers.google.com/identity/openid-connect/openid-connect#re-consent
 	prompt: "consent",
 	fetch_basic_profile: true,
 	//hosted_domain: ["studenti.unipi.it"]

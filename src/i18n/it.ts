@@ -1069,6 +1069,14 @@ export const it = {
 		unknown_error: "Si è verificato un errore sconosciuto",
 	},
 	course_tree: {
+		save_to_cancel_scheduled_publish:
+			"Salva le modifiche per annullare la pubblicazione pianificata",
+		scheduled_for: "Pianificato per il",
+		schedule: "Pianifica pubblicazione",
+		schedule_label: "Pianifica",
+		select_schedule_datetime: "Seleziona data e ora per pianificare la pubblicazione.",
+		schedule_datetime: "Data e ora",
+		schedule_publish_title: "Pianifica pubblicazione",
 		editor_discard_unsaved_changes: "Vuoi scartare le modifiche non salvate?",
 		confirm_delete_comment: "Sei sicuro di voler eliminare questo commento?",
 		file_by_url_description:

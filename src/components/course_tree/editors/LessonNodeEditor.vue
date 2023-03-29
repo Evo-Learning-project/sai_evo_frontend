@@ -45,6 +45,27 @@
 							}}
 						</Btn>
 					</div>
+					<div class="ml-2" v-if="modelValue.state === LessonNodeState.DRAFT">
+						<Btn
+							:variant="'icon'"
+							:outline="true"
+							class="icon-btn-primary"
+							:disabled="blockingSaving"
+							@click="showScheduleDialog = true"
+							:tooltip="$t('course_tree.schedule')"
+						>
+							<svg
+								style="width: 24px; fill: currentColor"
+								xmlns="http://www.w3.org/2000/svg"
+								viewBox="0 0 24 24"
+							>
+								<path
+									d="M15,13H16.5V15.82L18.94,17.23L18.19,18.53L15,16.69V13M19,8H5V19H9.67C9.24,18.09 9,17.07 9,16A7,7 0 0,1 16,9C17.07,9 18.09,9.24 19,9.67V8M5,21C3.89,21 3,20.1 3,19V5C3,3.89 3.89,3 5,3H6V1H8V3H16V1H18V3H19A2,2 0 0,1 21,5V11.1C22.24,12.36 23,14.09 23,16A7,7 0 0,1 16,23C14.09,23 12.36,22.24 11.1,21H5M16,11.15A4.85,4.85 0 0,0 11.15,16C11.15,18.68 13.32,20.85 16,20.85A4.85,4.85 0 0,0 20.85,16C20.85,13.32 18.68,11.15 16,11.15Z"
+								/>
+							</svg>
+							<!-- <span class="material-icons">schedule_send</span> -->
+						</Btn>
+					</div>
 				</div>
 			</div>
 			<div class="w-full flex">
@@ -60,6 +81,54 @@
 					v-if="hasGoogleClassroomTwin"
 					:remoteObjectUrl="googleClassroomMaterialTwin?.data.alternateLink"
 				/>
+				<div
+					:class="[
+						(showClassroomIntegrationSwitch &&
+							modelValue.state === LessonNodeState.DRAFT) ||
+						hasGoogleClassroomTwin
+							? 'ml-12'
+							: 'ml-auto',
+					]"
+					class="banner banner-light py-1.5 px-1.5 text-muted"
+					v-if="canceledScheduledPublish"
+				>
+					{{ $t("course_tree.save_to_cancel_scheduled_publish") }}
+				</div>
+				<div
+					:class="[
+						(showClassroomIntegrationSwitch &&
+							modelValue.state === LessonNodeState.DRAFT) ||
+						hasGoogleClassroomTwin
+							? 'ml-12'
+							: 'ml-auto',
+					]"
+					class="banner banner-light py-0.5 pr-1"
+					v-if="
+						modelValue.state === LessonNodeState.DRAFT && modelValue.schedule_publish_at
+					"
+				>
+					<svg
+						style="width: 24px; fill: currentColor"
+						xmlns="http://www.w3.org/2000/svg"
+						viewBox="0 0 24 24"
+					>
+						<path
+							d="M15,13H16.5V15.82L18.94,17.23L18.19,18.53L15,16.69V13M19,8H5V19H9.67C9.24,18.09 9,17.07 9,16A7,7 0 0,1 16,9C17.07,9 18.09,9.24 19,9.67V8M5,21C3.89,21 3,20.1 3,19V5C3,3.89 3.89,3 5,3H6V1H8V3H16V1H18V3H19A2,2 0 0,1 21,5V11.1C22.24,12.36 23,14.09 23,16A7,7 0 0,1 16,23C14.09,23 12.36,22.24 11.1,21H5M16,11.15A4.85,4.85 0 0,0 11.15,16C11.15,18.68 13.32,20.85 16,20.85A4.85,4.85 0 0,0 20.85,16C20.85,13.32 18.68,11.15 16,11.15Z"
+						/>
+					</svg>
+					<p>
+						{{ $t("course_tree.scheduled_for") }}
+						<Timestamp :value="modelValue.schedule_publish_at" />
+					</p>
+					<div class="flex items-center">
+						<Btn :variant="'icon'" :outline="true" @click="showScheduleDialog = true"
+							><span class="material-icons">edit</span></Btn
+						>
+						<Btn :variant="'icon'" :outline="true" @click="onSchedule(null)"
+							><span class="material-icons">close</span></Btn
+						>
+					</div>
+				</div>
 			</div>
 		</div>
 
@@ -144,6 +213,12 @@
 				/>
 			</div>
 		</div>
+		<SchedulePublishDialog
+			@cancel="showScheduleDialog = false"
+			@confirm="onSchedule($event)"
+			:visible="showScheduleDialog"
+			:initialValue="modelValue.schedule_publish_at"
+		/>
 	</div>
 </template>
 
@@ -155,6 +230,7 @@ import Dropdown from "@/components/ui/Dropdown.vue";
 import FileUpload from "@/components/ui/FileUpload.vue";
 import TextEditor from "@/components/ui/TextEditor.vue";
 import TextInput from "@/components/ui/TextInput.vue";
+import Timestamp from "@/components/ui/Timestamp.vue";
 import { getTranslatedString as _ } from "@/i18n";
 import IntegrationSwitch from "@/integrations/classroom/components/IntegrationSwitch.vue";
 import PublishedOnClassroom from "@/integrations/classroom/components/PublishedOnClassroom.vue";
@@ -180,6 +256,7 @@ import useVuelidate from "@vuelidate/core";
 import { mapStores } from "pinia";
 import FileNode from "../node/FileNode.vue";
 import { nodeEditorEmits, nodeEditorProps } from "../shared";
+import SchedulePublishDialog from "./SchedulePublishDialog.vue";
 export default defineComponent({
 	name: "LessonNodeEditor",
 	props: {
@@ -213,6 +290,8 @@ export default defineComponent({
 			publishToClassroom: true,
 			showClassroomIntegrationSwitch: false,
 			googleClassroomMaterialTwin: null as null | GoogleClassroomMaterialTwin,
+			showScheduleDialog: false,
+			canceledScheduledPublish: false,
 		};
 	},
 	async created() {
@@ -248,6 +327,14 @@ export default defineComponent({
 		]);
 	},
 	methods: {
+		async onSchedule(datetime) {
+			const save = datetime !== null;
+			this.onNodeChange("schedule_publish_at", datetime, save);
+			if (datetime === null) {
+				this.canceledScheduledPublish = true;
+			}
+			//this.showScheduleDialog = false;
+		},
 		async checkForMaterialTwin() {
 			this.googleClassroomMaterialTwin =
 				await this.googleIntegrationStore.getGoogleClassroomMaterialTwin(
@@ -357,6 +444,8 @@ export default defineComponent({
 		Dropdown,
 		IntegrationSwitch,
 		PublishedOnClassroom,
+		SchedulePublishDialog,
+		Timestamp,
 	},
 });
 </script>
