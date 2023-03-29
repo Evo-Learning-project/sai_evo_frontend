@@ -732,7 +732,7 @@ export const it = {
 		allowed_students: "studenti ammessi",
 		publish_exam: "Pubblica esame",
 		publish_announcement_prompt:
-			"Vuoi pubblicare un annuncio sul materiale del corso contenente il link all'esame?",
+			"Vuoi pianificare la pubblicazione di un annuncio sul materiale del corso contenente il link all'esame?",
 	},
 	exercise_editor: {
 		confirm_delete_testcase_attachment: "Sei sicuro di voler eliminare l'allegato",
@@ -1069,6 +1069,9 @@ export const it = {
 		unknown_error: "Si è verificato un errore sconosciuto",
 	},
 	course_tree: {
+		scheduled_confirm_publish_now_1:
+			"Hai pianificato la pubblicazione di questo elemento per il ",
+		scheduled_confirm_publish_now_2: ". Vuoi pubblicarlo subito?",
 		save_to_cancel_scheduled_publish:
 			"Salva le modifiche per annullare la pubblicazione pianificata",
 		scheduled_for: "Pianificato per il",

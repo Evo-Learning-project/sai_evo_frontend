@@ -249,7 +249,7 @@ import {
 } from "@/models";
 import { useMainStore } from "@/stores/mainStore";
 import { useMetaStore } from "@/stores/metaStore";
-import { setErrorNotification } from "@/utils";
+import { getFormattedTimestamp, setErrorNotification } from "@/utils";
 import { lessonNodeValidation } from "@/validation/models";
 import { defineComponent, PropType } from "@vue/runtime-core";
 import useVuelidate from "@vuelidate/core";
@@ -328,12 +328,18 @@ export default defineComponent({
 	},
 	methods: {
 		async onSchedule(datetime) {
-			const save = datetime !== null;
-			this.onNodeChange("schedule_publish_at", datetime, save);
-			if (datetime === null) {
-				this.canceledScheduledPublish = true;
+			if (datetime !== null) {
+				this.v$.$touch();
 			}
-			//this.showScheduleDialog = false;
+			if (datetime === null || this.v$.$errors.length === 0) {
+				const save = datetime !== null;
+				this.onNodeChange("schedule_publish_at", datetime, save);
+				if (datetime === null) {
+					this.canceledScheduledPublish = true;
+				}
+			} else {
+				this.showScheduleDialog = false;
+			}
 		},
 		async checkForMaterialTwin() {
 			this.googleClassroomMaterialTwin =
@@ -350,7 +356,11 @@ export default defineComponent({
 			this.$emit("patchNode", { key, value, save });
 		},
 		onSave() {
-			if (this.modelValue.state !== LessonNodeState.DRAFT && this.v$.$invalid) {
+			if (
+				(this.modelValue.state !== LessonNodeState.DRAFT ||
+					this.modelValue.schedule_publish_at) &&
+				this.v$.$invalid
+			) {
 				this.v$.$touch();
 				return;
 			}
@@ -363,6 +373,16 @@ export default defineComponent({
 			this.onNodeChange("parent_id", parentId);
 		},
 		async onPublish() {
+			if (
+				this.modelValue.schedule_publish_at &&
+				!confirm(
+					_("course_tree.scheduled_confirm_publish_now_1") +
+						getFormattedTimestamp(this.modelValue.schedule_publish_at) +
+						_("course_tree.scheduled_confirm_publish_now_2"),
+				)
+			) {
+				return;
+			}
 			this.v$.$touch();
 			if (this.v$.$errors.length === 0) {
 				this.$emit("updateState", {

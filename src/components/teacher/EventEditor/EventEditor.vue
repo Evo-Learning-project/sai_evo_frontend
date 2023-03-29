@@ -211,7 +211,7 @@
 						@save="resolveBlockingDialog(true)"
 						@closeEditor="resolveBlockingDialog(false)"
 						:isExistingNode="false"
-						:publishOnly="true"
+						:publishOnly="false"
 					/>
 				</transition>
 
@@ -491,6 +491,7 @@ export default defineComponent({
 				this.announcement = {
 					...getBlankAnnouncementNode(),
 					body: examPublishedAnnouncementTemplate(this.modelValue),
+					schedule_publish_at: this.modelValue.begin_timestamp,
 					parent_id: await this.mainStore.getCourseRootId({ courseId: this.courseId }),
 				};
 			} catch (e) {
