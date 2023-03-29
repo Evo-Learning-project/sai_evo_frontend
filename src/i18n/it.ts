@@ -246,6 +246,11 @@ export const it = {
 		donate_now: "Dona ora",
 	},
 	misc: {
+		this_morning: "Stamattina",
+		this_afternoon: "Oggi pomeriggio",
+		tomorrow_morning: "Domani mattina",
+		tomorrow_afternoon: "Domani pomeriggio",
+		next_week: "Prossima settimana",
 		disable: "Disabilita",
 		an_error_occurred: "Si è verificato un errore",
 		try_again: "Riprova",
@@ -1069,6 +1074,7 @@ export const it = {
 		unknown_error: "Si è verificato un errore sconosciuto",
 	},
 	course_tree: {
+		invalid_schedule_time: "Data e ora invalide",
 		scheduled_confirm_publish_now_1:
 			"Hai pianificato la pubblicazione di questo elemento per il ",
 		scheduled_confirm_publish_now_2: ". Vuoi pubblicarlo subito?",

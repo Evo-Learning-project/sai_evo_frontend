@@ -143,6 +143,62 @@
 		width: 100%;
 	}
 
+	.mx-datepicker-main.mx-datepicker-popup {
+		display: flex !important;
+	}
+
+	.mx-datepicker-content {
+		margin-left: 0 !important;
+	}
+
+	.mx-btn:hover {
+		@apply border-primary text-primary !important;
+	}
+
+	.mx-calendar-content .cell {
+		@apply rounded-full transition-all duration-200 ease-in-out !important;
+	}
+
+	.mx-calendar-content .cell:hover {
+		@apply bg-gray-200 bg-opacity-60 !important;
+	}
+
+	.mx-calendar {
+		box-sizing: border-box;
+		width: 100% !important;
+		height: 300px !important;
+	}
+
+	.mx-calendar-content {
+		position: relative;
+		height: 86% !important;
+		box-sizing: border-box;
+	}
+
+	.mx-time-content {
+		height: 250px !important;
+		box-sizing: border-box;
+		overflow: hidden;
+	}
+
+	.mx-date-time {
+		position: relative;
+		width: 270px !important;
+		height: 300px !important;
+	}
+
+	.mx-table-date .today {
+		@apply text-primary border border-primary !important;
+	}
+
+	.mx-datepicker-sidebar {
+		width: max-content !important;
+	}
+
+	.mx-btn-shortcut {
+		@apply font-normal text-2xs md:text-xs mt-2 mb-1 !important;
+	}
+
 	/*
   experimental styles
   */
@@ -1024,7 +1080,7 @@
 		@apply rounded-md !important;
 	}
 	.mx-calendar-content .cell.active {
-		@apply text-lightText bg-primary rounded-md !important;
+		@apply text-lightText bg-primary !important;
 	}
 	.mx-time-column .mx-time-item.active {
 		@apply text-primary !important;

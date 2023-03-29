@@ -5,6 +5,7 @@
 			:noText="$t('dialog.default_cancel_text')"
 			:yesText="$t('course_tree.schedule_label')"
 			:showDialog="visible"
+			:disableOk="invalid"
 			@yes="onYes()"
 			@no="onNo()"
 		>
@@ -17,6 +18,13 @@
 					<CalendarInput v-model="value" class="w-full">
 						{{ $t("course_tree.schedule_datetime") }}
 					</CalendarInput>
+					<div
+						class="text-danger-dark mt-4 flex items-center space-x-2"
+						v-if="showErrors"
+					>
+						<span class="material-icons">error_outline</span>
+						<p class="">{{ $t("course_tree.invalid_schedule_time") }}</p>
+					</div>
 				</div>
 			</template>
 		</Dialog>
@@ -51,10 +59,14 @@ export default defineComponent({
 				this.value = this.initialValue;
 			}
 		},
+		value(newVal) {
+			this.showErrors = newVal && this.invalid;
+		},
 	},
 	data() {
 		return {
 			value: null as string | null,
+			showErrors: false,
 		};
 	},
 	methods: {
@@ -65,7 +77,14 @@ export default defineComponent({
 			return this.$emit("cancel");
 		},
 	},
-	computed: {},
+	computed: {
+		invalid() {
+			if (this.value === null) {
+				return true;
+			}
+			return new Date(this.value).getTime() - new Date().getTime() <= 5 * 1000 * 60;
+		},
+	},
 	components: { Dialog, CalendarInput },
 });
 </script>
