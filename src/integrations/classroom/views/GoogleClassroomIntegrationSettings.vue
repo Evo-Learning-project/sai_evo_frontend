@@ -22,7 +22,7 @@
             granted yet-->
 		<GoogleScopeChecker
 			class="flex flex-col items-center mt-4"
-			:scopes="classroomScopes"
+			:role="'teacher'"
 			@scopesOk="scopesVerified = true"
 		></GoogleScopeChecker>
 		<!-- actual settings once the integration is enabled-->

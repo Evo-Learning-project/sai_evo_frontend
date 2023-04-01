@@ -1366,6 +1366,9 @@ export const it = {
 	},
 	integrations: {
 		classroom: {
+			student_no_scopes_warning:
+				"Alcune funzionalità potrebbero non operare correttamente perché non \
+			hai autorizzato l'applicazione ad accedere alle informazioni necessarie del tuo account Google.",
 			published_on_classroom: "Pubblicato su Classroom",
 			type_course_name_to_disable_integration:
 				"Per disabilitare l'integrazione, scrivi qui sotto",

@@ -39,6 +39,7 @@
 					</div>
 				</div>
 			</div>
+			<StudentScopesBanner v-if="!metaStore.user.is_teacher" />
 			<div class="grid gap-4 md:gap-8 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
 				<CourseListItem
 					v-for="(course, index) in coursesFiltered"
@@ -137,6 +138,7 @@ import { mapStores } from "pinia";
 import { useMainStore } from "@/stores/mainStore";
 import { useMetaStore } from "@/stores/metaStore";
 import Dialog from "@/components/ui/Dialog.vue";
+import StudentScopesBanner from "@/integrations/classroom/components/StudentScopesBanner.vue";
 
 const DEMO_COURSES_TOUR_KEY = "courses_tour_taken";
 
@@ -150,6 +152,7 @@ export default defineComponent({
 		Btn,
 		CourseSearchFilters,
 		Dialog,
+		StudentScopesBanner,
 	},
 	async created() {
 		await this.withFirstLoading(async () => this.mainStore.getCourses());
