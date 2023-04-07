@@ -97,7 +97,26 @@ export async function getEventTemplateRule(
 }
 
 export async function createEvent(courseId: string, event: Event): Promise<Event> {
-	const response = await axios.post(`courses/${courseId}/events/`, event);
+	// if the event contains a template with tag-based rules,
+	// we need to convert the tag objects to tag ids
+	const convertedEvent = {
+		...event,
+		...(event.template
+			? {
+					template: {
+						...event.template,
+						rules: event.template.rules.map(r => ({
+							...r,
+							clauses: (r.clauses ?? []).map(c => ({
+								...c,
+								tags: c.tags.map(t => t.id),
+							})),
+						})),
+					},
+			  }
+			: {}),
+	};
+	const response = await axios.post(`courses/${courseId}/events/`, convertedEvent);
 	return normalizeIncomingEvent(response.data);
 }
 

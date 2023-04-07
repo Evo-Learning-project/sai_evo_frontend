@@ -199,8 +199,6 @@ export const useMainStore = defineStore("main", {
 		// course tree node currently viewed in detail mode
 		currentCourseTreeNode: null as CourseTreeNode | null,
 
-		// event currently being edited
-		editingEvent: null as Event | null, // ! see if this is really necessary here
 		// event currently being displayed (e.g. in the confirmation page before joining an event)
 		previewingEvent: null as Event | null,
 
@@ -730,9 +728,6 @@ export const useMainStore = defineStore("main", {
 			}
 		},
 		/** Previous teacher mutations */
-		setEditingEvent(payload: Event | null) {
-			this.editingEvent = payload;
-		},
 		// update an event in memory with the given payload
 		setEvent({ eventId, payload }: { eventId: string; payload: Event }) {
 			Object.assign(this.getEventById(eventId), payload);
@@ -990,50 +985,6 @@ export const useMainStore = defineStore("main", {
 			Object.assign(target, { ...target, ...changes });
 		},
 
-		// ! this mutation and the two below are only used on editingEvent
-		setEditingEventTemplateRule(rule: EventTemplateRule) {
-			const target = this.editingEvent?.template?.rules.find(
-				(r: EventTemplateRule) => r.id == rule.id,
-			);
-			if (target) {
-				// update existing rule
-				Object.assign(target, rule);
-			} else {
-				// push new rule
-				this.editingEvent?.template?.rules.push(rule);
-			}
-		},
-		patchEditingEventTemplateRule({
-			ruleId,
-			changes,
-		}: {
-			ruleId: string;
-			changes: Partial<EventTemplateRule>;
-		}) {
-			const target = this.editingEvent?.template?.rules.find(
-				(r: EventTemplateRule) => r.id == ruleId,
-			);
-			if (target) {
-				// update existing rule
-				Object.assign(target, { ...target, ...changes });
-			}
-		},
-		setEditingEventTemplateRuleClause({
-			ruleId,
-			payload,
-		}: MutationPayload<EventTemplateRuleClause>) {
-			const targetRule = this.editingEvent?.template?.rules.find(
-				(r: EventTemplateRule) => r.id == ruleId,
-			) as EventTemplateRule;
-			const targetClause = targetRule.clauses?.find(c => c.id == payload.id);
-			if (targetClause) {
-				// updating existing clause
-				Object.assign(targetClause, payload);
-			} else {
-				// pushing new clause
-				targetRule.clauses?.push(payload);
-			}
-		},
 		// updates an existing solution for an exercises or pushes a new one
 		setExerciseSolution({
 			exerciseId,
@@ -1237,32 +1188,6 @@ export const useMainStore = defineStore("main", {
 				});
 				throw e;
 			}
-		},
-		async addEventTemplateRuleToCurrentEditingEvent({
-			courseId,
-			templateId,
-			rule,
-		}: CourseIdActionPayload & EventTemplateRuleActionPayload & TemplateIdPayload) {
-			const newRule = await createEventTemplateRule(courseId, templateId, rule);
-			this.setEditingEventTemplateRule(newRule);
-			return newRule;
-		},
-		async addEventTemplateRuleClauseToCurrentEditingEvent({
-			courseId,
-			templateId,
-			ruleId,
-			clause,
-		}: CourseIdActionPayload &
-			TemplateRuleIdActionPayload &
-			EventTemplateRuleClauseActionPayload) {
-			const newClause = await createEventTemplateRuleClause(
-				courseId,
-				templateId,
-				ruleId,
-				clause,
-			);
-			this.setEditingEventTemplateRuleClause({ ruleId, payload: newClause });
-			return newClause;
 		},
 		async createExerciseSolution({
 			courseId,

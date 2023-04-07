@@ -15,6 +15,8 @@ export const en = {
 	dialog: {
 		default_ok_text: "OK",
 		default_cancel_text: "Cancel",
+		default_yes_text: "Yes",
+		default_no_text: "No",
 	},
 	practice_template_editor: {
 		begin_practice: "Start practice",
@@ -329,6 +331,7 @@ export const en = {
 		[ExerciseState.DRAFT]: "Draft",
 	},
 	misc: {
+		warning: "Warning",
 		find_out_more: "Find out more",
 		minutes: "Minutes",
 		time_limit: "Time limit",
@@ -346,6 +349,11 @@ export const en = {
 		edit: "Edit",
 		select: "Select",
 		preview: "Preview",
+	},
+	enrollment: {
+		enroll: "Enroll",
+		enrollment: "Enrollment",
+		do_you_want_to_enroll: "Do you want to enroll in",
 	},
 	gamification: {
 		to_reach_next_level: "To reach next level",
@@ -541,6 +549,10 @@ export const en = {
 	integrations: {
 		classroom: {
 			publish_on_classroom: "Also publish on Classroom",
+			student_no_scopes_warning:
+				"Some features may not work properly because you haven't authorized this app to access \
+				the necessary information from your Google account.",
+			grant_scopes_btn: "Authorize",
 		},
 	},
 	data_table: {

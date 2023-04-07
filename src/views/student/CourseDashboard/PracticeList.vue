@@ -22,7 +22,7 @@
 					></Btn
 				>
 			</div>
-
+			<!-- ads -->
 			<div
 				v-show="ads3Code || adsMobileCode"
 				class="relative w-full bg-light py-2 mb-6 mt-4 px-2"
@@ -57,7 +57,7 @@
 				v-if="!firstLoading"
 			>
 				<!-- resume practice button -->
-				<div v-if="(currentCourse.unstarted_practice_events?.length ?? 0) > 0">
+				<!-- <div v-if="(currentCourse.unstarted_practice_events?.length ?? 0) > 0">
 					<Card
 						:hoverable="false"
 						:margin-less="true"
@@ -89,11 +89,11 @@
 							</div>
 						</template>
 					</Card>
-				</div>
+				</div> -->
+
 				<!-- new practice button -->
 				<Card
 					id="create-practice-btn"
-					v-else
 					:margin-less="true"
 					:hoverable="false"
 					:filled="true"
@@ -181,17 +181,22 @@
 
 		<!-- editor dialog-->
 		<Dialog
-			@no="mainStore.setEditingEvent(null)"
-			@yes="onBeginPractice(mainStore.editingEvent)"
+			@no="onCancelPracticeEditorDialog()"
+			@yes="onBeginPractice()"
 			:noText="$t('dialog.default_cancel_text')"
-			:yesText="$t('practice_template_editor.begin_practice')"
+			:yesText="
+				practiceEditorDialogLoading
+					? $t('misc.wait')
+					: $t('practice_template_editor.begin_practice')
+			"
 			:fullWidth="mainStore.tags.length > 0"
 			:disableOk="
-				totalRuleAmount < 1 ||
-				totalRuleAmount > MAX_PRACTICE_EXERCISE_COUNT ||
+				practiceEditorDialogLoading ||
+				draftEventTemplate.rules.length === 0 ||
 				isEditingRule
 			"
-			:showDialog="!!mainStore.editingEvent"
+			:showDialog="showPracticeEditorDialog"
+			:loading="practiceEditorDialogLoading"
 		>
 			<template v-slot:title>
 				{{
@@ -208,12 +213,10 @@
 							: $t("practice_template_editor.choose_exercises_no_tag_text")
 					}}
 				</p>
-				<PracticeTemplateEditor
-					class="mt-6"
-					v-if="mainStore.editingEvent"
-					@isEditingRule="isEditingRule = $event"
-					:modelValue="mainStore.editingEvent.template"
-				></PracticeTemplateEditor>
+				<PracticeTemplateEditorNew
+					v-model="draftEventTemplate"
+					@isEditing="isEditingRule = $event"
+				></PracticeTemplateEditorNew>
 				<p
 					v-if="totalRuleAmount > MAX_PRACTICE_EXERCISE_COUNT && !isEditingRule"
 					class="text-danger-dark"
@@ -241,9 +244,14 @@ import { defineComponent } from "@vue/runtime-core";
 import EventParticipationPreview from "@/components/student/EventParticipationPreview.vue";
 import SkeletonCard from "@/components/ui/SkeletonCard.vue";
 import Card from "@/components/ui/Card.vue";
-import { Event, EventParticipation, EventType, getBlankPractice } from "@/models";
+import {
+	Event,
+	EventParticipation,
+	EventType,
+	getBlankEventTemplate,
+	getBlankPractice,
+} from "@/models";
 import Dialog from "@/components/ui/Dialog.vue";
-import PracticeTemplateEditor from "@/components/student/PracticeTemplateEditor.vue";
 import { getTranslatedString as _ } from "@/i18n";
 import { sum } from "lodash";
 import { demoStudentTourSteps, MAX_PRACTICE_EXERCISE_COUNT, tourOptions } from "@/const";
@@ -256,6 +264,7 @@ import { isDemoMode, setErrorNotification } from "@/utils";
 import { logAnalyticsEvent } from "@/utils";
 import { mapStores } from "pinia";
 import { useMainStore } from "@/stores/mainStore";
+import PracticeTemplateEditorNew from "../../../components/student/PracticeTemplateEditorNew.vue";
 
 const DEMO_TOUR_KEY = "demo_student_tour_taken";
 
@@ -265,10 +274,10 @@ export default defineComponent({
 		SkeletonCard,
 		Card,
 		Dialog,
-		PracticeTemplateEditor,
 		Btn,
 		VueEternalLoading,
 		Spinner,
+		PracticeTemplateEditorNew,
 	},
 	name: "PracticeList",
 	mixins: [courseIdMixin, loadingMixin, adComponentMixin],
@@ -302,6 +311,9 @@ export default defineComponent({
 			loadingParticipations: new Set<string>(),
 			tourOptions,
 			demoStudentTourSteps,
+			showPracticeEditorDialog: false,
+			draftEventTemplate: getBlankEventTemplate(),
+			practiceEditorDialogLoading: false,
 		};
 	},
 	methods: {
@@ -324,18 +336,56 @@ export default defineComponent({
 				error();
 			}
 		},
-		onBeginPractice(event: Event) {
-			logAnalyticsEvent("beginPractice", { courseId: this.courseId });
-			this.mainStore.setEditingEvent(null);
-			this.$router.push({
-				name: "PracticeParticipationPage",
-				params: {
-					examId: event.id,
-				},
-			});
+		onCreatePractice() {
+			/**
+			 * Open practice editor dialog and lets user define the practice template
+			 */
+			logAnalyticsEvent("createPractice", { courseId: this.courseId });
+			if (this.loading) {
+				return;
+			}
+			if (this.currentCourse.public_exercises_count === 0) {
+				// TODO if you use this.setErrorNotification, it's undefined - investigate
+				setErrorNotification(_("student_course_dashboard.no_public_exercises"), true);
+				return;
+			}
+			this.showPracticeEditorDialog = true;
 		},
-		onResumePractice(event: Event) {
-			this.mainStore.setEditingEvent(event);
+		async onBeginPractice() {
+			/**
+			 * Create practice event using defined template and redirect to
+			 * practice participation page
+			 */
+			logAnalyticsEvent("beginPractice", { courseId: this.courseId });
+
+			const eventPayload = {
+				...getBlankPractice(),
+				template: this.draftEventTemplate,
+			};
+
+			try {
+				this.practiceEditorDialogLoading = true;
+
+				// create practice event with draftEventTemplate
+				const newPracticeEvent = await this.mainStore.createEvent({
+					courseId: this.courseId,
+					event: eventPayload,
+				});
+
+				this.$router.push({
+					name: "PracticeParticipationPage",
+					params: {
+						examId: newPracticeEvent.id,
+					},
+				});
+			} catch (e) {
+				setErrorNotification(e);
+			} finally {
+				this.practiceEditorDialogLoading = false;
+			}
+		},
+		onCancelPracticeEditorDialog() {
+			this.showPracticeEditorDialog = false;
 		},
 		async onBookmark(participation: EventParticipation) {
 			try {
@@ -355,24 +405,6 @@ export default defineComponent({
 			} finally {
 				this.loadingParticipations.delete(participation.id);
 			}
-		},
-		async onCreatePractice() {
-			logAnalyticsEvent("createPractice", { courseId: this.courseId });
-			if (this.loading) {
-				return;
-			}
-			if (this.currentCourse.public_exercises_count === 0) {
-				// TODO if you use this.setErrorNotification, it's undefined - investigate
-				setErrorNotification(_("student_course_dashboard.no_public_exercises"), true);
-				return;
-			}
-			await this.withLoading(async () => {
-				const newPracticeEvent = await this.mainStore.createEvent({
-					courseId: this.courseId,
-					event: getBlankPractice(),
-				});
-				this.mainStore.setEditingEvent(newPracticeEvent);
-			}, setErrorNotification);
 		},
 	},
 	computed: {

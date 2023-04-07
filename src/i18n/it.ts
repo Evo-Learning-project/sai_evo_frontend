@@ -840,6 +840,9 @@ export const it = {
 			"Non puoi iniziare un'esercitazione perché i docenti del corso non hanno ancora aggiunto esercizi",
 	},
 	practice_template_editor: {
+		add_tag_1: "Aggiungi",
+		add_tag_2: " esercizio con tag | esercizi con tag",
+		add_tag_3: "alla mia esercitazione",
 		begin_practice: "Inizia esercitazione",
 		add_rule: "Aggiungi esercizi",
 		choose_tags_text: "Seleziona i tag che ti interessano per creare l'esercitazione.",
