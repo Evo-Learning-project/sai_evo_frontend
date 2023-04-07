@@ -536,17 +536,15 @@ export default defineComponent({
 				slot,
 				async changes => {
 					try {
-						await this.mainStore.partialUpdateCurrentEventParticipationSlot({
+						await this.mainStore.partialUpdateCurrentEventParticipationSlotSubmission({
 							courseId: this.courseId,
 							slotId: slot.id,
 							changes,
-							mutate: true,
-							forceStudent: true,
 						});
 					} catch (e) {
 						// investigate https://sentry.io/organizations/samuele/issues/3683654671/?project=6265941
 						console.error(
-							"partialUpdateCurrentEventParticipationSlot failed when called with args",
+							"partialUpdateCurrentEventParticipationSlotSubmission failed when called with args",
 							slot.id,
 							JSON.stringify(changes),
 						);

@@ -54,6 +54,7 @@ import {
 	partialUpdateEvent,
 	partialUpdateEventParticipation,
 	partialUpdateEventParticipationSlot,
+	partialUpdateEventParticipationSlotSubmission,
 	partialUpdateEventTemplateRule,
 	participateInEvent,
 	removeTagFromExercise,
@@ -129,6 +130,7 @@ import {
 	NodeComment,
 	PollNodeChoice,
 	CourseTreeNodeType,
+	EventParticipationSlotSubmission,
 } from "@/models";
 import {
 	CourseIdActionPayload,
@@ -955,7 +957,7 @@ export const useMainStore = defineStore("main", {
 		setEventParticipations(participations: PaginatedData<EventParticipation>) {
 			this.paginatedEventParticipations = participations;
 		},
-		setCurrentEventParticipationSlot(slot: EventParticipationSlot) {
+		setCurrentEventParticipationSlot(slot: Partial<EventParticipationSlot>) {
 			// look for both slots and sub-slots
 			const flattenedSlots = this.currentEventParticipationFlattenedSlots;
 			const target = flattenedSlots.find(s => s.id == slot.id);
@@ -964,7 +966,7 @@ export const useMainStore = defineStore("main", {
 					"setCurrentEventParticipationSlot couldn't find slot with id " + slot.id,
 				);
 			}
-			Object.assign(target, slot);
+			Object.assign(target, { ...target, ...slot });
 		},
 		patchCurrentEventParticipationSlot({
 			slotId,
@@ -1151,6 +1153,29 @@ export const useMainStore = defineStore("main", {
 			if (mutate) {
 				this.setCurrentEventParticipationSlot(response);
 			}
+		},
+
+		async partialUpdateCurrentEventParticipationSlotSubmission({
+			courseId,
+			slotId,
+			changes,
+		}: CourseIdActionPayload & { slotId: string } & {
+			changes: Partial<EventParticipationSlotSubmission>;
+		}) {
+			if (!this.currentEventParticipation) {
+				throw new Error(
+					"partialUpdateCurrentEventParticipationSubmission called with null currentParticipation",
+				);
+			}
+			const response = await partialUpdateEventParticipationSlotSubmission(
+				courseId,
+				// TODO assumes currentEventParticipation contains Event
+				this.currentEventParticipation.event.id,
+				this.currentEventParticipation.id,
+				slotId,
+				changes,
+			);
+			this.setCurrentEventParticipationSlot(response);
 		},
 		async runCurrentEventParticipationSlotCode({
 			courseId,
@@ -1905,7 +1930,6 @@ export const useMainStore = defineStore("main", {
 			// we can assume the number of privileged users for a given course will be fairly
 			// small, therefore no need to keep them paginated - we can fetch all of them at once
 			const users = await getUsers(courseId, { hasPrivileges: true, size: 99999999 });
-			console.log("About to set priv", users.data);
 			this.privilegedUsers = users.data;
 		},
 		async getCourseEnrolledUsers(

@@ -18,6 +18,7 @@ import {
 	Event,
 	EventParticipation,
 	EventParticipationSlot,
+	EventParticipationSlotSubmission,
 	EventTemplate,
 	EventTemplateRule,
 	EventTemplateRuleClause,
@@ -369,6 +370,20 @@ export async function partialUpdateEventParticipationSlot(
 	return normalizeIncomingEventParticipationSlot(response.data);
 }
 
+export async function partialUpdateEventParticipationSlotSubmission(
+	courseId: string,
+	eventId: string,
+	participationId: string,
+	slotId: string,
+	changes: Partial<EventParticipationSlotSubmission>,
+): Promise<EventParticipationSlotSubmission> {
+	const response = await axios.patch(
+		`/courses/${courseId}/events/${eventId}/participations/${participationId}/slots/${slotId}/patch_submission/`,
+		changes,
+	);
+	return normalizeIncomingEventParticipationSlot(response.data);
+}
+
 export async function getEventParticipationSlot(
 	courseId: string,
 	eventId: string,
@@ -423,7 +438,7 @@ export async function runEventParticipationSlotCode(
 	slotId: string,
 ): Promise<EventParticipationSlot> {
 	const response = await axios.post(
-		`/courses/${courseId}/events/${eventId}/participations/${participationId}/slots/${slotId}/run/?as_student=1`,
+		`/courses/${courseId}/events/${eventId}/participations/${participationId}/slots/${slotId}/run/`,
 	);
 	return normalizeIncomingEventParticipationSlot(response.data);
 }
