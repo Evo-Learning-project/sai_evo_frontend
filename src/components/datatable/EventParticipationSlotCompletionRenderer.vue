@@ -7,8 +7,8 @@
 					class="material-icons text-lg mx-auto"
 					style="font-size: 20px !important; padding-top: 12.5px !important"
 				>
-					{{ hasAnswer ? "done" : "remove" }}</span
-				>
+					{{ hasAnswer ? "done" : "remove" }}
+				</span>
 			</div>
 		</div>
 	</div>
@@ -17,12 +17,11 @@
 <script lang="ts">
 import { EventParticipationSlot } from "@/models";
 import { defineComponent, PropType } from "@vue/runtime-core";
-import Btn from "@/components/ui/Btn.vue";
 export default defineComponent({
 	name: "EventParticipationSlotScoreRenderer",
 	props: {
 		params: {
-			type: Object as PropType<{ value: EventParticipationSlot }>,
+			type: Object as PropType<{ value: Pick<EventParticipationSlot, "has_answer"> }>,
 			required: true,
 		},
 	},

@@ -261,6 +261,8 @@ export interface EventParticipationSlot
 	is_first?: boolean;
 	is_last?: boolean;
 	weight?: number;
+
+	has_answer?: boolean;
 }
 
 export interface CodeExecutionResults {

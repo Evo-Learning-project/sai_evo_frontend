@@ -11,8 +11,9 @@
 				<span
 					style="font-size: 20px !important"
 					class="material-icons-outlined animate-spin"
-					>sync</span
 				>
+					sync
+				</span>
 			</div>
 			<Btn
 				:variant="'icon'"
@@ -29,13 +30,14 @@
 						v-if="hasNullishScore"
 						class="text-yellow-900 material-icons-outlined mx-auto"
 						style="font-size: 20px !important; padding-top: 3.5px !important"
-						>pending_actions</span
 					>
+						pending_actions
+					</span>
 					<span v-else class="mx-auto" style="padding-top: -5px !important">
 						{{ params.value.score }}
 					</span>
-				</div></Btn
-			>
+				</div>
+			</Btn>
 		</div>
 	</div>
 </template>
@@ -48,7 +50,9 @@ export default defineComponent({
 	name: "EventParticipationSlotScoreRenderer",
 	props: {
 		params: {
-			type: Object as PropType<{ value: EventParticipationSlot }>,
+			type: Object as PropType<{
+				value: Pick<EventParticipationSlot, "score" | "execution_results">;
+			}>,
 			required: true,
 		},
 	},
