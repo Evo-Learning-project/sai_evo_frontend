@@ -217,7 +217,7 @@
 					v-model="draftEventTemplate"
 					@isEditing="isEditingRule = $event"
 				></PracticeTemplateEditorNew>
-				<p
+				<!-- <p
 					v-if="totalRuleAmount > MAX_PRACTICE_EXERCISE_COUNT && !isEditingRule"
 					class="text-danger-dark"
 				>
@@ -227,7 +227,7 @@
 						MAX_PRACTICE_EXERCISE_COUNT +
 						"."
 					}}
-				</p>
+				</p> -->
 			</template>
 		</Dialog>
 		<v-tour name="demoStudentTour" :steps="demoStudentTourSteps" :options="tourOptions" />
@@ -416,22 +416,22 @@ export default defineComponent({
 					(!this.showBookmarkedOnly || p.bookmarked),
 			);
 		},
-		isResumingUnstartedPractice(): boolean {
-			return (
-				this.mainStore.editingEvent?.id ===
-				this.currentCourse.unstarted_practice_events?.[0]?.id
-			);
-		},
-		totalRuleAmount(): number {
-			if (!this.mainStore.editingEvent) {
-				return 0;
-			}
-			return sum(
-				(this.mainStore.editingEvent as Event).template?.rules.map(r =>
-					parseInt(String(r.amount)),
-				),
-			);
-		},
+		// isResumingUnstartedPractice(): boolean {
+		// 	return (
+		// 		this.mainStore.editingEvent?.id ===
+		// 		this.currentCourse.unstarted_practice_events?.[0]?.id
+		// 	);
+		// },
+		// totalRuleAmount(): number {
+		// 	if (!this.mainStore.editingEvent) {
+		// 		return 0;
+		// 	}
+		// 	return sum(
+		// 		(this.mainStore.editingEvent as Event).template?.rules.map(r =>
+		// 			parseInt(String(r.amount)),
+		// 		),
+		// 	);
+		// },
 	},
 });
 </script>

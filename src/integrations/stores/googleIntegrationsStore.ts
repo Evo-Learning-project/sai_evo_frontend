@@ -89,6 +89,12 @@ export const useGoogleIntegrationsStore = defineStore("googleIntegration", {
 		},
 
 		/**
+		 * Actions for syncing data with Classroom
+		 */
+		async syncExamGrades(eventId: string): Promise<void> {
+			await axios.post(`/integrations/classroom/sync_exam_grades/?event_id=${eventId}`);
+		},
+		/**
 		 * Getters for twins of various types of items
 		 */
 		async getGoogleClassroomCourseWorkTwin(

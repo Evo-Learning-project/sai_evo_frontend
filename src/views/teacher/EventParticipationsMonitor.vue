@@ -110,17 +110,22 @@
 					class="no-elevate mr-2"
 					@click="onPublishResults"
 					:disabled="selectedParticipationsIds.length == 0"
-					:tooltip="
-						selectedParticipationsIds.length == 0
-							? $t('event_monitor.select_students_to_publish_results')
-							: ''
-					"
 				>
 					<!-- <span class="mr-1 text-base material-icons-outlined"> done </span> -->
 					{{ $t("event_results.publish_results") }}</Btn
 				>
-				<!-- insights button -->
+				<!-- classroom grade sync button -->
+				<Btn
+					v-if="googleClassroomCourseWorkTwin !== null"
+					:variant="'icon'"
+					:outline="true"
+					:tooltip="$t('integrations.classroom.sync_grades_with_classroom')"
+					@click="onSyncGradesWithClassroom"
+				>
+					<img src="@/assets/classroom_sync.png" style="width: 28px" />
+				</Btn>
 
+				<!-- insights button -->
 				<router-link class="z-50" :to="{ name: 'ExamStats' }">
 					<Btn
 						:outline="true"
@@ -898,6 +903,7 @@ export default defineComponent({
 				this.gridApi.refreshCells({ force: true });
 			} catch (e) {
 				setErrorNotification(e);
+				throw e;
 			} finally {
 				this.dispatchingCall = false;
 			}
@@ -919,14 +925,19 @@ export default defineComponent({
 			}
 
 			// TODO handle blocking dialog
-			await this.dispatchParticipationsUpdate(
-				// TODO if you select all you might mistakenly publish results for unassessed participations
-				this.selectedParticipationsIds,
-				{
-					visibility: AssessmentVisibility.PUBLISHED,
-				},
-				this.publishToClassroom,
-			);
+			try {
+				await this.dispatchParticipationsUpdate(
+					// TODO if you select all you might mistakenly publish results for unassessed participations
+					this.selectedParticipationsIds,
+					{
+						visibility: AssessmentVisibility.PUBLISHED,
+					},
+					this.publishToClassroom,
+				);
+			} catch {
+				// ! this is a hack to make the dialog keep working - without this it wouldn't work because the promise has already been resolved
+				await this.onPublishResults();
+			}
 		},
 		async onUndoParticipationTurnIn() {
 			const applicableParticipationsIds = this.selectedParticipations
@@ -960,6 +971,34 @@ export default defineComponent({
 				state: EventParticipationState.IN_PROGRESS,
 				current_slot_cursor: 0,
 			});
+		},
+		async onSyncGradesWithClassroom() {
+			const dialogData: DialogData = {
+				title: _("integrations.classroom.sync_grades_with_classroom"),
+				text: _("integrations.classroom.sync_grades_with_classroom_description"),
+				warning: false,
+				noText: _("dialog.default_cancel_text"),
+				yesText: _("integrations.classroom.sync"),
+			};
+
+			this.blockingDialogData = dialogData;
+			const choice = await this.getBlockingBinaryDialogChoice();
+
+			if (!choice) {
+				this.showBlockingDialog = false;
+				return;
+			}
+
+			try {
+				this.dispatchingCall = true;
+				await this.googleIntegrationStore.syncExamGrades(this.eventId);
+				this.showBlockingDialog = false;
+				this.metaStore.showSuccessFeedback();
+			} catch (e) {
+				setErrorNotification(e);
+			} finally {
+				this.dispatchingCall = false;
+			}
 		},
 
 		setSortingOption(index: number) {

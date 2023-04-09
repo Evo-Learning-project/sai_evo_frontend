@@ -1369,6 +1369,10 @@ export const it = {
 	},
 	integrations: {
 		classroom: {
+			sync_grades_with_classroom: "Sincronizza voti con Classroom",
+			sync: "Sincronizza",
+			sync_grades_with_classroom_description:
+				"I voti che hai assegnato agli studenti verranno sincronizzati con Classroom. I voti non verranno pubblicati e quindi non saranno ancora visibili agli studenti.",
 			student_no_scopes_warning:
 				"Alcune funzionalità potrebbero non operare correttamente perché non \
 			hai autorizzato l'applicazione ad accedere alle informazioni necessarie del tuo account Google.",
