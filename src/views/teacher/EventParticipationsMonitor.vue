@@ -1157,7 +1157,7 @@ export default defineComponent({
 		filteredParticipationsData() {
 			const data = this.participationsData as any as EventParticipation[]; // TODO refactor
 			return data
-				.filter(d => userMatchesSearch(this.searchText, d.user as User))
+				.filter(d => userMatchesSearch(this.searchText, d.user))
 				.sort(this.sortingOptions[this.selectedSortingOption].sortFn);
 		},
 		participationsData() {

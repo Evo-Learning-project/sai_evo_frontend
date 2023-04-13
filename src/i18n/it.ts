@@ -203,6 +203,7 @@ export const it = {
 			" oppure una stringa.",
 	},
 	course_insights: {
+		no_users_matching_search: "Nessuno studente corrisponde ai criteri di ricerca",
 		exams_stats: "Esami",
 		enrolled_students: "Studenti iscritti",
 		no_enrolled_students: "Non ci sono ancora iscritti",

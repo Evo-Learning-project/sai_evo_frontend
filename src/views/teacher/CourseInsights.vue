@@ -1,69 +1,69 @@
 <template>
 	<div class="relative flex flex-col flex-grow">
 		<div class="flex flex-col w-full -mt-4">
-			<!-- exam checkboxes-->
-			<div
-				v-show="viewMode === 'table'"
-				:class="[
-					examSelectionExpanded ? 'max-h-100' : 'max-h-0  overflow-y-hidden',
-					'duration-200 ease-in-out w-full transition-max-height',
-				]"
-			>
-				<CheckboxGroup
-					class="flex flex-wrap"
-					:options="examsAsSelectableOptions"
-					v-model="selectedExamsIds"
-					:usesCustomSlot="true"
-					:itemClass="'mt-4 mr-5'"
-				>
-					<template v-slot:custom="{ item }">
-						<div class="flex items-center">
-							<div
-								:style="{
-									'background-color': examsColors[item.value],
-									'margin-right': '5px',
-									'min-width': '10px',
-									'min-height': '10px',
-									width: '10px',
-									height: '10px',
-									'border-radius': '50%',
-								}"
-							></div>
-							{{ item.content }}
-						</div></template
-					></CheckboxGroup
-				>
-				<div class="flex items-center space-x-1.5 mb-3">
-					<Btn
-						class="mt-3 -ml-1 text-sm"
-						:variant="'primary-borderless'"
-						:size="'xs'"
-						@click="selectedExamsIds = mainStore.exams.map(e => e.id)"
-						><span class="text-sm">{{ $t("misc.select_all") }}</span></Btn
-					>
-					<Btn
-						class="mt-3 text-sm"
-						:variant="'primary-borderless'"
-						:size="'xs'"
-						@click="selectedExamsIds = closedExamIds"
-						><span class="text-sm">{{
-							$t("course_insights.select_closed_exams")
-						}}</span></Btn
-					>
-					<Btn
-						class="mt-3 text-sm"
-						:variant="'primary-borderless'"
-						:size="'xs'"
-						@click="selectedExamsIds = []"
-						><span class="text-sm">{{ $t("misc.unselect_all") }}</span></Btn
-					>
-				</div>
-			</div>
 			<!-- filter button -->
 			<div class="flex flex-col w-full mb-4">
 				<!-- tabs to select view mode -->
-				<Tabs class="mt-6 mb-8" :options="viewModesAsOptions" v-model="viewMode" />
+				<Tabs class="mt-6 mb-4" :options="viewModesAsOptions" v-model="viewMode" />
 				<!-- exam filters -->
+				<!-- exam checkboxes-->
+				<div
+					v-show="viewMode === 'table'"
+					:class="[
+						examSelectionExpanded ? 'max-h-100' : 'max-h-0  overflow-y-hidden',
+						'duration-200 ease-in-out w-full transition-max-height',
+					]"
+				>
+					<CheckboxGroup
+						class="flex flex-wrap"
+						:options="examsAsSelectableOptions"
+						v-model="selectedExamsIds"
+						:usesCustomSlot="true"
+						:itemClass="'mt-4 mr-5'"
+					>
+						<template v-slot:custom="{ item }">
+							<div class="flex items-center">
+								<div
+									:style="{
+										'background-color': examsColors[item.value],
+										'margin-right': '5px',
+										'min-width': '10px',
+										'min-height': '10px',
+										width: '10px',
+										height: '10px',
+										'border-radius': '50%',
+									}"
+								></div>
+								{{ item.content }}
+							</div></template
+						></CheckboxGroup
+					>
+					<div class="flex items-center space-x-1.5 mb-3">
+						<Btn
+							class="mt-3 -ml-1 text-sm"
+							:variant="'primary-borderless'"
+							:size="'xs'"
+							@click="selectedExamsIds = mainStore.exams.map(e => e.id)"
+							><span class="text-sm">{{ $t("misc.select_all") }}</span></Btn
+						>
+						<Btn
+							class="mt-3 text-sm"
+							:variant="'primary-borderless'"
+							:size="'xs'"
+							@click="selectedExamsIds = closedExamIds"
+							><span class="text-sm">{{
+								$t("course_insights.select_closed_exams")
+							}}</span></Btn
+						>
+						<Btn
+							class="mt-3 text-sm"
+							:variant="'primary-borderless'"
+							:size="'xs'"
+							@click="selectedExamsIds = []"
+							><span class="text-sm">{{ $t("misc.unselect_all") }}</span></Btn
+						>
+					</div>
+				</div>
 				<div class="flex items-center w-full mb-4 -ml-3">
 					<div v-show="viewMode === 'table'" class="flex items-center w-max">
 						<Btn
@@ -150,7 +150,7 @@
 				</div>
 			</div>
 			<!-- students -->
-			<div class="grid grid-cols-1 gap-3 md:grid-cols-3 2xl:grid-cols-4">
+			<div class="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
 				<div
 					v-if="!loading && mainStore.enrolledUsers.length === 0"
 					class="
@@ -168,9 +168,26 @@
 					</p>
 					<h2 class="opacity-40">{{ $t("course_insights.no_enrolled_students") }}</h2>
 				</div>
+				<div
+					v-else-if="!loading && filteredEnrolledUsers.length === 0"
+					class="
+						flex flex-col
+						items-center
+						w-full
+						h-full
+						mt-12
+						md:col-span-3
+						2xl:col-span-4
+					"
+				>
+					<p style="font-size: 6rem" class="material-icons-outlined opacity-10">
+						person_off
+					</p>
+					<h2 class="opacity-40">{{ $t("course_insights.no_users_matching_search") }}</h2>
+				</div>
 				<StudentCard
 					class="mb-auto"
-					v-for="user in mainStore.enrolledUsers"
+					v-for="user in filteredEnrolledUsers"
 					:key="'enrolled-user-' + user.id"
 					:user="user"
 				/>
@@ -449,6 +466,12 @@ export default defineComponent({
 		},
 		practiceParticipations() {
 			return [];
+		},
+		filteredEnrolledUsers() {
+			const enrolledUsers = this.mainStore.enrolledUsers;
+			return enrolledUsers.filter(u => {
+				return userMatchesSearch(this.userSearchText, u);
+			});
 		},
 		usersToEnrollCount() {
 			return this.usersToEnroll.emails.length + this.usersToEnroll.ids.length;
