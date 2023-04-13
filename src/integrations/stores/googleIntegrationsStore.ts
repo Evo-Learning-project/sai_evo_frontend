@@ -94,6 +94,11 @@ export const useGoogleIntegrationsStore = defineStore("googleIntegration", {
 		async syncExamGrades(eventId: string): Promise<void> {
 			await axios.post(`/integrations/classroom/sync_exam_grades/?event_id=${eventId}`);
 		},
+		async syncCourseRoster(courseId: string): Promise<void> {
+			await axios.post(
+				`/integrations/classroom/sync_course_roster/?course_id=${courseId}`,
+			);
+		},
 		/**
 		 * Getters for twins of various types of items
 		 */

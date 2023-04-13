@@ -8,7 +8,10 @@
 			<Spinner :size="'xl'" :variant="'dark'" :fast="true" />
 		</div>
 		<transition name="fade">
-			<Notification v-if="metaStore._showSuccessFeedback"></Notification>
+			<Notification
+				v-if="metaStore._showSuccessFeedback"
+				:text="metaStore.customSuccessFeedbackMessage"
+			/>
 		</transition>
 		<div class="flex flex-col flex-grow">
 			<!-- top app bar -->

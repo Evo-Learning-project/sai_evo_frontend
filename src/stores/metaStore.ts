@@ -17,6 +17,7 @@ export const useMetaStore = defineStore("meta", {
 		saving: false,
 		savingError: false,
 		_showSuccessFeedback: false,
+		customSuccessFeedbackMessage: "",
 		dirtyTex: false,
 		helpCenterOpen: false,
 		helpCenterSelectedArticleId: null as string | null,
@@ -44,9 +45,15 @@ export const useMetaStore = defineStore("meta", {
 				this.user = JSON.parse(user);
 			}
 		},
-		showSuccessFeedback() {
+		showSuccessFeedback(message?: string, hideTimeout = 2000) {
 			this._showSuccessFeedback = true;
-			setTimeout(() => (this._showSuccessFeedback = false), 2000);
+			if (message) {
+				this.customSuccessFeedbackMessage = message;
+			}
+			setTimeout(() => {
+				this._showSuccessFeedback = false;
+				this.customSuccessFeedbackMessage = "";
+			}, hideTimeout);
 		},
 		setUser(user: User) {
 			Object.assign(this.user, user);

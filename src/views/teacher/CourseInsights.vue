@@ -125,17 +125,29 @@
 				class="flex flex-col items-center w-full mb-12 space-y-4 md:flex-row md:space-y-0"
 			>
 				<TextInput
-					v-if="false"
 					class="w-full md:w-1/2"
 					:searchBar="true"
 					:leftIcon="'search'"
 					:placeholder="$t('course_insights.search_students')"
 					v-model="userSearchText"
 				/>
-				<Btn class="w-full md:ml-auto md:w-max" @click="onEnrollUsers()">
-					<span class="mr-2 material-icons">person_add</span>
-					{{ $t("course_insights.enroll_students") }}
-				</Btn>
+				<div class="flex items-center space-x-2 ml-auto">
+					<Btn class="" @click="onEnrollUsers()">
+						<span class="mr-2 material-icons">person_add</span>
+						{{ $t("course_insights.enroll_students") }}
+					</Btn>
+					<Btn
+						v-if="classroomIntegrationActive"
+						:outline="true"
+						:variant="'icon'"
+						class=""
+						style="margin-top: 2px"
+						@click="showClassroomSyncDialog = true"
+						:tooltip="$t('integrations.classroom.sync_classroom_roster')"
+					>
+						<img src="@/assets/classroom_sync.png" style="width: 28px" />
+					</Btn>
+				</div>
 			</div>
 			<!-- students -->
 			<div class="grid grid-cols-1 gap-3 md:grid-cols-3 2xl:grid-cols-4">
@@ -164,6 +176,36 @@
 				/>
 			</div>
 		</div>
+		<Dialog
+			:showDialog="showClassroomSyncDialog"
+			@yes="onSyncClassroomRoster()"
+			@no="showClassroomSyncDialog = false"
+			:yesText="
+				syncingClassroomRoster
+					? $t('misc.wait')
+					: $t('integrations.classroom.sync_roster')
+			"
+			:noText="$t('dialog.default_cancel_text')"
+			:disableOk="syncingClassroomRoster"
+			:loading="syncingClassroomRoster"
+		>
+			<template v-slot:title>
+				{{ $t("integrations.classroom.sync_classroom_roster") }}
+			</template>
+			<template v-slot:body>
+				<p class="text-darkText">
+					{{ $t("integrations.classroom.sync_classroom_roster_description_1") }}
+					<span class="">
+						<img src="@/assets/classroom.png" style="width: 20px" class="inline mr-1" />
+						<strong>{{ googleClassroomCourseTwin?.data?.name }}</strong>
+					</span>
+					{{ $t("integrations.classroom.sync_classroom_roster_description_2") }}
+					<strong>{{ currentCourse.name }}</strong
+					>.
+					<!-- {{ $t("integrations.classroom.sync_classroom_roster_description_3") }} -->
+				</p>
+			</template>
+		</Dialog>
 		<Dialog
 			:showDialog="showBlockingDialog"
 			@yes="resolveBlockingDialog(true)"
@@ -221,6 +263,8 @@ import TextInput from "@/components/ui/TextInput.vue";
 import Dialog from "@/components/ui/Dialog.vue";
 import UserPicker from "@/components/shared/UserPicker.vue";
 import { useMetaStore } from "@/stores/metaStore";
+import { useGoogleIntegrationsStore } from "../../integrations/stores/googleIntegrationsStore";
+import { GoogleClassroomCourseTwin } from "../../integrations/classroom/interfaces";
 export default defineComponent({
 	name: "CourseInsights",
 	mixins: [courseIdMixin, loadingMixin, blockingDialogMixin],
@@ -234,6 +278,11 @@ export default defineComponent({
 		TextInput,
 		Dialog,
 		UserPicker,
+	},
+	beforeUnmount() {
+		if (this.fetchUserPollingHandle) {
+			clearInterval(this.fetchUserPollingHandle);
+		}
 	},
 	watch: {
 		viewMode(newVal) {
@@ -259,6 +308,9 @@ export default defineComponent({
 
 			this.participations = await getCourseParticipationReport(this.courseId);
 		});
+		this.googleClassroomCourseTwin = await this.googleIntegrationStore.getCourseTwin(
+			this.courseId,
+		);
 		logAnalyticsEvent("viewedCourseStats", { courseId: this.courseId });
 	},
 	data() {
@@ -272,17 +324,40 @@ export default defineComponent({
 			selectedExamsIds: [] as string[],
 			viewMode: "table" as "table" | "cards",
 			downloadingReport: false,
+			// TODO implement this
 			userSearchText: "",
 			usersToEnroll: { ids: [], emails: [] } as {
 				ids: string[];
 				emails: string[];
 			},
 			enrollingUsers: false,
+			googleClassroomCourseTwin: null as null | GoogleClassroomCourseTwin,
+			showClassroomSyncDialog: false,
+			syncingClassroomRoster: false,
+			fetchUserPollingHandle: null as null | number,
 		};
 	},
 	methods: {
 		getRowId(data: any) {
 			return data.id;
+		},
+		async onSyncClassroomRoster() {
+			try {
+				this.syncingClassroomRoster = true;
+				await this.googleIntegrationStore.syncCourseRoster(this.courseId);
+				this.showClassroomSyncDialog = false;
+				this.metaStore.showSuccessFeedback(
+					_("integrations.classroom.roster_sync_scheduled"),
+					5000,
+				);
+				this.fetchUserPollingHandle = setInterval(() => {
+					this.fetchUsers();
+				}, 10_000);
+			} catch (e) {
+				setErrorNotification(e);
+			} finally {
+				this.syncingClassroomRoster = false;
+			}
 		},
 		async fetchUsers() {
 			this.loadingEnrolledStudents = true;
@@ -368,7 +443,10 @@ export default defineComponent({
 		},
 	},
 	computed: {
-		...mapStores(useMainStore, useMetaStore),
+		...mapStores(useMainStore, useMetaStore, useGoogleIntegrationsStore),
+		classroomIntegrationActive() {
+			return this.googleClassroomCourseTwin !== null;
+		},
 		practiceParticipations() {
 			return [];
 		},

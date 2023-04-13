@@ -1369,6 +1369,14 @@ export const it = {
 	},
 	integrations: {
 		classroom: {
+			sync_roster: "Importa",
+			sync_classroom_roster: "Importa iscritti da Classroom",
+			sync_classroom_roster_description_1: "Tutti gli studenti iscritti a ",
+			sync_classroom_roster_description_2: "saranno aggiunti a",
+			sync_classroom_roster_description_3:
+				"L'operazione potrebbe richiedere alcuni minuti.",
+			roster_sync_scheduled:
+				"Operazione pianificata. Il completamento potrebbe richiedere alcuni minuti.",
 			sync_grades_with_classroom: "Sincronizza voti con Classroom",
 			sync: "Sincronizza",
 			sync_grades_with_classroom_description:
