@@ -19,6 +19,8 @@
 		@selection-change="$emit('selectionChanged', $event)"
 		@first-data-rendered="onGridReady"
 		@filterChanged="onFilterChanged"
+		@body-scroll="onBodyScroll"
+		:class="{ 'ag-scrolled': scrolled }"
 	></ag-grid-vue>
 	<!-- <p>Rows: {{ rowCount }}</p> -->
 </template>
@@ -70,6 +72,7 @@ export default defineComponent({
 			style: "width: 100%; height: 100%; min-height: 300px",
 			gridApi: null as any,
 			rowCount: 0,
+			scrolled: false,
 		};
 	},
 	methods: {
@@ -82,6 +85,9 @@ export default defineComponent({
 		},
 		onFilterChanged() {
 			this.rowCount = this.gridApi?.getDisplayedRowCount() ?? 0;
+		},
+		onBodyScroll(event) {
+			this.scrolled = event.left > 0;
 		},
 		// getRowId(params: any) {
 		//   return params.data.id;

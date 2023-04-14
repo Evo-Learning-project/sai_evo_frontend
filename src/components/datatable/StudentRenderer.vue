@@ -1,11 +1,11 @@
 <template>
-	<div class="flex items-center">
-		<Avatar style="line-height: 1 !important" :user="params.data.user" />
+	<div class="flex items-center" style="margin-top: 13px">
+		<Avatar style="line-height: 1 !important" :user="params.value" />
 		<div class="flex flex-col space-y-0.5 ml-3 mr-1.5" style="line-height: 1 !important">
-			<p>{{ params.data.user.full_name }}</p>
-			<p class="text-xs text-muted">{{ params.data.user.email }}</p>
+			<p>{{ params.value.full_name }}</p>
+			<p class="text-xs text-muted">{{ params.value.email }}</p>
 		</div>
-		<router-link
+		<!-- <router-link
 			:to="{
 				name: 'ExamParticipationFull',
 				params: {
@@ -22,23 +22,22 @@
 					>launch</span
 				>
 			</Btn>
-		</router-link>
+		</router-link> -->
 	</div>
 </template>
 
 <script lang="ts">
 import { courseIdMixin, eventIdMixin } from "@/mixins";
-import { EventParticipation } from "@/models";
+import { EventParticipation, User } from "@/models";
 import { defineComponent, PropType } from "@vue/runtime-core";
 import Avatar from "../ui/Avatar.vue";
 import Btn from "../ui/Btn.vue";
 export default defineComponent({
-	name: "EventParticipationEmailRenderer",
+	name: "StudentRenderer",
 	props: {
 		params: {
 			type: Object as PropType<{
-				data: EventParticipation;
-				value: string;
+				value: User;
 			}>,
 			required: true,
 		},
@@ -46,7 +45,10 @@ export default defineComponent({
 	mixins: [eventIdMixin, courseIdMixin],
 	methods: {},
 	computed: {},
-	components: { Btn, Avatar },
+	components: {
+		// Btn,
+		Avatar,
+	},
 });
 </script>
 

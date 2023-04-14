@@ -64,6 +64,7 @@
 						>
 					</div>
 				</div>
+				<!-- exam filter & csv downloader-->
 				<div class="flex items-center w-full mb-4 -ml-3">
 					<div v-show="viewMode === 'table'" class="flex items-center w-max">
 						<Btn
@@ -89,6 +90,18 @@
 							$t("course_insights.filter_exams")
 						}}</label>
 					</div>
+
+					<Btn
+						class="ml-auto"
+						:disabled="downloadingReport"
+						:outline="true"
+						:variant="'icon'"
+						@click="downloadReport()"
+						:tooltip="$t('misc.download_as_csv')"
+					>
+						<span class="material-icons-outlined"> file_download </span>
+						<!-- {{ downloadingReport ? $t("misc.wait") : $t("misc.download_as_csv") }} -->
+					</Btn>
 				</div>
 			</div>
 		</div>
@@ -107,7 +120,7 @@
 					"
 				/>
 			</div>
-			<div class="flex w-full">
+			<!-- <div class="flex w-full">
 				<Btn
 					class="ml-auto"
 					:disabled="downloadingReport"
@@ -116,7 +129,7 @@
 					><span class="mr-1 material-icons-outlined"> file_download </span>
 					{{ downloadingReport ? $t("misc.wait") : $t("misc.download_as_csv") }}
 				</Btn>
-			</div>
+			</div> -->
 		</div>
 		<!-- enrolled students list-->
 		<div v-show="viewMode === 'cards'" class="flex flex-col flex-grow w-full">
@@ -282,6 +295,8 @@ import UserPicker from "@/components/shared/UserPicker.vue";
 import { useMetaStore } from "@/stores/metaStore";
 import { useGoogleIntegrationsStore } from "../../integrations/stores/googleIntegrationsStore";
 import { GoogleClassroomCourseTwin } from "../../integrations/classroom/interfaces";
+import StudentRenderer from "@/components/datatable/StudentRenderer.vue";
+
 export default defineComponent({
 	name: "CourseInsights",
 	mixins: [courseIdMixin, loadingMixin, blockingDialogMixin],
@@ -295,6 +310,8 @@ export default defineComponent({
 		TextInput,
 		Dialog,
 		UserPicker,
+		// eslint-disable-next-line vue/no-unused-components
+		StudentRenderer,
 	},
 	beforeUnmount() {
 		if (this.fetchUserPollingHandle) {
@@ -571,6 +588,7 @@ export default defineComponent({
 				id: u.id,
 				email: u.email,
 				fullName: u.full_name,
+				student: u,
 				mat: u.mat,
 				course: u.course,
 				...exams.reduce((acc, e) => {

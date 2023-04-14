@@ -83,7 +83,7 @@ export const courseDashboardSidebarOptions: SidebarOption[] = [
 	},
 	{
 		label: _("sidebar_labels.course_insights"),
-		icon: "insights",
+		icon: "assignment_ind", //"insights",
 		routeName: "CourseInsights",
 		requiredPrivileges: [],
 	},

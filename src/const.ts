@@ -360,72 +360,75 @@ export const getCourseInsightsHeaders = (
 ): ColDef[] => [
 	{ field: "id", hide: true },
 	{
-		field: "email",
-		headerName: _("event_participation_headings.email"),
-		filterParams: {
-			filterOptions: ["contains"],
-			suppressAndOrCondition: true,
-		},
-		filter: "agTextColumnFilter",
+		field: "student",
+		headerName: _("event_participation_headings.student"),
+		// filterParams: {
+		// 	filterOptions: ["contains"],
+		// 	suppressAndOrCondition: true,
+		// },
+		// filter: "agTextColumnFilter",
 		width: 450,
 		resizable: true,
+		cellRenderer: "StudentRenderer",
+		pinned: "left",
 	},
-	{
-		field: "fullName",
-		headerName: _("misc.full_name"),
-		filterParams: {
-			filterOptions: ["contains"],
-			suppressAndOrCondition: true,
-		},
-		filter: "agTextColumnFilter",
-		minWidth: 120,
-		resizable: true,
-		flex: 1,
-	},
-	{
-		field: "mat",
-		headerName: _("event_participation_headings.mat"),
-		filterParams: {
-			filterOptions: ["contains"],
-			suppressAndOrCondition: true,
-		},
-		filter: "agTextColumnFilter",
-		resizable: true,
-	},
-	...(isDemoMode()
-		? []
-		: [
-				{
-					field: "course",
-					headerName: _("event_participation_headings.course"),
-					filterParams: {
-						filterOptions: ["contains"],
-						suppressAndOrCondition: true,
-					},
-					filter: "agTextColumnFilter",
-					resizable: true,
-				},
-		  ]),
-	{
-		field: "score_sum",
-		headerName: _("course_insights.score_sum"),
-		filterParams: {
-			allowedCharPattern: "\\d\\-\\,", // note: ensure you escape as if you were creating a RegExp from a string
-			numberParser: (text: string | null) => {
-				return text == null ? null : parseFloat(text.replace(",", "."));
-			},
-			filterOptions: [
-				"equals",
-				"notEqual",
-				"lessThan",
-				"lessThanOrEqual",
-				"greaterThan",
-				"greaterThanOrEqual",
-			],
-			suppressAndOrCondition: true,
-		},
-		filter: "agNumberColumnFilter",
-	},
+	// {
+	// 	field: "fullName",
+	// 	headerName: _("misc.full_name"),
+	// 	filterParams: {
+	// 		filterOptions: ["contains"],
+	// 		suppressAndOrCondition: true,
+	// 	},
+	// 	filter: "agTextColumnFilter",
+	// 	minWidth: 120,
+	// 	resizable: true,
+	// 	flex: 1,
+	// },
+	// {
+	// 	field: "mat",
+	// 	headerName: _("event_participation_headings.mat"),
+	// 	filterParams: {
+	// 		filterOptions: ["contains"],
+	// 		suppressAndOrCondition: true,
+	// 	},
+	// 	filter: "agTextColumnFilter",
+	// 	resizable: true,
+	// },
+	// ...(isDemoMode()
+	// 	? []
+	// 	: [
+	// 			{
+	// 				field: "course",
+	// 				headerName: _("event_participation_headings.course"),
+	// 				filterParams: {
+	// 					filterOptions: ["contains"],
+	// 					suppressAndOrCondition: true,
+	// 				},
+	// 				filter: "agTextColumnFilter",
+	// 				resizable: true,
+	// 			},
+	// 	  ]),
+	// {
+	// 	field: "score_sum",
+	// 	headerName: _("course_insights.score_sum"),
+	// 	filterParams: {
+	// 		allowedCharPattern: "\\d\\-\\,", // note: ensure you escape as if you were creating a RegExp from a string
+	// 		numberParser: (text: string | null) => {
+	// 			return text == null ? null : parseFloat(text.replace(",", "."));
+	// 		},
+	// 		filterOptions: [
+	// 			"equals",
+	// 			"notEqual",
+	// 			"lessThan",
+	// 			"lessThanOrEqual",
+	// 			"greaterThan",
+	// 			"greaterThanOrEqual",
+	// 		],
+	// 		suppressAndOrCondition: true,
+	// 	},
+	// 	filter: "agNumberColumnFilter",
+	// 	pinned: "left",
+	// },
 	{
 		field: "score_average",
 		headerName: _("course_insights.score_average"),
@@ -445,6 +448,7 @@ export const getCourseInsightsHeaders = (
 			suppressAndOrCondition: true,
 		},
 		filter: "agNumberColumnFilter",
+		pinned: "left",
 	},
 	...exams.map((e, i) => ({
 		//autoHeight: true,
@@ -452,7 +456,7 @@ export const getCourseInsightsHeaders = (
 		field: "exam_" + e.id,
 		headerName:
 			e.name.trim().length > 0 ? e.name.trim() : _("event_preview.unnamed_event"),
-		width: 100,
+		width: 200,
 		resizable: true,
 		filterParams: {
 			allowedCharPattern: "\\d\\-\\,", // note: ensure you escape as if you were creating a RegExp from a string
@@ -509,6 +513,7 @@ export const getEventParticipationMonitorHeaders = (
 			checkboxSelection: true,
 			headerCheckboxSelection: true,
 			headerCheckboxSelectionFilteredOnly: true,
+			pinned: "left",
 			flex: 1,
 		},
 		{
