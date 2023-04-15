@@ -372,63 +372,6 @@ export const getCourseInsightsHeaders = (
 		cellRenderer: "StudentRenderer",
 		pinned: "left",
 	},
-	// {
-	// 	field: "fullName",
-	// 	headerName: _("misc.full_name"),
-	// 	filterParams: {
-	// 		filterOptions: ["contains"],
-	// 		suppressAndOrCondition: true,
-	// 	},
-	// 	filter: "agTextColumnFilter",
-	// 	minWidth: 120,
-	// 	resizable: true,
-	// 	flex: 1,
-	// },
-	// {
-	// 	field: "mat",
-	// 	headerName: _("event_participation_headings.mat"),
-	// 	filterParams: {
-	// 		filterOptions: ["contains"],
-	// 		suppressAndOrCondition: true,
-	// 	},
-	// 	filter: "agTextColumnFilter",
-	// 	resizable: true,
-	// },
-	// ...(isDemoMode()
-	// 	? []
-	// 	: [
-	// 			{
-	// 				field: "course",
-	// 				headerName: _("event_participation_headings.course"),
-	// 				filterParams: {
-	// 					filterOptions: ["contains"],
-	// 					suppressAndOrCondition: true,
-	// 				},
-	// 				filter: "agTextColumnFilter",
-	// 				resizable: true,
-	// 			},
-	// 	  ]),
-	// {
-	// 	field: "score_sum",
-	// 	headerName: _("course_insights.score_sum"),
-	// 	filterParams: {
-	// 		allowedCharPattern: "\\d\\-\\,", // note: ensure you escape as if you were creating a RegExp from a string
-	// 		numberParser: (text: string | null) => {
-	// 			return text == null ? null : parseFloat(text.replace(",", "."));
-	// 		},
-	// 		filterOptions: [
-	// 			"equals",
-	// 			"notEqual",
-	// 			"lessThan",
-	// 			"lessThanOrEqual",
-	// 			"greaterThan",
-	// 			"greaterThanOrEqual",
-	// 		],
-	// 		suppressAndOrCondition: true,
-	// 	},
-	// 	filter: "agNumberColumnFilter",
-	// 	pinned: "left",
-	// },
 	{
 		field: "score_average",
 		headerName: _("course_insights.score_average"),
@@ -457,7 +400,7 @@ export const getCourseInsightsHeaders = (
 		headerName:
 			e.name.trim().length > 0 ? e.name.trim() : _("event_preview.unnamed_event"),
 		width: 200,
-		resizable: true,
+		resizable: false,
 		filterParams: {
 			allowedCharPattern: "\\d\\-\\,", // note: ensure you escape as if you were creating a RegExp from a string
 			numberParser: (text: string | null) => {
@@ -474,23 +417,25 @@ export const getCourseInsightsHeaders = (
 			suppressAndOrCondition: true,
 		},
 		filter: "agNumberColumnFilter",
-		headerComponentParams: {
-			template:
-				'<div class="ag-cell-label-container" role="presentation">' +
-				'  <span ref="eMenu" class="ag-header-icon ag-header-cell-menu-button"></span>' +
-				'  <div ref="eLabel" class="ag-header-cell-label" role="presentation">' +
-				'    <span ref="eSortOrder" class="ag-header-icon ag-sort-order" ></span>' +
-				'    <span ref="eSortAsc" class="ag-header-icon ag-sort-ascending-icon" ></span>' +
-				'    <span ref="eSortDesc" class="ag-header-icon ag-sort-descending-icon" ></span>' +
-				'    <span ref="eSortNone" class="ag-header-icon ag-sort-none-icon" ></span>' +
-				`    <span style='background-color: ${
-					examsColors[e.id]
-				}; margin-right: 5px; min-width: 10px; min-height: 10px; width: 10px; height: 10px; border-radius: 50%;'></span>` +
-				'    <span ref="eText" class="ag-header-cell-text" role="columnheader"></span>' +
-				'    <span ref="eFilter" class="ag-header-icon ag-filter-icon"></span>' +
-				"  </div>" +
-				"</div>",
-		},
+		cellRenderer: "CourseInsightsExamParticipationRenderer",
+		headerComponent: "CourseInsightsExamHeaderRenderer",
+		// headerComponentParams: {
+		// 	template:
+		// 		'<div class="ag-cell-label-container" role="presentation">' +
+		// 		'  <span ref="eMenu" class="ag-header-icon ag-header-cell-menu-button"></span>' +
+		// 		'  <div ref="eLabel" class="ag-header-cell-label" role="presentation">' +
+		// 		'    <span ref="eSortOrder" class="ag-header-icon ag-sort-order" ></span>' +
+		// 		'    <span ref="eSortAsc" class="ag-header-icon ag-sort-ascending-icon" ></span>' +
+		// 		'    <span ref="eSortDesc" class="ag-header-icon ag-sort-descending-icon" ></span>' +
+		// 		'    <span ref="eSortNone" class="ag-header-icon ag-sort-none-icon" ></span>' +
+		// 		`    <span style='background-color: ${
+		// 			examsColors[e.id]
+		// 		}; margin-right: 5px; min-width: 10px; min-height: 10px; width: 10px; height: 10px; border-radius: 50%;'></span>` +
+		// 		'    <span ref="eText" class="ag-header-cell-text" role="columnheader"></span>' +
+		// 		'    <span ref="eFilter" class="ag-header-icon ag-filter-icon"></span>' +
+		// 		"  </div>" +
+		// 		"</div>",
+		// },
 	})),
 ];
 

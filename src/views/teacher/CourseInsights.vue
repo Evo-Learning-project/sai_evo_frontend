@@ -65,8 +65,8 @@
 					</div>
 				</div>
 				<!-- exam filter & csv downloader-->
-				<div class="flex items-center w-full mb-4 -ml-3">
-					<div v-show="viewMode === 'table'" class="flex items-center w-max">
+				<div class="flex items-center w-full mb-2 -ml-3">
+					<div v-show="viewMode === 'table'" class="flex items-center w-full">
 						<Btn
 							:variant="'icon'"
 							:outline="true"
@@ -88,20 +88,19 @@
 						</Btn>
 						<label class="cursor-pointer text-muted" for="more-filters-btn">{{
 							$t("course_insights.filter_exams")
-						}}</label>
+						}}</label
+						><Btn
+							class="ml-auto"
+							:disabled="downloadingReport"
+							:outline="true"
+							:variant="'icon'"
+							@click="downloadReport()"
+							:tooltip="$t('misc.download_as_csv')"
+						>
+							<span class="material-icons-outlined"> file_download </span>
+							<!-- {{ downloadingReport ? $t("misc.wait") : $t("misc.download_as_csv") }} -->
+						</Btn>
 					</div>
-
-					<Btn
-						class="ml-auto"
-						:disabled="downloadingReport"
-						:outline="true"
-						:variant="'icon'"
-						@click="downloadReport()"
-						:tooltip="$t('misc.download_as_csv')"
-					>
-						<span class="material-icons-outlined"> file_download </span>
-						<!-- {{ downloadingReport ? $t("misc.wait") : $t("misc.download_as_csv") }} -->
-					</Btn>
 				</div>
 			</div>
 		</div>
@@ -296,6 +295,8 @@ import { useMetaStore } from "@/stores/metaStore";
 import { useGoogleIntegrationsStore } from "../../integrations/stores/googleIntegrationsStore";
 import { GoogleClassroomCourseTwin } from "../../integrations/classroom/interfaces";
 import StudentRenderer from "@/components/datatable/StudentRenderer.vue";
+import CourseInsightsExamParticipationRenderer from "../../components/datatable/CourseInsightsExamParticipationRenderer.vue";
+import CourseInsightsExamHeaderRenderer from "../../components/datatable/CourseInsightsExamHeaderRenderer.vue";
 
 export default defineComponent({
 	name: "CourseInsights",
@@ -312,6 +313,10 @@ export default defineComponent({
 		UserPicker,
 		// eslint-disable-next-line vue/no-unused-components
 		StudentRenderer,
+		// eslint-disable-next-line vue/no-unused-components
+		CourseInsightsExamParticipationRenderer,
+		// eslint-disable-next-line vue/no-unused-components
+		CourseInsightsExamHeaderRenderer,
 	},
 	beforeUnmount() {
 		if (this.fetchUserPollingHandle) {
@@ -592,10 +597,13 @@ export default defineComponent({
 				mat: u.mat,
 				course: u.course,
 				...exams.reduce((acc, e) => {
-					const score = normalizeOptionalStringContainingNumber(
-						(this.participations[e.id] ?? []).find(p => p.user == u.id)?.score,
-					);
-					acc["exam_" + e.id] = score;
+					const participation = this.participations[e.id]?.find(p => p.user == u.id);
+					const score = normalizeOptionalStringContainingNumber(participation?.score);
+					acc["exam_" + e.id] = {
+						id: participation?.id,
+						examId: e.id,
+						score,
+					};
 					return acc;
 				}, {} as any),
 				score_sum: getScoreSumFn(u),
