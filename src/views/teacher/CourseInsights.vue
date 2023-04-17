@@ -1,14 +1,13 @@
 <template>
 	<div class="relative flex flex-col flex-grow">
 		<div class="flex flex-col w-full -mt-4">
-			<!-- filter button -->
 			<div class="flex flex-col w-full mb-4">
 				<!-- tabs to select view mode -->
-				<Tabs class="mt-6 mb-4" :options="viewModesAsOptions" v-model="viewMode" />
+				<Tabs class="mt-2 mb-4" :options="viewModesAsOptions" v-model="viewMode" />
 				<!-- exam filters -->
 				<!-- exam checkboxes-->
 				<div
-					v-show="viewMode === 'table'"
+					v-show="viewMode === 'exams'"
 					:class="[
 						examSelectionExpanded ? 'max-h-100' : 'max-h-0  overflow-y-hidden',
 						'duration-200 ease-in-out w-full transition-max-height',
@@ -64,51 +63,122 @@
 						>
 					</div>
 				</div>
-				<!-- exam filter & csv downloader-->
-				<div class="flex items-center w-full mb-2 -ml-3">
-					<div v-show="viewMode === 'table'" class="flex items-center w-full">
-						<Btn
-							:variant="'icon'"
-							:outline="true"
-							@click="examSelectionExpanded = !examSelectionExpanded"
-							class=""
-							id="more-filters-btn"
-							><span
-								class="
-									transition-transform
-									duration-200
-									ease-out
-									transform
-									material-icons-outlined
-								"
-								:class="{ 'rotate-180': examSelectionExpanded }"
-							>
-								{{ "expand_more" }}
-							</span>
-						</Btn>
-						<label class="cursor-pointer text-muted" for="more-filters-btn">{{
-							$t("course_insights.filter_exams")
-						}}</label
-						><Btn
-							class="ml-auto"
-							:disabled="downloadingReport"
-							:outline="true"
-							:variant="'icon'"
-							@click="downloadReport()"
-							:tooltip="$t('misc.download_as_csv')"
-						>
-							<span class="material-icons-outlined"> file_download </span>
-							<!-- {{ downloadingReport ? $t("misc.wait") : $t("misc.download_as_csv") }} -->
-						</Btn>
-					</div>
-				</div>
 			</div>
 		</div>
 		<!-- exams table -->
-		<div v-show="viewMode === 'table'" class="flex flex-col flex-grow">
+		<div v-if="viewMode === 'exams'" class="flex flex-col flex-grow">
+			<Spinner
+				:variant="'light'"
+				:size="'xl'"
+				v-if="localLoading"
+				class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
+			/>
+			<!-- search filters -->
+			<div class="flex items-center mb-2 -mt-2">
+				<!-- text filtering-->
+				<TextInput
+					class="w-full md:w-1/3"
+					:searchBar="true"
+					:leftIcon="'search'"
+					:placeholder="$t('course_insights.search_students')"
+					v-model="examsViewSearchText"
+				/>
+				<!-- sorting options -->
+				<DropdownMenu
+					:expanded="examsViewSortingOptionsExpanded"
+					@toggleExpanded="
+						examsViewSortingOptionsExpanded = !examsViewSortingOptionsExpanded
+					"
+				>
+					<template v-slot:activator>
+						<Btn :variant="'icon'" :outline="true" class="">
+							<!-- :tooltip="$t('event_monitor.sorting_tooltip')" -->
+							<svg
+								style="width: 22px; height: 22px"
+								class="opacity-70"
+								xmlns="http://www.w3.org/2000/svg"
+								viewBox="0 0 24 24"
+							>
+								<title>sort</title>
+								<path
+									d="M18 21L14 17H17V7H14L18 3L22 7H19V17H22M2 19V17H12V19M2 13V11H9V13M2 7V5H6V7H2Z"
+								/>
+							</svg>
+						</Btn>
+					</template>
+					<div class="-mx-5 -my-2.5 w-max">
+						<div v-for="(option, index) in examsViewSortingOptions" :key="index">
+							<Btn
+								:outline="true"
+								class="px-8 pt-2 pb-2 w-full"
+								:variant="'transparent'"
+								@click="setSortingOption(index)"
+							>
+								<span
+									class="material-icons mr-2 text-primary"
+									v-if="index === examsViewSelectedSortingOption"
+									>done</span
+								>
+								<div class="flex items-center align-top">{{ option.label }}</div>
+							</Btn>
+						</div>
+					</div>
+				</DropdownMenu>
+				<!-- filtering options based on average-->
+				<div class="flex space-x-1 ml-2">
+					<Dropdown
+						v-model="examsViewSelectedFilterOption"
+						:options="examViewFilteringOptions"
+						class="w-60"
+					/>
+					<NumberInput
+						style="padding-top: 0.5rem !important; padding-bottom: 0.645rem !important"
+						:elementId="'grade-filter-value-input'"
+						v-if="examsViewSelectedFilterOption !== 'no_filter'"
+						v-model="examsViewAverageGradeFilterValue"
+						class="w-16"
+					/>
+				</div>
+
+				<div class="flex items-center ml-2">
+					<Btn
+						:variant="'icon'"
+						:outline="true"
+						@click="examSelectionExpanded = !examSelectionExpanded"
+						class=""
+						id="more-filters-btn"
+						><span
+							class="
+								transition-transform
+								duration-200
+								ease-out
+								transform
+								material-icons-outlined
+							"
+							:class="{ 'rotate-180': examSelectionExpanded }"
+						>
+							{{ "expand_more" }}
+						</span>
+					</Btn>
+					<label class="cursor-pointer text-muted" for="more-filters-btn">{{
+						$t("course_insights.filter_exams")
+					}}</label>
+				</div>
+				<Btn
+					class="ml-auto"
+					:disabled="downloadingReport"
+					:outline="true"
+					:variant="'icon'"
+					@click="downloadReport()"
+					:tooltip="$t('misc.download_as_csv')"
+				>
+					<span class="material-icons-outlined"> file_download </span>
+					<!-- {{ downloadingReport ? $t("misc.wait") : $t("misc.download_as_csv") }} -->
+				</Btn>
+			</div>
 			<div class="flex-grow overflow-y-auto">
 				<DataTable
-					:class="{ 'opacity-60': loading }"
+					:class="{ 'opacity-60': loading || localLoading }"
 					:columnDefs="tableHeaders"
 					:rowData="loading ? [] : tableData"
 					:getRowId="getRowId"
@@ -119,29 +189,27 @@
 					"
 				/>
 			</div>
-			<!-- <div class="flex w-full">
-				<Btn
-					class="ml-auto"
-					:disabled="downloadingReport"
-					:outline="true"
-					@click="downloadReport()"
-					><span class="mr-1 material-icons-outlined"> file_download </span>
-					{{ downloadingReport ? $t("misc.wait") : $t("misc.download_as_csv") }}
-				</Btn>
-			</div> -->
 		</div>
 		<!-- enrolled students list-->
-		<div v-show="viewMode === 'cards'" class="flex flex-col flex-grow w-full">
+		<div v-show="viewMode === 'students'" class="flex flex-col flex-grow w-full">
 			<!-- filters & controls -->
 			<div
-				class="flex flex-col items-center w-full mb-12 space-y-4 md:flex-row md:space-y-0"
+				class="
+					flex flex-col
+					items-center
+					w-full
+					mb-12
+					space-y-4
+					md:flex-row md:space-y-0
+					-mt-2
+				"
 			>
 				<TextInput
 					class="w-full md:w-1/2"
 					:searchBar="true"
 					:leftIcon="'search'"
 					:placeholder="$t('course_insights.search_students')"
-					v-model="userSearchText"
+					v-model="usersViewSearchText"
 				/>
 				<div class="flex items-center space-x-2 ml-auto">
 					<Btn class="" @click="onEnrollUsers()">
@@ -297,6 +365,15 @@ import { GoogleClassroomCourseTwin } from "../../integrations/classroom/interfac
 import StudentRenderer from "@/components/datatable/StudentRenderer.vue";
 import CourseInsightsExamParticipationRenderer from "../../components/datatable/CourseInsightsExamParticipationRenderer.vue";
 import CourseInsightsExamHeaderRenderer from "../../components/datatable/CourseInsightsExamHeaderRenderer.vue";
+import DropdownMenu from "../../components/ui/DropdownMenu.vue";
+import Dropdown from "../../components/ui/Dropdown.vue";
+import NumberInput from "../../components/ui/NumberInput.vue";
+import Spinner from "../../components/ui/Spinner.vue";
+
+interface ExamsTableRow {
+	user: User;
+	scoreAverage: number;
+}
 
 export default defineComponent({
 	name: "CourseInsights",
@@ -317,6 +394,10 @@ export default defineComponent({
 		CourseInsightsExamParticipationRenderer,
 		// eslint-disable-next-line vue/no-unused-components
 		CourseInsightsExamHeaderRenderer,
+		DropdownMenu,
+		Dropdown,
+		NumberInput,
+		Spinner,
 	},
 	beforeUnmount() {
 		if (this.fetchUserPollingHandle) {
@@ -329,6 +410,7 @@ export default defineComponent({
 				courseId: this.courseId,
 				to: newVal,
 			});
+			window.location.hash = newVal;
 		},
 		usersToEnroll: {
 			handler(newVal) {
@@ -338,18 +420,37 @@ export default defineComponent({
 			},
 			deep: true,
 		},
+		examsViewSelectedFilterOption(newVal) {
+			if (newVal !== "no_filter") {
+				this.$nextTick(() =>
+					document.getElementById("grade-filter-value-input")?.focus(),
+				);
+			} else {
+				this.examsViewAverageGradeFilterValue = 0;
+			}
+		},
 	},
 	async created() {
+		const hash = window.location.hash.replace("#", "");
+		// check for invalid hash
+		if (["students", "exams"].includes(hash)) {
+			this.viewMode = hash as "students" | "exams";
+		}
+
 		await this.withLoading(async () => {
 			await Promise.all([this.fetchUsers(), this.fetchExams()]);
-			// initially enable all exams in the table
-			this.selectedExamsIds = this.mainStore.exams.map(e => e.id);
-
-			this.participations = await getCourseParticipationReport(this.courseId);
 		});
+
 		this.googleClassroomCourseTwin = await this.googleIntegrationStore.getCourseTwin(
 			this.courseId,
 		);
+
+		await this.withLocalLoading(async () => {
+			// initially enable all exams in the table
+			this.selectedExamsIds = this.mainStore.exams.map(e => e.id);
+			this.participations = await getCourseParticipationReport(this.courseId);
+		});
+
 		logAnalyticsEvent("viewedCourseStats", { courseId: this.courseId });
 	},
 	data() {
@@ -361,10 +462,9 @@ export default defineComponent({
 			columnApi: null as any,
 			participations: {} as CourseExamParticipationReport,
 			selectedExamsIds: [] as string[],
-			viewMode: "table" as "table" | "cards",
+			viewMode: "students" as "exams" | "students",
 			downloadingReport: false,
-			// TODO implement this
-			userSearchText: "",
+			usersViewSearchText: "",
 			usersToEnroll: { ids: [], emails: [] } as {
 				ids: string[];
 				emails: string[];
@@ -374,6 +474,12 @@ export default defineComponent({
 			showClassroomSyncDialog: false,
 			syncingClassroomRoster: false,
 			fetchUserPollingHandle: null as null | number,
+			// filtering on exam view
+			examsViewSearchText: "",
+			examsViewSelectedFilterOption: "no_filter",
+			examsViewAverageGradeFilterValue: 0,
+			examsViewSelectedSortingOption: 0,
+			examsViewSortingOptionsExpanded: false,
 		};
 	},
 	methods: {
@@ -459,9 +565,13 @@ export default defineComponent({
 		downloadReport() {
 			this.downloadingReport = true;
 			try {
+				const filteredSortedUsers = this.tableData.map((row: ExamsTableRow) => ({
+					...row.user,
+					score_average: row.scoreAverage,
+				}));
 				const content = getCourseExamParticipationsReportAsCsv(
 					this.participations,
-					this.activeUsersForSelectedExams,
+					filteredSortedUsers,
 					this.selectedExams,
 				).replace(/(\\r)?\\n/g, "\n");
 				forceFileDownload(
@@ -476,23 +586,37 @@ export default defineComponent({
 				setTimeout(() => (this.downloadingReport = false), 150);
 			}
 		},
-		filterUser(search: string, userOption: SelectableOption) {
-			const user = this.mainStore.getUserById(userOption.value) as User;
-			return userMatchesSearch(search, user);
+		// exams view sorting & filtering
+		setSortingOption(index: number) {
+			this.examsViewSelectedSortingOption = index;
+			this.examsViewSortingOptionsExpanded = false;
 		},
 	},
 	computed: {
 		...mapStores(useMainStore, useMetaStore, useGoogleIntegrationsStore),
+		// bookkeeping
 		classroomIntegrationActive() {
 			return this.googleClassroomCourseTwin !== null;
 		},
-		practiceParticipations() {
-			return [];
+		viewModesAsOptions(): SelectableOption[] {
+			return [
+				{
+					value: "students",
+					icons: ["people"],
+					content: _("course_insights.enrolled_students"),
+				},
+				{
+					value: "exams",
+					icons: ["table_chart"],
+					content: _("course_insights.exams_stats"),
+				},
+			];
 		},
+		// users view & enrollment
 		filteredEnrolledUsers() {
 			const enrolledUsers = this.mainStore.enrolledUsers;
 			return enrolledUsers.filter(u => {
-				return userMatchesSearch(this.userSearchText, u);
+				return userMatchesSearch(this.usersViewSearchText, u);
 			});
 		},
 		usersToEnrollCount() {
@@ -505,19 +629,155 @@ export default defineComponent({
 				data: u,
 			}));
 		},
-		viewModesAsOptions(): SelectableOption[] {
+		// exams view data, sorting & filtering
+		examViewFilteringOptions(): SelectableOption[] {
 			return [
 				{
-					value: "table",
-					icons: ["table_chart"],
-					content: _("course_insights.exams_stats"),
+					value: "no_filter",
+					content: _("course_insights.no_filter"),
+					data: () => true,
 				},
 				{
-					value: "cards",
-					icons: ["people"],
-					content: _("course_insights.enrolled_students"),
+					value: "average_greater_than",
+					content: _("course_insights.filter_average_greater_than"),
+					data: (row: ExamsTableRow) =>
+						row.scoreAverage >= (this.examsViewAverageGradeFilterValue ?? 0),
+				},
+				{
+					value: "average_less_than",
+					content: _("course_insights.filter_average_less_than"),
+					data: (row: ExamsTableRow) =>
+						row.scoreAverage <= (this.examsViewAverageGradeFilterValue ?? 0),
 				},
 			];
+		},
+		examsViewSortingOptions() {
+			const options: {
+				label: string;
+				sortFn: (r1: ExamsTableRow, r2: ExamsTableRow) => number;
+			}[] = [
+				{
+					label: _("event_monitor.sort_options.alphabetical"),
+					sortFn: (r1, r2) => {
+						const lastName1 = r1.user.last_name;
+						const lastName2 = r2.user.last_name;
+						if (lastName1 > lastName2) {
+							return 1;
+						}
+						if (lastName1 < lastName2) {
+							return -1;
+						}
+						return 0;
+					},
+				},
+				{
+					label: _("event_monitor.sort_options.alphabetical_reverse"),
+					sortFn: (r1, r2) => {
+						const lastName1 = r1.user.last_name;
+						const lastName2 = r2.user.last_name;
+						if (lastName1 > lastName2) {
+							return -1;
+						}
+						if (lastName1 < lastName2) {
+							return 1;
+						}
+						return 0;
+					},
+				},
+				{
+					label: _("event_monitor.sort_options.average_increasing"),
+					sortFn: (r1, r2) => {
+						const average1 = r1.scoreAverage;
+						const average2 = r2.scoreAverage;
+						if (average1 > average2) {
+							return 1;
+						}
+						if (average1 < average2) {
+							return -1;
+						}
+						return 0;
+					},
+				},
+				{
+					label: _("event_monitor.sort_options.average_decreasing"),
+					sortFn: (r1, r2) => {
+						const average1 = r1.scoreAverage;
+						const average2 = r2.scoreAverage;
+						if (average1 > average2) {
+							return -1;
+						}
+						if (average1 < average2) {
+							return 1;
+						}
+						return 0;
+					},
+				},
+			];
+			return options;
+		},
+		rawTableData() {
+			if (this.loading) {
+				return [];
+			}
+			const filteredUsers = this.activeUsersForSelectedExams;
+			const exams = this.mainStore.exams;
+
+			const getScoreSumFn = (u: User) =>
+				Math.round(
+					Object.entries(this.participations)
+						.filter(([eventId]) =>
+							this.selectedExamsIds.map(i => String(i)).includes(String(eventId)),
+						)
+						.map(([, participations]) => participations)
+						.flat()
+						.filter(p => p.user == u.id)
+						.map(p => parseFloat(p.score ?? "0"))
+						.reduce((a, b) => a + b, 0) * 100,
+				) / 100;
+
+			return filteredUsers.map(u => ({
+				user: u, // this isn't used directly by the table, but it's useful for filtering & sorting
+				id: u.id,
+				email: u.email,
+				fullName: u.full_name,
+				student: u,
+				mat: u.mat,
+				course: u.course,
+				...exams.reduce((acc, e) => {
+					const participation = this.participations[e.id]?.find(p => p.user == u.id);
+					const score = normalizeOptionalStringContainingNumber(participation?.score);
+					acc["exam_" + e.id] = {
+						id: participation?.id,
+						examId: e.id,
+						score,
+					};
+					return acc;
+				}, {} as any),
+				score_sum: getScoreSumFn(u),
+				scoreAverage: roundToTwoDecimals(
+					getScoreSumFn(u) /
+						this.selectedExams.filter(
+							// only consider exams the user has participated in
+							e =>
+								(this.participations[e.id] ?? []).findIndex(p => p.user == u.id) !== -1,
+						).length,
+				),
+			}));
+		},
+		tableData() {
+			return this.rawTableData
+				.filter(
+					row =>
+						// if search text is provided, only show users that match it
+						(!this.examsViewSearchText.trim() ||
+							userMatchesSearch(this.examsViewSearchText, row.user)) &&
+						// if filter is provided, only show users that match it
+						this.examViewFilteringOptions
+							.find(o => o.value === this.examsViewSelectedFilterOption)!
+							// the filter function is stored in the `data` property of the filtering option
+							.data(row),
+				)
+				.sort(this.examsViewSortingOptions[this.examsViewSelectedSortingOption].sortFn);
 		},
 		examsAsSelectableOptions(): SelectableOption[] {
 			return (
@@ -568,54 +828,6 @@ export default defineComponent({
 				acc[e.id] = getColorFromString(e.name);
 				return acc;
 			}, {} as Record<string, string>);
-		},
-		tableData() {
-			if (this.loading) {
-				return [];
-			}
-			const filteredUsers = this.activeUsersForSelectedExams;
-			const exams = this.mainStore.exams;
-
-			const getScoreSumFn = (u: User) =>
-				Math.round(
-					Object.entries(this.participations)
-						.filter(([eventId]) =>
-							this.selectedExamsIds.map(i => String(i)).includes(String(eventId)),
-						)
-						.map(([, participations]) => participations)
-						.flat()
-						.filter(p => p.user == u.id)
-						.map(p => parseFloat(p.score ?? "0"))
-						.reduce((a, b) => a + b, 0) * 100,
-				) / 100;
-
-			return filteredUsers.map(u => ({
-				id: u.id,
-				email: u.email,
-				fullName: u.full_name,
-				student: u,
-				mat: u.mat,
-				course: u.course,
-				...exams.reduce((acc, e) => {
-					const participation = this.participations[e.id]?.find(p => p.user == u.id);
-					const score = normalizeOptionalStringContainingNumber(participation?.score);
-					acc["exam_" + e.id] = {
-						id: participation?.id,
-						examId: e.id,
-						score,
-					};
-					return acc;
-				}, {} as any),
-				score_sum: getScoreSumFn(u),
-				score_average: roundToTwoDecimals(
-					getScoreSumFn(u) /
-						this.selectedExams.filter(
-							// only consider exams the user has participated in
-							e =>
-								(this.participations[e.id] ?? []).findIndex(p => p.user == u.id) !== -1,
-						).length,
-				),
-			}));
 		},
 	},
 });

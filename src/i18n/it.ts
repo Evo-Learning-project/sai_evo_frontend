@@ -203,6 +203,10 @@ export const it = {
 			" oppure una stringa.",
 	},
 	course_insights: {
+		average: "Media",
+		no_filter: "Nessun filtro",
+		filter_average_greater_than: "Media maggiore o uguale a",
+		filter_average_less_than: "Media minore o uguale a",
 		no_users_matching_search: "Nessuno studente corrisponde ai criteri di ricerca",
 		exams_stats: "Esami",
 		enrolled_students: "Studenti iscritti",
@@ -506,6 +510,7 @@ export const it = {
 	},
 	course_events: {
 		new_exam: "Nuovo esame",
+		exams_stats: "Statistiche esami",
 		no_exams: "Non ci sono ancora esami",
 		reopen: "Riapri",
 		reopen_exam_body: "Vuoi riaprire l'esame",
@@ -565,6 +570,8 @@ export const it = {
 			alphabetical_reverse: "Alfabetico inverso (cognome)",
 			begin_timestamp: "Ordine di inizio",
 			begin_timestamp_reverse: "Ordine di inizio inverso",
+			average_increasing: "Media crescente",
+			average_decreasing: "Media decrescente",
 		},
 	},
 	event_stats: {
@@ -1212,6 +1219,9 @@ export const it = {
 		hidden_course: "Corso nascosto agli studenti",
 	},
 	tour: {
+		integrations_header: "Integrazioni",
+		integrations_content:
+			"Se utilizzi altri servizi di gestione dell'apprendimento, come Google Classroom, puoi integrarli con Evo Learning.",
 		new_material_header: "Materiale",
 		new_material_content:
 			"Prova subito il nuovo modulo Materiale! Esso ti permette di creare lezioni, caricare contenuti didattici, creare sondaggi e pubblicare annunci.",
@@ -1304,6 +1314,7 @@ export const it = {
 			course: "Corso",
 			full_name: "Nome e cognome",
 			mat: "Matricola",
+			score_average: "Media",
 		},
 		csv_headers: {
 			user: {

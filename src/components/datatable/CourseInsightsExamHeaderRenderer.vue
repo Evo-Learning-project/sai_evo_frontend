@@ -68,9 +68,6 @@ export default defineComponent({
 			required: true,
 		},
 	},
-	created() {
-		console.log(this.params);
-	},
 	data() {
 		return {};
 	},

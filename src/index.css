@@ -1304,10 +1304,15 @@
 		@apply transition-shadow duration-100 ease-in-out;
 	}
 
-	.ag-scrolled .ag-pinned-left-cols-container,
 	.ag-scrolled .ag-pinned-left-header {
 		box-shadow: 0px 5px 8px 0px rgba(0, 0, 0, 0.14), 0px 1px 14px 0px rgba(0, 0, 0, 0.12),
 			0px 3px 5px -1px rgba(0, 0, 0, 0.2);
+		z-index: 9999 !important;
+	}
+
+	.ag-scrolled .ag-pinned-left-cols-container {
+		box-shadow: 0px -3px 8px 0px rgba(0, 0, 0, 0.14),
+			0px -1px 14px 0px rgba(0, 0, 0, 0.12), 0px -2px 5px -1px rgba(0, 0, 0, 0.2);
 		z-index: 9999 !important;
 	}
 

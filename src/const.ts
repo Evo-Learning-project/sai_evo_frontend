@@ -197,11 +197,22 @@ export const teacherTourSteps = [
 	},
 	{
 		// permissions
-		target: "#sidebar-option-5",
+		target: "#sidebar-option-6",
 		header: {
 			title: _("tour.permissions_header"),
 		},
 		content: _("tour.permissions_content"),
+		params: {
+			placement: "right",
+		},
+	},
+	{
+		// integrations
+		target: "#sidebar-option-7",
+		header: {
+			title: _("tour.integrations_header"),
+		},
+		content: _("tour.integrations_content"),
 		params: {
 			placement: "right",
 		},
@@ -373,25 +384,26 @@ export const getCourseInsightsHeaders = (
 		pinned: "left",
 	},
 	{
-		field: "score_average",
+		field: "scoreAverage",
 		headerName: _("course_insights.score_average"),
-		filterParams: {
-			allowedCharPattern: "\\d\\-\\,", // note: ensure you escape as if you were creating a RegExp from a string
-			numberParser: (text: string | null) => {
-				return text == null ? null : parseFloat(text.replace(",", "."));
-			},
-			filterOptions: [
-				"equals",
-				"notEqual",
-				"lessThan",
-				"lessThanOrEqual",
-				"greaterThan",
-				"greaterThanOrEqual",
-			],
-			suppressAndOrCondition: true,
-		},
-		filter: "agNumberColumnFilter",
+		// filterParams: {
+		// 	allowedCharPattern: "\\d\\-\\,", // note: ensure you escape as if you were creating a RegExp from a string
+		// 	numberParser: (text: string | null) => {
+		// 		return text == null ? null : parseFloat(text.replace(",", "."));
+		// 	},
+		// 	filterOptions: [
+		// 		"equals",
+		// 		"notEqual",
+		// 		"lessThan",
+		// 		"lessThanOrEqual",
+		// 		"greaterThan",
+		// 		"greaterThanOrEqual",
+		// 	],
+		// 	suppressAndOrCondition: true,
+		// },
+		// filter: "agNumberColumnFilter",
 		pinned: "left",
+		width: 100,
 	},
 	...exams.map((e, i) => ({
 		//autoHeight: true,

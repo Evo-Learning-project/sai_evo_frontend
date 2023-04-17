@@ -61,7 +61,6 @@
 					class="w-full"
 					:placeholder="$t('event_monitor.search_students')"
 				/>
-				<!-- TODO implement sorting -->
 				<DropdownMenu
 					:expanded="sortingOptionsExpanded"
 					@toggleExpanded="sortingOptionsExpanded = !sortingOptionsExpanded"

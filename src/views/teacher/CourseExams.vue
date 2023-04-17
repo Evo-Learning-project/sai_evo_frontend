@@ -1,11 +1,22 @@
 <template>
 	<div>
 		<div class="flex w-full mb-8">
+			<router-link class="ml-auto mr-4" :to="{ name: 'CourseInsights', hash: '#exams' }">
+				<Btn
+					class="icon-btn-primary"
+					:tooltip="$t('course_events.exams_stats')"
+					:variant="'icon'"
+					:outline="true"
+				>
+					<span class="material-icons-outlined">insights</span>
+				</Btn>
+			</router-link>
+
 			<Btn
 				v-if="firstLoading || hasPrivileges([CoursePrivilege.MANAGE_EVENTS])"
 				@click="onAddExam()"
 				:loading="localLoading"
-				class="ml-auto"
+				class=""
 				:disabled="firstLoading"
 				><span class="mr-1 text-base material-icons-outlined"> add </span>
 				{{ $t("course_events.new_exam") }}</Btn

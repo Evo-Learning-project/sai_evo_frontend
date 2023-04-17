@@ -26,6 +26,7 @@
 			:disabled="disabled"
 			placeholder=" "
 			v-model.number="proxyModelValue"
+			:id="elementId"
 			class="
 				z-10
 				block
@@ -112,6 +113,10 @@ export default defineComponent({
 		filled: {
 			type: Boolean,
 			default: true,
+		},
+		elementId: {
+			type: String,
+			default: "",
 		},
 	},
 	// methods: {
