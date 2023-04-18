@@ -1,6 +1,12 @@
 <template>
-	<div v-show="showMissingScopesBanner" class="banner banner-danger mb-4" role="alert">
-		<!-- <strong class="font-bold">Missing scopes!</strong>
+	<div>
+		<Transition name="fade">
+			<div
+				v-show="showMissingScopesBanner"
+				class="banner banner-danger mb-8"
+				role="alert"
+			>
+				<!-- <strong class="font-bold">Missing scopes!</strong>
 			<span class="block sm:inline"
 				>You need to grant the missing scopes to use this feature.</span
 			>
@@ -18,29 +24,38 @@
 					/>
 				</svg>
 			</span> -->
-		<div class="flex flex-col space-y-4">
-			<div class="flex items-center space-x-2">
-				<span class="material-icons">error_outline</span>
-				<h4 class="mb-0">{{ $t("misc.warning") }}</h4>
+				<div class="flex flex-col space-y-4">
+					<div class="flex items-center space-x-2">
+						<span class="material-icons">error_outline</span>
+						<h4 class="mb-0">{{ $t("misc.warning") }}</h4>
+					</div>
+					<GoogleScopeChecker
+						class="flex flex-col items-start space-y-4"
+						@scopesOk="onScopesOk()"
+						@scopesCheckFailed="onScopesCheckFailed()"
+						:role="'student'"
+					>
+						<template v-slot:noScopes>
+							<p>
+								{{ $t("integrations.classroom.student_no_scopes_warning") }}
+							</p>
+							<p><ArticleHandle :articleId="'why_evo_asks_for_google_scopes'" />.</p>
+						</template>
+						<template v-slot:outstandingScopes>
+							<p>
+								{{ $t("integrations.classroom.student_no_scopes_warning") }}
+							</p>
+							<p><ArticleHandle :articleId="'why_evo_asks_for_google_scopes'" />.</p>
+						</template>
+					</GoogleScopeChecker>
+				</div>
 			</div>
-			<GoogleScopeChecker
-				class="flex flex-col items-start space-y-4"
-				@scopesOk="onScopesOk()"
-				@scopesCheckFailed="onScopesCheckFailed()"
-				:role="'student'"
-			>
-				<template v-slot:noScopes>
-					<p>
-						{{ $t("integrations.classroom.student_no_scopes_warning") }}
-					</p>
-				</template>
-				<template v-slot:outstandingScopes>
-					<p>
-						{{ $t("integrations.classroom.student_no_scopes_warning") }}
-					</p>
-				</template>
-			</GoogleScopeChecker>
-		</div>
+		</Transition>
+		<HelpCenter
+			@close="metaStore.setHelpCenterVisibility(false)"
+			v-if="metaStore.helpCenterOpen"
+			:allowGoBack="false"
+		></HelpCenter>
 	</div>
 </template>
 
@@ -48,6 +63,10 @@
 import GoogleScopeChecker from "@/integrations/components/GoogleScopeChecker.vue";
 import { defineComponent, PropType } from "@vue/runtime-core";
 import { CLASSROOM_STUDENT_SCOPES } from "../const";
+import { mapStores } from "pinia";
+import { useMetaStore } from "../../../stores/metaStore";
+import ArticleHandle from "../../../components/shared/HelpCenter/ArticleHandle.vue";
+import HelpCenter from "../../../components/shared/HelpCenter/HelpCenter.vue";
 export default defineComponent({
 	name: "StudentScopesBanner",
 	props: {},
@@ -65,8 +84,10 @@ export default defineComponent({
 			this.showMissingScopesBanner = true;
 		},
 	},
-	computed: {},
-	components: { GoogleScopeChecker },
+	computed: {
+		...mapStores(useMetaStore),
+	},
+	components: { GoogleScopeChecker, ArticleHandle, HelpCenter },
 });
 </script>
 

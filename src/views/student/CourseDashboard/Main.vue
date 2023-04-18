@@ -17,6 +17,7 @@
 					<h2 class="mb-2" style="line-height: 1.2">{{ routeTitle }}</h2>
 					<BreadCrumbs :route="$route" />
 				</div>
+				<StudentScopesBanner v-if="!metaStore.user.is_teacher" />
 				<router-view />
 			</section>
 		</div>
@@ -43,6 +44,7 @@ import {
 import { mapStores } from "pinia";
 import { useMainStore } from "@/stores/mainStore";
 import { useMetaStore } from "@/stores/metaStore";
+import StudentScopesBanner from "../../../integrations/classroom/components/StudentScopesBanner.vue";
 export default defineComponent({
 	name: "Main",
 	props: {},
@@ -111,6 +113,7 @@ export default defineComponent({
 	},
 	components: {
 		BreadCrumbs,
+		StudentScopesBanner,
 	},
 });
 </script>

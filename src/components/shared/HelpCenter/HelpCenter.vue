@@ -13,7 +13,7 @@
 			:style="'max-height:' + (mediaQueryMdMatches ? '30' : '15') + 'rem'"
 		>
 			<div v-if="metaStore.helpCenterSelectedArticleId === null">
-				<div
+				<!-- <div
 					v-if="courseId"
 					v-show="!isDemo"
 					class="flex items-center px-6 py-4 mb-2 -mx-6 bg-light place-content-evenly"
@@ -26,7 +26,7 @@
 					<a href="mailto:s.bonini7@studenti.unipi.it" class="ml-auto"
 						><Btn>{{ $t("misc.contact_us") }}</Btn></a
 					>
-				</div>
+				</div> -->
 
 				<!-- relevant articles -->
 				<div
@@ -121,6 +121,7 @@
 				v-else
 				:article="selectedArticle"
 				@back="metaStore.setHelpCenterArticleId(null)"
+				:allowGoBack="allowGoBack"
 			></HelpCenterArticleFull>
 		</div>
 	</DraggablePopup>
@@ -129,11 +130,10 @@
 <script lang="ts">
 const SHOWN_ARTICLES = 10;
 
-import { defineComponent, PropType } from "@vue/runtime-core";
+import { defineComponent } from "@vue/runtime-core";
 import DraggablePopup from "@/components/ui/DraggablePopup.vue";
 import { getArticle, getArticles, HelpCenterArticle } from "@/helpCenter";
 import HelpCenterArticleFull from "./HelpCenterArticleFull.vue";
-import Btn from "@/components/ui/Btn.vue";
 import { courseIdMixin, mediaQueryMixin } from "@/mixins";
 import { isDemoMode } from "@/utils";
 import { logAnalyticsEvent } from "@/utils";
@@ -141,9 +141,14 @@ import { mapStores } from "pinia";
 import { useMetaStore } from "@/stores/metaStore";
 export default defineComponent({
 	name: "HelpCenter",
-	components: { DraggablePopup, HelpCenterArticleFull, Btn },
+	components: { DraggablePopup, HelpCenterArticleFull },
 	mixins: [courseIdMixin, mediaQueryMixin],
-	props: {},
+	props: {
+		allowGoBack: {
+			type: Boolean,
+			default: true,
+		},
+	},
 	created() {
 		logAnalyticsEvent("openedHelpCenter", { path: this.$route.fullPath });
 	},

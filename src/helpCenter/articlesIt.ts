@@ -46,6 +46,28 @@ export const articles: HelpCenterArticle[] = [
 		related: [],
 	},
 	{
+		id: "why_evo_asks_for_google_scopes",
+		title:
+			"Perché Evo Learning richiede accesso alle informazioni del mio account Google?",
+		content: `<div>
+    <div class="flex items-center space-x-4 mt-4 mb-4">
+      <img style="width: 130px" src=${require("@/assets/evo_classroom.png")} />
+      <!-- <h4>Integrazione con Google Classroom</h4> -->
+    </div>
+      <p>Evo Learning realizza un'integrazione con Google Classroom che consente di sincronizzare i dati tra le 
+      due piattaforme. I dati interessati includono: </p>
+      <ul class="list-disc list-inside my-2">
+        <li>Iscrizioni ai corsi</li>
+        <li>Lezioni, annunci e materiale didattico</li>
+        <li>Esami e voti</li>
+      </ul>
+      <p>Al fine di fonirti la migliore esperienza possibile, Evo Learning richiede di accedere ai
+      dati del tuo account Google d'interesse per l'integrazione con Google Classroom.</p>
+    </div>`,
+		tags: ["general", "integrations"],
+		related: [],
+	},
+	{
 		id: "close_exams_for_certain_students",
 		title: "Come si chiude un esame solo per alcuni studenti?",
 		content: `

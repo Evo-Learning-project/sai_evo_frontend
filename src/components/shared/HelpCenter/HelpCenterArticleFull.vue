@@ -2,13 +2,14 @@
 	<div>
 		<div class="flex items-center space-x-2">
 			<Btn
+				v-if="allowGoBack"
 				@click="$emit('back')"
 				:outline="true"
 				:variant="'icon'"
 				:tooltip="$t('misc.back')"
 				><span class="material-icons-outlined"> arrow_back </span></Btn
 			>
-			<h3 class="mb-0">{{ article.title }}</h3>
+			<h3 :class="{ 'ml-3': !allowGoBack }" class="mb-0">{{ article.title }}</h3>
 		</div>
 		<div class="mx-4 mt-2">
 			<div v-html="article.content"></div>
@@ -27,6 +28,10 @@ export default defineComponent({
 		article: {
 			type: Object as PropType<HelpCenterArticle>,
 			required: true,
+		},
+		allowGoBack: {
+			type: Boolean,
+			default: true,
 		},
 	},
 	created() {
