@@ -265,8 +265,10 @@ import { logAnalyticsEvent } from "@/utils";
 import { mapStores } from "pinia";
 import { useMainStore } from "@/stores/mainStore";
 import PracticeTemplateEditorNew from "../../../components/student/PracticeTemplateEditorNew.vue";
+import { useGoogleIntegrationsStore } from "../../../integrations/stores/googleIntegrationsStore";
 
 const DEMO_TOUR_KEY = "demo_student_tour_taken";
+const SCOPES_REQUIRED_TO_CREATE_PRACTICE = true;
 
 export default defineComponent({
 	components: {
@@ -344,6 +346,14 @@ export default defineComponent({
 			if (this.loading) {
 				return;
 			}
+			// if student hasn't granted scopes yet, deny practice creation
+			if (
+				this.googleIntegrationStore.studentScopesBannerVisible &&
+				SCOPES_REQUIRED_TO_CREATE_PRACTICE
+			) {
+				this.googleIntegrationStore.studentScopesBannerShaking = true;
+				return;
+			}
 			if (this.currentCourse.public_exercises_count === 0) {
 				// TODO if you use this.setErrorNotification, it's undefined - investigate
 				setErrorNotification(_("student_course_dashboard.no_public_exercises"), true);
@@ -408,7 +418,7 @@ export default defineComponent({
 		},
 	},
 	computed: {
-		...mapStores(useMainStore),
+		...mapStores(useMainStore, useGoogleIntegrationsStore),
 		filteredPracticeParticipations() {
 			return this.mainStore.practiceParticipations.filter(
 				(p, i) =>

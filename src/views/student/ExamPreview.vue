@@ -39,6 +39,9 @@
 				</div>
 			</div>
 			<div class="mt-auto">
+				<!-- scopes banner -->
+				<StudentScopesBanner v-if="!metaStore.user.is_teacher" />
+				<!-- banner for mat & course input -->
 				<div
 					class="w-full mb-4 banner banner-danger"
 					v-if="
@@ -94,6 +97,7 @@
 						</div>
 					</div>
 				</div>
+				<!-- alert texts for closed or not-yet-open exams -->
 				<p
 					class="mb-1 mr-auto text-muted text-danger-dark"
 					v-if="mainStore.previewingEvent.state === EventState.PLANNED"
@@ -106,6 +110,7 @@
 				>
 					{{ $t("event_participation_page.exam_is_over") }}
 				</p>
+				<!-- link to participate-->
 				<router-link
 					v-if="
 						canParticipate &&
@@ -124,6 +129,7 @@
 						>{{ $t("event_participation_page.participate") }}</Btn
 					>
 				</router-link>
+				<!-- fake button to display when exam isn't open-->
 				<Btn v-else :size="'lg'" :disabled="true"
 					><span class="mr-2 text-xl material-icons-outlined"> login </span
 					>{{ $t("event_participation_page.participate") }}</Btn
@@ -149,6 +155,7 @@ import { isDemoMode } from "@/utils";
 import { mapStores } from "pinia";
 import { useMainStore } from "@/stores/mainStore";
 import { useMetaStore } from "@/stores/metaStore";
+import StudentScopesBanner from "../../integrations/classroom/components/StudentScopesBanner.vue";
 export default defineComponent({
 	name: "ExamPreview",
 	mixins: [courseIdMixin, eventIdMixin, loadingMixin],
@@ -158,6 +165,7 @@ export default defineComponent({
 		SlotSkeleton,
 		NumberInput,
 		RadioGroup,
+		StudentScopesBanner,
 	},
 	async created() {
 		await this.withFirstLoading(async () => {

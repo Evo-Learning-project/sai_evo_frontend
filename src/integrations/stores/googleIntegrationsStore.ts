@@ -15,6 +15,9 @@ export const useGoogleIntegrationsStore = defineStore("googleIntegration", {
 		// maps course id's to their course twins (i.e. the Classroom course to
 		// which they are paired), if they exist
 		courseTwins: {} as Record<string, GoogleClassroomCourseTwin>,
+		// whether the student scopes banner is visible
+		studentScopesBannerVisible: false,
+		studentScopesBannerShaking: false,
 	}),
 	getters: {},
 	actions: {

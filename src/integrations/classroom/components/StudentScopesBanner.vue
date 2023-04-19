@@ -5,6 +5,8 @@
 				v-show="showMissingScopesBanner"
 				class="banner banner-danger mb-8"
 				role="alert"
+				:class="{ shake: googleIntegrationStore.studentScopesBannerShaking }"
+				@animationend="googleIntegrationStore.studentScopesBannerShaking = false"
 			>
 				<!-- <strong class="font-bold">Missing scopes!</strong>
 			<span class="block sm:inline"
@@ -67,25 +69,29 @@ import { mapStores } from "pinia";
 import { useMetaStore } from "../../../stores/metaStore";
 import ArticleHandle from "../../../components/shared/HelpCenter/ArticleHandle.vue";
 import HelpCenter from "../../../components/shared/HelpCenter/HelpCenter.vue";
+import { useGoogleIntegrationsStore } from "../../stores/googleIntegrationsStore";
 export default defineComponent({
 	name: "StudentScopesBanner",
 	props: {},
 	data() {
 		return {
 			CLASSROOM_STUDENT_SCOPES,
-			showMissingScopesBanner: false,
+			shakeBanner: false,
 		};
 	},
 	methods: {
 		onScopesOk() {
-			this.showMissingScopesBanner = false;
+			this.googleIntegrationStore.studentScopesBannerVisible = false;
 		},
 		onScopesCheckFailed() {
-			this.showMissingScopesBanner = true;
+			this.googleIntegrationStore.studentScopesBannerVisible = true;
 		},
 	},
 	computed: {
-		...mapStores(useMetaStore),
+		...mapStores(useMetaStore, useGoogleIntegrationsStore),
+		showMissingScopesBanner() {
+			return this.googleIntegrationStore.studentScopesBannerVisible;
+		},
 	},
 	components: { GoogleScopeChecker, ArticleHandle, HelpCenter },
 });
