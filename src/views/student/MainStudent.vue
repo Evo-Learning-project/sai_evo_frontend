@@ -81,7 +81,7 @@ import ErrorView from "../shared/ErrorView.vue";
 import SnackBar from "@/components/ui/SnackBar.vue";
 import BreadCrumbs from "@/components/ui/BreadCrumbs.vue";
 import Btn from "@/components/ui/Btn.vue";
-import { isDemoMode, logOut } from "@/utils";
+import { isDemoMode } from "@/utils";
 import Dialog from "@/components/ui/Dialog.vue";
 import NumberInput from "@/components/ui/NumberInput.vue";
 import { mapStores } from "pinia";
@@ -118,7 +118,6 @@ export default defineComponent({
 			this.editingMat = false;
 			this.metaStore.showSuccessFeedback();
 		},
-		logOut,
 	},
 	computed: {
 		...mapStores(useMainStore, useMetaStore),

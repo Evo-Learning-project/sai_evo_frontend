@@ -163,7 +163,6 @@
 import Btn from "@/components/ui/Btn.vue";
 import { Course } from "@/models";
 import { useMetaStore } from "@/stores/metaStore";
-import { getColorFromString } from "@/utils";
 import { defineComponent, PropType } from "@vue/runtime-core";
 import { mapStores } from "pinia";
 import CopyToClipboard from "../ui/CopyToClipboard.vue";
@@ -210,24 +209,24 @@ export default defineComponent({
 				(description.length > MAX_DESC_LENGTH ? "..." : "")
 			);
 		},
-		bookmarkColor() {
-			return getColorFromString(this.course.name);
-			// return [
-			// 	"#000066",
-			// 	"#310987",
-			// 	"#4f24a1",
-			// 	"#6b3cbc",
-			// 	"#8654d7",
-			// 	"#a26df3",
-			// 	"#c189fe",
-			// 	"#e1a7ff",
-			// 	"#ffc5ff",
-			// ][this.course.name.length % 9];
-		},
+		// bookmarkColor() {
+		// 	return getColorFromString(this.course.name);
+		// 	// return [
+		// 	// 	"#000066",
+		// 	// 	"#310987",
+		// 	// 	"#4f24a1",
+		// 	// 	"#6b3cbc",
+		// 	// 	"#8654d7",
+		// 	// 	"#a26df3",
+		// 	// 	"#c189fe",
+		// 	// 	"#e1a7ff",
+		// 	// 	"#ffc5ff",
+		// 	// ][this.course.name.length % 9];
+		// },
 	},
-	methods: {
-		getColorFromString,
-	},
+	// methods: {
+	// 	getColorFromString,
+	// },
 });
 </script>
 

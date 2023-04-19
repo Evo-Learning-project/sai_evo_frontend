@@ -155,7 +155,6 @@ export default defineComponent({
 			}
 		},
 		onInput(value: string, inputEvent: Event) {
-			console.log("INPUT", value);
 			(inputEvent.target as unknown as { checked: boolean }).checked = false;
 			inputEvent.preventDefault();
 			this.$emit("update:modelValue", value);

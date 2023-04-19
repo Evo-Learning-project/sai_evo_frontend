@@ -43,7 +43,7 @@ import {
 	ROUTE_TITLE_EVENT_NAME_TOKEN,
 } from "@/navigation/const";
 import { SidebarOption } from "@/navigation/sidebar";
-import { isDemoMode, logAnalyticsEvent, logOut } from "@/utils";
+import { isDemoMode, logAnalyticsEvent } from "@/utils";
 import { defineComponent } from "@vue/runtime-core";
 import ErrorView from "../shared/ErrorView.vue";
 import SnackBar from "@/components/ui/SnackBar.vue";
@@ -108,7 +108,6 @@ export default defineComponent({
 	},
 	mixins: [courseIdMixin, eventIdMixin, coursePrivilegeMixin],
 	methods: {
-		logOut,
 		startTour() {
 			(this.$tours["helpCenterTour"] as any).start();
 		},

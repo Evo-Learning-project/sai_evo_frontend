@@ -195,8 +195,8 @@ export const loadingMixin = {
 				(this as any).metaStore.localLoading = false;
 			}
 		},
-		setPageWideError,
-		setErrorNotification,
+		// setPageWideError,
+		// setErrorNotification,
 	},
 	computed: {
 		...mapStores(useMetaStore),
