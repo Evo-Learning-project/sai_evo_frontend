@@ -31,16 +31,18 @@ import { sanitizeOptions } from "./const";
 import VueGtag from "vue-gtag";
 import { createPinia } from "pinia";
 
+import vue3GoogleLogin from "vue3-google-login";
+
 // TODO export to env vars
-const gAuthOptions = {
-	clientId: "956826904172-mcsaj1bqcllv93bpad7dmd0e3oil4758.apps.googleusercontent.com",
-	scope:
-		"profile email https://www.googleapis.com/auth/classroom.rosters https://www.googleapis.com/auth/classroom.coursework.me",
-	// TODO probably remove this - see https://developers.google.com/identity/openid-connect/openid-connect#re-consent
-	prompt: "consent",
-	fetch_basic_profile: true,
-	//hosted_domain: ["studenti.unipi.it"]
-};
+// const gAuthOptions = {
+// 	clientId: "956826904172-507or0sbkrsugaebu97pgqe1i6ac1kfm.apps.googleusercontent.com", //"956826904172-mcsaj1bqcllv93bpad7dmd0e3oil4758.apps.googleusercontent.com",
+// 	scope:
+// 		"profile email https://www.googleapis.com/auth/classroom.rosters https://www.googleapis.com/auth/classroom.coursework.me",
+// 	// TODO probably remove this - see https://developers.google.com/identity/openid-connect/openid-connect#re-consent
+// 	prompt: "consent",
+// 	fetch_basic_profile: true,
+// 	//hosted_domain: ["studenti.unipi.it"]
+// };
 
 const dev = process.env.NODE_ENV !== "production";
 
@@ -78,10 +80,13 @@ const app = createApp(App);
 app
 	.directive("click-outside", clickOutsideDirective)
 	.use(createPinia())
+	.use(vue3GoogleLogin, {
+		clientId: "956826904172-mcsaj1bqcllv93bpad7dmd0e3oil4758.apps.googleusercontent.com",
+	})
 	.use(VWave, {
 		duration: 0.3,
 	})
-	.use(GAuth, gAuthOptions)
+	//.use(GAuth, gAuthOptions)
 	//.use(store)
 	.use(router)
 	.use(VueAxios, axios)
