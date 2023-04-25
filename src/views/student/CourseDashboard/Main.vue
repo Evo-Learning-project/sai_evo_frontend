@@ -17,6 +17,11 @@
 					<h2 class="mb-2" style="line-height: 1.2">{{ routeTitle }}</h2>
 					<BreadCrumbs :route="$route" />
 				</div>
+				<CourseTutoringBanner
+					v-if="currentCourse?.id"
+					:course="currentCourse"
+					class="mb-12"
+				/>
 				<router-view />
 			</section>
 		</div>
@@ -43,6 +48,7 @@ import {
 import { mapStores } from "pinia";
 import { useMainStore } from "@/stores/mainStore";
 import { useMetaStore } from "@/stores/metaStore";
+import CourseTutoringBanner from "../../../components/misc/CourseTutoringBanner.vue";
 export default defineComponent({
 	name: "Main",
 	props: {},
@@ -111,6 +117,7 @@ export default defineComponent({
 	},
 	components: {
 		BreadCrumbs,
+		CourseTutoringBanner,
 	},
 });
 </script>
