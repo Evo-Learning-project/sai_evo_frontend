@@ -130,7 +130,7 @@ export default defineComponent({
 			localStorage.setItem("tutoringDismissedCourses", JSON.stringify(dismissedCourses));
 		},
 		makeRequest(payload) {
-			return axios.post("/features/", { feature_id: "tutoring", ...payload });
+			return axios.post("/features/", { feature_id: "tutoring", data: payload });
 		},
 		getDismissedCourses() {
 			try {
