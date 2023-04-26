@@ -23,25 +23,36 @@
 					</span>
 				</div>
 
-				<div class="flex items-center" v-if="!confirmed">
+				<div
+					class="flex items-center md:space-y-0 space-y-2 flex-col md:flex-row"
+					v-if="!confirmed"
+				>
 					<h4 class="mr-6">Cerchi ripetizioni per {{ course.name }}?</h4>
-					<Btn :loading="requesting" :disabled="offering" :size="'sm'" @click="onConfirm"
-						>Trova i migliori tutor</Btn
-					>
-					<p
-						@click="onOffer"
-						class="
-							text-base
-							hover:text-primary hover:underline
-							ml-4
-							cursor-pointer
-							text-gray-500
-							select-none
-						"
-						:class="{ 'pointer-events-none cursor-not-allowed': offering || requesting }"
-					>
-						Voglio offrire ripetizioni
-					</p>
+					<div class="flex items-center md:space-y-0 space-y-2 flex-col md:flex-row">
+						<Btn
+							:loading="requesting"
+							:disabled="offering"
+							:size="'sm'"
+							@click="onConfirm"
+							>Trova i migliori tutor</Btn
+						>
+						<p
+							@click="onOffer"
+							class="
+								text-base
+								hover:text-primary hover:underline
+								ml-4
+								cursor-pointer
+								text-gray-500
+								select-none
+							"
+							:class="{
+								'pointer-events-none cursor-not-allowed': offering || requesting,
+							}"
+						>
+							Voglio offrire ripetizioni
+						</p>
+					</div>
 				</div>
 				<h4 v-else>Grazie per aver mostrato interesse! Ti contatteremo al più presto.</h4>
 
@@ -183,6 +194,7 @@ export default defineComponent({
 					houry_rate: this.hourlyRate,
 					sessions_per_week: this.sessionsPerWeek,
 					selected_courses: this.selectedCourses,
+					comment: this.comment,
 				});
 
 				this.showBlockingDialog = false;
@@ -220,6 +232,7 @@ export default defineComponent({
 					houry_rate: this.hourlyRate,
 					sessions_per_week: this.sessionsPerWeek,
 					selected_courses: this.selectedCourses,
+					comment: this.comment,
 				});
 
 				this.showBlockingDialog = false;
