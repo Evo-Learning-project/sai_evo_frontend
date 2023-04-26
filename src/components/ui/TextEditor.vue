@@ -23,7 +23,7 @@
 					<textarea
 						class="py-3.5 px-3.5 bg-transparent rounded-t-sm outline-none"
 						v-else
-						rows="8"
+						:rows="baseEditorRows"
 						@input="$emit('update:modelValue', $event.target.value)"
 						:value="modelValue"
 					></textarea>
@@ -202,6 +202,10 @@ export default defineComponent({
 		showPreviewButton: {
 			type: Boolean,
 			default: true,
+		},
+		baseEditorRows: {
+			type: Number,
+			default: 8,
 		},
 	},
 	mixins: [texMixin],
