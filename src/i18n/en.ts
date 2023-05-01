@@ -30,6 +30,7 @@ export const en = {
 		login: "Login",
 	},
 	headings: {
+		course_integrations: "Integrations for " + ROUTE_TITLE_COURSE_NAME_TOKEN,
 		course_tree: "Material " + ROUTE_TITLE_COURSE_NAME_TOKEN,
 		exercise_solution_threads: "Soluzioni esercizi " + ROUTE_TITLE_COURSE_NAME_TOKEN,
 		login: "Login",
@@ -553,6 +554,8 @@ export const en = {
 				"Some features may not work properly because you haven't authorized this app to access \
 				the necessary information from your Google account.",
 			grant_scopes_btn: "Authorize",
+			grant_scopes_to_use_integration:
+				"To use this integration, authorize Evo Learning to access the relevant data of your Google account.",
 		},
 	},
 	data_table: {
