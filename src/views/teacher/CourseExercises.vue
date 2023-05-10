@@ -12,6 +12,15 @@
 				><span class="mr-1 text-base material-icons-outlined"> add </span>
 				{{ $t("course_exercises.new_exercise") }}</Btn
 			>
+			<Btn
+				class="ml-2"
+				@click="onGenerateExercises()"
+				:loading="localLoading"
+				:outline="true"
+			>
+				<span class="mr-1 text-base material-icons-outlined"> bolt </span>
+				Genera esercizi
+			</Btn>
 			<DropdownMenu
 				class="-mr-4"
 				:expanded="dropdownExpanded"
@@ -44,6 +53,12 @@
 				</div>
 			</DropdownMenu>
 		</div>
+		<transition name="bounce">
+			<GenerateExercisePrompt
+				@confirm="onCreateMockExercises"
+				v-if="showGenerateExercisePrompt"
+			/>
+		</transition>
 		<div v-if="!firstLoading">
 			<transition-group name="quick-bounce">
 				<ExerciseEditorWrapper
@@ -171,6 +186,8 @@ import { getExercises } from "@/api";
 import { mapStores } from "pinia";
 import { useMainStore } from "@/stores/mainStore";
 import { useMetaStore } from "@/stores/metaStore";
+import GenerateExercisePrompt from "../../components/demo/GenerateExercisePrompt.vue";
+import { mockExercises } from "../../components/demo/mock";
 export default defineComponent({
 	name: "CourseExercises",
 	props: {
@@ -200,6 +217,7 @@ export default defineComponent({
 		Dialog,
 		ExerciseImporter,
 		DropdownMenu,
+		GenerateExercisePrompt,
 	},
 	async created() {
 		this.onFilterChange = getDebouncedForFilter(this.onFilterChange);
@@ -240,10 +258,21 @@ export default defineComponent({
 			importedExercises: [] as Exercise[],
 			importLoading: false,
 			dropdownExpanded: false,
+			showGenerateExercisePrompt: false,
 		};
 	},
 	methods: {
+		async onCreateMockExercises() {
+			await this.withLoading(async () => {
+				await this.mainStore.createMockExercises(mockExercises);
+				this.metaStore.showSuccessFeedback();
+				this.showGenerateExercisePrompt = false;
+			}, setErrorNotification);
+		},
 		getBlankExerciseSearchFilters,
+		async onGenerateExercises() {
+			this.showGenerateExercisePrompt = true;
+		},
 		async onExportExercises() {
 			await this.withLoading(async () => {
 				const MAX_PAGE_SIZE = 999999;

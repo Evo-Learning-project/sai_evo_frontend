@@ -1,5 +1,11 @@
 <template>
-	<div class="darken-on-hover">
+	<label :id="baseId" class="mdc-text-field mdc-text-field--filled">
+		<span class="mdc-text-field__ripple"></span>
+		<span class="mdc-floating-label" id="my-label-id">Hint text</span>
+		<input class="mdc-text-field__input" type="text" aria-labelledby="my-label-id" />
+		<span class="mdc-line-ripple"></span>
+	</label>
+	<!-- <div class="darken-on-hover">
 		<div
 			:class="{
 				'border-danger-dark focus-within:border-danger-dark': $slots.errors,
@@ -56,13 +62,13 @@
 		<div v-if="$slots.errors?.()" class="text-sm font-light text-danger-dark">
 			<slot name="errors"></slot>
 		</div>
-	</div>
+	</div> -->
 </template>
 
 <script lang="ts">
 import { defineComponent } from "@vue/runtime-core";
 import LinearProgress from "./LinearProgress.vue";
-
+import { v4 as uuid } from "uuid";
 export default defineComponent({
 	name: "TextInput",
 	props: {
@@ -103,6 +109,17 @@ export default defineComponent({
 			default: false,
 		},
 	},
-	components: { LinearProgress },
+	data() {
+		return {
+			baseId: "a" + uuid(), // 'a' is needed because ids can't start with a number
+			element: null as any,
+		};
+	},
+	mounted() {
+		this.element = new (window as any).mdc.textField.MDCTextField(
+			document.querySelector(`#${this.baseId}`),
+		);
+	},
+	//components: { LinearProgress },
 });
 </script>

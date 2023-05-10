@@ -788,6 +788,7 @@ import { forceFileDownload, getCurrentUserId, setErrorNotification } from "@/uti
 import { mapStores } from "pinia";
 import { useMainStore } from "@/stores/mainStore";
 import { useMetaStore } from "@/stores/metaStore";
+import { mockSolutions } from "../../demo/mock";
 
 export default defineComponent({
 	name: "ExerciseEditor",
@@ -849,25 +850,25 @@ export default defineComponent({
 	},
 	async created() {
 		// fetch exercise to make sure to have the most up to date version
-		await this.$nextTick(
-			// nextTick required to prevent render issues with vue-draggable
-			async () => {
-				this.fetchingExercise = true;
-				// TODO overwriting the whole exercise isn't necessary, what we really want is locked_by
-				try {
-					await this.mainStore.getExercise({
-						courseId: this.courseId,
-						exerciseId: this.modelValue.id,
-					});
-				} catch (e) {
-					setErrorNotification(e);
-				} finally {
-					this.fetchingExercise = false;
-				}
-			},
-		);
+		// await this.$nextTick(
+		// 	// nextTick required to prevent render issues with vue-draggable
+		// 	async () => {
+		// 		this.fetchingExercise = true;
+		// 		// TODO overwriting the whole exercise isn't necessary, what we really want is locked_by
+		// 		try {
+		// 			await this.mainStore.getExercise({
+		// 				courseId: this.courseId,
+		// 				exerciseId: this.modelValue.id,
+		// 			});
+		// 		} catch (e) {
+		// 			setErrorNotification(e);
+		// 		} finally {
+		// 			this.fetchingExercise = false;
+		// 		}
+		// 	},
+		// );
 
-		await this.lockEditingObject();
+		// await this.lockEditingObject();
 
 		this.autoSaveManager = new AutoSaveManager<Exercise>(
 			this.modelValue,
@@ -906,15 +907,22 @@ export default defineComponent({
 
 		this.loadingSolutions = true;
 		try {
-			await this.mainStore.getSolutionsByExercise({
-				courseId: this.courseId,
-				exerciseId: this.modelValue.id,
-				fromFirstPage: true, // TODO handle solutions on multiple pages
-				filter: {
-					states: [ExerciseSolutionState.APPROVED],
-				} as ExerciseSolutionSearchFilter,
-			});
-			this.solutions.forEach(s => this.instantiateSolutionAutoSaveManager(s));
+			// ! mock
+			// this.mainStore.paginatedSolutionsByExerciseId[this.modelValue.id] = {
+			// 	data: [mockSolutions[this.modelValue.id]],
+			// 	pageNumber: 1,
+			// 	count: 1,
+			// 	isLastPage: true,
+			// };
+			// await this.mainStore.getSolutionsByExercise({
+			// 	courseId: this.courseId,
+			// 	exerciseId: this.modelValue.id,
+			// 	fromFirstPage: true, // TODO handle solutions on multiple pages
+			// 	filter: {
+			// 		states: [ExerciseSolutionState.APPROVED],
+			// 	} as ExerciseSolutionSearchFilter,
+			// });
+			// this.solutions.forEach(s => this.instantiateSolutionAutoSaveManager(s));
 		} catch (e) {
 			setErrorNotification(e);
 		} finally {

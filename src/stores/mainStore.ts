@@ -1454,6 +1454,13 @@ export const useMainStore = defineStore("main", {
 			);
 			return newExercise;
 		},
+		async createMockExercises(exercises: Exercise[]) {
+			await new Promise(resolve => setTimeout(resolve, 3000));
+			this.paginatedExercises = prependToPaginatedData(
+				this.paginatedExercises,
+				...exercises,
+			);
+		},
 		async getExercise({ courseId, exerciseId }: ExerciseIdActionPayload) {
 			const exercise = (await getExercisesById(courseId, [exerciseId]))[0];
 			this.setExercise(exercise);
