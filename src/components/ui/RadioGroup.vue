@@ -4,13 +4,12 @@
 
 		<div class="w-full">
 			<label
-				:for="id + '-input-' + index"
 				class="
 					relative
 					flex
-					my-0.5
+					my-0
 					max-h-screen
-					space-x-1.5
+					space-x-0
 					cursor-pointer
 					items-start
 					radio-item
@@ -19,43 +18,23 @@
 				v-for="(option, index) in options"
 				:key="id + '-option-' + index"
 			>
-				<div
-					v-wave-trigger:radio
-					v-wave="disabled ? false : { trigger: 'radio', color: '#666ad1' }"
-					class="
-						absolute
-						w-12
-						h-12
-						transition-all
-						duration-100
-						ease-in-out
-						rounded-full
-						bg-opacity-10 bg-primary
-						radio-shadow
-					"
-				></div>
-
-				<input
-					@input="onInput(option.value, $event)"
-					style="min-width: 15px; min-height: 15px"
-					class="mt-5px input-radio"
-					type="radio"
-					:id="id + '-input-' + index"
-					:value="option.value"
-					:checked="option.value == modelValue"
-					:disabled="disabled"
-				/>
-
-				<div class="flex items-start space-x-2">
-					<MultiIcon v-if="option.icons" class="w-6" :icons="option.icons"></MultiIcon>
-					<div class="flex flex-col">
-						<div class="flex items-center">
-							<p class="" v-html="option.content"></p>
-							<slot name="itemSide" v-bind:option="option"></slot>
-						</div>
-						<slot name="item" v-bind:description="option.description"></slot>
+				<div :id="id + '-radio-' + index" class="mdc-radio">
+					<input
+						:id="id + '-radio-' + index + '-native'"
+						class="mdc-radio__native-control"
+						type="radio"
+						:name="id"
+						:value="option.value"
+					/>
+					<div class="mdc-radio__background">
+						<div class="mdc-radio__outer-circle"></div>
+						<div class="mdc-radio__inner-circle"></div>
 					</div>
+					<div class="mdc-radio__ripple"></div>
 				</div>
+				<label class="mt-2 cursor-pointer" :for="id + '-radio-' + index + '-native'">
+					<p v-html="option.content"
+				/></label>
 			</label>
 		</div>
 	</div>
@@ -65,26 +44,61 @@
 import { defineComponent } from "@vue/runtime-core";
 import { v4 as uuid4 } from "uuid";
 import MultiIcon from "@/components/ui/MultiIcon.vue";
+import { SelectableOption } from "../../interfaces";
 
 export default defineComponent({
 	name: "RadioGroup",
 	props: ["options", "modelValue", "disabled"],
 	components: {
-		MultiIcon,
+		//MultiIcon,
 	},
-	created() {
-		this.id = uuid4();
+	watch: {
+		disabled: {
+			handler() {
+				this.$nextTick(() => {
+					this.radios.forEach(radio => {
+						radio.disabled = this.disabled;
+					});
+				});
+			},
+			immediate: true,
+		},
+	},
+
+	mounted() {
+		(this.options as SelectableOption[]).map((option, i) => {
+			const radio = new (window as any).mdc.radio.MDCRadio(
+				document.getElementById(this.id + "-radio-" + i),
+			);
+			this.radios.push(radio);
+			console.log({
+				radio,
+				checked: radio.checked,
+				model: this.modelValue,
+				opt: option.value,
+			});
+
+			radio.checked = this.modelValue == option.value;
+			radio.disabled = this.disabled;
+
+			// attach event listener
+			radio.listen("input", e => {
+				console.log(e);
+				this.$emit("update:modelValue", option.value);
+			});
+		});
 	},
 	data() {
 		return {
 			showFeedback: false,
-			id: "",
+			id: "a" + uuid4(),
+			radios: [] as any,
 		};
 	},
 	methods: {
 		onInput(value: string, inputEvent: Event) {
 			// eslint-disable-next-line @typescript-eslint/no-extra-semi
-			(inputEvent.target as unknown as { checked: boolean }).checked = false;
+			//(inputEvent.target as unknown as { checked: boolean }).checked = false;
 			inputEvent.preventDefault();
 			this.$emit("update:modelValue", value);
 		},

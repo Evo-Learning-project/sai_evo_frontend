@@ -8,62 +8,32 @@
 				itemClass,
 			]"
 			v-for="(option, index) in options"
-			:key="id + '-option-' + index"
-			:for="id + '-option-' + index"
+			:key="id + '-checkbox-' + index"
 			class="checkbox-item"
 		>
-			<div class="flex flex-col w-full">
-				<div class="flex items-start w-full">
-					<div
-						v-if="!useToggles"
-						v-wave-trigger:checkbox
-						v-wave="disabled ? false : { trigger: 'checkbox', color: '#666ad1' }"
-						class="
-							absolute
-							w-12
-							h-12
-							transition-all
-							duration-100
-							ease-in-out
-							rounded-full
-							bg-opacity-10 bg-primary
-							checkbox-shadow
-						"
-					></div>
+			<div class="mdc-form-field">
+				<div :id="id + '-checkbox-' + index" class="mdc-checkbox">
 					<input
-						v-if="!useToggles"
-						:disabled="disabled"
-						:id="id + '-option-' + index"
+						:id="id + '-checkbox-' + index + '-native'"
 						type="checkbox"
-						v-model="proxyModelValue"
-						style="min-width: 15px; min-height: 15px"
-						:value="option.value"
-						class="mr-2 mt-5px"
+						class="mdc-checkbox__native-control"
+						:name="id"
 					/>
-					<Toggle
-						v-else
-						class="order-1 ml-4 mt-5px"
-						:overrideId="id + '-option-' + index"
-						:modelValue="proxyModelValue.includes(option.value)"
-						@update:modelValue="onToggleUpdate($event, option)"
-					></Toggle>
-					<div :class="labelClass" class="flex flex-col">
-						<div v-if="!usesCustomSlot" class="flex items-center">
-							<slot v-bind:icons="option.icons"></slot>
-							<p v-html="option.content"></p>
-						</div>
-						<slot
-							v-else
-							name="custom"
-							v-bind:item="{
-								content: option.content,
-								icons: option.icons,
-								value: option.value,
-							}"
-						></slot>
-						<slot name="item" v-bind:description="option.description"></slot>
+					<div class="mdc-checkbox__background">
+						<svg class="mdc-checkbox__checkmark" viewBox="0 0 24 24">
+							<path
+								class="mdc-checkbox__checkmark-path"
+								fill="none"
+								d="M1.73,12.91 8.1,19.28 22.79,4.59"
+							/>
+						</svg>
+						<div class="mdc-checkbox__mixedmark"></div>
 					</div>
+					<div class="mdc-checkbox__ripple"></div>
 				</div>
+				<label :for="id + '-checkbox-' + index + '-native'">
+					<div v-html="option.content" />
+				</label>
 			</div>
 		</label>
 	</div>
@@ -73,10 +43,8 @@
 import { SelectableOption } from "@/interfaces";
 import { defineComponent, PropType } from "@vue/runtime-core";
 import { v4 as uuid4 } from "uuid";
-import Toggle from "./Toggle.vue";
 
 export default defineComponent({
-	components: { Toggle },
 	name: "CheckboxGroup",
 	//props: ['options', 'modelValue', 'disabled'],
 	props: {
@@ -113,12 +81,45 @@ export default defineComponent({
 			default: "",
 		},
 	},
-	created() {
-		this.id = uuid4();
+	// when disabled changes, update the checkboxes
+	watch: {
+		disabled: {
+			handler() {
+				this.$nextTick(() => {
+					this.checkboxes.forEach(checkbox => {
+						checkbox.disabled = this.disabled;
+					});
+				});
+			},
+			immediate: true,
+		},
+	},
+	mounted() {
+		(this.options as SelectableOption[]).map((option, i) => {
+			const checkbox = new (window as any).mdc.checkbox.MDCCheckbox(
+				document.getElementById(this.id + "-checkbox-" + i),
+			);
+			this.checkboxes.push(checkbox);
+
+			checkbox.checked = this.modelValue.includes(option.value);
+			checkbox.disabled = this.disabled;
+
+			// attach event listener
+			checkbox.listen("input", e => {
+				console.log(e);
+				this.$emit(
+					"update:modelValue",
+					e.target.checked
+						? [...this.modelValue, option.value]
+						: this.modelValue.filter(v => v !== option.value),
+				);
+			});
+		});
 	},
 	data() {
 		return {
-			id: "",
+			id: "a" + uuid4(),
+			checkboxes: [] as any[],
 		};
 	},
 	methods: {
