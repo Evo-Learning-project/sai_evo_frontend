@@ -18,7 +18,7 @@
 					<BreadCrumbs :route="$route" />
 				</div>
 				<CourseTutoringBanner
-					v-if="currentCourse?.id"
+					v-if="false && currentCourse?.id"
 					:course="currentCourse"
 					class="mb-12"
 				/>
