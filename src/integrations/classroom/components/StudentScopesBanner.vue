@@ -89,7 +89,7 @@ export default defineComponent({
 	},
 	computed: {
 		...mapStores(useMetaStore, useGoogleIntegrationsStore),
-		showMissingScopesBanner() {
+		showMissingScopesBanner(): boolean {
 			return this.googleIntegrationStore.studentScopesBannerVisible;
 		},
 	},
