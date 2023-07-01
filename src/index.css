@@ -23,9 +23,10 @@
 		@apply font-medium;
 	}
 	h1 {
-		font-size: 34px;
+		font-size: 30px;
 		letter-spacing: 0.25px;
 		@apply mb-6;
+		font-weight: 400;
 		/* @apply font-medium text-2.5xl mb-6 */
 	}
 	h2 {
@@ -423,7 +424,7 @@
 		-webkit-font-smoothing: antialiased;
 		font-size: 1.2rem !important;
 		line-height: 2rem;
-		font-weight: 600;
+		font-weight: 500;
 		letter-spacing: 0.011em;
 		text-decoration: inherit;
 		text-transform: inherit;
