@@ -235,7 +235,6 @@ export default defineComponent({
 					courseId: this.courseId,
 					filters: {
 						event_type: EventType.EXAM,
-						// state: EventState.CLOSED,
 					} as EventSearchFilter,
 				});
 			} catch (e) {

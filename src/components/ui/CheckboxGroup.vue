@@ -43,6 +43,7 @@
 import { SelectableOption } from "@/interfaces";
 import { defineComponent, PropType } from "@vue/runtime-core";
 import { v4 as uuid4 } from "uuid";
+import { MDCCheckbox } from "@material/checkbox";
 
 export default defineComponent({
 	name: "CheckboxGroup",
@@ -95,9 +96,9 @@ export default defineComponent({
 		},
 	},
 	mounted() {
-		(this.options as SelectableOption[]).map((option, i) => {
-			const checkbox = new (window as any).mdc.checkbox.MDCCheckbox(
-				document.getElementById(this.id + "-checkbox-" + i),
+		this.options.map((option, i) => {
+			const checkbox = new MDCCheckbox(
+				document.getElementById(this.id + "-checkbox-" + i) as Element,
 			);
 			this.checkboxes.push(checkbox);
 
@@ -109,7 +110,7 @@ export default defineComponent({
 				console.log(e);
 				this.$emit(
 					"update:modelValue",
-					e.target.checked
+					(e.target as HTMLInputElement).checked
 						? [...this.modelValue, option.value]
 						: this.modelValue.filter(v => v !== option.value),
 				);

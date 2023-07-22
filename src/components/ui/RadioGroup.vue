@@ -33,8 +33,8 @@
 					<div class="mdc-radio__ripple"></div>
 				</div>
 				<label class="mt-2 cursor-pointer" :for="id + '-radio-' + index + '-native'">
-					<p v-html="option.content"
-				/></label>
+					<p v-html="option.content" />
+				</label>
 			</label>
 		</div>
 	</div>
@@ -45,10 +45,25 @@ import { defineComponent } from "@vue/runtime-core";
 import { v4 as uuid4 } from "uuid";
 import MultiIcon from "@/components/ui/MultiIcon.vue";
 import { SelectableOption } from "../../interfaces";
+import { MDCRadio } from "@material/radio";
+import { PropType } from "vue";
 
 export default defineComponent({
 	name: "RadioGroup",
-	props: ["options", "modelValue", "disabled"],
+	props: {
+		options: {
+			type: Object as PropType<SelectableOption[]>,
+			required: true,
+		},
+		modelValue: {
+			type: Array as PropType<unknown>,
+			required: true,
+		},
+		disabled: {
+			type: Boolean,
+			default: false,
+		},
+	},
 	components: {
 		//MultiIcon,
 	},
@@ -67,16 +82,10 @@ export default defineComponent({
 
 	mounted() {
 		(this.options as SelectableOption[]).map((option, i) => {
-			const radio = new (window as any).mdc.radio.MDCRadio(
-				document.getElementById(this.id + "-radio-" + i),
+			const radio = new MDCRadio(
+				document.getElementById(this.id + "-radio-" + i) as Element,
 			);
 			this.radios.push(radio);
-			console.log({
-				radio,
-				checked: radio.checked,
-				model: this.modelValue,
-				opt: option.value,
-			});
 
 			radio.checked = this.modelValue == option.value;
 			radio.disabled = this.disabled;
