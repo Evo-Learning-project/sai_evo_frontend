@@ -12,14 +12,29 @@ export const isMultipleChoiceExercise = (exercise: Exercise): boolean =>
 		ExerciseType.MULTIPLE_CHOICE_SINGLE_POSSIBLE,
 	].includes(exercise.exercise_type as ExerciseType);
 
+export const getAssessableSubExercises = (exercise: Exercise): Exercise[] => {
+	if (exercise.exercise_type === ExerciseType.AGGREGATED) {
+		return exercise.sub_exercises ?? [];
+	}
+	if (exercise.exercise_type !== ExerciseType.COMPLETION) {
+		return [];
+	}
+	// for cloze exercises, only include sub-exercises which have a placeholder
+	// that references their id in the main exercise text
+	return (exercise.sub_exercises ?? []).filter(e =>
+		exercise.text.includes(`[[${e.id}]]`),
+	);
+};
+
 export const getMaxScore = (exercise: Exercise): number | null => {
 	const exType = exercise.exercise_type as ExerciseType;
 	if ([ExerciseType.OPEN_ANSWER, ExerciseType.ATTACHMENT].includes(exType)) {
 		return null;
 	}
 	if ([ExerciseType.COMPLETION, ExerciseType.AGGREGATED].includes(exType)) {
+		const assessable_sub_exercises = getAssessableSubExercises(exercise);
 		return (
-			(exercise.sub_exercises ?? [])
+			assessable_sub_exercises
 				// TODO is 0 the appropriate default? what if I have an aggregated exercise, the sub-exercise is an open answer and its weight is 3? shouldn't it have a 3?
 				.map(s => (getMaxScore(s) ?? 0) * (s.child_weight ?? 0))
 				.reduce((a, b) => a + b, 0)

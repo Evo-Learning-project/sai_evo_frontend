@@ -536,6 +536,7 @@ export const it = {
 			"Nessuna statistica disponibile per questo esercizio",
 		incomplete_scores:
 			"Le statistiche visualizzate sono incomplete perché non hai ancora corretto tutti gli esami",
+		cloze_stats_title: "Gruppo di risposte",
 	},
 	event_results: {
 		publish_results: "Pubblica risultati",
@@ -764,6 +765,9 @@ export const it = {
 		no_choice_penalty_warning:
 			"Non hai impostato una penalità (punteggio negativo) per alcuna scelta. Gli studenti potranno ottenere il punteggio massimo per questo esercizio selezionando tutte le scelte disponibili.",
 	},
+	cloze: {
+		invalid_cloze_id: "(ID sotto-domanda invalido)",
+	},
 	exercise_wrapper: {
 		select: "Seleziona",
 	},
@@ -891,6 +895,7 @@ export const it = {
 		},
 		exercise: {
 			modelValue: {
+				"text-clozeIdsAreValid": "Hai inserito degli ID errati per le sotto-domande",
 				"text-required": "Il testo dell'esercizio non può essere vuoto.",
 				"choices-choicesRequiredIfMultipleChoiceExercise":
 					"L'esercizio deve avere almeno una scelta selezionabile.",
@@ -1118,7 +1123,8 @@ export const it = {
 			private_tags:
 				"Questi tag non verranno mai mostrati agli studenti e possono essere utilizzati per organizzare gli esercizi e aggiungerli agli esami",
 			clozes:
-				"Per aggiungere una sotto-domanda, posiziona il cursore nella posizione del testo dove vuoi aggiungerla e clicca Aggiungi domanda. Per modificare una sotto-domanda, clicca sul simbolo [[?]] corrispondente e clicca Modifica domanda.",
+				"Per aggiungere una sotto-domanda, posiziona il cursore nella posizione del testo dove vuoi aggiungerla e clicca Aggiungi domanda. \
+				Per modificare una sotto-domanda, clicca sul segnaposto corrispondente, per esempio [[1234]], e clicca Modifica domanda.",
 		},
 		event_template_rule_editor: {
 			weight: "Punteggio massimo ottenibile per gli esercizi di questo slot",

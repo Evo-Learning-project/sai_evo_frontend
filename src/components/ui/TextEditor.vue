@@ -1,6 +1,6 @@
 <template>
 	<div :class="{ 'h-full': tall }" :id="id">
-		<div @mouseup="endDragging()" class="flex space-x-2 relative">
+		<div @mouseup="endDragging()" class="relative flex space-x-2">
 			<div
 				:id="resizablePanelId"
 				:style="previewPanelStyle"
@@ -34,7 +34,7 @@
 				>
 					<slot></slot>
 				</label>
-				<div class="absolute -top-5 right-0">
+				<div class="absolute right-0 -top-5">
 					<Btn
 						:size="'xs'"
 						:variant="'primary-borderless'"
@@ -74,15 +74,14 @@
 				style="width: 5px; transition-property: background"
 				class="
 					absolute
-					resizer
-					h-full
 					top-0
-					bg-gray-300
-					hover:bg-opacity-70
+					z-30
+					h-full
 					duration-150
 					delay-75
-					bg-opacity-50
-					z-30
+					bg-gray-300 bg-opacity-50
+					resizer
+					hover:bg-opacity-70
 				"
 			></div>
 			<span
@@ -93,12 +92,12 @@
 					transform: 'translate(-40%, -50%) rotate(90deg)',
 					'font-size': '20px !important',
 				}"
-				class="absolute opacity-30 resizer top-1/2 z-30 material-icons-outlined"
+				class="absolute z-30 opacity-30 resizer top-1/2 material-icons-outlined"
 			>
 				drag_handle
 			</span>
 			<div
-				class="px-8 py-2 relative"
+				class="relative px-8 py-2"
 				:style="{ width: 100 - previewPanelWidth + '%' }"
 				v-if="showPreview"
 			>
@@ -307,7 +306,7 @@ export default defineComponent({
 			if (event) {
 				this.$emit("selectionChange", {
 					fullText: this.instance.getText(),
-					text: this.instance.getText(event.index - 5, event.length + 10),
+					text: this.instance.getText(event.index - 10, event.length + 15),
 					range: event,
 				});
 			}

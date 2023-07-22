@@ -152,22 +152,22 @@
 						v-if="showStickyStateDropdown"
 						style="box-shadow: 0px 15px 15px -15px rgb(0 0 0 / 20%)"
 						class="
-							-mx-5
 							sticky
-							top-14
 							z-50
-							h-20
-							py-4
-							bg-white
 							flex
 							items-start
-							align-center
+							h-20
+							py-4
+							-mx-5
 							space-x-2
+							bg-white
+							top-14
+							align-center
 						"
 					>
 						<div class="flex mx-auto space-x-2">
 							<p class="mt-3 text-muted">{{ $t("exercise_editor.exercise_state") }}</p>
-							<div class="w-96 ml-auto">
+							<div class="ml-auto w-96">
 								<Dropdown
 									:id="stateDropdownId + '-sticky'"
 									:options="exerciseStateOptions"
@@ -243,7 +243,7 @@
 					</div>
 
 					<!-- exercise text -->
-					<div class="my-6">
+					<div class="flex flex-col my-6 space-y-4 xl:flex-row xl:space-x-2 xl:space-y-0">
 						<TextEditor
 							v-if="!cloze"
 							:modelValue="modelValue.text"
@@ -251,6 +251,7 @@
 							@selectionChange="onTextSelectionChange($event)"
 							@blur="onBlur()"
 							@update:modelValue="onBaseExerciseChange('text', $event)"
+							class="w-full"
 							>{{ $t("exercise_editor.exercise_text") }}
 							<template v-if="v$.modelValue.text.$errors.length > 0" v-slot:errors>
 								<div
@@ -264,22 +265,36 @@
 								</div>
 							</template>
 						</TextEditor>
+						<!-- cloze text preview -->
+						<div
+							class="relative w-full"
+							v-if="modelValue.exercise_type === ExerciseType.COMPLETION"
+						>
+							<p class="absolute top-2 left-1.5 origin-0 fixed-label w-full">
+								{{ $t("misc.preview") }}
+							</p>
+							<ClozeExercise :slot="modelValueWrapperSlot" />
+						</div>
 					</div>
 
 					<!-- cloze controls -->
 					<div
-						class="flex items-start w-full space-y-1 md:space-y-0"
+						class="flex items-start w-full mb-8 space-y-1 md:space-y-0"
 						v-if="modelValue.exercise_type === ExerciseType.COMPLETION"
 					>
-						<Btn @click="onAddCloze()" :variant="'secondary'" class="w-1/2 2xl:w-1/3"
+						<Btn
+							@click="onAddCloze()"
+							:loading="addingCloze"
+							:variant="'secondary'"
+							class="w-1/2 2xl:w-1/3"
 							><span class="mr-1.5 text-base material-icons-outlined"> add </span
 							>{{ $t("exercise_editor.new_cloze") }}</Btn
 						>
 						<Btn
 							:outline="true"
-							:disabled="editableClozePosition === null"
+							:disabled="editableClozeSubExerciseId === null"
 							class="w-1/2 ml-2 mr-auto 2xl:w-1/3"
-							@click="editingClozePosition = editableClozePosition"
+							@click="editingClozeSubExerciseId = editableClozeSubExerciseId"
 							><span class="mr-1.5 text-base material-icons-outlined"> edit </span
 							>{{ $t("exercise_editor.edit_cloze") }}</Btn
 						>
@@ -296,6 +311,7 @@
 							</p>
 						</div>
 					</div>
+					<!-- end cloze controls -->
 
 					<!-- solutions -->
 					<div v-if="!cloze" class="mb-12">
@@ -304,7 +320,7 @@
 							<div
 								v-for="solution in solutions"
 								:key="'e-' + modelValue.id + '-sol-' + solution.id"
-								class="my-2 flex space-x-2"
+								class="flex my-2 space-x-2"
 							>
 								<!-- plain text solution -->
 								<TextEditor
@@ -466,7 +482,7 @@
 						:modelValue="modelValue.all_or_nothing"
 						@update:modelValue="onBaseExerciseChange('all_or_nothing', $event)"
 					>
-						<div class="flex space-x-1 mt-1">
+						<div class="flex mt-1 space-x-1">
 							<p>{{ $t("exercise_editor.all_or_nothing") }}</p>
 							<Tooltip
 								class="transform scale-125"
@@ -580,7 +596,7 @@
 					<h3 class="mb-8">{{ $t("exercise_editor.testcases_title") }}</h3>
 
 					<div v-if="modelValue.exercise_type === ExerciseType.JS">
-						<p class="text-muted mb-2">
+						<p class="mb-2 text-muted">
 							{{ $t("exercise_editor.use_assert_lib") }}
 							<a class="link" href="https://nodejs.org/api/assert.html" target="_blank">
 								<pre class="inline text-sm">assert</pre>
@@ -626,13 +642,17 @@
 				<Dialog
 					:fullWidth="true"
 					:confirmOnly="true"
-					@yes="editingClozePosition = null"
+					@yes="editingClozeSubExerciseId = null"
 					v-if="modelValue.exercise_type === ExerciseType.COMPLETION"
 					:showDialog="!!editingCloze"
 				>
 					<template v-slot:title>
 						{{ $t("exercise_editor.editing_cloze") }}
-						{{ editingClozePosition + 1 }}
+						{{
+							modelValue.sub_exercises?.findIndex(
+								s => s.id == editingClozeSubExerciseId,
+							) + 1
+						}}
 					</template>
 					<template v-slot:body v-if="!!editingCloze">
 						<ExerciseEditor
@@ -762,6 +782,7 @@ import {
 	CLOZE_SEPARATOR,
 	EXERCISE_SOLUTION_AUTO_SAVE_DEBOUNCE_FIELDS,
 	EXERCISE_SOLUTION_AUTO_SAVE_DEBOUNCE_TIME_MS,
+	CLOZE_PLACEHOLDER_REGEX,
 } from "@/const";
 import CodeEditor from "@/components/ui/CodeEditor.vue";
 import TestCaseEditor from "./TestCaseEditor.vue";
@@ -788,6 +809,7 @@ import { forceFileDownload, getCurrentUserId, setErrorNotification } from "@/uti
 import { mapStores } from "pinia";
 import { useMainStore } from "@/stores/mainStore";
 import { useMetaStore } from "@/stores/metaStore";
+import ClozeExercise from "@/components/shared/Exercise/ClozeExercise.vue";
 
 export default defineComponent({
 	name: "ExerciseEditor",
@@ -810,7 +832,7 @@ export default defineComponent({
 		NumberInput,
 		ArticleHandle,
 		SlotSkeleton,
-		//Spinner,
+		ClozeExercise,
 	},
 	props: {
 		modelValue: {
@@ -873,6 +895,7 @@ export default defineComponent({
 			this.modelValue,
 			async changes =>
 				await this.mainStore.updateExercise({
+					// TODO use partial update
 					courseId: this.courseId,
 					exercise: { ...this.modelValue, ...changes },
 				}),
@@ -952,14 +975,15 @@ export default defineComponent({
 			ExerciseState,
 			ExerciseType,
 			textEditorInstance: null as any,
-			editingClozePosition: null as number | null,
-			editableClozePosition: null as number | null,
+			editingClozeSubExerciseId: null as string | null,
+			editableClozeSubExerciseId: null as string | null,
 			solutionTestSlots: {} as Record<string, EventParticipationSlot>,
 			testingSolutions: {} as Record<string, boolean>,
 			showStickyStateDropdown: false,
 			lockPollingHandle: null as null | number,
 			heartbeatHandle: null as null | number,
 			fetchingExercise: false,
+			addingCloze: false,
 		};
 	},
 	methods: {
@@ -1057,7 +1081,6 @@ export default defineComponent({
 						fakeSlot.execution_results = executionResults[sId];
 					}
 				});
-				//this.solutionTestSlots[solutionId] = fakeSlot;
 			} catch (e) {
 				setErrorNotification(e);
 			} finally {
@@ -1071,26 +1094,37 @@ export default defineComponent({
 			text: string;
 			range: { index: number; length: number };
 		}) {
+			/**
+			 * Used to detect whether the text cursor is positioned within the limits
+			 * of a cloze exercise placeholder (i.e. [[<exercise_id>]])
+			 */
 			if (this.modelValue.exercise_type !== ExerciseType.COMPLETION) {
 				return;
 			}
-			const clozeSeparatorPositions = [...event.fullText.matchAll(/\[\[\?\]\]/g)].map(
-				m => m.index as number,
-			);
-			if (event.range.length === 0 && event.text.includes(CLOZE_SEPARATOR)) {
+			const clozeSeparatorPositions: [number, string, string][] = [
+				...event.fullText.matchAll(CLOZE_PLACEHOLDER_REGEX),
+			].map(m => [
+				m.index as number, // position of the match
+				m[0], // full text match (e.g. `[[123]]`)
+				m[1], // capture group match, in this case the id of the cloze sub exercise
+			]);
+			if (
+				event.range.length === 0
+				//&& event.text.includes(CLOZE_SEPARATOR)
+			) {
 				let i = 0;
-				for (const p of clozeSeparatorPositions) {
+				for (const [matchPosition, matchText, clozeId] of clozeSeparatorPositions) {
 					if (
-						event.range.index >= p &&
-						event.range.index + event.range.length <= p + CLOZE_SEPARATOR.length
+						event.range.index >= matchPosition &&
+						event.range.index + event.range.length <= matchPosition + matchText.length
 					) {
-						this.editableClozePosition = i;
+						this.editableClozeSubExerciseId = clozeId;
 						return;
 					}
 					i++;
 				}
 			}
-			this.editableClozePosition = null;
+			this.editableClozeSubExerciseId = null;
 		},
 		onExerciseTypeChange(newVal: ExerciseType) {
 			this.onBaseExerciseChange("exercise_type", newVal);
@@ -1296,13 +1330,27 @@ export default defineComponent({
 		},
 		async onAddCloze() {
 			const selection = this.textEditorInstance.getSelection();
+			const insertionIndex = selection
+				? selection.index + selection.length
+				: this.textEditorInstance.getLength();
 
-			const insertionIndex = selection.index + selection.length;
-			this.textEditorInstance.insertText(insertionIndex, CLOZE_SEPARATOR);
-			await this.onAddSubExercise();
-			// focus on most recently added cloze
-			this.editingClozePosition =
-				(this.modelValue.sub_exercises as Exercise[]).length - 1;
+			try {
+				this.addingCloze = true;
+				const subExercise = await this.onAddSubExercise();
+
+				// insert placeholder for new cloze sub-exercise
+				this.textEditorInstance.insertText(
+					insertionIndex,
+					CLOZE_SEPARATOR(subExercise.id),
+				);
+
+				// focus on most recently added cloze
+				this.editingClozeSubExerciseId = subExercise.id;
+			} catch (e) {
+				setErrorNotification(e);
+			} finally {
+				this.addingCloze = false;
+			}
 		},
 		/* end CRUD on related objects */
 		onExerciseStateChange(newState: ExerciseState) {
@@ -1478,10 +1526,12 @@ export default defineComponent({
 			);
 		},
 		editingCloze(): Exercise | null {
-			if (this.editingClozePosition === null) {
+			if (this.editingClozeSubExerciseId === null) {
 				return null;
 			}
-			return (this.modelValue.sub_exercises as Exercise[])[this.editingClozePosition];
+			return (this.modelValue.sub_exercises as Exercise[]).find(
+				s => s.id == this.editingClozeSubExerciseId,
+			) as Exercise;
 		},
 		childWeightError() {
 			return (this.v$ as any).modelValue.$errors.find((e: any) =>
@@ -1500,6 +1550,9 @@ export default defineComponent({
 		},
 		stateDropdownId() {
 			return "exercise_state_" + this.elementId;
+		},
+		modelValueWrapperSlot() {
+			return getFakeEventParticipationSlot(this.modelValue);
 		},
 	},
 });
