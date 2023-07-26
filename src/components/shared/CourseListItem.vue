@@ -2,67 +2,27 @@
 	<div
 		class="
 			flex flex-col
-			px-6
-			py-6
+			rounded-lg
 			overflow-x-hidden
 			md:min-h-13rem
 			lg:overflow-x-visible
-			card card-border card-hoverable
+			card-border card-hoverable
 			hover-shadow-elevation hover:border-transparent
 			relative
 		"
 	>
-		<!-- <span
-			v-if="course.bookmarked"
-			:style="'font-size: 42px !important; color: ' + bookmarkColor + ';'"
-			class="material-icons-outlined absolute -top-2 right-4"
-		>
-			bookmark
-		</span> -->
-
-		<div
-			class="
-				text-darkText
-				course-header
-				bg-light bg-opacity-0
-				flex
-				items-start
-				py-4
-				-mt-4
-				rounded-t
-			"
-		>
+		<!-- head -->
+		<!--bg-gradient grad-bg-->
+		<div class="px-8 h-24 flex items-start py-4 rounded-t-lg wave-bg">
 			<div>
 				<div class="flex items-start space-x-2">
-					<div
-						style="
-							min-height: 2.8rem;
-							min-width: 2.8rem;
-							max-height: 2.8rem;
-							max-width: 2.8rem;
-						"
-						class="w-8 h-8 flex mb-full rounded-full bg-primary bg-opacity-15"
-					>
-						<span
-							style="font-size: 2.05rem"
-							class="m-auto text-primary material-icons-outlined icon-light"
-						>
-							book
-						</span>
-					</div>
 					<div class="mb-auto mt-0.5">
 						<h3
-							style="line-height: 25px; font-size: 20px"
-							class="hidden lg:block mb-1.5 pr-4.5 font-normal"
+							style="line-height: 28px; font-size: 23px"
+							class="text-purple-200 mb-1.5 pr-4.5 font-normal"
 						>
 							{{ course.name }}
 						</h3>
-						<h4 style="line-height: 22px" class="lg:hidden mb-1.5 pr-4.5 font-normal">
-							{{ course.name }}
-						</h4>
-						<p style="font-weight: 400" class="-mb-0.5 text-xs text-muted uppercase">
-							{{ course.creator?.full_name }}
-						</p>
 					</div>
 				</div>
 
@@ -88,25 +48,51 @@
 				</span>
 			</Tooltip>
 		</div>
-		<div class="my-1">
-			<!-- <div class="flex items-center px-0.5 mb-1 space-x-1 text-sm"> -->
-			<!-- <div class="flex items-center space-x-0.5 text-muted">
-					<span class="my-auto text-xl material-icons-outlined">person</span>
-					<span class="">{{ $t("misc.teacher") }}:</span>
-				</div> -->
-			<!-- <p class="text-muted text-sm uppercase">{{ course.creator?.full_name }}</p> -->
-			<!-- </div> -->
-			<!-- v-html="formattedDescription" -->
+		<!-- description-->
+		<div class="mt-8 mb-4 px-8 relative">
+			<div
+				style="
+					min-height: 4.5rem;
+					min-width: 4.5rem;
+					max-height: 4.5rem;
+					max-width: 4.5rem;
+				"
+				class="
+					z-10
+					border-2 border-white
+					flex
+					rounded-full
+					bg-primary-light bg-opacity-100
+					absolute
+					-mt-4
+					-top-1/2
+					right-0
+					mr-8
+				"
+			>
+				<span
+					style="font-size: 3.05rem"
+					class="m-auto text-primary material-icons-outlined icon-light"
+				>
+					book
+				</span>
+			</div>
+			<p>
+				Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vel sapiente ad
+				reprehenderit cum natus in nostrum recusandae illo? Maiores perferendis labore
+				illo repellat, animi accusamus minima mollitia vel alias! Illum.
+			</p>
 			<p
 				style="line-height: 1.2rem; font-weight: 400; opacity: 0.8"
 				class="my-3 text-sm"
-				v-if="formattedDescription"
+				v-if="false && formattedDescription"
 				:title="course.description"
 			>
 				{{ formattedDescription }}
 			</p>
 		</div>
-		<div class="mt-auto flex w-full">
+		<!-- actions -->
+		<div class="mt-auto flex w-full px-8 pt-2 pb-6">
 			<div class="flex flex-col mt-auto space-y-1.5">
 				<router-link
 					class="w-full"
@@ -116,7 +102,6 @@
 					}"
 				>
 					<Btn
-						:size="'xs'"
 						:variant="'primary-borderless'"
 						:outline="true"
 						class="whitespace-nowrap font-medium"
@@ -124,30 +109,29 @@
 						<!-- <span class="mr-0.5 mt-0.5 text-lg material-icons-outlined">
 						chevron_right
 					</span> -->
-						<span class="text-base 2xl:text-lg">{{
+						<span class="text-base 2xl:text-lg uppercase">
+							Entra
+							<!-- {{
 							metaStore.user.is_teacher
 								? $t("courses.access_as_student")
 								: $t("courses.go_to_course")
-						}}</span>
+						}} -->
+						</span>
 					</Btn></router-link
 				>
 				<router-link
-					v-if="canAccessCoursePanel"
+					v-if="false && canAccessCoursePanel"
 					class=""
 					:to="{
 						name: 'TeacherCourseDashboard',
 						params: { courseId: course.id },
 					}"
-					><Btn
-						:size="'xs'"
-						:outline="true"
-						:variant="'primary-borderless'"
-						class="font-medium"
-					>
-						<span class="text-base 2xl:text-lg">{{ $t("courses.course_panel") }}</span>
-						<!-- <span class="ml-1 text-lg material-icons-outlined"> shield </span> -->
-					</Btn></router-link
 				>
+					<Btn :outline="true" :variant="'icon'" class="font-medium">
+						<!-- <span class="text-base 2xl:text-lg">{{ $t("courses.course_panel") }}</span> -->
+						<span class="ml-1 text-lg material-icons-outlined"> shield </span>
+					</Btn>
+				</router-link>
 			</div>
 			<div class="ml-auto flex items-center mt-auto">
 				<!-- TODO implement -->
@@ -236,14 +220,12 @@ export default defineComponent({
 	},
 	methods: {
 		getColorFromString,
+		getImageUrl(imageName: string) {
+			// eslint-disable-next-line no-undef
+			return require("@/assets/illustrations/" + imageName);
+		},
 	},
 });
 </script>
 
-<style>
-.course-header {
-	/* background-image: url("../../../public/course-bg.png");
-	background-size: cover;
-	background-repeat: no-repeat; */
-}
-</style>
+<style></style>

@@ -67,6 +67,16 @@
 		@apply underline text-blue-500 hover:text-blue-700;
 	}
 
+	.course-header {
+		background: rgb(115, 5, 253);
+		background: linear-gradient(
+			150deg,
+			var(--grad-start) 0%,
+			var(--grad-mid-1) 25%,
+			var(--grad-mid-2) 83% /* var(--grad-end) 100% */
+		) !important;
+	}
+
 	.hero-icon {
 		@apply shadow-all-around
 		opacity-40
@@ -91,6 +101,10 @@
 		transform: translateY(-10px);
 	}
 
+	.wave-bg {
+		background: url("assets/illustrations/card-bg.png");
+		background-size: cover;
+	}
 	.grad-bg {
 		--grad-start: rgba(115, 5, 253, 1);
 		--grad-mid-1: rgba(97, 30, 210, 1);

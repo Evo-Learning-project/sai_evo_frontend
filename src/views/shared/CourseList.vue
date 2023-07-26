@@ -39,7 +39,17 @@
 					</div>
 				</div>
 			</div>
-			<div class="grid gap-4 md:gap-8 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
+			<div
+				class="
+					grid
+					gap-4
+					md:gap-8
+					lg:gap-20
+					md:grid-cols-2
+					lg:grid-cols-3
+					2xl:grid-cols-4
+				"
+			>
 				<CourseListItem
 					v-for="(course, index) in coursesFiltered"
 					:key="'course-' + course.id"

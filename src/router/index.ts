@@ -9,7 +9,6 @@ import CourseDashBoardExamList from "../views/student/CourseDashboard/ExamsList.
 import CourseDashBoardPracticeSessionList from "../views/student/CourseDashboard/PracticeList.vue";
 import CourseDashBoardExerciseThreadList from "../views/student/CourseDashboard/ExerciseThreadList.vue";
 import FavoriteContentsList from "../views/student/CourseDashboard/FavoriteContentsList.vue";
-//import StudentCourseDashboard from "../views/student/CourseDashboard.vue";
 import CourseExercises from "../views/teacher/CourseExercises.vue";
 import CourseTree from "../views/course_tree/CourseTree.vue";
 import NodeDetail from "../views/course_tree/NodeDetail.vue";
@@ -80,6 +79,7 @@ const routes: Array<RouteRecordRaw> = [
 			// TODO move CourseList here
 		],
 	},
+	// dispatchers
 	{
 		path: "/threads/:courseId/:exerciseId/:solutionId",
 		name: "ExerciseSolutionThreadDispatcher",
@@ -110,6 +110,7 @@ const routes: Array<RouteRecordRaw> = [
 		component: MainStudent,
 		beforeEnter: courseTreeBeforeGuard,
 	},
+	// teacher routes
 	{
 		path: "/teacher",
 		name: "MainTeacher",
@@ -299,6 +300,7 @@ const routes: Array<RouteRecordRaw> = [
 			},
 		],
 	},
+	// student routes
 	{
 		path: "/student",
 		name: "MainStudent",
@@ -478,6 +480,12 @@ const routes: Array<RouteRecordRaw> = [
 				component: PageNotFound,
 			},
 		],
+	},
+	// new b2c routes
+	{
+		path: "/welcome",
+		name: "EducationTypeSelection",
+		component: () => import("../views/student/EducationTypeSelection.vue"),
 	},
 ];
 

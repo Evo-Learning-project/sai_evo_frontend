@@ -326,6 +326,7 @@ export function logAnalyticsEvent(eventName: string, params: Record<string, any>
 export const getMaxUploadFileSizeBytes = () =>
 	parseFloat(process.env.VUE_APP_MAX_UPLOAD_SIZE_BYTES ?? String(1_100_000_000));
 export const isDemoMode = () => JSON.parse(process.env.VUE_APP_DEMO_MODE ?? "false");
+export const isB2cMode = () => JSON.parse(process.env.VUE_APP_B2C_MODE ?? "false");
 export const isMaintenanceMode = () =>
 	JSON.parse(process.env.VUE_APP_MAINTENANCE_MODE ?? "false");
 
