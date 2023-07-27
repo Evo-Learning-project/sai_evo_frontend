@@ -47,6 +47,7 @@ module.exports = {
 				"max-height": "max-height",
 				"max-width": "max-width",
 				"shadow-border": "shadow border",
+				"colors-opacity": "background-color, border-color, color, fill, stroke, opacity",
 			},
 			transformOrigin: {
 				0: "0%",

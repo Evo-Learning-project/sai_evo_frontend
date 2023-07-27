@@ -217,7 +217,11 @@ import {
 } from "@/api";
 import SlotSkeleton from "@/components/ui/skeletons/SlotSkeleton.vue";
 import Countdown from "@/components/ui/Countdown.vue";
-import { getParticipationRemainingTime, setErrorNotification } from "@/utils";
+import {
+	DEFAULT_SERVER_MESSAGES,
+	getParticipationRemainingTime,
+	setErrorNotification,
+} from "@/utils";
 import { mapStores } from "pinia";
 import { useMainStore } from "@/stores/mainStore";
 import { useMetaStore } from "@/stores/metaStore";
@@ -532,20 +536,23 @@ export default defineComponent({
 				slot,
 				async changes => {
 					try {
-						await this.mainStore.partialUpdateCurrentEventParticipationSlot({
+						await this.mainStore.partialUpdateCurrentEventParticipationSlotSubmission({
 							courseId: this.courseId,
 							slotId: slot.id,
 							changes,
-							mutate: true,
-							forceStudent: true,
 						});
 					} catch (e) {
 						// investigate https://sentry.io/organizations/samuele/issues/3683654671/?project=6265941
 						console.error(
-							"partialUpdateCurrentEventParticipationSlot failed when called with args",
+							"partialUpdateCurrentEventParticipationSlotSubmission failed when called with args",
 							slot.id,
 							JSON.stringify(changes),
 						);
+						if (
+							!DEFAULT_SERVER_MESSAGES.includes((e as any).response?.data?.detail ?? "")
+						) {
+							setErrorNotification(e);
+						}
 						throw e;
 					}
 				},

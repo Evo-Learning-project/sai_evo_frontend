@@ -19,7 +19,10 @@
 				:show-second="false"
 				:formatter="momentFormat"
 				:title-time-format="'DD-MM-YYYY'"
+				:shortcuts="shortcuts"
 			>
+				<!-- :disabledDate="isDateDisabledFn"
+				 :disabledTime="isTimeDisabledFn" -->
 				<template v-slot:icon-calendar
 					><span class="text-base material-icons-outlined"> calendar_today </span>
 				</template>
@@ -45,6 +48,7 @@
 </template>
 
 <script lang="ts">
+import { getTranslatedString as _ } from "@/i18n";
 import { defineComponent } from "@vue/runtime-core";
 import moment from "moment";
 import { v4 as uuid4 } from "uuid";
@@ -56,7 +60,15 @@ import "vue-datepicker-next/locale/it";
 export default defineComponent({
 	name: "CalendarInput",
 	components: { DatePicker },
-	props: ["modelValue"],
+	props: {
+		modelValue: {
+			required: true,
+		},
+		// allowPast: {
+		// 	type: Boolean,
+		// 	default: false,
+		// },
+	},
 	created() {
 		this.elementId = uuid4();
 	},
@@ -109,6 +121,77 @@ export default defineComponent({
 			set(val: unknown) {
 				this.$emit("update:modelValue", val);
 			},
+		},
+		// isDateDisabledFn() {
+		// 	if (this.allowPast) {
+		// 		return () => false;
+		// 	}
+		// 	return date => {
+		// 		if (date === this.modelValue) {
+		// 			return false;
+		// 		}
+		// 		const today = new Date();
+		// 		const midnight = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+		// 		return date.getTime() < midnight.getTime();
+		// 	};
+		// },
+		// isTimeDisabledFn() {
+		// 	if (this.allowPast) {
+		// 		return () => false;
+		// 	}
+		// 	return date => {
+		// 		if (date === this.modelValue) {
+		// 			return false;
+		// 		}
+		// 		return date < new Date();
+		// 	};
+		// },
+		shortcuts() {
+			const nineAMToday = new Date();
+			nineAMToday.setHours(9, 0, 0, 0);
+
+			const twoPMToday = new Date();
+			twoPMToday.setHours(14, 0, 0, 0);
+
+			return [
+				...(new Date() > nineAMToday
+					? []
+					: [{ text: _("misc.this_morning"), onClick: () => nineAMToday }]),
+				...(new Date() > twoPMToday
+					? []
+					: [
+							{
+								text: _("misc.this_afternoon"),
+								onClick: () => twoPMToday,
+							},
+					  ]),
+				{
+					text: _("misc.tomorrow_morning"),
+					onClick: () => {
+						const tomorrow = new Date();
+						tomorrow.setDate(tomorrow.getDate() + 1); // set the date to tomorrow
+						tomorrow.setHours(9, 0, 0, 0);
+						return tomorrow;
+					},
+				},
+				{
+					text: _("misc.tomorrow_afternoon"),
+					onClick: () => {
+						const tomorrow = new Date();
+						tomorrow.setDate(tomorrow.getDate() + 1); // set the date to tomorrow
+						tomorrow.setHours(14, 0, 0, 0);
+						return tomorrow;
+					},
+				},
+				{
+					text: _("misc.next_week"),
+					onClick: () => {
+						const date = new Date();
+						date.setTime(date.getTime() + 3600 * 1000 * 24 * 7);
+						return date;
+					},
+				},
+			];
 		},
 	},
 });

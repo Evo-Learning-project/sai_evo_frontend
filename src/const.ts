@@ -197,11 +197,22 @@ export const teacherTourSteps = [
 	},
 	{
 		// permissions
-		target: "#sidebar-option-5",
+		target: "#sidebar-option-6",
 		header: {
 			title: _("tour.permissions_header"),
 		},
 		content: _("tour.permissions_content"),
+		params: {
+			placement: "right",
+		},
+	},
+	{
+		// integrations
+		target: "#sidebar-option-7",
+		header: {
+			title: _("tour.integrations_header"),
+		},
+		content: _("tour.integrations_content"),
 		params: {
 			placement: "right",
 		},
@@ -358,91 +369,39 @@ export const getCourseInsightsHeaders = (
 ): ColDef[] => [
 	{ field: "id", hide: true },
 	{
-		field: "email",
-		headerName: _("event_participation_headings.email"),
-		filterParams: {
-			filterOptions: ["contains"],
-			suppressAndOrCondition: true,
-		},
-		filter: "agTextColumnFilter",
-		width: 300,
+		field: "student",
+		headerName: _("event_participation_headings.student"),
+		// filterParams: {
+		// 	filterOptions: ["contains"],
+		// 	suppressAndOrCondition: true,
+		// },
+		// filter: "agTextColumnFilter",
+		width: 450,
 		resizable: true,
+		cellRenderer: "StudentRenderer",
+		pinned: "left",
 	},
 	{
-		field: "fullName",
-		headerName: _("misc.full_name"),
-		filterParams: {
-			filterOptions: ["contains"],
-			suppressAndOrCondition: true,
-		},
-		filter: "agTextColumnFilter",
-		minWidth: 120,
-		resizable: true,
-		flex: 1,
-	},
-	{
-		field: "mat",
-		headerName: _("event_participation_headings.mat"),
-		filterParams: {
-			filterOptions: ["contains"],
-			suppressAndOrCondition: true,
-		},
-		filter: "agTextColumnFilter",
-		resizable: true,
-	},
-	...(isDemoMode()
-		? []
-		: [
-				{
-					field: "course",
-					headerName: _("event_participation_headings.course"),
-					filterParams: {
-						filterOptions: ["contains"],
-						suppressAndOrCondition: true,
-					},
-					filter: "agTextColumnFilter",
-					resizable: true,
-				},
-		  ]),
-	{
-		field: "score_sum",
-		headerName: _("course_insights.score_sum"),
-		filterParams: {
-			allowedCharPattern: "\\d\\-\\,", // note: ensure you escape as if you were creating a RegExp from a string
-			numberParser: (text: string | null) => {
-				return text == null ? null : parseFloat(text.replace(",", "."));
-			},
-			filterOptions: [
-				"equals",
-				"notEqual",
-				"lessThan",
-				"lessThanOrEqual",
-				"greaterThan",
-				"greaterThanOrEqual",
-			],
-			suppressAndOrCondition: true,
-		},
-		filter: "agNumberColumnFilter",
-	},
-	{
-		field: "score_average",
+		field: "scoreAverage",
 		headerName: _("course_insights.score_average"),
-		filterParams: {
-			allowedCharPattern: "\\d\\-\\,", // note: ensure you escape as if you were creating a RegExp from a string
-			numberParser: (text: string | null) => {
-				return text == null ? null : parseFloat(text.replace(",", "."));
-			},
-			filterOptions: [
-				"equals",
-				"notEqual",
-				"lessThan",
-				"lessThanOrEqual",
-				"greaterThan",
-				"greaterThanOrEqual",
-			],
-			suppressAndOrCondition: true,
-		},
-		filter: "agNumberColumnFilter",
+		// filterParams: {
+		// 	allowedCharPattern: "\\d\\-\\,", // note: ensure you escape as if you were creating a RegExp from a string
+		// 	numberParser: (text: string | null) => {
+		// 		return text == null ? null : parseFloat(text.replace(",", "."));
+		// 	},
+		// 	filterOptions: [
+		// 		"equals",
+		// 		"notEqual",
+		// 		"lessThan",
+		// 		"lessThanOrEqual",
+		// 		"greaterThan",
+		// 		"greaterThanOrEqual",
+		// 	],
+		// 	suppressAndOrCondition: true,
+		// },
+		// filter: "agNumberColumnFilter",
+		pinned: "left",
+		width: 100,
 	},
 	...exams.map((e, i) => ({
 		//autoHeight: true,
@@ -450,8 +409,8 @@ export const getCourseInsightsHeaders = (
 		field: "exam_" + e.id,
 		headerName:
 			e.name.trim().length > 0 ? e.name.trim() : _("event_preview.unnamed_event"),
-		width: 100,
-		resizable: true,
+		width: 200,
+		resizable: false,
 		filterParams: {
 			allowedCharPattern: "\\d\\-\\,", // note: ensure you escape as if you were creating a RegExp from a string
 			numberParser: (text: string | null) => {
@@ -468,23 +427,25 @@ export const getCourseInsightsHeaders = (
 			suppressAndOrCondition: true,
 		},
 		filter: "agNumberColumnFilter",
-		headerComponentParams: {
-			template:
-				'<div class="ag-cell-label-container" role="presentation">' +
-				'  <span ref="eMenu" class="ag-header-icon ag-header-cell-menu-button"></span>' +
-				'  <div ref="eLabel" class="ag-header-cell-label" role="presentation">' +
-				'    <span ref="eSortOrder" class="ag-header-icon ag-sort-order" ></span>' +
-				'    <span ref="eSortAsc" class="ag-header-icon ag-sort-ascending-icon" ></span>' +
-				'    <span ref="eSortDesc" class="ag-header-icon ag-sort-descending-icon" ></span>' +
-				'    <span ref="eSortNone" class="ag-header-icon ag-sort-none-icon" ></span>' +
-				`    <span style='background-color: ${
-					examsColors[e.id]
-				}; margin-right: 5px; min-width: 10px; min-height: 10px; width: 10px; height: 10px; border-radius: 50%;'></span>` +
-				'    <span ref="eText" class="ag-header-cell-text" role="columnheader"></span>' +
-				'    <span ref="eFilter" class="ag-header-icon ag-filter-icon"></span>' +
-				"  </div>" +
-				"</div>",
-		},
+		cellRenderer: "CourseInsightsExamParticipationRenderer",
+		headerComponent: "CourseInsightsExamHeaderRenderer",
+		// headerComponentParams: {
+		// 	template:
+		// 		'<div class="ag-cell-label-container" role="presentation">' +
+		// 		'  <span ref="eMenu" class="ag-header-icon ag-header-cell-menu-button"></span>' +
+		// 		'  <div ref="eLabel" class="ag-header-cell-label" role="presentation">' +
+		// 		'    <span ref="eSortOrder" class="ag-header-icon ag-sort-order" ></span>' +
+		// 		'    <span ref="eSortAsc" class="ag-header-icon ag-sort-ascending-icon" ></span>' +
+		// 		'    <span ref="eSortDesc" class="ag-header-icon ag-sort-descending-icon" ></span>' +
+		// 		'    <span ref="eSortNone" class="ag-header-icon ag-sort-none-icon" ></span>' +
+		// 		`    <span style='background-color: ${
+		// 			examsColors[e.id]
+		// 		}; margin-right: 5px; min-width: 10px; min-height: 10px; width: 10px; height: 10px; border-radius: 50%;'></span>` +
+		// 		'    <span ref="eText" class="ag-header-cell-text" role="columnheader"></span>' +
+		// 		'    <span ref="eFilter" class="ag-header-icon ag-filter-icon"></span>' +
+		// 		"  </div>" +
+		// 		"</div>",
+		// },
 	})),
 ];
 
@@ -500,39 +461,19 @@ export const getEventParticipationMonitorHeaders = (
 		{ field: "id", hide: true },
 		{
 			field: "email",
-			headerName: _("event_participation_headings.email"),
-			filterParams: {
-				filterOptions: ["contains"],
-				suppressAndOrCondition: true,
-			},
-			filter: "agTextColumnFilter",
-			width: 300,
+			headerName: _("event_participation_headings.student"),
+			minWidth: 400,
 			resizable: true,
 			cellRenderer: "EventParticipationEmailRenderer",
 			checkboxSelection: true,
 			headerCheckboxSelection: true,
 			headerCheckboxSelectionFilteredOnly: true,
-		},
-		{
-			field: "fullName",
-			headerName: _("misc.full_name"),
-			filterParams: {
-				filterOptions: ["contains"],
-				suppressAndOrCondition: true,
-			},
-			filter: "agTextColumnFilter",
-			minWidth: 120,
-			resizable: true,
+			pinned: "left",
 			flex: 1,
 		},
 		{
 			field: "mat",
 			headerName: _("event_participation_headings.mat"),
-			filterParams: {
-				filterOptions: ["contains"],
-				suppressAndOrCondition: true,
-			},
-			filter: "agTextColumnFilter",
 			resizable: true,
 		},
 		...(isDemoMode()
@@ -541,11 +482,6 @@ export const getEventParticipationMonitorHeaders = (
 					{
 						field: "course",
 						headerName: _("event_participation_headings.course"),
-						filterParams: {
-							filterOptions: ["contains"],
-							suppressAndOrCondition: true,
-						},
-						filter: "agTextColumnFilter",
 						resizable: true,
 					},
 			  ]),
@@ -578,6 +514,7 @@ export const getEventParticipationMonitorHeaders = (
 			width: 60,
 			resizable: true,
 			headerName: _("event_participation_headings.grade"),
+			cellRenderer: "EventParticipationScoreRenderer",
 		});
 	}
 

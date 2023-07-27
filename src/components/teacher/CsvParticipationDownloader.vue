@@ -1,12 +1,14 @@
 <template>
 	<div>
 		<Btn
+			:tooltip="$t('misc.download_results')"
 			@click="showDialog = true"
 			:outline="true"
+			:variant="'icon'"
 			:disabled="(mainStore.eventParticipations?.length ?? 0) === 0"
-			><span class="mr-1 material-icons-outlined"> file_download </span
-			>{{ $t("misc.download_results") }}</Btn
-		>
+			><span class="material-icons-outlined"> file_download </span>
+			<!-- {{ $t("misc.download_results") }} -->
+		</Btn>
 		<Dialog
 			:showDialog="showDialog"
 			:yesText="loadingReport ? $t('misc.downloading') : $t('misc.download')"

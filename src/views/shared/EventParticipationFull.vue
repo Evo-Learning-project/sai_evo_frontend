@@ -311,6 +311,7 @@ export default defineComponent({
 		}
 
 		if (this.showSolutionAndScores) {
+			// TODO load solutions for exercises as they become visible
 			(this.mainStore.currentEventParticipation?.slots ?? []).forEach(async s => {
 				this.slotsLoadingSolution[s.id] = true;
 				try {

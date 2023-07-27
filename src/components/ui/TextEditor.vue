@@ -291,8 +291,6 @@ export default defineComponent({
 			this.showBaseEditor = !this.showBaseEditor;
 		},
 		onEditorChange({ quill, html, text }: unknown) {
-			//this.content = html;
-			console.log({ quill, html, text });
 			this.$emit("update:modelValue", html);
 		},
 		onEditorReady(quill: any) {

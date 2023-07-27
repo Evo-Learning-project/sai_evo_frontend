@@ -239,9 +239,6 @@ export default defineComponent({
 		},
 		...nodeProps,
 	},
-	created() {
-		console.log("POLL CREATED");
-	},
 	data() {
 		return {
 			PollNodeState,

@@ -13,4 +13,4 @@ export const i18n = createI18n({
 	silentFallbackWarn: true,
 });
 
-export const getTranslatedString = i18n.global.t;
+export const getTranslatedString = i18n.global.tc;

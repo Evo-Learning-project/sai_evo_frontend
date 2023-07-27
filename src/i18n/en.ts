@@ -15,6 +15,8 @@ export const en = {
 	dialog: {
 		default_ok_text: "OK",
 		default_cancel_text: "Cancel",
+		default_yes_text: "Yes",
+		default_no_text: "No",
 	},
 	practice_template_editor: {
 		begin_practice: "Start practice",
@@ -24,7 +26,11 @@ export const en = {
 		rule_amount_1: "How many exercises with tag",
 		rule_amount_2: "do you want to see?",
 	},
+	login_screen: {
+		login: "Login",
+	},
 	headings: {
+		course_integrations: "Integrations for " + ROUTE_TITLE_COURSE_NAME_TOKEN,
 		course_tree: "Material " + ROUTE_TITLE_COURSE_NAME_TOKEN,
 		exercise_solution_threads: "Soluzioni esercizi " + ROUTE_TITLE_COURSE_NAME_TOKEN,
 		login: "Login",
@@ -122,6 +128,7 @@ export const en = {
 		course_dashboard_back_to_courses: "Back to courses",
 		course_list_courses: "Courses",
 		course_list_new_course: "New course",
+		course_integrations: "Integrations",
 	},
 	breadcrumbs: {
 		course_list: "Courses",
@@ -173,26 +180,43 @@ export const en = {
 	event_states_descriptions: {
 		[EventState.PLANNED]:
 			"It's all set! The exam preview is visible to students, but they won't be able to access it until its begin timestamp.",
-		[EventState.DRAFT]: "Exam won't be visible to students until you publish it.",
+		[EventState.DRAFT]: "This exam won't be visible to students until you publish it.",
 		[EventState.OPEN]: "",
 		[EventState.CLOSED]: "",
 	},
 	event_editor: {
-		name: "Nome",
+		choose_allowed: "Choose allowed",
+		allowed_students: "allowed students",
+		current_state_is_draft: "This exam is currently in draft state",
+		max_grade: "Maximum grade",
+		name: "Name",
 		state_editor_title: "Publish",
-		state: "Stato esame",
+		state: "State",
 		current_state_is: "Exam is currently in state: ",
-		state_is: "L'esame è",
+		state_is: "The exam has",
 		begin_timestamp: "Beings at",
 		end_timestamp: "Ends at",
-		instructions: "Istruzioni (opzionale)",
+		instructions: "Instructions (optional)",
 		editor_title: "Exam editor",
-		flow_rules: "Regole di svolgimento",
+		flow_rules: "Exam rules",
+		access_rules: "Access rules",
+		allow_everyone_access_label: "Allow access to anyone who has the link",
+		deny_access_by_default_label: "Only allow access to those you select",
+		allow_access_description:
+			"Anyone who has the link to this exam will be able to participate once it starts",
+		deny_access_description: "Only the students you select will be able to participate",
+		time_limit_rules: "Time limit",
+		time_limit_label: "Enforce time limit",
+		no_time_limit_description:
+			"The exam will not end automatically and you'll have to manually close it",
+		time_limit_description:
+			"After the specified time limit, the exam will end. This applies to each student individually.",
+		manage_time_limit_exceptions: "Exceptions",
+		time_limit_exceptions: "exceptions",
 		exercises_shown_at_a_time_label: "Numero di esercizi da mostrare per pagina",
-		allow_going_back_label:
-			"Permetti agli studenti di tornare indietro a un esercizio già visto",
-		show_all_exercises_at_once: "Mostra tutti gli esercizi insieme",
-		show_one_exercise_at_once: "Mostra solo un esercizio alla volta",
+		allow_going_back_label: "Allow going back to a previously seen exercise",
+		show_all_exercises_at_once: "Display all exercises at once",
+		show_one_exercise_at_once: "Display one exercise at a time",
 		publish: "Publish",
 		revert_to_draft: "Torna a stato di bozza",
 		event_planned_help_text: "L'esame verrà aperto agli studenti automaticamente in data",
@@ -270,6 +294,23 @@ export const en = {
 		make_public_confirmation_body:
 			"Se rendi questo esercizio pubblico, tutti gli studenti potranno visualizzarlo in qualsiasi momento. Se vuoi utilizzare questo esercizio in un esame, rendilo privato.",
 	},
+	event_monitor: {
+		search_students: "Search students",
+		close_for_selected: "Close",
+		undo_turn_in: "Undo turn-in",
+		if_selected: "If selected",
+		reopen_for_selected: "Reopen",
+		stats_participants: "Participants",
+		stats_turned_in: "Turned in",
+		stats_average_progress: "Average completion",
+	},
+	event_participation_headings: {
+		student: "Student",
+		mat: "Mat",
+		course: "Course",
+		exercise: "Exercise",
+		participation_state: "Turned in",
+	},
 	filter_results: {
 		title: "Search exercises",
 		more_filters: "More filters",
@@ -291,6 +332,10 @@ export const en = {
 		[ExerciseState.DRAFT]: "Draft",
 	},
 	misc: {
+		warning: "Warning",
+		find_out_more: "Find out more",
+		minutes: "Minutes",
+		time_limit: "Time limit",
 		updated_on: "Updated on",
 		wait: "Wait...",
 		file_upload: "Upload file",
@@ -305,6 +350,11 @@ export const en = {
 		edit: "Edit",
 		select: "Select",
 		preview: "Preview",
+	},
+	enrollment: {
+		enroll: "Enroll",
+		enrollment: "Enrollment",
+		do_you_want_to_enroll: "Do you want to enroll in",
 	},
 	gamification: {
 		to_reach_next_level: "To reach next level",
@@ -377,6 +427,7 @@ export const en = {
 			"Gli slot verranno assegnati agli studenti in ordine casuale",
 	},
 	event_template_rule_editor: {
+		weight: "Weight",
 		reset_slot_settings: "Reset slot",
 		exercise_number: "Slot",
 		choose_exercise: "Choose exercise",
@@ -395,7 +446,7 @@ export const en = {
 			"Each student will be shown a randomly picked exercise among these:",
 		tag_based_description: "Ogni studente vedrà un esercizio a caso che tra i tag ha:",
 		same_exercise_for_everyone_description:
-			"Tutti gli studenti vedranno questo esercizio:",
+			"All participants will be shown this exercise:",
 		tag_based_introduction:
 			"Each student will see one exercise chosen randomly among those that meet the conditions defined here. An exercise is eligible if, for each group of tags defined, it contains at least one tag from that group.",
 		tag_based_select_exercises: "Exercises will be eligible only if they have",
@@ -495,5 +546,19 @@ export const en = {
 		overall_score_instructions:
 			"You can assign a grade manually to this student. The grade can be" +
 			" a number or a string.",
+	},
+	integrations: {
+		classroom: {
+			publish_on_classroom: "Also publish on Classroom",
+			student_no_scopes_warning:
+				"Some features may not work properly because you haven't authorized this app to access \
+				the necessary information from your Google account.",
+			grant_scopes_btn: "Authorize",
+			grant_scopes_to_use_integration:
+				"To use this integration, authorize Evo Learning to access the relevant data of your Google account.",
+		},
+	},
+	data_table: {
+		noRowsToShow: "No results",
 	},
 };

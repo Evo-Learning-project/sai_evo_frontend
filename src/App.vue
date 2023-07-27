@@ -8,7 +8,10 @@
 			<Spinner :size="'xl'" :variant="'dark'" :fast="true" />
 		</div>
 		<transition name="fade">
-			<Notification v-if="metaStore._showSuccessFeedback"></Notification>
+			<Notification
+				v-if="metaStore._showSuccessFeedback"
+				:text="metaStore.customSuccessFeedbackMessage"
+			/>
 		</transition>
 		<div class="flex flex-col flex-grow">
 			<!-- top app bar -->
@@ -51,11 +54,9 @@
 			<!-- main pane containing sidebar & current view-->
 			<div class="flex relative flex-grow">
 				<SideBar
-					@logout="logOut()"
 					:header="currentCourseName"
 					v-if="showSidebar"
 					:sidebarOptions="sidebarOptions"
-					@toggleMobileSidebar="onToggleMobileSidebar()"
 					:collapsed="sidebarCollapsed"
 					:showMobileSidebar="showMobileSidebar"
 					:initializing="initializingSidebar"
@@ -136,7 +137,9 @@
 						</div>
 					</template>
 					<template
-						v-if="hasAnyPrivileges && !isTeacherRoute && $route.params.courseId"
+						v-if="
+							hasAnyPrivilegesOrIsTeacher && !isTeacherRoute && $route.params.courseId
+						"
 						v-slot:footer
 					>
 						<div
@@ -359,7 +362,7 @@ export default defineComponent({
 				await this.mainStore.getCourses();
 				// redirect to student view if attempting to access a teacher view unprivileged,
 				// or to unprivileged route specified in route meta
-				if (!this.hasAnyPrivileges && this.isTeacherRoute) {
+				if (!this.hasAnyPrivilegesOrIsTeacher && this.isTeacherRoute) {
 					const redirectTo = this.$route.meta.unprivilegedRedirect as string | undefined;
 					this.$router.push({
 						name:
@@ -475,7 +478,7 @@ export default defineComponent({
 		isDemoMode() {
 			return JSON.parse(process.env.VUE_APP_DEMO_MODE ?? "false");
 		},
-		hasAnyPrivileges(): boolean {
+		hasAnyPrivilegesOrIsTeacher(): boolean {
 			if (this.$router.currentRoute.value.params.courseId) {
 				// check user has privileges for course currrently visited
 				const myPrivileges: CoursePrivilege[] =

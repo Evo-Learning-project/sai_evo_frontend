@@ -1,4 +1,9 @@
-import { CourseTreeNode } from "@/models";
+import {
+	AnnouncementNodeState,
+	CourseTreeNode,
+	LessonNodeState,
+	PollNodeState,
+} from "@/models";
 import { useMainStore } from "@/stores/mainStore";
 
 export const nodeProps = {
@@ -76,6 +81,13 @@ export const nodeEditorProps = {
 	},
 };
 
+export interface NodeEditorStateUpdatePayload {
+	newState: LessonNodeState | AnnouncementNodeState | PollNodeState;
+	params: {
+		fireIntegrationEvent?: boolean;
+	};
+}
+
 export const nodeEditorEmits = {
 	patchNode<N extends CourseTreeNode, K extends keyof N>({
 		key,
@@ -86,6 +98,9 @@ export const nodeEditorEmits = {
 		value: N[K];
 		save?: boolean;
 	}) {
+		return true;
+	},
+	updateState({ newState, params }: NodeEditorStateUpdatePayload) {
 		return true;
 	},
 	deleteNode(node: CourseTreeNode) {

@@ -82,6 +82,7 @@ export enum EventTemplateRuleType {
 export enum EventParticipationState {
 	IN_PROGRESS,
 	TURNED_IN,
+	CLOSED_BY_TEACHER,
 }
 
 export enum ParticipationAssessmentProgress {

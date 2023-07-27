@@ -143,6 +143,62 @@
 		width: 100%;
 	}
 
+	.mx-datepicker-main.mx-datepicker-popup {
+		display: flex !important;
+	}
+
+	.mx-datepicker-content {
+		margin-left: 0 !important;
+	}
+
+	.mx-btn:hover {
+		@apply border-primary text-primary !important;
+	}
+
+	.mx-calendar-content .cell {
+		@apply rounded-full transition-all duration-200 ease-in-out !important;
+	}
+
+	.mx-calendar-content .cell:hover {
+		@apply bg-gray-200 bg-opacity-60 !important;
+	}
+
+	.mx-calendar {
+		box-sizing: border-box;
+		width: 100% !important;
+		height: 300px !important;
+	}
+
+	.mx-calendar-content {
+		position: relative;
+		height: 86% !important;
+		box-sizing: border-box;
+	}
+
+	.mx-time-content {
+		height: 250px !important;
+		box-sizing: border-box;
+		overflow: hidden;
+	}
+
+	.mx-date-time {
+		position: relative;
+		width: 270px !important;
+		height: 300px !important;
+	}
+
+	.mx-table-date .today {
+		@apply text-primary border border-primary !important;
+	}
+
+	.mx-datepicker-sidebar {
+		width: max-content !important;
+	}
+
+	.mx-btn-shortcut {
+		@apply font-normal text-2xs md:text-xs mt-2 mb-1 !important;
+	}
+
 	/*
   experimental styles
   */
@@ -380,6 +436,39 @@
 		box-shadow: 0 2px 6px -1px rgb(0 0 0 / 20%), 0 4px 6px 0 rgb(0 0 0 / 14%),
 			0 1px 12px 0 rgb(0 0 0 / 12%);
 	}
+
+	.top-edge-shadow {
+		/* box-shadow: 0px 1px 2px 0px rgb(60 64 67 / 30%), 0px 2px 6px 2px rgb(60 64 67 / 15%); */
+		background: linear-gradient(to bottom, #e8eaed, rgba(255, 255, 255, 0));
+		-webkit-mask-image: linear-gradient(
+			to right,
+			#e8eaed37 0%,
+			#e8eaed 6.93%,
+			#e8eaed 93.07%,
+			#e8eaed37
+		);
+		mask-image: linear-gradient(
+			to right,
+			#e8eaed37 0%,
+			#e8eaed 6.93%,
+			#e8eaed 93.07%,
+			#e8eaed37
+		);
+		position: absolute;
+		height: 6px;
+		top: 0;
+		width: calc(100% + 10px) !important;
+		margin-left: -5px;
+		/*
+		    background: linear-gradient(to top,#e8eaed,rgba(255,255,255,0));
+    height: 6px;
+    mask-image: linear-gradient(to right,rgba(0,0,0,0) 0%,#e8eaed 6.93%,#e8eaed 93.07%,rgba(0,0,0,0));
+    -webkit-mask-image: linear-gradient(to right,rgba(0,0,0,0) 0%,#e8eaed 6.93%,#e8eaed 93.07%,rgba(0,0,0,0));
+    opacity: 1;
+    position: absolute;
+    top: calc(6px*-1);
+		*/
+	}
 	/* .shadow-elevation {
       @apply transition-shadow duration-1000 ease-in-out;
     } */
@@ -446,7 +535,8 @@
 		@apply bg-light bg-opacity-80;
 	}
 
-	.card button {
+	.card button,
+	.no-elevate {
 		@apply shadow-none !important;
 	}
 	.link {
@@ -990,7 +1080,7 @@
 		@apply rounded-md !important;
 	}
 	.mx-calendar-content .cell.active {
-		@apply text-lightText bg-primary rounded-md !important;
+		@apply text-lightText bg-primary !important;
 	}
 	.mx-time-column .mx-time-item.active {
 		@apply text-primary !important;
@@ -1025,6 +1115,21 @@
 	}
 
 	/* animations */
+
+	.slide-fade-enter-active {
+		transition: all 0.2s ease-out;
+	}
+
+	.slide-fade-leave-active {
+		transition: all 0.1s ease-in; /* cubic-bezier(1, 0.5, 0.8, 1); */
+	}
+
+	.slide-fade-enter-from,
+	.slide-fade-leave-to {
+		transform: translateX(10px);
+		opacity: 0;
+	}
+
 	.bounce-enter-active {
 		animation: bounce-in 0.25s ease;
 	}
@@ -1177,6 +1282,40 @@
 		@apply px-3 !important;
 	}
 
+	.ag-theme-material .ag-pinned-left-header {
+		border-right: 0 !important;
+	}
+
+	/* .ag-pinned-left-header:after {
+		height: 110vh;
+		box-shadow: 0px 5px 8px 0px rgba(0, 0, 0, 0.14), 0px 1px 14px 0px rgba(0, 0, 0, 0.12),
+			0px 3px 5px -1px rgba(0, 0, 0, 0.2);
+		content: "";
+		pointer-events: none;
+		position: absolute;
+		right: 0;
+		top: -5vh;
+		width: 100vw;
+		z-index: -1;
+	} */
+
+	.ag-pinned-left-cols-container,
+	.ag-pinned-left-header {
+		@apply transition-shadow duration-100 ease-in-out;
+	}
+
+	.ag-scrolled .ag-pinned-left-header {
+		box-shadow: 0px 5px 8px 0px rgba(0, 0, 0, 0.14), 0px 1px 14px 0px rgba(0, 0, 0, 0.12),
+			0px 3px 5px -1px rgba(0, 0, 0, 0.2);
+		z-index: 9999 !important;
+	}
+
+	.ag-scrolled .ag-pinned-left-cols-container {
+		box-shadow: 0px -3px 8px 0px rgba(0, 0, 0, 0.14),
+			0px -1px 14px 0px rgba(0, 0, 0, 0.12), 0px -2px 5px -1px rgba(0, 0, 0, 0.2);
+		z-index: 9999 !important;
+	}
+
 	.ag-theme-material {
 		@apply font-sans text-sm !important;
 	}
@@ -1196,6 +1335,7 @@
 	}
 	.ag-row {
 		@apply border-l-0 border-r-0 border-b bg-white border-light transition-colors duration-75 !important;
+		height: 58px !important;
 	}
 	.ag-row:hover {
 		@apply border-b-0 !important;
@@ -1209,6 +1349,14 @@
 
 	.ag-theme-material .ag-checkbox-input-wrapper {
 		font-family: "Material Icons Outlined" !important;
+		width: 19px !important;
+		height: 19px !important;
+		font-size: 22px !important;
+	}
+	.ag-theme-material .ag-checkbox-input-wrapper:focus-within,
+	.ag-theme-material .ag-checkbox-input-wrapper:active {
+		outline: none;
+		box-shadow: none !important;
 	}
 	.ag-theme-material .ag-checkbox-input-wrapper::after {
 		content: "check_box_outline_blank" !important;

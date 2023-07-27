@@ -19,7 +19,7 @@ export interface CourseParticipationReportSettings {
 }
 
 const getHeaders = (exams: Event[]) => [
-	...["email", "full_name", "mat", "course"],
+	...["email", "full_name", "mat", "course", "score_average"],
 	...exams.map(e => `participations["${e.id}"].score`),
 ];
 
@@ -38,7 +38,7 @@ const getCellValue = (user, field: string) => {
 
 export const getCourseExamParticipationsReportAsCsv = (
 	report: CourseExamParticipationReport,
-	users: User[],
+	users: (User & { score_average: number })[],
 	exams: Event[],
 ): string => {
 	const headers = getHeaders(exams);

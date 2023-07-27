@@ -19,11 +19,19 @@
 			<!-- icon-->
 			<div
 				style="min-width: 3.5rem; max-width: 3.5rem"
-				class="flex rounded-full w-14 h-14 bg-primary bg-opacity-15 mr-3"
+				class="flex rounded-full w-14 h-14 mr-3"
+				:class="{
+					'bg-gray-200': node.state === AnnouncementNodeState.DRAFT,
+					'bg-primary  bg-opacity-15': node.state === AnnouncementNodeState.PUBLISHED,
+				}"
 			>
 				<span
 					style="font-size: 40px !important"
-					class="m-auto material-icons-outlined text-primary"
+					class="m-auto material-icons-outlined"
+					:class="{
+						'text-gray-500': node.state === AnnouncementNodeState.DRAFT,
+						'text-primary': node.state === AnnouncementNodeState.PUBLISHED,
+					}"
 					>campaign</span
 				>
 			</div>
@@ -45,6 +53,12 @@
 							class="text-sm text-muted"
 							:value="node.created"
 						/>
+						<p
+							class="text-muted text-sm"
+							v-if="node.state === AnnouncementNodeState.DRAFT"
+						>
+							{{ $t("course_tree.draft") }}
+						</p>
 					</div>
 				</div>
 				<!-- teacher actions-->
@@ -118,7 +132,12 @@ import SlotSkeleton from "@/components/ui/skeletons/SlotSkeleton.vue";
 import Timestamp from "@/components/ui/Timestamp.vue";
 import { getTranslatedString as _ } from "@/i18n";
 import { courseIdMixin, loadingMixin, nodeMixin } from "@/mixins";
-import { CourseTreeNode as ICourseTreeNode, FileNode, AnnouncementNode } from "@/models";
+import {
+	CourseTreeNode as ICourseTreeNode,
+	FileNode,
+	AnnouncementNode,
+	AnnouncementNodeState,
+} from "@/models";
 import { defineComponent, PropType } from "@vue/runtime-core";
 import CourseTreeNodeCommentSection from "../CourseTreeNodeCommentSection.vue";
 import CourseTreeNode from "../node/CourseTreeNode.vue";
@@ -144,6 +163,11 @@ export default defineComponent({
 		// TODO possibly extract shared logic
 		this.$emit("loadChildren", { node: this.node, fromFirstPage: true });
 		this.$emit("loadComments", this.node);
+	},
+	data() {
+		return {
+			AnnouncementNodeState,
+		};
 	},
 	methods: {
 		onEdit() {

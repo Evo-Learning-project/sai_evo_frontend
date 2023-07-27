@@ -38,7 +38,7 @@
 					</span>
 				</div>
 				<!-- no cookies banner -->
-				<div
+				<!-- <div
 					v-if="googleOauthHadError"
 					class="mx-4 w-full px-4 space-x-3 banner banner-danger mt-6"
 				>
@@ -65,7 +65,7 @@
 							>.
 						</p>
 					</div>
-				</div>
+				</div> -->
 
 				<!-- unauthorized email address banner -->
 				<div
@@ -93,8 +93,23 @@
 						</p>
 					</div>
 				</div>
+				<!-- login button -->
 				<div class="mt-8 text-center">
-					<Btn
+					<GoogleLogin :popup-type="'TOKEN'" :callback="onLogin">
+						<Btn
+							id="login-btn"
+							:variant="'secondary'"
+							:size="'lg'"
+							class="md:w-max"
+							style="background: white !important"
+							:disabled="localLoading || disableLogin"
+							:loading="localLoading"
+						>
+							<img class="mr-2.5" style="width: 30px" src="@/assets/unipi.png" />
+							{{ $t("login_screen.login") }}
+						</Btn>
+					</GoogleLogin>
+					<!-- <Btn
 						id="login-btn"
 						@click="handleClickSignIn"
 						:variant="'secondary'"
@@ -104,11 +119,9 @@
 						:disabled="!googleOauthReady || localLoading || disableLogin"
 						:loading="(!googleOauthReady && !googleOauthHadError) || localLoading"
 					>
-						<!-- <img class="mr-2.5" style="width: 22px" src="@/assets/google.png" /> -->
 						<img class="mr-2.5" style="width: 30px" src="@/assets/unipi.png" />
-						<!-- <span class="mr-2 text-xl material-icons">lock</span> -->
 						{{ $t("login_screen.login") }}
-					</Btn>
+					</Btn> -->
 				</div>
 			</div>
 			<!-- terms & conditions-->
@@ -132,7 +145,7 @@
 							>Evo Learning</a
 						>
 					</p>
-					<p class="mx-2">&#183;</p>
+					<!-- <p class="mx-2">&#183;</p>
 					<p>
 						Crafted with ❤️ by
 						<a
@@ -141,7 +154,7 @@
 							href="http://bsamu.it"
 							>Samuele Bonini</a
 						>
-					</p>
+					</p> -->
 				</div>
 			</div>
 
@@ -186,56 +199,7 @@
 			>
 				<span style="font-size: 72px !important" class="material-icons">school</span>
 			</div>
-			<!-- <img
-				class="absolute top-0 right-0 mt-24 mr-24 filter drop-shadow-lg"
-				style="width: 375px"
-				src="@/assets/hero/undraw_6.svg"
-			/>
-			<img
-				class="absolute filter drop-shadow-lg bottom-0 left-0 mb-12 ml-12"
-				style="width: 300px"
-				src="@/assets/hero/undraw_teaching_re_g7e3.svg"
-			/> -->
 		</div>
-		<!-- <div
-			class="
-				w-full
-				overflow-hidden
-				relative
-				h-full
-				bg-gradient
-				grad-bg
-				px-2
-				md:px-6
-				lg:px-10
-				py-4
-			"
-		>
-			<div
-				class="
-					absolute
-					zigzag-pattern
-					w-1/2
-					h-96
-					-top-40
-					-left-40
-					opacity-80
-					rounded-xl
-					-rotate-45
-					transform
-				"
-			></div>
-			<div
-				style="
-					height: 800px;
-					width: 800px;
-					bottom: -500px;
-					right: -500px;
-					border-radius: 500px;
-				"
-				class="absolute patterns opacity-40"
-			></div>
-		</div> -->
 		<v-tour
 			name="demoTour"
 			:steps="demoLoginTourSteps"
@@ -262,6 +226,8 @@ import { demoLoginTourSteps, tourOptions } from "@/const";
 import { mapStores } from "pinia";
 import { useMetaStore } from "@/stores/metaStore";
 
+import type { CallbackTypes } from "vue3-google-login";
+
 const DEMO_TOUR_KEY = "demo_tour_taken";
 
 export default defineComponent({
@@ -269,18 +235,8 @@ export default defineComponent({
 	components: {
 		Btn,
 	},
-	watch: {
-		googleOauthReady(newVal) {
-			// trigger demo tour
-			if (newVal && isDemoMode() && !(DEMO_TOUR_KEY in localStorage)) {
-				setTimeout(() => ((this as any).$tours["demoTour"] as any).start(), 50);
-				this.disableLogin = true;
-			}
-		},
-	},
 	data() {
 		return {
-			user: "",
 			loadingLogin: true,
 			disableLogin: false,
 			demoLoginTourSteps,
@@ -295,47 +251,13 @@ export default defineComponent({
 			this.disableLogin = false;
 			localStorage.setItem(DEMO_TOUR_KEY, "true");
 		},
-		async handleClickSignIn() {
-			try {
-				this.loginAttemptWithUnauthorizedEmailAddress = false;
-				await this.withLocalLoading(
-					async () => {
-						const googleUser = await this.$gAuth.signIn();
-						if (!googleUser) {
-							return null;
-						}
-						this.user = googleUser.getBasicProfile().getEmail();
-						const token = googleUser.getAuthResponse().access_token;
-
-						await this.metaStore.convertToken(token);
-						await this.metaStore.getUserData();
-
-						redirectToMainView();
-
-						// TODO if you use this.setErroNotification, this is undefined - investigate (hint: it has to do something with the mixin and possibily the store)
-						setErrorNotification(_("misc.logged_in"), true);
-					},
-					// different error handling depending on whether in demo mode
-					isDemoMode()
-						? this.redirectToDemoPage
-						: e => {
-								// rethrow error to custom handler
-								throw e;
-						  },
-				);
-			} catch (error: any) {
-				console.error("sign in error", error);
-
-				const UNAUTHORIZED_EMAIL_DOMAIN_MSG = "Your credentials aren't allowed";
-				if (error.response?.data?.error_description === UNAUTHORIZED_EMAIL_DOMAIN_MSG) {
-					this.onLoginAttemptWithUnauthorizedEmailAddress();
-				} else if (error.error === "popup_closed_by_user") {
-					logAnalyticsEvent("popup_closed_by_user", {});
-				} else {
-					setErrorNotification(error);
-				}
-				throw error;
-			}
+		async onLogin(response: Parameters<CallbackTypes.TokenResponseCallback>[0]) {
+			await this.withLocalLoading(async () => {
+				const token = response.access_token;
+				await this.metaStore.convertToken(token);
+				await this.metaStore.getUserData();
+				redirectToMainView();
+			}, setErrorNotification);
 		},
 		onLoginAttemptWithUnauthorizedEmailAddress() {
 			logAnalyticsEvent("unauth_login_attempt", {});
@@ -364,12 +286,6 @@ export default defineComponent({
 	},
 	computed: {
 		...mapStores(useMetaStore),
-		googleOauthReady() {
-			return (this as any).Vue3GoogleOauth.isInit;
-		},
-		googleOauthHadError() {
-			return (this as any).Vue3GoogleOauth.hadError;
-		},
 	},
 });
 </script>
@@ -391,7 +307,7 @@ export default defineComponent({
 }
 
 #login-btn:hover {
-	filter: brightness(0.9825);
+	filter: brightness(0.9725);
 }
 
 .dot-patterns {

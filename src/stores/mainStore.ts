@@ -21,6 +21,7 @@ import {
 	deleteExerciseSubExercise,
 	deleteExerciseTestCase,
 	deleteExerciseTestCaseAttachment,
+	enrollUsersInCourse,
 	EventParticipationSearchFilter,
 	EventSearchFilter,
 	ExerciseSearchFilter,
@@ -44,13 +45,16 @@ import {
 	getExerciseTestCaseAttachments,
 	getTags,
 	getUsers,
+	getUsersEnrolledInCourse,
 	lockEvent,
 	lockExercise,
+	manageSelfCourseEnrollment,
 	moveEventParticipationCurrentSlotCursor,
 	PaginatedData,
 	partialUpdateEvent,
 	partialUpdateEventParticipation,
 	partialUpdateEventParticipationSlot,
+	partialUpdateEventParticipationSlotSubmission,
 	partialUpdateEventTemplateRule,
 	participateInEvent,
 	removeTagFromExercise,
@@ -126,6 +130,7 @@ import {
 	NodeComment,
 	PollNodeChoice,
 	CourseTreeNodeType,
+	EventParticipationSlotSubmission,
 } from "@/models";
 import {
 	CourseIdActionPayload,
@@ -156,7 +161,9 @@ export const useMainStore = defineStore("main", {
 		tags: [] as Tag[], // tags of current course
 
 		privilegedUsers: [] as User[], // users with privileges for the current course
-		paginatedUsers: getEmptyPaginatedData() as PaginatedData<User>, // users currently displayed (e.g. course insights page)
+		enrolledUsers: [] as User[], // users enrolled in current course
+		activeUsers: [] as User[], // users active (i.e. with >= 1 participation) in current course
+		paginatedUsers: getEmptyPaginatedData() as PaginatedData<User>, // general-purpose store for users
 		paginatedExercises: getEmptyPaginatedData() as PaginatedData<Exercise>, // exercises currently displayed
 		events: [] as Event[], // events currently displayed (e.g. course exam list)
 
@@ -194,8 +201,6 @@ export const useMainStore = defineStore("main", {
 		// course tree node currently viewed in detail mode
 		currentCourseTreeNode: null as CourseTreeNode | null,
 
-		// event currently being edited
-		editingEvent: null as Event | null, // ! see if this is really necessary here
 		// event currently being displayed (e.g. in the confirmation page before joining an event)
 		previewingEvent: null as Event | null,
 
@@ -210,7 +215,12 @@ export const useMainStore = defineStore("main", {
 		getCourseById: state => (courseId: string) =>
 			state.courses.find(c => c.id == courseId),
 		getUserById: state => (userId: string) =>
-			[...state.privilegedUsers, ...state.paginatedUsers.data].find(u => u.id == userId),
+			[
+				...state.privilegedUsers,
+				...state.enrolledUsers,
+				...state.activeUsers,
+				...state.paginatedUsers.data,
+			].find(u => u.id == userId),
 		getEventById: state => (eventId: string) =>
 			state.events.find(e => e.id == eventId) ?? getBlankExam(),
 		getEventByTemplateId: state => (templateId: string) =>
@@ -277,6 +287,24 @@ export const useMainStore = defineStore("main", {
 		},
 	},
 	actions: {
+		async selfEnrollInCourse({ courseId }: CourseIdActionPayload) {
+			await manageSelfCourseEnrollment(courseId, false);
+			const course = this.getCourseById(courseId);
+			if (course) {
+				course.enrolled = true;
+			} else {
+				throw new Error("selfEnrollInCourse couldn't find course with id " + courseId);
+			}
+		},
+		async selfUnenrollInCourse({ courseId }: CourseIdActionPayload) {
+			await manageSelfCourseEnrollment(courseId, true);
+			const course = this.getCourseById(courseId);
+			if (course) {
+				course.enrolled = false;
+			} else {
+				throw new Error("selfUnenrollInCourse couldn't find course with id " + courseId);
+			}
+		},
 		async isTopLevelNode({
 			courseId,
 			node,
@@ -568,9 +596,18 @@ export const useMainStore = defineStore("main", {
 			courseId,
 			nodeId,
 			changes,
+			fireIntegrationEvent = false,
 		}: CourseIdActionPayload &
-			CourseTreeNodeIdActionPayload & { changes: Partial<CourseTreeNode> }) {
-			const updatedNode = await partialUpdateCourseNode(courseId, nodeId, changes);
+			CourseTreeNodeIdActionPayload & {
+				changes: Partial<CourseTreeNode>;
+				fireIntegrationEvent?: boolean;
+			}) {
+			const updatedNode = await partialUpdateCourseNode(
+				courseId,
+				nodeId,
+				changes,
+				fireIntegrationEvent,
+			);
 			return updatedNode;
 		},
 		patchCourseTreeNode({
@@ -585,11 +622,6 @@ export const useMainStore = defineStore("main", {
 			}
 			const oldParentId = target.parent_id;
 			Object.assign(target, { ...target, ...changes });
-			console.log({
-				oldParentId,
-				newP: changes.parent_id,
-				root: this.courseIdToTreeRootId[courseId],
-			});
 			if (changes.parent_id) {
 				if (oldParentId == this.courseIdToTreeRootId[courseId]) {
 					// remove node from children list of top-level nodes
@@ -698,9 +730,6 @@ export const useMainStore = defineStore("main", {
 			}
 		},
 		/** Previous teacher mutations */
-		setEditingEvent(payload: Event | null) {
-			this.editingEvent = payload;
-		},
 		// update an event in memory with the given payload
 		setEvent({ eventId, payload }: { eventId: string; payload: Event }) {
 			Object.assign(this.getEventById(eventId), payload);
@@ -928,7 +957,7 @@ export const useMainStore = defineStore("main", {
 		setEventParticipations(participations: PaginatedData<EventParticipation>) {
 			this.paginatedEventParticipations = participations;
 		},
-		setCurrentEventParticipationSlot(slot: EventParticipationSlot) {
+		setCurrentEventParticipationSlot(slot: Partial<EventParticipationSlot>) {
 			// look for both slots and sub-slots
 			const flattenedSlots = this.currentEventParticipationFlattenedSlots;
 			const target = flattenedSlots.find(s => s.id == slot.id);
@@ -937,7 +966,7 @@ export const useMainStore = defineStore("main", {
 					"setCurrentEventParticipationSlot couldn't find slot with id " + slot.id,
 				);
 			}
-			Object.assign(target, slot);
+			Object.assign(target, { ...target, ...slot });
 		},
 		patchCurrentEventParticipationSlot({
 			slotId,
@@ -958,50 +987,6 @@ export const useMainStore = defineStore("main", {
 			Object.assign(target, { ...target, ...changes });
 		},
 
-		// ! this mutation and the two below are only used on editingEvent
-		setEditingEventTemplateRule(rule: EventTemplateRule) {
-			const target = this.editingEvent?.template?.rules.find(
-				(r: EventTemplateRule) => r.id == rule.id,
-			);
-			if (target) {
-				// update existing rule
-				Object.assign(target, rule);
-			} else {
-				// push new rule
-				this.editingEvent?.template?.rules.push(rule);
-			}
-		},
-		patchEditingEventTemplateRule({
-			ruleId,
-			changes,
-		}: {
-			ruleId: string;
-			changes: Partial<EventTemplateRule>;
-		}) {
-			const target = this.editingEvent?.template?.rules.find(
-				(r: EventTemplateRule) => r.id == ruleId,
-			);
-			if (target) {
-				// update existing rule
-				Object.assign(target, { ...target, ...changes });
-			}
-		},
-		setEditingEventTemplateRuleClause({
-			ruleId,
-			payload,
-		}: MutationPayload<EventTemplateRuleClause>) {
-			const targetRule = this.editingEvent?.template?.rules.find(
-				(r: EventTemplateRule) => r.id == ruleId,
-			) as EventTemplateRule;
-			const targetClause = targetRule.clauses?.find(c => c.id == payload.id);
-			if (targetClause) {
-				// updating existing clause
-				Object.assign(targetClause, payload);
-			} else {
-				// pushing new clause
-				targetRule.clauses?.push(payload);
-			}
-		},
 		// updates an existing solution for an exercises or pushes a new one
 		setExerciseSolution({
 			exerciseId,
@@ -1169,6 +1154,29 @@ export const useMainStore = defineStore("main", {
 				this.setCurrentEventParticipationSlot(response);
 			}
 		},
+
+		async partialUpdateCurrentEventParticipationSlotSubmission({
+			courseId,
+			slotId,
+			changes,
+		}: CourseIdActionPayload & { slotId: string } & {
+			changes: Partial<EventParticipationSlotSubmission>;
+		}) {
+			if (!this.currentEventParticipation) {
+				throw new Error(
+					"partialUpdateCurrentEventParticipationSubmission called with null currentParticipation",
+				);
+			}
+			const response = await partialUpdateEventParticipationSlotSubmission(
+				courseId,
+				// TODO assumes currentEventParticipation contains Event
+				this.currentEventParticipation.event.id,
+				this.currentEventParticipation.id,
+				slotId,
+				changes,
+			);
+			this.setCurrentEventParticipationSlot(response);
+		},
 		async runCurrentEventParticipationSlotCode({
 			courseId,
 			slot,
@@ -1205,32 +1213,6 @@ export const useMainStore = defineStore("main", {
 				});
 				throw e;
 			}
-		},
-		async addEventTemplateRuleToCurrentEditingEvent({
-			courseId,
-			templateId,
-			rule,
-		}: CourseIdActionPayload & EventTemplateRuleActionPayload & TemplateIdPayload) {
-			const newRule = await createEventTemplateRule(courseId, templateId, rule);
-			this.setEditingEventTemplateRule(newRule);
-			return newRule;
-		},
-		async addEventTemplateRuleClauseToCurrentEditingEvent({
-			courseId,
-			templateId,
-			ruleId,
-			clause,
-		}: CourseIdActionPayload &
-			TemplateRuleIdActionPayload &
-			EventTemplateRuleClauseActionPayload) {
-			const newClause = await createEventTemplateRuleClause(
-				courseId,
-				templateId,
-				ruleId,
-				clause,
-			);
-			this.setEditingEventTemplateRuleClause({ ruleId, payload: newClause });
-			return newClause;
 		},
 		async createExerciseSolution({
 			courseId,
@@ -1758,11 +1740,18 @@ export const useMainStore = defineStore("main", {
 			eventId,
 			changes,
 			mutate = false,
+			fireIntegrationEvent = false,
 		}: EventIdActionPayload & {
 			changes: Partial<Event>;
 			mutate: boolean;
+			fireIntegrationEvent?: boolean;
 		}) {
-			const event = await partialUpdateEvent(courseId, eventId, changes);
+			const event = await partialUpdateEvent(
+				courseId,
+				eventId,
+				changes,
+				fireIntegrationEvent,
+			);
 			if (mutate) {
 				this.setEvent({ eventId, payload: event });
 			}
@@ -1941,20 +1930,31 @@ export const useMainStore = defineStore("main", {
 			// we can assume the number of privileged users for a given course will be fairly
 			// small, therefore no need to keep them paginated - we can fetch all of them at once
 			const users = await getUsers(courseId, { hasPrivileges: true, size: 99999999 });
-			console.log("About to set priv", users.data);
 			this.privilegedUsers = users.data;
+		},
+		async getCourseEnrolledUsers(
+			// returns all users that are enrolled in given course
+			{ courseId }: CourseIdActionPayload,
+		) {
+			const users = await getUsersEnrolledInCourse(courseId);
+			this.enrolledUsers = users;
+		},
+		async enrollUsersInCourse(
+			// returns all users that are enrolled in given course
+			{
+				courseId,
+				userIds,
+				emails,
+			}: CourseIdActionPayload & { userIds: string[]; emails: string[] },
+		) {
+			await enrollUsersInCourse(courseId, userIds, emails);
 		},
 		async getCourseActiveUsers(
 			// returns all users that are active in given course
 			{ courseId }: CourseIdActionPayload,
 		) {
 			const users = await getActiveUsersForCourse(courseId);
-			this.paginatedUsers = {
-				data: users,
-				count: users.length,
-				pageNumber: 1,
-				isLastPage: true,
-			};
+			this.activeUsers = users;
 		},
 		async updateUserCoursePrivileges({
 			courseId,
@@ -2005,17 +2005,18 @@ export const useMainStore = defineStore("main", {
 			changes,
 			eventId,
 			participationIds,
-		}: {
-			courseId: string;
-			eventId: string;
+			fireIntegrationEvent,
+		}: EventIdActionPayload & {
 			changes: Partial<EventParticipation>;
 			participationIds: string[];
+			fireIntegrationEvent?: boolean;
 		}) {
 			const response = await bulkPartialUpdateEventParticipation(
 				courseId,
 				eventId,
 				participationIds,
 				changes,
+				fireIntegrationEvent,
 			);
 			response.forEach(p => this.setEventParticipation(p));
 		},

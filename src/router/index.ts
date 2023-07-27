@@ -2,6 +2,7 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 import MainTeacher from "../views/teacher/MainTeacher.vue";
 import MainStudent from "../views/student/MainStudent.vue";
+import CourseEnrollment from "../views/student/CourseEnrollment.vue";
 import CourseList from "../views/shared/CourseList.vue";
 import TeacherCourseDashboard from "../views/teacher/CourseDashboard.vue";
 import StudentCourseDashboard from "../views/student/CourseDashboard/Main.vue";
@@ -15,6 +16,7 @@ import CourseTree from "../views/course_tree/CourseTree.vue";
 import NodeDetail from "../views/course_tree/NodeDetail.vue";
 import CourseExams from "../views/teacher/CourseExams.vue";
 import CourseInsights from "../views/teacher/CourseInsights.vue";
+import CourseIntegrations from "../views/teacher/CourseIntegrations.vue";
 import CoursePermissions from "../views/teacher/CoursePermissions.vue";
 import EventEditor from "../components/teacher/EventEditor/EventEditor.vue";
 import EventParticipationPage from "../views/student/EventParticipationPage.vue";
@@ -111,6 +113,11 @@ const routes: Array<RouteRecordRaw> = [
 		beforeEnter: courseTreeBeforeGuard,
 	},
 	{
+		path: "/courses/:courseId/enrollment/",
+		name: "CourseEnrollment",
+		component: CourseEnrollment,
+	},
+	{
 		path: "/teacher",
 		name: "MainTeacher",
 		component: MainTeacher,
@@ -201,6 +208,16 @@ const routes: Array<RouteRecordRaw> = [
 				},
 			},
 			{
+				path: "courses/:courseId/integrations",
+				name: "CourseIntegrations",
+				component: CourseIntegrations,
+				meta: {
+					routeTitle: _("headings.course_integrations"),
+					sidebarOptions: courseDashboardSidebarOptions,
+					tags: ["general"],
+				},
+			},
+			{
 				path: "courses/:courseId/exercises",
 				name: "CourseExercises",
 				component: CourseExercises,
@@ -235,7 +252,7 @@ const routes: Array<RouteRecordRaw> = [
 				name: "ExamProgress",
 				meta: {
 					sidebarOptions: courseDashboardSidebarOptions,
-					routeTitle: _("headings.exam_progress"),
+					//routeTitle: _("headings.exam_progress"),
 					tags: ["exams", "participations"],
 				},
 			},
@@ -249,7 +266,7 @@ const routes: Array<RouteRecordRaw> = [
 				},
 				meta: {
 					sidebarOptions: courseDashboardSidebarOptions,
-					routeTitle: _("headings.exam_results"),
+					// routeTitle: _("headings.exam_results"),
 					tags: ["exams", "participations"],
 				},
 			},

@@ -1,6 +1,7 @@
 <template>
 	<div class="">
 		<h4 class="mb-3">{{ $t("event_editor.state_editor_title") }}</h4>
+		<!-- state banners-->
 		<div class="my-4 banner banner-light" v-if="isDraft">
 			<span class="ml-px text-yellow-900 material-icons-outlined"> error_outline </span>
 			<p class="">{{ currentEventStateDescription }}</p>
@@ -12,6 +13,7 @@
 			<p class="">{{ currentEventStateDescription }}</p>
 		</div>
 		<div class="">
+			<!-- errors -->
 			<div
 				:class="{ shake: shakeErrorBanner }"
 				v-if="relevantErrors.length > 0"
@@ -37,38 +39,69 @@
 				class="
 					flex flex-col
 					mt-2
+					md:mt-10
 					space-y-2
 					md:items-center md:flex-row md:space-y-0 md:space-x-4
 				"
 			>
-				<h5 class="">
-					{{
-						isDraft || isPlanned
-							? $t("event_editor.current_state_is")
-							: $t("event_editor.state_is")
-					}}
-					<strong>{{ currentEventStateName }}</strong
-					>.
+				<!-- text showing exam state-->
+				<h5 v-if="isDraft" class="text-lg">
+					{{ $t("event_editor.current_state_is_draft") }}.
 				</h5>
-				<Btn
-					class=""
+
+				<h5 v-else-if="isPlanned" class="text-lg">
+					{{ $t("event_editor.current_state_is_planned") }}.
+				</h5>
+
+				<h5 v-else>
+					{{ $t("event_editor.state_is") }}
+					<strong>{{ currentEventStateName }} </strong>.
+				</h5>
+				<div
+					class="flex md:space-x-12 md:flex-row flex-col md:space-y-0 space-y-4"
 					v-if="isDraft || isPlanned"
-					:variant="'primary'"
-					:loading="localLoading"
-					:disabled="false && isDraft && v$.$invalid && v$.$dirty"
-					@click="
-						isDraft ? (v$.$invalid ? onInvalidSubmission() : publish()) : revertToDraft()
-					"
 				>
-					{{ isDraft ? $t("event_editor.publish") : $t("event_editor.revert_to_draft") }}
-				</Btn>
+					<!-- publish/unpublish button-->
+					<Btn
+						class=""
+						:variant="'primary'"
+						:loading="loading"
+						:disabled="false && isDraft && v$.$invalid && v$.$dirty"
+						@click="
+							isDraft
+								? v$.$invalid
+									? onInvalidSubmission()
+									: publish()
+								: revertToDraft()
+						"
+					>
+						{{
+							isDraft ? $t("event_editor.publish") : $t("event_editor.revert_to_draft")
+						}}
+					</Btn>
+					<IntegrationSwitch
+						class="md:ml-auto bg-light pl-3 pr-2 rounded md:py-0 py-2"
+						v-if="isDraft && showClassroomIntegrationSwitch && !hasGoogleClassroomTwin"
+						v-model="publishToClassroom"
+					/>
+				</div>
+				<PublishedOnClassroom
+					:remote-object-url="
+						googleClassroomCourseWorkTwin.data.alternateLink ||
+						(googleClassroomCourseTwin
+							? googleClassroomCourseTwin.data.alternateLink
+							: '')
+					"
+					class="banner-success pl-3 pr-2 rounded md:py-0"
+					v-if="hasGoogleClassroomTwin"
+				/>
 			</div>
+			<!-- helper text for planned exam-->
 			<p v-if="isPlanned" class="mt-10 text-muted">
 				{{ $t("event_editor.event_planned_help_text") }}
-				<!-- <strong>{{ formattedTimestamp }}</strong> -->
-				<strong>&nbsp;<Timestamp :value="modelValue.begin_timestamp"></Timestamp></strong
-				>.
+				<strong><Timestamp :value="modelValue.begin_timestamp" /></strong>.
 			</p>
+			<!-- text with link to the exam -->
 			<div class="flex flex-col items-stretch mt-2 space-y-2" v-if="isPlanned || isOpen">
 				<p class="text-muted">
 					{{ $t("event_editor.this_is_the_link_to_the_event") }}
@@ -89,38 +122,80 @@ import Btn from "@/components/ui/Btn.vue";
 import { getExamPermalink, getFormattedTimestamp } from "@/utils";
 import Timestamp from "@/components/ui/Timestamp.vue";
 import CopyToClipboard from "@/components/ui/CopyToClipboard.vue";
-import { loadingMixin } from "@/mixins";
+import { courseIdMixin, eventIdMixin, loadingMixin } from "@/mixins";
+import IntegrationSwitch from "@/integrations/classroom/components/IntegrationSwitch.vue";
+import { mapStores } from "pinia";
+import { useGoogleIntegrationsStore } from "@/integrations/stores/googleIntegrationsStore";
+import PublishedOnClassroom from "@/integrations/classroom/components/PublishedOnClassroom.vue";
+import { GoogleClassroomCourseWorkTwin } from "@/integrations/classroom/interfaces";
 
 export default defineComponent({
 	components: {
 		Btn,
 		Timestamp,
 		CopyToClipboard,
+		IntegrationSwitch,
+		PublishedOnClassroom,
 	},
-	mixins: [loadingMixin],
 	props: {
 		modelValue: {
 			type: Object as PropType<Event>,
 			required: true,
 		},
+		loading: {
+			type: Boolean,
+			default: false,
+		},
 	},
+	mixins: [courseIdMixin, eventIdMixin],
 	setup() {
 		return {
 			v$: inject("v$"),
 		};
 	},
 	name: "EventStateEditor",
+	async created() {
+		this.showClassroomIntegrationSwitch =
+			await this.googleIntegrationStore.isGoogleClassroomIntegrationActive(this.courseId);
+		await this.checkForCourseworkTwin();
+	},
 	data() {
 		return {
 			shakeErrorBanner: false,
+			publishToClassroom: true,
+			showClassroomIntegrationSwitch: false,
+			googleClassroomCourseWorkTwin: null as null | GoogleClassroomCourseWorkTwin,
 		};
 	},
 	methods: {
+		async checkForCourseworkTwin() {
+			this.googleClassroomCourseWorkTwin =
+				await this.googleIntegrationStore.getGoogleClassroomCourseWorkTwin(this.eventId);
+		},
 		emitUpdate(value: EventState) {
-			this.$emit("update:modelValue", value);
+			this.$emit("update:modelValue", {
+				value,
+				fireIntegrationEvent: this.publishToClassroom,
+			});
+			// if we're changing the exam to PLANNED and there's an active integration
+			// with Classroom, check whether the twin coursework was created successfully
+			if (
+				this.publishToClassroom &&
+				this.showClassroomIntegrationSwitch &&
+				value === EventState.PLANNED
+			) {
+				const handle = setInterval(async () => {
+					await this.checkForCourseworkTwin();
+					if (this.hasGoogleClassroomTwin) {
+						clearInterval(handle);
+					}
+				}, 1000);
+			}
 		},
 		onInvalidSubmission() {
+			// make errors visible
 			(this.v$ as any).$touch();
+
 			window.scrollTo(
 				0,
 				document.body.scrollHeight || document.documentElement.scrollHeight,
@@ -143,6 +218,7 @@ export default defineComponent({
 		},
 	},
 	computed: {
+		...mapStores(useGoogleIntegrationsStore),
 		eventStateOptions() {
 			return (Object.keys(EventState) as unknown[] as EventState[])
 				.filter((key: string | number) => parseInt(key as string) == key) //(ExerciseType[key] as unknown) == 'number')
@@ -153,6 +229,9 @@ export default defineComponent({
 					description: _("event_states_descriptions." + key),
 				}));
 		},
+		hasGoogleClassroomTwin() {
+			return this.googleClassroomCourseWorkTwin !== null;
+		},
 		isDraft() {
 			return this.modelValue.state == EventState.DRAFT;
 		},
@@ -161,6 +240,9 @@ export default defineComponent({
 		},
 		isOpen() {
 			return this.modelValue.state == EventState.OPEN;
+		},
+		googleClassroomCourseTwin() {
+			return this.googleIntegrationStore.courseTwins[this.courseId];
 		},
 		currentEventStateName() {
 			return this.eventStateOptions[this.modelValue?.state]?.content?.toLowerCase();

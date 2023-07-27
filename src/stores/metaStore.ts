@@ -17,6 +17,7 @@ export const useMetaStore = defineStore("meta", {
 		saving: false,
 		savingError: false,
 		_showSuccessFeedback: false,
+		customSuccessFeedbackMessage: "",
 		dirtyTex: false,
 		helpCenterOpen: false,
 		helpCenterSelectedArticleId: null as string | null,
@@ -44,9 +45,15 @@ export const useMetaStore = defineStore("meta", {
 				this.user = JSON.parse(user);
 			}
 		},
-		showSuccessFeedback() {
+		showSuccessFeedback(message?: string, hideTimeout = 2000) {
 			this._showSuccessFeedback = true;
-			setTimeout(() => (this._showSuccessFeedback = false), 2000);
+			if (message) {
+				this.customSuccessFeedbackMessage = message;
+			}
+			setTimeout(() => {
+				this._showSuccessFeedback = false;
+				this.customSuccessFeedbackMessage = "";
+			}, hideTimeout);
 		},
 		setUser(user: User) {
 			Object.assign(this.user, user);
@@ -92,6 +99,18 @@ export const useMetaStore = defineStore("meta", {
 		async convertToken(token: string) {
 			const response = await axios.post("/users/auth/convert-token/", {
 				token,
+				grant_type: "convert_token",
+				client_id: process.env.VUE_APP_GOOGLE_OAUTH_CLIENT_ID,
+				client_secret: process.env.VUE_APP_GOOGLE_OAUTH_CLIENT_SECRET,
+				backend: "google-oauth2",
+			});
+
+			this.setToken(response.data.access_token);
+			this.setRefreshToken(response.data.refresh_token);
+		},
+		async convertAuthorizationCode(code: string) {
+			const response = await axios.post("/users/auth/convert-token/", {
+				code,
 				grant_type: "convert_token",
 				client_id: process.env.VUE_APP_GOOGLE_OAUTH_CLIENT_ID,
 				client_secret: process.env.VUE_APP_GOOGLE_OAUTH_CLIENT_SECRET,

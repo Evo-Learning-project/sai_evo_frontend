@@ -162,9 +162,10 @@
 				</div>
 			</div>
 			<EventStateEditor
+				:loading="updatingState"
 				class="pb-10"
 				:modelValue="modelValue"
-				@update:modelValue="onStateUpdate($event)"
+				@update:modelValue="onStateUpdate($event.value, $event.fireIntegrationEvent)"
 			/>
 		</div>
 
@@ -210,12 +211,21 @@
 						@save="resolveBlockingDialog(true)"
 						@closeEditor="resolveBlockingDialog(false)"
 						:isExistingNode="false"
-						:publishOnly="true"
-				/></transition>
+						:publishOnly="false"
+					/>
+				</transition>
 
 				<p v-if="!showAnnouncementEditor">
 					{{ $t("event_editor.publish_announcement_prompt") }}
 				</p>
+			</template>
+			<template v-slot:footerButtons>
+				<Btn
+					class="ml-2"
+					@click="rejectBlockingDialog()"
+					:variant="'primary-borderless'"
+					>{{ $t("dialog.default_cancel_text") }}</Btn
+				>
 			</template>
 		</Dialog>
 	</div>
@@ -357,6 +367,7 @@ export default defineComponent({
 			showAnnouncementEditor: false,
 			publishingAnnouncement: false,
 			bounceDialog: false,
+			updatingState: false,
 		};
 	},
 	methods: {
@@ -476,11 +487,17 @@ export default defineComponent({
 		async promptForPublishingAnnouncement() {
 			this.showAnnouncementEditor = false;
 
-			this.announcement = {
-				...getBlankAnnouncementNode(),
-				body: examPublishedAnnouncementTemplate(this.modelValue),
-				parent_id: await this.mainStore.getCourseRootId({ courseId: this.courseId }),
-			};
+			try {
+				this.announcement = {
+					...getBlankAnnouncementNode(),
+					body: examPublishedAnnouncementTemplate(this.modelValue),
+					schedule_publish_at: this.modelValue.begin_timestamp,
+					parent_id: await this.mainStore.getCourseRootId({ courseId: this.courseId }),
+				};
+			} catch (e) {
+				setErrorNotification(e);
+				return;
+			}
 
 			const choice = await this.getBlockingBinaryDialogChoice();
 			if (choice) {
@@ -491,18 +508,48 @@ export default defineComponent({
 						node: this.announcement,
 					});
 				} catch (e) {
-					setErrorNotification;
+					setErrorNotification(e);
 				} finally {
 					this.publishingAnnouncement = false;
 				}
 			}
 			this.showBlockingDialog = false;
 		},
-		async onStateUpdate(newState: EventState) {
+		async onStateUpdate(newState: EventState, fireIntegrationEvent: boolean) {
 			if (newState === EventState.PLANNED) {
-				await this.promptForPublishingAnnouncement();
+				try {
+					await this.promptForPublishingAnnouncement();
+				} catch (e) {
+					this.showBlockingDialog = false;
+					return;
+				}
 			}
-			await this.onChange("state", newState);
+			try {
+				/**
+				 * Do the update manually instead of calling this.onChange("state", newState)
+				 * in order to first update the remote resource and only then do the
+				 * update locally
+				 */
+				this.updatingState = true;
+				await this.mainStore.partialUpdateEvent({
+					courseId: this.courseId,
+					eventId: this.modelValue.id,
+					changes: { state: newState },
+					mutate: false,
+					fireIntegrationEvent,
+				});
+				if (newState === EventState.PLANNED) {
+					this.metaStore.showSuccessFeedback();
+				}
+				this.mainStore.setEvent({
+					eventId: this.eventId,
+					payload: { ...this.modelValue, state: newState },
+				});
+			} catch (e) {
+				setErrorNotification(e);
+			} finally {
+				this.updatingState = false;
+			}
 		},
 		async onBlur() {
 			await this.autoSaveManager?.flush();

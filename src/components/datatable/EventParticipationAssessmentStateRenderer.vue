@@ -4,7 +4,7 @@
 			params.value == ParticipationAssessmentProgress.PARTIALLY_ASSESSED
 				? 'text-yellow-900'
 				: 'text-success',
-			'pt-2 ml-1 text-lg material-icons-outlined',
+			'pt-3.5 ml-1 text-lg material-icons-outlined',
 		]"
 		>{{ assessmentStateIcons[params.value][0] }}</span
 	>

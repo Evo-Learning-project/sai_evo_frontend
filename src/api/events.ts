@@ -18,6 +18,7 @@ import {
 	Event,
 	EventParticipation,
 	EventParticipationSlot,
+	EventParticipationSlotSubmission,
 	EventTemplate,
 	EventTemplateRule,
 	EventTemplateRuleClause,
@@ -97,7 +98,26 @@ export async function getEventTemplateRule(
 }
 
 export async function createEvent(courseId: string, event: Event): Promise<Event> {
-	const response = await axios.post(`courses/${courseId}/events/`, event);
+	// if the event contains a template with tag-based rules,
+	// we need to convert the tag objects to tag ids
+	const convertedEvent = {
+		...event,
+		...(event.template
+			? {
+					template: {
+						...event.template,
+						rules: event.template.rules.map(r => ({
+							...r,
+							clauses: (r.clauses ?? []).map(c => ({
+								...c,
+								tags: c.tags.map(t => t.id),
+							})),
+						})),
+					},
+			  }
+			: {}),
+	};
+	const response = await axios.post(`courses/${courseId}/events/`, convertedEvent);
 	return normalizeIncomingEvent(response.data);
 }
 
@@ -125,8 +145,16 @@ export async function partialUpdateEvent(
 	courseId: string,
 	eventId: string,
 	changes: Partial<Event>,
+	fireIntegrationEvent?: boolean,
 ): Promise<Event> {
-	const response = await axios.patch(`courses/${courseId}/events/${eventId}/`, changes);
+	const response = await axios.patch(
+		`courses/${courseId}/events/${eventId}/${
+			typeof fireIntegrationEvent === "boolean"
+				? `?fire_integration_event=${JSON.stringify(fireIntegrationEvent)}`
+				: ""
+		}`,
+		changes,
+	);
 	return normalizeIncomingEvent(response.data);
 }
 
@@ -310,10 +338,15 @@ export async function bulkPartialUpdateEventParticipation(
 	eventId: string,
 	participationIds: string[],
 	changes: Partial<EventParticipation>,
+	fireIntegrationEvent?: boolean,
 ): Promise<EventParticipation[]> {
 	const url = `/courses/${courseId}/events/${eventId}/participations/bulk_patch/?ids=${participationIds.join(
 		",",
-	)}`;
+	)}${
+		typeof fireIntegrationEvent === "boolean"
+			? `&fire_integration_event=${JSON.stringify(fireIntegrationEvent)}`
+			: ""
+	}`;
 	const response = await axios.patch(url, changes);
 	return response.data.map((p: EventParticipation) =>
 		normalizeIncomingEventParticipation(p),
@@ -332,6 +365,20 @@ export async function partialUpdateEventParticipationSlot(
 		`/courses/${courseId}/events/${eventId}/participations/${participationId}/slots/${slotId}/${
 			forceStudent ? "?as_student=1" : ""
 		}`,
+		changes,
+	);
+	return normalizeIncomingEventParticipationSlot(response.data);
+}
+
+export async function partialUpdateEventParticipationSlotSubmission(
+	courseId: string,
+	eventId: string,
+	participationId: string,
+	slotId: string,
+	changes: Partial<EventParticipationSlotSubmission>,
+): Promise<EventParticipationSlotSubmission> {
+	const response = await axios.patch(
+		`/courses/${courseId}/events/${eventId}/participations/${participationId}/slots/${slotId}/patch_submission/`,
 		changes,
 	);
 	return normalizeIncomingEventParticipationSlot(response.data);
@@ -391,7 +438,7 @@ export async function runEventParticipationSlotCode(
 	slotId: string,
 ): Promise<EventParticipationSlot> {
 	const response = await axios.post(
-		`/courses/${courseId}/events/${eventId}/participations/${participationId}/slots/${slotId}/run/?as_student=1`,
+		`/courses/${courseId}/events/${eventId}/participations/${participationId}/slots/${slotId}/run/`,
 	);
 	return normalizeIncomingEventParticipationSlot(response.data);
 }

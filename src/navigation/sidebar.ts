@@ -69,6 +69,12 @@ export const courseDashboardSidebarOptions: SidebarOption[] = [
 		requiredPrivileges: [], //[CoursePrivilege.MANAGE_MATERIAL],
 	},
 	{
+		label: _("sidebar_labels.course_insights"),
+		icon: "assignment_ind", //"insights",
+		routeName: "CourseInsights",
+		requiredPrivileges: [],
+	},
+	{
 		label: _("sidebar_labels.exercise_solution_threads"),
 		icon: "forum",
 		routeName: "TeacherCourseExerciseSolutionThreads",
@@ -82,9 +88,9 @@ export const courseDashboardSidebarOptions: SidebarOption[] = [
 		requiredPrivileges: [], //[CoursePrivilege.UPDATE_COURSE],
 	},
 	{
-		label: _("sidebar_labels.course_insights"),
-		icon: "insights",
-		routeName: "CourseInsights",
+		label: _("sidebar_labels.course_integrations"),
+		icon: "extension",
+		routeName: "CourseIntegrations",
 		requiredPrivileges: [],
 	},
 	{

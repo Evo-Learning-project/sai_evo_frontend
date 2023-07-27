@@ -1,4 +1,4 @@
-import { DataFormat } from "./../integrations/types";
+import { DataFormat } from "@/integrations/moodle/types";
 import { ReportField } from "../reports/examParticipations/types";
 import {
 	CoursePrivilege,
@@ -34,6 +34,13 @@ export const it = {
 		course_panel: "Pannello docente",
 		go_to_course: "Vai al corso",
 		access_as_student: "Entra come studente",
+	},
+	enrollment: {
+		enrollment: "Iscrizione",
+		do_you_want_to_enroll: "Vuoi iscriverti a",
+		do_you_want_to_unenroll: "Vuoi disiscriverti da",
+		enroll: "Iscriviti",
+		unenroll: "Disiscriviti",
 	},
 	filter_results: {
 		title: "Cerca esercizi",
@@ -77,7 +84,8 @@ export const it = {
 		course_exercises: "Esercizi " + ROUTE_TITLE_COURSE_NAME_TOKEN,
 		course_exams: "Esami " + ROUTE_TITLE_COURSE_NAME_TOKEN,
 		course_permissions: "Permessi " + ROUTE_TITLE_COURSE_NAME_TOKEN,
-		course_insights: "Statistiche " + ROUTE_TITLE_COURSE_NAME_TOKEN,
+		course_insights: "Registro " + ROUTE_TITLE_COURSE_NAME_TOKEN,
+		course_integrations: "Integrazioni per " + ROUTE_TITLE_COURSE_NAME_TOKEN,
 		course_list: "Corsi",
 		exam_progress: "Progresso " + ROUTE_TITLE_EVENT_NAME_TOKEN,
 		exam_results: "Risultati " + ROUTE_TITLE_EVENT_NAME_TOKEN,
@@ -135,6 +143,7 @@ export const it = {
 		email: "Email",
 		exercise: "Es.",
 		grade: "Voto",
+		student: "Studente",
 	},
 	event_assessment: {
 		no_score_for_exercise: "Punteggio non assegnato",
@@ -194,6 +203,15 @@ export const it = {
 			" oppure una stringa.",
 	},
 	course_insights: {
+		average: "Media",
+		no_filter: "Nessun filtro",
+		filter_average_greater_than: "Media maggiore o uguale a",
+		filter_average_less_than: "Media minore o uguale a",
+		no_users_matching_search: "Nessuno studente corrisponde ai criteri di ricerca",
+		exams_stats: "Esami",
+		enrolled_students: "Studenti iscritti",
+		no_enrolled_students: "Non ci sono ancora iscritti",
+		no_user_activity: "Nessuna attività nel corso",
 		select_closed_exams: "Seleziona esami chiusi",
 		filter_exams: "Filtra esami",
 		score_sum: "Somma",
@@ -204,6 +222,12 @@ export const it = {
 		no_active_students: "Non ci sono ancora studenti attivi nel corso",
 		active_students_description:
 			"Gli studenti attivi sono studenti che hanno partecipato ad almeno un esame o hanno iniziato autonomamente almeno un'esercitazione nel corso.",
+		search_students: "Cerca studenti",
+		enroll_students: "Iscrivi studenti",
+		search_student: "Cerca studente",
+		add_enrolled_students: "Iscrivi studenti",
+		enroll: "Iscrivi",
+		unenroll: "Rimuovi iscrizione",
 		user_history_event_descriptions: {
 			[EventType.EXAM]: "Ha partecipato all'esame",
 			[EventType.SELF_SERVICE_PRACTICE]: "Ha svolto un'esercitazione",
@@ -227,6 +251,17 @@ export const it = {
 		donate_now: "Dona ora",
 	},
 	misc: {
+		this_morning: "Stamattina",
+		this_afternoon: "Oggi pomeriggio",
+		tomorrow_morning: "Domani mattina",
+		tomorrow_afternoon: "Domani pomeriggio",
+		next_week: "Prossima settimana",
+		disable: "Disabilita",
+		an_error_occurred: "Si è verificato un errore",
+		try_again: "Riprova",
+		popup_blocked:
+			"Il tuo browser ha bloccato l'apertura di una nuova scheda. Per favore, abilita l'apertura di schede e pop-up per proseguire",
+		selected: "selezionato | selezionati",
 		show_base_editor: "Editor base",
 		insert_latex: "Inserisci formula LaTeX",
 		updated_on: "Aggiornato",
@@ -300,11 +335,11 @@ export const it = {
 		for: "per",
 		success: "Operazione completata con successo",
 		participants: "partecipanti",
-		participant: "partecipante",
+		participant: "partecipante | partecipanti",
 		close: "Chiudi",
 		reopen: "Riapri",
 		exams: "esami",
-		exam: "esame",
+		exam: "esame | esami",
 		edit: "Modifica",
 		at: "alle",
 		copy: "Copia",
@@ -421,7 +456,8 @@ export const it = {
 		course_dashboard_practices: "Esercitazioni",
 		course_dashboard_exercises: "Esercizi",
 		exercise_solution_threads: "Soluzioni",
-		course_insights: "Statistiche",
+		course_insights: "Registro",
+		course_integrations: "Integrazioni",
 		course_dashboard_back_to_courses: "Torna ai corsi",
 		course_list_courses: "Corsi",
 		course_list_new_course: "Nuovo corso",
@@ -474,6 +510,7 @@ export const it = {
 	},
 	course_events: {
 		new_exam: "Nuovo esame",
+		exams_stats: "Statistiche esami",
 		no_exams: "Non ci sono ancora esami",
 		reopen: "Riapri",
 		reopen_exam_body: "Vuoi riaprire l'esame",
@@ -482,9 +519,10 @@ export const it = {
 		close_for_everyone: "Chiudi per tutti",
 		reopen_for_everyone: "Riapri per tutti",
 		close_exam_for_everyone_body_1: "Stai per chiudere l'esame",
-		close_exam_for_everyone_body_2: "per tutti i partecipanti.",
+		close_exam_for_everyone_body_2: "per tutti i partecipanti",
 		close_exam_for_everyone_body_3:
 			"Se vuoi chiudere l'esame solo per alcuni studenti, selezionali dalla pagina",
+		close_exam_for_everyone_body_1_alt: "Vuoi chiudere l'esame",
 	},
 	exercise_preview: {
 		unnamed_exercise: "Esercizio senza nome",
@@ -501,13 +539,18 @@ export const it = {
 		copied_link: "Copiato link per gli studenti negli appunti",
 	},
 	event_monitor: {
+		select_students_to_publish_results:
+			"Seleziona gli studenti per pubblicare i risultati",
+		if_selected: "Se selezionati",
+		search_students: "Cerca studenti",
 		assess_slot: "Valuta",
 		change_slot_score: "Modifica punteggio",
 		undo_turn_in: "Annulla consegna",
-		stats_turned_in: "Consegnati",
-		stats_participants: "Partecipanti",
-		stats_average_progress: "Completamento medio",
-		close_for_selected: "Chiudi esame per i selezionati",
+		stats_turned_in: "consegnati",
+		stats_participants: "partecipanti",
+		stats_average_progress: "completamento medio",
+		close_for_selected: "Chiudi",
+		reopen_for_selected: "Riapri",
 		open_for_selected: "Apri esame per i selezionati",
 		close_for_selected_text_1: "Stai per chiudere l'esame per",
 		open_for_selected_text: "Stai per riaprire l'esame per",
@@ -515,10 +558,21 @@ export const it = {
 		some_exams_still_open:
 			"L'esame è stato chiuso per alcuni partecipanti. Ricorda di chiudere l'esame per tutti al termine. Le righe evidenziate in rosso corrispondono a esami già chiusi.",
 		un_turn_in_text:
-			"Questo studente ha già consegnato. Puoi annullare la sua consegna per permettergli di modificare le sue risposte. Vuoi annullare la consegna di ",
+			"Vuoi annullare la consegna dello studento selezionato?|Vuoi annullare la consegna degli studenti selezionati?",
 		un_turn_in_instructions:
 			"Per riaprire l'esame di uno studente che ha già consegnato, clicca sull'icona",
+		student_will_be_brought_back_to_first_slot:
+			"Lo studente verrà riportato al primo esercizio e potrà cambiare le risposte date finora. | Gli studenti selezionati verranno riportati al primo esercizio e potranno cambiare le risposte date finora.",
 		in_column_state: "nella colonna Consegna.",
+		sorting_tooltip: "Cambia ordinamento",
+		sort_options: {
+			alphabetical: "Alfabetico (cognome)",
+			alphabetical_reverse: "Alfabetico inverso (cognome)",
+			begin_timestamp: "Ordine di inizio",
+			begin_timestamp_reverse: "Ordine di inizio inverso",
+			average_increasing: "Media crescente",
+			average_decreasing: "Media decrescente",
+		},
 	},
 	event_stats: {
 		not_yet_assessed: "Non ancora corretto",
@@ -623,6 +677,8 @@ export const it = {
 		state_editor_title: "Pubblica",
 		state: "Stato esame",
 		current_state_is: "L'esame è attualmente in stato",
+		current_state_is_draft: "L'esame è in stato di bozza",
+		current_state_is_planned: "L'esame è stato pianificato",
 		state_is: "L'esame è",
 		max_grade: "Voto massimo",
 		begin_timestamp: "Data e ora di inizio",
@@ -653,7 +709,7 @@ export const it = {
 		show_all_exercises_at_once: "Mostra tutti gli esercizi insieme",
 		show_one_exercise_at_once: "Mostra solo un esercizio alla volta",
 		publish: "Pubblica",
-		revert_to_draft: "Torna a stato di bozza",
+		revert_to_draft: "Torna in bozza",
 		event_planned_help_text: "L'esame verrà aperto agli studenti automaticamente in data",
 		editing_open_event_title: "Modifica di un esame in corso",
 		editing_open_event_body:
@@ -690,7 +746,7 @@ export const it = {
 		allowed_students: "studenti ammessi",
 		publish_exam: "Pubblica esame",
 		publish_announcement_prompt:
-			"Vuoi pubblicare un annuncio sul materiale del corso contenente il link all'esame?",
+			"Vuoi pianificare la pubblicazione di un annuncio sul materiale del corso contenente il link all'esame?",
 	},
 	exercise_editor: {
 		confirm_delete_testcase_attachment: "Sei sicuro di voler eliminare l'allegato",
@@ -796,6 +852,9 @@ export const it = {
 			"Non puoi iniziare un'esercitazione perché i docenti del corso non hanno ancora aggiunto esercizi",
 	},
 	practice_template_editor: {
+		add_tag_1: "Aggiungi",
+		add_tag_2: " esercizio con tag | esercizi con tag",
+		add_tag_3: "alla mia esercitazione",
 		begin_practice: "Inizia esercitazione",
 		add_rule: "Aggiungi esercizi",
 		choose_tags_text: "Seleziona i tag che ti interessano per creare l'esercitazione.",
@@ -882,6 +941,24 @@ export const it = {
 		[EventState.CLOSED]: "",
 	},
 	validation_errors: {
+		course_tree: {
+			lesson: {
+				modelValue: {
+					"title-required": "Inserisci un titolo per la lezione",
+				},
+			},
+			announcement: {
+				modelValue: {
+					"body-required": "L'annuncio non può essere vuoto",
+				},
+			},
+			poll: {
+				modelValue: {
+					"text-required": "Il testo non può essere vuoto",
+					"choices-required": "Inserisci almeno una scelta",
+				},
+			},
+		},
 		event: {
 			modelValue: {
 				"name-required": "Inserisci un nome per l'esame",
@@ -1013,6 +1090,18 @@ export const it = {
 		unknown_error: "Si è verificato un errore sconosciuto",
 	},
 	course_tree: {
+		invalid_schedule_time: "Data e ora invalide",
+		scheduled_confirm_publish_now_1:
+			"Hai pianificato la pubblicazione di questo elemento per il ",
+		scheduled_confirm_publish_now_2: ". Vuoi pubblicarlo subito?",
+		save_to_cancel_scheduled_publish:
+			"Salva le modifiche per annullare la pubblicazione pianificata",
+		scheduled_for: "Pianificato per il",
+		schedule: "Pianifica pubblicazione",
+		schedule_label: "Pianifica",
+		select_schedule_datetime: "Seleziona data e ora per pianificare la pubblicazione.",
+		schedule_datetime: "Data e ora",
+		schedule_publish_title: "Pianifica pubblicazione",
 		editor_discard_unsaved_changes: "Vuoi scartare le modifiche non salvate?",
 		confirm_delete_comment: "Sei sicuro di voler eliminare questo commento?",
 		file_by_url_description:
@@ -1136,6 +1225,9 @@ export const it = {
 		hidden_course: "Corso nascosto agli studenti",
 	},
 	tour: {
+		integrations_header: "Integrazioni",
+		integrations_content:
+			"Se utilizzi altri servizi di gestione dell'apprendimento, come Google Classroom, puoi integrarli con Evo Learning.",
 		new_material_header: "Materiale",
 		new_material_content:
 			"Prova subito il nuovo modulo Materiale! Esso ti permette di creare lezioni, caricare contenuti didattici, creare sondaggi e pubblicare annunci.",
@@ -1228,6 +1320,7 @@ export const it = {
 			course: "Corso",
 			full_name: "Nome e cognome",
 			mat: "Matricola",
+			score_average: "Media",
 		},
 		csv_headers: {
 			user: {
@@ -1270,7 +1363,9 @@ export const it = {
 	},
 	server_messages: {
 		error: {
+			NOT_ENROLLED: "Non sei iscritto a questo corso. Iscriviti per continuare.",
 			EVENT_CLOSED: "L'esame è terminato.",
+			ALREADY_ENROLLED: "Sei già iscritto a questo corso.",
 			NOT_IN_EVENT_ALLOWED_LIST:
 				"Non sei nella lista di studenti ammessi a questo esame. Se ritieni che si tratti di un errore, contatta il docente.",
 		},
@@ -1289,5 +1384,57 @@ export const it = {
 		extras_detected_tags: "Tag rilevati",
 		extras_detected_tags_description:
 			"Clicca sui tag che vuoi aggiungere agli esercizi importati. I tag selezionati verranno aggiunti come tag pubblici.",
+	},
+	integrations: {
+		classroom: {
+			sync_roster: "Importa",
+			sync_classroom_roster: "Importa iscritti da Classroom",
+			sync_classroom_roster_description_1: "Tutti gli studenti iscritti a ",
+			sync_classroom_roster_description_2: "saranno aggiunti a",
+			sync_classroom_roster_description_3:
+				"L'operazione potrebbe richiedere alcuni minuti.",
+			roster_sync_scheduled:
+				"Operazione pianificata. Il completamento potrebbe richiedere alcuni minuti.",
+			sync_grades_with_classroom: "Sincronizza voti con Classroom",
+			sync: "Sincronizza",
+			sync_grades_with_classroom_description:
+				"I voti che hai assegnato agli studenti verranno sincronizzati con Classroom. I voti non verranno pubblicati e quindi non saranno ancora visibili agli studenti.",
+			student_no_scopes_warning:
+				"Alcune funzionalità potrebbero non operare correttamente perché non \
+			hai autorizzato l'applicazione ad accedere alle informazioni necessarie del tuo account Google.",
+			published_on_classroom: "Pubblicato su Classroom",
+			type_course_name_to_disable_integration:
+				"Per disabilitare l'integrazione, scrivi qui sotto",
+			disable_warning:
+				"Se disabiliti l'integrazione, tutti i dati del tuo corso non saranno più sincronizzati con Google Classroom. Anche se riabiliti l'integrazione, i dati che hai sincronizzato in passato non verranno sincronizzati nuovamente. ",
+			publish_on_classroom: "Pubblica anche su Classroom",
+			introduction:
+				"L'integrazione Evo Learning + Google Classroom ti consente di collegare i corsi che hai creato su Evo ai corsi che insegni su Classroom.",
+			select_course_to_pair:
+				"Seleziona il corso di Google Classroom che vuoi associare a ",
+			enable: "Abilita integrazione con Google Classroom per questo corso",
+			grant_scopes_btn: "Abilita permessi",
+			grant_scopes_to_use_integration:
+				"Per utilizzare l'integrazione con Google Classroom, abilita i permessi necessari.",
+			you_have_outstanding_scopes: "Non hai ancora abilitato tutti i permessi necessari",
+			pair_a_classroom_course: "Associa un corso Google Classroom",
+			is_paired_with: "è associato con il corso",
+			you_dont_teach_any_courses:
+				"Non è stato possibile trovare corsi su Google Classroom di cui sei un insegnante. Prova con un altro account.",
+			pair_course: "Associa",
+			feature_exams:
+				"Pubblica i tuoi esami su Evo e verranno sincronizzati con gli assegnamenti su Classroom",
+			feature_exam_participations:
+				"Tieni traccia su Classroom delle consegne e dei voti assegnati agli studenti per esami che hai creato su Evo",
+			feature_material:
+				"Pubblica lezioni, annunci e materiale su Evo e visualizzali anche nel tuo corso Classroom",
+			feature_roster:
+				"Sincronizza le iscrizioni ai tuoi corsi Classroom con quelle ai corsi associati in Evo",
+			disable_title: "Disabilita integrazione",
+			disable_body:
+				"Se disabiliti l'integrazione, le seguenti funzionalità verranno disattivate:",
+			keep_active: "Mantieni attiva",
+			find_out_features: "Scopri i vantaggi dell'integrazione Evo + Classroom",
+		},
 	},
 };

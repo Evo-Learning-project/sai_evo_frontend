@@ -1,4 +1,4 @@
-import { CLOZE_SEPARATOR } from "./../const";
+import { CLOZE_SEPARATOR } from "@/const";
 import { Exercise, ExerciseType } from "@/models";
 import { MoodleCategory, MoodleQuestion } from "./interfaces";
 

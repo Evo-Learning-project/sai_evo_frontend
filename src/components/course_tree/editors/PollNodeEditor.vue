@@ -74,6 +74,17 @@
 				@update:modelValue="onNodeChange('text', $event)"
 			>
 				{{ $t("course_tree.poll_text") }}
+				<template v-if="v$.modelValue.text.$errors.length > 0" v-slot:errors>
+					<div
+						class="input-errors"
+						v-for="error of v$.modelValue.text.$errors"
+						:key="error.$uid"
+					>
+						<div class="error-msg">
+							{{ $t("validation_errors.course_tree.poll." + error.$uid) }}
+						</div>
+					</div>
+				</template>
 			</TextEditor>
 		</div>
 		<!-- choices -->
@@ -127,6 +138,7 @@
 							@click="onDeleteChoice(choice)"
 							:variant="'icon'"
 							:outline="true"
+							v-if="modelValue.choices.length > 1"
 						>
 							<span class="material-icons">delete</span></Btn
 						>
@@ -191,6 +203,15 @@
 				>
 			</div>
 		</div>
+		<div
+			class="input-errors"
+			v-for="error of v$.modelValue.choices.$errors"
+			:key="error.$uid"
+		>
+			<div class="error-msg">
+				{{ $t("validation_errors.course_tree.poll." + error.$uid) }}
+			</div>
+		</div>
 	</div>
 </template>
 
@@ -217,7 +238,9 @@ import {
 import { useMainStore } from "@/stores/mainStore";
 import { useMetaStore } from "@/stores/metaStore";
 import { setErrorNotification } from "@/utils";
+import { pollNodeValidation } from "@/validation/models";
 import { defineComponent, PropType } from "@vue/runtime-core";
+import useVuelidate from "@vuelidate/core";
 import { mapStores } from "pinia";
 import { nodeEditorProps } from "../shared";
 export default defineComponent({
@@ -230,6 +253,15 @@ export default defineComponent({
 		...nodeEditorProps,
 	},
 	mixins: [courseIdMixin, savingMixin],
+	validations() {
+		return {
+			modelValue: pollNodeValidation,
+		};
+	},
+	setup() {
+		const v = useVuelidate();
+		return { v$: v };
+	},
 	data() {
 		return {
 			PollNodeState,
@@ -330,6 +362,10 @@ export default defineComponent({
 			this.$emit("patchNode", { key, value, save });
 		},
 		onSave() {
+			if (this.modelValue.state !== PollNodeState.DRAFT && this.v$.$invalid) {
+				this.v$.$touch();
+				return;
+			}
 			this.$emit("save");
 		},
 		onBlur() {
@@ -339,21 +375,14 @@ export default defineComponent({
 			await this.onNodeChange("parent_id", parentId);
 		},
 		async onPublish() {
-			this.onNodeChange("state", PollNodeState.OPEN, true);
+			this.v$.$touch();
+			if (this.v$.$errors.length === 0) {
+				this.$emit("updateState", {
+					newState: PollNodeState.OPEN,
+					params: {},
+				});
+			}
 		},
-		// async onCreateAttachment(file) {
-		// 	this.creatingAttachment = true;
-		// 	try {
-		// 		await this.mainStore.createCourseTreeNode({
-		// 			courseId: this.courseId,
-		// 			node: { ...getBlankFileNode(this.modelValue.id), file },
-		// 		});
-		// 	} catch (e) {
-		// 		setErrorNotification(e);
-		// 	} finally {
-		// 		this.creatingAttachment = false;
-		// 	}
-		// },
 		/** end shared behavior */
 	},
 	computed: {

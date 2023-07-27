@@ -11,12 +11,14 @@
 				<span
 					style="font-size: 20px !important"
 					class="material-icons-outlined animate-spin"
-					>sync</span
 				>
+					sync
+				</span>
 			</div>
 			<Btn
 				:variant="'icon'"
 				:outline="true"
+				style="margin-top: 7.5px !important; line-height: 1 !important"
 				:class="{
 					'transition-opacity duration-75 hover:opacity-100 opacity-70': hasNullishScore,
 				}"
@@ -27,14 +29,15 @@
 					<span
 						v-if="hasNullishScore"
 						class="text-yellow-900 material-icons-outlined mx-auto"
-						style="font-size: 20px !important; padding-top: 12.5px !important"
-						>pending_actions</span
+						style="font-size: 20px !important; padding-top: 3.5px !important"
 					>
-					<span v-else class="mx-auto -mt-2" style="padding-top: -10px !important">
+						pending_actions
+					</span>
+					<span v-else class="mx-auto" style="padding-top: -5px !important">
 						{{ params.value.score }}
 					</span>
-				</div></Btn
-			>
+				</div>
+			</Btn>
 		</div>
 	</div>
 </template>
@@ -47,7 +50,9 @@ export default defineComponent({
 	name: "EventParticipationSlotScoreRenderer",
 	props: {
 		params: {
-			type: Object as PropType<{ value: EventParticipationSlot }>,
+			type: Object as PropType<{
+				value: Pick<EventParticipationSlot, "score" | "execution_results">;
+			}>,
 			required: true,
 		},
 	},

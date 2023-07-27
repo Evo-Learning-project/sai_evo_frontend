@@ -1,145 +1,297 @@
 <template>
 	<div class="relative flex flex-col flex-grow">
-		<!-- insights button -->
-		<div v-if="!firstLoading && resultsMode" class="z-50 flex flex-col mb-2 -mt-8">
-			<router-link class="ml-auto" :to="{ name: 'ExamStats' }">
+		<!-- top row heading & stats chips -->
+		<div class="flex items-center pb-4 pt-1.5 mb-2">
+			<div class="overflow-hidden mr-4">
+				<h4
+					class="mb-0"
+					style="
+						line-height: 0.95;
+						white-space: nowrap;
+						overflow: hidden;
+						text-overflow: ellipsis;
+					"
+				>
+					{{ event.name }}
+				</h4>
+			</div>
+			<!-- stats chips -->
+			<div class="flex items-center" v-if="!firstLoading">
+				<div class="chip chip-primary mb-0">
+					<div class="flex items-center mx-auto">
+						<span class="mr-1 material-icons text-primary">people</span>
+						<p class="text-primary">{{ participantCount }}</p>
+						<p class="ml-1 text-sm text-muted text-primary">
+							{{ $t("event_monitor.stats_participants") }}
+						</p>
+					</div>
+				</div>
+
+				<div class="chip chip-success mb-0">
+					<div class="flex items-center mx-auto">
+						<span class="mr-1 material-icons-outlined text-success"
+							>assignment_turned_in</span
+						>
+						<p class="text-success">{{ turnedInCount }}</p>
+						<p class="ml-1 text-sm text-muted text-success">
+							{{ $t("event_monitor.stats_turned_in") }}
+						</p>
+					</div>
+				</div>
+
+				<div class="chip bg-light border-none mb-0">
+					<div class="flex items-center mx-auto">
+						<p>{{ averageProgress }}</p>
+						<p>%</p>
+						<p class="ml-1 text-sm text-center text-muted">
+							{{ $t("event_monitor.stats_average_progress") }}
+						</p>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- second row with controls -->
+		<div class="flex items-center mb-1">
+			<div class="flex items-center space-x-2 w-1/3 mr-auto">
+				<TextInput
+					:searchBar="true"
+					v-model="searchText"
+					:leftIcon="'search'"
+					class="w-full"
+					:placeholder="$t('event_monitor.search_students')"
+				/>
+				<DropdownMenu
+					:expanded="sortingOptionsExpanded"
+					@toggleExpanded="sortingOptionsExpanded = !sortingOptionsExpanded"
+				>
+					<template v-slot:activator>
+						<Btn :variant="'icon'" :outline="true" class="">
+							<!-- :tooltip="$t('event_monitor.sorting_tooltip')" -->
+							<svg
+								style="width: 22px; height: 22px"
+								class="opacity-70"
+								xmlns="http://www.w3.org/2000/svg"
+								viewBox="0 0 24 24"
+							>
+								<title>sort</title>
+								<path
+									d="M18 21L14 17H17V7H14L18 3L22 7H19V17H22M2 19V17H12V19M2 13V11H9V13M2 7V5H6V7H2Z"
+								/>
+							</svg>
+						</Btn>
+					</template>
+					<div class="-mx-5 -my-2.5 w-max">
+						<div v-for="(option, index) in sortingOptions" :key="index">
+							<Btn
+								:outline="true"
+								class="px-8 pt-2 pb-2 w-full"
+								:variant="'transparent'"
+								@click="setSortingOption(index)"
+							>
+								<span
+									class="material-icons mr-2 text-primary"
+									v-if="index === selectedSortingOption"
+									>done</span
+								>
+								<div class="flex items-center align-top">{{ option.label }}</div>
+							</Btn>
+						</div>
+					</div>
+				</DropdownMenu>
+			</div>
+
+			<!-- buttons to publish results and download participations -->
+			<div v-if="!firstLoading && resultsMode" class="flex mr-2">
+				<!-- TODO if the button is wrapped in a tooltip,
+					it'll be clickable even if disabled, and won't inherit no-elevate class -->
+				<Btn
+					class="no-elevate mr-2"
+					@click="onPublishResults"
+					:disabled="selectedParticipationsIds.length == 0"
+				>
+					<!-- <span class="mr-1 text-base material-icons-outlined"> done </span> -->
+					{{ $t("event_results.publish_results") }}</Btn
+				>
+				<!-- classroom grade sync button -->
+				<Btn
+					v-if="googleClassroomCourseWorkTwin !== null"
+					:variant="'icon'"
+					:outline="true"
+					:tooltip="$t('integrations.classroom.sync_grades_with_classroom')"
+					@click="onSyncGradesWithClassroom"
+				>
+					<img src="@/assets/classroom_sync.png" style="width: 28px" />
+				</Btn>
+
+				<!-- insights button -->
+				<router-link class="z-50" :to="{ name: 'ExamStats' }">
+					<Btn
+						:outline="true"
+						:tooltip="$t('help_texts.stats')"
+						:variant="'icon'"
+						class="transition-transform duration-200 transform icon-btn-primary"
+					>
+						<span
+							id="insights-btn"
+							class="transition-opacity duration-75 rounded-full material-icons-outlined"
+							>insights</span
+						>
+					</Btn>
+				</router-link>
+				<CsvParticipationDownloader class="ml-auto" />
+			</div>
+
+			<!-- buttons to close/open participations-->
+			<div v-else-if="!firstLoading" class="flex mr-2 items-center">
+				<p class="text-muted mr-1">{{ $t("event_monitor.if_selected") }}:</p>
+				<div v-for="[name, action] in Object.entries(bulkActions)" :key="name">
+					<Btn
+						@click="action.method()"
+						class="no-elevate mx-1"
+						:variant="'secondary'"
+						:disabled="!selectedParticipations.some(p => action.applicable(p))"
+						>{{ action.label }}</Btn
+					>
+				</div>
 				<Btn
 					:outline="true"
-					:tooltip="!showStats ? $t('help_texts.stats') : ''"
-					:variant="'icon'"
-					class="-mt-8 transition-transform duration-200 transform icon-btn-primary"
+					:size="'sm'"
+					:variant="'danger'"
+					@click="onCloseExam"
+					class="ml-4 mr-1"
 				>
-					<span
-						id="insights-btn"
-						class="transition-opacity duration-75 rounded-full material-icons-outlined"
-						>insights</span
-					>
+					<span class="mr-1 text-base material-icons-outlined"> block </span>
+					{{ $t("event_preview.close") }}
 				</Btn>
-			</router-link>
+			</div>
 		</div>
 
 		<!-- alerts -->
 		<!-- event restricted alert -->
-		<div
-			class="flex w-full transition-all duration-200"
-			v-if="event.state === EventState.RESTRICTED"
-			:class="{
-				'opacity-0 max-h-0 mb-0': !showRestrictedModeBanner,
-				'opacity-100 max-h-96 mb-3': showRestrictedModeBanner,
-			}"
-		>
-			<div class="w-full mb-4 banner banner-danger">
-				<span class="text-yellow-900 material-icons-outlined"> error_outline </span>
-				<p>
-					{{ $t("event_monitor.some_exams_still_open") }}
-				</p>
-				<Btn
-					:outline="true"
-					:size="'xs'"
-					:variant="'icon'"
-					@click="showRestrictedModeBanner = false"
-				>
-					<span
-						class="material-icons-outlined"
-						style="font-size: 17px !important; margin-right: 0 !important"
-						>close</span
-					></Btn
-				>
-			</div>
-		</div>
-		<div v-if="!firstLoading && resultsMode">
-			<!-- pending assessments alert -->
+		<div v-if="false">
 			<div
-				v-if="!areAllParticipationsFullyAssessed(mainStore.eventParticipations)"
-				class="flex transition-all duration-200 banner banner-danger"
+				class="flex w-full transition-all duration-200"
+				v-if="event.state === EventState.RESTRICTED"
 				:class="{
-					'opacity-0 max-h-0 mb-0 py-0': !showThereArePendingAssessmentsBanner,
-					'opacity-100 max-h-96 mb-3': showThereArePendingAssessmentsBanner,
+					'opacity-0 max-h-0 mb-0': !showRestrictedModeBanner,
+					'opacity-100 max-h-96 mb-3': showRestrictedModeBanner,
 				}"
 			>
-				<span class="ml-px text-yellow-900 material-icons-outlined">
-					pending_actions
-				</span>
-				<p class="">
-					{{ $t("event_assessment.some_exams_require_manual_assessment") }}
+				<div class="w-full mb-4 banner banner-danger">
+					<span class="text-yellow-900 material-icons-outlined"> error_outline </span>
+					<p>
+						{{ $t("event_monitor.some_exams_still_open") }}
+					</p>
+					<Btn
+						:outline="true"
+						:size="'xs'"
+						:variant="'icon'"
+						@click="showRestrictedModeBanner = false"
+					>
+						<span
+							class="material-icons-outlined"
+							style="font-size: 17px !important; margin-right: 0 !important"
+							>close</span
+						></Btn
+					>
+				</div>
+			</div>
+			<div v-if="!firstLoading && resultsMode">
+				<!-- pending assessments alert -->
+				<div
+					v-if="!areAllParticipationsFullyAssessed(mainStore.eventParticipations)"
+					class="flex transition-all duration-200 banner banner-danger"
+					:class="{
+						'opacity-0 max-h-0 mb-0 py-0': !showThereArePendingAssessmentsBanner,
+						'opacity-100 max-h-96 mb-3': showThereArePendingAssessmentsBanner,
+					}"
+				>
+					<span class="ml-px text-yellow-900 material-icons-outlined">
+						pending_actions
+					</span>
+					<p class="">
+						{{ $t("event_assessment.some_exams_require_manual_assessment") }}
 
-					{{ $t("event_assessment.exams_awaiting_assessment_are_marked") }}
-					<span class="text-base text-yellow-900 inline-icon material-icons-outlined"
-						>pending_actions</span
-					>.
-				</p>
-				<Btn
-					:outline="true"
-					:size="'xs'"
-					:variant="'icon'"
-					@click="showThereArePendingAssessmentsBanner = false"
+						{{ $t("event_assessment.exams_awaiting_assessment_are_marked") }}
+						<span class="text-base text-yellow-900 inline-icon material-icons-outlined"
+							>pending_actions</span
+						>.
+					</p>
+					<Btn
+						:outline="true"
+						:size="'xs'"
+						:variant="'icon'"
+						@click="showThereArePendingAssessmentsBanner = false"
+					>
+						<span
+							class="material-icons-outlined"
+							style="font-size: 17px !important; margin-right: 3px !important"
+							>close</span
+						></Btn
+					>
+				</div>
+				<!-- you can publish results alert -->
+				<div
+					v-else-if="thereAreUnpublishedAssessments"
+					class="flex transition-all duration-200 banner banner-light"
+					:class="{
+						'opacity-0 max-h-0 mb-0 py-0': !showThereAreUnpublishedResultsBanner,
+						'opacity-100 max-h-96 mb-3': showThereAreUnpublishedResultsBanner,
+					}"
 				>
-					<span
-						class="material-icons-outlined"
-						style="font-size: 17px !important; margin-right: 3px !important"
-						>close</span
-					></Btn
+					<span class="ml-px material-icons-outlined text-success"> task </span>
+					<p>
+						{{ $t("event_assessment.ready_to_publish_1") }}
+						<span>{{ $t("event_results.publish_results") }}</span
+						>. {{ $t("event_assessment.ready_to_publish_2") }}
+					</p>
+					<Btn
+						:outline="true"
+						:size="'xs'"
+						:variant="'icon'"
+						style="margin-left: auto !important"
+						@click="showThereAreUnpublishedResultsBanner = false"
+					>
+						<span
+							class="material-icons-outlined"
+							style="font-size: 17px !important; margin-right: 0 !important"
+							>close</span
+						></Btn
+					>
+				</div>
+				<!-- all assessments published alert -->
+				<div
+					v-else
+					class="flex transition-all duration-200 banner banner-success"
+					:class="{
+						'opacity-0 max-h-0 mb-0 py-0': !showAllAssessmentsPublishedBanner,
+						'opacity-100 max-h-96 mb-3': showAllAssessmentsPublishedBanner,
+					}"
 				>
-			</div>
-			<!-- you can publish results alert -->
-			<div
-				v-else-if="thereAreUnpublishedAssessments"
-				class="flex transition-all duration-200 banner banner-light"
-				:class="{
-					'opacity-0 max-h-0 mb-0 py-0': !showThereAreUnpublishedResultsBanner,
-					'opacity-100 max-h-96 mb-3': showThereAreUnpublishedResultsBanner,
-				}"
-			>
-				<span class="ml-px material-icons-outlined text-success"> task </span>
-				<p>
-					{{ $t("event_assessment.ready_to_publish_1") }}
-					<span>{{ $t("event_results.publish_results") }}</span
-					>. {{ $t("event_assessment.ready_to_publish_2") }}
-				</p>
-				<Btn
-					:outline="true"
-					:size="'xs'"
-					:variant="'icon'"
-					style="margin-left: auto !important"
-					@click="showThereAreUnpublishedResultsBanner = false"
-				>
-					<span
-						class="material-icons-outlined"
-						style="font-size: 17px !important; margin-right: 0 !important"
-						>close</span
-					></Btn
-				>
-			</div>
-			<!-- all assessments published alert -->
-			<div
-				v-else
-				class="flex transition-all duration-200 banner banner-success"
-				:class="{
-					'opacity-0 max-h-0 mb-0 py-0': !showAllAssessmentsPublishedBanner,
-					'opacity-100 max-h-96 mb-3': showAllAssessmentsPublishedBanner,
-				}"
-			>
-				<span class="text-xl material-icons-outlined"> done </span>
-				<p class="">
-					{{ $t("event_assessment.all_published") }}
-				</p>
-				<Btn
-					:outline="true"
-					:size="'xs'"
-					:variant="'icon'"
-					style="margin-left: auto !important"
-					@click="showAllAssessmentsPublishedBanner = false"
-				>
-					<span
-						class="material-icons-outlined"
-						style="font-size: 17px !important; margin-right: 0 !important"
-						>close</span
-					></Btn
-				>
+					<span class="text-xl material-icons-outlined"> done </span>
+					<p class="">
+						{{ $t("event_assessment.all_published") }}
+					</p>
+					<Btn
+						:outline="true"
+						:size="'xs'"
+						:variant="'icon'"
+						style="margin-left: auto !important"
+						@click="showAllAssessmentsPublishedBanner = false"
+					>
+						<span
+							class="material-icons-outlined"
+							style="font-size: 17px !important; margin-right: 0 !important"
+							>close</span
+						></Btn
+					>
+				</div>
 			</div>
 		</div>
 
 		<!-- stats cards -->
+		<!--
 		<div v-if="!firstLoading && !resultsMode" class="mb-2">
 			<div class="flex">
 				<div class="flex w-1/3 mr-4 card shadow-elevation">
@@ -185,15 +337,17 @@
 				</div>
 			</div>
 		</div>
+		-->
 
+		<!----------------------->
 		<!-- table -->
 		<div class="flex-grow">
 			<DataTable
 				:class="{
-					'opacity-50': participationsData.length === 0 || firstLoading,
+					'opacity-50': filteredParticipationsData.length === 0 || firstLoading,
 				}"
 				:columnDefs="participationPreviewColumns"
-				:rowData="firstLoading ? [] : participationsData"
+				:rowData="firstLoading ? [] : filteredParticipationsData"
 				:isRowSelectable="isRowSelectable"
 				:rowClassRules="getRowClassRules()"
 				:getRowId="getRowId"
@@ -205,47 +359,6 @@
 				"
 				@selectionChanged="onSelectionChanged"
 			></DataTable>
-		</div>
-
-		<!-- buttons to publish results and download participations -->
-		<div v-if="!firstLoading && resultsMode" class="flex mt-4">
-			<Btn
-				:variant="'success'"
-				@click="onPublishResults"
-				:disabled="selectedParticipations.length == 0"
-			>
-				<span class="mr-1 text-base material-icons-outlined"> done </span>
-				{{ $t("event_results.publish_results") }}</Btn
-			>
-			<CsvParticipationDownloader class="ml-auto" />
-		</div>
-
-		<!-- buttons to close/open participations-->
-		<div v-else-if="!firstLoading" class="flex mt-2 space-x-2">
-			<Btn
-				v-if="false"
-				class=""
-				:outline="true"
-				:variant="'danger'"
-				@click="onCloseSelectedExams"
-				:disabled="selectedCloseableParticipations.length === 0"
-			>
-				<span class="mr-1 text-base material-icons-outlined"> block </span>
-				{{ $t("event_monitor.close_for_selected") }}</Btn
-			>
-
-			<Btn
-				v-if="false"
-				class=""
-				v-show="event.state === EventState.RESTRICTED"
-				:variant="'primary'"
-				:outline="true"
-				@click="onOpenSelectedExams"
-				:disabled="selectedOpenableParticipations.length === 0"
-			>
-				<span class="mr-1 text-base material-icons-outlined"> undo </span>
-				{{ $t("event_monitor.open_for_selected") }}</Btn
-			>
 		</div>
 
 		<Dialog
@@ -263,6 +376,13 @@
 			</template>
 			<template v-slot:body>
 				{{ blockingDialogData.text }}
+			</template>
+			<template v-slot:footerButtons>
+				<IntegrationSwitch
+					v-if="showClassroomIntegrationSwitch"
+					class="ml-7.5 mb-1"
+					v-model="publishToClassroom"
+				/>
 			</template>
 		</Dialog>
 
@@ -331,7 +451,7 @@
 			name="examInsightsTour"
 			:steps="examInsightsPageTourSteps"
 			:options="tourOptions"
-		></v-tour>
+		/>
 	</div>
 </template>
 
@@ -351,6 +471,8 @@ import {
 	EventState,
 	EventTemplateRule,
 	ParticipationAssessmentProgress,
+	User,
+	userMatchesSearch,
 } from "@/models";
 import { defineComponent } from "@vue/runtime-core";
 
@@ -381,10 +503,16 @@ import EventParticipationSlotCompletionRenderer from "@/components/datatable/Eve
 import EventParticipationEmailRenderer from "@/components/datatable/EventParticipationEmailRenderer.vue";
 import EventParticipationStateRenderer from "@/components/datatable/EventParticipationStateRenderer.vue";
 import EventParticipationAssessmentStateRenderer from "@/components/datatable/EventParticipationAssessmentStateRenderer.vue";
+import EventParticipationScoreRenderer from "@/components/datatable/EventParticipationScoreRenderer.vue";
 import { mapStores } from "pinia";
 import { useMainStore } from "@/stores/mainStore";
 import { useMetaStore } from "@/stores/metaStore";
 import { setErrorNotification } from "@/utils";
+import IntegrationSwitch from "@/integrations/classroom/components/IntegrationSwitch.vue";
+import { GoogleClassroomCourseWorkTwin } from "@/integrations/classroom/interfaces";
+import { useGoogleIntegrationsStore } from "@/integrations/stores/googleIntegrationsStore";
+import TextInput from "@/components/ui/TextInput.vue";
+import DropdownMenu from "@/components/ui/DropdownMenu.vue";
 
 export default defineComponent({
 	components: {
@@ -395,7 +523,6 @@ export default defineComponent({
 		CsvParticipationDownloader,
 		SkeletonCard,
 		Spinner,
-
 		/** Cell renderers required by Ag-grid */
 		// eslint-disable-next-line vue/no-unused-components
 		EventParticipationSlotScoreRenderer,
@@ -407,6 +534,11 @@ export default defineComponent({
 		EventParticipationStateRenderer,
 		// eslint-disable-next-line vue/no-unused-components
 		EventParticipationAssessmentStateRenderer,
+		// eslint-disable-next-line vue/no-unused-components
+		EventParticipationScoreRenderer,
+		IntegrationSwitch,
+		TextInput,
+		DropdownMenu,
 	},
 	name: "EventParticipationsMonitor",
 	props: {
@@ -436,12 +568,17 @@ export default defineComponent({
 			});
 		});
 
+		if (this.resultsMode) {
+			await this.checkForCourseworkTwin();
+		}
+
 		if (this.resultsMode && !(VISITED_INSIGHTS_TOUR_KEY in localStorage)) {
 			setTimeout(() => (this.$tours as any)["examInsightsTour"].start(), 200);
 			localStorage.setItem(VISITED_INSIGHTS_TOUR_KEY, "true");
 		}
 
 		if (this.refreshData) {
+			// TODO improve this to avoid repeated calls before the last one completes, and possibly adjusting for network speed
 			this.setDataRefreshInterval(10000);
 		}
 
@@ -479,16 +616,12 @@ export default defineComponent({
 			editingParticipationId: "",
 			gridApi: null as any,
 			columnApi: null as any,
-			selectedParticipations: [] as string[],
-			showStats: false,
+			selectedParticipationsIds: [] as string[],
 			dispatchingCall: false,
+			searchText: "",
 
 			// dialog functions
 			showAssessmentEditorDialog: false,
-			publishingResultsMode: false,
-			closingExamsMode: false,
-			reOpeningTurnedInParticipationMode: false,
-			reOpeningClosedExamsMode: false,
 
 			// show banners
 			showThereAreUnpublishedResultsBanner: true,
@@ -502,10 +635,20 @@ export default defineComponent({
 
 			EventParticipationState,
 			participationStateIcons,
+
+			googleClassroomCourseWorkTwin: null as null | GoogleClassroomCourseWorkTwin,
+			publishToClassroom: true,
+			sortingOptionsExpanded: false,
+
+			selectedSortingOption: 0,
 		};
 	},
 	methods: {
 		areAllParticipationsFullyAssessed,
+		async checkForCourseworkTwin() {
+			this.googleClassroomCourseWorkTwin =
+				await this.googleIntegrationStore.getGoogleClassroomCourseWorkTwin(this.eventId);
+		},
 		setDataRefreshInterval(interval: number, callback?: any) {
 			this.refreshHandle = setInterval(async () => {
 				await this.mainStore.getEventParticipations({
@@ -548,35 +691,23 @@ export default defineComponent({
 					this.resultsMode && params.data.visibility === AssessmentVisibility.PUBLISHED,
 				"bg-danger-important hover:bg-danger-important": (params: RowNode) =>
 					!this.resultsMode &&
-					this.event.state === EventState.RESTRICTED &&
-					!this.event.users_allowed_past_closure?.includes(
-						this.mainStore.getEventParticipationById(params.data.id)?.user?.id ?? "",
-					),
+					this.mainStore.getEventParticipationById(params.data.id)?.state ===
+						EventParticipationState.CLOSED_BY_TEACHER,
 			};
 		},
 		onSelectionChanged() {
 			// copy the id's of the selected participations
-			this.selectedParticipations = this.gridApi
+			this.selectedParticipationsIds = this.gridApi
 				?.getSelectedNodes()
 				.map((n: any) => n.data.id);
 		},
 		deselectAllRows() {
 			this.gridApi.deselectAll();
-			this.selectedParticipations = [];
+			this.selectedParticipationsIds = [];
 		},
 		async onCellClicked(event: CellClickedEvent) {
-			// TODO refactor to have separate methods
 			if (event.colDef.field?.startsWith("slot") && this.resultsMode) {
 				this.onOpenAssessmentEditorDialog(event.data.id, event.value);
-			}
-			// change turned in status
-			else if (
-				event.colDef.field === "state" &&
-				!this.resultsMode &&
-				event.data.state == EventParticipationState.TURNED_IN
-			) {
-				const participation = this.mainStore.getEventParticipationById(event.data.id);
-				await this.onUndoParticipationTurnIn(participation as EventParticipation);
 			}
 		},
 		async onOpenAssessmentEditorDialog(
@@ -631,32 +762,65 @@ export default defineComponent({
 				this.dispatchingCall = false;
 			}
 		},
+		async onCloseExam() {
+			const dialogData: DialogData = {
+				title: _("course_events.close_exam_for_everyone_title"),
+				text:
+					_("course_events.close_exam_for_everyone_body_1_alt") +
+					" " +
+					this.event.name +
+					" " +
+					_("course_events.close_exam_for_everyone_body_2") +
+					"?",
+				yesText: _("course_events.close_for_everyone"),
+				noText: _("dialog.default_cancel_text"),
+			};
+			this.blockingDialogData = dialogData;
+
+			const choice = await this.getBlockingBinaryDialogChoice();
+
+			if (!choice) {
+				this.showBlockingDialog = false;
+				return;
+			}
+
+			await this.withLoading(
+				async () =>
+					await this.mainStore.partialUpdateEvent({
+						courseId: this.courseId,
+						eventId: this.event.id,
+						mutate: true,
+						changes: {
+							state: EventState.CLOSED,
+							users_allowed_past_closure: [],
+						},
+					}),
+				setErrorNotification,
+				() => this.metaStore.showSuccessFeedback(),
+			);
+			this.showBlockingDialog = false;
+		},
 		async onCloseSelectedExams() {
-			// closing exams only for a group of participant means putting all of the
-			// participants except those ones inside the `users_allowed_past_closure`
-			// list of the exam and setting the exam state to RESTRICTED
+			const applicableParticipationsIds = this.selectedParticipations
+				.filter(p => this.bulkActions.close.applicable(p))
+				.map(p => p.id);
 
 			const dialogData: DialogData = {
 				title: _("event_monitor.close_for_selected"),
 				yesText:
 					_("misc.close") +
 					" " +
-					this.selectedCloseableParticipations.length +
+					applicableParticipationsIds.length +
 					" " +
-					(this.selectedCloseableParticipations.length === 1
-						? _("misc.exam")
-						: _("misc.exams")),
+					_("misc.exam", applicableParticipationsIds.length),
 				noText: _("dialog.default_cancel_text"),
 				text:
 					_("event_monitor.close_for_selected_text_1") +
 					" " +
-					this.selectedCloseableParticipations.length +
+					applicableParticipationsIds.length +
 					" " +
-					(this.selectedCloseableParticipations.length === 1
-						? _("misc.participant")
-						: _("misc.participants")) +
+					_("misc.participant", applicableParticipationsIds.length) +
 					".",
-				//onYes: this.closeExams,
 			};
 
 			this.blockingDialogData = dialogData;
@@ -667,45 +831,9 @@ export default defineComponent({
 				return;
 			}
 
-			// these are the ones the exam will stay open for
-			const unselectedParticipations = this.mainStore.eventParticipations.filter(
-				p => !this.selectedParticipations.includes(p.id),
-			);
-			const unselectedUserIds = unselectedParticipations.map(p => p.user.id);
-
-			this.dispatchingCall = true;
-			try {
-				await this.mainStore.partialUpdateEvent({
-					courseId: this.courseId,
-					eventId: this.eventId,
-					mutate: true, // update local object too
-					changes: {
-						state: EventState.RESTRICTED,
-						users_allowed_past_closure: [
-							// users that were already allowed and haven't been selected now
-							...(this.event.users_allowed_past_closure ?? []).filter(
-								i =>
-									!this.selectedCloseableParticipations.map(p => p.user.id).includes(i),
-							),
-							// unselected id's that were already allowed (unless it's the
-							// first time the exam gets restricted)
-							...unselectedUserIds.filter(
-								i =>
-									this.event.state !== EventState.RESTRICTED ||
-									this.event.users_allowed_past_closure?.includes(i),
-							),
-						],
-					},
-				});
-				this.showBlockingDialog = false;
-				this.metaStore.showSuccessFeedback();
-				this.deselectAllRows();
-				this.gridApi.refreshCells({ force: true });
-			} catch (e) {
-				setErrorNotification(e);
-			} finally {
-				this.dispatchingCall = false;
-			}
+			await this.dispatchParticipationsUpdate(applicableParticipationsIds, {
+				state: EventParticipationState.CLOSED_BY_TEACHER,
+			});
 
 			// TODO extract
 			if (this.resultsMode && !(VISITED_INSIGHTS_TOUR_KEY in localStorage)) {
@@ -714,28 +842,26 @@ export default defineComponent({
 			}
 		},
 		async onOpenSelectedExams() {
-			// re-opening exam for a group of participants means adding those
-			// participants to the `users_allowed_past_closure` list for the exam
+			const applicableParticipationsIds = this.selectedParticipations
+				.filter(p => this.bulkActions.reOpen.applicable(p))
+				.map(p => p.id);
+
 			const dialogData: DialogData = {
 				title: _("event_monitor.open_for_selected"),
 				yesText:
 					_("misc.reopen") +
 					" " +
-					this.selectedOpenableParticipations.length +
+					applicableParticipationsIds.length +
 					" " +
-					(this.selectedOpenableParticipations.length === 1
-						? _("misc.exam")
-						: _("misc.exams")),
+					_("misc.exam", applicableParticipationsIds.length),
 				noText: _("dialog.default_cancel_text"),
 				onYes: this.openExams,
 				text:
 					_("event_monitor.open_for_selected_text") +
 					" " +
-					this.selectedOpenableParticipations.length +
+					applicableParticipationsIds.length +
 					" " +
-					(this.selectedOpenableParticipations.length === 1
-						? _("misc.participant")
-						: _("misc.participants")) +
+					_("misc.participant", applicableParticipationsIds.length) +
 					".",
 			};
 
@@ -747,43 +873,19 @@ export default defineComponent({
 				return;
 			}
 
-			// these are the ones the exam will stay open for
-			const selectedParticipations = this.mainStore.eventParticipations.filter(p =>
-				this.selectedParticipations.includes(p.id),
-			);
-			const selectedUserIds = selectedParticipations.map(p => p.user.id);
-
-			this.dispatchingCall = true;
-
-			try {
-				await this.mainStore.partialUpdateEvent({
-					courseId: this.courseId,
-					eventId: this.eventId,
-					mutate: true, // update local object
-					changes: {
-						users_allowed_past_closure: [
-							// those that were already allowed
-							...(this.event.users_allowed_past_closure ?? []),
-							...selectedUserIds, // those added now
-						],
-					},
-				});
-				this.showBlockingDialog = false;
-
-				this.metaStore.showSuccessFeedback();
-				this.deselectAllRows();
-				this.gridApi.refreshCells({ force: true });
-			} catch (e) {
-				setErrorNotification(e);
-			} finally {
-				this.dispatchingCall = false;
-			}
+			await this.dispatchParticipationsUpdate(applicableParticipationsIds, {
+				state: EventParticipationState.IN_PROGRESS,
+			});
 		},
 		async dispatchParticipationsUpdate(
 			participationIds: string[],
 			changes: Partial<EventParticipation>,
+			fireIntegrationEvent?: boolean,
 		) {
-			// generic method to update multiple participations at once and show feedback/error
+			/**
+			 * Generic method to update multiple participations
+			 * at once and show feedback/error
+			 */
 			this.dispatchingCall = true;
 
 			try {
@@ -792,6 +894,7 @@ export default defineComponent({
 					eventId: this.eventId,
 					participationIds,
 					changes,
+					fireIntegrationEvent,
 				});
 				this.showBlockingDialog = false;
 				this.metaStore.showSuccessFeedback();
@@ -799,6 +902,7 @@ export default defineComponent({
 				this.gridApi.refreshCells({ force: true });
 			} catch (e) {
 				setErrorNotification(e);
+				throw e;
 			} finally {
 				this.dispatchingCall = false;
 			}
@@ -820,14 +924,35 @@ export default defineComponent({
 			}
 
 			// TODO handle blocking dialog
-			await this.dispatchParticipationsUpdate(this.selectedParticipations, {
-				visibility: AssessmentVisibility.PUBLISHED,
-			});
+			try {
+				await this.dispatchParticipationsUpdate(
+					// TODO if you select all you might mistakenly publish results for unassessed participations
+					this.selectedParticipationsIds,
+					{
+						visibility: AssessmentVisibility.PUBLISHED,
+					},
+					this.publishToClassroom,
+				);
+			} catch {
+				// ! this is a hack to make the dialog keep working - without this it wouldn't work because the promise has already been resolved
+				await this.onPublishResults();
+			}
 		},
-		async onUndoParticipationTurnIn(participation: EventParticipation) {
+		async onUndoParticipationTurnIn() {
+			const applicableParticipationsIds = this.selectedParticipations
+				.filter(p => this.bulkActions.undoTurnIn.applicable(p))
+				.map(p => p.id);
 			const dialogData: DialogData = {
 				title: "",
-				text: _("event_monitor.un_turn_in_text") + participation.user?.full_name + "?",
+				text:
+					_("event_monitor.un_turn_in_text", applicableParticipationsIds.length) +
+					(this.event.exercises_shown_at_a_time === 1
+						? " " +
+						  _(
+								"event_monitor.student_will_be_brought_back_to_first_slot",
+								applicableParticipationsIds.length,
+						  )
+						: ""),
 				warning: false,
 				noText: _("dialog.default_no_text"),
 				yesText: _("dialog.default_yes_text"),
@@ -841,9 +966,43 @@ export default defineComponent({
 				return;
 			}
 
-			await this.dispatchParticipationsUpdate([participation.id], {
+			await this.dispatchParticipationsUpdate(applicableParticipationsIds, {
 				state: EventParticipationState.IN_PROGRESS,
+				current_slot_cursor: 0,
 			});
+		},
+		async onSyncGradesWithClassroom() {
+			const dialogData: DialogData = {
+				title: _("integrations.classroom.sync_grades_with_classroom"),
+				text: _("integrations.classroom.sync_grades_with_classroom_description"),
+				warning: false,
+				noText: _("dialog.default_cancel_text"),
+				yesText: _("integrations.classroom.sync"),
+			};
+
+			this.blockingDialogData = dialogData;
+			const choice = await this.getBlockingBinaryDialogChoice();
+
+			if (!choice) {
+				this.showBlockingDialog = false;
+				return;
+			}
+
+			try {
+				this.dispatchingCall = true;
+				await this.googleIntegrationStore.syncExamGrades(this.eventId);
+				this.showBlockingDialog = false;
+				this.metaStore.showSuccessFeedback();
+			} catch (e) {
+				setErrorNotification(e);
+			} finally {
+				this.dispatchingCall = false;
+			}
+		},
+
+		setSortingOption(index: number) {
+			this.selectedSortingOption = index;
+			this.sortingOptionsExpanded = false;
 		},
 
 		hideDialog() {
@@ -851,31 +1010,102 @@ export default defineComponent({
 			this.editingSlotDirty = null;
 			this.editingFullName = "";
 			this.editingParticipationId = "";
-			this.showDialog = false;
-			this.selectedParticipations = [];
+			this.selectedParticipationsIds = [];
+			this.showAssessmentEditorDialog = false;
 		},
 	},
 	computed: {
-		...mapStores(useMainStore, useMetaStore),
-		showDialog: {
-			get() {
-				return (
-					this.showAssessmentEditorDialog ||
-					this.publishingResultsMode ||
-					this.closingExamsMode ||
-					this.reOpeningTurnedInParticipationMode ||
-					this.reOpeningClosedExamsMode
-				);
-			},
-			set(val: boolean) {
-				if (!val) {
-					this.showAssessmentEditorDialog = false;
-					this.publishingResultsMode = false;
-					this.closingExamsMode = false;
-					this.reOpeningTurnedInParticipationMode = false;
-					this.reOpeningClosedExamsMode = false;
-				}
-			},
+		...mapStores(useMainStore, useMetaStore, useGoogleIntegrationsStore),
+		selectedParticipations() {
+			return this.mainStore.eventParticipations.filter(p =>
+				this.selectedParticipationsIds.includes(p.id),
+			);
+		},
+		sortingOptions() {
+			const options: {
+				label: string;
+				sortFn: (p1: EventParticipation, p2: EventParticipation) => number;
+			}[] = [
+				{
+					label: _("event_monitor.sort_options.alphabetical"),
+					sortFn: (p1, p2) => {
+						const lastName1 = p1.user.last_name;
+						const lastName2 = p2.user.last_name;
+						console.log({ lastName1, lastName2 });
+						if (lastName1 > lastName2) {
+							return 1;
+						}
+						if (lastName1 < lastName2) {
+							return -1;
+						}
+						return 0;
+					},
+				},
+				{
+					label: _("event_monitor.sort_options.alphabetical_reverse"),
+					sortFn: (p1, p2) => {
+						const lastName1 = p1.user.last_name;
+						const lastName2 = p2.user.last_name;
+						if (lastName1 > lastName2) {
+							return -1;
+						}
+						if (lastName1 < lastName2) {
+							return 1;
+						}
+						return 0;
+					},
+				},
+				{
+					label: _("event_monitor.sort_options.begin_timestamp"),
+					sortFn: (p1, p2) => {
+						const begin1 = p1.begin_timestamp;
+						const begin2 = p2.begin_timestamp;
+						return new Date(begin1).getTime() - new Date(begin2).getTime();
+					},
+				},
+				{
+					label: _("event_monitor.sort_options.begin_timestamp_reverse"),
+					sortFn: (p1, p2) => {
+						const begin1 = p1.begin_timestamp;
+						const begin2 = p2.begin_timestamp;
+						return new Date(begin2).getTime() - new Date(begin1).getTime();
+					},
+				},
+				// { label: _("event_monitor.sort_options.progress") },
+				// { label: _("event_monitor.sort_options.progress_inverse") },
+			];
+			return options;
+		},
+		bulkActions() {
+			const actions = {
+				undoTurnIn: {
+					applicable: (p: EventParticipation) =>
+						p.state === EventParticipationState.TURNED_IN,
+					method: this.onUndoParticipationTurnIn,
+					label: _("event_monitor.undo_turn_in"),
+				},
+				close: {
+					applicable: (p: EventParticipation) =>
+						p.state === EventParticipationState.IN_PROGRESS,
+					method: this.onCloseSelectedExams,
+					label: _("event_monitor.close_for_selected"),
+				},
+				reOpen: {
+					applicable: (p: EventParticipation) =>
+						p.state === EventParticipationState.CLOSED_BY_TEACHER,
+					method: this.onOpenSelectedExams,
+					label: _("event_monitor.reopen_for_selected"),
+				},
+			};
+
+			return actions;
+		},
+		showClassroomIntegrationSwitch() {
+			// TODO refactor
+			return (
+				this.googleClassroomCourseWorkTwin !== null &&
+				(this.blockingDialogData?.text ?? "") === _("event_results.publish_confirm_text")
+			);
 		},
 		dialogData(): DialogData {
 			let ret = {} as DialogData;
@@ -923,6 +1153,12 @@ export default defineComponent({
 				this.mainStore.eventParticipations,
 			);
 		},
+		filteredParticipationsData() {
+			const data = this.participationsData as any as EventParticipation[]; // TODO refactor
+			return data
+				.filter(d => userMatchesSearch(this.searchText, d.user))
+				.sort(this.sortingOptions[this.selectedSortingOption].sortFn);
+		},
 		participationsData() {
 			return this.mainStore.eventParticipations.map((p: EventParticipation) => {
 				const ret = {
@@ -935,30 +1171,14 @@ export default defineComponent({
 					state: this.resultsMode ? p.assessment_progress : p.state,
 					visibility: p.visibility,
 					score: p.score ?? "",
+					user: p.user,
+					begin_timestamp: p.begin_timestamp,
 				} as Record<string, unknown>;
 				p.slots.forEach(
 					s => (ret["slot-" + ((s.slot_number as number) + 1)] = s), //s.score ?? '-')
 				);
 				return ret;
 			});
-		},
-		selectedCloseableParticipations(): EventParticipation[] {
-			return this.mainStore.eventParticipations.filter(
-				p =>
-					this.selectedParticipations.includes(p.id) && // participation is selected
-					(this.event.state === EventState.OPEN || // event is open for everyone or...
-						//... event is still open for this participant
-						this.event.users_allowed_past_closure?.includes(p.user.id)),
-			);
-		},
-		selectedOpenableParticipations(): EventParticipation[] {
-			return this.mainStore.eventParticipations.filter(
-				p =>
-					this.selectedParticipations.includes(p.id) && // participation is selected
-					// event is restricted and participant isn't in the list of those still allowed
-					this.event.state === EventState.RESTRICTED &&
-					!this.event.users_allowed_past_closure?.includes(p.user.id),
-			);
 		},
 	},
 });

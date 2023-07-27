@@ -126,6 +126,7 @@
 					@closeEditor="onDismissNodeEditor()"
 					@blur="onEditorBlur()"
 					@deleteNode="onDeleteNode($event)"
+					@updateState="onEditingNodeStateUpdate($event)"
 				/>
 			</template>
 		</Dialog>
@@ -145,6 +146,7 @@ import {
 	savingMixin,
 } from "@/mixins";
 import {
+	AnnouncementNodeState,
 	CoursePrivilege,
 	CourseTreeNode as ICourseTreeNode,
 	CourseTreeNodeType,
@@ -154,6 +156,8 @@ import {
 	getBlankLessonNode,
 	getBlankPollNode,
 	getBlankTopicNode,
+	LessonNodeState,
+	PollNodeState,
 	TopicNode,
 } from "@/models";
 import { useMainStore } from "@/stores/mainStore";
@@ -171,7 +175,10 @@ import { AutoSaveManager, FieldList } from "@/autoSave";
 import VueEternalLoading from "@ts-pro/vue-eternal-loading/src/components/VueEternalLoading/VueEternalLoading.vue";
 import { LoadAction } from "@ts-pro/vue-eternal-loading";
 import Spinner from "@/components/ui/Spinner.vue";
-import { onChangeNodePosition } from "@/components/course_tree/shared";
+import {
+	NodeEditorStateUpdatePayload,
+	onChangeNodePosition,
+} from "@/components/course_tree/shared";
 
 export default defineComponent({
 	name: "CourseTree",
@@ -183,7 +190,11 @@ export default defineComponent({
 		savingMixin,
 		coursePrivilegeMixin,
 	],
+	beforeUnmount() {
+		window.removeEventListener("beforeunload", this.beforeWindowUnload);
+	},
 	async created() {
+		window.addEventListener("beforeunload", this.beforeWindowUnload);
 		await this.withLoading(
 			async () =>
 				await this.mainStore.getCourseTopLevelNodes({
@@ -231,15 +242,17 @@ export default defineComponent({
 		};
 	},
 	methods: {
-		// onchs() {
-		// 	setTimeout(() => {
-		// 		var slides = document.getElementsByClassName("dragging-element");
-		// 		for (var i = 0; i < slides.length; i++) {
-		// 			console.log("EL", slides.item(i));
-		// 			slides.item(i)?.classList.remove("dragging-element");
-		// 		}
-		// 	}, 10);
-		// },
+		beforeWindowUnload(e: { preventDefault: () => void; returnValue: string }) {
+			if (
+				Object.keys(this.editingNodeUnsavedChanges).length > 0 &&
+				!confirm(_("course_tree.editor_discard_unsaved_changes"))
+			) {
+				// Cancel the event
+				e.preventDefault();
+				// Chrome requires returnValue to be set
+				e.returnValue = "";
+			}
+		},
 		async onLoadMore({ loaded, noMore, error }: LoadAction) {
 			try {
 				const moreResults = await this.mainStore.getCourseTopLevelNodes({
@@ -256,11 +269,9 @@ export default defineComponent({
 			}
 		},
 		async onNodeDragStart() {
-			//this.draggingNode = true;
 			this.mainStore.draggingCourseTreeNode = true;
 		},
 		async onNodeDragEnd(event: { oldIndex: number; newIndex: number }) {
-			//this.draggingNode = false;
 			this.mainStore.draggingCourseTreeNode = false;
 			try {
 				await onChangeNodePosition(
@@ -318,6 +329,63 @@ export default defineComponent({
 				},
 			);
 		},
+		async onEditingNodeStateUpdate({ newState, params }: NodeEditorStateUpdatePayload) {
+			if (!this.editingNode) {
+				throw new Error(
+					"Called onEditingNodeStateUpdate with this.editingNode is " + this.editingNode,
+				);
+			}
+
+			this.blockingSaving = true;
+			if (!this.editingNode.id) {
+				// if the node hasn't been created yet, we just create it
+				// with the supplied state value
+				const oldState =
+					this.proxyEditingNode && "state" in this.proxyEditingNode
+						? this.proxyEditingNode.state
+						: null;
+				this.editingNodeUnsavedChanges["state"] = newState;
+				try {
+					await this.createNodeFromUnsavedChanges();
+					this.onDismissNodeEditor();
+					this.metaStore.showSuccessFeedback();
+				} catch (e) {
+					setErrorNotification(e);
+					this.editingNodeUnsavedChanges["state"] = oldState;
+				}
+			} else {
+				// otherwise, we first save the changes to the server and, if the rmeote update
+				// is successful, we patch the local node too. if the node is being autosaved,
+				// we first flush the autosave manager, then the only change we need to sync is
+				// the new value for the state; otherwise, we patch the node with all unsaved
+				// changes plus the new state
+				const changes = {
+					state: newState,
+					...(this.autoSaveEditingNode ? {} : this.editingNodeUnsavedChanges),
+				};
+				try {
+					// flush any pending changes first
+					await this.editingNodeAutoSaveManager?.flush();
+					await this.mainStore.partialUpdateCourseTreeNode({
+						courseId: this.courseId,
+						nodeId: this.editingNode.id,
+						changes,
+						fireIntegrationEvent: params.fireIntegrationEvent,
+					});
+					this.mainStore.patchCourseTreeNode({
+						courseId: this.courseId,
+						nodeId: this.editingNode.id,
+						changes,
+					});
+					this.editingNodeUnsavedChanges = {};
+					this.onDismissNodeEditor();
+					this.metaStore.showSuccessFeedback();
+				} catch (e) {
+					setErrorNotification(e);
+				}
+			}
+			this.blockingSaving = false;
+		},
 		async onEditingNodeChange<K extends keyof ICourseTreeNode>(
 			key: K,
 			value: ICourseTreeNode[K],
@@ -334,6 +402,52 @@ export default defineComponent({
 			}
 			if (save) {
 				await this.onEditingNodeSave();
+			}
+		},
+		async createNodeFromUnsavedChanges() {
+			// used if creating a FileNode to keep track of upload progress for the file
+			const onUploadProgress = (e: { loaded: number; total: number }) => {
+				this.fileUploadProgress = (e.loaded / e.total) * 100;
+				// make loader indeterminate after upload completes for
+				//better visual feedback to the user
+				if (this.fileUploadProgress === 100) {
+					setTimeout(() => {
+						this.fileUploadProgress = undefined;
+					}, 100);
+				}
+			};
+			try {
+				this.blockingSaving = true;
+				await this.mainStore.createCourseTreeNode({
+					courseId: this.courseId,
+					node: this.proxyEditingNode as ICourseTreeNode,
+					config: {
+						onUploadProgress,
+					},
+				});
+				this.editingNodeUnsavedChanges = {};
+				this.onDismissNodeEditor();
+				this.metaStore.showSuccessFeedback();
+			} catch (e) {
+				setErrorNotification(e);
+			} finally {
+				this.blockingSaving = false;
+				this.fileUploadProgress = 0;
+			}
+		},
+		async updateNodeFromUnsavedChanges() {
+			try {
+				this.blockingSaving = true;
+				await this.editingNodeAutoSaveManager?.onChange(this.editingNodeUnsavedChanges);
+				await this.editingNodeAutoSaveManager?.flush();
+				this.editingNodeUnsavedChanges = {};
+				this.onDismissNodeEditor();
+				this.metaStore.showSuccessFeedback();
+			} catch (e) {
+				setErrorNotification(e);
+				throw e;
+			} finally {
+				this.blockingSaving = false;
 			}
 		},
 		async onEditingNodeSave() {
@@ -357,53 +471,12 @@ export default defineComponent({
 				/**
 				 * Create node
 				 * */
-
-				// used if creating a FileNode to keep track of upload progress for the file
-				const onUploadProgress = (e: { loaded: number; total: number }) => {
-					this.fileUploadProgress = (e.loaded / e.total) * 100;
-					// make loader indeterminate after upload completes for
-					//better visual feedback to the user
-					if (this.fileUploadProgress === 100) {
-						setTimeout(() => {
-							this.fileUploadProgress = undefined;
-						}, 100);
-					}
-				};
-				try {
-					// TODO if creating a file node, don't display loader in dialog
-					this.blockingSaving = true;
-					await this.mainStore.createCourseTreeNode({
-						courseId: this.courseId,
-						node: this.proxyEditingNode as ICourseTreeNode,
-						config: {
-							onUploadProgress,
-						},
-					});
-					this.editingNodeUnsavedChanges = {};
-					this.onDismissNodeEditor();
-					this.metaStore.showSuccessFeedback();
-				} catch (e) {
-					setErrorNotification(e);
-				} finally {
-					this.blockingSaving = false;
-					this.fileUploadProgress = 0;
-				}
+				await this.createNodeFromUnsavedChanges();
 			} else if (!this.autoSaveEditingNode) {
 				/**
 				 * Save changes to existing node
 				 */
-				try {
-					this.blockingSaving = true;
-					await this.editingNodeAutoSaveManager?.onChange(this.editingNodeUnsavedChanges);
-					await this.editingNodeAutoSaveManager?.flush();
-					this.editingNodeUnsavedChanges = {};
-					this.onDismissNodeEditor();
-					this.metaStore.showSuccessFeedback();
-				} catch (e) {
-					setErrorNotification(e);
-				} finally {
-					this.blockingSaving = false;
-				}
+				await this.updateNodeFromUnsavedChanges();
 			} else {
 				/**
 				 * Autosave is on, so changes were already saved
@@ -415,13 +488,6 @@ export default defineComponent({
 			}
 		},
 		onEditNode(node: ICourseTreeNode) {
-			/* TODO make deep copy of editing node and await a blocking dialog
-			meanwhile, you save all changes in the deep copied object and if the user
-			saves, you flush everything in the autosave manager.
-
-			In order to be able to do this, you need to lift up the manager here
-			instead of using it in the editors. The editors will simply emit patchNode({key: val})
-			*/
 			this.autoSaveEditingNode = false;
 			this.editingNode = node;
 			this.showEditorDialog = true;
@@ -440,55 +506,43 @@ export default defineComponent({
 				setErrorNotification,
 			);
 		},
-		async createFileNode(file: Blob) {
-			this.uploadingFile = true;
-			try {
-				await this.mainStore.createCourseTreeNode({
-					courseId: this.courseId,
-					node: { ...getBlankFileNode(this.selectedTopicId), file },
-				});
-				this.metaStore.showSuccessFeedback();
-				this.selectedTopicId = this.mainStore.courseIdToTreeRootId[this.courseId];
-			} catch (e) {
-				setErrorNotification(e);
-			} finally {
-				this.uploadingFile = false;
-			}
-		},
 		async onCreateNode(nodeType: CourseTreeNodeType) {
-			/**
-			 * TODO refactor - move the declaration of factories to top,
-			 * then based on the type of the node use the correct logic
-			 * whether to create it immediately or turn autosave off &
-			 * open editor dialog only
-			 */
-			if (nodeType === CourseTreeNodeType.TopicNode) {
-				this.editingNode = getBlankTopicNode(null);
-				this.autoSaveEditingNode = false;
-				this.showEditorDialog = true;
-			} else if (nodeType === CourseTreeNodeType.FileNode) {
-				// don't create node on the server just yet
-				this.editingNode = getBlankFileNode(
-					this.mainStore.courseIdToTreeRootId[this.courseId],
-				);
-				this.autoSaveEditingNode = false;
-				this.showEditorDialog = true;
-			} else {
-				// immediately create node & open editor
-				const factories = {
-					[CourseTreeNodeType.LessonNode]: getBlankLessonNode,
-					[CourseTreeNodeType.AnnouncementNode]: getBlankAnnouncementNode,
-					[CourseTreeNodeType.PollNode]: getBlankPollNode,
-				};
+			// functions used to get a new node based on the given node type
+			const factories = {
+				[CourseTreeNodeType.LessonNode]: getBlankLessonNode,
+				[CourseTreeNodeType.AnnouncementNode]: getBlankAnnouncementNode,
+				[CourseTreeNodeType.PollNode]: getBlankPollNode,
+				[CourseTreeNodeType.TopicNode]: getBlankTopicNode,
+				[CourseTreeNodeType.FileNode]: getBlankFileNode,
+			};
+			const factory = factories[nodeType];
+			const newNode = factory(this.mainStore.courseIdToTreeRootId[this.courseId]);
+
+			// these types of node are autosaved on the server when created, and require
+			// different treatment upon creation
+			const autoSavedNodeTypes = [
+				CourseTreeNodeType.LessonNode,
+				CourseTreeNodeType.AnnouncementNode,
+				CourseTreeNodeType.PollNode,
+			];
+			// set autosaving on or off depending on whether the type of node being
+			// created requires it
+			this.autoSaveEditingNode = autoSavedNodeTypes.includes(nodeType);
+
+			// for autosaved node types, create the node immediately and use that one
+			// for editing
+			if (this.autoSaveEditingNode) {
 				await this.withLoading(async () => {
 					this.editingNode = await this.mainStore.createCourseTreeNode({
 						courseId: this.courseId,
-						node: factories[nodeType](null),
+						node: newNode,
 					});
-					this.autoSaveEditingNode = true;
-					this.showEditorDialog = true;
 				}, setErrorNotification);
+			} else {
+				// otherwise, only save changes to local object
+				this.editingNode = newNode;
 			}
+			this.showEditorDialog = true;
 		},
 		async onLoadComments(node: ICourseTreeNode) {
 			await this.mainStore.getCourseTreeNodeComments({
