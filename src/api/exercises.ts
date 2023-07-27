@@ -53,6 +53,20 @@ export async function getExercises(
 	return convertPaginatedResponseToLocalPaginatedData(normalizedResponseData, pageNumber);
 }
 
+export async function exportCourseExercises(
+	courseId: string,
+): Promise<PaginatedData<Exercise>> {
+	const response = await axios.get(
+		`/courses/${courseId}/exercises/export/?page=1&size=9999999999`,
+	);
+	const normalizedResponseData = {
+		...(response.data as BackendPaginatedResponse<Exercise>),
+		results: (response.data.results as Exercise[]).map(e => normalizeIncomingExercise(e)),
+	};
+
+	return convertPaginatedResponseToLocalPaginatedData(normalizedResponseData, 1);
+}
+
 export async function lockExercise(
 	courseId: string,
 	exerciseId: string,

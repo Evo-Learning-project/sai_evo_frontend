@@ -167,7 +167,7 @@ import { getBlankExerciseSearchFilters, isEmptyFilter } from "@/api/utils";
 import Dialog from "@/components/ui/Dialog.vue";
 import ExerciseImporter from "@/components/teacher/ExerciseImporter.vue";
 import DropdownMenu from "@/components/ui/DropdownMenu.vue";
-import { getExercises } from "@/api";
+import { exportCourseExercises } from "@/api";
 import { mapStores } from "pinia";
 import { useMainStore } from "@/stores/mainStore";
 import { useMetaStore } from "@/stores/metaStore";
@@ -247,8 +247,7 @@ export default defineComponent({
 		async onExportExercises() {
 			await this.withLoading(async () => {
 				const MAX_PAGE_SIZE = 999999;
-				const exercises = (await getExercises(this.courseId, 1, null, MAX_PAGE_SIZE))
-					.data;
+				const exercises = (await exportCourseExercises(this.courseId)).data;
 				forceFileDownload({ data: JSON.stringify(exercises, null, 4) }, "exercises.json");
 			}, setErrorNotification);
 		},
