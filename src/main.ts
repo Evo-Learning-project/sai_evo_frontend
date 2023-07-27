@@ -2,15 +2,9 @@
 import { createApp } from "vue";
 import App from "./App.vue";
 import router from "./router";
-//import store from "./store";
 import axios from "axios";
 import VueAxios from "vue-axios";
 import { i18n } from "./i18n";
-//import GAuth from './src/plugins/vue3-google-oauth2'; //'vue3-google-oauth2';
-//import GAuth from "vue3-google-oauth2";
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-import GAuth from "./plugins/vue-google-oauth2"; //'vue3-google-oauth2';
 
 import "./index.css";
 import VueClipboard from "vue3-clipboard";
@@ -32,17 +26,6 @@ import VueGtag from "vue-gtag";
 import { createPinia } from "pinia";
 
 import vue3GoogleLogin from "vue3-google-login";
-
-// TODO export to env vars
-// const gAuthOptions = {
-// 	clientId: "956826904172-507or0sbkrsugaebu97pgqe1i6ac1kfm.apps.googleusercontent.com", //"956826904172-mcsaj1bqcllv93bpad7dmd0e3oil4758.apps.googleusercontent.com",
-// 	scope:
-// 		"profile email https://www.googleapis.com/auth/classroom.rosters https://www.googleapis.com/auth/classroom.coursework.me",
-// 	// TODO probably remove this - see https://developers.google.com/identity/openid-connect/openid-connect#re-consent
-// 	prompt: "consent",
-// 	fetch_basic_profile: true,
-// 	//hosted_domain: ["studenti.unipi.it"]
-// };
 
 const dev = process.env.NODE_ENV !== "production";
 
@@ -81,13 +64,11 @@ app
 	.directive("click-outside", clickOutsideDirective)
 	.use(createPinia())
 	.use(vue3GoogleLogin, {
-		clientId: "956826904172-mcsaj1bqcllv93bpad7dmd0e3oil4758.apps.googleusercontent.com",
+		clientId: process.env.VUE_APP_GOOGLE_CLIENT_ID,
 	})
 	.use(VWave, {
 		duration: 0.3,
 	})
-	//.use(GAuth, gAuthOptions)
-	//.use(store)
 	.use(router)
 	.use(VueAxios, axios)
 	.use(i18n)

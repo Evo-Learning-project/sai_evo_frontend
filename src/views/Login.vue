@@ -145,7 +145,7 @@
 							>Evo Learning</a
 						>
 					</p>
-					<p class="mx-2">&#183;</p>
+					<!-- <p class="mx-2">&#183;</p>
 					<p>
 						Crafted with ❤️ by
 						<a
@@ -154,7 +154,7 @@
 							href="http://bsamu.it"
 							>Samuele Bonini</a
 						>
-					</p>
+					</p> -->
 				</div>
 			</div>
 
@@ -199,16 +199,6 @@
 			>
 				<span style="font-size: 72px !important" class="material-icons">school</span>
 			</div>
-			<!-- <img
-				class="absolute top-0 right-0 mt-24 mr-24 filter drop-shadow-lg"
-				style="width: 375px"
-				src="@/assets/hero/undraw_6.svg"
-			/>
-			<img
-				class="absolute filter drop-shadow-lg bottom-0 left-0 mb-12 ml-12"
-				style="width: 300px"
-				src="@/assets/hero/undraw_teaching_re_g7e3.svg"
-			/> -->
 		</div>
 		<v-tour
 			name="demoTour"
@@ -236,7 +226,7 @@ import { demoLoginTourSteps, tourOptions } from "@/const";
 import { mapStores } from "pinia";
 import { useMetaStore } from "@/stores/metaStore";
 
-import { decodeCredential } from "vue3-google-login";
+import type { CallbackTypes } from "vue3-google-login";
 
 const DEMO_TOUR_KEY = "demo_tour_taken";
 
@@ -244,15 +234,6 @@ export default defineComponent({
 	name: "Login",
 	components: {
 		Btn,
-	},
-	watch: {
-		// googleOauthReady(newVal) {
-		// 	// trigger demo tour
-		// 	if (newVal && isDemoMode() && !(DEMO_TOUR_KEY in localStorage)) {
-		// 		setTimeout(() => ((this as any).$tours["demoTour"] as any).start(), 50);
-		// 		this.disableLogin = true;
-		// 	}
-		// },
 	},
 	data() {
 		return {
@@ -270,9 +251,7 @@ export default defineComponent({
 			this.disableLogin = false;
 			localStorage.setItem(DEMO_TOUR_KEY, "true");
 		},
-		async onLogin(response) {
-			console.log({ response });
-
+		async onLogin(response: Parameters<CallbackTypes.TokenResponseCallback>[0]) {
 			await this.withLocalLoading(async () => {
 				const token = response.access_token;
 				await this.metaStore.convertToken(token);
@@ -280,56 +259,6 @@ export default defineComponent({
 				redirectToMainView();
 			}, setErrorNotification);
 		},
-		// async handleClickSignIn() {
-		// 	try {
-		// 		this.loginAttemptWithUnauthorizedEmailAddress = false;
-		// 		await this.withLocalLoading(
-		// 			async () => {
-		// 				// ------------------------------------------
-		// 				const googleUser = await this.$gAuth.signIn();
-		// 				if (!googleUser) {
-		// 					return null;
-		// 				}
-		// 				const token = googleUser.getAuthResponse().access_token;
-		// 				await this.metaStore.convertToken(token);
-		// 				await this.metaStore.getUserData();
-		// 				// ------------------------------------------
-
-		// 				// ------------------------------------------
-		// 				// const code = await this.$gAuth.getAuthCode();
-		// 				// console.log({ code });
-
-		// 				// await this.metaStore.convertAuthorizationCode(code);
-		// 				// await this.metaStore.getUserData();
-		// 				// ------------------------------------------
-
-		// 				redirectToMainView();
-
-		// 				// TODO if you use this.setErroNotification, this is undefined - investigate (hint: it has to do something with the mixin and possibily the store)
-		// 				setErrorNotification(_("misc.logged_in"), true);
-		// 			},
-		// 			// different error handling depending on whether in demo mode
-		// 			isDemoMode()
-		// 				? this.redirectToDemoPage
-		// 				: e => {
-		// 						// rethrow error to custom handler
-		// 						throw e;
-		// 				  },
-		// 		);
-		// 	} catch (error: any) {
-		// 		console.error("sign in error", error);
-
-		// 		const UNAUTHORIZED_EMAIL_DOMAIN_MSG = "Your credentials aren't allowed";
-		// 		if (error.response?.data?.error_description === UNAUTHORIZED_EMAIL_DOMAIN_MSG) {
-		// 			this.onLoginAttemptWithUnauthorizedEmailAddress();
-		// 		} else if (error.error === "popup_closed_by_user") {
-		// 			logAnalyticsEvent("popup_closed_by_user", {});
-		// 		} else {
-		// 			setErrorNotification(error);
-		// 		}
-		// 		throw error;
-		// 	}
-		// },
 		onLoginAttemptWithUnauthorizedEmailAddress() {
 			logAnalyticsEvent("unauth_login_attempt", {});
 			this.loginAttemptWithUnauthorizedEmailAddress = true;
@@ -357,12 +286,6 @@ export default defineComponent({
 	},
 	computed: {
 		...mapStores(useMetaStore),
-		// googleOauthReady() {
-		// 	return (this as any).Vue3GoogleOauth.isInit;
-		// },
-		// googleOauthHadError() {
-		// 	return (this as any).Vue3GoogleOauth.hadError;
-		// },
 	},
 });
 </script>
