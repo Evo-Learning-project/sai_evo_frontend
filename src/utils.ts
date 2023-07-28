@@ -126,12 +126,14 @@ export const getErrorData = (e: any, useAsIs = false): ErrorMessage => {
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const setPageWideError = (e: any) => {
 	const metaStore = useMetaStore();
-	// if the error is a 401 response, don't set the global
-	// error message to allow for redirecting to the login view
-	if (typeof e !== "object" || e?.response?.status !== 401) {
+	// if the error is a 401 response or a NOT_ENROLLED error, don't set the global
+	// error message to allow for redirecting to the appropriate view
+	if (
+		typeof e !== "object" ||
+		(e?.response?.status !== 401 && e?.response?.data?.detail !== "NOT_ENROLLED")
+	) {
 		metaStore.pageWideErrorData = getErrorData(e);
 	}
-	console.error("setPageWideError", e);
 	throw e;
 };
 

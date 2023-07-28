@@ -31,9 +31,17 @@ import { useMetaStore } from "@/stores/metaStore";
 import { setErrorNotification } from "@/utils";
 import { defineComponent, PropType } from "@vue/runtime-core";
 import { mapStores } from "pinia";
+import { Course } from "../../models";
 export default defineComponent({
 	name: "CourseEnrollment",
 	props: {},
+	watch: {
+		currentCourse(newVal: Course | undefined) {
+			if (newVal?.enrolled) {
+				this.$router.push({ name: "StudentCourseDashboard" });
+			}
+		},
+	},
 	data() {
 		return {
 			enrolling: false,
@@ -45,7 +53,11 @@ export default defineComponent({
 			this.enrolling = true;
 			try {
 				await this.mainStore.selfEnrollInCourse({ courseId: this.courseId });
-				this.$router.push(this.$router.currentRoute.value.query.redirect as string);
+				if (this.$router.currentRoute.value.query.redirect) {
+					this.$router.push(this.$router.currentRoute.value.query.redirect as string);
+				} else {
+					this.$router.push({ name: "StudentCourseList" });
+				}
 				this.metaStore.showSuccessFeedback();
 			} catch (e) {
 				setErrorNotification(e);
@@ -54,7 +66,6 @@ export default defineComponent({
 			}
 		},
 		onCancel() {
-			console.log("BACK");
 			this.$router.push({ name: "StudentCourseList" });
 		},
 	},
