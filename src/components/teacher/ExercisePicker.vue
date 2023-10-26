@@ -1,11 +1,19 @@
 <template>
 	<div class="">
-		<ExerciseSearchFilters
-			class="px-8 pt-6 pb-2 mb-6 -mx-4 md:-mx-8 bg-light"
-			v-model="searchFilter"
-			@resetFilters="searchFilter = getBlankExerciseSearchFilters()"
-			:full="false"
-		></ExerciseSearchFilters>
+		<div
+			class="px-8 pt-6 mb-6 -mx-4 md:-mx-8 bg-light sticky top-0 z-50 flex items-start"
+		>
+			<ExerciseSearchFilters
+				class="w-1/2"
+				v-model="searchFilter"
+				@resetFilters="searchFilter = getBlankExerciseSearchFilters()"
+				:full="false"
+			/>
+			<Btn @click="onAddExercise()" :loading="localLoading" class="ml-auto">
+				<span class="mr-1 text-base material-icons-outlined"> add </span>
+				{{ $t("exercise_picker.new_exercise") }}
+			</Btn>
+		</div>
 
 		<div v-if="!firstLoading" class="grid gap-5 md:grid-cols-2">
 			<MinimalExercisePreview

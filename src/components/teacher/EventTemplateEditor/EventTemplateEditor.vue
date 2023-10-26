@@ -7,14 +7,17 @@
 				class="hidden ml-auto md:block"
 				:options="viewModesAsOptions"
 				v-model="viewMode"
-				v-if="modelValue.rules.length > 0"
-			></SegmentedControls>
+				v-if="modelValue.rules.length > 1"
+			/>
 		</div>
+
 		<div class="mb-6">
+			<!-- intro text -->
 			<p class="mb-8 text-muted" v-if="!showEditWarning">
 				{{ $t("event_template_editor.introduction_text") }}
 				<ArticleHandle :articleId="'whats_exam_template'"></ArticleHandle>.
 			</p>
+			<!-- warning banner -->
 			<div v-else class="banner banner-danger">
 				<span class="material-icons-outlined"> error_outline </span>
 				<div>
@@ -24,6 +27,7 @@
 					</p>
 				</div>
 			</div>
+			<!-- rules -->
 			<draggable
 				animation="100"
 				:class="{
@@ -45,6 +49,7 @@
 						:lockRuleType="element.amount > 1"
 						:ordering="getActualSlotOrdering(index)"
 						:reduced="viewMode === 'grid' || viewMode === 'compact_list'"
+						:ref="'rule-' + element.id"
 						@updateRule="
 							onRuleUpdate(element, $event.field, $event.value);
 							$emit('templateChanged');
@@ -65,8 +70,7 @@
 							onRuleDelete(element);
 							$emit('templateChanged');
 						"
-					>
-					</EventTemplateRuleEditor>
+					/>
 				</template>
 			</draggable>
 			<div
@@ -300,11 +304,15 @@ export default defineComponent({
 					courseId: this.courseId,
 					templateId: this.modelValue.id,
 					rule: getBlankEventTemplateRule(
-						amount === 1 ? undefined : EventTemplateRuleType.TAG_BASED,
+						amount === 1
+							? EventTemplateRuleType.ID_BASED
+							: EventTemplateRuleType.TAG_BASED,
 						amount,
 					),
 				});
 				this.instantiateRuleAutoSaveManager(newRule);
+				// show dialog for new rule
+				(this.$refs[`rule-${newRule.id}`] as any)?.showRuleDialog();
 			});
 			if (amount > 1) {
 				// multiple slots were added through the dropdown menu

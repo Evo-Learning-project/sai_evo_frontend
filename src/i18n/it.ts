@@ -47,7 +47,7 @@ export const it = {
 		filter_by_tag: "Filtra per tag",
 		filter_by_type: "Filtra per tipologia",
 		there_are_active_filters: "Ci sono filtri attivi",
-		more_filters: "Filtri avanzati",
+		more_filters: "Filtri",
 		remove_filters: "Rimuovi filtri",
 	},
 	login_screen: {
@@ -606,7 +606,7 @@ export const it = {
 		editor_title: "Modello esame",
 		introduction_text:
 			"Crea il modello per questo esame. Per ogni slot, puoi scegliere se far vedere a ogni studente lo stesso esercizio o se utilizzare i criteri di scelta casuale.",
-		add_rule: "Aggiungi slot",
+		add_rule: "Aggiungi esercizio",
 		confirm_delete_rule: "Sei sicuro di voler eliminare questo slot?",
 		randomize_rule_order: "Randomizza ordine degli slot",
 		rule_order_randomization_off:
@@ -618,6 +618,7 @@ export const it = {
 		cannot_pick_draft: "Non puoi usare un esercizio in stato di bozza in un esame",
 		already_selected: "Questo esercizio è già stato selezionato in un altro slot",
 		go_to_exercises: "Vai agli esercizi",
+		new_exercise: "Nuovo",
 		no_available_exercises:
 			"Non hai ancora creato esercizi per questo corso. Dalla pagina degli esercizi, creane almeno uno per poter popolare questo slot. Ricordati di rimuovere lo stato di bozza dagli esercizi che vuoi inserire in un esame!",
 	},
@@ -636,7 +637,7 @@ export const it = {
 		exercise_number: "Slot",
 		choose_exercise: "Scegli esercizio",
 		change_exercise: "Cambia esercizio",
-		populate_slot_singular_title: "Seleziona esercizio per lo slot",
+		populate_slot_singular_title: "Seleziona esercizio",
 		populate_slot_plural_title: "Seleziona esercizi per gli slot",
 		mode_selection_text: "Come vuoi scegliere l'esercizio per questo slot?",
 		pick_single_exercise: "Seleziona un esercizio",

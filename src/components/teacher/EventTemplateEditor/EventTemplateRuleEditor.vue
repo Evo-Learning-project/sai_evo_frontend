@@ -1,5 +1,6 @@
 <template>
 	<div>
+		<!-- card containing the rule preview -->
 		<div
 			class="
 				h-full
@@ -66,6 +67,7 @@
 						md:space-x-2 md:items-center md:flex-row md:ml-auto
 					"
 				>
+					<!-- weight -->
 					<NumberInput
 						:min="0"
 						class="my-4 md:ml-auto md:my-0"
@@ -84,6 +86,7 @@
 							></Tooltip>
 						</div>
 					</NumberInput>
+					<!-- controls -->
 					<div class="flex items-center space-x-2">
 						<!-- settings button -->
 						<Btn
@@ -116,6 +119,7 @@
 					</div>
 				</div>
 			</div>
+
 			<!-- exercises preview -->
 			<div
 				v-if="isSlotPopulated && modelValue.rule_type == EventTemplateRuleType.ID_BASED"
@@ -172,6 +176,7 @@
 					</div>
 				</div>
 			</div>
+
 			<!-- tags preview -->
 			<div
 				v-else-if="
@@ -211,6 +216,8 @@
 					</div>
 				</div>
 			</div>
+
+			<!-- errors -->
 			<p
 				class="text-danger-dark"
 				v-for="error in v$.$errors"
@@ -219,6 +226,8 @@
 				{{ $t("validation_errors.eventTemplateRule." + error.$uid) }}
 			</p>
 		</div>
+
+		<!-- dialog containing the actual editor -->
 		<Dialog
 			:showDialog="showDialog"
 			:fullWidth="true"
@@ -251,6 +260,7 @@
 				}}
 			</template>
 			<template v-slot:body>
+				<!-- step 1 - type selection -->
 				<div v-if="modelValue.rule_type == null">
 					<p>{{ $t("event_template_rule_editor.mode_selection_text") }}</p>
 					<div class="grid grid-cols-1 mt-6 md:grid-cols-3">
@@ -307,8 +317,10 @@
 						</Btn>
 					</div>
 				</div>
+
+				<!-- exercise selection -->
 				<div v-else-if="modelValue.rule_type == EventTemplateRuleType.ID_BASED">
-					<h3 class="text-dark">
+					<!-- <h3 class="text-dark">
 						{{
 							pickOneExerciseOnly
 								? $t("event_template_rule_editor.pick_single_exercise")
@@ -321,8 +333,9 @@
 								? $t("event_template_rule_editor.pick_single_exercise_help_text")
 								: $t("event_template_rule_editor.pick_exercise_from_pool_help_text")
 						}}
-					</p>
-					<div class="mt-4" style="height: calc(100vh - 224px)">
+					</p> -->
+					<!--style="height: calc(100vh - 224px)"-->
+					<div class="-mt-3">
 						<ExercisePicker
 							:modelValue="modelValue.exercises"
 							:alreadySelected="globallySelectedExercises"
@@ -331,6 +344,8 @@
 						></ExercisePicker>
 					</div>
 				</div>
+
+				<!-- tag rule selection-->
 				<div v-else-if="modelValue.rule_type == EventTemplateRuleType.TAG_BASED">
 					<TagBasedEventTemplateRuleEditor
 						:modelValue="modelValue.clauses"

@@ -399,6 +399,20 @@
 		background: radial-gradient(circle, rgba(2, 0, 36, 1) 70%, rgba(0, 0, 0, 0) 100%);
 	}
 
+	.faded-bottom:after {
+		content: "";
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		width: 100%;
+		height: 15px;
+		background-image: linear-gradient(
+			to bottom,
+			rgba(255, 255, 255, 0),
+			rgba(255, 255, 255, 1)
+		);
+	}
+
 	.user-content {
 		@apply py-5 pl-4 pr-2 rounded-sm border-l-6 bg-gray-50 border-secondary;
 	}
