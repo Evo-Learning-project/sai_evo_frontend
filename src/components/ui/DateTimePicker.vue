@@ -1,5 +1,5 @@
 <template>
-	<div class="flex relative">
+	<div class="relative flex">
 		<!-- calendar widget-->
 		<div>
 			<DatePicker
@@ -35,7 +35,6 @@
 			>
 				<slot></slot>
 			</label>
-			<div v-if="false"><TextInput /></div>
 		</div>
 		<!-- inputs -->
 	</div>
@@ -50,7 +49,7 @@ import "vue-datepicker-next/locale/it";
 import { v4 as uuid4 } from "uuid";
 
 import { defineComponent, PropType } from "@vue/runtime-core";
-import TextInput from "./TextInput.vue";
+
 export default defineComponent({
 	name: "DateTimePicker",
 	props: {},
@@ -85,7 +84,7 @@ export default defineComponent({
 		};
 	},
 	computed: {},
-	components: { DatePicker, TextInput },
+	components: { DatePicker },
 });
 </script>
 
