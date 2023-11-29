@@ -1,10 +1,6 @@
 import { getMe } from "@/api";
 import { getCourse } from "@/api/courses";
-import {
-	NavigationGuardNext,
-	RouteLocationNormalized,
-	RouteLocationRaw,
-} from "vue-router";
+import { NavigationGuardNext, RouteLocationNormalized } from "vue-router";
 
 async function hasPrivilegesOverRouteCourse(route: RouteLocationNormalized) {
 	const params = route.params;
