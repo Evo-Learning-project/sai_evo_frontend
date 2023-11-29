@@ -1,54 +1,6 @@
 <template>
 	<div class="w-full flex flex-col">
-		<!-- secondary app bar containing header and route title-->
-		<!-- <header
-			v-if="showSecondaryHeader"
-			class="
-				sticky
-				top-20
-				z-20
-				mb-4
-				bg-light bg-opacity-100 bg-fallback-firefox
-				md:-mx-10 md:-mt-4
-				backdrop-blur-sm backdrop-filter
-			"
-		>
-			<div class="flex bg-light w-full px-4 mx-auto md:items-center sm:px-18 lg:px-20">
-				<div class="md:items-center md:flex-row">
-					 <h2 class="mb-0 text-lg md:mr-6 md:text-2xl">
-						{{ routeTitle }}
-					</h2> 
-					<BreadCrumbs
-						v-if="!$route.meta.hideBreadcrumbs"
-						:route="$route"
-						class="mt-1 md:ml-0"
-					></BreadCrumbs>
-				</div>
-				<div class="flex ml-auto md:w-80">
-					<div class="ml-auto" id="main-student-header-right"></div>
-				</div>
-			</div>
-		</header> -->
-
 		<router-view class="w-full" />
-
-		<!-- main pane containing current view -->
-		<!-- <main class="w-full bg-white md:px-8">
-			<div class="h-full mx-auto lg:px-8" :class="{ 'px-4': showSecondaryHeader }">
-				<ErrorView v-if="metaStore.pageWideErrorData"></ErrorView>
-
-				<router-view class="" v-else />
-
-				<transition name="quick-bounce">
-					<SnackBar
-						class="w-full px-4"
-						v-if="metaStore.errorNotificationData"
-						:icon="metaStore.errorNotificationData.icon"
-						:message="metaStore.errorNotificationData.title"
-					/>
-				</transition>
-			</div>
-		</main> -->
 
 		<!-- dialog for editing mat number -->
 		<Dialog

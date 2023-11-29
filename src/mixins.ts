@@ -3,7 +3,7 @@ import { downloadFileNode } from "./api";
 import { getCourseTreeNodeRoute } from "./components/shared/ExerciseSolution/utils";
 import { getTranslatedString as _ } from "./i18n";
 import { DialogData } from "./interfaces";
-import { Course, CoursePrivilege, getBlankCourse } from "./models";
+import { Course, CourseFeature, CoursePrivilege, getBlankCourse } from "./models";
 import router from "./router";
 import { useMainStore } from "./stores/mainStore";
 import { useMetaStore } from "./stores/metaStore";
@@ -274,6 +274,18 @@ export const scrollMixin = {
 			const self = this as any;
 			const el = self.element as HTMLElement;
 			return el.scrollHeight - self.fromTop;
+		},
+	},
+};
+
+export const courseFeatureMixin = {
+	methods: {
+		hasFeatures(features: CourseFeature[] | undefined) {
+			const self = this as any;
+			if (!self.currentCourse) {
+				return false;
+			}
+			return (features ?? []).every(f => (self.currentCourse.features ?? {})[f]);
 		},
 	},
 };
