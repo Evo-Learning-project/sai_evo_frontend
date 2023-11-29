@@ -4,7 +4,7 @@
 		<div
 			class="flex relative md:w-11/12 flex-col items-center h-full md:shadow-elevation-2"
 		>
-			<img src="@/assets/logo.png" class="mt-4 md:w-7/12 w-10/12" />
+			<img :src="$config.get('logo')" class="mt-4 md:w-7/12 w-10/12" />
 
 			<!-- main area -->
 			<div
@@ -105,7 +105,18 @@
 							:disabled="localLoading || disableLogin"
 							:loading="localLoading"
 						>
-							<img class="mr-2.5" style="width: 30px" src="@/assets/unipi.png" />
+							<img
+								v-if="$config.get('loginButtonImage')"
+								class="mr-2.5"
+								style="width: 30px"
+								:src="$config.get('loginButtonImage')"
+							/>
+							<span
+								v-else
+								class="mr-2.5 material-icons icon-light"
+								style="font-size: 24px !important"
+								>lock</span
+							>
 							{{ $t("login_screen.login") }}
 						</Btn>
 					</GoogleLogin>

@@ -1,0 +1,6 @@
+{
+	"logo": "/logo.png",
+	"favicon": "/favicon.ico",
+	"loginButtonImage": "/unipi.png",
+	"enableUnpiExtensions": true
+}

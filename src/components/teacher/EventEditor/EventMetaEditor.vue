@@ -231,7 +231,10 @@
 						:placeholder="$t('event_editor.student_email')"
 					></TagInput>
 				</div>
-				<div v-if="!isDemoMode" class="flex flex-col mt-12 space-y-4">
+				<div
+					v-if="!isDemoMode && $config.get('enableUnpiExtensions')"
+					class="flex flex-col mt-12 space-y-4"
+				>
 					<h3 class="text-darkText">
 						{{ $t("event_editor.import_from_valutami") }}
 					</h3>

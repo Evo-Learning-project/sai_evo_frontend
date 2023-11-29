@@ -154,9 +154,6 @@ export default defineComponent({
 		isDemoMode() {
 			return isDemoMode();
 		},
-		logoUrl() {
-			return require("../../assets/logo.png");
-		},
 		allowedSidebarOptions(): SidebarOption[] {
 			return ((this.$route.meta?.sidebarOptions ?? []) as SidebarOption[]).filter(o =>
 				this.hasPrivileges(o.requiredPrivileges),

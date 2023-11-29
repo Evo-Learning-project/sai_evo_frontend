@@ -26,6 +26,7 @@ import VueGtag from "vue-gtag";
 import { createPinia } from "pinia";
 
 import vue3GoogleLogin from "vue3-google-login";
+import configService from "./config";
 
 const dev = process.env.NODE_ENV !== "production";
 
@@ -59,6 +60,7 @@ axios.interceptors.response.use(
 );
 
 const app = createApp(App);
+app.config.globalProperties.$config = configService;
 
 app
 	.directive("click-outside", clickOutsideDirective)

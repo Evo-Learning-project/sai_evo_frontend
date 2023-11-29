@@ -35,7 +35,7 @@
 				</Btn>
 			</div>
 			<div class="flex items-center mr-auto">
-				<img class="lg:w-60 3xl:w-70 w-52 md:-ml-1" :src="logoUrl" />
+				<img class="lg:w-60 3xl:w-70 w-52 md:-ml-1" :src="$config.get('logo')" />
 			</div>
 			<div class="">
 				<div v-if="metaStore.isAuthenticated" class="flex items-center ml-4 md:ml-6">
@@ -209,12 +209,8 @@ export default defineComponent({
 		},
 	},
 	computed: {
-		//...mapStores(useMetaStore),
 		isDemoMode() {
 			return isDemoMode();
-		},
-		logoUrl() {
-			return require("../../assets/logo.png");
 		},
 	},
 	components: {

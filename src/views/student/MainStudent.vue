@@ -124,12 +124,6 @@ export default defineComponent({
 		isDemoMode() {
 			return isDemoMode();
 		},
-		logoUrl() {
-			if (!this.isDemoMode) {
-				return require("../../../public/unipi-logo.svg");
-			}
-			return require("../../../public/evo_logo.png");
-		},
 		// sidebarOptions(): SidebarOption[] {
 		// 	return (this.$route.meta?.sidebarOptions ?? []) as SidebarOption[];
 		// },
