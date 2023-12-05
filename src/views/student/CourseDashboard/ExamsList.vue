@@ -49,7 +49,6 @@ import EventParticipationPreview from "@/components/student/EventParticipationPr
 import SkeletonCard from "@/components/ui/SkeletonCard.vue";
 import { EventType } from "@/models";
 import { getTranslatedString as _ } from "@/i18n";
-import { MAX_PRACTICE_EXERCISE_COUNT } from "@/const";
 import { LoadAction } from "@ts-pro/vue-eternal-loading";
 import VueEternalLoading from "@ts-pro/vue-eternal-loading/src/components/VueEternalLoading/VueEternalLoading.vue";
 import { EventParticipationSearchFilter } from "@/api";
@@ -83,10 +82,6 @@ export default defineComponent({
 	},
 	data() {
 		return {
-			isEditingRule: false,
-			MAX_PRACTICE_EXERCISE_COUNT,
-			showNotRecent: false,
-			showBookmarkedOnly: false,
 			isInitialInfiniteLoad: false,
 		};
 	},
