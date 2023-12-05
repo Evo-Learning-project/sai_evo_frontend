@@ -1630,7 +1630,7 @@
 	}
 
 	.thumbnail-slot .user-content {
-		@apply py-1.5 pl-2 pr-0.5 border-l-2 bg-gray-50 border-secondary mb-2 !important;
+		@apply py-1.5 pl-2 pr-0.5 border-l-2 bg-gray-50 border-secondary mb-0 !important;
 		border-radius: 0.4px !important;
 	}
 	.thumbnail-slot h5,
@@ -1648,8 +1648,30 @@
 
 	.thumbnail-slot .checkbox-item,
 	.thumbnail-slot .radio-item,
-	.thumbnail-slot .user-content {
+	.thumbnail-slot .user-content,
+	.thumbnail-slot .mdc-form-field {
 		font-size: 5.5px !important;
+	}
+
+	.thumbnail-slot .mdc-checkbox__background,
+	.thumbnail-slot .mdc-radio__background {
+		transform: scale(0.45) !important;
+		margin-left: -8px !important;
+	}
+
+	.thumbnail-slot .mdc-checkbox,
+	.thumbnail-slot .mdc-radio {
+		margin-right: -20.5px !important;
+		/* margin-bottom: -10px !important; */
+	}
+
+	.thumbnail-slot .checkbox-container,
+	.thumbnail-slot .radio-container {
+		margin-bottom: -15px !important;
+	}
+
+	.thumbnail-slot .radio-container label {
+		margin-top: 15px !important;
 	}
 
 	.thumbnail-slot .checkbox-item,

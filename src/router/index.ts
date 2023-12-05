@@ -7,6 +7,7 @@ import CourseList from "../views/shared/CourseList.vue";
 import TeacherCourseDashboard from "../views/teacher/CourseDashboard.vue";
 import StudentCourseDashboard from "../views/student/CourseDashboard/Main.vue";
 import CourseDashBoardExamList from "../views/student/CourseDashboard/ExamsList.vue";
+import CourseDashBoardPublicExamList from "../views/student/CourseDashboard/PublicExamsList.vue";
 import CourseDashBoardPracticeSessionList from "../views/student/CourseDashboard/PracticeList.vue";
 import CourseDashBoardExerciseThreadList from "../views/student/CourseDashboard/ExerciseThreadList.vue";
 import FavoriteContentsList from "../views/student/CourseDashboard/FavoriteContentsList.vue";
@@ -350,6 +351,18 @@ const routes: Array<RouteRecordRaw> = [
 						component: CourseDashBoardExamList,
 						meta: {
 							routeTitle: _("student_course_dashboard.exams_you_participated_in"),
+							breadcrumbs: examsListBreadCrumbs,
+							sidebarOptions: studentDashboardSidebarOptions,
+						},
+					},
+					// TODO add public exams & rename the above route to My Exams
+					{
+						// TODO make path name configurable
+						path: "public_exams",
+						name: "PublicExamsList",
+						component: CourseDashBoardPublicExamList,
+						meta: {
+							routeTitle: _("student_course_dashboard.public_exams"),
 							breadcrumbs: examsListBreadCrumbs,
 							sidebarOptions: studentDashboardSidebarOptions,
 						},

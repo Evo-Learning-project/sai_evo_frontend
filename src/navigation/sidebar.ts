@@ -127,6 +127,7 @@ export const studentDashboardSidebarOptions: SidebarOption[] = [
 		routeName: "CourseDashBoardExamList",
 		requiredFeatures: [CourseFeature.MY_EXAMS],
 	},
+	// TODO add public exams
 	{
 		label: _("student_dashboard_options.popular_exercises"),
 		requiredPrivileges: [],
