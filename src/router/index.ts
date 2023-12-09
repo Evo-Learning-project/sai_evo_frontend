@@ -63,6 +63,14 @@ import {
 	courseListBeforeGuard,
 } from "./guards";
 import { useMetaStore } from "@/stores/metaStore";
+import configService from "../config";
+
+const studentRoutePrefix = configService.get("studentRoutePrefix") ?? "student";
+const teacherRoutePrefix = configService.get("teacherRoutePrefix") ?? "teacher";
+
+const getRoutePath = (routeName: string, defaultPath: string): string => {
+	return (configService.get("routeNames") ?? {})[routeName] ?? defaultPath;
+};
 
 const routes: Array<RouteRecordRaw> = [
 	{
@@ -119,7 +127,7 @@ const routes: Array<RouteRecordRaw> = [
 		component: CourseEnrollment,
 	},
 	{
-		path: "/teacher",
+		path: `/${teacherRoutePrefix}`,
 		name: "MainTeacher",
 		component: MainTeacher,
 		meta: {
@@ -318,13 +326,14 @@ const routes: Array<RouteRecordRaw> = [
 		],
 	},
 	{
-		path: "/student",
+		path: `/${studentRoutePrefix}`,
 		name: "MainStudent",
 		component: MainStudent,
 		redirect: { name: "StudentCourseList" },
 		children: [
 			{
-				path: "courses",
+				// TODO find a better way
+				path: getRoutePath("StudentCourseList", "courses"),
 				name: "StudentCourseList",
 				component: CourseList,
 				meta: {
@@ -334,7 +343,7 @@ const routes: Array<RouteRecordRaw> = [
 				},
 			},
 			{
-				path: "courses/:courseId",
+				path: getRoutePath("StudentCourseDashboard", "courses/:courseId"),
 				name: "StudentCourseDashboard",
 				component: StudentCourseDashboard,
 				meta: {
