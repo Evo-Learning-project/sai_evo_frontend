@@ -50,12 +50,18 @@ export const redirectToCourseEnrollment = (redirect: string): void => {
 
 export const redirectToMainView = (): void => {
 	const metaStore = useMetaStore();
+
+	const defaultTeacherMainRoute = { name: "TeacherCourseList" };
+	const defaultStudentMainRoute = { name: "StudentCourseList" };
+
 	if (router.currentRoute.value.query.redirect) {
 		router.push(router.currentRoute.value.query.redirect as string);
 	} else if (metaStore.user.is_teacher) {
-		router.push({ name: "TeacherCourseList" });
+		const route = configService.get("teacherMainRoute") ?? defaultTeacherMainRoute;
+		router.push(route);
 	} else {
-		router.push({ name: "StudentCourseList" });
+		const route = configService.get("studentMainRoute") ?? defaultStudentMainRoute;
+		router.push(route);
 	}
 };
 
@@ -333,6 +339,7 @@ export const roundToTwoDecimals = (num: number) =>
 
 import { event } from "vue-gtag";
 import { useMetaStore } from "./stores/metaStore";
+import configService from "./config";
 
 export function logAnalyticsEvent(eventName: string, params: Record<string, any>) {
 	event(eventName, params);

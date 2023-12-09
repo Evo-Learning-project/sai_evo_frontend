@@ -76,9 +76,9 @@
 						style="width: 40px; height: 40px; padding-left: 2.5px"
 						class="flex items-start rounded-full"
 					>
-						<span class="m-auto material-icons" style="font-size: 35px"
-							>remove_circle_outline</span
-						>
+						<span class="m-auto material-icons" style="font-size: 35px">
+							remove_circle_outline
+						</span>
 					</div>
 					<div>
 						<!-- <p class="">
@@ -139,9 +139,10 @@
 			<div class="mb-1 mt-auto mr-auto ml-2 md:ml-4 opacity-0">
 				<p class="text-xs text-muted">
 					{{ $t("login_screen.entering_you_agree_to") }}
-					<span class="text-primary hover:underline cursor-pointer"
-						>{{ $t("misc.terms_and_conditions") }} </span
-					>.
+					<span class="text-primary hover:underline cursor-pointer">
+						{{ $t("misc.terms_and_conditions") }}
+					</span>
+					.
 				</p>
 			</div>
 			<!-- copyright & info-->
