@@ -1,13 +1,12 @@
 <template>
 	<div class="h-full">
-		<transition name="fade"
-			><div
+		<transition name="fade">
+			<div
 				@click="showMobileSidebar = false"
 				class="fixed z-50 w-full h-full opacity-50 bg-dark"
 				v-show="showMobileSidebar"
-			></div
-		></transition>
-		<div></div>
+			/>
+		</transition>
 		<!-- main -->
 		<div class="flex h-full md:space-x-10">
 			<!-- sidebar -->
@@ -17,12 +16,10 @@
 					<h2 class="mb-2" style="line-height: 1.2">{{ routeTitle }}</h2>
 					<BreadCrumbs :route="$route" />
 				</div>
-				<CourseTutoringBanner
-					v-if="false && currentCourse?.id"
-					:course="currentCourse"
-					class="mb-12"
-				/>
+
 				<StudentScopesBanner v-if="!metaStore.user.is_teacher" />
+
+				<!-- main route -->
 				<router-view />
 			</section>
 		</div>
@@ -49,7 +46,6 @@ import {
 import { mapStores } from "pinia";
 import { useMainStore } from "@/stores/mainStore";
 import { useMetaStore } from "@/stores/metaStore";
-import CourseTutoringBanner from "../../../components/misc/CourseTutoringBanner.vue";
 import StudentScopesBanner from "../../../integrations/classroom/components/StudentScopesBanner.vue";
 export default defineComponent({
 	name: "Main",
@@ -119,7 +115,7 @@ export default defineComponent({
 	},
 	components: {
 		BreadCrumbs,
-		CourseTutoringBanner,
+
 		StudentScopesBanner,
 	},
 });

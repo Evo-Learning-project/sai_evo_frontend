@@ -1,5 +1,5 @@
 import { getTranslatedString as _ } from "@/i18n";
-import { CoursePrivilege } from "@/models";
+import { CourseFeature, CoursePrivilege } from "@/models";
 
 export interface SidebarOption {
 	label: string;
@@ -9,6 +9,7 @@ export interface SidebarOption {
 	icon?: string;
 	requiredPrivileges: CoursePrivilege[];
 	requiresTeacher?: boolean;
+	requiredFeatures?: CourseFeature[];
 }
 
 export const courseListSidebarOptions: SidebarOption[] = [
@@ -108,6 +109,7 @@ export const studentDashboardSidebarOptions: SidebarOption[] = [
 		children: [],
 		icon: "fitness_center",
 		routeName: "CourseDashBoardPracticeSessionList",
+		requiredFeatures: [CourseFeature.PRACTICE],
 	},
 	{
 		label: _("sidebar_labels.course_dashboard_material"),
@@ -115,6 +117,7 @@ export const studentDashboardSidebarOptions: SidebarOption[] = [
 		routeName: "StudentCourseTree",
 		children: ["StudentNodeDetail"],
 		requiredPrivileges: [],
+		requiredFeatures: [CourseFeature.MATERIAL],
 	},
 	{
 		label: _("student_dashboard_options.my_exams"),
@@ -122,13 +125,16 @@ export const studentDashboardSidebarOptions: SidebarOption[] = [
 		children: [],
 		icon: "assignment",
 		routeName: "CourseDashBoardExamList",
+		requiredFeatures: [CourseFeature.MY_EXAMS],
 	},
+	// TODO add public exams
 	{
 		label: _("student_dashboard_options.popular_exercises"),
 		requiredPrivileges: [],
 		children: ["ExerciseSolutionThread"],
 		icon: "topic",
 		routeName: "CourseDashBoardExerciseThreadList",
+		requiredFeatures: [CourseFeature.EXERCISE_SOLUTIONS],
 	},
 	{
 		label: _("student_dashboard_options.leaderboard"),
@@ -136,6 +142,7 @@ export const studentDashboardSidebarOptions: SidebarOption[] = [
 		children: [],
 		icon: "leaderboard",
 		routeName: "StudentCourseLeaderboard",
+		requiredFeatures: [CourseFeature.LEADERBOARD],
 	},
 	{
 		label: _("student_dashboard_options.my_favorites"),
@@ -143,6 +150,7 @@ export const studentDashboardSidebarOptions: SidebarOption[] = [
 		children: [],
 		icon: "bookmark_outline",
 		routeName: "StudentFavorites",
+		requiredFeatures: [CourseFeature.BOOKMARKED],
 	},
 	{
 		label: _("sidebar_labels.course_dashboard_back_to_courses"),

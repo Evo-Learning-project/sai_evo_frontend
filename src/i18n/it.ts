@@ -828,6 +828,7 @@ export const it = {
 		select: "Seleziona",
 	},
 	student_course_dashboard: {
+		begin_exam: "Inizia",
 		you_are_in_student_mode: "Stai visualizzando il corso in modalità studente",
 		no_exams: "Non hai ancora partecipato a nessun esame",
 		show_bookmarked: "Mostra solo preferite",

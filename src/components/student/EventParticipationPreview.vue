@@ -2,9 +2,8 @@
 	<div>
 		<Card
 			:class="{
-				'md:h-23rem h-64':
-					participation.event.event_type === EventType.SELF_SERVICE_PRACTICE,
-				'h-44': participation.event.event_type !== EventType.SELF_SERVICE_PRACTICE,
+				'md:h-23rem h-64': showThumbnail,
+				'h-44': !showThumbnail,
 			}"
 		>
 			<!-- 334 x 371 -->
@@ -31,19 +30,13 @@
 			<template v-slot:body>
 				<div class="flex flex-col h-full">
 					<!-- thumbnail -->
-					<div
-						class=""
-						v-if="participation.event.event_type === EventType.SELF_SERVICE_PRACTICE"
-					>
+					<div class="" v-if="showThumbnail">
 						<ParticipationThumbnail
 							:participation="participation"
 						></ParticipationThumbnail>
 					</div>
 					<!-- separator border -->
-					<div
-						v-if="participation.event.event_type === EventType.SELF_SERVICE_PRACTICE"
-						class="h-0 -mx-4 border-b md:-mx-5"
-					></div>
+					<div v-if="showThumbnail" class="h-0 -mx-4 border-b md:-mx-5"></div>
 					<!-- bottom section with buttons -->
 					<div class="flex items-center mt-auto -mb-1 bg-black bg-opacity-0">
 						<div class="" v-if="isParticipable">
@@ -51,10 +44,9 @@
 							<router-link
 								class="order-12 md:mt-6 xl:mt-0 xl:order-1"
 								:to="{
-									name:
-										participation.event.event_type === EventType.SELF_SERVICE_PRACTICE
-											? 'PracticeParticipationPage'
-											: 'ExamParticipationPage',
+									name: showThumbnail
+										? 'PracticeParticipationPage'
+										: 'ExamParticipationPage',
 									params: {
 										examId: participation.event.id,
 										courseId: courseId,
@@ -72,10 +64,7 @@
 							<router-link
 								v-if="participation.assessment_available"
 								:to="{
-									name:
-										participation.event.event_type === EventType.SELF_SERVICE_PRACTICE
-											? 'PracticeSummaryPage'
-											: 'AssessmentReviewPage',
+									name: showThumbnail ? 'PracticeSummaryPage' : 'AssessmentReviewPage',
 									params: {
 										participationId: participation.id,
 										examId: participation.event.id,
@@ -85,7 +74,7 @@
 							>
 								<Btn :size="'sm'" :variant="'primary-borderless'">
 									{{
-										participation.event.event_type === EventType.SELF_SERVICE_PRACTICE
+										showThumbnail
 											? $t("student_course_dashboard.practice_summary")
 											: $t("student_course_dashboard.view_assessment")
 									}}</Btn
@@ -93,7 +82,7 @@
 							</router-link>
 							<!-- review button -->
 							<router-link
-								v-if="participation.event.event_type !== EventType.SELF_SERVICE_PRACTICE"
+								v-if="!showThumbnail"
 								:to="{
 									name: 'SubmissionReviewPage',
 									params: {
@@ -114,7 +103,7 @@
 									? $t('student_course_dashboard.remove_bookmark')
 									: $t('student_course_dashboard.add_bookmark')
 							"
-							v-if="participation.event.event_type === EventType.SELF_SERVICE_PRACTICE"
+							v-if="showThumbnail"
 							@click="$emit('bookmark')"
 							:loading="loading"
 							:variant="'icon'"
@@ -171,6 +160,9 @@ export default defineComponent({
 				this.participation.event.state === EventState.OPEN &&
 				this.participation.state === EventParticipationState.IN_PROGRESS
 			);
+		},
+		showThumbnail(): boolean {
+			return this.participation.event.event_type === EventType.SELF_SERVICE_PRACTICE;
 		},
 	},
 	components: {

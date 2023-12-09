@@ -288,7 +288,7 @@ import { Breadcrumbs } from "@sentry/browser/dist/integrations";
 import BreadCrumbs from "./components/ui/BreadCrumbs.vue";
 import DraggablePopup from "./components/ui/DraggablePopup.vue";
 import GamificationContextPanel from "./components/student/GamificationContextPanel.vue";
-import { coursePrivilegeMixin } from "./mixins";
+import { courseFeatureMixin, coursePrivilegeMixin } from "./mixins";
 
 //import { typesetTex } from "./utils";
 const SIDEBAR_COLLASPED_LOCALSTORAGE = "sidebar_collapsed";
@@ -312,7 +312,7 @@ export default defineComponent({
 	beforeCreate(): void {
 		this.metaStore.initStore();
 	},
-	mixins: [coursePrivilegeMixin],
+	mixins: [coursePrivilegeMixin, courseFeatureMixin],
 	mounted() {
 		// TODO refactor
 		setTimeout(() => {
@@ -449,24 +449,23 @@ export default defineComponent({
 		sidebarOptions(): SidebarOption[] {
 			const sidebarOptions = (this.$route.meta?.sidebarOptions ?? []) as SidebarOption[];
 
+			// override path for course list for teachers so it goes to /teacher/courses
+			// instead of /student/courses
+			const courseListRoute = sidebarOptions.find(
+				r => r.routeName === "StudentCourseList",
+			);
+			if (courseListRoute && this.metaStore.user?.is_teacher) {
+				courseListRoute.routeName = "TeacherCourseList";
+			}
+
 			return [
 				...sidebarOptions.filter(
 					r =>
-						r.routeName !== "StudentCourseList" &&
-						this.hasPrivileges(r.requiredPrivileges),
+						r.routeName !== "StudentCourseList" && // treat course list separately
+						this.hasPrivileges(r.requiredPrivileges) &&
+						this.hasFeatures(r.requiredFeatures),
 				),
-				...(sidebarOptions.filter(r => r.routeName === "StudentCourseList").length === 1
-					? [
-							{
-								...sidebarOptions.filter(r => r.routeName === "StudentCourseList")[0],
-								// override path for course list for teachers so it goes to /teacher/courses
-								// instead of /student/courses
-								...(this.metaStore.user.is_teacher
-									? { routeName: "TeacherCourseList" }
-									: {}),
-							},
-					  ]
-					: []),
+				...(courseListRoute ? [courseListRoute] : []),
 			];
 		},
 		showSidebar() {

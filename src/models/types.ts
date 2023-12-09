@@ -112,6 +112,16 @@ export enum CoursePrivilege {
 	MANAGE_EXERCISE_SOLUTIONS = "manage_exercise_solutions",
 }
 
+export enum CourseFeature {
+	PRACTICE = "practice",
+	EXAM_LIST = "exam_list",
+	MY_EXAMS = "my_exams",
+	MATERIAL = "material",
+	EXERCISE_SOLUTIONS = "exercise_solutions",
+	LEADERBOARD = "leaderboard",
+	BOOKMARKED = "bookmarked",
+}
+
 export enum ExerciseSolutionState {
 	DRAFT,
 	SUBMITTED,

@@ -1,5 +1,6 @@
 import {
 	AnnouncementNodeState,
+	CourseFeature,
 	CourseTreeNodeType,
 	EventAccessRule,
 	EventTimeLimitRule,
@@ -53,6 +54,7 @@ export interface Course {
 	creator?: User;
 	bookmarked?: boolean;
 	enrolled?: boolean;
+	features?: Record<CourseFeature, boolean>;
 
 	// student fields
 	participations?: EventParticipation[];
