@@ -105,7 +105,8 @@
 				:allowEditSubmission="true"
 				:saving="saving"
 				:showTags="
-					currentEventParticipation.event.event_type === EventType.SELF_SERVICE_PRACTICE
+					currentEventParticipation.event.event_type ===
+						EventType.SELF_SERVICE_PRACTICE && !$config.get('hideExerciseTagsInPractice')
 				"
 			>
 				<h4 class="mb-0">

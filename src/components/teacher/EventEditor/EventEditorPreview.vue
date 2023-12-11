@@ -6,6 +6,7 @@
 					class="mt-1.25px mr-4"
 					:class="{ 'text-muted': event.name.length === 0 }"
 					style="
+						line-height: 1.25;
 						display: -webkit-box;
 						-webkit-line-clamp: 2;
 						-webkit-box-orient: vertical;

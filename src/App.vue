@@ -39,10 +39,14 @@
 						{{ routeTitle }}
 					</h2> -->
 							<BreadCrumbs
-								v-if="$route.meta?.breadcrumbs && !$route.meta?.hideBreadcrumbs"
+								v-if="
+									$route.meta?.breadcrumbs &&
+									!$route.meta?.hideBreadcrumbs &&
+									!$config.get('hideBreadcrumbsGlobally')
+								"
 								:route="$route"
 								class="mt-1 md:ml-0"
-							></BreadCrumbs>
+							/>
 						</div>
 						<div class="flex ml-auto md:w-80">
 							<div class="ml-auto" id="main-student-header-right"></div>

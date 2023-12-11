@@ -14,7 +14,7 @@
 			<section class="w-full pb-4">
 				<div class="mb-8 mt-4">
 					<h2 class="mb-2" style="line-height: 1.2">{{ routeTitle }}</h2>
-					<BreadCrumbs :route="$route" />
+					<BreadCrumbs :route="$route" v-if="!$config.get('hideBreadcrumbsGlobally')" />
 				</div>
 
 				<StudentScopesBanner v-if="!metaStore.user.is_teacher" />

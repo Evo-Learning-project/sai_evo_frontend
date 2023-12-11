@@ -1,7 +1,14 @@
 <template>
 	<div>
 		<div class="flex items-center space-x-4">
-			<h4 v-if="showTitle">{{ $t("exercise_solution.proposed_solutions_title") }}</h4>
+			<h4
+				v-if="
+					(showTitle && solutions.length > 0) ||
+					($config.get('allowExerciseSolutionProposals') ?? true)
+				"
+			>
+				{{ $t("exercise_solution.proposed_solutions_title") }}
+			</h4>
 			<!-- <Btn :variant="'primary'" :size="'sm'" :outline="true">
             <span class="mr-2 text-base material-icons">reviews</span>
             {{ $t("exercise_solution.propose_solution") }}</Btn
@@ -22,7 +29,9 @@
 		/>
 		<div
 			class="flex md:flex-row items-center md:space-y-0 space-y-2 flex-col md:space-x-4"
-			v-if="solutions.length === 0"
+			v-if="
+				solutions.length === 0 && ($config.get('allowExerciseSolutionProposals') ?? true)
+			"
 		>
 			<p class="text-muted">
 				{{ $t("exercise_solution.no_solutions_call_to_action") }}

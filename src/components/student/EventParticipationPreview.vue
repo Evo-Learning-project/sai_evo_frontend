@@ -8,18 +8,16 @@
 		>
 			<!-- 334 x 371 -->
 			<template v-slot:header>
-				<h4 class="text-center" v-if="participation.event.name.length > 0">
+				<h4
+					style="line-height: 1.25"
+					class="text-center mb-2"
+					v-if="participation.event.name.length > 0"
+				>
 					{{ participation.event.name }}
 				</h4>
 				<div class="flex mx-auto font-medium text-muted">
 					<p class="mx-auto space-x-1">
-						<span class="hidden inline-icon material-icons-outlined light-icon">
-							event
-						</span>
-						<Timestamp
-							:value="participation.begin_timestamp"
-							:date-only="true"
-						></Timestamp>
+						<Timestamp :value="participation.begin_timestamp" :date-only="true" />
 					</p>
 					<div v-if="isParticipable" class="hidden chip mx-auto chip-primary mb-0 pt-0.5">
 						<span class="material-icons-outlined text-base mr-1 mt-1.25px"> update </span>
@@ -109,12 +107,13 @@
 							:variant="'icon'"
 							:outline="true"
 							class="my-0 ml-auto"
-							><span
+						>
+							<span
 								class="material-icons"
 								:class="{ 'text-primary': participation.bookmarked }"
-								>{{ participation.bookmarked ? "bookmark" : "bookmark_outline" }}</span
-							></Btn
-						>
+								>{{ participation.bookmarked ? "bookmark" : "bookmark_outline" }}
+							</span>
+						</Btn>
 					</div>
 				</div>
 			</template>
