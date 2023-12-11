@@ -68,8 +68,13 @@ import configService from "../config";
 const studentRoutePrefix = configService.get("studentRoutePrefix") ?? "student";
 const teacherRoutePrefix = configService.get("teacherRoutePrefix") ?? "teacher";
 
-const getRoutePath = (routeName: string, defaultPath: string): string => {
-	return (configService.get("routeNames") ?? {})[routeName] ?? defaultPath;
+const getRouteInformation = (routeName: string, defaultPath: string) => {
+	return {
+		name: routeName,
+		path:
+			((configService.get("routeNames") ?? {})[routeName] as string | null | undefined) ??
+			defaultPath,
+	};
 };
 
 const routes: Array<RouteRecordRaw> = [
@@ -332,9 +337,7 @@ const routes: Array<RouteRecordRaw> = [
 		redirect: { name: "StudentCourseList" },
 		children: [
 			{
-				// TODO find a better way
-				path: getRoutePath("StudentCourseList", "courses"),
-				name: "StudentCourseList",
+				...getRouteInformation("StudentCourseList", "courses"),
 				component: CourseList,
 				meta: {
 					routeTitle: _("headings.course_list"),
@@ -343,8 +346,7 @@ const routes: Array<RouteRecordRaw> = [
 				},
 			},
 			{
-				path: getRoutePath("StudentCourseDashboard", "courses/:courseId"),
-				name: "StudentCourseDashboard",
+				...getRouteInformation("StudentCourseDashboard", "courses/:courseId"),
 				component: StudentCourseDashboard,
 				meta: {
 					routeTitle: _("headings.course_title"),
@@ -355,8 +357,7 @@ const routes: Array<RouteRecordRaw> = [
 				redirect: { name: "CourseDashBoardPracticeSessionList" },
 				children: [
 					{
-						path: "exams",
-						name: "CourseDashBoardExamList",
+						...getRouteInformation("CourseDashBoardExamList", "exams"),
 						component: CourseDashBoardExamList,
 						meta: {
 							routeTitle: _("student_course_dashboard.exams_you_participated_in"),
@@ -364,11 +365,9 @@ const routes: Array<RouteRecordRaw> = [
 							sidebarOptions: studentDashboardSidebarOptions,
 						},
 					},
-					// TODO add public exams & rename the above route to My Exams
+					// TODO rename the above route to My Exams
 					{
-						// TODO make path name configurable
-						path: "public_exams",
-						name: "PublicExamsList",
+						...getRouteInformation("PublicExamsList", "public_exams"),
 						component: CourseDashBoardPublicExamList,
 						meta: {
 							routeTitle: _("student_course_dashboard.public_exams"),
@@ -377,8 +376,7 @@ const routes: Array<RouteRecordRaw> = [
 						},
 					},
 					{
-						path: "practices",
-						name: "CourseDashBoardPracticeSessionList",
+						...getRouteInformation("CourseDashBoardPracticeSessionList", "practices"),
 						component: CourseDashBoardPracticeSessionList,
 						meta: {
 							routeTitle: _("student_course_dashboard.your_practice_events"),
@@ -387,8 +385,7 @@ const routes: Array<RouteRecordRaw> = [
 						},
 					},
 					{
-						path: "threads",
-						name: "CourseDashBoardExerciseThreadList",
+						...getRouteInformation("CourseDashBoardExerciseThreadList", "threads"),
 						component: CourseDashBoardExerciseThreadList,
 						meta: {
 							routeTitle: _("headings.student_exercise_solution_threads"),
@@ -397,8 +394,7 @@ const routes: Array<RouteRecordRaw> = [
 						},
 					},
 					{
-						path: "leaderboard",
-						name: "StudentCourseLeaderboard",
+						...getRouteInformation("StudentCourseLeaderboard", "leaderboard"),
 						component: GamificationLeaderboard,
 						meta: {
 							routeTitle: _("headings.student_course_leaderboard"),
@@ -407,8 +403,7 @@ const routes: Array<RouteRecordRaw> = [
 						},
 					},
 					{
-						path: "favorites",
-						name: "StudentFavorites",
+						...getRouteInformation("StudentFavorites", "favorites"),
 						component: FavoriteContentsList,
 						meta: {
 							routeTitle: _("headings.student_favorites"),
@@ -417,8 +412,7 @@ const routes: Array<RouteRecordRaw> = [
 						},
 					},
 					{
-						path: "material",
-						name: "StudentCourseTree",
+						...getRouteInformation("StudentCourseTree", "material"),
 						component: CourseTree,
 						meta: {
 							// routeTitle: _("headings.student_favorites"),
@@ -427,8 +421,7 @@ const routes: Array<RouteRecordRaw> = [
 						},
 					},
 					{
-						path: "material/:nodeId",
-						name: "StudentNodeDetail",
+						...getRouteInformation("StudentNodeDetail", "material/:nodeId"),
 						component: NodeDetail,
 						meta: {
 							// routeTitle: _("headings.student_favorites"),
@@ -437,8 +430,10 @@ const routes: Array<RouteRecordRaw> = [
 						},
 					},
 					{
-						path: "threads/:exerciseId/:solutionId?",
-						name: "ExerciseSolutionThread",
+						...getRouteInformation(
+							"ExerciseSolutionThread",
+							"threads/:exerciseId/:solutionId?",
+						),
 						component: ExerciseSolutionThread,
 						meta: {
 							routeTitle: _("headings.student_exercise_solution_thread"),
@@ -450,36 +445,44 @@ const routes: Array<RouteRecordRaw> = [
 			},
 
 			{
-				path: "courses/:courseId/exams/:examId",
+				...getRouteInformation(
+					"ExamParticipationPreview",
+					"courses/:courseId/exams/:examId",
+				),
 				component: ExamPreview,
-				name: "ExamParticipationPreview",
 				meta: {
 					routeTitle: _("headings.exam_preview"),
 					breadcrumbs: examParticipationBreadCrumbs,
 				},
 			},
 			{
-				path: "courses/:courseId/exams/:examId/participate",
+				...getRouteInformation(
+					"ExamParticipationPage",
+					"courses/:courseId/exams/:examId/participate",
+				),
 				component: EventParticipationPage,
-				name: "ExamParticipationPage",
 				meta: {
 					routeTitle: _("headings.ongoing_exam"),
 					breadcrumbs: examParticipationBreadCrumbs,
 				},
 			},
 			{
-				path: "courses/:courseId/practice/:examId",
+				...getRouteInformation(
+					"PracticeParticipationPage",
+					"courses/:courseId/practice/:examId",
+				),
 				component: EventParticipationPage,
-				name: "PracticeParticipationPage",
 				meta: {
 					routeTitle: _("headings.ongoing_practice"),
 					breadcrumbs: practiceParticipationBreadCrumbs,
 				},
 			},
 			{
-				path: "courses/:courseId/exams/:examId/review/:participationId/:showSubmissionConfirmationMessage?",
+				...getRouteInformation(
+					"SubmissionReviewPage",
+					"courses/:courseId/exams/:examId/review/:participationId/:showSubmissionConfirmationMessage?",
+				),
 				component: EventParticipationFull,
-				name: "SubmissionReviewPage",
 				meta: {
 					routeTitle: _("headings.review_submission"),
 					breadcrumbs: submissionReviewBreadCrumbs,
@@ -489,9 +492,11 @@ const routes: Array<RouteRecordRaw> = [
 				},
 			},
 			{
-				path: "courses/:courseId/exams/:examId/assessment/:participationId",
+				...getRouteInformation(
+					"AssessmentReviewPage",
+					"courses/:courseId/exams/:examId/assessment/:participationId",
+				),
 				component: EventParticipationFull,
-				name: "AssessmentReviewPage",
 				meta: {
 					routeTitle: _("headings.review_assessment"),
 					breadcrumbs: examAssessmentBreadCrumbs,
@@ -501,9 +506,11 @@ const routes: Array<RouteRecordRaw> = [
 				},
 			},
 			{
-				path: "courses/:courseId/practice/:examId/summary/:participationId",
+				...getRouteInformation(
+					"PracticeSummaryPage",
+					"courses/:courseId/practice/:examId/summary/:participationId",
+				),
 				component: EventParticipationFull,
-				name: "PracticeSummaryPage",
 				meta: {
 					routeTitle: _("headings.practice_summary"),
 					breadcrumbs: practiceReviewBreadCrumbs,
