@@ -283,6 +283,7 @@ export const courseFeatureMixin = {
 		hasFeatures(features: CourseFeature[] | undefined) {
 			const self = this as any;
 			if (!self.currentCourse) {
+				// TODO this is wrong, it makes all entries disappear on teacher course list
 				return false;
 			}
 			return (features ?? []).every(f => (self.currentCourse.features ?? {})[f]);

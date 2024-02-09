@@ -369,6 +369,7 @@ export const it = {
 			"In questa pagina sono visulizzate le soluzioni agli esercizi proposte dagli studenti. Puoi rendere ufficiali quelle corrette e scartare quelle errate.",
 	},
 	student_dashboard_options: {
+		exams: "Esami",
 		my_exams: "I miei esami",
 		my_practice_sessions: "Le mie esercitazioni",
 		popular_exercises: "Esercizi popolari",

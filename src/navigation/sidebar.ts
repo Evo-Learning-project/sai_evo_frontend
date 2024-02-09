@@ -1,5 +1,6 @@
 import { getTranslatedString as _ } from "@/i18n";
 import { CourseFeature, CoursePrivilege } from "@/models";
+import configService from "../config";
 
 export interface SidebarOption {
 	label: string;
@@ -112,6 +113,14 @@ export const studentDashboardSidebarOptions: SidebarOption[] = [
 		requiredFeatures: [CourseFeature.PRACTICE],
 	},
 	{
+		label: _("student_dashboard_options.exams"),
+		requiredPrivileges: [],
+		children: [],
+		icon: "assignment",
+		routeName: "PublicExamsList",
+		requiredFeatures: [CourseFeature.EXAM_LIST],
+	},
+	{
 		label: _("sidebar_labels.course_dashboard_material"),
 		icon: "class",
 		routeName: "StudentCourseTree",
@@ -152,11 +161,15 @@ export const studentDashboardSidebarOptions: SidebarOption[] = [
 		routeName: "StudentFavorites",
 		requiredFeatures: [CourseFeature.BOOKMARKED],
 	},
-	{
-		label: _("sidebar_labels.course_dashboard_back_to_courses"),
-		icon: "chevron_left",
-		routeName: "StudentCourseList",
-		routeParams: { courseId: "-1" }, // !
-		requiredPrivileges: [],
-	},
+	...(configService.get("showCourseListInStudentDashboard") ?? true
+		? [
+				{
+					label: _("sidebar_labels.course_dashboard_back_to_courses"),
+					icon: "chevron_left",
+					routeName: "StudentCourseList",
+					routeParams: { courseId: "-1" }, // !
+					requiredPrivileges: [],
+				},
+		  ]
+		: []),
 ];

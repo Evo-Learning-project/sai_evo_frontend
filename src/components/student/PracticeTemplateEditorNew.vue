@@ -166,6 +166,7 @@ export default defineComponent({
 					...this.modelValue.rules,
 					{
 						rule_type: EventTemplateRuleType.TAG_BASED,
+						weight: 1,
 						amount,
 						clauses: [
 							{

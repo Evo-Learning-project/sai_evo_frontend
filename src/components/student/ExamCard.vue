@@ -53,7 +53,7 @@
 							<router-link
 								class="order-12 md:mt-6 xl:mt-0 xl:order-1"
 								:to="{
-									name: 'ExamParticipationPage',
+									name: 'ExamParticipationPreview',
 									params: {
 										examId: event.id,
 										courseId: courseId,

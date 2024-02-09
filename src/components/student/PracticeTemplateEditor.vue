@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
 	<div>
 		<div class="">
 			<div class="relative">
@@ -122,9 +122,9 @@
 						:max="editingRuleTag?.public_exercises_not_seen ?? 100000000"
 					>
 						<template v-slot:rightHint>
-							/{{ editingRuleTag?.public_exercises_not_seen ?? "" }}</template
-						></NumberInput
-					>
+							/{{ editingRuleTag?.public_exercises_not_seen ?? "" }}
+						</template>
+					</NumberInput>
 					<div class="flex items-center w-full md:w-max space-x-2">
 						<Btn
 							class="my-auto md:w-max w-full"
@@ -367,4 +367,4 @@ export default defineComponent({
 });
 </script>
 
-<style></style>
+<style></style> -->

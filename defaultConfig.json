@@ -2,5 +2,18 @@
 	"logo": "/logo.png",
 	"favicon": "/favicon.ico",
 	"loginButtonImage": "/unipi.png",
-	"enableUnpiExtensions": true
+	"enableUnpiExtensions": true,
+	"studentMainRoute": {
+		"name": "CourseDashBoardPracticeSessionList",
+		"params": { "courseId": "17" }
+	},
+	"studentRoutePrefix": "student",
+	"teacherRoutePrefix": "teacher",
+	"routeNames": {
+		"StudentCourseDashboard": "courses/:courseId"
+	},
+	"hideBreadcrumbsGlobally": false,
+	"hideExerciseTagsInPractice": false,
+	"allowExerciseSolutionProposals": false,
+	"showCourseListInStudentDashboard": false
 }
